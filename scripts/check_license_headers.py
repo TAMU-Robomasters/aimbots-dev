@@ -2,20 +2,20 @@
 #
 # Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
 #
-# This file is part of aruw-mcb.
+# This file is part of template-project.
 #
-# aruw-mcb is free software: you can redistribute it and/or modify
+# template-project is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# aruw-mcb is distributed in the hope that it will be useful,
+# template-project is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
+# along with template-project.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
 import sys
@@ -24,7 +24,7 @@ SCRIPT_DIR = os.path.dirname(__file__)
 # These should be relative to the directory that this script is housed in.
 PATHS_TO_CHECK = [ '../template-project/src/',
                    '../template-project/test/' ]
-FILES_TO_IGNORE = []
+FILES_TO_IGNORE = [ '../template-project/src/drivers.hpp' ]
 
 PATHS_TO_CHECK = [ os.path.join(SCRIPT_DIR, path) for path in PATHS_TO_CHECK ]
 FILES_TO_IGNORE = [ os.path.join(SCRIPT_DIR, path) for path in FILES_TO_IGNORE ]
@@ -36,20 +36,20 @@ LICENSED_SOURCE_FILE_EXTENSIONS = ['.cpp', '.hpp', '.h']
 LICENSE_HEADER = '/*\n\
  * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>\n\
  *\n\
- * This file is part of aruw-mcb.\n\
+ * This file is part of template-project.\n\
  *\n\
- * aruw-mcb is free software: you can redistribute it and/or modify\n\
+ * template-project is free software: you can redistribute it and/or modify\n\
  * it under the terms of the GNU General Public License as published by\n\
  * the Free Software Foundation, either version 3 of the License, or\n\
  * (at your option) any later version.\n\
  *\n\
- * aruw-mcb is distributed in the hope that it will be useful,\n\
+ * template-project is distributed in the hope that it will be useful,\n\
  * but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
  * GNU General Public License for more details.\n\
  *\n\
  * You should have received a copy of the GNU General Public License\n\
- * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.\n\
+ * along with template-project.  If not, see <https://www.gnu.org/licenses/>.\n\
  */\n'
 
 if len(sys.argv) not in [ 1, 2 ]:

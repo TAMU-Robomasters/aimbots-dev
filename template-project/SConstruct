@@ -1,19 +1,19 @@
 # Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
 #
-# This file is part of aruw-mcb.
+# This file is part of template-project.
 #
-# aruw-mcb is free software: you can redistribute it and/or modify
+# template-project is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# aruw-mcb is distributed in the hope that it will be useful,
+# template-project is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
+# along with template-project.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
 from build_tools import extract_robot_type, parse_args
@@ -30,7 +30,7 @@ LINKERSCRIPT_FILE   = join(HARDWARE_MODM_PATH, "link/linkerscript.ld")
 ARUWLIB_SRC_PATH    = "aruwlib/src"
 ARUWLIB_PATH        = join(ARUWLIB_SRC_PATH, "aruwlib")
 ARUWLIB_TEST_PATH   = "aruwlib/test"
-ARUWSRC_TEST_PATH   = "test"
+SRC_TEST_PATH       = "test"
 
 # Define libraries
 HOSTED_LIBS         = ["pthread"]
@@ -41,7 +41,7 @@ COVERAGE_LIBS       = ["-lgcov"]
 ignored_dirs        = [".lbuild_cache", BUILD_PATH, HOSTED_MODM_PATH, HARDWARE_MODM_PATH, ARUWLIB_PATH]
 ignored_files       = [extract_robot_type.ROBOT_TYPE_FILE]
 # Don't compile this stuff when testing
-IGNORED_FILES_WHILE_TESTING = ["src/main.cpp", "src/aruwsrc/control/*_control.cpp"]
+IGNORED_FILES_WHILE_TESTING = ["src/main.cpp"]
 
 
 # Parse and validate arguments
@@ -55,11 +55,11 @@ if args["TARGET_ENV"] == "tests":
 elif args["TARGET_ENV"] == "sim":
     modm_path = HOSTED_MODM_PATH
     ignored_dirs.append(ARUWLIB_TEST_PATH)
-    ignored_dirs.append(ARUWSRC_TEST_PATH)
+    ignored_dirs.append(SRC_TEST_PATH)
 elif args["TARGET_ENV"] == "hardware":
     modm_path = HARDWARE_MODM_PATH
     ignored_dirs.append(ARUWLIB_TEST_PATH)
-    ignored_dirs.append(ARUWSRC_TEST_PATH)
+    ignored_dirs.append(SRC_TEST_PATH)
 
 
 # Set the number of threads unless it has already been set to anything but 1
@@ -132,7 +132,7 @@ elif args["TARGET_ENV"] == "tests":
         "-DPLATFORM_HOSTED",
         "-DENV_UNIT_TESTS"])
     env.AppendUnique(CPPPATH=[abspath(ARUWLIB_TEST_PATH)])
-    env.AppendUnique(CPPPATH=[abspath(ARUWSRC_TEST_PATH)])
+    env.AppendUnique(CPPPATH=[abspath(SRC_TEST_PATH)])
     env.AppendUnique(LIBS=GTEST_LIBS)
     env.AppendUnique(LIBS=HOSTED_LIBS)
 
@@ -164,7 +164,7 @@ if args["TARGET_ENV"] == "hardware":
     program = env.Program(target=env["CONFIG_PROJECT_NAME"]+".elf", source=sources)
 
     # The executable depends on the linkerscript
-    env.Depends(target=program, dependency=abspath("aruwlib/modm/link/linkerscript.ld"))
+    env.Depends(target=program, dependency=abspath(LINKERSCRIPT_FILE))
 
     # Add target environment-specific SCons aliases
     # WARNING: all aliases must be checked during argument validation

@@ -17,8 +17,9 @@
  * along with template-project.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
+#ifndef MY_FIRST_FILE_HPP_
+#define MY_FIRST_FILE_HPP_
 
-#include "my_first_file.hpp"
+int sum(int x, int y) { return x + y; }
 
-TEST(hello, world) { EXPECT_EQ(3, sum(1, 2)); }
+#endif  // MY_FIRST_FILE_HPP_
