@@ -1,0 +1,267 @@
+# Copyright (c) 2017-2019, Niklas Hauser
+#
+# This file is part of the modm project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#!/usr/bin/env python3
+
+from os.path import join, abspath
+Import("env")
+
+profile = env["CONFIG_PROFILE"]
+env["BUILDPATH"] = join(env["CONFIG_BUILD_BASE"], profile)
+env["BASEPATH"] = abspath(".")
+# SCons tools
+env.Append(toolpath=[
+    abspath(r"ext/dlr/scons/site_tools"),
+    abspath(r"scons/site_tools"),
+])
+env.Tool("artifact")
+env.Tool("bmp")
+env.Tool("build_target")
+env.Tool("compiler_arm_none_eabi_gcc")
+env.Tool("crashdebug")
+env.Tool("dfu")
+env.Tool("find_files")
+env.Tool("log_itm")
+env.Tool("openocd")
+env.Tool("openocd_remote")
+env.Tool("qtcreator")
+env.Tool("settings_buildpath")
+env.Tool("size")
+env.Tool("template")
+env.Tool("utils_buildformat")
+# Toolchain configuration
+if profile == "debug":
+    env.Append(CPPDEFINES = [
+        "MODM_DEBUG_BUILD",
+    ])
+
+env["CCFLAGS"] = [
+    "-fdata-sections",
+    "-ffunction-sections",
+    "-finline-limit=10000",
+    "-fshort-wchar",
+    "-fsingle-precision-constant",
+    "-funsigned-bitfields",
+    "-funsigned-char",
+    "-fwrapv",
+    "-g3",
+    "-gdwarf-3",
+    "-W",
+    "-Wall",
+    "-Wdouble-promotion",
+    "-Wduplicated-cond",
+    "-Werror=format",
+    "-Werror=maybe-uninitialized",
+    "-Werror=overflow",
+    "-Werror=sign-compare",
+    "-Wextra",
+    "-Wlogical-op",
+    "-Wpointer-arith",
+    "-Wundef",
+]
+if profile == "release":
+    env.Append(CCFLAGS = [
+        "-Os",
+    ])
+if profile == "debug":
+    env.Append(CCFLAGS = [
+        "-fno-move-loop-invariants",
+        "-fno-split-wide-types",
+        "-fno-tree-loop-optimize",
+        "-Og",
+    ])
+
+env["CFLAGS"] = [
+    "-std=gnu11",
+    "-Wbad-function-cast",
+    "-Wimplicit",
+    "-Wredundant-decls",
+    "-Wstrict-prototypes",
+]
+
+env["CXXFLAGS"] = [
+    "-fno-exceptions",
+    "-fno-rtti",
+    "-fno-unwind-tables",
+    "-fstrict-enums",
+    "-fuse-cxa-atexit",
+    "-std=c++17",
+    "-Woverloaded-virtual",
+]
+
+env["ASFLAGS"] = [
+    "-g3",
+    "-gdwarf-3",
+]
+
+env["LINKFLAGS"] = [
+    "--specs=nano.specs",
+    "--specs=nosys.specs",
+    "-L{project_source_dir}",
+    "-nostartfiles",
+    "-Tmodm/link/linkerscript.ld",
+    "-Wl,--build-id=sha1",
+    "-Wl,--fatal-warnings",
+    "-Wl,--gc-sections",
+    "-Wl,--no-wchar-size-warning",
+    "-Wl,--relax",
+    "-Wl,-wrap,_calloc_r",
+    "-Wl,-wrap,_free_r",
+    "-Wl,-wrap,_malloc_r",
+    "-Wl,-wrap,_realloc_r",
+]
+
+env["ARCHFLAGS"] = [
+    "-mcpu=cortex-m4",
+    "-mfloat-abi=hard",
+    "-mfpu=fpv4-sp-d16",
+    "-mthumb",
+]
+
+
+# ARCHFLAGS must be known for compiling *and* linking
+env.Append(CCFLAGS="$ARCHFLAGS")
+env.Append(ASFLAGS="$ARCHFLAGS")
+env.Append(LINKFLAGS="$ARCHFLAGS")
+
+# Search all linked static libraries multiple times
+env["_LIBFLAGS"] = "-Wl,--start-group " + env["_LIBFLAGS"] + " -Wl,--end-group"
+# We need to link libmodm.a with --whole-archive, so that all weak symbols are
+# visible to the linker. Functions placed in a linker section list are typically
+# not referenced externally, so the linker will discard them when searching.
+# From https://sourceware.org/binutils/docs/ld/Options.html#Options:
+#     For each archive mentioned on the command line after the --whole-archive option, include every object
+#     file in the archive in the link, rather than searching the archive for the required object files.
+env["_LIBFLAGS"] = "-Wl,--whole-archive " + env["_LIBFLAGS"] + " -Wl,--no-whole-archive"
+
+
+
+
+
+
+# Device configuration
+env["CONFIG_DEVICE_NAME"] = "stm32f427iih6"
+env["CONFIG_DEVICE_MEMORY"] = [
+    {'name': 'flash', 'access': 'rx', 'start': 134217728, 'size': 2097152},
+    {'name': 'ccm', 'access': 'rw', 'start': 268435456, 'size': 65536},
+    {'name': 'sram1', 'access': 'rwx', 'start': 536870912, 'size': 114688},
+    {'name': 'sram2', 'access': 'rwx', 'start': 536985600, 'size': 16384},
+    {'name': 'sram3', 'access': 'rwx', 'start': 537001984, 'size': 65536},
+    {'name': 'backup', 'access': 'rwx', 'start': 1073889280, 'size': 4096},
+]
+# Programming configuration
+env.Append(MODM_OPENOCD_CONFIGFILES="$BASEPATH/openocd.cfg")
+env.Append(MODM_OPENOCD_GDBINIT="$BASEPATH/openocd_gdbinit")
+env.Append(MODM_GDBINIT="$BASEPATH/gdbinit")
+# XPCC generator tool path
+env["XPCC_SYSTEM_DESIGN"] = join(abspath("."), "tools", "xpcc_generator")
+env.AppendUnique(CPPPATH=[
+    abspath(r"ext"),
+    abspath(r"ext/cmsis/core"),
+    abspath(r"ext/cmsis/device"),
+    abspath(r"src"),
+])
+
+files = [
+    env.File(r"ext/gcc/cabi.c"),
+    env.File(r"ext/gcc/cxxabi.cpp"),
+    env.File(r"ext/gcc/new_delete.cpp"),
+    env.File(r"ext/tlsf/tlsf.c"),
+    env.File(r"src/modm/architecture/driver/atomic/flag.cpp"),
+    env.File(r"src/modm/architecture/interface/can.cpp"),
+    env.File(r"src/modm/architecture/interface/can_message.cpp"),
+    env.File(r"src/modm/architecture/interface/i2c.cpp"),
+    env.File(r"src/modm/communication/xpcc/backend/can/connector.cpp"),
+    env.File(r"src/modm/communication/xpcc/backend/header.cpp"),
+    env.File(r"src/modm/communication/xpcc/communicator.cpp"),
+    env.File(r"src/modm/communication/xpcc/dispatcher.cpp"),
+    env.File(r"src/modm/communication/xpcc/postman/dynamic_postman/dynamic_postman.cpp"),
+    env.File(r"src/modm/communication/xpcc/postman/postman.cpp"),
+    env.File(r"src/modm/container/smart_pointer.cpp"),
+    env.File(r"src/modm/io/iostream.cpp"),
+    env.File(r"src/modm/io/iostream_printf.cpp"),
+    env.File(r"src/modm/math/geometry/angle.cpp"),
+    env.File(r"src/modm/math/geometry/vector2.cpp"),
+    env.File(r"src/modm/math/utils/bit_operation.cpp"),
+    env.File(r"src/modm/math/utils/pc/operator.cpp"),
+    env.File(r"src/modm/platform/adc/adc_interrupt_1.cpp"),
+    env.File(r"src/modm/platform/can/can_1.cpp"),
+    env.File(r"src/modm/platform/can/can_2.cpp"),
+    env.File(r"src/modm/platform/can/can_filter.cpp"),
+    env.File(r"src/modm/platform/clock/rcc.cpp"),
+    env.File(r"src/modm/platform/clock/systick_timer.cpp"),
+    env.File(r"src/modm/platform/core/assert.cpp"),
+    env.File(r"src/modm/platform/core/delay.cpp"),
+    env.File(r"src/modm/platform/core/heap_table.cpp"),
+    env.File(r"src/modm/platform/core/reset_handler.sx"),
+    env.File(r"src/modm/platform/core/startup.c"),
+    env.File(r"src/modm/platform/core/startup_platform.c"),
+    env.File(r"src/modm/platform/core/vectors.c"),
+    env.File(r"src/modm/platform/gpio/enable.cpp"),
+    env.File(r"src/modm/platform/heap/heap_tlsf.cpp"),
+    env.File(r"src/modm/platform/i2c/i2c_master_2.cpp"),
+    env.File(r"src/modm/platform/spi/spi_master_1.cpp"),
+    env.File(r"src/modm/platform/spi/spi_master_5.cpp"),
+    env.File(r"src/modm/platform/timer/timer_8.cpp"),
+    env.File(r"src/modm/platform/uart/uart_1.cpp"),
+    env.File(r"src/modm/platform/uart/uart_2.cpp"),
+    env.File(r"src/modm/platform/uart/uart_3.cpp"),
+    env.File(r"src/modm/platform/uart/uart_6.cpp"),
+    env.File(r"src/modm/ui/display/character_display.cpp"),
+    env.File(r"src/modm/ui/display/font/all_caps_3x5.cpp"),
+    env.File(r"src/modm/ui/display/font/arcade_classic.cpp"),
+    env.File(r"src/modm/ui/display/font/assertion.cpp"),
+    env.File(r"src/modm/ui/display/font/fixed_width_5x8.cpp"),
+    env.File(r"src/modm/ui/display/font/matrix_8x8.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_14x32.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_40x56.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_46x64.cpp"),
+    env.File(r"src/modm/ui/display/font/scripto_narrow.cpp"),
+    env.File(r"src/modm/ui/display/font/ubuntu_36.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display_fill.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display_text.cpp"),
+    env.File(r"src/modm/ui/display/image/home_16x16.cpp"),
+    env.File(r"src/modm/ui/display/image/logo_eurobot_90x64.cpp"),
+    env.File(r"src/modm/ui/display/image/logo_rca_90x64.cpp"),
+    env.File(r"src/modm/ui/display/image/skull_64x64.cpp"),
+    env.File(r"src/modm/ui/display/virtual_graphic_display.cpp"),
+    env.File(r"src/modm/ui/menu/abstract_menu.cpp"),
+    env.File(r"src/modm/ui/menu/abstract_view.cpp"),
+    env.File(r"src/modm/ui/menu/choice_menu.cpp"),
+    env.File(r"src/modm/ui/menu/choice_menu_entry.cpp"),
+    env.File(r"src/modm/ui/menu/scrollable_text.cpp"),
+    env.File(r"src/modm/ui/menu/standard_menu.cpp"),
+    env.File(r"src/modm/ui/menu/view_stack.cpp"),
+    env.File(r"src/modm/utils/dummy.cpp"),
+]
+library = env.StaticLibrary(target="modm", source=files)
+
+env.AppendUnique(LIBS=[
+    library,
+])
+env.AppendUnique(LIBPATH=[
+    abspath(str(library[0].get_dir())),
+])
+for flags in ["CCFLAGS", "CFLAGS", "CXXFLAGS", "ASFLAGS", "ARCHFLAGS", "LINKFLAGS"]:
+	flags_str = ARGUMENTS.get(flags)
+	if flags_str is not None:
+		flags_list = flags_str.split(",")
+		for flag in flags_list:
+			if len(flag) > 1 and flag[0] == "~":
+				try:
+					env[flags].remove(flag[1:])
+				except ValueError:
+					print("'" + flag[1:] + "' does not exist in " + flags +
+						" and therefore can not be removed.")
+					print("Info: " + flags + ": " + ", ".join(env[flags]))
+					exit(1)
+			else:
+				env[flags].append(flag)
+
+Return("library")

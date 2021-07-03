@@ -1,0 +1,15 @@
+<library>
+  <repositories>
+    <repository>
+      <path>../aruwlib/repo.lb</path>
+    </repository>
+  </repositories>
+  <options>
+    <option name="aruwlib:project_name">aruw-mcb-project</option>
+    <option name="aruwlib:modm_repo_lb">../aruwlib/modm/repo.lb</option>
+    <option name="aruwlib:core:generate_driver_hpp">True</option>
+  </options>
+  <modules>
+    <module>aruwlib:core</module>
+  </modules>
+</library>

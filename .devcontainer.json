@@ -1,0 +1,14 @@
+{
+    "image": "aruw/mcb-dev:2021-01-12.1",
+    // TODO: consider supporting/promoting using WSL2 file system for perf?
+    //       Might make it harder to deploy to an MCB.
+    "extensions": [
+        "marus25.cortex-debug",
+        "ms-vscode.cpptools",
+        "aruwrobotchooser.robot-chooser"
+    ],
+    "mounts": [
+        // Persist installed extensions across container rebuilds
+        "source=aruwlib-template-project-extensions,target=/root/.vscode-server/extensions,type=volume",
+    ]
+}

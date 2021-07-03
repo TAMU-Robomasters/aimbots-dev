@@ -1,0 +1,11 @@
+template-project/build
+project.xml.log
+.vscode/.cortex-debug.peripherals.state.json
+.vscode/.cortex-debug.registers.state.json
+.sconsign.dblite
+*.pyc
+.robot_type.txt
+docs/_build
+docs/api
+docs/doxyoutput
+gcov-result

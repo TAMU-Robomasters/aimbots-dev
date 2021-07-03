@@ -1,0 +1,257 @@
+# Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+#
+# This file is part of aruw-mcb.
+#
+# aruw-mcb is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# aruw-mcb is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
+
+default:
+  image: aruw/mcb-2020-gitlab-ci:2021-03-20.1
+
+variables:
+  ARTIFACT_PATH: isolated-deploy
+  GIT_SUBMODULE_STRATEGY: normal
+  DEFAULT_BUILD_ELF_FILE: build/hardware/release/template-project.elf
+  DEFAULT_TESTS_BUILD_ELF_FILE: build/tests/fast/template-project.elf
+  NUM_JOBS: 4
+
+.default_only: &default_only
+  - merge_requests
+  - master
+  - develop
+  - schedules
+
+.verification_only: &verification_only
+  - merge_requests
+  - master
+  - develop
+
+.verification_except: &verification_except
+  - schedules 
+
+stages:
+  - Initial Verification
+  - Build all Targets
+  - Deploy Pages
+
+before_script:
+  - python -V # Print out python version for debugging
+
+# Initial verification
+
+clang-format:
+  stage: Initial Verification
+  script:
+    - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r template-project/src/ template-project/test/
+  only: *verification_only
+  except: *verification_except
+
+Policy Checks:
+  stage: Initial Verification
+  script:
+    - python3 ./scripts/check_singleton_drivers.py ./template-project/src/ 
+    - python3 ./scripts/check_license_headers.py
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  only: *verification_only
+  except: *verification_except
+
+# Hidden jobs to be extended for each robot
+
+.mcb build:
+  stage: Build all Targets
+  only: *default_only
+  script:
+    - cd template-project
+    - python3 $(which scons) build robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror
+    - python3 $(which scons) size robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror > size.txt
+    - python3 ../scripts/parse_metrics.py $ROBOT
+    - cp $DEFAULT_BUILD_ELF_FILE ../$ARTIFACT_PATH/template-project-$ROBOT.elf
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$ROBOT-mcb"
+    paths:
+      - $ARTIFACT_PATH/*
+    expire_in: 2 weeks
+    reports:
+      metrics: metrics.txt
+
+.sim build:
+  stage: Build all Targets
+  only: *default_only
+  script:
+    - cd template-project
+    - python3 $(which scons) build-sim profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
+
+.test build:
+  stage: Build all Targets
+  only: *default_only
+  script:
+    - cd template-project
+    - python3 $(which scons) build-tests profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
+    - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
+
+# Soldier build
+
+Soldier MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: SOLDIER
+
+Soldier Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: SOLDIER
+
+Soldier Test Build:
+  stage: Build all Targets
+  only: *default_only
+  script:
+    - cd template-project
+    - python3 $(which scons) run-tests-gcov profile=fast robot=TARGET_SOLDIER -j${NUM_JOBS}
+    - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
+    - cd .. && gcovr -g --xml > cobertura.xml
+    - 'sed -i "s=<source>.</source>=<source>./template-project</source>=g" cobertura.xml'
+    - 'sed -i "s;filename=\";filename=\"template-project/;g" cobertura.xml'
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-soldier-tests"
+    reports:
+      cobertura: cobertura.xml
+
+# Drone build
+
+Drone MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: DRONE
+
+Drone Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: DRONE
+
+Drone Test Build:
+  extends:
+    - .test build
+  variables:
+    ROBOT: DRONE
+
+# Engineer build
+
+Engineer MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: ENGINEER
+
+Engineer Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: ENGINEER
+
+Engineer Test Build:
+  extends:
+    - .test build
+  variables:
+    ROBOT: ENGINEER
+
+# Hero build
+
+Hero MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: HERO
+
+Hero Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: HERO
+
+Hero Test Build:
+  extends:
+    - .test build
+  variables:
+    ROBOT: HERO
+
+# Old Soldier build
+
+Old Soldier MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: OLD_SOLDIER
+
+Old Soldier Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: OLD_SOLDIER
+
+Old Soldier Test Build:
+  extends:
+    - .test build
+  variables:
+    ROBOT: OLD_SOLDIER
+
+# Sentinel build
+
+Sentinel MCB Build:
+  extends:
+    - .mcb build
+  variables:
+    ROBOT: SENTINEL
+
+Sentinel Sim Build:
+  extends:
+    - .sim build
+  variables:
+    ROBOT: SENTINEL
+
+Sentinel Test Build:
+  extends:
+    - .test build
+  variables:
+    ROBOT: SENTINEL
+
+# Pages deploy
+
+pages:
+  image: alpine
+  stage: Deploy Pages
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  before_script:
+    - apk update
+    - apk add py-pip python3-dev
+    - apk add make
+    - apk add --no-cache g++ gcc libxml2-dev libxslt-dev
+    - pip3 install lxml
+    - pip3 install sphinx breathe exhale
+    - pip install sphinx_rtd_theme
+    - apk add doxygen
+  script:
+    - cd docs && make html
+    - mv _build/html/ ../public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - develop
+  except:
+    - schedules
