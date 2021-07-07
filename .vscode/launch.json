@@ -1,0 +1,58 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "preLaunchTask": "Build Tests - Debug",
+            "program": "${workspaceFolder}/template-project/build/tests/debug/template-project-tests.elf",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Debug Sim",
+            "type": "cppdbg",
+            "request": "launch",
+            "preLaunchTask": "Build Sim - Debug",
+            "program": "${workspaceFolder}/template-project/build/sim/debug/template-project.elf",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Debug MCB",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Program - Debug",
+            "executable": "./template-project/build/hardware/debug/template-project.elf",
+            "device": "STM32F427II",
+            "configFiles": [
+                "./template-project/openocd.cfg"
+            ]
+        }
+    ]
+}

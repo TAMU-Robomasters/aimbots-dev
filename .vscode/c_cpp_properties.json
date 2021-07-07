@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Test",
+            "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "compilerPath": "/usr/bin/g++",
+            "intelliSenseMode": "gcc-x64",
+            "browse": { "limitSymbolsToIncludedHeaders": true }
+        },
+        {
+            "name": "Sim",
+            "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "compilerPath": "/usr/bin/g++",
+            "intelliSenseMode": "gcc-x64",
+            "browse": { "limitSymbolsToIncludedHeaders": true }
+        },
+        {
+            "name": "MCB",
+            "compilerPath": "/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm",
+            "browse": { "limitSymbolsToIncludedHeaders": true }
+        }
+    ],
+    "version": 4
+}
