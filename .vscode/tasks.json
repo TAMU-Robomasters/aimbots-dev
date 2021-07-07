@@ -1,0 +1,181 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build - Release",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build",
+            "windows": {
+                "command": "conda run -n modm scons build"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Program - Release",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) run",
+            "windows": {
+                "command": "conda run -n modm scons run"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Build Sim - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build-sim profile=debug",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Run Sim - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) run-sim profile=debug",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Run Sim - Valgrind Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build-sim profile=debug && valgrind --leak-check=full --show-leak-kinds=all ./build/sim/debug/aruw-mcb.elf",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Build Tests - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build-tests profile=debug",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Run Tests - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) run-tests profile=debug",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Run Tests - Valgrind Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build-tests profile=debug && valgrind --leak-check=full --show-leak-kinds=all ./build/tests/debug/aruw-mcb-tests.elf",
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Build - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) build profile=debug profiling=true",
+            "windows": {
+                "command": "conda run -n modm scons build profile=debug"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Program - Debug",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "/usr/bin/env python3 $(which scons) run profile=debug",
+            "windows": {
+                "command": "conda run -n modm scons run profile=debug"
+            },
+            "group": "build",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "lbuild build",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "lbuild build",
+            "windows": {
+                "command": "conda run -n modm lbuild build"
+            },
+            "group": "none",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        },
+        {
+            "label": "Git - Remove pre-commit meta files",
+            "type": "shell",
+            "presentation": {
+                "panel": "new"
+            },
+            "command": "find | fgrep .orig | xargs rm && find | fgrep .rej | xargs rm",
+            "group": "none",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceRoot}/template-project"
+            }
+        }
+    ]
+}
