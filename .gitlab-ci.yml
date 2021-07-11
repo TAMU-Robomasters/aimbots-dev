@@ -100,32 +100,32 @@ Policy Checks:
     - python3 $(which scons) build-tests profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
     - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
 
-# Soldier build
+# Standard build
 
-Soldier MCB Build:
+Standard MCB Build:
   extends:
     - .mcb build
   variables:
-    ROBOT: SOLDIER
+    ROBOT: STANDARD
 
-Soldier Sim Build:
+Standard Sim Build:
   extends:
     - .sim build
   variables:
-    ROBOT: SOLDIER
+    ROBOT: STANDARD
 
-Soldier Test Build:
+Standard Test Build:
   stage: Build all Targets
   only: *default_only
   script:
     - cd template-project
-    - python3 $(which scons) run-tests-gcov profile=fast robot=TARGET_SOLDIER -j${NUM_JOBS}
+    - python3 $(which scons) run-tests-gcov profile=fast robot=TARGET_STANDARD -j${NUM_JOBS}
     - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
     - cd .. && gcovr -g --xml > cobertura.xml
     - 'sed -i "s=<source>.</source>=<source>./template-project</source>=g" cobertura.xml'
     - 'sed -i "s;filename=\";filename=\"template-project/;g" cobertura.xml'
   artifacts:
-    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-soldier-tests"
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-standard-tests"
     reports:
       cobertura: cobertura.xml
 
@@ -189,45 +189,25 @@ Hero Test Build:
   variables:
     ROBOT: HERO
 
-# Old Soldier build
+# Sentry build
 
-Old Soldier MCB Build:
+Sentry MCB Build:
   extends:
     - .mcb build
   variables:
-    ROBOT: OLD_SOLDIER
+    ROBOT: SENTRY
 
-Old Soldier Sim Build:
+Sentry Sim Build:
   extends:
     - .sim build
   variables:
-    ROBOT: OLD_SOLDIER
+    ROBOT: SENTRY
 
-Old Soldier Test Build:
+Sentry Test Build:
   extends:
     - .test build
   variables:
-    ROBOT: OLD_SOLDIER
-
-# Sentinel build
-
-Sentinel MCB Build:
-  extends:
-    - .mcb build
-  variables:
-    ROBOT: SENTINEL
-
-Sentinel Sim Build:
-  extends:
-    - .sim build
-  variables:
-    ROBOT: SENTINEL
-
-Sentinel Test Build:
-  extends:
-    - .test build
-  variables:
-    ROBOT: SENTINEL
+    ROBOT: SENTRY
 
 # Pages deploy
 
