@@ -37,7 +37,7 @@ USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROB
         - \"run-sim\": build all code for the simulated environment, for the current host platform, and execute the simulator locally.\n\
     \"TARGET_<ROBOT_TYPE>\" is an optional argument that can override whatever robot type has been specified in robot_type.hpp.\n\
         - <ROBOT_TYPE> must be one of the following:\n\
-            - SOLDIER, OLD_SOLDIER, DRONE, ENGINEER, SENTINEL, HERO"
+            - STANDARD, DRONE, ENGINEER, SENTRY, HERO"
 
 
 def parse_args():
