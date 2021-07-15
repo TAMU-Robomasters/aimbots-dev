@@ -110,9 +110,6 @@ static void initializeIo(aruwlib::Drivers *drivers)
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
-#ifdef TARGET_SOLDIER
-    drivers->imuRxHandler.init();
-#endif
 }
 
 static void updateIo(aruwlib::Drivers *drivers)
