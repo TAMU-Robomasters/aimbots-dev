@@ -91,6 +91,10 @@ public:
     /**
      * The initial subroutine of a command. Called once when the command is
      * initially scheduled by a CommandScheduler.
+     *
+     * Note that command instances are re-used: a single command could be
+     * initialized, run, finished, then later initialized again. **Ensure that
+     * initialize() resets any state stored in the command!**
      */
     virtual void initialize() = 0;
 
