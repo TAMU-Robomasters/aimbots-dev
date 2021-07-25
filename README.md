@@ -1,25 +1,25 @@
-[![pipeline status](https://gitlab.com/aruw/controls/aruwlib-template-project/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/aruwlib-template-project/-/commits/develop)
+[![pipeline status](https://gitlab.com/aruw/controls/taproot-template-project/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/taproot-template-project/-/commits/develop)
 
 <!-- Start sections that may be removed after forking this repository -->
 <hr/>
 
-# aruwlib-template-project
+# taproot-template-project
 
 
-This is a blank project fully configured for use of [aruwlib](https://gitlab.com/aruw/controls/aruwlib).
+This is a blank project fully configured for use of [Taproot](https://gitlab.com/aruw/controls/taproot).
 It is designed to be a starting point for your own RoboMaster software projects. Be sure to check
-out aruwlib for more information.
+out Taproot for more information.
 
-**Note:** Currently, aruwlib only supports the RoboMaster Development Board Type A. In the future,
+**Note:** Currently, Taproot only supports the RoboMaster Development Board Type A. In the future,
 you will be able to configure this repository for other development boards. See
-aruw/controls/aruwlib#9.
+aruw/controls/taproot#9.
 
 This template includes the following:
-- Code generated from the `aruwlib` and `modm` repositories. This generated code is located in
-  `/template-project/aruwlib` and includes the hardware abstraction layer provided by
-  [modm](modm.io) as well as aruwlib library code that sits on top of modm.
+- Code generated from the `taproot` and `modm` repositories. This generated code is located in
+  `/template-project/taproot` and includes the hardware abstraction layer provided by
+  [modm](modm.io) as well as Taproot library code that sits on top of modm.
 
-  See [here](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Code-Generation-in-User-Projects) for
+  See [here](https://gitlab.com/aruw/controls/taproot/-/wikis/Code-Generation-in-User-Projects) for
   more information on code generation.
 - A `.vscode` folder with C++ configurations for developing in a simulated, test, and hardware
   environment. This also includes convenient VS Code tasks for building code and debug launch
@@ -39,7 +39,7 @@ This template includes the following:
 
 ## Usage of the template
 
-This project is provided to reduce the configuration overhead when adopting aruwlib. We recommend
+This project is provided to reduce the configuration overhead when adopting Taproot. We recommend
 creating a new blank GitLab project and pushing the history of this repository there. This will be
 similar to a fork, but omit the "forked from..." badge, which you likely don't want.
 
@@ -49,7 +49,7 @@ is as follows:
 ```bash
 git clone https://gitlab.com/my-team/my-amazing-project.git
 cd my-amazing-project
-git remote add template https://gitlab.com/aruw/controls/aruwlib-template-project.git
+git remote add template https://gitlab.com/aruw/controls/taproot-template-project.git
 git pull template develop
 # replace "main" with your main branch name of choice
 git push --set-upstream origin main
@@ -61,11 +61,11 @@ kicked off a Continuous Integration (CI) Pipeline, indicated by the blue "waitin
 
 ### Configuring your new project
 
-By using this template, your project will start out with a fully-functional aruwlib instance and
+By using this template, your project will start out with a fully-functional Taproot instance and
 build tools. The provided `main.cpp` (`/template-project/src/main.cpp`) includes initialization of
 all core systems and drivers. This should allow you to develop control systems starting day one.
 
-_Note: [Issue #3](https://gitlab.com/aruw/controls/aruwlib-template-project/-/issues/3) tracks the
+_Note: [Issue #3](https://gitlab.com/aruw/controls/taproot-template-project/-/issues/3) tracks the
 desire to automate the below process. Let us know about your experiences there._
 
 To get started, we suggest using Visual Studio Code to perform a find-and-replace across all files,
@@ -81,7 +81,7 @@ Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robom
 ```
 
 To refer to your own team, year and email. Do so in all template source files, **excluding files in
-`**/aruwlib`**. Also update `scripts/check_license_headers.py` accordingly.
+`**/taproot`**. Also update `scripts/check_license_headers.py` accordingly.
 
 > **A note on copyright headers:**
 > The above suggestions regarding copyright headers are purely for your convenience. You are free to
@@ -105,17 +105,17 @@ If you have any questions please contact us at robomstr@uw.edu.
 
 ## Licensing
 
-aruwlib-template-project is covered under the GPL-3.0-or-later with the following exceptions:
-- `/aruwlib/modm` and `/template-project/aruwlib/modm` are licensed under MPL 2.0 by the modm
+taproot-template-project is covered under the GPL-3.0-or-later with the following exceptions:
+- `/taproot/modm` and `/template-project/taproot/modm` are licensed under MPL 2.0 by the modm
   project. We _are not_ the license holder for these files. See `/modm/LICENSE` for license
   information.
-- `/template-project/aruwlib/src/aruwlib/algorithms/MahonyAHRS.h` and
-  `/template-project/aruwlib/src/aruwlib/algorithms/MahonyAHRS.cpp` are licensed under the GPL by
+- `/template-project/taproot/src/taproot/algorithms/MahonyAHRS.h` and
+  `/template-project/taproot/src/taproot/algorithms/MahonyAHRS.cpp` are licensed under the GPL by
   SOH Madgwick. The repo containing this code can be found
   [here](https://github.com/uw-advanced-robotics/MahonyAHRS).
 
 Other RoboMaster teams are invited, and encouraged, to utilize this library. We have licensed this
-template project and aruwlib under the GPL to encourage collaboration and open publishing of
+template project and Taproot under the GPL to encourage collaboration and open publishing of
 RoboMaster controls codebases. **We politely request that other teams choosing to utilize this
 library, or parts of it (including its design), open-source their own code in turn.**
 
@@ -124,11 +124,11 @@ library, or parts of it (including its design), open-source their own code in tu
 
 ## Resources
 
-- **The [aruwlib wiki](https://gitlab.com/aruw/controls/aruwlib/-/wikis/home). It has lots of content and we strongly recommend you browse through it to get a sense of
+- **The [Taproot wiki](https://gitlab.com/aruw/controls/taproot/-/wikis/home). It has lots of content and we strongly recommend you browse through it to get a sense of
   what's there.**
-- [aruw-edu](https://gitlab.com/aruw/controls/aruw-edu): a hands-on tutorial for building robot code with aruwlib
+- [aruw-edu](https://gitlab.com/aruw/controls/aruw-edu): a hands-on tutorial for building robot code with Taproot
 - [aruw-mcb](https://gitlab.com/aruw/controls/aruw-mcb), ARUW's full robot code project available for reference
-- The [generated API documentation for aruwlib](https://aruw.gitlab.io/controls/aruwlib/)
+- The [generated API documentation for Taproot](https://aruw.gitlab.io/controls/taproot/)
 - The [modm website](https://modm.io/) and associated documentation
 
 ## New user guide
@@ -141,13 +141,13 @@ run tests and deploy to the development board.
 If you do not have a native Linux environment, we recommend using a virtual machine. We have tested
 a virtual machine hosted using [VirtualBox](https://www.virtualbox.org). Once you have a virtual
 machine installed on your computer, follow
-[this](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Debian-Linux-Setup) guide to set up the
+[this](https://gitlab.com/aruw/controls/taproot/-/wikis/Debian-Linux-Setup) guide to set up the
 tooling necessary to build and deploy software.
 
 Alternatively, we have guides for developing software in a [Docker
-container](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Docker-Container-Setup), a [Windows
-machine](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Windows-Setup), or by using [Windows
-Subsystem for Linux](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Windows-WSL-Setup). Note that
+container](https://gitlab.com/aruw/controls/taproot/-/wikis/Docker-Container-Setup), a [Windows
+machine](https://gitlab.com/aruw/controls/taproot/-/wikis/Windows-Setup), or by using [Windows
+Subsystem for Linux](https://gitlab.com/aruw/controls/taproot/-/wikis/Windows-WSL-Setup). Note that
 these have drawbacks because they either do not fully support both running unit tests on your local
 machine and deploying to the development board or have not been rigorously tested.
 
@@ -167,7 +167,7 @@ for getting around VSCode. There are many shortcuts that make programming faster
 _If you would like to use the terminal instead, see the section "Building and running via the
 terminal" below._
 
-1. Make sure you have VSCode opened in the folder `aruwlib-template-project` (**not
+1. Make sure you have VSCode opened in the folder `taproot-template-project` (**not
    `template-project`**)
 2. Connect an ST-Link to the RoboMaster Development Board and your computer.
 3. In VSCode, open the Command Palette (<kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>P</kbd>)
@@ -183,7 +183,7 @@ terminal" below._
    <kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>D</kbd>.
 2. Hit the green play arrow on the left top of the screen.
 3. See [this
-   page](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Software-Tools/Debugging-With-STLink) for
+   page](https://gitlab.com/aruw/controls/taproot/-/wikis/Software-Tools/Debugging-With-STLink) for
    more information about using the ST-Link for programming the MCB and debugging. <br>
    <img
    src=https://gitlab.com/aruw/controls/aruw-mcb/uploads/1f62ea310a20ee76092fe18de83d14a7/image.png
@@ -191,7 +191,7 @@ terminal" below._
 
 ### Debugging with a J-Link
 
-See the [wiki](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Software-Tools/Debugging-With-JLink)
+See the [wiki](https://gitlab.com/aruw/controls/taproot/-/wikis/Software-Tools/Debugging-With-JLink)
 for an explanation on the difference between an ST-Link and J-Link and a step-by-step procedure on
 how to use the J-Link.
 
@@ -213,7 +213,7 @@ initializeStandard();
 ### How to select an appropriate VSCode C/C++ configuration
 
 This codebase has a number of different build targets (see [this wiki
-page](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Build-Targets-Overview) for more
+page](https://gitlab.com/aruw/controls/taproot/-/wikis/Build-Targets-Overview) for more
 information). Because the build setup is different for the test, sim, and RoboMaster Development
 Board (aka MCB) environments, while working on a particular portion of code you may select an
 appropriate profile that provides optimal
@@ -227,7 +227,7 @@ Configuration" and hit enter. A dropdown menu will appear where you may choose e
 The below commands require that your working directory is `/template-project` (where the
 `SConstruct` and `project.xml` files are).
 
-- `lbuild build`: Re-generates out copy of `aruwlib` and `modm`.
+- `lbuild build`: Re-generates out copy of `taproot` and `modm`.
 - `scons build`: Builds the firmware image for the hardware target. Creates a "release" folder located in `build/hardware/` which contains the final `.elf` file as well as the intermediate object files (`.o`).
 - `scons build-tests`: Builds a program which hosts our unit tests. This executable can be run on your host computer (only supported on Linux) and prints results for each unit test run.
 - `scons program`: Builds as with `scons build` and then programs the board.
