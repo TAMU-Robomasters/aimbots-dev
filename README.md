@@ -1,5 +1,4 @@
-[![pipeline
-status](https://gitlab.com/aruw/controls/aruwlib-template-project/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/aruwlib-template-project/-/commits/develop)
+[![pipeline status](https://gitlab.com/aruw/controls/aruwlib-template-project/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/aruwlib-template-project/-/commits/develop)
 
 <!-- Start sections that may be removed after forking this repository -->
 <hr/>
@@ -7,60 +6,98 @@ status](https://gitlab.com/aruw/controls/aruwlib-template-project/badges/develop
 # aruwlib-template-project
 
 
-This is a blank project to help people start using
-[aruwlib](https://gitlab.com/aruw/controls/aruwlib) in their own projects. Be sure to check out
-aruwlib before starting to use this template project.
+This is a blank project fully configured for use of [aruwlib](https://gitlab.com/aruw/controls/aruwlib).
+It is designed to be a starting point for your own RoboMaster software projects. Be sure to check
+out aruwlib for more information.
 
-**Note:** Currently, aruwlib only supports the RoboMaster Development Board Type A, so this project
-is configured to work with this MCU. In the future, you will be able to configure this repository to
-work with other development boards.
+**Note:** Currently, aruwlib only supports the RoboMaster Development Board Type A. In the future,
+you will be able to configure this repository for other development boards. See
+aruw/controls/aruwlib#9.
 
-This project includes the following:
-- Code generated from the `aruwlib` and `modm` repositories to use in your project. This generated
-  code is located in `/template-project/aruwlib` and includes the hardware abstraction layer
-  provided by [modm](modm.io) as well as aruwlib library code that sits on top of modm.
-- A `.vscode` configuration folder with C++ configurations for developing in a simulated, test, and
-  hardware environment. This also includes convenient VS Code tasks for building code and debug
-  launch configuration for debugging the simulated, test, or hardware environment.
-- A [Doxygen](https://www.doxygen.nl/index.html) document generation configuration that generates
-  documentation from commented code.
+This template includes the following:
+- Code generated from the `aruwlib` and `modm` repositories. This generated code is located in
+  `/template-project/aruwlib` and includes the hardware abstraction layer provided by
+  [modm](modm.io) as well as aruwlib library code that sits on top of modm.
+
+  See [here](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Code-Generation-in-User-Projects) for
+  more information on code generation.
+- A `.vscode` folder with C++ configurations for developing in a simulated, test, and hardware
+  environment. This also includes convenient VS Code tasks for building code and debug launch
+  configuration for debugging the simulated, test, or hardware environment.
+- A [Doxygen](https://www.doxygen.nl/index.html) document generation configuration that renders a
+  documentation webpage sourced from commented code.
 - Various [linting](https://en.wikipedia.org/wiki/Lint_(software)) scripts that are used for
-  maintaining high quality software.
+  maintaining high quality source code.
 - A [clang format](https://clang.llvm.org/docs/ClangFormat.html) configuration (see
   `.clang-format`). This should be configured based on user preferences.
-- Build tools that allow you to build your software with various configurations specified (including
-  building for a simulator, tests, hardware, as well as building for a specific robot type).
-- A basic GitLab Continuous Integration (CI) Pipeline that lints the source code and builds all
-  target configurations (see `.gitlab-ci.yml`).
+- Build scripts supporting configurable target profiles, including environment (simulator, tests,
+  hardware) and robot type (Standard, Hero, etc.).
+- A basic GitLab Continuous Integration (CI) Pipeline that lints the source code, builds all
+  targets, and runs your tests (see `.gitlab-ci.yml`).
 - Instructions and a configuration file for deploying your software to hardware via the command
   line.
 
-## How to utilize this project
+## Usage of the template
 
-This project is provided to reduce the startup time needed to start using aruwlib. To start using
-this project, we recommend creating a new blank project and pushing the history of this repository
-to the project. We recommend **not** forking this project. Assuming you have a repository set up
-somewhere, to push the history of this project, clone this repository, change the remote to your new
-project, and push this repository to your new project.
+This project is provided to reduce the configuration overhead when adopting aruwlib. We recommend
+creating a new blank GitLab project and pushing the history of this repository there. This will be
+similar to a fork, but omit the "forked from..." badge, which you likely don't want.
 
-### Starting to use this project
+Assuming your new project is at `https://gitlab.com/my-team/my-amazing-project`, the setup process
+is as follows:
 
-By default, all the tools necessary for developing software for the development boards will be
-generated. By default, all of the software drivers present in `aruwlib` are initialized and updated.
-You can see this behavior in `/template-project/src/main.cpp`. This should allow you to develop
-control systems starting day one.
+```bash
+git clone https://gitlab.com/my-team/my-amazing-project.git
+cd my-amazing-project
+git remote add template https://gitlab.com/aruw/controls/aruwlib-template-project.git
+git pull template develop
+# replace "main" with your main branch name of choice
+git push --set-upstream origin main
+```
 
-To get started, we first recommend find and replacing `template-project` with the name of your
-project. Furthermore, rename the directory `/template-project` to the name of your project.
+If you visit the project's GitLab page, starter files should be present and GitLab will likely have
+kicked off a Continuous Integration (CI) Pipeline, indicated by the blue "waiting" icon or a green
+"checkmark".
 
-Furthermore, you should update the license headers in this project. To do this, find and replace all
-instances of `template-project` with the name of your project. Finally, find and replace `Copyright
-(c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>` (excluding any
-files in `**/aruwlib`) with the name of your organization and an emil.
+### Configuring your new project
+
+By using this template, your project will start out with a fully-functional aruwlib instance and
+build tools. The provided `main.cpp` (`/template-project/src/main.cpp`) includes initialization of
+all core systems and drivers. This should allow you to develop control systems starting day one.
+
+_Note: [Issue #3](https://gitlab.com/aruw/controls/aruwlib-template-project/-/issues/3) tracks the
+desire to automate the below process. Let us know about your experiences there._
+
+To get started, we suggest using Visual Studio Code to perform a find-and-replace across all files,
+swapping your own project name in place of `template-project`. Furthermore, rename the directory
+`/template-project` accordingly. Feel free to call it the same name as your repo.
+
+You should also update the license headers in your project. The above find-and-replace should have
+updated the project name references. However, you will also want to update the copyright line of
+each header:
+
+```
+Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+```
+
+To refer to your own team, year and email. Do so in all template source files, **excluding files in
+`**/aruwlib`**. Also update `scripts/check_license_headers.py` accordingly.
+
+> **A note on copyright headers:**
+> The above suggestions regarding copyright headers are purely for your convenience. You are free to
+> decide how you would like to manage these, including omitting the license headers entirely if
+> preferred, so long as you abide by the original license terms of the files. You may opt to disable
+> the automated license header check; do so by removing the below line from `.gitlab-ci.yml`:
+> ```yaml
+>     - python3 ./scripts/check_license_headers.py
+> ```
 
 To start developing software, place your source code in `/template-project/src` and your tests in
-`/template-project/test`. See the [workflow guide](#workflow-guide) for how to build, test, or
+`/template-project/test`. See the [workflow guide](#workflow-guide) for how to build, test, and
 deploy your code.
+
+Finally, after you are done with it, we recommend removing the portion of this README between
+`<!-- ... -->` comments. The rest of the file is intended to provide a starting point for your team.
 
 ## Contacting
 
@@ -85,6 +122,15 @@ library, or parts of it (including its design), open-source their own code in tu
 <hr/>
 <!-- End sections that may be removed after forking this repository -->
 
+## Resources
+
+- **The [aruwlib wiki](https://gitlab.com/aruw/controls/aruwlib/-/wikis/home). It has lots of content and we strongly recommend you browse through it to get a sense of
+  what's there.**
+- [aruw-edu](https://gitlab.com/aruw/controls/aruw-edu): a hands-on tutorial for building robot code with aruwlib
+- [aruw-mcb](https://gitlab.com/aruw/controls/aruw-mcb), ARUW's full robot code project available for reference
+- The [generated API documentation for aruwlib](https://aruw.gitlab.io/controls/aruwlib/)
+- The [modm website](https://modm.io/) and associated documentation
+
 ## New user guide
 
 To develop software for the simulator or unit test environment, a Debian Linux development
@@ -98,7 +144,7 @@ machine installed on your computer, follow
 [this](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Debian-Linux-Setup) guide to set up the
 tooling necessary to build and deploy software.
 
-Alternatively, we have guides for developing software on a [Docker
+Alternatively, we have guides for developing software in a [Docker
 container](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Docker-Container-Setup), a [Windows
 machine](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Windows-Setup), or by using [Windows
 Subsystem for Linux](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Windows-WSL-Setup). Note that
@@ -106,7 +152,7 @@ these have drawbacks because they either do not fully support both running unit 
 machine and deploying to the development board or have not been rigorously tested.
 
 Sometimes setting up your machine can be tricky. If you are having trouble setting up your
-environment properly, feel free to ask for help on our [discord](https://discord.gg/jjDrGhrjMy).
+environment properly, feel free to ask for help on our [Discord server](https://discord.gg/jjDrGhrjMy).
 
 ## Workflow guide
 
@@ -116,12 +162,12 @@ Microsoft provides a [helpful
 website](https://code.visualstudio.com/docs/getstarted/tips-and-tricks) with a number of shortcuts
 for getting around VSCode. There are many shortcuts that make programming faster.
 
-### How to build code and program the RoboMaster Development Board
+### Building code and programming the RoboMaster Development Board
 
 _If you would like to use the terminal instead, see the section "Building and running via the
 terminal" below._
 
-1. Make sure you have VSCode opened in the folder `aruw-template-project` (**not
+1. Make sure you have VSCode opened in the folder `aruwlib-template-project` (**not
    `template-project`**)
 2. Connect an ST-Link to the RoboMaster Development Board and your computer.
 3. In VSCode, open the Command Palette (<kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>P</kbd>)
@@ -131,7 +177,7 @@ terminal" below._
     src=https://gitlab.com/aruw/controls/aruw-mcb/uploads/2ffb02c86387916c2c49ac3548151b38/image.png
     height="200px" />
 
-### How to debug using an ST-Link
+### Debugging with an ST-Link
 
 1. Open the folder `aruw-template-project` in VSCode. Hit the debug tab on the left side or type
    <kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>D</kbd>.
@@ -143,18 +189,26 @@ terminal" below._
    src=https://gitlab.com/aruw/controls/aruw-mcb/uploads/1f62ea310a20ee76092fe18de83d14a7/image.png
    height="400px" />
 
-### How to debug using a J-Link
+### Debugging with a J-Link
 
 See the [wiki](https://gitlab.com/aruw/controls/aruwlib/-/wikis/Software-Tools/Debugging-With-JLink)
 for an explanation on the difference between an ST-Link and J-Link and a step-by-step procedure on
 how to use the J-Link.
 
-### How to select robot type
+### Selecting and using robot types
 
-Navigate to `/template-project/robot-type/robot_type.hpp` and change the macro defined in this file.
-Alternatively, specify the robot type via the command line when compiling (see
-[below](#building-and-running-via-the-terminal)). Each robot is defiend by a unique macro (for
-example, to build standard code the macro `TARGET_STANDARD` is globally defined in the project).
+Specify the robot type via the command line when compiling (see
+[below](#building-and-running-via-the-terminal)). For vscode IntelliSense, navigate to
+`/template-project/robot-type/robot_type.hpp` and change the macro defined in this file.
+
+Each robot is signified by a unique macro which can be checked to special-case code:
+
+```c++
+#if defined(TARGET_STANDARD)
+// Only included if building for the Standard
+initializeStandard();
+#endif
+```
 
 ### How to select an appropriate VSCode C/C++ configuration
 
@@ -166,17 +220,22 @@ appropriate profile that provides optimal
 [intellisense](https://code.visualstudio.com/docs/editor/intellisense). To select a configuration,
 in VSCode, type <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, then type "C/C++:Select a
 Configuration" and hit enter. A dropdown menu will appear where you may choose either the "Test",
-"Sim", or "MCB" configuration.
+"Sim", or "Hardware" configuration.
 
 ## Building and running via the terminal
 
 The below commands require that your working directory is `/template-project` (where the
 `SConstruct` and `project.xml` files are).
 
-To rebuild aruwlib or compile the software, refer to [aruwlib's
-README](https://gitlab.com/aruw/controls/aruwlib/-/blob/develop/README.md#user-content-building-and-testing-via-the-terminal).
-Also note the following usage statement for using the scons build environment. Note that you can
-select the robot, profile, or whether or not you want profiling to be on using the various options.
+- `lbuild build`: Re-generates out copy of `aruwlib` and `modm`.
+- `scons build`: Builds the firmware image for the hardware target. Creates a "release" folder located in `build/hardware/` which contains the final `.elf` file as well as the intermediate object files (`.o`).
+- `scons build-tests`: Builds a program which hosts our unit tests. This executable can be run on your host computer (only supported on Linux) and prints results for each unit test run.
+- `scons program`: Builds as with `scons build` and then programs the board.
+- `scons run-tests`: Builds and runs the unit test program.
+- `scons size`: Prints statistics on program size and (statically-)allocated memory. Note that the reported available heap space is an upper bound, and this tool has no way of knowing about the real size of dynamic allocations.
+
+Below is the full usage statement from our scons build environment. Note that you can select the
+robot, profile, or whether or not you want profiling to be on using the various options.
 
 ```
 Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>]

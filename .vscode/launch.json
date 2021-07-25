@@ -42,7 +42,7 @@
             ]
         },
         {
-            "name": "Debug MCB",
+            "name": "Debug Hardware",
             "type": "cortex-debug",
             "request": "launch",
             "servertype": "openocd",

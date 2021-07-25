@@ -15,7 +15,7 @@
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
         {
-            "name": "MCB",
+            "name": "Hardware",
             "compilerPath": "/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
             "browse": { "limitSymbolsToIncludedHeaders": true }
