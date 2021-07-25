@@ -9,6 +9,6 @@
     ],
     "mounts": [
         // Persist installed extensions across container rebuilds
-        "source=aruwlib-template-project-extensions,target=/root/.vscode-server/extensions,type=volume",
+        "source=taproot-template-project-extensions,target=/root/.vscode-server/extensions,type=volume",
     ]
 }
