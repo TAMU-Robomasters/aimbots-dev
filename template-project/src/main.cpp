@@ -21,40 +21,40 @@
 /* hosted environment (simulator) includes --------------------------------- */
 #include <iostream>
 
-#include "aruwlib/communication/tcp-server/tcp_server.hpp"
-#include "aruwlib/motor/motorsim/sim_handler.hpp"
+#include "tap/communication/tcp-server/tcp_server.hpp"
+#include "tap/motor/motorsim/sim_handler.hpp"
 #endif
 
-#include "aruwlib/rm-dev-board-a/board.hpp"
+#include "tap/rm-dev-board-a/board.hpp"
 
 #include "modm/architecture/interface/delay.hpp"
 
 /* arch includes ------------------------------------------------------------*/
-#include "aruwlib/architecture/periodic_timer.hpp"
-#include "aruwlib/architecture/profiler.hpp"
+#include "tap/architecture/periodic_timer.hpp"
+#include "tap/architecture/profiler.hpp"
 
 /* communication includes ---------------------------------------------------*/
-#include "aruwlib/drivers_singleton.hpp"
+#include "tap/drivers_singleton.hpp"
 
 /* error handling includes --------------------------------------------------*/
-#include "aruwlib/errors/create_errors.hpp"
+#include "tap/errors/create_errors.hpp"
 
 /* control includes ---------------------------------------------------------*/
-#include "aruwlib/architecture/clock.hpp"
+#include "tap/architecture/clock.hpp"
 
-using aruwlib::Drivers;
+using tap::Drivers;
 
 /* define timers here -------------------------------------------------------*/
-aruwlib::arch::PeriodicMilliTimer sendMotorTimeout(2);
+tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
-static void initializeIo(aruwlib::Drivers *drivers);
+static void initializeIo(tap::Drivers *drivers);
 
 // Anything that you would like to be called place here. It will be called
 // very frequently. Use PeriodicMilliTimers if you don't want something to be
 // called as frequently.
-static void updateIo(aruwlib::Drivers *drivers);
+static void updateIo(tap::Drivers *drivers);
 
 int main()
 {
@@ -67,15 +67,15 @@ int main()
      *      robot loop we must access the singleton drivers to update
      *      IO states and run the scheduler.
      */
-    aruwlib::Drivers *drivers = aruwlib::DoNotUse_getDrivers();
+    tap::Drivers *drivers = tap::DoNotUse_getDrivers();
 
     Board::initialize();
     initializeIo(drivers);
 
 #ifdef PLATFORM_HOSTED
-    aruwlib::motorsim::SimHandler::resetMotorSims();
+    tap::motorsim::SimHandler::resetMotorSims();
     // Blocking call, waits until Windows Simulator connects.
-    aruwlib::communication::TCPServer::MainServer()->getConnection();
+    tap::communication::TCPServer::MainServer()->getConnection();
 #endif
 
     while (1)
@@ -96,7 +96,7 @@ int main()
     return 0;
 }
 
-static void initializeIo(aruwlib::Drivers *drivers)
+static void initializeIo(tap::Drivers *drivers)
 {
     drivers->analog.init();
     drivers->pwm.init();
@@ -112,10 +112,10 @@ static void initializeIo(aruwlib::Drivers *drivers)
     drivers->djiMotorTerminalSerialHandler.init();
 }
 
-static void updateIo(aruwlib::Drivers *drivers)
+static void updateIo(tap::Drivers *drivers)
 {
 #ifdef PLATFORM_HOSTED
-    aruwlib::motorsim::SimHandler::updateSims();
+    tap::motorsim::SimHandler::updateSims();
 #endif
 
     drivers->canRxHandler.pollCanData();

@@ -83,8 +83,8 @@ IncludeCategories:
   # Other libraries' h files (with angles).
   - Regex:    '^<'
     Priority: 3
-  # aruwlib libraries
-  - Regex:    '^[<"]aruwlib'
+  # Taproot libraries
+  - Regex:    '^[<"]tap'
     Priority: 4
   # This forces full include paths above folder-specific includes.
   # (i.e. "aruwsrc/control/foo.hpp" is above just "bar.hpp")
