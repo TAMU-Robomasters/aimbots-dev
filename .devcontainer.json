@@ -1,5 +1,5 @@
 {
-    "image": "aruw/mcb-dev:2021-01-12.1",
+    "image": "aruw/mcb-dev:2021-06-02.3",
     // TODO: consider supporting/promoting using WSL2 file system for perf?
     //       Might make it harder to deploy to an MCB.
     "extensions": [
