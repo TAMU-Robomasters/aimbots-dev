@@ -25,6 +25,7 @@
 #include <gmock/gmock.h>
 
 #include "tap/communication/can/can_rx_handler.hpp"
+#include "tap/communication/can/can_rx_listener.hpp"
 
 namespace tap
 {

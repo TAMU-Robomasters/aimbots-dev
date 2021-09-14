@@ -24,6 +24,8 @@
 
 #include "modm/io/iodevice.hpp"
 
+#include "uart_terminal_device_constants.hpp"
+
 namespace tap
 {
 class Drivers;
@@ -71,7 +73,7 @@ private:
     Drivers *drivers;
 
     static constexpr tap::serial::Uart::UartPort TERMINAL_UART_PORT =
-        tap::serial::Uart::UartPort::Uart3;
+        tap::serial::bound_ports::TERMINAL_SERIAL_UART_PORT;
 };  // class UartTerminalDevice
 }  // namespace serial
 }  // namespace communication

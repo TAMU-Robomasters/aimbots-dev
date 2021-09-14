@@ -24,6 +24,8 @@
 #include "tap/architecture/endianness_wrappers.hpp"
 #include "tap/drivers.hpp"
 
+#include "ref_serial_constants.hpp"
+
 using namespace tap::arch;
 
 namespace tap
@@ -31,7 +33,7 @@ namespace tap
 namespace serial
 {
 RefSerial::RefSerial(Drivers* drivers)
-    : DJISerial(drivers, Uart::UartPort::Uart6),
+    : DJISerial(drivers, bound_ports::REF_SERIAL_UART_PORT),
       robotData(),
       gameData(),
       receivedDpsTracker()
@@ -44,7 +46,6 @@ bool RefSerial::getRefSerialReceivingData() const
     return !(refSerialOfflineTimeout.isStopped() || refSerialOfflineTimeout.isExpired());
 }
 
-// rx stuff
 void RefSerial::messageReceiveCallback(const SerialMessage& completeMessage)
 {
     refSerialOfflineTimeout.restart(TIME_OFFLINE_REF_DATA_MS);
@@ -458,7 +459,7 @@ void RefSerial::deleteGraphicLayer(DeleteGraphicOperation graphicOperation, uint
         sizeof(DeleteGraphicLayerMessage) - 2);
 
     drivers->uart.write(
-        Uart::Uart6,
+        bound_ports::REF_SERIAL_UART_PORT,
         reinterpret_cast<uint8_t*>(&msg),
         sizeof(DeleteGraphicLayerMessage));
 }
@@ -497,7 +498,7 @@ static void sendGraphicHelper(
     if (sendMsg)
     {
         drivers->uart.write(
-            Uart::Uart6,
+            bound_ports::REF_SERIAL_UART_PORT,
             reinterpret_cast<uint8_t*>(graphicMsg),
             sizeof(GraphicType));
     }
@@ -551,4 +552,5 @@ void RefSerial::configGraphicHeader(GraphicHeader* header, uint16_t cmdId, uint1
     header->receiverId = getRobotClientID(robotId);
 }
 }  // namespace serial
+
 }  // namespace tap

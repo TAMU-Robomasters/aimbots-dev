@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -173,7 +173,7 @@ public:
 	using Nss = GpioSignal;
 	/// Connect to Dac
 	using Out1 = GpioSignal;
-	/// Connect to UsbOtgHs
+	/// Connect to Usbotghs
 	using Sof = GpioSignal;
 	/// Connect to I2s3
 	using Ws = GpioSignal;
@@ -221,8 +221,8 @@ public:
 	template< Peripheral peripheral >
 	struct Sof { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioA4::Sof only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioA4::Sof only connects to Usbotghs!");
 	};
 	template< Peripheral peripheral >
 	struct Ws { static void connect();
@@ -344,7 +344,7 @@ template<>
 constexpr int8_t
 GpioA4::DacChannel<Peripheral::Dac> = 1;
 template<>
-struct GpioA4::Sof<Peripheral::UsbOtgHs>
+struct GpioA4::Sof<Peripheral::Usbotghs>
 {
 	using Gpio = GpioA4;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Sof;

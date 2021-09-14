@@ -94,7 +94,11 @@ using namespace ::std::chrono_literals;
 
 }	// namespace modm
 
+#if MODM_HAS_IOSTREAM
 #include <modm/io/iostream.hpp>
+
+namespace modm
+{
 
 template<class C, class D>
 modm::IOStream&
@@ -103,6 +107,7 @@ operator << (modm::IOStream& s, const std::chrono::time_point<C, D>& m)
 	s << m.time_since_epoch();
 	return s;
 }
+
 template<class T, class R>
 modm::IOStream&
 operator << (modm::IOStream& s, const std::chrono::duration<T, R>& m)
@@ -115,3 +120,6 @@ operator << (modm::IOStream& s, const std::chrono::duration<T, R>& m)
 	if constexpr (std::is_same_v<R, std::ratio<3600>>) s << 'h';
 	return s;
 }
+
+} // modm namespace
+#endif

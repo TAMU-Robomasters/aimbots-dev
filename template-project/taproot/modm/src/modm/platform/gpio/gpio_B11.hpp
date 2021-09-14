@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -170,9 +170,9 @@ public:
 	/// Connect to I2c2
 	using Sda = GpioSignal;
 	/// Connect to Eth
-	using TxEn = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiD4 = GpioSignal;
+	using Txen = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpid4 = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -201,16 +201,16 @@ public:
 			"GpioB11::Sda only connects to I2c2!");
 	};
 	template< Peripheral peripheral >
-	struct TxEn { static void connect();
+	struct Txen { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioB11::TxEn only connects to Eth!");
+			"GpioB11::Txen only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiD4 { static void connect();
+	struct Ulpid4 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB11::UlpiD4 only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB11::Ulpid4 only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -266,10 +266,10 @@ struct GpioB11::Sda<Peripheral::I2c2>
 	}
 };
 template<>
-struct GpioB11::TxEn<Peripheral::Eth>
+struct GpioB11::Txen<Peripheral::Eth>
 {
 	using Gpio = GpioB11;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::TxEn;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Txen;
 	static constexpr int af = 11;
 	inline static void
 	connect()
@@ -278,10 +278,10 @@ struct GpioB11::TxEn<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioB11::UlpiD4<Peripheral::UsbOtgHs>
+struct GpioB11::Ulpid4<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB11;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD4;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid4;
 	static constexpr int af = 10;
 	inline static void
 	connect()

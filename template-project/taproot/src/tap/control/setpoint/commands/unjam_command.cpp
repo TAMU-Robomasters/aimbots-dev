@@ -74,7 +74,7 @@ void UnjamCommand::execute()
 {
     if (salvationTimeout.execute())
     {
-        currAgitatorUnjamAngle = agitatorSetpointBeforeUnjam - 2 * tap::algorithms::PI;
+        currAgitatorUnjamAngle = agitatorSetpointBeforeUnjam - 2 * M_PI;
         salvationTimeout.stop();
         agitatorUnjamRotateTimeout.restart(SALVATION_UNJAM_BACK_WAIT_TIME);
         currUnjamstate = AGITATOR_SALVATION_UNJAM_BACK;

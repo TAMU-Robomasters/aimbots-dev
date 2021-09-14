@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOF->ODR & mask); }
 	// stop documentation inherited
@@ -174,7 +174,7 @@ public:
 	/// Connect to Uart7
 	using Rx = GpioSignal;
 	/// Connect to Sai1
-	using SdB = GpioSignal;
+	using Sdb = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -215,10 +215,10 @@ public:
 			"GpioF6::Rx only connects to Uart7!");
 	};
 	template< Peripheral peripheral >
-	struct SdB { static void connect();
+	struct Sdb { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Sai1),
-			"GpioF6::SdB only connects to Sai1!");
+			"GpioF6::Sdb only connects to Sai1!");
 	};
 	/// @endcond
 private:
@@ -302,10 +302,10 @@ struct GpioF6::Rx<Peripheral::Uart7>
 	}
 };
 template<>
-struct GpioF6::SdB<Peripheral::Sai1>
+struct GpioF6::Sdb<Peripheral::Sai1>
 {
 	using Gpio = GpioF6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::SdB;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdb;
 	static constexpr int af = 6;
 	inline static void
 	connect()

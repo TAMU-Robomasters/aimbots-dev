@@ -44,8 +44,8 @@ public:
     mockable ~Can() = default;
 
     /**
-     * Initializes CAN 1 and CAN 2 hardware to pins specific to the Robomaster
-     * type A board and sets up the CAN bus filters necessary for reading
+     * Initializes CAN 1 and CAN 2 hardware to pins specific to the development
+     * board and sets up the CAN bus filters necessary for reading
      * from the CAN bus.
      *
      * @note CAN 1 is connected to pins D0 (RX) and D1 (TX) and

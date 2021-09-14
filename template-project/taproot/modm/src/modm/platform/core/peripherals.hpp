@@ -74,8 +74,8 @@ Peripheral
 	Usart2,
 	Usart3,
 	Usart6,
-	UsbOtgFs,
-	UsbOtgHs,
+	Usbotgfs,
+	Usbotghs,
 	Wwdg,
 	Syscfg = Sys,
 };

@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -174,9 +174,9 @@ public:
 	/// Connect to Spi1
 	using Mosi = GpioSignal;
 	/// Connect to Eth
-	using RccCrsDv = GpioSignal;
+	using Rcccrsdv = GpioSignal;
 	/// Connect to Eth
-	using RxDv = GpioSignal;
+	using Rxdv = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -219,16 +219,16 @@ public:
 			"GpioA7::Mosi only connects to Spi1!");
 	};
 	template< Peripheral peripheral >
-	struct RccCrsDv { static void connect();
+	struct Rcccrsdv { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioA7::RccCrsDv only connects to Eth!");
+			"GpioA7::Rcccrsdv only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct RxDv { static void connect();
+	struct Rxdv { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioA7::RxDv only connects to Eth!");
+			"GpioA7::Rxdv only connects to Eth!");
 	};
 	/// @endcond
 private:
@@ -340,10 +340,10 @@ struct GpioA7::Mosi<Peripheral::Spi1>
 	}
 };
 template<>
-struct GpioA7::RccCrsDv<Peripheral::Eth>
+struct GpioA7::Rcccrsdv<Peripheral::Eth>
 {
 	using Gpio = GpioA7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::RccCrsDv;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Rcccrsdv;
 	static constexpr int af = 11;
 	inline static void
 	connect()
@@ -352,10 +352,10 @@ struct GpioA7::RccCrsDv<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioA7::RxDv<Peripheral::Eth>
+struct GpioA7::Rxdv<Peripheral::Eth>
 {
 	using Gpio = GpioA7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::RxDv;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Rxdv;
 	static constexpr int af = 11;
 	inline static void
 	connect()

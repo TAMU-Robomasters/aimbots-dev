@@ -30,7 +30,7 @@ namespace gpio
 {
 /**
  * A class specifically for handling the wrapping of the digital
- * pins connected to LEDs on the RoboMaster type A board.
+ * pins connected to LEDs on the RoboMaster development board.
  */
 class Leds
 {

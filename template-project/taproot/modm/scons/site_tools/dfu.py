@@ -25,24 +25,16 @@ import platform
 from SCons.Script import *
 
 # -----------------------------------------------------------------------------
-def dfu_stm32_programmer_flash(env, source, alias='dfu_stm32_program'):
-	# dfu-util  -v -d 0483:df11 -i 0 -a 0 -s 0x08000000 -D build/iobox-stm32/iobox-stm32.bin
-	# 0483:df11 is for STM32 F4 only
-	actionString  = '$DFU_STM32_PROGRAMMER -v -d 0483:df11 -i 0 -a 0 -s 0x08000000:leave -D $SOURCE'
+def program_dfu(env, source, alias='program_dfu'):
+	delay = ARGUMENTS.get("delay", "5")
+	actionString  = 'dfu-util -v -E{} -R -i 0 -a 0 -s 0x08000000:leave -D $SOURCE'.format(delay)
 
-	action = Action(actionString, cmdstr = "$DFU_STM32_PROGRAMMER_COMSTR")
+	action = Action(actionString, cmdstr="$PROGRAM_DFU_COMSTR")
 	return env.AlwaysBuild(env.Alias(alias, source, action))
 
 # -----------------------------------------------------------------------------
 def generate(env, **kw):
-	# build messages
-	if ARGUMENTS.get('verbose') != '1':
-		env['DFU_STM32_PROGRAMMER_COMSTR']       = "dfu_stm32_programmer: program $SOURCE"
-
-	# Name of the binary program to run
-	env['DFU_STM32_PROGRAMMER'] = 'dfu-util'
-
-	env.AddMethod(dfu_stm32_programmer_flash, 'ProgramDFU')
+	env.AddMethod(program_dfu, 'ProgramDFU')
 
 def exists(env):
-	return env.Detect('dfu_stm32_programmer')
+	return env.Detect('dfu-util')

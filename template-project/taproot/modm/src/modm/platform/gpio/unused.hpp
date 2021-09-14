@@ -805,24 +805,24 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct ExtSd
+	struct Extsd
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::ExtSd;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Extsd;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct FsA
+	struct Fsa
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::FsA;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Fsa;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct FsB
+	struct Fsb
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::FsB;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Fsb;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1015,17 +1015,17 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct MclkA
+	struct Mclka
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::MclkA;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Mclka;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct MclkB
+	struct Mclkb
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::MclkB;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Mclkb;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1211,31 +1211,31 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct Osc32In
+	struct Osc32in
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32In;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32in;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct Osc32Out
+	struct Osc32out
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32Out;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32out;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct OscIn
+	struct Oscin
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::OscIn;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Oscin;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct OscOut
+	struct Oscout
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::OscOut;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Oscout;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1260,24 +1260,24 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct PpsOut
+	struct Ppsout
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::PpsOut;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ppsout;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct RccCrsDv
+	struct Rcccrsdv
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::RccCrsDv;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Rcccrsdv;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct RefClk
+	struct Refclk
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::RefClk;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Refclk;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1302,24 +1302,10 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct RxClk
+	struct Rxclk
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::RxClk;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct RxDv
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::RxDv;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct RxEr
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::RxEr;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxclk;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1351,6 +1337,20 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
+	struct Rxdv
+	{
+		using Gpio = GpioUnused;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxdv;
+		static void connect() {}
+	};
+	template< Peripheral _ >
+	struct Rxer
+	{
+		using Gpio = GpioUnused;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxer;
+		static void connect() {}
+	};
+	template< Peripheral _ >
 	struct Sck
 	{
 		using Gpio = GpioUnused;
@@ -1358,17 +1358,17 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct SckA
+	struct Scka
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::SckA;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Scka;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct SckB
+	struct Sckb
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::SckB;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Sckb;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1386,24 +1386,17 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct SdA
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::SdA;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct SdB
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::SdB;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Sda
 	{
 		using Gpio = GpioUnused;
 		static constexpr Gpio::Signal Signal = Gpio::Signal::Sda;
+		static void connect() {}
+	};
+	template< Peripheral _ >
+	struct Sdb
+	{
+		using Gpio = GpioUnused;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Sdb;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1540,17 +1533,10 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct TxClk
+	struct Txclk
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::TxClk;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct TxEn
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::TxEn;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Txclk;
 		static void connect() {}
 	};
 	template< Peripheral _ >
@@ -1582,87 +1568,94 @@ public:
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiCk
+	struct Txen
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiCk;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Txen;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD0
+	struct Ulpick
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD0;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpick;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD1
+	struct Ulpid0
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD1;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid0;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD2
+	struct Ulpid1
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD2;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid1;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD3
+	struct Ulpid2
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD3;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid2;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD4
+	struct Ulpid3
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD4;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid3;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD5
+	struct Ulpid4
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD5;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid4;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD6
+	struct Ulpid5
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD6;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid5;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiD7
+	struct Ulpid6
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD7;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid6;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiDir
+	struct Ulpid7
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiDir;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid7;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiNxt
+	struct Ulpidir
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiNxt;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpidir;
 		static void connect() {}
 	};
 	template< Peripheral _ >
-	struct UlpiStp
+	struct Ulpinxt
 	{
 		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiStp;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpinxt;
+		static void connect() {}
+	};
+	template< Peripheral _ >
+	struct Ulpistp
+	{
+		using Gpio = GpioUnused;
+		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpistp;
 		static void connect() {}
 	};
 	template< Peripheral _ >

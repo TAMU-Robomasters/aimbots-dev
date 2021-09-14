@@ -34,12 +34,11 @@ namespace gpio
 {
 /**
  * Similar to the Analog class, wraps input and output digital pins.
- * Currently 4 input and 4 output pins are configured.
  *
  * @see InputPin for the input pins configured (pin names correspond
- *      to RoboMaster type A board definitions).
+ *      to RoboMaster dev board definitions).
  * @see OutputPin for the output pins configured (pin names correspond
- *      to RoboMaster type A board definitions).
+ *      to RoboMaster dev board definitions).
  */
 class Digital
 {
@@ -56,7 +55,7 @@ public:
         A,
         B,
         C,
-        D
+        D,
     };
 
     /**
@@ -67,7 +66,8 @@ public:
         E,
         F,
         G,
-        H
+        H,
+        Laser,
     };
 
 #ifdef PLATFORM_HOSTED

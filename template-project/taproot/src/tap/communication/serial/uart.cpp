@@ -19,7 +19,8 @@
 
 #include "uart.hpp"
 
-#include "tap/rm-dev-board-a/board.hpp"
+#include "tap/board/board.hpp"
+#include "tap/util_macros.hpp"
 
 using namespace Board;
 
@@ -30,6 +31,8 @@ namespace serial
 bool Uart::read(UartPort port, uint8_t *data)
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
+    UNUSED(data);
     return false;
 #else
     switch (port)
@@ -51,6 +54,9 @@ bool Uart::read(UartPort port, uint8_t *data)
 std::size_t Uart::read(UartPort port, uint8_t *data, std::size_t length)
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
+    UNUSED(data);
+    UNUSED(length);
     return 0;
 #else
     switch (port)
@@ -72,6 +78,7 @@ std::size_t Uart::read(UartPort port, uint8_t *data, std::size_t length)
 std::size_t Uart::discardReceiveBuffer(UartPort port)
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
     return 0;
 #else
     switch (port)
@@ -93,6 +100,8 @@ std::size_t Uart::discardReceiveBuffer(UartPort port)
 bool Uart::write(UartPort port, uint8_t data)
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
+    UNUSED(data);
     return false;
 #else
     switch (port)
@@ -114,6 +123,9 @@ bool Uart::write(UartPort port, uint8_t data)
 std::size_t Uart::write(UartPort port, const uint8_t *data, std::size_t length)
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
+    UNUSED(data);
+    UNUSED(length);
     return 0;
 #else
     switch (port)
@@ -135,6 +147,7 @@ std::size_t Uart::write(UartPort port, const uint8_t *data, std::size_t length)
 bool Uart::isWriteFinished(UartPort port) const
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(port);
     return false;
 #else
     switch (port)
@@ -155,7 +168,9 @@ bool Uart::isWriteFinished(UartPort port) const
 
 void Uart::flushWriteBuffer(UartPort port)
 {
-#ifndef PLATFORM_HOSTED
+#ifdef PLATFORM_HOSTED
+    UNUSED(port);
+#else
     switch (port)
     {
         case UartPort::Uart1:

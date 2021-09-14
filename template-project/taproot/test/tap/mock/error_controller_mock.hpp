@@ -35,7 +35,6 @@ public:
     virtual ~ErrorControllerMock();
 
     MOCK_METHOD(void, addToErrorList, (const tap::errors::SystemError& error), (override));
-    MOCK_METHOD(void, updateLedDisplay, (), (override));
 };  // class ErrorControllerMock
 }  // namespace mock
 }  // namespace tap

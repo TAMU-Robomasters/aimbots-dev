@@ -78,8 +78,7 @@ modm::platform::Can2::initializeWithPrescaler(
 		// The CAN hardware waits until the current CAN activity (transmission
 		// or reception) is completed before entering the initialization mode.
 	}
-	if (not modm_assert_continue_fail_debug(deadlockPreventer > 0, "can.init",
-			"CAN::initialize() timed out on entering initialization!", 2))
+	if (deadlockPreventer == 0)
 		return false;
 
 	// Enable Interrupts:
@@ -111,8 +110,7 @@ modm::platform::Can2::initializeWithPrescaler(
 	while (((CAN2->MSR & CAN_MSR_INAK) == CAN_MSR_INAK) and (deadlockPreventer-- > 0))  {
 		// wait for the normal mode
 	}
-	return modm_assert_continue_fail_debug(deadlockPreventer > 0, "can.init2",
-		"CAN::initialize() timed out on leaving initialization!", 2);
+	return deadlockPreventer > 0;
 }
 
 // ----------------------------------------------------------------------------

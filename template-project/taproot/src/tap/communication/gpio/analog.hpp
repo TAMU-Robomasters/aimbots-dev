@@ -33,11 +33,8 @@ namespace tap
 namespace gpio
 {
 /**
- * Analog output pins are pins W, X, Y, and Z (board pins PI5, PI6, PI7, PI2)
- * as referenced by the pin naming on the RoboMaster type A board.
- *
- * To read from a pin call Read and pass the function a value (S - V) from the
- * analog inPin enum.
+ * To read from a pin call Read and pass the function a pin from the
+ * analog Pin enum.
  */
 class Analog
 {
@@ -49,11 +46,11 @@ public:
     // Analog pins
     enum Pin
     {
-        S = 1,
+        S,
         T,
         U,
         V,
-        OLED_JOYSTICK,
+        OledJoystick,
     };
 
     /**

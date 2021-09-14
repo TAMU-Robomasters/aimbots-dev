@@ -14,6 +14,8 @@
 #define MODM_CAN_MESSAGE_HPP
 
 #include <stdint.h>
+#include <string.h>  // strlen
+#include <algorithm>
 #include <modm/architecture/utils.hpp>
 
 namespace modm::can
@@ -23,9 +25,19 @@ namespace modm::can
 /// @ingroup modm_architecture_can
 struct Message
 {
-	Message(const uint32_t& inIdentifier = 0, uint8_t inLength = 0) :
+	inline Message(uint32_t inIdentifier = 0, uint8_t inLength = 0) :
 		identifier(inIdentifier), flags(), length(inLength)
 	{
+	}
+
+	// Create CAN message from long data in Network Order.
+	inline Message(uint32_t inIdentifier, uint8_t inLength, const uint64_t &inData, bool extended=false) :
+		identifier(inIdentifier), length(std::min(inLength, uint8_t(8)))
+	{
+		flags.extended = extended;
+		const uint8_t *inDataB = reinterpret_cast<const uint8_t *>(&inData);
+		for (uint8_t ii = 0; ii < length; ++ii)
+ 			data[ii] = inDataB[length - ii - 1];
 	}
 
 	inline uint32_t
@@ -92,14 +104,50 @@ public:
 	uint8_t length;
 
 public:
-	bool
-	operator == (const modm::can::Message& rhs) const;
+	inline bool
+	operator == (const modm::can::Message& rhs) const
+	{
+		return ((this->identifier     == rhs.identifier) and
+				(this->length         == rhs.length)     and
+				(this->flags.rtr      == rhs.flags.rtr)  and
+				(this->flags.extended == rhs.flags.extended) and
+				std::equal(data, data + length, rhs.data));
+	}
+
+	inline bool
+	operator < (const modm::can::Message& rhs) const
+	{
+		return (this->identifier << (this->flags.extended ? 0 : 18))
+			< (rhs.identifier << (rhs.flags.extended ? 0 : 18));
+	}
 };
 
 }	// namespace modm::can
 
+#if MODM_HAS_IOSTREAM
+#include <inttypes.h>
 #include <modm/io/iostream.hpp>
 
-modm::IOStream&
-operator << (modm::IOStream& s, const modm::can::Message m);
+namespace modm
+{
+
+inline modm::IOStream&
+operator << (modm::IOStream& s, const modm::can::Message& m)
+{
+	s.printf("id = %04" PRIx32 ", len = ", m.identifier);
+	s << m.length;
+	s.printf(", flags = %c%c, data = ",
+			 m.flags.rtr ? 'R' : 'r',
+			 m.flags.extended ? 'E' : 'e');
+	if (not m.isRemoteTransmitRequest()) {
+		for (uint_fast8_t ii = 0; ii < m.length; ++ii) {
+			s.printf("%02x ", m.data[ii]);
+		}
+	}
+	return s;
+}
+
+} // modm namespace
+#endif
+
 #endif // MODM_CAN_MESSAGE_HPP

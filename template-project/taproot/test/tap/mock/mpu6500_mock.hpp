@@ -35,7 +35,7 @@ public:
     virtual ~Mpu6500Mock();
 
     MOCK_METHOD(void, init, (), (override));
-    MOCK_METHOD(void, calcIMUAngles, (), (override));
+    MOCK_METHOD(void, periodicIMUUpdate, (), (override));
     MOCK_METHOD(bool, read, (), (override));
     MOCK_METHOD(bool, initialized, (), (const override));
     MOCK_METHOD(float, getAx, (), (const override));

@@ -43,8 +43,7 @@ def call(source=None, config=None, commands=None, backend=None, ui=None):
                 '{source}'
     elif 'web' in ui:
         gdb_command = 'gdbgui {source} ' \
-                '-g arm-none-eabi-gdb ' \
-                "--gdb-args='{args} {source}'"
+                "--gdb-cmd='arm-none-eabi-gdb {args} {source}'"
     else:
         raise ValueError("Unknown UI mode! '{}'".format(ui))
 
@@ -62,7 +61,7 @@ def call(source=None, config=None, commands=None, backend=None, ui=None):
     return True
 
 
-def add_subparser(subparsers):
+def add_subparser(subparser):
     # Generic backend
     parser = subparser.add_parser("remote", help="Use a generic extended remote as Backend.")
     parser.add_argument(
@@ -84,7 +83,7 @@ if __name__ == "__main__":
             metavar="ELF",
             help="The ELF files to use for debugging.")
     parser.add_argument(
-            "-ui",
+            "--ui",
             dest="ui",
             choices=["tui", "web"],
             help="Use GDB via TUI or GDBGUI.")

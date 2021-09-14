@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016, Niklas Hauser
+ * Copyright (c) 2015-2016, 2021, Niklas Hauser
  *
  * This file is part of the modm project.
  *
@@ -13,24 +13,25 @@
 #include "hardware_init.hpp"
 #include "delay_impl.hpp"
 
-namespace modm
+void
+modm::delay_us(uint32_t us)
 {
-
-void modm_fastcode
-delay_us(uint32_t us)
-{
-	modm_assert_continue_fail_debug(us <= 10'000'000ul,
-		"delay.us", "modm::delay(us) can only delay a maximum of ~10 seconds!");
-	if (us == 0) return;    // 1 cycle, or 2 when taken
-
-	uint32_t start = DWT->CYCCNT;
-	// prefer this for cores with fast hardware multiplication
-	int32_t delay = int32_t(platform::delay_fcpu_MHz) * us - 25;
-
-	while (int32_t(DWT->CYCCNT - start) < delay)
-		;
-}
-
+	const uint32_t start = DWT->CYCCNT;
+	asm inline ("" ::: "memory");
+#ifdef MODM_DEBUG_BUILD
+	unsigned int unshifted_cycles;
+	modm_assert_continue_fail_debug(
+		not __builtin_umul_overflow(platform::delay_fcpu_MHz, us, &unshifted_cycles),
+		"delay.us", "modm::delay(us) can only delay ~1s! Use modm::delay(ms) for longer durations.");
+#else
+	const uint32_t unshifted_cycles = platform::delay_fcpu_MHz * us;
+#endif
+	const uint32_t cycles = unshifted_cycles >> platform::delay_fcpu_MHz_shift;
+	while (true)
+	{
+		const uint32_t now = DWT->CYCCNT;
+		if (now - start >= cycles) break;
+	}
 }
 
 void
@@ -38,9 +39,9 @@ modm_dwt_enable(void)
 {
 	// Enable Tracing Debug Unit
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	// Reset counter to 0
 	DWT->CYCCNT = 0;
 	// Enable CPU cycle counter
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
-
 MODM_HARDWARE_INIT_ORDER(modm_dwt_enable, 100);

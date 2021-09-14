@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -167,7 +167,7 @@ public:
 	using Ch3 = GpioSignal;
 	/// Connect to Dcmi
 	using D1 = GpioSignal;
-	/// Connect to UsbOtgFs
+	/// Connect to Usbotgfs
 	using Id = GpioSignal;
 	/// Connect to Usart1
 	using Rx = GpioSignal;
@@ -195,8 +195,8 @@ public:
 	template< Peripheral peripheral >
 	struct Id { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgFs),
-			"GpioA10::Id only connects to UsbOtgFs!");
+			(peripheral == Peripheral::Usbotgfs),
+			"GpioA10::Id only connects to Usbotgfs!");
 	};
 	template< Peripheral peripheral >
 	struct Rx { static void connect();
@@ -246,7 +246,7 @@ struct GpioA10::D1<Peripheral::Dcmi>
 	}
 };
 template<>
-struct GpioA10::Id<Peripheral::UsbOtgFs>
+struct GpioA10::Id<Peripheral::Usbotgfs>
 {
 	using Gpio = GpioA10;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Id;

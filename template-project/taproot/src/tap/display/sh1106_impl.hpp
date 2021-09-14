@@ -57,7 +57,7 @@ modm::ResumableResult<bool> tap::display::Sh1106<SPI, A0, Reset, Width, Height, 
         a0.set();
         for (x = 0; x < Width; ++x)
         {
-            RF_CALL(spi.transfer(this->display_buffer[x][y]));
+            RF_CALL(spi.transfer(this->buffer[y][x]));
         }
     }
 

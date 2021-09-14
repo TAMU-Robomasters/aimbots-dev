@@ -26,7 +26,8 @@
 #include "tap/motor/motorsim/sim_handler.hpp"
 #endif
 
-#include "tap/rm-dev-board-a/board.hpp"
+#include "tap/board/board.hpp"
+#include "tap/util_macros.hpp"
 
 #ifndef PLATFORM_HOSTED
 using namespace modm::platform;
@@ -39,7 +40,7 @@ void tap::can::Can::initialize()
     CanFilter::setStartFilterBankForCan2(14);
     // initialize CAN 1
     Can1::connect<GpioD0::Rx, GpioD1::Tx>(Gpio::InputType::PullUp);
-    Can1::initialize<Board::SystemClock, 1000_kbps>(9);
+    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can2", "initialize-failed");
     // receive every message for CAN 1
     CanFilter::setFilter(
         0,
@@ -47,7 +48,7 @@ void tap::can::Can::initialize()
         CanFilter::StandardIdentifier(0),
         CanFilter::StandardFilterMask(0));
     Can2::connect<GpioB12::Rx, GpioB13::Tx>(Gpio::InputType::PullUp);
-    Can2::initialize<Board::SystemClock, 1000_kbps>(12);
+    modm_assert((Can2::initialize<Board::SystemClock, 1000_kbps>(12)), "Can2", "initialize-failed");
     // receive every message for CAN 2
     CanFilter::setFilter(
         14,
@@ -94,6 +95,7 @@ bool tap::can::Can::getMessage(tap::can::CanBus bus, modm::can::Message* message
 bool tap::can::Can::isReadyToSend(CanBus bus) const
 {
 #ifdef PLATFORM_HOSTED
+    UNUSED(bus);
     return true;
 #else
     switch (bus)

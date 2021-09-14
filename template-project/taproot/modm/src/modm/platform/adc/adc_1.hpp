@@ -276,11 +276,6 @@ public:
 	setRightAdjustResult();
 	// stop documentation inherited
 
-	// TODO
-	//static void
-	//calibrate();
-
-
 	/// Switch on temperature- and V_REF measurement.
 	static inline void
 	enableTemperatureRefVMeasurement();

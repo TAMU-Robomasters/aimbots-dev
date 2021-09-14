@@ -23,25 +23,12 @@
 #include <cmath>
 #include <cstring>
 
+#include "modm/math/geometry/angle.hpp"
+
 namespace tap
 {
 namespace algorithms
 {
-/**
- * An approximation for pi.
- */
-constexpr float PI = 3.1415926535897932384626f;
-
-/**
- * Floating point conversion from degrees to radians using PI.
- */
-inline float degreesToRadians(float degrees) { return degrees * PI / 180.0f; }
-
-/**
- * Floating point conversion from radians to degrees using PI.
- */
-inline float radiansToDegrees(float radians) { return radians * 180.f / PI; }
-
 /**
  * Use this instead of the == operator when asserting equality for floats.
  * Performs \code fabsf(val1-val2)<epsilon\endcode

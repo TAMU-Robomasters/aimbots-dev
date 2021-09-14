@@ -32,8 +32,26 @@ class Drivers;
 namespace tap::control::chassis
 {
 /**
- * A utility object that a chassis may use to provide power limiting. Assumes the motor
- * being used is an M3508 and the current sensor is a TODO.
+ * A utility to limit the power consumption of a chassis system according to its live current draw
+ * and available power buffer (from the referee system). Assumes the motors being used are M3508s
+ * and that the referee system is connected via UART.
+ *
+ * This class currently requires the referee system connected via its default UART port
+ * and an ACS712 current sensor connected via the specified analog input pin.
+ *
+ * See here for information on the ACS712 current sensor:
+ * https://www.seeedstudio.com/blog/2020/02/15/acs712-current-sensor-features-how-it-works-arduino-guide/
+ *
+ * The following issues address improved versatility of this class:
+ * - https://gitlab.com/aruw/controls/taproot/-/issues/45
+ * - https://gitlab.com/aruw/controls/taproot/-/issues/44
+ * - https://gitlab.com/aruw/controls/taproot/-/issues/32
+ *
+ * Motor setpoints are retroactively modified (lowered) by this function if power consumption has
+ * historically been too high and the energy buffer is depleted.
+ *
+ * If the referee system is not connected (valid data has not recently arrived), this class
+ * does nothing.
  */
 class PowerLimiter
 {
@@ -91,7 +109,10 @@ public:
      * A function to be called repeatedly (in a subsystem's refresh function, for example), that
      * performs power limiting on the motors passed in.
      *
-     * @note Four wheeled varient designed for a normal mecanum wheeled chassis.
+     * Must be called immediately *after* setpoints are configured. This method modifies the
+     * setpoints of the provided motors.
+     *
+     * @note Tested with a normal four-wheel mecanum chassis and a two-wheel sentry chassis.
      */
     void performPowerLimiting(tap::motor::DjiMotor *motors[], int numMotors);
 

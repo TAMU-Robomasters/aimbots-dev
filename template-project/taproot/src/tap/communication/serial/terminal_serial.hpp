@@ -30,8 +30,8 @@
 #endif
 
 #include "tap/architecture/periodic_timer.hpp"
+#include "tap/board/board.hpp"
 #include "tap/communication/serial/uart.hpp"
-#include "tap/rm-dev-board-a/board.hpp"
 #include "tap/util_macros.hpp"
 
 #include "modm/io.hpp"

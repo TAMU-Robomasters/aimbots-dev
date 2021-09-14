@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -166,7 +166,7 @@ public:
 	/// Connect to Tim3
 	using Ch1 = GpioSignal;
 	/// Connect to I2s3
-	using ExtSd = GpioSignal;
+	using Extsd = GpioSignal;
 	/// Connect to Sys
 	using Jtrst = GpioSignal;
 	/// Connect to Spi1 or Spi3
@@ -187,10 +187,10 @@ public:
 			"GpioB4::Ch1 only connects to Tim3!");
 	};
 	template< Peripheral peripheral >
-	struct ExtSd { static void connect();
+	struct Extsd { static void connect();
 		static_assert(
 			(peripheral == Peripheral::I2s3),
-			"GpioB4::ExtSd only connects to I2s3!");
+			"GpioB4::Extsd only connects to I2s3!");
 	};
 	template< Peripheral peripheral >
 	struct Jtrst { static void connect();
@@ -235,10 +235,10 @@ struct GpioB4::Ch1<Peripheral::Tim3>
 	}
 };
 template<>
-struct GpioB4::ExtSd<Peripheral::I2s3>
+struct GpioB4::Extsd<Peripheral::I2s3>
 {
 	using Gpio = GpioB4;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::ExtSd;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Extsd;
 	static constexpr int af = 7;
 	inline static void
 	connect()

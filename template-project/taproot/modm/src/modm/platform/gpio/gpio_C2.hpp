@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOC->ODR & mask); }
 	// stop documentation inherited
@@ -164,7 +164,7 @@ public:
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
 	/// Connect to I2s2
-	using ExtSd = GpioSignal;
+	using Extsd = GpioSignal;
 	/// Connect to Adc1 or Adc2 or Adc3
 	using In12 = GpioSignal;
 	/// Connect to Spi2
@@ -173,8 +173,8 @@ public:
 	using Sdne0 = GpioSignal;
 	/// Connect to Eth
 	using Txd2 = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiDir = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpidir = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -185,10 +185,10 @@ public:
 			"GpioC2::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct ExtSd { static void connect();
+	struct Extsd { static void connect();
 		static_assert(
 			(peripheral == Peripheral::I2s2),
-			"GpioC2::ExtSd only connects to I2s2!");
+			"GpioC2::Extsd only connects to I2s2!");
 	};
 	template< Peripheral peripheral >
 	struct In12 { static void connect();
@@ -217,10 +217,10 @@ public:
 			"GpioC2::Txd2 only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiDir { static void connect();
+	struct Ulpidir { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioC2::UlpiDir only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioC2::Ulpidir only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -240,10 +240,10 @@ struct GpioC2::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioC2::ExtSd<Peripheral::I2s2>
+struct GpioC2::Extsd<Peripheral::I2s2>
 {
 	using Gpio = GpioC2;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::ExtSd;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Extsd;
 	static constexpr int af = 6;
 	inline static void
 	connect()
@@ -336,10 +336,10 @@ struct GpioC2::Txd2<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioC2::UlpiDir<Peripheral::UsbOtgHs>
+struct GpioC2::Ulpidir<Peripheral::Usbotghs>
 {
 	using Gpio = GpioC2;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiDir;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpidir;
 	static constexpr int af = 10;
 	inline static void
 	connect()

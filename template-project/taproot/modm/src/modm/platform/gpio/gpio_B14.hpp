@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -167,10 +167,10 @@ public:
 	using Ch1 = GpioSignal;
 	/// Connect to Tim1 or Tim8
 	using Ch2n = GpioSignal;
-	/// Connect to UsbOtgHs
+	/// Connect to Usbotghs
 	using Dm = GpioSignal;
 	/// Connect to I2s2
-	using ExtSd = GpioSignal;
+	using Extsd = GpioSignal;
 	/// Connect to Spi2
 	using Miso = GpioSignal;
 	/// Connect to Usart3
@@ -200,14 +200,14 @@ public:
 	template< Peripheral peripheral >
 	struct Dm { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB14::Dm only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB14::Dm only connects to Usbotghs!");
 	};
 	template< Peripheral peripheral >
-	struct ExtSd { static void connect();
+	struct Extsd { static void connect();
 		static_assert(
 			(peripheral == Peripheral::I2s2),
-			"GpioB14::ExtSd only connects to I2s2!");
+			"GpioB14::Extsd only connects to I2s2!");
 	};
 	template< Peripheral peripheral >
 	struct Miso { static void connect();
@@ -275,7 +275,7 @@ struct GpioB14::Ch2n<Peripheral::Tim8>
 	}
 };
 template<>
-struct GpioB14::Dm<Peripheral::UsbOtgHs>
+struct GpioB14::Dm<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB14;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Dm;
@@ -287,10 +287,10 @@ struct GpioB14::Dm<Peripheral::UsbOtgHs>
 	}
 };
 template<>
-struct GpioB14::ExtSd<Peripheral::I2s2>
+struct GpioB14::Extsd<Peripheral::I2s2>
 {
 	using Gpio = GpioB14;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::ExtSd;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Extsd;
 	static constexpr int af = 6;
 	inline static void
 	connect()

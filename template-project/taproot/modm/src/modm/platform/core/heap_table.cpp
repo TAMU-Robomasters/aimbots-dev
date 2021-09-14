@@ -14,12 +14,12 @@
 #include <stdint.h>
 #include "heap_table.hpp"
 
-typedef struct
+struct table_pool_t
 {
 	uint32_t traits;
 	uint8_t *const start;
 	uint8_t *const end;
-} __attribute__((packed)) table_pool_t;
+} __attribute__((packed));
 
 extern "C" const table_pool_t __table_heap_start[];
 extern "C" const table_pool_t __table_heap_end[];
@@ -29,31 +29,29 @@ namespace modm::platform
 HeapTable::Iterator
 HeapTable::begin()
 {
-	return Iterator(reinterpret_cast<const void*>(__table_heap_start));
+	return Iterator(__table_heap_start);
 }
 
 HeapTable::Iterator
 HeapTable::end()
 {
-	return Iterator(reinterpret_cast<const void*>(__table_heap_end));
+	return Iterator(__table_heap_end);
 }
 
-HeapTable::Iterator::Iterator(const void* table):
+HeapTable::Iterator::Iterator(const table_pool_t* table):
 	table(table)
 {}
 
 HeapTable::Iterator::Type
 HeapTable::Iterator::operator*() const
 {
-	const auto t{reinterpret_cast<const table_pool_t*>(table)};
-	return {MemoryTraits(t->traits), t->start, t->end, (size_t)t->end - (size_t)t->start};
+	return {MemoryTraits(table->traits), table->start, table->end, static_cast<size_t>(table->end - table->start)};
 }
 
 HeapTable::Iterator&
 HeapTable::Iterator::operator++()
 {
-	auto t{reinterpret_cast<const table_pool_t*>(table)};
-	table = reinterpret_cast<const void*>(++t);
+	table++;
 	return *this;
 }
 

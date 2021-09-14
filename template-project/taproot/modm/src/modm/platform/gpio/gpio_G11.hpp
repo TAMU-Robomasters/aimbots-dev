@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOG->ODR & mask); }
 	// stop documentation inherited
@@ -168,7 +168,7 @@ public:
 	/// Connect to Fmc
 	using Nce42 = GpioSignal;
 	/// Connect to Eth
-	using TxEn = GpioSignal;
+	using Txen = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -191,10 +191,10 @@ public:
 			"GpioG11::Nce42 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
-	struct TxEn { static void connect();
+	struct Txen { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioG11::TxEn only connects to Eth!");
+			"GpioG11::Txen only connects to Eth!");
 	};
 	/// @endcond
 private:
@@ -238,10 +238,10 @@ struct GpioG11::Nce42<Peripheral::Fmc>
 	}
 };
 template<>
-struct GpioG11::TxEn<Peripheral::Eth>
+struct GpioG11::Txen<Peripheral::Eth>
 {
 	using Gpio = GpioG11;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::TxEn;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Txen;
 	static constexpr int af = 11;
 	inline static void
 	connect()

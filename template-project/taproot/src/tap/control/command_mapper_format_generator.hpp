@@ -24,7 +24,7 @@
 #include <string_view>
 #include <vector>
 
-#include "tap/communication/remote.hpp"
+#include "tap/communication/serial/remote.hpp"
 
 namespace tap
 {

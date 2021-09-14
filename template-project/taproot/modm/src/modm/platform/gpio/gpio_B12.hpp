@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -167,7 +167,7 @@ public:
 	using Bkin = GpioSignal;
 	/// Connect to Usart3
 	using Ck = GpioSignal;
-	/// Connect to UsbOtgHs
+	/// Connect to Usbotghs
 	using Id = GpioSignal;
 	/// Connect to Spi2
 	using Nss = GpioSignal;
@@ -177,8 +177,8 @@ public:
 	using Smba = GpioSignal;
 	/// Connect to Eth
 	using Txd0 = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiD5 = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpid5 = GpioSignal;
 	/// Connect to I2s2
 	using Ws = GpioSignal;
 	/// @}
@@ -205,8 +205,8 @@ public:
 	template< Peripheral peripheral >
 	struct Id { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB12::Id only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB12::Id only connects to Usbotghs!");
 	};
 	template< Peripheral peripheral >
 	struct Nss { static void connect();
@@ -233,10 +233,10 @@ public:
 			"GpioB12::Txd0 only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiD5 { static void connect();
+	struct Ulpid5 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB12::UlpiD5 only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB12::Ulpid5 only connects to Usbotghs!");
 	};
 	template< Peripheral peripheral >
 	struct Ws { static void connect();
@@ -286,7 +286,7 @@ struct GpioB12::Ck<Peripheral::Usart3>
 	}
 };
 template<>
-struct GpioB12::Id<Peripheral::UsbOtgHs>
+struct GpioB12::Id<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB12;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Id;
@@ -346,10 +346,10 @@ struct GpioB12::Txd0<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioB12::UlpiD5<Peripheral::UsbOtgHs>
+struct GpioB12::Ulpid5<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB12;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD5;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid5;
 	static constexpr int af = 10;
 	inline static void
 	connect()
