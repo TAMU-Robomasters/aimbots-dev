@@ -26,6 +26,7 @@
 #include "tap/mock/can_mock.hpp"
 #include "tap/mock/can_rx_handler_mock.hpp"
 #include "tap/mock/command_mapper_mock.hpp"
+#include "tap/mock/command_scheduler_mock.hpp"
 #include "tap/mock/control_operator_interface_mock.hpp"
 #include "tap/mock/digital_mock.hpp"
 #include "tap/mock/dji_motor_terminal_serial_handler_mock.hpp"
@@ -40,7 +41,6 @@
 #include "tap/mock/scheduler_terminal_handler_mock.hpp"
 #include "tap/mock/terminal_serial_mock.hpp"
 #include "tap/mock/uart_mock.hpp"
-#include "tap/mock/command_scheduler_mock.hpp"
 /* Start user mock includes */
 /* End user mock includes */
 #else
@@ -58,12 +58,12 @@
 #include "tap/communication/serial/terminal_serial.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "tap/control/command_mapper.hpp"
+#include "tap/control/command_scheduler.hpp"
 #include "tap/control/control_operator_interface.hpp"
 #include "tap/control/scheduler_terminal_handler.hpp"
 #include "tap/errors/error_controller.hpp"
 #include "tap/motor/dji_motor_terminal_serial_handler.hpp"
 #include "tap/motor/dji_motor_tx_handler.hpp"
-#include "tap/control/command_scheduler.hpp"
 /* Start user mock includes */
 /* End user mock includes */
 #endif
@@ -103,8 +103,7 @@ public:
           commandScheduler(this, true)
 #endif
     /* Begin user constructor defines */
-    /* End user mock drivers defines */
-          {}
+    /* End user mock drivers defines */ {}
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
     arch::Profiler profiler;
