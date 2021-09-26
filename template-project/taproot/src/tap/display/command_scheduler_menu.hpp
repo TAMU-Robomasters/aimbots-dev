@@ -25,6 +25,7 @@
 
 #include "modm/ui/menu/abstract_menu.hpp"
 
+#include "dummy_allocator.hpp"
 #include "vertical_scroll_logic_handler.hpp"
 
 namespace tap
@@ -39,10 +40,12 @@ class Subsystem;
 
 namespace display
 {
-class CommandSchedulerMenu : public modm::AbstractMenu
+class CommandSchedulerMenu : public modm::AbstractMenu<DummyAllocator<modm::IAbstractView>>
 {
 public:
-    CommandSchedulerMenu(modm::ViewStack *stack, Drivers *drivers);
+    CommandSchedulerMenu(
+        modm::ViewStack<DummyAllocator<modm::IAbstractView>> *stack,
+        Drivers *drivers);
 
     ~CommandSchedulerMenu() = default;
 

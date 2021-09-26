@@ -32,4 +32,6 @@
 #define mockable
 #endif
 
+#define UNUSED(var) (void)(var)
+
 #endif  // UTIL_MACROS_HPP_

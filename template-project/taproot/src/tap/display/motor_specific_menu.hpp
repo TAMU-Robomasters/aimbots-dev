@@ -22,6 +22,8 @@
 
 #include "modm/ui/menu/abstract_menu.hpp"
 
+#include "dummy_allocator.hpp"
+
 namespace tap
 {
 namespace motor
@@ -31,10 +33,13 @@ class DjiMotor;
 class Drivers;
 namespace display
 {
-class MotorSpecificMenu : public modm::AbstractMenu
+class MotorSpecificMenu : public modm::AbstractMenu<DummyAllocator<modm::IAbstractView> >
 {
 public:
-    MotorSpecificMenu(modm::ViewStack* stack, Drivers* drivers, const tap::motor::DjiMotor* motor);
+    MotorSpecificMenu(
+        modm::ViewStack<DummyAllocator<modm::IAbstractView> >* stack,
+        Drivers* drivers,
+        const motor::DjiMotor* motor);
 
     void draw() override;
 

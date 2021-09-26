@@ -11,11 +11,12 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include <iterator>
 #include <tuple>
 #include <modm/architecture/interface/memory.hpp>
 
+struct table_pool_t;
 namespace modm::platform
 {
 
@@ -50,7 +51,7 @@ public:
 	class Iterator
 	{
 		using Type = std::tuple<MemoryTraits, const uint8_t*, const uint8_t*, size_t>;
-		const void* table;
+		const table_pool_t* table;
 	public:
 		using iterator_category = std::input_iterator_tag;
 		using value_type = Type;
@@ -58,7 +59,7 @@ public:
 		using pointer = Type*;
 		using reference = Type&;
 
-		explicit Iterator(const void* table);
+		explicit Iterator(const table_pool_t* table);
 		Type operator*() const;
 		Iterator& operator++();
 		Iterator operator++(int);

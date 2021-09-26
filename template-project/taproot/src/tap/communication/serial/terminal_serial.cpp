@@ -93,6 +93,7 @@ void TerminalSerial::update()
             }
         }
         currLineSize = 0;
+        rxBuff[0] = '\0';
     }
     else
     {

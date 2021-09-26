@@ -25,8 +25,8 @@ from SCons.Script import *
 PROJECT_NAME        = "template-project"
 BUILD_PATH          = "build"
 HARDWARE_MODM_PATH  = "taproot/modm"
-HOSTED_MODM_PATH    = "taproot/sim-modm/modm"
 LINKERSCRIPT_FILE   = join(HARDWARE_MODM_PATH, "link/linkerscript.ld")
+HOSTED_MODM_PATH    = "taproot/sim-modm/modm"
 TAPROOT_SRC_PATH    = "taproot/src"
 TAPROOT_PATH        = join(TAPROOT_SRC_PATH, "tap")
 TAPROOT_TEST_PATH   = "taproot/test"
@@ -74,13 +74,13 @@ env["CONFIG_PROJECT_NAME"] = PROJECT_NAME
 env["CONFIG_ARTIFACT_PATH"] = join(env["CONFIG_BUILD_BASE"], "artifact")
 env["CONFIG_PROFILE"] = args["BUILD_PROFILE"]
 
-
-print("Configured {0} parallel build jobs (-j{0}), {1}"
-    .format(GetOption("num_jobs"), args["ROBOT_TYPE"]))
-
+print(
+    "Configured {0} parallel build jobs (-j{0}), {1}"
+    .format(GetOption("num_jobs"), args["ROBOT_TYPE"])
+)
 
 # Building all libraries (read from sconscript files located in provided dirs)
-# Ensure that modm is first, since Taproot depends on modm
+# Ensure that modm is first, since taproot depends on modm
 external_scons_libraries = [modm_path, TAPROOT_PATH]
 env.SConscript(dirs=external_scons_libraries, exports="env")
 
@@ -131,8 +131,8 @@ elif args["TARGET_ENV"] == "tests":
     env.AppendUnique(CPPFLAGS=[
         "-DPLATFORM_HOSTED",
         "-DENV_UNIT_TESTS"])
-    env.AppendUnique(CPPPATH=[abspath(TAPROOT_TEST_PATH)])
     env.AppendUnique(CPPPATH=[abspath(SRC_TEST_PATH)])
+    env.AppendUnique(CPPPATH=[abspath(TAPROOT_TEST_PATH)])
     env.AppendUnique(LIBS=GTEST_LIBS)
     env.AppendUnique(LIBS=HOSTED_LIBS)
 
@@ -140,7 +140,12 @@ elif args["TARGET_ENV"] == "tests":
     if COMMAND_LINE_TARGETS[0] == "run-tests-gcov":
         env.AppendUnique(CPPFLAGS=[
             "-fprofile-arcs",
-            "-ftest-coverage"])
+            "-ftest-coverage",
+            "-fno-inline",
+            "-fno-inline-small-functions",
+            "-fno-default-inline"])
+        env.Append(CCFLAGS='--coverage')
+        env.Append(LINKFLAGS='--coverage')
         env.AppendUnique(LIBS=COVERAGE_LIBS)
 else:  # hardware target env
     # Update linkerscript file
@@ -150,6 +155,7 @@ else:  # hardware target env
 
 # Append little endian flag to all
 env.AppendUnique(CPPFLAGS=["-DLITTLE_ENDIAN"])
+
 
 # Add any additional flags the user chooses specify
 if "additional-ccflags" in ARGUMENTS:
@@ -176,7 +182,7 @@ if args["TARGET_ENV"] == "hardware":
     env.Default("all")  # For the hardware target env, "all" runs if you don't
                         # specify anything (i.e. just type "scons")
 elif args["TARGET_ENV"] == "tests":
-    env.Append(toolpath=[abspath(r"build_tools")])
+    env.Append(toolpath=[abspath(r"taproot/build_tools")])
     env.Tool("run_gcov")
 
     program = env.Program(target=env["CONFIG_PROJECT_NAME"]+"-tests.elf", source=sources)

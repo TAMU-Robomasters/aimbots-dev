@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -171,7 +171,7 @@ public:
 	using Mco1 = GpioSignal;
 	/// Connect to I2c3
 	using Scl = GpioSignal;
-	/// Connect to UsbOtgFs
+	/// Connect to Usbotgfs
 	using Sof = GpioSignal;
 	/// @}
 #endif
@@ -209,8 +209,8 @@ public:
 	template< Peripheral peripheral >
 	struct Sof { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgFs),
-			"GpioA8::Sof only connects to UsbOtgFs!");
+			(peripheral == Peripheral::Usbotgfs),
+			"GpioA8::Sof only connects to Usbotgfs!");
 	};
 	/// @endcond
 private:
@@ -278,7 +278,7 @@ struct GpioA8::Scl<Peripheral::I2c3>
 	}
 };
 template<>
-struct GpioA8::Sof<Peripheral::UsbOtgFs>
+struct GpioA8::Sof<Peripheral::Usbotgfs>
 {
 	using Gpio = GpioA8;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Sof;

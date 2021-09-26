@@ -17,13 +17,17 @@
 #include <modm/architecture/utils.hpp>
 
 /// @cond
+#ifndef MODM_ASSERTION_INFO_HAS_DESCRIPTION
 #define MODM_ASSERTION_INFO_HAS_DESCRIPTION 1
+#endif
 
 // C-type information struct
 typedef struct modm_packed
 {
 	const char *name;
+#if MODM_ASSERTION_INFO_HAS_DESCRIPTION
 	const char *description;
+#endif
 	uintptr_t context;
 	uint8_t behavior;
 } _modm_assertion_info;
@@ -31,18 +35,32 @@ typedef struct modm_packed
 // modm_assert* helper macros
 
 #define _modm_assert_ifss(s) ((const char *)(s))
-#define _modm_assert5(behavior, condition, name, description, context) \
-	({ \
-		const bool evaluated_condition = (bool) (condition); \
-		if (!evaluated_condition) { \
-			_modm_assertion_info info = { \
-				_modm_assert_ifss(name), _modm_assert_ifss(description), \
-				 (uintptr_t)(context), (uint8_t)(behavior)}; \
-			modm_assert_report(&info); \
-			if (behavior & 4) __builtin_unreachable(); \
-		} \
-		evaluated_condition; \
-	})
+#if MODM_ASSERTION_INFO_HAS_DESCRIPTION
+	#define _modm_assert5(behavior, condition, name, description, context) \
+		({ \
+			const bool evaluated_condition = (bool) (condition); \
+			if (!evaluated_condition) { \
+				_modm_assertion_info info = { \
+					_modm_assert_ifss(name), _modm_assert_ifss(description), \
+					 (uintptr_t)(context), (uint8_t)(behavior)}; \
+				modm_assert_report(&info); \
+				if (behavior & 4) __builtin_unreachable(); \
+			} \
+			evaluated_condition; \
+		})
+#else
+	#define _modm_assert5(behavior, condition, name, description, context) \
+		({ \
+			const bool evaluated_condition = (bool) (condition); \
+			if (!evaluated_condition) { \
+				_modm_assertion_info info = { \
+					_modm_assert_ifss(name), (uintptr_t)(context), (uint8_t)(behavior)}; \
+				modm_assert_report(&info); \
+				if (behavior & 4) __builtin_unreachable(); \
+			} \
+			evaluated_condition; \
+		})
+#endif
 #define _modm_assert4(behavior, condition, name, description) \
 	_modm_assert5(behavior, condition, name, description, -1)
 

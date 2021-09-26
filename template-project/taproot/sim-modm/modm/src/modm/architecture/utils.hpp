@@ -2,7 +2,7 @@
  * Copyright (c) 2011, Georgi Grinshpun
  * Copyright (c) 2011, Martin Rosekeit
  * Copyright (c) 2011-2012, Fabian Greif
- * Copyright (c) 2012, 2014-2017, Niklas Hauser
+ * Copyright (c) 2012, 2014-2017, 2021, Niklas Hauser
  * Copyright (c) 2013, Kevin Läufer
  * Copyright (c) 2015, Sascha Schade
  * Copyright (c) 2016, Tarik TIRE
@@ -42,6 +42,11 @@
 	/// Compute the size of a static (!) array.
 	#define MODM_ARRAY_SIZE(x)	(sizeof(x) / sizeof(x[0]))
 
+	/// Include a binary file into a specific section (usually `".rodata"`).
+	/// Access via `extern "C" uint8_t {{name}}[]; extern "C" uint8_t {{name}}_length[];`.
+	/// @see http://elm-chan.org/junk/32bit/binclude.html
+	#define MODM_IMPORT_BINARY(name, file, section)
+
 	/// @{
 	/**
 	 * Force inlining on functions if needed. Compiling with -Os  does not
@@ -67,11 +72,13 @@
 	/// Marks a declaration as deprecated and displays a message.
 	#define modm_deprecated(msg)
 
-	/// Specifies that a function is placed in fastest executable memory.
-	/// @note This is not always SRAM, since Flash accelerators can be faster.
+	/// Places a function in the fastest executable memory:
+	/// instruction cache, core coupled memory or SRAM as fallback.
 	#define modm_fastcode
 
-	/// Specifies that a variable is placed in fastest accessible memory.
+	/// Places a variable in the fastest accessible memory:
+	/// data cache, core coupled memory or SRAM as fallback.
+	/// @note This memory location may not be DMA-able!
 	#define modm_fastdata
 
 	/// This branch is more likely to execute.
@@ -139,7 +146,7 @@
 	#	define modm_fastdata
 	#else
 	#	define modm_fastcode		modm_section(".fastcode")
-	#	define modm_ramcode			modm_section(".ramcode")
+	#	define modm_ramcode			modm_fastcode
 	#	define modm_fastdata		modm_section(".fastdata")
 	#endif
 
@@ -148,6 +155,23 @@
 	#else
 	#	define modm_extern_c
 	#endif
+
+	#define MODM_IMPORT_BINARY(name, file, section) \
+		asm 										\
+		(											\
+			".section " #section "\n"				\
+			".balign 4\n"							\
+			".global " #name "\n"					\
+			#name ":\n"								\
+			".incbin \"" file "\"\n"				\
+			".global " #name "_laddr\n"				\
+			".set " #name "_laddr, . - " #name "\n"	\
+			".balign 4\n"							\
+			".section \".text\"\n"					\
+		); 											\
+		modm_extern_c uint8_t name ## _laddr[];		\
+		modm_extern_c const size_t name ## _length = (size_t) name ## _laddr; \
+		modm_extern_c uint8_t name[]
 
 
 #endif	// !__DOXYGEN__

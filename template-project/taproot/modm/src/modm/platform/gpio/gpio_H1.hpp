@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOH->ODR & mask); }
 	// stop documentation inherited
@@ -164,7 +164,7 @@ public:
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
 	/// Connect to Rcc
-	using OscOut = GpioSignal;
+	using Oscout = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -175,10 +175,10 @@ public:
 			"GpioH1::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct OscOut { static void connect();
+	struct Oscout { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Rcc),
-			"GpioH1::OscOut only connects to Rcc!");
+			"GpioH1::Oscout only connects to Rcc!");
 	};
 	/// @endcond
 private:
@@ -198,10 +198,10 @@ struct GpioH1::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioH1::OscOut<Peripheral::Rcc>
+struct GpioH1::Oscout<Peripheral::Rcc>
 {
 	using Gpio = GpioH1;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::OscOut;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Oscout;
 	static constexpr int af = -1;
 	inline static void
 	connect()

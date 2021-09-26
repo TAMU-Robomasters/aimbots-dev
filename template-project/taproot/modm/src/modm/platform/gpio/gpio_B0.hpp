@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -171,8 +171,8 @@ public:
 	using In8 = GpioSignal;
 	/// Connect to Eth
 	using Rxd2 = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiD1 = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpid1 = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -209,10 +209,10 @@ public:
 			"GpioB0::Rxd2 only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiD1 { static void connect();
+	struct Ulpid1 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB0::UlpiD1 only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB0::Ulpid1 only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -312,10 +312,10 @@ struct GpioB0::Rxd2<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioB0::UlpiD1<Peripheral::UsbOtgHs>
+struct GpioB0::Ulpid1<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB0;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD1;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid1;
 	static constexpr int af = 10;
 	inline static void
 	connect()

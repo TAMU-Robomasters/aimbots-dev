@@ -389,7 +389,7 @@ public:
     };
 
     /**
-     * Constructs a RefSerial class connected to `Uart::UartPort::Uart6` with
+     * Constructs a RefSerial class connected to `bound_ports::REF_SERIAL_UART_PORT` with
      * CRC enforcement enabled.
      *
      * @see `DjiSerial`

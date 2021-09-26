@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOH->ODR & mask); }
 	// stop documentation inherited
@@ -165,8 +165,8 @@ public:
 	using BitBang = GpioSignal;
 	/// Connect to I2c2
 	using Scl = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiNxt = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpinxt = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -183,10 +183,10 @@ public:
 			"GpioH4::Scl only connects to I2c2!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiNxt { static void connect();
+	struct Ulpinxt { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioH4::UlpiNxt only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioH4::Ulpinxt only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -218,10 +218,10 @@ struct GpioH4::Scl<Peripheral::I2c2>
 	}
 };
 template<>
-struct GpioH4::UlpiNxt<Peripheral::UsbOtgHs>
+struct GpioH4::Ulpinxt<Peripheral::Usbotghs>
 {
 	using Gpio = GpioH4;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiNxt;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpinxt;
 	static constexpr int af = 10;
 	inline static void
 	connect()

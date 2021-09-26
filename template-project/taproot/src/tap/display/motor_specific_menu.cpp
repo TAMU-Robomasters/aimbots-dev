@@ -31,10 +31,10 @@ namespace tap
 namespace display
 {
 MotorSpecificMenu::MotorSpecificMenu(
-    modm::ViewStack *stack,
+    modm::ViewStack<DummyAllocator<modm::IAbstractView> > *stack,
     Drivers *drivers,
     const DjiMotor *motor)
-    : modm::AbstractMenu(stack, 1),
+    : modm::AbstractMenu<DummyAllocator<modm::IAbstractView> >(stack, 1),
       drivers(drivers),
       associatedMotor(motor)
 {

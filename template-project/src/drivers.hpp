@@ -32,9 +32,9 @@
 #include "tap/mock/dji_motor_terminal_serial_handler_mock.hpp"
 #include "tap/mock/dji_motor_tx_handler_mock.hpp"
 #include "tap/mock/error_controller_mock.hpp"
-#include "tap/mock/imu_rx_listener_mock.hpp"
 #include "tap/mock/leds_mock.hpp"
 #include "tap/mock/mpu6500_mock.hpp"
+#include "tap/mock/mpu6500_terminal_serial_handler_mock.hpp"
 #include "tap/mock/pwm_mock.hpp"
 #include "tap/mock/ref_serial_mock.hpp"
 #include "tap/mock/remote_mock.hpp"
@@ -47,14 +47,14 @@
 #include "tap/architecture/profiler.hpp"
 #include "tap/communication/can/can.hpp"
 #include "tap/communication/can/can_rx_handler.hpp"
-#include "tap/communication/can/imu_rx_listener.hpp"
 #include "tap/communication/gpio/analog.hpp"
 #include "tap/communication/gpio/digital.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/communication/gpio/pwm.hpp"
-#include "tap/communication/remote.hpp"
 #include "tap/communication/sensors/mpu6500/mpu6500.hpp"
+#include "tap/communication/sensors/mpu6500/mpu6500_terminal_serial_handler.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
+#include "tap/communication/serial/remote.hpp"
 #include "tap/communication/serial/terminal_serial.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "tap/control/command_mapper.hpp"
@@ -78,78 +78,78 @@ class Drivers
 public:
 #endif
     Drivers()
-        : can(),
-          canRxHandler(this),
+        : profiler(),
           analog(),
+          can(),
+          canRxHandler(this),
           digital(),
           leds(),
           pwm(),
-          remote(this),
           mpu6500(this),
-          uart(),
           refSerial(this),
-#ifdef ENV_UNIT_TESTS
-          commandScheduler(this),
-#else
-          commandScheduler(this, true),
-#endif
-          controlOperatorInterface(this),
-          commandMapper(this),
-          errorController(this),
+          remote(this),
+          uart(),
           terminalSerial(this),
-          djiMotorTxHandler(this),
-          profiler(),
-          djiMotorTerminalSerialHandler(this),
+          commandMapper(this),
+          controlOperatorInterface(this),
           schedulerTerminalHandler(this),
-          imuRxHandler(this)
+          errorController(this),
+          djiMotorTerminalSerialHandler(this),
+          djiMotorTxHandler(this),
+          mpu6500TerminalSerialHandler(this),
+#ifdef ENV_UNIT_TESTS
+          commandScheduler(this)
+#else
+          commandScheduler(this, true)
+#endif
     /* Begin user constructor defines */
     /* End user mock drivers defines */ {}
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+    arch::Profiler profiler;
+    testing::NiceMock<mock::AnalogMock> analog;
     testing::NiceMock<mock::CanMock> can;
     testing::NiceMock<mock::CanRxHandlerMock> canRxHandler;
-    testing::NiceMock<mock::AnalogMock> analog;
     testing::NiceMock<mock::DigitalMock> digital;
     testing::NiceMock<mock::LedsMock> leds;
     testing::NiceMock<mock::PwmMock> pwm;
-    testing::NiceMock<mock::RemoteMock> remote;
     testing::NiceMock<mock::Mpu6500Mock> mpu6500;
-    testing::NiceMock<mock::UartMock> uart;
     testing::NiceMock<mock::RefSerialMock> refSerial;
-    testing::NiceMock<mock::CommandSchedulerMock> commandScheduler;
-    testing::NiceMock<mock::ControlOperatorInterfaceMock> controlOperatorInterface;
-    testing::NiceMock<mock::CommandMapperMock> commandMapper;
-    mock::ErrorControllerMock errorController;
+    testing::NiceMock<mock::RemoteMock> remote;
+    testing::NiceMock<mock::UartMock> uart;
     testing::NiceMock<mock::TerminalSerialMock> terminalSerial;
-    testing::NiceMock<mock::DjiMotorTxHandlerMock> djiMotorTxHandler;
-    arch::Profiler profiler;
-    testing::NiceMock<mock::DjiMotorTerminalSerialHandlerMock> djiMotorTerminalSerialHandler;
+    testing::NiceMock<mock::CommandMapperMock> commandMapper;
+    testing::NiceMock<mock::ControlOperatorInterfaceMock> controlOperatorInterface;
     testing::NiceMock<mock::SchedulerTerminalHandlerMock> schedulerTerminalHandler;
-    testing::NiceMock<mock::ImuRxListenerMock> imuRxHandler;
+    testing::NiceMock<mock::ErrorControllerMock> errorController;
+    testing::NiceMock<mock::DjiMotorTerminalSerialHandlerMock> djiMotorTerminalSerialHandler;
+    testing::NiceMock<mock::DjiMotorTxHandlerMock> djiMotorTxHandler;
+    testing::NiceMock<mock::Mpu6500TerminalSerialHandlerMock> mpu6500TerminalSerialHandler;
+    testing::NiceMock<mock::CommandSchedulerMock> commandScheduler;
 /* Begin user mock drivers defines */
 /* End user mock drivers defines */
 #else
 public:
+    arch::Profiler profiler;
+    gpio::Analog analog;
     can::Can can;
     can::CanRxHandler canRxHandler;
-    gpio::Analog analog;
     gpio::Digital digital;
     gpio::Leds leds;
     gpio::Pwm pwm;
-    Remote remote;
     sensors::Mpu6500 mpu6500;
-    serial::Uart uart;
     serial::RefSerial refSerial;
-    control::CommandScheduler commandScheduler;
-    control::ControlOperatorInterface controlOperatorInterface;
-    control::CommandMapper commandMapper;
-    errors::ErrorController errorController;
+    Remote remote;
+    serial::Uart uart;
     communication::serial::TerminalSerial terminalSerial;
-    motor::DjiMotorTxHandler djiMotorTxHandler;
-    arch::Profiler profiler;
-    motor::DjiMotorTerminalSerialHandler djiMotorTerminalSerialHandler;
+    control::CommandMapper commandMapper;
+    control::ControlOperatorInterface controlOperatorInterface;
     control::SchedulerTerminalHandler schedulerTerminalHandler;
-    can::ImuRxListener imuRxHandler;
+    errors::ErrorController errorController;
+    motor::DjiMotorTerminalSerialHandler djiMotorTerminalSerialHandler;
+    motor::DjiMotorTxHandler djiMotorTxHandler;
+    sensors::Mpu6500TerminalSerialHandler mpu6500TerminalSerialHandler;
+    control::CommandScheduler commandScheduler;
 /* Begin user drivers defines */
 /* End user drivers defines */
 #endif

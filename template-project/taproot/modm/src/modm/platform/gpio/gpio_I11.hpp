@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOI->ODR & mask); }
 	// stop documentation inherited
@@ -163,8 +163,8 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiDir = GpioSignal;
+	/// Connect to Usbotghs
+	using Ulpidir = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -175,10 +175,10 @@ public:
 			"GpioI11::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiDir { static void connect();
+	struct Ulpidir { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioI11::UlpiDir only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioI11::Ulpidir only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -198,10 +198,10 @@ struct GpioI11::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioI11::UlpiDir<Peripheral::UsbOtgHs>
+struct GpioI11::Ulpidir<Peripheral::Usbotghs>
 {
 	using Gpio = GpioI11;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiDir;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpidir;
 	static constexpr int af = 10;
 	inline static void
 	connect()

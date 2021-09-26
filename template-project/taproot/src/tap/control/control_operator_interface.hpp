@@ -20,7 +20,7 @@
 #ifndef CONTROL_OPERATOR_INTERFACE_HPP_
 #define CONTROL_OPERATOR_INTERFACE_HPP_
 
-#include "tap/algorithms/linear_interpolation.hpp"
+#include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "tap/util_macros.hpp"
 
 namespace tap
@@ -92,9 +92,9 @@ private:
     uint32_t prevUpdateCounterY = 0;
     uint32_t prevUpdateCounterR = 0;
 
-    algorithms::LinearInterpolation chassisXInput;
-    algorithms::LinearInterpolation chassisYInput;
-    algorithms::LinearInterpolation chassisRInput;
+    algorithms::LinearInterpolationPredictor chassisXInput;
+    algorithms::LinearInterpolationPredictor chassisYInput;
+    algorithms::LinearInterpolationPredictor chassisRInput;
 
     float chassisXKeyInputFiltered = 0;
     float chassisYKeyInputFiltered = 0;

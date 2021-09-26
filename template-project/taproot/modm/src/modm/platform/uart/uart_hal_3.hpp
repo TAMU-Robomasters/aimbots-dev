@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2013, Sascha Schade
  * Copyright (c) 2013-2014, 2016, Kevin Läufer
- * Copyright (c) 2013-2017, Niklas Hauser
+ * Copyright (c) 2013-2017, 2021, Niklas Hauser
+ * Copyright (c) 2021, Raphael Lehmann
  *
  * This file is part of the modm project.
  *
@@ -13,16 +14,13 @@
 
 #ifndef MODM_STM32_UARTHAL_3_HPP
 #define MODM_STM32_UARTHAL_3_HPP
-
 #include <stdint.h>
 #include "../device.hpp"
 #include "uart_base.hpp"
-#include "uart_baudrate.hpp"
+#include <modm/architecture/interface/peripheral.hpp>
 
-namespace modm
-{
 
-namespace platform
+namespace modm::platform
 {
 
 /**
@@ -38,19 +36,11 @@ namespace platform
  */
 class UsartHal3 : public UartBase
 {
-private:
-	/**
-	 * Disable Parity or Enable Odd/Even Parity
-	 *
-	 * This method assumes 8 databits + 1 parity bit
-	 * Remember to enable the clock but not the UART peripheral
-	 * before setting the party.
-	 */
-	static inline void
-	setParity(const Parity parity);
-
 public:
-	/// Enables the clock, resets the hardware and sets the UE bit
+	static constexpr bool isExtended = false;
+
+	/// Enables the clock, resets the hardware
+	/// @warning Call `enableOperation()` to start the peripheral!
 	static inline void
 	enable();
 
@@ -58,52 +48,24 @@ public:
 	static inline void
 	disable();
 
-	/**
-	* Initialize Uart HAL Peripheral
-	*
-	* Enables clocks, the UART peripheral (but neither TX nor RX)
-	* Sets baudrate and parity.
-	*/
-	template<	class SystemClock, baudrate_t baudrate >
-	static void
-	initialize(	Parity parity = Parity::Disabled);
-
-	/**
-	 * Initialize Uart HAL Peripheral
-	 *
-	 * Enables clocks, the UART peripheral (but neither TX nor RX)
-	 * Sets baudrate and parity.
-	 */
-	template<	class SystemClock, baudrate_t baudrate,
-				OversamplingMode oversample = OversamplingMode::By16 >
-	static void
-	initialize(	Parity parity = Parity::Disabled);
+	/// Set the UE (USART enable) bit
 	static inline void
-	setWordLength(WordLength length);
+	enableOperation();
 
-	/**
-	 * Initialize Uart HAL Peripheral
-	 *
-	 * Enables clocks, the UART peripheral (but neither TX nor RX)
-	 * Sets raw brr, parity and oversampling mode.
-	 */
-	static void
-	initializeWithBrr(uint16_t brr,
-			Parity parity,
-			OversamplingMode oversample);
+	/// Clear the UE (USART enable) bit
+	static inline void
+	disableOperation();
 
-	/// Choose if you want to oversample by 16 (_default_) or by 8
+	/// @warning Call `enableOperation()` after this to start the peripheral!
+	template< class SystemClock, baudrate_t baudrate, percent_t tolerance >
 	static inline void
-	setOversamplingMode(OversamplingMode mode);
-	// Methods needed to use this Usart Peripheral for SPI
+	initialize(Parity parity, WordLength length);
+
 	static inline void
-	setSpiClock(SpiClock clk);
+	setSpiClock(SpiClock clk, LastBitClockPulse pulse);
 
 	static inline void
 	setSpiDataMode(SpiDataMode mode);
-
-	static inline void
-	setLastBitClockPulse(LastBitClockPulse pulse);
 	/**
 	 * \brief	Write a single byte to the transmit register
 	 *
@@ -112,7 +74,7 @@ public:
 	 *				is empty!
 	 */
 	static inline void
-	write(uint8_t data);
+	write(uint16_t data);
 
 	/**
 	 * Saves the value of the receive register to data
@@ -124,21 +86,14 @@ public:
 	static inline void
 	read(uint8_t &data);
 
-	/// Enable/Disable Transmitter
 	static inline void
-	setTransmitterEnable(const bool enable);
+	read(uint16_t &data);
 
-	/// Enable/Disable Receiver
+	static inline void
+	setTransmitterEnable(bool enable);
+
 	static inline void
 	setReceiverEnable(bool enable);
-
-	/// Set the UE (USART enable) bit
-	static inline void
-	enableOperation();
-
-	/// Clear the UE (USART enable) bit
-	static inline void
-	disableOperation();
 
 	/// Returns true if data has been received
 	static inline bool
@@ -157,22 +112,17 @@ public:
 	static inline void
 	disableInterrupt(Interrupt_t interrupt);
 
+	static inline void
+	setInterruptPriority(uint32_t priority);
+
 	static inline InterruptFlag_t
 	getInterruptFlags();
 
-	/**
-	 * Returns the value of the receive register
-	 *
-	 * @warning 	Not all InterruptFlags can be cleared this way.
-	 */
 	static inline void
 	acknowledgeInterruptFlags(InterruptFlag_t flags);
 };
 
-}	// namespace platform
-
-}	// namespace modm
+}	// namespace modm::platform
 
 #include "uart_hal_3_impl.hpp"
-
-#endif // MODM_STM32_UARTHAL_3_HPP
+#endif

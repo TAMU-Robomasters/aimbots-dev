@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "tap/communication/remote.hpp"
+#include "tap/communication/serial/remote.hpp"
 #include "tap/util_macros.hpp"
 
 namespace tap

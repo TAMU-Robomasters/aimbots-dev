@@ -30,8 +30,10 @@ namespace tap
 {
 namespace display
 {
-CommandSchedulerMenu::CommandSchedulerMenu(modm::ViewStack *stack, Drivers *drivers)
-    : modm::AbstractMenu(stack, 1),
+CommandSchedulerMenu::CommandSchedulerMenu(
+    modm::ViewStack<DummyAllocator<modm::IAbstractView> > *stack,
+    Drivers *drivers)
+    : modm::AbstractMenu<DummyAllocator<modm::IAbstractView> >(stack, 1),
       drivers(drivers),
       vertScrollHandler(drivers, 0, MAX_ENTRIES_DISPLAYED),
       firstDrawTime(true)

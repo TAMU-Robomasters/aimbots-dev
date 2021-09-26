@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -171,7 +171,7 @@ public:
 	using Smba = GpioSignal;
 	/// Connect to Usart1
 	using Tx = GpioSignal;
-	/// Connect to UsbOtgFs
+	/// Connect to Usbotgfs
 	using Vbus = GpioSignal;
 	/// @}
 #endif
@@ -209,8 +209,8 @@ public:
 	template< Peripheral peripheral >
 	struct Vbus { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgFs),
-			"GpioA9::Vbus only connects to UsbOtgFs!");
+			(peripheral == Peripheral::Usbotgfs),
+			"GpioA9::Vbus only connects to Usbotgfs!");
 	};
 	/// @endcond
 private:
@@ -278,7 +278,7 @@ struct GpioA9::Tx<Peripheral::Usart1>
 	}
 };
 template<>
-struct GpioA9::Vbus<Peripheral::UsbOtgFs>
+struct GpioA9::Vbus<Peripheral::Usbotgfs>
 {
 	using Gpio = GpioA9;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Vbus;

@@ -43,6 +43,9 @@ struct modm_packed
 AssertionInfo
 {
 	const char *name;			///< Can be used to recognise the assertion in code
+#if MODM_ASSERTION_INFO_HAS_DESCRIPTION
+	const char *description;	///< Detailed failure description
+#endif
 	uintptr_t context;			///< Optional context depends on assertion
 	AbandonmentBehavior behavior;	///< Can this assertion be ignored?
 };
@@ -60,7 +63,7 @@ using AssertionHandler = Abandonment (*)(const AssertionInfo &info);
  *
  * @ingroup modm_architecture_assert
  */
-#define MODM_ASSERTION_INFO_HAS_DESCRIPTION 0
+#define MODM_ASSERTION_INFO_HAS_DESCRIPTION 0/1
 
 /**
  * This adds a function to the list of assertion handlers to execute on

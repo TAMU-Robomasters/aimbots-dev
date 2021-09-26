@@ -84,7 +84,7 @@ private:
     /**
      * The angle at which the agitator is considered to have reached its setpoint.
      */
-    static constexpr float SETPOINT_TOLERANCE = tap::algorithms::PI / 16.0f;
+    static constexpr float SETPOINT_TOLERANCE = M_PI / 16.0f;
 
     SetpointSubsystem* setpointSubsystem;
 

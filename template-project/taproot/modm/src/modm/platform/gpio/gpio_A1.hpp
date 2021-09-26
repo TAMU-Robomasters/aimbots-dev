@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -168,13 +168,13 @@ public:
 	/// Connect to Adc1 or Adc2 or Adc3
 	using In1 = GpioSignal;
 	/// Connect to Eth
-	using RefClk = GpioSignal;
+	using Refclk = GpioSignal;
 	/// Connect to Usart2
 	using Rts = GpioSignal;
 	/// Connect to Uart4
 	using Rx = GpioSignal;
 	/// Connect to Eth
-	using RxClk = GpioSignal;
+	using Rxclk = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -200,10 +200,10 @@ public:
 			"GpioA1::In1 only connects to Adc1 or Adc2 or Adc3!");
 	};
 	template< Peripheral peripheral >
-	struct RefClk { static void connect();
+	struct Refclk { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioA1::RefClk only connects to Eth!");
+			"GpioA1::Refclk only connects to Eth!");
 	};
 	template< Peripheral peripheral >
 	struct Rts { static void connect();
@@ -218,10 +218,10 @@ public:
 			"GpioA1::Rx only connects to Uart4!");
 	};
 	template< Peripheral peripheral >
-	struct RxClk { static void connect();
+	struct Rxclk { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
-			"GpioA1::RxClk only connects to Eth!");
+			"GpioA1::Rxclk only connects to Eth!");
 	};
 	/// @endcond
 private:
@@ -313,10 +313,10 @@ template<>
 constexpr int8_t
 GpioA1::AdcChannel<Peripheral::Adc3> = 1;
 template<>
-struct GpioA1::RefClk<Peripheral::Eth>
+struct GpioA1::Refclk<Peripheral::Eth>
 {
 	using Gpio = GpioA1;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::RefClk;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Refclk;
 	static constexpr int af = 11;
 	inline static void
 	connect()
@@ -349,10 +349,10 @@ struct GpioA1::Rx<Peripheral::Uart4>
 	}
 };
 template<>
-struct GpioA1::RxClk<Peripheral::Eth>
+struct GpioA1::Rxclk<Peripheral::Eth>
 {
 	using Gpio = GpioA1;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::RxClk;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Rxclk;
 	static constexpr int af = 11;
 	inline static void
 	connect()

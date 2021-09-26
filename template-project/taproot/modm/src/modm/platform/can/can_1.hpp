@@ -106,7 +106,7 @@ public:
 	 * 			other function from this class!
 	 */
 	template< class SystemClock, bitrate_t bitrate=kbps(125), percent_t tolerance=pct(1) >
-	static inline bool
+	[[nodiscard]] static inline bool
 	initialize(	uint32_t interruptPriority, Mode startupMode = Mode::Normal,
 				bool overwriteOnOverrun = true)
 	{

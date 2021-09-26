@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOB->ODR & mask); }
 	// stop documentation inherited
@@ -175,9 +175,9 @@ public:
 	using Tx = GpioSignal;
 	/// Connect to Eth
 	using Txd1 = GpioSignal;
-	/// Connect to UsbOtgHs
-	using UlpiD6 = GpioSignal;
-	/// Connect to UsbOtgHs
+	/// Connect to Usbotghs
+	using Ulpid6 = GpioSignal;
+	/// Connect to Usbotghs
 	using Vbus = GpioSignal;
 	/// @}
 #endif
@@ -225,16 +225,16 @@ public:
 			"GpioB13::Txd1 only connects to Eth!");
 	};
 	template< Peripheral peripheral >
-	struct UlpiD6 { static void connect();
+	struct Ulpid6 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB13::UlpiD6 only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB13::Ulpid6 only connects to Usbotghs!");
 	};
 	template< Peripheral peripheral >
 	struct Vbus { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgHs),
-			"GpioB13::Vbus only connects to UsbOtgHs!");
+			(peripheral == Peripheral::Usbotghs),
+			"GpioB13::Vbus only connects to Usbotghs!");
 	};
 	/// @endcond
 private:
@@ -326,10 +326,10 @@ struct GpioB13::Txd1<Peripheral::Eth>
 	}
 };
 template<>
-struct GpioB13::UlpiD6<Peripheral::UsbOtgHs>
+struct GpioB13::Ulpid6<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB13;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::UlpiD6;
+	static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid6;
 	static constexpr int af = 10;
 	inline static void
 	connect()
@@ -338,7 +338,7 @@ struct GpioB13::UlpiD6<Peripheral::UsbOtgHs>
 	}
 };
 template<>
-struct GpioB13::Vbus<Peripheral::UsbOtgHs>
+struct GpioB13::Vbus<Peripheral::Usbotghs>
 {
 	using Gpio = GpioB13;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Vbus;

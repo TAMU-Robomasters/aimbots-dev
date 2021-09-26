@@ -78,9 +78,9 @@ public:
 	inline static void set() { PinSet::set(); }
 	inline static void set(bool status) { PinSet::set(status); }
 	inline static void reset() { PinSet::reset(); }
-	inline static void toggle() {
-		if (isSet()) { reset(); }
-		else         { set();   }
+	inline static bool toggle() {
+		if (isSet()) { reset(); return true; }
+		else         { set();   return false; }
 	}
 	inline static bool isSet() { return (GPIOA->ODR & mask); }
 	// stop documentation inherited
@@ -163,7 +163,7 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to UsbOtgFs
+	/// Connect to Usbotgfs
 	using Dp = GpioSignal;
 	/// Connect to Tim1
 	using Etr = GpioSignal;
@@ -183,8 +183,8 @@ public:
 	template< Peripheral peripheral >
 	struct Dp { static void connect();
 		static_assert(
-			(peripheral == Peripheral::UsbOtgFs),
-			"GpioA12::Dp only connects to UsbOtgFs!");
+			(peripheral == Peripheral::Usbotgfs),
+			"GpioA12::Dp only connects to Usbotgfs!");
 	};
 	template< Peripheral peripheral >
 	struct Etr { static void connect();
@@ -222,7 +222,7 @@ struct GpioA12::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioA12::Dp<Peripheral::UsbOtgFs>
+struct GpioA12::Dp<Peripheral::Usbotgfs>
 {
 	using Gpio = GpioA12;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Dp;

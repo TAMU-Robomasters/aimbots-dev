@@ -71,7 +71,7 @@ private:
 
     static constexpr uint32_t SALVATION_UNJAM_BACK_WAIT_TIME = 1000;
 
-    static constexpr float SETPOINT_TOLERANCE = tap::algorithms::PI / 16.0f;
+    static constexpr float SETPOINT_TOLERANCE = M_PI / 16.0f;
 
     /**
      * The maximum time that the command will wait from commanding the agitator to rotate
@@ -82,7 +82,7 @@ private:
     /**
      * Minimum angle the agitator will rotate backwards when unjamming.
      */
-    static constexpr float MIN_AGITATOR_UNJAM_ANGLE = tap::algorithms::PI / 4.0f;
+    static constexpr float MIN_AGITATOR_UNJAM_ANGLE = M_PI / 4.0f;
 
     enum AgitatorUnjamState
     {

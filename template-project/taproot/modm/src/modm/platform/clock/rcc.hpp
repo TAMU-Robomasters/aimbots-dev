@@ -3,7 +3,7 @@
  * Copyright (c) 2012, 2017, Fabian Greif
  * Copyright (c) 2012, 2014-2017, Niklas Hauser
  * Copyright (c) 2013-2014, Kevin Läufer
- * Copyright (c) 2018, Christopher Durand
+ * Copyright (c) 2018, 2021, Christopher Durand
  *
  * This file is part of the modm project.
  *
@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include "../device.hpp"
 #include <modm/platform/core/peripherals.hpp>
+#include <modm/architecture/interface/delay.hpp>
 
 namespace modm::platform
 {
@@ -37,13 +38,15 @@ namespace modm::platform
 class Rcc
 {
 public:
+	static constexpr uint32_t BootFrequency = 16'000'000;
+
 	enum class
 	PllSource : uint32_t
 	{
 		/// High speed internal clock (16 MHz)
 		Hsi = RCC_PLLCFGR_PLLSRC_HSI,
 		InternalClock = Hsi,
-		/// High speed external clock (see HseConfig)
+		/// High speed external clock
 		Hse = RCC_PLLCFGR_PLLSRC_HSE,
 		ExternalClock = Hse,
 		ExternalCrystal = Hse,
@@ -66,6 +69,7 @@ public:
 		Lsi = RCC_BDCR_RTCSEL_1,
 		Lse = RCC_BDCR_RTCSEL_0,
 		Hse = RCC_BDCR_RTCSEL_0 | RCC_BDCR_RTCSEL_1,
+
 		ExternalClock = Hse,
 		ExternalCrystal = Hse,
 		LowSpeedInternalClock = Lsi,
@@ -149,34 +153,12 @@ public:
 	static bool
 	enableLowSpeedExternalCrystal(uint32_t waitCycles = 2048);
 
-	/**
-	 * \code
-	 * VCO input frequency = PLL input clock frequency / PLLM [with 2 <= PLLM <= 63]
-	 * VCO output frequency = VCO input frequency × PLLN [with 64 <= PLLN <= 432]
-	 * \endcode
-	 *
-	 * \param	pllM
-	 * 		Division factor for the main PLL (PLL) and
-	 * 		audio PLL (PLLI2S) input clock (with 2 <= pllM <= 63).
-	 *		The software has to set these bits correctly to ensure
-	 *		that frequency of selected source divided by pllM
-	 *		is in ranges from 1 to 2 MHz.
-	 *
-	 * \param	pllN
-	 * 		Main PLL (PLL) multiplication factor for VCO (with 64 <= pllN <= 432).
-	 * 		The software has to set these bits correctly to ensure
-	 * 		that the VCO output frequency is
-	 * 		 - 336 MHz for ST32F4. Core will run at 168 MHz.
-	 *		 - 240 MHz for ST32F2. Core will run at 120 MHz.
-	 *
-	 * \param	pllP
-	 *
-	 */
 	struct PllFactors
 	{
-		const uint8_t pllM;
-		const uint16_t pllN;
-		const uint8_t pllP;
+		uint8_t pllM;
+		uint16_t pllN;
+		uint8_t pllP;
+		uint8_t pllQ = 0xff;
 	};
 
 	/**
@@ -289,6 +271,8 @@ public:
 		RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_PPRE2) | uint32_t(prescaler);
 		return true;
 	}
+	static bool
+	enableOverdriveMode(uint32_t waitCycles = 2048);
 public:
 	/** Set flash latency for CPU frequency and voltage.
 	 * Does nothing if CPU frequency is too high for the available
