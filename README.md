@@ -10,10 +10,6 @@ This is a blank project fully configured for use of [Taproot](https://gitlab.com
 It is designed to be a starting point for your own RoboMaster software projects. Be sure to check
 out Taproot for more information.
 
-**Note:** Currently, Taproot only supports the RoboMaster Development Board Type A. In the future,
-you will be able to configure this repository for other development boards. See
-aruw/controls/taproot#9.
-
 This template includes the following:
 - Code generated from the `taproot` and `modm` repositories. This generated code is located in
   `/template-project/taproot` and includes the hardware abstraction layer provided by
@@ -98,6 +94,18 @@ deploy your code.
 
 Finally, after you are done with it, we recommend removing the portion of this README between
 `<!-- ... -->` comments. The rest of the file is intended to provide a starting point for your team.
+
+### (Optional) Using the RoboMaster Development Board Type C
+
+By default, this project targets the RoboMaster Development Board Type A. However, Taproot also
+supports the newer Type C board. If you would like to use this board instead (replace
+`template-project` with the new name if it has been renamed):
+
+1. Commit any work so you don't lose it
+1. Edit `template-project/project.xml` according to the included comment
+1. Run `rm -r template-project/taproot`
+1. Run `cd template-project` and then `lbuild build`
+1. Commit the result: `git add . && git commit -m "Target RM Dev Board Type C"`
 
 ## Contacting
 
