@@ -254,7 +254,7 @@ The below commands require that your working directory is `/template-project` (w
 - `lbuild build`: Re-generates out copy of `taproot` and `modm`.
 - `scons build`: Builds the firmware image for the hardware target. Creates a "release" folder located in `build/hardware/` which contains the final `.elf` file as well as the intermediate object files (`.o`).
 - `scons build-tests`: Builds a program which hosts our unit tests. This executable can be run on your host computer (only supported on Linux) and prints results for each unit test run.
-- `scons program`: Builds as with `scons build` and then programs the board.
+- `scons run`: Builds as with `scons build` and then programs the board.
 - `scons run-tests`: Builds and runs the unit test program.
 - `scons size`: Prints statistics on program size and (statically-)allocated memory. Note that the reported available heap space is an upper bound, and this tool has no way of knowing about the real size of dynamic allocations.
 
