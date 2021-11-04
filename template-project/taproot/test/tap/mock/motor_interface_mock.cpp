@@ -17,27 +17,11 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "dji_motor_mock.hpp"
+#include "motor_interface_mock.hpp"
 
 namespace tap::mock
 {
-DjiMotorMock::DjiMotorMock(
-    Drivers *drivers,
-    tap::motor::MotorId desMotorIdentifier,
-    tap::can::CanBus motorCanBus,
-    bool isInverted,
-    const char *name,
-    uint16_t encWrapped,
-    int64_t encRevolutions)
-    : DjiMotor(
-          drivers,
-          desMotorIdentifier,
-          motorCanBus,
-          isInverted,
-          name,
-          encWrapped,
-          encRevolutions)
-{
-}
-DjiMotorMock::~DjiMotorMock() {}
+MotorInterfaceMock::MotorInterfaceMock() : tap::motor::MotorInterface() {}
+
+MotorInterfaceMock::~MotorInterfaceMock() {}
 }  // namespace tap::mock

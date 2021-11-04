@@ -40,12 +40,14 @@ public:
         float tQDerivativeKalman,
         float tRDerivativeKalman,
         float tQProportionalKalman,
-        float tRProportionalKalman)
+        float tRProportionalKalman,
+        float errDeadzone = 0.0f)
         : kp(kp),
           ki(ki),
           kd(kd),
           maxICumulative(maxICumulative),
           maxOutput(maxOutput),
+          errDeadzone(errDeadzone),
           proportionalKalman(tQProportionalKalman, tRProportionalKalman),
           derivativeKalman(tQDerivativeKalman, tRDerivativeKalman)
     {
@@ -70,6 +72,7 @@ private:
     float kd = 0.0f;
     float maxICumulative = 0.0f;
     float maxOutput = 0.0f;
+    float errDeadzone = 0.0f;
 
     // while these could be local, debugging pid is much easier if they are not
     float currErrorP = 0.0f;

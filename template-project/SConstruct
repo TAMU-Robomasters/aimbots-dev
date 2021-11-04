@@ -16,7 +16,7 @@
 # along with template-project.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-from build_tools import extract_robot_type, parse_args
+from build_tools import parse_args, extract_robot_type
 from os.path import join, abspath
 from SCons.Script import *
 
