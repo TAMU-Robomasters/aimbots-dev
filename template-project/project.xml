@@ -10,8 +10,9 @@
     <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option>
     <option name="taproot:docs:source_paths">src</option>
     <option name="taproot:rebuild_modm">True</option>
-    <!-- This project comes with a pre-generated drivers.hpp file. You can edit it without Taproot attempting to replace it. -->
+    <!-- This project comes with a pre-generated drivers.hpp file and build script. You can edit them without Taproot attempting to replace them. -->
     <option name="taproot:core:generate_driver_hpp">False</option>
+    <option name="taproot:build:include_sconstruct">False</option>
 
     <!-- For RoboMaster Development Board Type A -->
     <option name="taproot:dev_board">rm-dev-board-a</option>

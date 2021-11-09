@@ -29,6 +29,11 @@ namespace algorithms
 {
 float SmoothPid::runController(float error, float errorDerivative, float dt)
 {
+    if (abs(error) < errDeadzone)
+    {
+        error = 0.0f;
+    }
+
     // p
     currErrorP = kp * proportionalKalman.filterData(error);
     // i
@@ -45,6 +50,10 @@ float SmoothPid::runController(float error, float errorDerivative, float dt)
 
 float SmoothPid::runControllerDerivateError(float error, float dt)
 {
+    if (compareFloatClose(dt, 0.0f, 1E-5))
+    {
+        dt = 1.0f;
+    }
     float errorDerivative = (error - prevError) / dt;
     prevError = error;
     return runController(error, errorDerivative, dt);
@@ -58,6 +67,7 @@ void SmoothPid::reset()
     this->currErrorP = 0.0f;
     this->currErrorI = 0.0f;
     this->currErrorD = 0.0f;
+    this->prevError = 0.0f;
     this->derivativeKalman.reset();
     this->proportionalKalman.reset();
 }

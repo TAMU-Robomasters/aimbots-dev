@@ -17,27 +17,27 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "dji_motor_mock.hpp"
+#ifndef MOTOR_INTERFACE_HPP_
+#define MOTOR_INTERFACE_HPP_
 
-namespace tap::mock
+#include <cstdint>
+
+namespace tap::motor
 {
-DjiMotorMock::DjiMotorMock(
-    Drivers *drivers,
-    tap::motor::MotorId desMotorIdentifier,
-    tap::can::CanBus motorCanBus,
-    bool isInverted,
-    const char *name,
-    uint16_t encWrapped,
-    int64_t encRevolutions)
-    : DjiMotor(
-          drivers,
-          desMotorIdentifier,
-          motorCanBus,
-          isInverted,
-          name,
-          encWrapped,
-          encRevolutions)
+class MotorInterface
 {
-}
-DjiMotorMock::~DjiMotorMock() {}
-}  // namespace tap::mock
+public:
+    virtual void initialize() = 0;
+    virtual int64_t getEncoderUnwrapped() const = 0;
+    virtual uint16_t getEncoderWrapped() const = 0;
+    virtual void setDesiredOutput(int32_t desiredOutput) = 0;
+    virtual bool isMotorOnline() const = 0;
+    virtual int16_t getOutputDesired() const = 0;
+    virtual int8_t getTemperature() const = 0;
+    virtual int16_t getTorque() const = 0;
+    virtual int16_t getShaftRPM() const = 0;
+};
+
+}  // namespace tap::motor
+
+#endif  //  MOTOR_INTERFACE_HPP_

@@ -25,9 +25,9 @@
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/can/can_rx_listener.hpp"
 
-namespace tap
-{
-namespace motor
+#include "motor_interface.hpp"
+
+namespace tap::motor
 {
 // for declaring a new motor, must be one of these motor
 // identifiers
@@ -46,7 +46,7 @@ enum MotorId : int32_t
 // extend the CanRxListener class, which allows one to connect a
 // motor to the receive handler and use the class's built in
 // receive handler
-class DjiMotor : public can::CanRxListener
+class DjiMotor : public can::CanRxListener, public MotorInterface
 {
 public:
     // 0 - 8191 for dji motors
@@ -64,13 +64,13 @@ public:
 
     mockable ~DjiMotor();
 
-    mockable void initialize();
+    void initialize() override;
 
     // formerly encoderstore
-    mockable int64_t getEncoderUnwrapped() const;
+    int64_t getEncoderUnwrapped() const override;
 
     // formerly encoderstore
-    mockable uint16_t getEncoderWrapped() const;
+    uint16_t getEncoderWrapped() const override;
 
     DISALLOW_COPY_AND_ASSIGN(DjiMotor)
 
@@ -82,23 +82,23 @@ public:
     // than 2^16, then limit it.
     // Limiting should typically be done on a motor by motor basis in a wrapper class, this
     // is simply a sanity check.
-    mockable void setDesiredOutput(int32_t desiredOutput);
+    void setDesiredOutput(int32_t desiredOutput) override;
 
-    mockable bool isMotorOnline() const;
+    bool isMotorOnline() const override;
 
     // Serializes send data and deposits it in a message to be sent.
     mockable void serializeCanSendData(modm::can::Message* txMessage) const;
 
     // getter functions
-    mockable int16_t getOutputDesired() const;
+    int16_t getOutputDesired() const override;
 
     mockable uint32_t getMotorIdentifier() const;
 
-    mockable int8_t getTemperature() const;
+    int8_t getTemperature() const override;
 
-    mockable int16_t getTorque() const;
+    int16_t getTorque() const override;
 
-    mockable int16_t getShaftRPM() const;
+    int16_t getShaftRPM() const override;
 
     mockable bool isMotorInverted() const;
 
@@ -166,8 +166,6 @@ private:
     tap::arch::MilliTimeout motorDisconnectTimeout;
 };
 
-}  // namespace motor
-
-}  // namespace tap
+}  // namespace tap::motor
 
 #endif
