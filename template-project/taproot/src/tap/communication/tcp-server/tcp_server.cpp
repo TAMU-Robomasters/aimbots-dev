@@ -21,6 +21,7 @@
 
 #include "tcp_server.hpp"
 
+#ifdef __linux__
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +29,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#endif  // __linux__
 
 #include <atomic>
 #include <iostream>
@@ -53,12 +55,15 @@ namespace communication
  */
 
 TCPServer::TCPServer(int targetPortNumber)
+#ifdef __linux__
     : socketOpened(false),
       clientConnected(false),
       mainClientDescriptor(-1),
       serverAddress(),
       portNumber(-1)
+#endif  // __linux__
 {
+#ifdef __linux__
     // Do sockety stuff.
     listenFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
     if (listenFileDescriptor < 0)
@@ -101,17 +106,20 @@ TCPServer::TCPServer(int targetPortNumber)
     listen(listenFileDescriptor, LISTEN_QUEUE_SIZE);
     std::cout << "TCPServer initialized on port: " << targetPortNumber << std::endl;
     std::cout << "call getConnection() to accept client" << std::endl;
+#endif  // __linux__
 }
 
 TCPServer::~TCPServer()
 {
+#ifdef __linux__
     close(listenFileDescriptor);
     close(mainClientDescriptor);
+#endif  // __linux__
 }
 
 TCPServer* TCPServer::MainServer()
 {
-#ifdef ENV_UNIT_TESTS
+#if defined(ENV_UNIT_TESTS) || !defined(__linux__)
     return nullptr;
 #else
     return &mainServer;
@@ -120,6 +128,7 @@ TCPServer* TCPServer::MainServer()
 
 void TCPServer::getConnection()
 {
+#ifdef __linux__
     sockaddr_in clientAddress;
     socklen_t clientAddressLength = sizeof(clientAddress);
     mainClientDescriptor = accept(
@@ -127,26 +136,37 @@ void TCPServer::getConnection()
         reinterpret_cast<sockaddr*>(&clientAddress),
         &clientAddressLength);
     cerr << "TCPServer: connection accepted" << std::endl;
+#endif  // __linux__
 }
 
 void TCPServer::closeConnection()
 {
+#ifdef __linux__
     close(mainClientDescriptor);
     mainClientDescriptor = -1;
     std::cout << "TCPServer: closed connection with client, "
                  "use getConnection() to connect to a new one";
+#endif  // __linux__
 }
 
 /**
  * Post: Returns the port number of this server.
  */
-uint16_t TCPServer::getPortNumber() { return this->portNumber; }
+uint16_t TCPServer::getPortNumber()
+{
+#ifdef __linux__
+    return this->portNumber;
+#else
+    return 0;
+#endif  // __linux__
+}
 
 /**
  * Writes "messageLength" bytes of "message" to the mainClient
  */
 void TCPServer::writeToClient(const char* message, int32_t messageLength)
 {
+#ifdef __linux__
     if (mainClientDescriptor < 0)
     {
         // Not necessarily an error if fileDescriptor still hasn't been opened
@@ -162,8 +182,10 @@ void TCPServer::writeToClient(const char* message, int32_t messageLength)
     {
         std::cerr << e.what() << std::endl;
     }
+#endif  // __linux__
 }
 
+#ifdef __linux__
 void readMessage(int16_t fileDescriptor, char* readBuffer, uint16_t messageLength)
 {
     readBuffer[messageLength] = '\0';  // Null terminate the message
@@ -228,6 +250,7 @@ int32_t readInt32(int16_t fileDescriptor)
     }
     return answer;
 }
+#endif  // __linux__
 
 // Only construct static singleton in actual sim, not in unit tests.
 #ifndef ENV_UNIT_TESTS

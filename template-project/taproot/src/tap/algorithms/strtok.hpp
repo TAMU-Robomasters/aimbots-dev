@@ -20,10 +20,14 @@
 #ifndef STRTOK_HPP_
 #define STRTOK_HPP_
 
+#ifndef __DOXYGEN__
+
 /**
  * Source code from glibc/string/strtok_r.c. arm-none-eabi-gcc does not have strtok_r,
  * so we implement it ourselves.
  */
 char *strtokR(char *s, const char *delim, char **savePtr);
+
+#endif
 
 #endif  // STRTOK_HPP_
