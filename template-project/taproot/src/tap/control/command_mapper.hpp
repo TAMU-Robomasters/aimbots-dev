@@ -41,10 +41,18 @@ class CommandMapping;
  * is received.
  *
  * For example, given the command `coolCommand`, to map a hold mapping
- * to the left switch in the up position, we call
- * `addHoldMapping(RemoteMapState(
- *      Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP),
- *      {&coolCommand});`
+ * to the left switch in the up position, we define a `HoldCommandMapping`
+ * and then add it to the `CommandMapper` as follows (where `drivers` is assumed
+ * to be a global drivers object that has a `CommandMapper` object):
+ *
+ * ```
+ * HoldCommandMapping leftSwitchUp(
+ *      drivers,
+ *      {&coolCommand},
+ *      RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+ *
+ * drivers->commandMapper.addMap(&leftSwitchUp);
+ * ```
  *
  * @note Only unique RemoteMapStates can be added to the CommandMapper. This ensures
  *      a user will not accidently map two `Command`s to the same RemoteMapState without

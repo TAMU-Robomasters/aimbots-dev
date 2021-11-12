@@ -59,23 +59,28 @@ class Subsystem;
  * and remove commands from the scheduler.
  *
  * The main use case will be to be refreshing all the main subsystems running
- * on the robot. To do so, you should call `getMainScheduler()` to access this
- * base scheduler. Here is an example of how to do this:
+ * on the robot. You should access the main scheduler via the global `tap::Drivers *`
+ * instance, which should have an instance of a `CommandScheduler` called  `commandScheduler`.
+ * The below example code registers a subsystem (`sub`) and adds a command (`cmd`) to
+ * the scheduler. Then the scheduler is run over and over, in a loop.
  *
  * ```
- * // A class that has Command as a base class.
+ * // A class that has Subsystem as a base class.
  * CoolSubsystem sub;
- * // A class that has Subsystem as a base class that requires
+ * // A class that has Command as a base class that requires
  * // the subsystem above. In the constructor of the ControlCoolCommand,
- * // you must call `addSubsystemRequirement(dynamic_cast<Subsystem*>(subsystem))`;
+ * // you must call `addSubsystemRequirement(sub)`, where `sub` is the
+ * // `CoolSubsystem` defined above.
  * ControlCoolCommand cmd(&sub);
  *
- * CommandScheduler::getMainScheduler().registerSubsystem(&sub);
- * CommandScheduler::getMainScheduler().addCommand(&cmd);
+ * drivers->commandScheduler.registerSubsystem(&sub);
+ * drivers->commandScheduler.addCommand(&cmd);
  *
- * while (1) {
- *     // The subsystem will refresh forever and the command until it is not finished.
- *     CommandScheduler::getMainScheduler().run();
+ * while (1)
+ * {
+ *     // The subsystem will refresh forever and the command will execute until it
+ *     // is finished.
+ *     drivers->commandScheduler.run();
  * }
  * ```
  *

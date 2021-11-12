@@ -5,11 +5,10 @@
             "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/modm/src",
+                "template-project/taproot/sim-modm/hosted-linux/modm/src",
                 "template-project/taproot/test",
                 "template-project/test"
             ],
-            "compilerPath": "/usr/bin/g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -18,9 +17,8 @@
             "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/modm/src"
+                "template-project/taproot/sim-modm/hosted-linux/modm/src"
             ],
-            "compilerPath": "/usr/bin/g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -33,7 +31,6 @@
                 "template-project/taproot/modm/ext/cmsis/device",
                 "template-project/taproot/modm/ext/cmsis/dsp"        
             ],
-            "compilerPath": "/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         }

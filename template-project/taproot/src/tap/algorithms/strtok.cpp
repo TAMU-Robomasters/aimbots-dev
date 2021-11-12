@@ -17,6 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef __DOXYGEN__
+
 #include "strtok.hpp"
 
 #include <cstring>
@@ -54,3 +56,5 @@ char *strtokR(char *s, const char *delim, char **savePtr)
     *savePtr = end + 1;
     return s;
 }
+
+#endif

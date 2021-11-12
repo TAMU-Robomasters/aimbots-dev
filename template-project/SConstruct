@@ -16,17 +16,19 @@
 # along with template-project.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
-from build_tools import parse_args, extract_robot_type
+import platform
 from os.path import join, abspath
+
 from SCons.Script import *
 
+from build_tools import parse_args, extract_robot_type
 
 # Define project settings and build paths
 PROJECT_NAME        = "template-project"
 BUILD_PATH          = "build"
 HARDWARE_MODM_PATH  = "taproot/modm"
 LINKERSCRIPT_FILE   = join(HARDWARE_MODM_PATH, "link/linkerscript.ld")
-HOSTED_MODM_PATH    = "taproot/sim-modm/modm"
+SIM_MODM_DIR        = "taproot/sim-modm/"
 TAPROOT_SRC_PATH    = "taproot/src"
 TAPROOT_PATH        = join(TAPROOT_SRC_PATH, "tap")
 TAPROOT_TEST_PATH   = "taproot/test"
@@ -38,7 +40,7 @@ GTEST_LIBS          = ["gtest", "gtest_main", "gmock", "gmock_main"]
 COVERAGE_LIBS       = ["-lgcov"]
 
 # Don't compile this stuff
-ignored_dirs        = [".lbuild_cache", BUILD_PATH, HOSTED_MODM_PATH, HARDWARE_MODM_PATH, TAPROOT_PATH]
+ignored_dirs        = [".lbuild_cache", BUILD_PATH, SIM_MODM_DIR, HARDWARE_MODM_PATH, TAPROOT_PATH]
 ignored_files       = [extract_robot_type.ROBOT_TYPE_FILE]
 # Don't compile this stuff when testing
 IGNORED_FILES_WHILE_TESTING = ["src/main.cpp"]
@@ -47,13 +49,26 @@ IGNORED_FILES_WHILE_TESTING = ["src/main.cpp"]
 # Parse and validate arguments
 args = parse_args.parse_args()
 
+def _get_hosted_target_name_for_current_platform():
+    os_type = platform.system()
+    try:
+        return {
+            "Windows": "hosted-windows",
+            "Darwin": "hosted-darwin",
+            "Linux": "hosted-linux",
+        }[os_type]
+    except KeyError:
+        raise ValueError(f"Unknown host OS {os_type}")
+
+def _get_sim_modm_instance_path():
+    return f"taproot/sim-modm/{_get_hosted_target_name_for_current_platform()}/modm"
 
 # Set up target environment-specific paths
 if args["TARGET_ENV"] == "tests":
-    modm_path = HOSTED_MODM_PATH
+    modm_path = _get_sim_modm_instance_path()
     ignored_files.extend(IGNORED_FILES_WHILE_TESTING)
 elif args["TARGET_ENV"] == "sim":
-    modm_path = HOSTED_MODM_PATH
+    modm_path = _get_sim_modm_instance_path()
     ignored_dirs.append(TAPROOT_TEST_PATH)
     ignored_dirs.append(SRC_TEST_PATH)
 elif args["TARGET_ENV"] == "hardware":

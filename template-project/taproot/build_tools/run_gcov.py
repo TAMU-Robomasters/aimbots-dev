@@ -23,7 +23,7 @@ import glob
 
 GCOV_OUT_DIR        = os.path.abspath('../gcov-result')
 GCOV_OUT_FILE       = 'aaa_run_gcov.output'
-SIM_MODM_DIR        = 'Source:sim-modm/modm'
+SIM_MODM_DIR        = 'Source:sim-modm/'
 TEST_DIR            = 'Source:test'
 COVERAGE_INFO_FILE  = os.path.join(GCOV_OUT_DIR, 'coverage.info')
 

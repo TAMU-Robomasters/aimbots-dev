@@ -143,40 +143,58 @@ library, or parts of it (including its design), open-source their own code in tu
 
 ### Setting up a development environment
 
-To develop software for the simulator or unit test environment, a Debian Linux development
-environment is necessary. When developing software for the development board, Linux, Windows, or Mac
-OS operating systems all work. We recommend working in a Debian Linux environment so you can both
-run tests and deploy to the development board.
+If you want the easiest setup experience and **_do not_ require deploying code to hardware**,
+consider developing within the provided [Docker container](https://gitlab.com/aruw/controls/taproot/-/wikis/Docker-Container-Setup).
 
-If you do not have a native Linux environment, we recommend using a virtual machine. We have tested
-a virtual machine hosted using [VirtualBox](https://www.virtualbox.org). Once you have a virtual
-machine installed on your computer, follow
-[this](https://gitlab.com/aruw/controls/taproot/-/wikis/Debian-Linux-Setup) guide to set up the
-tooling necessary to build and deploy software.
+Otherwise, follow the guide appropriate for your operating system.
+- Linux
+  - Debian: https://gitlab.com/aruw/controls/taproot/-/wikis/Debian-Linux-Setup
+  - Fedora: https://gitlab.com/aruw/controls/taproot/-/wikis/Fedora-Linux-Setup
+  - Other: follow one of the above guides, substituting your distribution's package names in place
+    of Debian or Fedora packages.
+- macOS: https://gitlab.com/aruw/controls/taproot/-/wikis/macOS-Setup
+- Windows: https://gitlab.com/aruw/controls/taproot/-/wikis/Windows-Setup
 
-Alternatively, we have guides for developing software in a [Docker
-container](https://gitlab.com/aruw/controls/taproot/-/wikis/Docker-Container-Setup), a [Windows
-machine](https://gitlab.com/aruw/controls/taproot/-/wikis/Windows-Setup), or by using [Windows
-Subsystem for Linux](https://gitlab.com/aruw/controls/taproot/-/wikis/Windows-WSL-Setup). Note that
-these have drawbacks because they either do not fully support both running unit tests on your local
-machine and deploying to the development board or have not been rigorously tested.
+Finally, install `pipenv` and set up the build tools:
 
-Sometimes setting up your machine can be tricky. If you are having trouble setting up your
-environment properly, feel free to ask for help on our [Discord server](https://discord.gg/jjDrGhrjMy).
+```
+pip3 install pipenv
+cd template-project/
+pipenv install
+```
 
-### Cloning the repo
+### Getting started with this repo
 
-If you use the Docker container, or have already cloned the repository yourself, you should run:
+_Make sure you have followed the above setup instructions._
+
+Run the following to clone this repository:
+
+```
+git clone --recursive https://gitlab.com/my-team/my-amazing-project.git
+```
+
+If you use the Docker container, or have already cloned the repository yourself, you should instead
+run:
 
 ```
 git submodule update --init --recursive
 ```
 
-Otherwise, you should clone your repo in the target development environment as follows:
+Now, `cd` into the project directory, activate the virtualenv, and run some builds:
 
 ```
-git clone --recursive https://gitlab.com/my-team/my-amazing-project.git
+cd my-amazing-project/template-project
+pipenv shell
+# Build for hardware
+scons build
+# Run automated tests
+scons run-tests
 ```
+
+### Returning to the development environment
+
+**You will need to run `pipenv shell` from this directory _every time_ you open a new terminal,
+before using `scons` or `lbuild`.**
 
 ## Workflow guide
 
@@ -245,6 +263,12 @@ appropriate profile that provides optimal
 in VSCode, type <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, then type "C/C++:Select a
 Configuration" and hit enter. A dropdown menu will appear where you may choose either the "Test",
 "Sim", or "Hardware" configuration.
+
+### Upgrading Taproot
+
+The Taproot project recommends that user projects occasionally upgrade the version of
+Taproot that they depend on. The guide for doing so is
+[here](https://gitlab.com/aruw/controls/taproot/-/wikis/Upgrading-a-Taproot-project). 
 
 ## Building and running via the terminal
 

@@ -22,7 +22,9 @@
 #ifndef TCPSERVER_HPP_
 #define TCPSERVER_HPP_
 
+#ifdef __linux__
 #include <netinet/in.h>
+#endif
 
 #include <atomic>
 #include <cstdint>
@@ -87,17 +89,20 @@ public:
     void writeToClient(const char* message, int32_t messageLength);
 
 private:
+#ifdef __linux__
     bool socketOpened;
     bool clientConnected;
     int16_t listenFileDescriptor;  // File descriptor which server gets connection requests
     int16_t mainClientDescriptor;  // File Descriptor which we communciate with
     sockaddr_in serverAddress;
     int16_t portNumber;  // portNumber the server is bound to
+#endif                   // __linux__
 
     // Singleton server.
     static TCPServer mainServer;
 };  // TCPServer
 
+#ifdef __linux__
 /**
  * Pre: Message readBuffer must be messageLength + 1 bytes long otherwise out of bounds
  * array access will occur and behavior will be undefined.
@@ -120,6 +125,7 @@ void writeMessage(int16_t fileDescriptor, const char* message, uint16_t bytes);
  * that the lowest register bytes are most significant (big endian)
  */
 int32_t readInt32(int16_t fileDescriptor);
+#endif  // __linux__
 
 }  // namespace communication
 
