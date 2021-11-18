@@ -2,29 +2,29 @@
 #
 # Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
 #
-# This file is part of template-project.
+# This file is part of mdev2021.
 #
-# template-project is free software: you can redistribute it and/or modify
+# mdev2021 is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# template-project is distributed in the hope that it will be useful,
+# mdev2021 is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with template-project.  If not, see <https://www.gnu.org/licenses/>.
+# along with mdev2021.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
 import sys
 
 SCRIPT_DIR = os.path.dirname(__file__)
 # These should be relative to the directory that this script is housed in.
-PATHS_TO_CHECK = [ '../template-project/src/',
-                   '../template-project/test/' ]
-FILES_TO_IGNORE = [ '../template-project/src/drivers.hpp' ]
+PATHS_TO_CHECK = [ '../mdev2021/src/',
+                   '../mdev2021/test/' ]
+FILES_TO_IGNORE = [ '../mdev2021/src/drivers.hpp' ]
 
 PATHS_TO_CHECK = [ os.path.join(SCRIPT_DIR, path) for path in PATHS_TO_CHECK ]
 FILES_TO_IGNORE = [ os.path.join(SCRIPT_DIR, path) for path in FILES_TO_IGNORE ]
@@ -36,20 +36,20 @@ LICENSED_SOURCE_FILE_EXTENSIONS = ['.cpp', '.hpp', '.h']
 LICENSE_HEADER = '/*\n\
  * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>\n\
  *\n\
- * This file is part of template-project.\n\
+ * This file is part of mdev2021.\n\
  *\n\
- * template-project is free software: you can redistribute it and/or modify\n\
+ * mdev2021 is free software: you can redistribute it and/or modify\n\
  * it under the terms of the GNU General Public License as published by\n\
  * the Free Software Foundation, either version 3 of the License, or\n\
  * (at your option) any later version.\n\
  *\n\
- * template-project is distributed in the hope that it will be useful,\n\
+ * mdev2021 is distributed in the hope that it will be useful,\n\
  * but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
  * GNU General Public License for more details.\n\
  *\n\
  * You should have received a copy of the GNU General Public License\n\
- * along with template-project.  If not, see <https://www.gnu.org/licenses/>.\n\
+ * along with mdev2021.  If not, see <https://www.gnu.org/licenses/>.\n\
  */\n'
 
 if len(sys.argv) not in [ 1, 2 ]:

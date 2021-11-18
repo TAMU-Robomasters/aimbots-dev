@@ -73,13 +73,13 @@
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
-        "template-project/taproot/src",
-        "template-project/src",
+        "mdev2021/taproot/src",
+        "mdev2021/src",
     ],
     "C_Cpp.default.cppStandard": "c++20",
     "C_Cpp.default.cStandard": "c11",
     "C_Cpp.default.forcedInclude": [
-        "template-project/robot-type/robot_type.hpp"
+        "mdev2021/robot-type/robot_type.hpp"
     ],
     "[markdown]": {
         "editor.wordWrap": "off",

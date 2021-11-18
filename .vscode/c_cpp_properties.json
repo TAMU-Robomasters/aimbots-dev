@@ -5,9 +5,9 @@
             "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/hosted-linux/modm/src",
-                "template-project/taproot/test",
-                "template-project/test"
+                "mdev2021/taproot/sim-modm/hosted-linux/modm/src",
+                "mdev2021/taproot/test",
+                "mdev2021/test"
             ],
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
@@ -17,7 +17,7 @@
             "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/hosted-linux/modm/src"
+                "mdev2021/taproot/sim-modm/hosted-linux/modm/src"
             ],
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
@@ -26,10 +26,10 @@
             "name": "Hardware",
             "includePath": [
                 "${default}",
-                "template-project/taproot/modm/src",
-                "template-project/taproot/modm/ext/cmsis/core",
-                "template-project/taproot/modm/ext/cmsis/device",
-                "template-project/taproot/modm/ext/cmsis/dsp"        
+                "mdev2021/taproot/modm/src",
+                "mdev2021/taproot/modm/ext/cmsis/core",
+                "mdev2021/taproot/modm/ext/cmsis/device",
+                "mdev2021/taproot/modm/ext/cmsis/dsp"        
             ],
             "intelliSenseMode": "gcc-arm",
             "browse": { "limitSymbolsToIncludedHeaders": true }

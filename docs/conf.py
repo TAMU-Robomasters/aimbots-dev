@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'template-project'
-copyright = '2020, template-project'
-author = 'template-project'
+project = 'mdev2021'
+copyright = '2020, mdev2021'
+author = 'mdev2021'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0.0'
@@ -55,7 +55,7 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 
-breathe_default_project = "template-project"
+breathe_default_project = "mdev2021"
 
 extensions = [
     # there may be others here already, e.g. 'sphinx.ext.mathjax'
@@ -65,7 +65,7 @@ extensions = [
 
 # Setup the breathe extension
 breathe_projects = {
-    "template-project": "./doxyoutput/xml"
+    "mdev2021": "./doxyoutput/xml"
 }
 
 # Setup the exhale extension
