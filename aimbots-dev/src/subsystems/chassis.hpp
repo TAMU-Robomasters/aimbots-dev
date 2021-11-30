@@ -1,59 +1,45 @@
 #pragma once
 
-#include <tap/algorithms/smooth_pid.hpp>
-#include <tap/communication/can/can_bus.hpp>
-#include <tap/control/subsystem.hpp>
-#include <tap/drivers.hpp>
-#include <tap/motor/dji_motor.hpp>
+#include "modm/math/matrix.hpp"
+#include "tap/control/chassis/chassis_subsystem_interface.hpp"
+#include "tap/control/chassis/power_limiter.hpp"
+#include "tap/motor/dji_motor.hpp"
+#include "tap/motor/m3508_constants.hpp"
+#include "utils/common_types.hpp"
 
 namespace Chassis {
 
-class ChassisSubsystem : public tap::control::Subsystem {
-    using DJIMotor = tap::motor::DjiMotor;
-    using DJIMotorID = tap::motor::MotorId;
-
-    using CanBus = tap::can::CanBus;
-    using PID = tap::algorithms::SmoothPid;
-
+class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
    public:
-    ChassisSubsystem(tap::Drivers* drivers);
-
-    void initialize() override;
-
-    void refresh() override;
-
-    void calculateMecanumTargets(double x, double y, double theta);
-
-    void setPower();
+    void calculateMecanum(float x, float y, float r);  // normal 4wd mecanum robots
+    void calculateSwerve(float x, float y, float r);   // swerve drive robots
+    void calculateRail(float x);                       // sentry rail robots
 
    private:
-    DJIMotor lfMotor, lbMotor, rfMotor, rbMotor;
-    PID lfControl, lbControl, rfControl, rbControl;
-
-    float wheelTargets[4];
-
-    // TODO: Maybe split this up for all motors?
-    static constexpr CanBus CAN_BUS = CanBus::CAN_BUS1;
-
-    static constexpr DJIMotorID LF_MOTOR_ID = DJIMotorID::MOTOR1;
-    static constexpr DJIMotorID LB_MOTOR_ID = DJIMotorID::MOTOR2;
-    static constexpr DJIMotorID RF_MOTOR_ID = DJIMotorID::MOTOR3;
-    static constexpr DJIMotorID RB_MOTOR_ID = DJIMotorID::MOTOR4;
-
-    // FIXME: Set these to their proper values
-    static constexpr float VELOCITY_KP = 0.0f;
-    static constexpr float VELOCITY_KI = 0.0f;
-    static constexpr float VELOCITY_KD = 0.0f;
-
-    // What are these for?
-    static constexpr float Q_DERIVATIVE_KALMAN = 0.0f;
-    static constexpr float R_DERIVATIVE_KALMAN = 0.0f;
-    static constexpr float Q_PROPORTIONAL_KALMAN = 0.0f;
-    static constexpr float R_PROPORTIONAL_KALMAN = 0.0f;
-
-    // What are these for?
-    static constexpr float PID_MAX_CUMULATIVE = 0.0f;
-    static constexpr float PID_MAX_OUTPUT = 0.0f;
+#if defined TARGET_STANDARD
+#include "robots/standard/standard_constants.hpp"
+    modm::Matrix<float, 4, 1> targetWheelRPMs;
+#elif defined TARGET_HERO
+#include "robots/hero/hero_constants.hpp"
+    modm::Matrix<float, 4, 1> targetWheelRPMs;
+#elif defined TARGET_ENGINEER
+#include "robots/engineer/engineer_constants.hpp"
+    modm::Matrix<float, 4, 1> targetWheelRPMs;
+#elif defined TARGET_SENTRY
+#include "robots/sentry/sentry_constants.hpp"
+    modm::Matrix<float, 1, 1> targetWheelRPMs;
+#elif defined TARGET_AERIAL
+#include "robots/aerial/aerial_constants.hpp"
+    // modm::Matrix<float, 1, 1> targetWheelRPMs;
+#elif defined TARGET_SWERVE_STANDARD
+#include "robots/standard/swerve_standard_constants.hpp"
+    modm::Matrix<float, 4, 2> targetWheelRPMs;
+#elif defined TARGET_SWERVE_ENGINEER
+#include "robots/engineer/swerve_engineer_constants.hpp"
+    modm::Matrix<float, 4, 2> targetWheelRPMs;
+#else
+#include "robots/standard/standard_constants.hpp"
+    modm::Matrix<float, 4, 1> targetWheelRPMs;
+#endif
 };
-
 };  // namespace Chassis

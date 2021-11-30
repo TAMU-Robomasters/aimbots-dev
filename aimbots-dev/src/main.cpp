@@ -28,7 +28,6 @@
 #include "modm/architecture/interface/delay.hpp"
 #include "tap/board/board.hpp"
 
-
 /* arch includes ------------------------------------------------------------*/
 #include "tap/architecture/periodic_timer.hpp"
 #include "tap/architecture/profiler.hpp"
