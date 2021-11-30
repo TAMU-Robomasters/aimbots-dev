@@ -3,4 +3,6 @@
 <!-- Start sections that may be removed after forking this repository -->
 <hr/>
 
-# Aimbots Codebase Development
+# Texas Aimbots Embedded Development
+
+<hr/>
