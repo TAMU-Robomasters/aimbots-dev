@@ -79,7 +79,7 @@ elif args["TARGET_ENV"] == "hardware":
 
 # Set the number of threads unless it has already been set to anything but 1
 if GetOption("num_jobs") == 1:
-    SetOption("num_jobs", 8)
+    SetOption("num_jobs", 20)
 
 
 # Define a new SCons environment and set up basic build variables
@@ -98,6 +98,8 @@ print(
 # Ensure that modm is first, since taproot depends on modm
 external_scons_libraries = [modm_path, TAPROOT_PATH]
 env.SConscript(dirs=external_scons_libraries, exports="env")
+
+# env.SetOption('experimental', 'ninja')
 
 # References:
 #   GCC flags: https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
