@@ -1,8 +1,6 @@
 #pragma once
 #include "utils/common_types.hpp"
 
-#ifdef TARGET_HERO
-
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
@@ -60,5 +58,3 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
-
-#endif

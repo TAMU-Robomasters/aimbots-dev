@@ -5,13 +5,7 @@
 #include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
 
-// #include "robots/aerial/aerial_constants.hpp"
-#include "robots/engineer/engineer_constants.hpp"
-#include "robots/engineer/swerve_engineer_constants.hpp"
-#include "robots/hero/hero_constants.hpp"
-#include "robots/sentry/sentry_constants.hpp"
-#include "robots/standard/standard_constants.hpp"
-#include "robots/standard/swerve_standard_constants.hpp"
+#include "utils/robot_constants.hpp"
 
 namespace Chassis {
 
