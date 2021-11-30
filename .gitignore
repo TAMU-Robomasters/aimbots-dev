@@ -1,7 +1,7 @@
 *.pyc
 
-mdev2021/build
-mdev2021/Pipfile.lock
+aimbots-dev/build
+aimbots-dev/Pipfile.lock
 project.xml.log
 
 .vscode/.cortex-debug.peripherals.state.json

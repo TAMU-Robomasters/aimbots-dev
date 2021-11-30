@@ -9,6 +9,6 @@
     ],
     "mounts": [
         // Persist installed extensions across container rebuilds
-        "source=taproot-mdev2021-extensions,target=/root/.vscode-server/extensions,type=volume",
+        "source=taproot-aimbots-dev-extensions,target=/root/.vscode-server/extensions,type=volume",
     ]
 }

@@ -1,9 +1,9 @@
-[![pipeline status](https://gitlab.com/aruw/controls/taproot-mdev2021/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/taproot-mdev2021/-/commits/develop)
+[![pipeline status](https://gitlab.com/aruw/controls/taproot-aimbots-dev/badges/develop/pipeline.svg)](https://gitlab.com/aruw/controls/taproot-aimbots-dev/-/commits/develop)
 
 <!-- Start sections that may be removed after forking this repository -->
 <hr/>
 
-# taproot-mdev2021
+# taproot-aimbots-dev
 
 
 This is a blank project fully configured for use of [Taproot](https://gitlab.com/aruw/controls/taproot).
@@ -12,7 +12,7 @@ out Taproot for more information.
 
 This template includes the following:
 - Code generated from the `taproot` and `modm` repositories. This generated code is located in
-  `/mdev2021/taproot` and includes the hardware abstraction layer provided by
+  `/aimbots-dev/taproot` and includes the hardware abstraction layer provided by
   [modm](modm.io) as well as Taproot library code that sits on top of modm.
 
   See [here](https://gitlab.com/aruw/controls/taproot/-/wikis/Code-Generation-in-User-Projects) for
@@ -45,7 +45,7 @@ is as follows:
 ```bash
 git clone --recursive https://gitlab.com/my-team/my-amazing-project.git
 cd my-amazing-project
-git remote add template https://gitlab.com/aruw/controls/taproot-mdev2021.git
+git remote add template https://gitlab.com/aruw/controls/taproot-aimbots-dev.git
 git pull template develop
 # replace "main" with your main branch name of choice
 git push --set-upstream origin main
@@ -58,15 +58,15 @@ kicked off a Continuous Integration (CI) Pipeline, indicated by the blue "waitin
 ### Configuring your new project
 
 By using this template, your project will start out with a fully-functional Taproot instance and
-build tools. The provided `main.cpp` (`/mdev2021/src/main.cpp`) includes initialization of
+build tools. The provided `main.cpp` (`/aimbots-dev/src/main.cpp`) includes initialization of
 all core systems and drivers. This should allow you to develop control systems starting day one.
 
-_Note: [Issue #3](https://gitlab.com/aruw/controls/taproot-mdev2021/-/issues/3) tracks the
+_Note: [Issue #3](https://gitlab.com/aruw/controls/taproot-aimbots-dev/-/issues/3) tracks the
 desire to automate the below process. Let us know about your experiences there._
 
 To get started, we suggest using Visual Studio Code to perform a find-and-replace across all files,
-swapping your own project name in place of `mdev2021`. Furthermore, rename the directory
-`/mdev2021` accordingly. Feel free to call it the same name as your repo.
+swapping your own project name in place of `aimbots-dev`. Furthermore, rename the directory
+`/aimbots-dev` accordingly. Feel free to call it the same name as your repo.
 
 You should also update the license headers in your project. The above find-and-replace should have
 updated the project name references. However, you will also want to update the copyright line of
@@ -88,8 +88,8 @@ To refer to your own team, year and email. Do so in all template source files, *
 >     - python3 ./scripts/check_license_headers.py
 > ```
 
-To start developing software, place your source code in `/mdev2021/src` and your tests in
-`/mdev2021/test`. See the [workflow guide](#workflow-guide) for how to build, test, and
+To start developing software, place your source code in `/aimbots-dev/src` and your tests in
+`/aimbots-dev/test`. See the [workflow guide](#workflow-guide) for how to build, test, and
 deploy your code.
 
 Finally, after you are done with it, we recommend removing the portion of this README between
@@ -99,12 +99,12 @@ Finally, after you are done with it, we recommend removing the portion of this R
 
 By default, this project targets the RoboMaster Development Board Type A. However, Taproot also
 supports the newer Type C board. If you would like to use this board instead (replace
-`mdev2021` with the new name if it has been renamed):
+`aimbots-dev` with the new name if it has been renamed):
 
 1. Commit any work so you don't lose it
-1. Edit `mdev2021/project.xml` according to the included comment
-1. Run `rm -r mdev2021/taproot`
-1. Run `cd mdev2021` and then `lbuild build`
+1. Edit `aimbots-dev/project.xml` according to the included comment
+1. Run `rm -r aimbots-dev/taproot`
+1. Run `cd aimbots-dev` and then `lbuild build`
 1. Commit the result: `git add . && git commit -m "Target RM Dev Board Type C"`
 
 ## Contacting
@@ -113,12 +113,12 @@ If you have any questions please contact us at robomstr@uw.edu.
 
 ## Licensing
 
-taproot-mdev2021 is covered under the GPL-3.0-or-later with the following exceptions:
-- `/taproot/modm` and `/mdev2021/taproot/modm` are licensed under MPL 2.0 by the modm
+taproot-aimbots-dev is covered under the GPL-3.0-or-later with the following exceptions:
+- `/taproot/modm` and `/aimbots-dev/taproot/modm` are licensed under MPL 2.0 by the modm
   project. We _are not_ the license holder for these files. See `/modm/LICENSE` for license
   information.
-- `/mdev2021/taproot/src/taproot/algorithms/MahonyAHRS.h` and
-  `/mdev2021/taproot/src/taproot/algorithms/MahonyAHRS.cpp` are licensed under the GPL by
+- `/aimbots-dev/taproot/src/taproot/algorithms/MahonyAHRS.h` and
+  `/aimbots-dev/taproot/src/taproot/algorithms/MahonyAHRS.cpp` are licensed under the GPL by
   SOH Madgwick. The repo containing this code can be found
   [here](https://github.com/uw-advanced-robotics/MahonyAHRS).
 
@@ -159,7 +159,7 @@ Finally, install `pipenv` and set up the build tools:
 
 ```
 pip3 install pipenv
-cd mdev2021/
+cd aimbots-dev/
 pipenv install
 ```
 
@@ -183,7 +183,7 @@ git submodule update --init --recursive
 Now, `cd` into the project directory, activate the virtualenv, and run some builds:
 
 ```
-cd my-amazing-project/mdev2021
+cd my-amazing-project/aimbots-dev
 pipenv shell
 # Build for hardware
 scons build
@@ -209,8 +209,8 @@ for getting around VSCode. There are many shortcuts that make programming faster
 _If you would like to use the terminal instead, see the section "Building and running via the
 terminal" below._
 
-1. Make sure you have VSCode opened in the folder `taproot-mdev2021` (**not
-   `mdev2021`**)
+1. Make sure you have VSCode opened in the folder `taproot-aimbots-dev` (**not
+   `aimbots-dev`**)
 2. Connect an ST-Link to the RoboMaster Development Board and your computer.
 3. In VSCode, open the Command Palette (<kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>P</kbd>)
 4. Find `Tasks: Run Task`. You should see the options below. Select `Program - Debug` or `Program -
@@ -221,7 +221,7 @@ terminal" below._
 
 ### Debugging with an ST-Link
 
-1. Open the folder `aruw-mdev2021` in VSCode. Hit the debug tab on the left side or type
+1. Open the folder `aruw-aimbots-dev` in VSCode. Hit the debug tab on the left side or type
    <kbd>Ctrl</kbd>+<kbd>shift</kbd>+<kbd>D</kbd>.
 2. Hit the green play arrow on the left top of the screen.
 3. See [this
@@ -241,7 +241,7 @@ how to use the J-Link.
 
 Specify the robot type via the command line when compiling (see
 [below](#building-and-running-via-the-terminal)). For vscode IntelliSense, navigate to
-`/mdev2021/robot-type/robot_type.hpp` and change the macro defined in this file.
+`/aimbots-dev/robot-type/robot_type.hpp` and change the macro defined in this file.
 
 Each robot is signified by a unique macro which can be checked to special-case code:
 
@@ -272,7 +272,7 @@ Taproot that they depend on. The guide for doing so is
 
 ## Building and running via the terminal
 
-The below commands require that your working directory is `/mdev2021` (where the
+The below commands require that your working directory is `/aimbots-dev` (where the
 `SConstruct` and `project.xml` files are).
 
 - `lbuild build`: Re-generates out copy of `taproot` and `modm`.

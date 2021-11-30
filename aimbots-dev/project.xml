@@ -5,7 +5,7 @@
     </repository>
   </repositories>
   <options>
-    <option name="taproot:project_name">mdev2021</option>
+    <option name="taproot:project_name">aimbots-dev</option>
 
     <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option>
     <option name="taproot:docs:source_paths">src</option>

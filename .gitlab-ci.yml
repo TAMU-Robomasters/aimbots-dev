@@ -1,19 +1,19 @@
 # Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
 #
-# This file is part of mdev2021.
+# This file is part of aimbots-dev.
 #
-# mdev2021 is free software: you can redistribute it and/or modify
+# aimbots-dev is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# mdev2021 is distributed in the hope that it will be useful,
+# aimbots-dev is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with mdev2021.  If not, see <https://www.gnu.org/licenses/>.
+# along with aimbots-dev.  If not, see <https://www.gnu.org/licenses/>.
 
 default:
   image: aruw/mcb-2020-gitlab-ci:2021-06-02.1
@@ -21,8 +21,8 @@ default:
 variables:
   ARTIFACT_PATH: isolated-deploy
   GIT_SUBMODULE_STRATEGY: normal
-  DEFAULT_BUILD_ELF_FILE: build/hardware/scons-release/mdev2021.elf
-  DEFAULT_TESTS_BUILD_ELF_FILE: build/tests/scons-fast/mdev2021-tests.elf
+  DEFAULT_BUILD_ELF_FILE: build/hardware/scons-release/aimbots-dev.elf
+  DEFAULT_TESTS_BUILD_ELF_FILE: build/tests/scons-fast/aimbots-dev-tests.elf
   NUM_JOBS: 4
 
 .verification_except: &verification_except
@@ -44,14 +44,14 @@ clang-format:
   stage: Quality
   needs: []
   script:
-    - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r mdev2021/src/ mdev2021/test/
+    - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r aimbots-dev/src/ aimbots-dev/test/
   except: *verification_except
 
 Policy Checks:
   stage: Quality
   needs: []
   script:
-    - python3 ./scripts/check_singleton_drivers.py ./mdev2021/src/ 
+    - python3 ./scripts/check_singleton_drivers.py ./aimbots-dev/src/ 
     - python3 ./scripts/check_license_headers.py
   variables:
     GIT_SUBMODULE_STRATEGY: none
@@ -62,11 +62,11 @@ Policy Checks:
 .hw_build:
   stage: Build
   script:
-    - cd mdev2021
+    - cd aimbots-dev
     - python3 $(which scons) build robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror
     - python3 $(which scons) size robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror > size.txt
     - python3 ../scripts/parse_metrics.py $ROBOT
-    - cp $DEFAULT_BUILD_ELF_FILE ../$ARTIFACT_PATH/mdev2021-$ROBOT.elf
+    - cp $DEFAULT_BUILD_ELF_FILE ../$ARTIFACT_PATH/aimbots-dev-$ROBOT.elf
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$ROBOT-mcb"
     paths:
@@ -78,22 +78,22 @@ Policy Checks:
 .sim_build:
   stage: Build
   script:
-    - cd mdev2021
+    - cd aimbots-dev
     - python3 $(which scons) build-sim profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
 
 .test_build:
   stage: Build
   script:
-    - cd mdev2021
+    - cd aimbots-dev
     - python3 $(which scons) build-tests profile=fast robot=TARGET_$ROBOT -j${NUM_JOBS}
   artifacts:
     paths:
-      - mdev2021/$DEFAULT_TESTS_BUILD_ELF_FILE
+      - aimbots-dev/$DEFAULT_TESTS_BUILD_ELF_FILE
 
 .test_run:
   stage: Test
   script:
-    - cd mdev2021
+    - cd aimbots-dev
     - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
 
 
@@ -126,11 +126,11 @@ Policy Checks:
   variables:
     ROBOT: STANDARD
   script:
-    - cd mdev2021
+    - cd aimbots-dev
     - valgrind --leak-check=full --error-exitcode=1 --show-leak-kinds=all $DEFAULT_TESTS_BUILD_ELF_FILE
     - cd .. && gcovr -g --xml > cobertura.xml
-    - 'sed -i "s=<source>.</source>=<source>./mdev2021</source>=g" cobertura.xml'
-    - 'sed -i "s;filename=\";filename=\"mdev2021/;g" cobertura.xml'
+    - 'sed -i "s=<source>.</source>=<source>./aimbots-dev</source>=g" cobertura.xml'
+    - 'sed -i "s;filename=\";filename=\"aimbots-dev/;g" cobertura.xml'
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-standard-tests"
     reports:

@@ -30,4 +30,4 @@
 
 ## Creating an elf file
 
-To get a `.elf` file, you must build the codebase. Refer to [the main repo](#how-to-build-code-and-program-the-mcb) if you are confused about how to build. If you don't have the build environment set up but need a new build, ask on slack for someone to send you a `.elf` file. If you do have the environment but want to deploy using this technique, once you have a build, find the file in the build directory `build/hardware/<debug/hardware>/mdev2021.elf`. This is the `.elf` file you will want to use while deploying to the MCB.
+To get a `.elf` file, you must build the codebase. Refer to [the main repo](#how-to-build-code-and-program-the-mcb) if you are confused about how to build. If you don't have the build environment set up but need a new build, ask on slack for someone to send you a `.elf` file. If you do have the environment but want to deploy using this technique, once you have a build, find the file in the build directory `build/hardware/<debug/hardware>/aimbots-dev.elf`. This is the `.elf` file you will want to use while deploying to the MCB.
