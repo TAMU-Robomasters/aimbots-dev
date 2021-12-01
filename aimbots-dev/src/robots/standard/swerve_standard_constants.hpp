@@ -1,6 +1,8 @@
 #pragma once
 #include "utils/common_types.hpp"
 
+#define SWERVE
+
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 
@@ -35,15 +37,15 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr MotorID LEFT_BACK_MOTOR_ID = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_MOTOR_ID = MotorID::MOTOR2;
-static constexpr MotorID RIGHT_FRONT_MOTOR_ID = MotorID::MOTOR3;
-static constexpr MotorID RIGHT_BACK_MOTOR_ID = MotorID::MOTOR4;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
-static constexpr MotorID LEFT_BACK_YAW_MOTOR_ID = MotorID::MOTOR5;
-static constexpr MotorID LEFT_FRONT_YAW_MOTOR_ID = MotorID::MOTOR6;
-static constexpr MotorID RIGHT_FRONT_YAW_MOTOR_ID = MotorID::MOTOR7;
-static constexpr MotorID RIGHT_BACK_YAW_MOTOR_ID = MotorID::MOTOR8;
+static constexpr MotorID LEFT_BACK_YAW_ID = MotorID::MOTOR5;
+static constexpr MotorID LEFT_FRONT_YAW_ID = MotorID::MOTOR6;
+static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
+static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,
