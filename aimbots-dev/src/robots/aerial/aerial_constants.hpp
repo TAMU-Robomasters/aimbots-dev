@@ -1,8 +1,10 @@
 #pragma once
 #include "utils/common_types.hpp"
 
-// static constexpr uint8_t DRIVEN_WHEEL_COUNT = 0;
-// static constexpr uint8_t MOTORS_PER_WHEEL = 0;
+#define NO_CHASSIS
+
+static constexpr uint8_t DRIVEN_WHEEL_COUNT = 0;
+static constexpr uint8_t MOTORS_PER_WHEEL = 0;
 
 // /**
 //  * @brief Velocity PID constants

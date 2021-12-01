@@ -8,10 +8,12 @@ set -e
 
 targets="\
     TARGET_STANDARD \
+    TARGET_SWERVE_STANDARD \
     TARGET_ENGINEER \
+    TARGET_SWERVE_ENGINEER \
     TARGET_HERO \
     TARGET_SENTRY \
-    TARGET_DRONE"
+    TARGET_AERIAL"
 
 for target in $targets; do
     echo ===============================================================================
