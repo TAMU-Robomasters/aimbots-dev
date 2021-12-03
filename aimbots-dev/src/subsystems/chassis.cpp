@@ -1,6 +1,17 @@
 #include "subsystems/chassis.hpp"
+#include <functional>
 
 namespace Chassis {
+
+template <typename T>
+void ChassisSubsystem::ForChassisMotors(void (DJIMotor::*func)(T), T param) {
+    for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        (motors[i][0]->*func)(param);
+#ifdef SWERVE
+        (motors[i][1]->*func)(param);
+#endif
+    }
+}
 
 ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers)
@@ -32,16 +43,7 @@ ChassisSubsystem::ChassisSubsystem(
 }
 
 void ChassisSubsystem::initialize() {
-    leftBackWheel.initialize();
-    leftFrontWheel.initialize();
-    rightFrontWheel.initialize();
-    rightBackWheel.initialize();
-#ifdef SWERVE
-    leftBackYaw.initialize();
-    leftFrontYaw.initialize();
-    rightBackYaw.initialize();
-    rightFrontYaw.initialize();
-#endif
+    // ForChassisMotors<int>(&DJIMotor::initialize, 0);
 }
 
 void ChassisSubsystem::refresh() {

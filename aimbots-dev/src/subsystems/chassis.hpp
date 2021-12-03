@@ -20,6 +20,9 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     ChassisSubsystem(  // Default chassis constructor
         tap::Drivers* drivers);
 
+    template <typename T>
+    void ForChassisMotors(void (DJIMotor::*func)(T), T param);
+
     void initialize() override;
     void refresh() override;
 
@@ -41,4 +44,5 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
     // ChassisPowerLimiter powerLimiter;
 };
+
 };  // namespace Chassis
