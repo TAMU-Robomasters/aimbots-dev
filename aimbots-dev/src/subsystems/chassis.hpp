@@ -1,6 +1,5 @@
 #pragma once
 
-#include "modm/math/matrix.hpp"
 #include "tap/control/chassis/chassis_subsystem_interface.hpp"
 #include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
@@ -8,10 +7,21 @@
 
 namespace Chassis {
 
+enum WheelIndex {  // index used to easily navigate wheel matrices
+    RAIL = 0,
+    LB = 0,
+    LF = 1,
+    RF = 2,
+    RB = 3,
+};
+
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
    public:
     ChassisSubsystem(  // Default chassis constructor
         tap::Drivers* drivers);
+
+    void initialize() override;
+    void refresh() override;
 
     void calculateMecanum(float x, float y, float r);  // normal 4wd mecanum robots
     void calculateSwerve(float x, float y, float r);   // swerve drive robots
@@ -25,10 +35,10 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
 #endif
 
-    modm::Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
+    Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
 
-    modm::Matrix<DJIMotor, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> motors;
+    Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> motors;
 
-    ChassisPowerLimiter powerLimiter;
+    // ChassisPowerLimiter powerLimiter;
 };
 };  // namespace Chassis

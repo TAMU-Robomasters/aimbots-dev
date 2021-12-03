@@ -35,7 +35,7 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr MotorID RAIL_MOTOR_ID = MotorID::MOTOR1;
+static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR1;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     R = 0,

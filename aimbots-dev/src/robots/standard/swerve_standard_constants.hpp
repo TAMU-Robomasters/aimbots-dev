@@ -47,13 +47,6 @@ static constexpr MotorID LEFT_FRONT_YAW_ID = MotorID::MOTOR6;
 static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
-enum WheelRPMIndex {  // index used to easily navigate wheel matrices
-    LB = 0,
-    LF = 1,
-    RF = 2,
-    RB = 3,
-};
-
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
  */

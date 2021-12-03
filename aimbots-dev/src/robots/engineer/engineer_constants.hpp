@@ -35,10 +35,10 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr MotorID LEFT_BACK_MOTOR_ID = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_MOTOR_ID = MotorID::MOTOR2;
-static constexpr MotorID RIGHT_FRONT_MOTOR_ID = MotorID::MOTOR3;
-static constexpr MotorID RIGHT_BACK_MOTOR_ID = MotorID::MOTOR4;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,
