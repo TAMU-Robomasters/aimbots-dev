@@ -65,11 +65,7 @@ void CommandMapper::addMap(CommandMapping *mapping)
     {
         if (mapStateEqual(*cmap, *mapping))
         {
-            RAISE_ERROR(
-                drivers,
-                "failed to insert io mapping",
-                tap::errors::CONTROLLER_MAPPER,
-                tap::errors::ControllerMapperErrorType::INVALID_ADD);
+            RAISE_ERROR(drivers, "failed to insert io mapping");
             return;
         }
     }

@@ -65,4 +65,13 @@ int TerminalDeviceStub::readItemsFromWriteBuffer(std::vector<char> &items, std::
     return itemsToRead;
 }
 
+std::string TerminalDeviceStub::readAllItemsFromWriteBufferToString()
+{
+    std::vector<char> output;
+    while (512 == readItemsFromWriteBuffer(output, 512))
+    {
+    }
+    return std::string(output.begin(), output.end());
+}
+
 }  // namespace tap::stub

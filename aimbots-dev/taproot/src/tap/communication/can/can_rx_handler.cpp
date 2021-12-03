@@ -94,11 +94,7 @@ void CanRxHandler::processReceivedCanData(
     }
     else
     {
-        RAISE_ERROR(
-            drivers,
-            "Invalid can id received - not between 0x200 and 0x208",
-            tap::errors::Location::CAN_RX,
-            tap::errors::CanRxErrorType::MOTOR_ID_OUT_OF_BOUNDS);
+        RAISE_ERROR(drivers, "Invalid can id received - not between 0x200 and 0x208");
     }
 }
 
@@ -122,11 +118,7 @@ void CanRxHandler::removeReceiveHandler(
     int id = DJI_MOTOR_NORMALIZED_ID(listener.canIdentifier);
     if (id < 0 || id >= messageHandlerStoreSize)
     {
-        RAISE_ERROR(
-            drivers,
-            "index out of bounds",
-            tap::errors::CAN_RX,
-            tap::errors::CanRxErrorType::INVALID_REMOVE);
+        RAISE_ERROR(drivers, "index out of bounds");
         return;
     }
     messageHandlerStore[id] = nullptr;

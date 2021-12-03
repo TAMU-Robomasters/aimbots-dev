@@ -25,24 +25,16 @@
 
 #include "modm/container/linked_list.hpp"
 
-namespace tap
-{
-namespace errors
+namespace tap::errors
 {
 void ErrorController::addToErrorList(const SystemError& error)
 {
-    if (!validateErrorTypeAndLocation(error))
-    {
-        return;
-    }
     // only add error if it is not already added
     // Note that we are okay with comparing raw char pointers because an error generated
     // in our codebase use char pointers located in literals.
     for (SystemError sysErr : errorList)
     {
-        if (sysErr.getErrorType() == error.getErrorType() &&
-            sysErr.getLocation() == error.getLocation() &&
-            sysErr.getDescription() == error.getDescription() &&
+        if (sysErr.getDescription() == error.getDescription() &&
             sysErr.getFilename() == error.getFilename() &&
             sysErr.getLineNumber() == error.getLineNumber())
         {
@@ -56,40 +48,9 @@ void ErrorController::addToErrorList(const SystemError& error)
     errorList.append(error);
 }
 
-void ErrorController::updateLedDisplay()
-{
-    // there are no errors to display, default display
-    if (errorList.getSize() == 0)
-    {
-        displayBinaryNumberViaLeds(0);
-        return;
-    }
-
-    // change error every ERROR_ROTATE_TIME time increment
-    if (prevLedErrorChangeWait.execute())
-    {
-        prevLedErrorChangeWait.restart(ERROR_ROTATE_TIME);
-        currentDisplayIndex = (currentDisplayIndex + 1) % errorList.getSize();
-
-        displayBinaryNumberViaLeds(
-            static_cast<uint8_t>(errorList.get(currentDisplayIndex).getLocation()));
-    }
-}
-
 void ErrorController::init()
 {
     drivers->terminalSerial.addHeader("error", &drivers->errorController);
-}
-
-void ErrorController::displayBinaryNumberViaLeds(uint8_t binaryRep)
-{
-    // Mask number and determine if it is a 0 or a 1
-    // If it is a 1, the LED corresponding will blink
-    for (error_index_t i = 0; i < NUM_LEDS; i++)
-    {
-        bool display = (binaryRep >> i) & 1;
-        drivers->leds.set(static_cast<tap::gpio::Leds::LedPin>(i), display);
-    }
 }
 
 bool ErrorController::removeSystemErrorAtIndex(error_index_t index)
@@ -100,20 +61,12 @@ bool ErrorController::removeSystemErrorAtIndex(error_index_t index)
     }
     if (index == 0)
     {
-        if (currentDisplayIndex != 0)
-        {
-            currentDisplayIndex--;
-        }
         errorList.removeFront();
         return true;
     }
     else if (index == errorList.getSize() - 1)
     {
         errorList.removeBack();
-        if (currentDisplayIndex == index)
-        {
-            currentDisplayIndex = 0;
-        }
         return true;
     }
     error_index_t size = errorList.getSize();
@@ -125,10 +78,6 @@ bool ErrorController::removeSystemErrorAtIndex(error_index_t index)
         {
             errorList.append(se);
         }
-    }
-    if (currentDisplayIndex > index)
-    {
-        currentDisplayIndex = (currentDisplayIndex - 1) % errorList.getSize();
     }
     return true;
 }
@@ -154,19 +103,19 @@ bool ErrorController::terminalSerialCallback(
     char* arg = strtokR(inputLine, communication::serial::TerminalSerial::DELIMITERS, &inputLine);
     if (arg == nullptr || strcmp(arg, "-H") == 0)
     {
-        help(outputStream);
+        outputStream << USAGE;
         return arg != nullptr;
     }
-    else if (strcmp(arg, "PrintErrors") == 0)
+    else if (strcmp(arg, "printall") == 0)
     {
         outputStream << "printing errors" << modm::endl;
         displayAllErrors(outputStream);
     }
-    else if (strcmp(arg, "RemoveAllTerminalErrors") == 0)
+    else if (strcmp(arg, "removeall") == 0)
     {
         clearAllTerminalErrors(outputStream);
     }
-    else if (strcmp(arg, "RemoveTerminalError") == 0)
+    else if (strcmp(arg, "remove") == 0)
     {
         arg = strtokR(inputLine, communication::serial::TerminalSerial::DELIMITERS, &inputLine);
         if (arg == nullptr)
@@ -191,24 +140,12 @@ bool ErrorController::terminalSerialCallback(
     return true;
 }
 
-void ErrorController::help(modm::IOStream& outputStream)
-{
-    outputStream << "Usage: error <target> [index]\n"
-                    "  Where\"<target>\" is one of:\n"
-                    "    - \"-H\": displays possible commands.\n"
-                    "    - \"PrintErrors\": prints all errors in errorList, displaying their"
-                    "description, lineNumber, fileName, and index.\n"
-                    "    - \"RemoveTerminalError [Index]\": removes the error at the given "
-                    "index. Example: Error RemoveTerminalError 1.\n"
-                    "    - \"RemoveAllTerminalErrors\": removes all errors from the errorList.\n";
-}
-
 void ErrorController::displayAllErrors(modm::IOStream& outputStream)
 {
     int index = 0;
     if (errorList.getSize() == 0)
     {
-        outputStream << "No Errors Found" << modm::endl;
+        outputStream << "No errors found" << modm::endl;
     }
     else
     {
@@ -224,7 +161,7 @@ void ErrorController::displayAllErrors(modm::IOStream& outputStream)
 // Syntax: Error RemoveTerminalError [Index]
 void ErrorController::removeTerminalError(int index, modm::IOStream& outputStream)
 {
-    outputStream << "Removing Terminal Error at index..." << index << modm::endl;
+    outputStream << "Removing terminal error at index..." << index << modm::endl;
     if (!removeSystemErrorAtIndex(index))
     {
         outputStream << "Invalid index" << modm::endl;
@@ -233,21 +170,8 @@ void ErrorController::removeTerminalError(int index, modm::IOStream& outputStrea
 
 void ErrorController::clearAllTerminalErrors(modm::IOStream& outputStream)
 {
-    outputStream << "Clearing all terminal errors..." << modm::endl;
+    outputStream << "Removing all terminal errors..." << modm::endl;
     removeAllSystemErrors();
 }
 
-bool ErrorController::validateErrorTypeAndLocation(const SystemError& error)
-{
-    static constexpr uint8_t locationMask =
-        static_cast<uint8_t>(~(0xffu << SystemError::ERROR_LOCATION_SIZE));
-    static constexpr uint8_t errorTypeMask =
-        static_cast<uint8_t>(~(0xffu << SystemError::ERROR_TYPE_SIZE));
-
-    uint8_t locationMasked = static_cast<uint8_t>(error.getLocation()) & locationMask;
-    uint8_t errorTypeMasked = static_cast<uint8_t>(error.getErrorType()) & errorTypeMask;
-    return locationMasked == error.getLocation() && errorTypeMasked == error.getErrorType();
-}
-}  // namespace errors
-
-}  // namespace tap
+}  // namespace tap::errors

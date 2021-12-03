@@ -21,6 +21,7 @@
 #define TERMINAL_DEVICE_STUB_HPP_
 
 #include <queue>
+#include <string>
 
 #include "modm/io/iodevice.hpp"
 
@@ -59,6 +60,11 @@ public:
      *      the buffer contains less than itemsToRead)
      */
     int readItemsFromWriteBuffer(std::vector<char> &items, std::size_t itemsToRead);
+
+    /**
+     * Reads all items from the write buffer, places them in a string, and returns the string.
+     */
+    std::string readAllItemsFromWriteBufferToString();
 
 private:
     std::deque<char> readBuffer;
