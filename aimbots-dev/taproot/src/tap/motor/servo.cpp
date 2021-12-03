@@ -46,11 +46,7 @@ Servo::Servo(
     {
         minPwm = 0.0f;
         maxPwm = 1.0f;
-        RAISE_ERROR(
-            drivers,
-            "min servo PWM > max servo PWM",
-            errors::Location::SERVO,
-            errors::ServoErrorType::INVALID_ADD);
+        RAISE_ERROR(drivers, "min servo PWM > max servo PWM");
     }
 }
 

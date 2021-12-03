@@ -98,9 +98,7 @@ bool DJISerial::send()
     {
         RAISE_ERROR(
             drivers,
-            "dji serial attempting to send greater than SERIAL_TX_BUFF_SIZE bytes",
-            tap::errors::Location::DJI_SERIAL,
-            tap::errors::DjiSerialErrorType::MESSAGE_LENGTH_OVERFLOW);
+            "dji serial attempting to send greater than SERIAL_TX_BUFF_SIZE bytes");
         return false;
     }
 
@@ -120,9 +118,7 @@ bool DJISerial::send()
         // the message did not completely send
         RAISE_ERROR(
             drivers,
-            "the message did not completely send",
-            tap::errors::Location::DJI_SERIAL,
-            tap::errors::DjiSerialErrorType::INVALID_MESSAGE_LENGTH);
+            "the message did not completely send");
     }
     txMessage.messageTimestamp = arch::clock::getTimeMilliseconds();
     return true;
@@ -178,9 +174,7 @@ void DJISerial::updateSerial()
                     djiSerialRxState = SERIAL_HEADER_SEARCH;
                     RAISE_ERROR(
                         drivers,
-                        "invalid message length received",
-                        tap::errors::Location::DJI_SERIAL,
-                        tap::errors::DjiSerialErrorType::INVALID_MESSAGE_LENGTH);
+                        "invalid message length received");
                     return;
                 }
 
@@ -194,9 +188,7 @@ void DJISerial::updateSerial()
                         djiSerialRxState = SERIAL_HEADER_SEARCH;
                         RAISE_ERROR(
                             drivers,
-                            "CRC8 failure",
-                            tap::errors::Location::DJI_SERIAL,
-                            tap::errors::DjiSerialErrorType::CRC_FAILURE);
+                            "CRC8 failure");
                         return;
                     }
                 }
@@ -241,9 +233,7 @@ void DJISerial::updateSerial()
                         djiSerialRxState = SERIAL_HEADER_SEARCH;
                         RAISE_ERROR(
                             drivers,
-                            "CRC16 failure",
-                            tap::errors::Location::DJI_SERIAL,
-                            tap::errors::DjiSerialErrorType::CRC_FAILURE);
+                            "CRC16 failure");
                         return;
                     }
                 }
@@ -264,9 +254,7 @@ void DJISerial::updateSerial()
                 frameCurrReadByte = 0;
                 RAISE_ERROR(
                     drivers,
-                    "Invalid message length",
-                    tap::errors::Location::DJI_SERIAL,
-                    tap::errors::DjiSerialErrorType::INVALID_MESSAGE_LENGTH);
+                    "Invalid message length");
                 djiSerialRxState = SERIAL_HEADER_SEARCH;
             }
             break;

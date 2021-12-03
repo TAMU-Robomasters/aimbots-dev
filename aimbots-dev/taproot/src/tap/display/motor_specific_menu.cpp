@@ -46,11 +46,7 @@ void MotorSpecificMenu::draw()
 {
     if (associatedMotor == nullptr)
     {
-        RAISE_ERROR(
-            drivers,
-            "MotorSpecificMenu has nullptr associated motor",
-            errors::OLED_DISPLAY,
-            errors::OLEDErrors::NULLPTR_DJI_MOTOR_IN_MOTOR_SPECIFIC_MENU);
+        RAISE_ERROR(drivers, "MotorSpecificMenu has nullptr associated motor");
         return;
     }
 

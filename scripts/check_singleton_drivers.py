@@ -14,7 +14,9 @@ project_path = sys.argv[1]
 string_to_check = 'DoNotUse_getDrivers'
 
 files_to_whitelist = [
-    'main.cpp'
+    'main.cpp',
+    'drivers_singleton.cpp',
+    'drivers_singleton.hpp',
 ]
 
 # Add on the project_path to all files in files_to_whitelist

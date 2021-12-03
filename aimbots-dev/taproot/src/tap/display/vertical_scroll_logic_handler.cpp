@@ -41,11 +41,7 @@ VerticalScrollLogicHandler::VerticalScrollLogicHandler(
     // here.
     if (maxEntries <= 0)
     {
-        RAISE_ERROR(
-            drivers,
-            "maxEntries < 0",
-            errors::Location::OLED_DISPLAY,
-            errors::OLEDErrors::INVALID_VERT_SCROLL_MAX_ENTRIES);
+        RAISE_ERROR(drivers, "maxEntries < 0");
     }
 }
 
@@ -53,11 +49,7 @@ void VerticalScrollLogicHandler::onShortButtonPress(modm::MenuButtons::Button bu
 {
     if (size < 0)
     {
-        RAISE_ERROR(
-            drivers,
-            "size < 0",
-            errors::Location::OLED_DISPLAY,
-            errors::OLEDErrors::INVALID_VERT_SCROLL_SIZE);
+        RAISE_ERROR(drivers, "size < 0");
         return;
     }
     else if (size == 0 || maxEntries == 0)

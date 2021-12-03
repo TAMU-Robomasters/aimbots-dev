@@ -20,62 +20,18 @@
 #ifndef SYSTEM_ERROR_HPP_
 #define SYSTEM_ERROR_HPP_
 
-namespace tap
+namespace tap::errors
 {
-namespace errors
-{
-/// Location of errors; subject to change
-enum Location
-{
-    CAN_RX = 0,
-    MOTOR_CONTROL,
-    MPU6500,
-    DJI_SERIAL,
-    COMMAND_SCHEDULER,
-    SUBSYSTEM,
-    CONTROLLER_MAPPER,
-    TURRET,
-    SERVO,
-    OLED_DISPLAY,
-    LOCATION_AMOUNT,
-    DJI_MOTOR_TX_HANDLER,
-};
-
 class SystemError
 {
 public:
-    static const uint8_t ERROR_LOCATION_SIZE = 5;
+    constexpr SystemError() : lineNumber(0), description("default"), filename("none") {}
 
-    static const uint8_t ERROR_TYPE_SIZE = 3;
-
-    constexpr SystemError()
-        : lineNumber(0),
-          description("default"),
-          filename("none"),
-          location(LOCATION_AMOUNT),
-          errorType(ERROR_TYPE_AMOUNT)
-    {
-        static_assert(
-            LOCATION_AMOUNT <= ERROR_LOCATION_SIZE * ERROR_LOCATION_SIZE,
-            "You have declared too many locations!");
-        static_assert(
-            ERROR_TYPE_AMOUNT <= ERROR_TYPE_SIZE * ERROR_TYPE_SIZE,
-            "You have declared too many error types!");
-    }
-
-    constexpr SystemError(const char *desc, int line, const char *file, Location l, uint8_t et)
+    constexpr SystemError(const char *desc, int line, const char *file)
         : lineNumber(line),
           description(desc),
-          filename(file),
-          location(l),
-          errorType(et)
+          filename(file)
     {
-        static_assert(
-            LOCATION_AMOUNT <= ERROR_LOCATION_SIZE * ERROR_LOCATION_SIZE,
-            "You have declared too many locations!");
-        static_assert(
-            ERROR_TYPE_AMOUNT <= ERROR_TYPE_SIZE * ERROR_TYPE_SIZE,
-            "You have declared too many error types!");
     }
 
     constexpr int getLineNumber() const { return lineNumber; }
@@ -84,24 +40,13 @@ public:
 
     const char *getFilename() const { return filename; }
 
-    constexpr Location getLocation() const { return location; }
-
-    constexpr uint8_t getErrorType() const { return errorType; }
-
 private:
     int lineNumber;
 
     const char *description;
 
     const char *filename;
-
-    static const uint8_t ERROR_TYPE_AMOUNT = 8;
-
-    Location location;
-
-    uint8_t errorType;
 };  // class SystemError
-}  // namespace errors
-}  // namespace tap
+}  // namespace tap::errors
 
 #endif  // SYSTEM_ERROR_HPP_

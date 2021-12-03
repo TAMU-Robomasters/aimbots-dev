@@ -95,11 +95,7 @@ void DjiMotorTxHandler::processCanSendData()
     }
     if (messageFailure)
     {
-        RAISE_ERROR(
-            drivers,
-            "sendMessage failure",
-            errors::Location::DJI_MOTOR_TX_HANDLER,
-            errors::DjiMotorTxHandlerErrorType::SEND_MESSAGE_FAILURE);
+        RAISE_ERROR(drivers, "sendMessage failure");
     }
 }
 
@@ -143,11 +139,7 @@ void DjiMotorTxHandler::removeFromMotorManager(const DjiMotor& motor, DjiMotor**
     if (motorStore[id] == nullptr)
     {
         // error, trying to remove something that doesn't exist!
-        RAISE_ERROR(
-            drivers,
-            "trying to remove something that doesn't exist",
-            tap::errors::Location::MOTOR_CONTROL,
-            tap::errors::MotorControlErrorType::NULL_MOTOR_ID);
+        RAISE_ERROR(drivers, "trying to remove something that doesn't exist");
         return;
     }
     motorStore[id] = nullptr;

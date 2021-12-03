@@ -21,81 +21,8 @@
 
 #include "system_error.hpp"
 
-namespace tap
+namespace tap::errors
 {
-namespace errors
-{
-enum class OLEDErrors : uint8_t
-{
-    INVALID_VERT_SCROLL_SIZE = 0,
-    INVAILD_VERT_SCROLL_SMALLEST_AND_LARGEST_INDEX = 1,
-    INVALID_VERT_SCROLL_MAX_ENTRIES = 2,
-    NULLPTR_DJI_MOTOR_IN_MOTOR_SPECIFIC_MENU = 3,
-};
-
-enum class CanRxErrorType : uint8_t
-{
-    MOTOR_ID_OUT_OF_BOUNDS = 0,
-    INVALID_REMOVE
-};
-
-enum class MotorControlErrorType : uint8_t
-{
-    NULL_MOTOR_ID = 0
-};
-
-enum class Mpu6500ErrorType : uint8_t
-{
-    IMU_DATA_NOT_INITIALIZED = 0,
-    IMU_NOT_RECEIVING_PROPERLY
-};
-
-enum class DjiSerialErrorType : uint8_t
-{
-    MESSAGE_LENGTH_OVERFLOW = 0,
-    INVALID_MESSAGE_LENGTH,
-    CRC_FAILURE
-};
-
-enum class CommandSchedulerErrorType : uint8_t
-{
-    ADDING_NULLPTR_COMMAND = 0,
-    ADDING_NULLPTR_SUBSYSTEM,
-    ADDING_ALREADY_ADDED_SUBSYSTEM,
-    MASTER_SCHEDULER_ALREADY_EXISTS,
-    ADD_COMMAND_WHILE_TESTING,
-    ADD_COMMAND_WITHOUT_REGISTERED_SUB,
-    RUN_TIME_OVERFLOW,
-    REMOVE_NULLPTR_COMMAND
-};
-
-enum class SubsystemErrorType : uint8_t
-{
-    MOTOR_OFFLINE = 0,
-    ZERO_DESIRED_AGITATOR_ROTATE_TIME
-};
-
-enum class ControllerMapperErrorType : uint8_t
-{
-    INVALID_ADD = 0
-};
-
-enum class TurretErrorType : uint8_t
-{
-    MOTOR_OFFLINE = 0,
-    INVALID_MOTOR_OUTPUT
-};
-
-enum class ServoErrorType : uint8_t
-{
-    INVALID_ADD = 0
-};
-
-enum class DjiMotorTxHandlerErrorType : uint8_t
-{
-    SEND_MESSAGE_FAILURE = 0
-};
-
 /**
  * Example for how to create and add an error. `drivers` is a pointer to an
  * `tap::Drivers`, which contains an instance of an `ErrorController`.
@@ -104,27 +31,16 @@ enum class DjiMotorTxHandlerErrorType : uint8_t
  * @see SystemError
  *
  * ```cpp
- * RAISE_ERROR(
- *     drivers
- *     "Error in DJI Serial",
- *     tap::errors::Location::DJI_SERIAL,
- *     tap::errors::ErrorType::INVALID_CRC);
+ * RAISE_ERROR(drivers, "CRC8 failure");
  * ```
  */
-#define RAISE_ERROR(drivers, desc, l, et)                     \
-    do                                                        \
-    {                                                         \
-        tap::errors::SystemError stringError(                 \
-            desc,                                             \
-            __LINE__,                                         \
-            __FILE__,                                         \
-            l,                                                \
-            static_cast<uint8_t>(et));                        \
-        drivers->errorController.addToErrorList(stringError); \
+#define RAISE_ERROR(drivers, desc)                                      \
+    do                                                                  \
+    {                                                                   \
+        tap::errors::SystemError stringError(desc, __LINE__, __FILE__); \
+        drivers->errorController.addToErrorList(stringError);           \
     } while (0);
 
-}  // namespace errors
-
-}  // namespace tap
+}  // namespace tap::errors
 
 #endif  // CREATE_ERRORS_HPP_

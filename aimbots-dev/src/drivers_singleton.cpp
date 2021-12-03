@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
- * This file is part of Taproot.
+ * This file is part of aimbots-dev.
  *
- * Taproot is free software: you can redistribute it and/or modify
+ * aimbots-dev is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Taproot is distributed in the hope that it will be useful,
+ * aimbots-dev is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
+ * along with aimbots-dev.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef ENV_UNIT_TESTS
 
 #include "drivers_singleton.hpp"
 
-namespace tap
+namespace src
 {
 /**
  * Class that allows one to construct a Drivers instance because of frienship
@@ -30,12 +30,12 @@ namespace tap
 class DriversSingleton
 {
 public:
-    static Drivers drivers;
+    static src::Drivers drivers;
 };  // class DriversSingleton
 
-Drivers DriversSingleton::drivers;
+src::Drivers DriversSingleton::drivers;
 
-Drivers *DoNotUse_getDrivers() { return &DriversSingleton::drivers; }
-}  // namespace tap
+src::Drivers *DoNotUse_getDrivers() { return &DriversSingleton::drivers; }
+}  // namespace src
 
 #endif

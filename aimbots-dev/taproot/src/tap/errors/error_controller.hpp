@@ -31,20 +31,15 @@
 namespace tap
 {
 class Drivers;
-namespace errors
+}
+
+namespace tap::errors
 {
 /**
- * The ErrorController stores the errors that are currently active and displays errors
- * via the MCB's LEDs.
+ * The ErrorController stores the errors that are currently active and allows
+ * the user to query errors via the terminal serial interface.
  *
  * Use the `RAISE_ERROR` macro to add errors to the main ErrorController.
- *
- * LED blink Protocol description:
- * - The 8 LEDs on the MCB are used to indicate the location of an error. LED A is the LSB
- *   and LED H is the MSB.
- * - The other green LED (next to the red LED) comes on when you have added an error that
- *   is invalid. The red LED is not used by the ErrorController.
- * - By default, LEDs A-H are always off if no errors are detected.
  */
 class ErrorController : public tap::communication::serial::ITerminalSerialCallback
 {
@@ -52,16 +47,7 @@ public:
     static constexpr std::size_t ERROR_LIST_MAX_SIZE = 16;
     using error_index_t = modm::BoundedDeque<SystemError, ERROR_LIST_MAX_SIZE>::Index;
 
-    /**
-     * Constrcuts an ErrorController with a display time for each error specified
-     * by `ERROR_ROTATE_TIME`.
-     */
-    ErrorController(Drivers* drivers)
-        : drivers(drivers),
-          prevLedErrorChangeWait(ERROR_ROTATE_TIME),
-          currentDisplayIndex(0)
-    {
-    }
+    ErrorController(Drivers* drivers) : drivers(drivers) {}
     DISALLOW_COPY_AND_ASSIGN(ErrorController)
     mockable ~ErrorController() = default;
 
@@ -73,36 +59,27 @@ public:
      */
     mockable void addToErrorList(const SystemError& error);
 
-    /**
-     * Updates the errors displayed via the LEDs. Cycles through the `SystemErrors` in the
-     * queue of errors, switching to a new error every `ERROR_ROTATE_TIME`.
-     */
-    mockable void updateLedDisplay();
-
     void init();
 
-    /**
-     * @param[in] inputLine The user input to be processed.
-     * @param[out] outputStream The stream to write information to.
-     * @return `true` if the inputLine was valid and was parsed correctly, `false` otherwise.
-     */
     bool terminalSerialCallback(char* inputLine, modm::IOStream& outputStream, bool) override;
 
     void terminalSerialStreamCallback(modm::IOStream&) override {}
 
 private:
-    friend class ErrorControllerTester;
+    static constexpr char USAGE[] =
+        "Usage: error <target>\n"
+        "  Where <target> is one of:\n"
+        "    - [-H]: displays possible commands.\n"
+        "    - [printall]: prints all errors in errorList, displaying their"
+        "description, lineNumber, fileName, and index.\n"
+        "    - [remove [index]]: removes the error at the given index. Example: error remove 1.\n"
+        "    - [removeall]: removes all errors from the errorList.\n";
 
-    static constexpr int ERROR_ROTATE_TIME = 5000;
-    static constexpr error_index_t NUM_LEDS = 8;
+    friend class ErrorControllerTester;
 
     Drivers* drivers;
 
     modm::BoundedDeque<SystemError, ERROR_LIST_MAX_SIZE> errorList;
-
-    tap::arch::MilliTimeout prevLedErrorChangeWait;
-
-    error_index_t currentDisplayIndex;
 
     bool removeSystemErrorAtIndex(error_index_t index);
 
@@ -113,17 +90,7 @@ private:
     void removeTerminalError(int index, modm::IOStream& outputStream);
 
     void clearAllTerminalErrors(modm::IOStream& outputStream);
-
-    void help(modm::IOStream& outputStream);
-
-    /**
-     * Displays the `binaryRep` with the LEDs A-H, with LED A as the LSB and LED H as the MSB.
-     */
-    void displayBinaryNumberViaLeds(uint8_t binaryRep);
-
-    bool validateErrorTypeAndLocation(const SystemError& error);
 };  // class ErrorController
-}  // namespace errors
-}  // namespace tap
+}  // namespace tap::errors
 
 #endif  // ERROR_CONTROLLER_HPP_
