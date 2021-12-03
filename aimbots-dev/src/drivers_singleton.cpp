@@ -17,25 +17,25 @@
  * along with aimbots-dev.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DRIVERS_HPP_
-#define DRIVERS_HPP_
+#ifndef ENV_UNIT_TESTS
 
-#include "tap/drivers.hpp"
+#include "drivers_singleton.hpp"
 
 namespace src
 {
-class Drivers : public tap::Drivers
+/**
+ * Class that allows one to construct a Drivers instance because of frienship
+ * with the Drivers class.
+ */
+class DriversSingleton
 {
-    friend class DriversSingleton;
-
-#ifdef ENV_UNIT_TESTS
 public:
-#endif
-    Drivers() : tap::Drivers() {}
+    static src::Drivers drivers;
+};  // class DriversSingleton
 
-public:
-};  // class Drivers
+src::Drivers DriversSingleton::drivers;
 
+src::Drivers *DoNotUse_getDrivers() { return &DriversSingleton::drivers; }
 }  // namespace src
 
-#endif  // DRIVERS_HPP_
+#endif
