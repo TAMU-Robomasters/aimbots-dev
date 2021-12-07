@@ -2,7 +2,12 @@
     "configurations": [
         {
             "name": "Test",
-            "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "defines": [
+                "${default}",
+                "ENV_UNIT_TESTS",
+                "PLATFORM_HOSTED",
+                "RUN_WITH_PROFILING"
+            ],
             "includePath": [
                 "${default}",
                 "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src",
@@ -10,17 +15,25 @@
                 "aimbots-dev/test"
             ],
             "intelliSenseMode": "gcc-x64",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
         },
         {
             "name": "Sim",
-            "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "defines": [
+                "${default}",
+                "PLATFORM_HOSTED",
+                "RUN_WITH_PROFILING"
+            ],
             "includePath": [
                 "${default}",
                 "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src"
             ],
             "intelliSenseMode": "gcc-x64",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
         },
         {
             "name": "Hardware",
@@ -29,10 +42,14 @@
                 "aimbots-dev/taproot/modm/src",
                 "aimbots-dev/taproot/modm/ext/cmsis/core",
                 "aimbots-dev/taproot/modm/ext/cmsis/device",
-                "aimbots-dev/taproot/modm/ext/cmsis/dsp"        
+                "aimbots-dev/taproot/modm/ext/cmsis/dsp",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk/usr/include/c++/v1",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers"
             ],
             "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4
