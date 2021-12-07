@@ -21,4 +21,5 @@ using DJIMotor = tap::motor::DjiMotor;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
-typedef void (DJIMotor::*DJIMotorFunc)();
+template <class... Types>
+using DJIMotorFunc = void (DJIMotor::*)(Types...);

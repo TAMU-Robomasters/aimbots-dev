@@ -20,8 +20,8 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     ChassisSubsystem(  // Default chassis constructor
         tap::Drivers* drivers);
 
-    template <typename T>
-    void ForChassisMotors(void (DJIMotor::*func)(T), T param);
+    template <class... Types>
+    void ForChassisMotors(DJIMotorFunc<Types...>, Types... args);
 
     void initialize() override;
     void refresh() override;
