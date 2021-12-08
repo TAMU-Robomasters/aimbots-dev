@@ -4,15 +4,15 @@
 
 namespace Chassis {
 
-template <class... Types>
-void ChassisSubsystem::ForChassisMotors(DJIMotorFunc<Types...>, Types... args) {
-    for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-        (motors[i][0]->*DJIMotorFunc<Types...>)(args...);
-#ifdef SWERVE
-        (motors[i][1]->*DJIMotorFunc<Types...>)(args...);
-#endif
-    }
-}
+// template <class... Types>
+// void ChassisSubsystem::ForChassisMotors(DJIMotorFunc<Types...>, Types... args) {
+//     for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+//         (motors[i][0]->*DJIMotorFunc<Types...>)(args...);
+// #ifdef SWERVE
+//         (motors[i][1]->*DJIMotorFunc<Types...>)(args...);
+// #endif
+//     }
+// }
 
 ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers)
@@ -44,8 +44,8 @@ ChassisSubsystem::ChassisSubsystem(
 }
 
 void ChassisSubsystem::initialize() {
-    ForChassisMotors(&DJIMotor::initialize);
-    ForChassisMotors<int32_t>(&DJIMotor::setDesiredOutput, 0);
+    // ForChassisMotors(&DJIMotor::initialize);
+    // ForChassisMotors<int32_t>(&DJIMotor::setDesiredOutput, 0);
 }
 
 void ChassisSubsystem::refresh() {
