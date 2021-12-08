@@ -30,6 +30,8 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     void calculateSwerve(float x, float y, float r);   // swerve drive robots
     void calculateRail(float x);                       // sentry rail robots
 
+    inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
+
    private:
     static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
 
@@ -43,6 +45,12 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> motors;
 
     // ChassisPowerLimiter powerLimiter;
+
+   public:
+    inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }
+    inline int16_t getLeftBackRpmActual() const override { return leftBackWheel.getShaftRPM(); }
+    inline int16_t getRightFrontRpmActual() const override { return rightFrontWheel.getShaftRPM(); }
+    inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
 };
 
 };  // namespace Chassis
