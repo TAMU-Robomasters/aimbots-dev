@@ -32,7 +32,11 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
     inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
 
+#ifndef ENV_UNIT_TESTS
    private:
+#else
+   public:
+#endif
     static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
 
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;

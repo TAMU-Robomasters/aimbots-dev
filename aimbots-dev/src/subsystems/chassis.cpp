@@ -44,8 +44,7 @@ ChassisSubsystem::ChassisSubsystem(
 }
 
 void ChassisSubsystem::initialize() {
-    // ForChassisMotors(&DJIMotor::initialize);
-    // ForChassisMotors<int32_t>(&DJIMotor::setDesiredOutput, 0);
+    ForChassisMotors(&DJIMotor::initialize);
 }
 
 void ChassisSubsystem::refresh() {
