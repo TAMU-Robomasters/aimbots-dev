@@ -17,8 +17,8 @@
  * along with aimbots-dev.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
+// #include <gtest/gtest.h>
 
-#include "my_first_file.hpp"
+// #include "my_first_file.hpp"
 
-TEST(hello, world) { EXPECT_EQ(3, sum(1, 2)); }
+// TEST(hello, world) { EXPECT_EQ(3, sum(1, 2)); }
