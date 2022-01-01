@@ -2,7 +2,7 @@
 #include "utils/common_types.hpp"
 
 namespace SwerveDrive{
-    linAlgMatrix<4,2> caluclateSwerve(float x, float y, float theta);
+    TapMatrix<4,2> caluclateSwerve(float x, float y, float theta);
     
 
 } // namespace SwerveDrive

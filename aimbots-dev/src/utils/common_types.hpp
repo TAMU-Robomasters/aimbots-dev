@@ -24,4 +24,4 @@ template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <uint8_t ROWS, uint8_t COLUMNS>
-using linAlgMatrix = tap::algorithms::CMSISMat<ROWS, COLUMNS>;
+using TapMatrix = tap::algorithms::CMSISMat<ROWS, COLUMNS>;

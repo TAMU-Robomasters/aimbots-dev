@@ -6,8 +6,8 @@
 
 namespace SwerveDrive
 {
-    linAlgMatrix<4,2> caluclateSwerve(float dx, float dy, float dtheta){
-        linAlgMatrix<4,2> power;
+    TapMatrix<4,2> caluclateSwerve(float dx, float dy, float dtheta){
+        TapMatrix<4,2> power;
 
             const float c[3 * 1] = {
         dx,
@@ -15,7 +15,7 @@ namespace SwerveDrive
         dtheta
     
         };
-        linAlgMatrix <3,1> cx;
+        TapMatrix <3,1> cx;
         cx.copyData(c);
 
         float l =30.0f, w = 30.0f;
@@ -34,7 +34,7 @@ namespace SwerveDrive
         //https://www.chiefdelphi.com/t/swerve-drive-direct-and-reverse-kinematics/395803/3
         //what the math is based upon ^^^
 
-        linAlgMatrix <8,3> g;
+        TapMatrix <8,3> g;
         // float theta = 0
         g.copyData(test);
 
@@ -44,11 +44,11 @@ namespace SwerveDrive
         //     0,          0,          1
         // };
 
-        // linAlgMatrix <3,3> R(r);
+        // TapMatrix <3,3> R(r);
 
-        linAlgMatrix<8,1> velocity = g * cx;
+        TapMatrix<8,1> velocity = g * cx;
 
-        linAlgMatrix<4,2> velocityOrganized;
+        TapMatrix<4,2> velocityOrganized;
         for (size_t i = 0; i < 8; i+=2)
         {
             velocityOrganized.data[i] = velocity.data[i];
@@ -56,7 +56,7 @@ namespace SwerveDrive
 
         }
         
-        linAlgMatrix<4,2> power_heading;
+        TapMatrix<4,2> power_heading;
         for (size_t i = 0; i < 8; i+=2)
         {
             power_heading.data[i] = sqrt(velocity.data[i] * velocity.data[i] + velocity.data[i+1] * velocity.data[i+1]);
