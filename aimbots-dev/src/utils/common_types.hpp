@@ -5,6 +5,8 @@
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/motor/dji_motor.hpp>
 
+
+#include "tap/algorithms/matrix_utils.hpp"
 #include "modm/math/matrix.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 
@@ -20,3 +22,6 @@ using DJIMotor = tap::motor::DjiMotor;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
+
+template <uint8_t ROWS, uint8_t COLUMNS>
+using linAlgMatrix = tap::algorithms::CMSISMat<ROWS, COLUMNS>;

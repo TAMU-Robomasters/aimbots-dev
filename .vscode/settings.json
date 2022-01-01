@@ -71,7 +71,8 @@
         "SConstruct": "python",
         "SConscript": "python",
         "__locale": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "matrix_text": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
