@@ -22,6 +22,8 @@
 
 #include "tap/drivers.hpp"
 
+#include <utils/jetson_communicator.hpp>
+
 namespace src
 {
 class Drivers : public tap::Drivers
@@ -31,9 +33,12 @@ class Drivers : public tap::Drivers
 #ifdef ENV_UNIT_TESTS
 public:
 #endif
-    Drivers() : tap::Drivers() {}
+    Drivers()
+        : tap::Drivers(),
+          jetsonCommunicator(this) {}
 
 public:
+    JetsonCommunicator jetsonCommunicator;
 };  // class Drivers
 
 }  // namespace src

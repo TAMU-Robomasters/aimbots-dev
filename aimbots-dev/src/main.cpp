@@ -103,6 +103,8 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
+
+    drivers->jetsonCommunicator.initialize();
 }
 
 static void updateIo(src::Drivers *drivers) {
@@ -114,4 +116,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->mpu6500.read();
+
+    drivers->jetsonCommunicator.updateSerial();
 }
