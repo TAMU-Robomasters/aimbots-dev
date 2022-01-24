@@ -5,7 +5,7 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
-namespace Chassis {
+namespace src::Chassis {
 
 enum WheelIndex {  // index used to easily navigate wheel matrices
     RAIL = 0,
@@ -23,7 +23,7 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     template <class... Args>
     void ForChassisMotors(void (DJIMotor::*func)(Args...), Args... args);
 
-    void initialize() override;
+    mockable void initialize() override;
     void refresh() override;
 
     void calculateMecanum(float x, float y, float r);  // normal 4wd mecanum robots
@@ -57,4 +57,4 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
 };
 
-};  // namespace Chassis
+};  // namespace src::Chassis

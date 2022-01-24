@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace Chassis {
+namespace src::Chassis {
 
 template <class... Args>
 void ChassisSubsystem::ForChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
@@ -57,4 +57,4 @@ void ChassisSubsystem::calculateSwerve(float, float, float) {}
 
 void ChassisSubsystem::calculateRail(float) {}
 
-};  // namespace Chassis
+};  // namespace src::Chassis

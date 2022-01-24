@@ -1,12 +1,19 @@
 #include <gtest/gtest.h>
-#include "subsystems/chassis.hpp"
+
 #include "drivers.hpp"
+#include "subsystems/chassis.hpp"
+
+using ::testing::NiceMock;
 
 TEST(ChassisSubsystemTest, for_chassis_motors_initialize) {
     src::Drivers d;
-    Chassis::ChassisSubsystem c(&d);
+    src::Chassis::ChassisSubsystem c(&d);
 
-    // EXPECT_CALL(c.leftBackWheel, initialize());
+    // ON_CALL(c.leftBackWheel, getEncoderUnwrapped);
+    EXPECT_CALL(c.leftBackWheel, initialize);
+    EXPECT_CALL(c.leftFrontWheel, initialize);
+    EXPECT_CALL(c.rightFrontWheel, initialize);
+    EXPECT_CALL(c.rightBackWheel, initialize);
 
     c.initialize();
 }
