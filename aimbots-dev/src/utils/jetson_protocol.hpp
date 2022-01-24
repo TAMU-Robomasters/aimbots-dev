@@ -2,8 +2,8 @@
 #include <cstdint>
 
 enum CVState : uint8_t {
-    PATROL = 0,
-    FIRE   = 1,
+    CV_STATE_PATROL = 0,
+    CV_STATE_FIRE   = 1,
 };
 
 // We need to get rid of any struct padding, so we tell the compiler not to pad
