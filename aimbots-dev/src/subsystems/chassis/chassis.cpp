@@ -1,4 +1,4 @@
-#include "subsystems/chassis.hpp"
+#include "subsystems/chassis/chassis.hpp"
 
 #include <functional>
 
@@ -17,6 +17,9 @@ void ChassisSubsystem::ForChassisMotors(void (DJIMotor::*func)(Args...), Args...
 ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers)
     : ChassisSubsystemInterface(drivers),
+#ifdef TARGET_SENTRY
+      railWheel(drivers, RAIL_WHEEL_ID, CHAS_BUS, false, "Rail Motor"),
+#else
       leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHAS_BUS, false, "Left Back Wheel Motor"),
       leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
       rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHAS_BUS, false, "Right Front Wheel Motor"),
@@ -27,10 +30,15 @@ ChassisSubsystem::ChassisSubsystem(
       rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHAS_BUS, false, "Right Front Yaw Motor"),
       rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHAS_BUS, false, "Right Back Yaw Motor"),
 #endif
+#endif
+
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix())
 //
 {
+#ifdef TARGET_SENTRY
+    motors[RAIL][0] = &railWheel;
+#else
     motors[LB][0] = &leftBackWheel;
     motors[LF][0] = &leftFrontWheel;
     motors[RF][0] = &rightFrontWheel;
@@ -40,6 +48,7 @@ ChassisSubsystem::ChassisSubsystem(
     motors[LF][1] = &leftFrontYaw;
     motors[RF][1] = &rightFrontYaw;
     motors[RB][1] = &rightBackYaw;
+#endif
 #endif
 }
 
