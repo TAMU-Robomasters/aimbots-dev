@@ -8,11 +8,13 @@
 namespace src::Chassis {
 
 enum WheelIndex {  // index used to easily navigate wheel matrices
-    RAIL = 0,
-    LB = 0,
-    LF = 1,
-    RF = 2,
-    RB = 3,
+    RAIL = 0,      //	 ___     ___ 	          __
+    LB = 0,        //	| 1 |___| 2 |	    | ___ __|
+    LF = 1,        //	|___| | |___|	    |  | |__
+    RF = 2,        //	      |      	       |
+    RB = 3         //	 ___  |  ___ 	   __  |  __
+                   //	| 0 |_|_| 3 |	  |  |_|_ __|
+                   //	|___|   |___|	  |__|    __|
 };
 
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {

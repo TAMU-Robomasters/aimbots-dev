@@ -3,6 +3,7 @@
 #include <modm/math/filter/pid.hpp>
 #include <tap/algorithms/smooth_pid.hpp>
 #include <tap/communication/can/can_bus.hpp>
+#include <tap/control/command.hpp>
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"
@@ -23,6 +24,8 @@ using CANBus = tap::can::CanBus;
 using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;
+
+using TapCommand = tap::control::Command;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
