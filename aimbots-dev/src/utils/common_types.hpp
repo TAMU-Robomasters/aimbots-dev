@@ -3,8 +3,14 @@
 #include <modm/math/filter/pid.hpp>
 #include <tap/algorithms/smooth_pid.hpp>
 #include <tap/communication/can/can_bus.hpp>
-#include <tap/motor/dji_motor.hpp>
-#include <tap/communication/serial/uart.hpp>
+
+#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+#include "tap/mock/dji_motor_mock.hpp"
+using DJIMotor = tap::mock::DjiMotorMock;
+#else
+#include "tap/motor/dji_motor.hpp"
+using DJIMotor = tap::motor::DjiMotor;
+#endif
 
 #include "modm/math/matrix.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
@@ -18,7 +24,6 @@ using TapUartPort = tap::serial::Uart::UartPort;
 using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;
-using DJIMotor = tap::motor::DjiMotor;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;

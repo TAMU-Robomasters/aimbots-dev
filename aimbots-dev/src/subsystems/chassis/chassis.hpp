@@ -5,7 +5,7 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
-namespace Chassis {
+namespace src::Chassis {
 
 enum WheelIndex {  // index used to easily navigate wheel matrices
     RAIL = 0,
@@ -23,7 +23,7 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     template <class... Args>
     void ForChassisMotors(void (DJIMotor::*func)(Args...), Args... args);
 
-    void initialize() override;
+    mockable void initialize() override;
     void refresh() override;
 
     void calculateMecanum(float x, float y, float r);  // normal 4wd mecanum robots
@@ -39,9 +39,13 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 #endif
     static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
 
+#ifdef TARGET_SENTRY
+    DJIMotor railWheel;
+#else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
+#endif
 #endif
 
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
@@ -51,10 +55,17 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     // ChassisPowerLimiter powerLimiter;
 
    public:
+#ifdef TARGET_SENTRY
+    inline int16_t getLeftFrontRpmActual() const override { return railWheel.getShaftRPM(); }
+    inline int16_t getLeftBackRpmActual() const override { return railWheel.getShaftRPM(); }
+    inline int16_t getRightFrontRpmActual() const override { return railWheel.getShaftRPM(); }
+    inline int16_t getRightBackRpmActual() const override { return railWheel.getShaftRPM(); }
+#else
     inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }
     inline int16_t getLeftBackRpmActual() const override { return leftBackWheel.getShaftRPM(); }
     inline int16_t getRightFrontRpmActual() const override { return rightFrontWheel.getShaftRPM(); }
     inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
+#endif
 };
 
-};  // namespace Chassis
+};  // namespace src::Chassis

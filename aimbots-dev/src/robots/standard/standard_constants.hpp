@@ -17,13 +17,6 @@ static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
-enum WheelRPMIndex {  // index used to easily navigate wheel matrices
-    LB = 0,
-    LF = 1,
-    RF = 2,
-    RB = 3,
-};
-
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
