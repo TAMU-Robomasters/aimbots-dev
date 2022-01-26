@@ -3,14 +3,12 @@ make: *** No rule to make target 'all'.  Stop.
  
 # GNU Make 4.3
 # Built for x86_64-pc-msys
- 
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
- 
 
-# Make data base, printed on Tue Jan 18 15:02:51 2022
+# Make data base, printed on Tue Jan 25 15:41:17 2022
 
 # Variables
 
@@ -20,16 +18,13 @@ FPS_BROWSER_APP_PROFILE_STRING = Internet Explorer
 SYSTEMDRIVE = C:
 # environment
 LC_ALL = C
- 
 # environment
 USERPROFILE = C:\Users\s2sid
 # environment
 LOCALAPPDATA = C:\Users\s2sid\AppData\Local
 # environment
- 
-VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-c2ff0662-7943-4519-ba18-4a26af0fcd3a-sock
+VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-f390bbea-e2f5-44dd-be60-988cae018b47-sock
 # environment
- 
 VSCODE_CWD = C:\WINDOWS\System32
 # environment
 SYSTEMROOT = C:\WINDOWS
@@ -59,15 +54,10 @@ VSCODE_LOG_STACK = false
 %F = $(notdir $%)
 # environment
 VSCODE_CODE_CACHE_PATH = C:\Users\s2sid\AppData\Roaming\Code\CachedData\899d46d82c4c95423fb7e10e68eba52050e30ba3
- 
 # environment
- 
 LANG = C
- 
 # default
- 
 .LOADED := 
- 
 # environment
 TMP = /cygdrive/c/Users/s2sid/AppData/Local/Temp
 # makefile
@@ -196,16 +186,12 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProce
 HOME = /home/s2sid
 # environment
 COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
- 
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
 TEMP = /cygdrive/c/Users/s2sid/AppData/Local/Temp
- 
 # environment
- 
 VSCODE_IPC_HOOK = \\.\pipe\7407b60860d9d5992a9dd25b7b6348d7-1.63.2-main-sock
- 
 # environment
 TERM = xterm-256color
 # default
@@ -219,9 +205,7 @@ ALLUSERSPROFILE = C:\ProgramData
 # environment
 SESSIONNAME = Console
 # default
- 
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
- 
 # environment
 PROCESSOR_REVISION = 4e03
 # environment
@@ -239,9 +223,7 @@ PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 78 Stepping 3, GenuineIntel
 
 # 17 files, no impossibilities in 1 directories.
 
- 
 # Implicit Rules
- 
 
 # No implicit rules.
 
@@ -253,7 +235,6 @@ Makefile:
 #  File does not exist.
 #  File has been updated.
 #  Failed to be updated.
- 
 
 # Not a target:
 .DEFAULT:
@@ -280,7 +261,6 @@ GNUmakefile:
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
- 
 #  Failed to be updated.
 
 # files hash-table stats:
@@ -296,8 +276,7 @@ GNUmakefile:
 
 # strcache performance: lookups = 25 / hit rate = 8%
 # hash-table stats:
- 
 # Load=23/8192=0%, Rehash=0, Collisions=0/25=0%
-# Finished Make data base on Tue Jan 18 15:02:51 2022
+# Finished Make data base on Tue Jan 25 15:41:17 2022
 
  

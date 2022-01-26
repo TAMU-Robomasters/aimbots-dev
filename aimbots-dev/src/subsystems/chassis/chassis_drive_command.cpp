@@ -2,18 +2,17 @@
 
 namespace src::Chassis {
 
-ChassisDriveCommand::ChassisDriveCommand(src::Drivers* drivers, ChassisSubsystem* chassisSubsystem)
-    : TapCommand(),
-      drivers(drivers),
-      chassis(chassisSubsystem) {
-    addSubsystemRequirement((tap::control::Subsystem*)chassis);
+ChassisDriveCommand::ChassisDriveCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
+    : drivers(drivers),
+      chassis(chassis) {
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
 void ChassisDriveCommand::initialize() {}
 
 void ChassisDriveCommand::execute() {}
 
-void ChassisDriveCommand::end(bool interrupted) {}
+void ChassisDriveCommand::end(bool) {}
 
 bool ChassisDriveCommand::isReady() {
     return true;

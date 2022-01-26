@@ -43,7 +43,7 @@ COVERAGE_LIBS        = ["-lgcov"]
 ignored_dirs         = [".lbuild_cache", BUILD_PATH, SIM_MODM_PARENT_PATH, HARDWARE_MODM_PATH, TAPROOT_PATH]
 ignored_files        = [extract_robot_type.ROBOT_TYPE_FILE]
 # Don't compile this stuff when testing
-IGNORED_FILES_WHILE_TESTING = ["src/main.cpp"]
+IGNORED_FILES_WHILE_TESTING = ["src/main.cpp", "src/robots/*/*_control.cpp"]
 
 
 # Parse and validate arguments

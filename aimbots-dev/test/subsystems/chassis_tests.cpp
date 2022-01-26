@@ -5,7 +5,7 @@
 
 using ::testing::NiceMock;
 
-TEST(ChassisSubsystemTest, for_chassis_motors_initialize) {
+TEST(ChassisSubsystemTest, initialize_runs_initialize_on_all_motors) {
     src::Drivers d;
     src::Chassis::ChassisSubsystem c(&d);
 
