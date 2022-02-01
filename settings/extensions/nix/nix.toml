@@ -36,8 +36,14 @@
     # specifically look at the `# create a shell` and `main.packages.mkShell` part
     # and know that seeing `pkgs` online translates to `main.packages` inside the shell.nix file
 
+# 
+# AIMBOTS specific packages
+# 
 
-# [[ you can add tools for your project right here or at the bottom ]]
+[[packages]]
+load = [ "segger-ozone",]
+onlyIf = [ [ "stdenv", "isLinux",],]
+
 
 # 
 # 
@@ -49,6 +55,7 @@
 # Note: most projects need these, 
 # and if you need them for one project nix has a shared-memory across projects
 # comment these out in a situation such as deploying a project to a minimal server
+
 
 # 
 # Linux
