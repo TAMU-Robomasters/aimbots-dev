@@ -1,12 +1,13 @@
 [tool.poetry]
-name = "fornix"
-version = "0.1.0"
+name = "_"
+version = "0.0.1"
 description = ""
 authors = [""]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.15"
+python = "3.9"
 pip = "20.1.1"
+lbuild = "1.20.0"
 
 [tool.poetry.dev-dependencies]
 
