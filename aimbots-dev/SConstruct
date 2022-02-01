@@ -79,7 +79,7 @@ elif args["TARGET_ENV"] == "hardware":
 
 # Set the number of threads unless it has already been set to anything but 1
 if GetOption("num_jobs") == 1:
-    SetOption("num_jobs", 20)
+    SetOption("num_jobs", 16)
 
 
 # Define a new SCons environment and set up basic build variables

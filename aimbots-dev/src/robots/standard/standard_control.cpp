@@ -24,7 +24,11 @@ using namespace src::Chassis;
  */
 src::driversFunc drivers = src::DoNotUse_getDrivers;
 
+using namespace tap;
+using namespace tap::control;
+
 namespace StandardControl {
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 
@@ -32,6 +36,10 @@ ChassisSubsystem chassis(drivers());
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 
 // Define command mappings here -------------------------------------------
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {&chassisDriveCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -45,29 +53,34 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    chassis.setDefaultCommand(&chassisDriveCommand);
+    // no default commands should be set
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    drivers->commandScheduler.addCommand(&chassisDriveCommand);
+    // no startup commands should be set
+    // yet...
+    // TODO: Possibly add some sort of hardware test command
+    //       that will move all the standard's parts so we
+    //       can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *) {
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&leftSwitchUp);
 }
 
 }  // namespace StandardControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif

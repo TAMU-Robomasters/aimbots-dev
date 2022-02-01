@@ -1,5 +1,9 @@
 {
     "editor.tabSize": 4,
+    "files.exclude": {
+        "**/.git": false,
+    },
+    "files.autoSave": "off",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",
