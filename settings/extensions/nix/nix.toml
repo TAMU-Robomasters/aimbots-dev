@@ -44,6 +44,28 @@
 load = [ "segger-ozone",]
 onlyIf = [ [ "stdenv", "isLinux",],]
 
+[[packages]]
+load = [ "openocd",]
+
+[[packages]]
+load = [ "boost",]
+
+[[packages]]
+load = [ "gtest",] # googletest
+
+[[packages]]
+load = [ "pkgsCross", "aarch64-embedded", "gcc" ]
+# alternative sources:
+#    aarch64-android-prebuilt 
+#    aarch64-embedded 
+#    aarch64-multiplatform 
+#    aarch64-multiplatform-musl 
+#    aarch64be-embedded 
+#    amd64-netbsd 
+#    arm-embedded 
+#    armhf-embedded 
+#    armv7a-android-prebuilt 
+#    armv7l-hf-multiplatform 
 
 # 
 # Python
