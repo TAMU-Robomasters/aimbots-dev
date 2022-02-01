@@ -3,7 +3,7 @@
 # 
     # you can search for them here: https://search.nixos.org/packages
     #
-    # if you find a package like: nixpkg.python38Packages.setuptools
+    # if you find a package like: nixpkg.python39Packages.setuptools
     # then add a section like this:
     #    [[packages]]
     #    load = [ "python38Packages", "setuptools",]
@@ -45,6 +45,9 @@ load = [ "segger-ozone",]
 onlyIf = [ [ "stdenv", "isLinux",],]
 
 [[packages]]
+load = [ "scons",]
+
+[[packages]]
 load = [ "openocd",]
 
 [[packages]]
@@ -67,28 +70,41 @@ load = [ "pkgsCross", "aarch64-embedded", "gcc" ]
 #    armv7a-android-prebuilt 
 #    armv7l-hf-multiplatform 
 
+[[packages]]
+load = [ "valgrind",]
+
+[[packages]]
+load = [ "lcov",]
+
+[[packages]]
+load = [ "gcovr",]
+
 # 
 # Python
 # 
 
 [[packages]]
-load = [ "python38",]
+load = [ "python39",]
 from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]
-load = [ "python38Packages", "setuptools",]
+load = [ "python39Packages", "setuptools",]
 from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]
-load = [ "python38Packages", "pip",]
+load = [ "python39Packages", "pip",]
 from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]
-load = [ "python38Packages", "virtualenv",]
+load = [ "python39Packages", "pipenv",]
 from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]
-load = [ "python38Packages", "wheel",]
+load = [ "python39Packages", "virtualenv",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "python39Packages", "wheel",]
 from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
 
 [[packages]]

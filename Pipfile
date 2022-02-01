@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+lbuild = "==1.20.0"
 
 [dev-packages]
 
