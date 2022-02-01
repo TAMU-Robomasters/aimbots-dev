@@ -2,5 +2,5 @@ defaultFrom = "7e9b0dff974c89e070da1ad85713ff3c20b0ca97" # this is a commit hash
 
 [config]
 allowUnfree = true
-allowUnsupportedSystem = true
+# allowUnsupportedSystem = true
 permittedInsecurePackages = [ "openssl-1.0.2u",]

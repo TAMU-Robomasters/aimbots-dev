@@ -85,9 +85,6 @@ load = [ "segger-ozone",]
 onlyIf = [ [ "stdenv", "isLinux",],]
 
 [[packages]]
-load = [ "scons",]
-
-[[packages]]
 load = [ "openocd",]
 
 [[packages]]
@@ -102,23 +99,8 @@ load = [ "lcov",]
 [[packages]]
 load = [ "gcovr",]
 
-# [[packages]]
-# load = [ "pkgsCross", "aarch64-embedded", "gcc" ]
-# alternative sources:
-#    aarch64-android-prebuilt 
-#    aarch64-embedded 
-#    aarch64-multiplatform 
-#    aarch64-multiplatform-musl 
-#    aarch64be-embedded 
-#    amd64-netbsd 
-#    arm-embedded 
-#    armhf-embedded 
-#    armv7a-android-prebuilt 
-#    armv7l-hf-multiplatform 
-
-# [[packages]]
-# load = [ "valgrind",]
-# from = "4f901203e8d1a0ded90a73e2670ce493ed051299"
+[[packages]]
+load = [ "gcc-arm-embedded" ]
 
 # 
 # for .so errors on linux with opencv+ffmpeg
