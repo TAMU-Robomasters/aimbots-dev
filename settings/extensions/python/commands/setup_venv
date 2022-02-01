@@ -10,6 +10,7 @@ then
     . "$FORNIX_FOLDER/settings/extensions/python/during_clean.sh"
     python -m venv "$VIRTUAL_ENV" && echo "virtual env created"
 fi
-
+# hush pipenv (and have it use venv)
+export PIPENV_VERBOSITY=-1
 # fix SSL issues
 export SSL_CERT_FILE="$(python -c 'import ssl; print(ssl.get_default_verify_paths().openssl_cafile)')"  

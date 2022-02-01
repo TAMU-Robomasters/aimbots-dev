@@ -1,0 +1,1 @@
+cd "$FORNIX_FOLDER/aimbots-dev"
