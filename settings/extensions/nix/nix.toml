@@ -42,8 +42,42 @@
 # 
 # 
 
+# for deploying code (doesn't auto-build on mac yet, but can be installed manually on mac)
+[[packages]]
+load = [ "segger-ozone",]
+onlyIf = [ [ "stdenv", "isLinux",],]
+
+# essential compile dependency
+[[packages]]
+load = [ "boost",]
+
+# essential compile dependency
+[[packages]]
+load = [ "gcc-arm-embedded" ]
+
+# for formatting
+[[packages]]
+load = [ "clang-tools" ]
+
+# for testing
+[[packages]]
+load = [ "openocd",]
+
+# for testing
+[[packages]]
+load = [ "gtest",] # googletest
+
+# for testing
+[[packages]]
+load = [ "lcov",]
+
+# for testing
+[[packages]]
+load = [ "gcovr",]
+
+
 # 
-# For Python (needs to be above scons)
+# For Python
 # 
 
 [[packages]]
@@ -76,34 +110,9 @@ load = [ "libxml2",] # needed for pip install lbuild
 [[packages]]
 load = [ "libxslt",] # needed for pip install lbuild
 
-# 
-# additional packages
-# 
-
-[[packages]]
-load = [ "segger-ozone",]
-onlyIf = [ [ "stdenv", "isLinux",],]
-
-[[packages]]
-load = [ "openocd",]
-
-[[packages]]
-load = [ "boost",]
-
-[[packages]]
-load = [ "gtest",] # googletest
-
-[[packages]]
-load = [ "lcov",]
-
-[[packages]]
-load = [ "gcovr",]
-
-[[packages]]
-load = [ "gcc-arm-embedded" ]
 
 # 
-# for .so errors on linux with opencv+ffmpeg
+# for .so errors on linux
 # 
 
 [[packages]]
