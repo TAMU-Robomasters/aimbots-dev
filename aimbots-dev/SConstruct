@@ -43,7 +43,7 @@ COVERAGE_LIBS        = ["-lgcov"]
 ignored_dirs         = [".lbuild_cache", BUILD_PATH, SIM_MODM_PARENT_PATH, HARDWARE_MODM_PATH, TAPROOT_PATH]
 ignored_files        = [extract_robot_type.ROBOT_TYPE_FILE]
 # Don't compile this stuff when testing
-IGNORED_FILES_WHILE_TESTING = ["src/main.cpp"]
+IGNORED_FILES_WHILE_TESTING = ["src/main.cpp", "src/robots/*/*_control.cpp"]
 
 
 # Parse and validate arguments
@@ -79,7 +79,7 @@ elif args["TARGET_ENV"] == "hardware":
 
 # Set the number of threads unless it has already been set to anything but 1
 if GetOption("num_jobs") == 1:
-    SetOption("num_jobs", 20)
+    SetOption("num_jobs", 16)
 
 
 # Define a new SCons environment and set up basic build variables

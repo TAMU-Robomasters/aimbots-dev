@@ -9,6 +9,7 @@
                 "aimbots-dev/taproot/test",
                 "aimbots-dev/test"
             ],
+            "compilerPath": "g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -19,6 +20,7 @@
                 "${default}",
                 "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src"
             ],
+            "compilerPath": "g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -31,6 +33,7 @@
                 "aimbots-dev/taproot/modm/ext/cmsis/device",
                 "aimbots-dev/taproot/modm/ext/cmsis/dsp"        
             ],
+            "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         }

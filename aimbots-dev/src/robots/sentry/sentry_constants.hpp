@@ -12,6 +12,8 @@ static constexpr float VELOCITY_PID_KI = 0.2f;
 static constexpr float VELOCITY_PID_KD = 0.0f;
 static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 
+static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR1;
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
@@ -34,12 +36,6 @@ static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR1;
-
-enum WheelRPMIndex {  // index used to easily navigate wheel matrices
-    R = 0,
-};
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
