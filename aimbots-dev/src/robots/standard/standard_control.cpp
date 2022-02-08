@@ -13,6 +13,8 @@
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
+//
+#include "subsystems/flywheel/flywheel.hpp"
 
 using namespace src::Chassis;
 
@@ -31,6 +33,7 @@ namespace StandardControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
+src::Flywheel::FlywheelSubsystem flywheel(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
@@ -44,11 +47,13 @@ HoldCommandMapping leftSwitchUp(
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&flywheel);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
+    flywheel.initialize();
 }
 
 // Set default command here -----------------------------------------------
