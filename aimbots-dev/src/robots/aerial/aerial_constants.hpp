@@ -21,6 +21,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 0;
  * -20 ~ 0 ~ 20 A.
  */
 static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
+static constexpr float POSITION_PID_MAX_OUTPUT = 10.0f;
 
 // Mechanical chassis constants, all in m
 /**
@@ -36,6 +37,11 @@ static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 // static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
+
+static constexpr MotorID YAW_MOTOR_ID   = MotorID::MOTOR5;
+static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
+
+static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS1;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
