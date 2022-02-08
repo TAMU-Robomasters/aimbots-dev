@@ -71,6 +71,11 @@
         "SConstruct": "python",
         "SConscript": "python"
     },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "taproot/**": true,
+    },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
         "aimbots-dev/taproot/src",
