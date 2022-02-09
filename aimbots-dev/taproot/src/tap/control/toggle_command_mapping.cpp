@@ -28,6 +28,14 @@ void ToggleCommandMapping::executeCommandMapping(const RemoteMapState &currState
     // Neg keys are weird in this mapping and must be handled as such. If neg keys of the
     // map state are a subset of the currState's neg keys, the mapping must be reset
     // and commands removed.
+    if (noCommandsScheduled() && toggled)
+    {
+        // If all commands have naturally finished on their own, this command mapping's state should
+        // not be toggled. Instead, it should automatically transition to not toggled.
+        toggled = false;
+        pressed = false;
+    }
+
     if (mapState.getNegKeysUsed() && negKeysSubset(mapState, currState))
     {
         if (toggled)

@@ -121,6 +121,11 @@ protected:
      * Removes all the `Command`s from the main CommandScheduler.
      */
     void removeCommands();
+
+    /**
+     * @return True if none of the associated commands are scheduled.
+     */
+    bool noCommandsScheduled() const;
 };  // class CommandMapping
 }  // namespace control
 }  // namespace tap

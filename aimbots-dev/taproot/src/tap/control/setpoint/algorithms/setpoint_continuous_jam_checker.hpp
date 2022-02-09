@@ -83,6 +83,11 @@ public:
         return jamTimeout.execute(!withinTolerance);
     }
 
+    /**
+     * @return the jamming distance tolerance of this jam checker
+     */
+    inline float getJamSetpointTolerance() const { return distanceTolerance; }
+
 private:
     SetpointSubsystem* setpointSubsystem;
     tap::arch::ConditionalMilliTimer jamTimeout;

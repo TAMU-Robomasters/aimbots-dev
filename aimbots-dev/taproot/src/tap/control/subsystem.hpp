@@ -111,8 +111,7 @@ public:
 
     virtual const char* getName();
 
-    // This shouldn't be mockable
-    inline int getGlobalIdentifier() const { return globalIdentifier; }
+    mockable inline int getGlobalIdentifier() const { return globalIdentifier; }
 
 protected:
     Drivers* drivers;

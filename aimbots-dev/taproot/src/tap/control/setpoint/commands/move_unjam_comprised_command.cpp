@@ -37,29 +37,40 @@ namespace setpoint
 MoveUnjamComprisedCommand::MoveUnjamComprisedCommand(
     tap::Drivers* drivers,
     SetpointSubsystem* setpointSubsystem,
-    float agitatorChangeAngle,
-    float maxUnjamAngle,
-    uint32_t agitatorRotateTime,
-    uint32_t agitatorPauseAfterRotateTime)
+    float moveDisplacement,
+    uint32_t moveTime,
+    uint32_t pauseAfterMoveTime,
+    bool setToTargetOnEnd,
+    float setpointTolerance,
+    float unjamDisplacement,
+    float unjamThreshold,
+    uint32_t maxUnjamWaitTime,
+    uint_fast16_t unjamCycleCount)
     : tap::control::ComprisedCommand(drivers),
       setpointSubsystem(setpointSubsystem),
       agitatorRotateCommand(
           setpointSubsystem,
-          agitatorChangeAngle,
-          agitatorRotateTime,
-          agitatorPauseAfterRotateTime,
-          false),
-      agitatorUnjamCommand(setpointSubsystem, maxUnjamAngle),
+          moveDisplacement,
+          moveTime,
+          pauseAfterMoveTime,
+          setToTargetOnEnd,
+          setpointTolerance),
+      agitatorUnjamCommand(
+          setpointSubsystem,
+          unjamDisplacement,
+          unjamThreshold,
+          maxUnjamWaitTime,
+          unjamCycleCount),
       unjamSequenceCommencing(false),
       agitatorDisconnectFault(false)
 {
     this->comprisedCommandScheduler.registerSubsystem(setpointSubsystem);
-    this->addSubsystemRequirement(dynamic_cast<Subsystem*>(setpointSubsystem));
+    this->addSubsystemRequirement(setpointSubsystem);
 }
 
 void MoveUnjamComprisedCommand::initialize()
 {
-    this->comprisedCommandScheduler.addCommand(dynamic_cast<Command*>(&agitatorRotateCommand));
+    this->comprisedCommandScheduler.addCommand(&agitatorRotateCommand);
     unjamSequenceCommencing = false;
 }
 
@@ -80,8 +91,7 @@ void MoveUnjamComprisedCommand::execute()
             // the to scheduler. The rotate forward command will be automatically
             // unscheduled.
             unjamSequenceCommencing = true;
-            this->comprisedCommandScheduler.addCommand(
-                dynamic_cast<Command*>(&agitatorUnjamCommand));
+            this->comprisedCommandScheduler.addCommand(&agitatorUnjamCommand);
         }
         this->comprisedCommandScheduler.run();
     }
@@ -96,12 +106,8 @@ void MoveUnjamComprisedCommand::end(bool interrupted)
     // set it back to false
     agitatorDisconnectFault = false;
 
-    this->comprisedCommandScheduler.removeCommand(
-        dynamic_cast<Command*>(&agitatorUnjamCommand),
-        interrupted);
-    this->comprisedCommandScheduler.removeCommand(
-        dynamic_cast<Command*>(&agitatorRotateCommand),
-        interrupted);
+    this->comprisedCommandScheduler.removeCommand(&agitatorUnjamCommand, interrupted);
+    this->comprisedCommandScheduler.removeCommand(&agitatorRotateCommand, interrupted);
 }
 
 bool MoveUnjamComprisedCommand::isFinished() const

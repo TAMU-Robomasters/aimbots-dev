@@ -51,6 +51,8 @@ public:
         Uart2,
         Uart3,
         Uart6,
+        Uart7,
+        Uart8,
     };
 
 #ifdef PLATFORM_HOSTED
@@ -99,6 +101,16 @@ public:
         {
             modm::platform::Usart6::connect<GpioG14::Tx, GpioG9::Rx>();
             modm::platform::Usart6::initialize<Board::SystemClock, baudrate>(parity);
+        }
+        else if constexpr (port == UartPort::Uart7)
+        {
+            modm::platform::Uart7::connect<GpioE8::Tx, GpioE7::Rx>();
+            modm::platform::Uart7::initialize<Board::SystemClock, baudrate>(parity);
+        }
+        else if constexpr (port == UartPort::Uart8)
+        {
+            modm::platform::Uart8::connect<GpioE1::Tx, GpioE0::Rx>();
+            modm::platform::Uart8::initialize<Board::SystemClock, baudrate>(parity);
         }
 #endif
     }

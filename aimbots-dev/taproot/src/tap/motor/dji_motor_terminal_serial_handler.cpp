@@ -41,7 +41,7 @@ void DjiMotorTerminalSerialHandler::init() { drivers->terminalSerial.addHeader(H
 bool DjiMotorTerminalSerialHandler::terminalSerialCallback(
     char* inputLine,
     modm::IOStream& outputStream,
-    bool)
+    bool streamingEnabled)
 {
     char* arg;
     motorId = 0;
@@ -97,13 +97,23 @@ bool DjiMotorTerminalSerialHandler::terminalSerialCallback(
         else if (strcmp(arg, "-H") == 0)
         {
             outputStream << USAGE;
-            return true;
+            // If streamingEnabled == true, we want to return false to indicate we shouldn't start
+            // streaming. Also if any of the other inputs have been set, return false since the user
+            // shouldn't specify -H and another argument.
+            return !streamingEnabled && !canBusValid && !motorIdValid && !printAll &&
+                   (*inputLine == '\0');
         }
         else
         {
             outputStream << USAGE;
             return false;
         }
+    }
+
+    if (((canBusValid || motorIdValid) && printAll) || (*inputLine != '\0'))
+    {
+        outputStream << USAGE;
+        return false;
     }
 
     return printInfo(outputStream);
