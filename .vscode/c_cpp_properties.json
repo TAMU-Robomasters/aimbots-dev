@@ -5,11 +5,10 @@
             "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src",
-                "aimbots-dev/taproot/test",
-                "aimbots-dev/test"
+                "template-project/taproot/sim-modm/hosted-linux/modm/src",
+                "template-project/taproot/test",
+                "template-project/test"
             ],
-            "compilerPath": "g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -18,9 +17,8 @@
             "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src"
+                "template-project/taproot/sim-modm/hosted-linux/modm/src"
             ],
-            "compilerPath": "g++",
             "intelliSenseMode": "gcc-x64",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         },
@@ -28,12 +26,11 @@
             "name": "Hardware",
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/modm/src",
-                "aimbots-dev/taproot/modm/ext/cmsis/core",
-                "aimbots-dev/taproot/modm/ext/cmsis/device",
-                "aimbots-dev/taproot/modm/ext/cmsis/dsp"        
+                "template-project/taproot/modm/src",
+                "template-project/taproot/modm/ext/cmsis/core",
+                "template-project/taproot/modm/ext/cmsis/device",
+                "template-project/taproot/modm/ext/cmsis/dsp"        
             ],
-            "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm",
             "browse": { "limitSymbolsToIncludedHeaders": true }
         }
