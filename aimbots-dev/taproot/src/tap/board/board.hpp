@@ -121,10 +121,6 @@ struct SystemClock
 
 #ifndef PLATFORM_HOSTED
 
-// initialize a button built into mcb
-
-using Button = GpioInputB2;
-
 // initialize 9 green Leds and 1 red LED
 // leds 1-8 used for error handling codes
 // led9 used for error handling error (unrepresentable error)
@@ -214,8 +210,6 @@ inline void initialize()
     SysTickTimer::initialize<SystemClock>();
     // init 24V output
     PowerOuts::setOutput(modm::Gpio::High);
-    // init button on board
-    Button::setInput();
 #endif
 }
 

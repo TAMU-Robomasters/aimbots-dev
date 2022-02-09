@@ -71,5 +71,17 @@ void CommandMapping::removeCommands()
         drivers->commandScheduler.removeCommand(cmd, false);
     });
 }
+
+bool CommandMapping::noCommandsScheduled() const
+{
+    for (auto cmd : mappedCommands)
+    {
+        if (drivers->commandScheduler.isCommandScheduled(cmd))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 }  // namespace control
 }  // namespace tap

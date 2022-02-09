@@ -1,5 +1,9 @@
 {
     "editor.tabSize": 4,
+    "files.exclude": {
+        "**/.git": false,
+    },
+    "files.autoSave": "off",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",
@@ -69,7 +73,8 @@
         "valarray": "cpp",
         "variant": "cpp",
         "SConstruct": "python",
-        "SConscript": "python"
+        "SConscript": "python",
+        "*.source": "cpp"
     },
     "search.exclude": {
         "**/node_modules": true,

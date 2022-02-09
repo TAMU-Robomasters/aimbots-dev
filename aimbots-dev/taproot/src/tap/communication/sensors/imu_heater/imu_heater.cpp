@@ -21,6 +21,8 @@
 
 #include "tap/drivers.hpp"
 
+#include "imu_heater_constants.hpp"
+
 namespace tap::sensors
 {
 ImuHeater::ImuHeater(Drivers *drivers)
@@ -37,11 +39,17 @@ ImuHeater::ImuHeater(Drivers *drivers)
 void ImuHeater::initialize()
 {
     // Initialize the heater timer frequency
-    drivers->pwm.setTimerFrequency(gpio::Pwm::TIMER3, HEATER_PWM_FREQUENCY);
+    drivers->pwm.setTimerFrequency(bound_ports::IMU_HEATER_TIMER, HEATER_PWM_FREQUENCY);
 }
 
 void ImuHeater::runTemperatureController(float temperature)
 {
+    if (temperature < 0)
+    {
+        drivers->pwm.write(0.0f, tap::gpio::Pwm::ImuHeater);
+        return;
+    }
+
     // Run PID controller to find desired output, output units PWM frequency
     imuTemperatureController.update(IMU_DESIRED_TEMPERATURE - temperature);
 
