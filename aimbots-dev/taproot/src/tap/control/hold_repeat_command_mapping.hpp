@@ -30,26 +30,34 @@ class Command;
 class RemoteMapState;
 
 /**
- * A CommandMapping that adds `Command`s when the contained
- * mapping is a subset of the remote mapping. If a Command finishes and the
- * contained mapping is still a subset of the remote mapping, it is added again.
- * It then removes the `Command`s when the mapping is no longer a subset.
+ * A CommandMapping that adds `Command`s when the contained mapping is a subset of the remote
+ * mapping. If a Command finishes and the contained mapping is still a subset of the remote mapping,
+ * it is added again. It then removes the `Command`s when the mapping is no longer a subset if
+ * endCommandsWhenNotHeld is true or doesn't end commands if endCommandsWhenNotHeld is false.
  *
- * Additionally, When neg keys are being used and the mapping's neg keys
- * are a subset of the remote map state, the `Command`s are removed.
+ * Additionally, When neg keys are being used and the mapping's neg keys are a subset of the remote
+ * map state, the `Command`s are removed.
  */
 class HoldRepeatCommandMapping : public CommandMapping
 {
 public:
     /**
      * Constructor must take the set of `Command`s and the RemoteMapState.
+     *
+     * @param[in] drivers Global drivers instance.
+     * @param[in] cmds vector of commands that will be scheduled by this command mapping.
+     * @param[in] rms RemoteMapState that controls when commands will be scheduled.
+     * @param[in] endCommandsWhenNotHeld If `true`, the commands will be forcibly ended by the
+     * command mapping when no longer being held. Otherwise, the commands will naturally finish.
      */
     HoldRepeatCommandMapping(
         Drivers *drivers,
         const std::vector<Command *> cmds,
-        const RemoteMapState &rms)
+        const RemoteMapState &rms,
+        bool endCommandsWhenNotHeld)
         : CommandMapping(drivers, cmds, rms),
-          commandsScheduled(false)
+          commandsScheduled(false),
+          endCommandsWhenNotHeld(endCommandsWhenNotHeld)
     {
     }
 
@@ -62,6 +70,7 @@ public:
 
 private:
     bool commandsScheduled;
+    bool endCommandsWhenNotHeld;
 };  // class HoldRepeatCommandMapping
 }  // namespace control
 }  // namespace tap

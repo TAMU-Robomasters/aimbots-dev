@@ -31,7 +31,7 @@ class Drivers;
 namespace motor
 {
 class DjiMotorTxHandler;
-class DjiMotorTerminalSerialHandler : public communication::serial::ITerminalSerialCallback
+class DjiMotorTerminalSerialHandler : public communication::serial::TerminalSerialCallbackInterface
 {
 public:
     static constexpr char HEADER[] = "motorinfo";

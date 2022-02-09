@@ -219,6 +219,16 @@ void Remote::reset()
     remote.key = 0;
     remote.wheel = 0;
     clearRxBuffer();
+
+    // Refresh command mapper with all keys deactivated. This prevents bug where
+    // command states enter defaults when remote reconnects even if key/switch
+    // state should do otherwise
+    drivers->commandMapper.handleKeyStateChange(
+        0,
+        tap::Remote::SwitchState::UNKNOWN,
+        tap::Remote::SwitchState::UNKNOWN,
+        false,
+        false);
 }
 
 uint32_t Remote::getUpdateCounter() const { return remote.updateCounter; }

@@ -106,6 +106,8 @@ TCPServer::TCPServer(int targetPortNumber)
     listen(listenFileDescriptor, LISTEN_QUEUE_SIZE);
     std::cout << "TCPServer initialized on port: " << targetPortNumber << std::endl;
     std::cout << "call getConnection() to accept client" << std::endl;
+#else
+    UNUSED(targetPortNumber);
 #endif  // __linux__
 }
 
@@ -182,6 +184,9 @@ void TCPServer::writeToClient(const char* message, int32_t messageLength)
     {
         std::cerr << e.what() << std::endl;
     }
+#else
+    UNUSED(message);
+    UNUSED(messageLength);
 #endif  // __linux__
 }
 

@@ -29,9 +29,12 @@ namespace tap
 {
 namespace algorithms
 {
+/** Acceleration due to gravity, in m/s^2. */
+static constexpr float ACCELERATION_GRAVITY = 9.80665f;
+
 /**
  * Use this instead of the == operator when asserting equality for floats.
- * Performs \code fabsf(val1-val2)<epsilon\endcode
+ * Performs \code fabsf(val1-val2)<=epsilon\endcode
  *
  * @param[in] val1 the first value to compare.
  * @param[in] val2 the second value to compare.
@@ -42,7 +45,7 @@ namespace algorithms
  */
 inline bool compareFloatClose(float val1, float val2, float epsilon)
 {
-    return fabsf(val1 - val2) < epsilon;
+    return fabsf(val1 - val2) <= epsilon;
 }
 
 /**

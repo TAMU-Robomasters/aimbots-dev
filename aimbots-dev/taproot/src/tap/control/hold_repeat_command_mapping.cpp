@@ -27,6 +27,9 @@ namespace control
 {
 void HoldRepeatCommandMapping::executeCommandMapping(const RemoteMapState &currState)
 {
+    // if mapping subset of the current remote map state and if the neg keys are not used or the neg
+    // keys are not pressed, schedule or reschedule command
+    // see `RemoteMapState` class comment if confused about neg keys
     if (mappingSubset(currState) &&
         !(mapState.getNegKeysUsed() && negKeysSubset(mapState, currState)))
     {
@@ -43,7 +46,7 @@ void HoldRepeatCommandMapping::executeCommandMapping(const RemoteMapState &currS
     {
         // While Commands may not be scheduled this prevents the unnecessary call of the
         // removeCommand function from the scheduler.
-        if (commandsScheduled)
+        if (commandsScheduled && endCommandsWhenNotHeld)
         {
             removeCommands();
             commandsScheduled = false;

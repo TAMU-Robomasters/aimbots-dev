@@ -115,7 +115,7 @@ void TerminalSerial::update()
     }
 }
 
-void TerminalSerial::addHeader(const char *header, ITerminalSerialCallback *callback)
+void TerminalSerial::addHeader(const char *header, TerminalSerialCallbackInterface *callback)
 {
     if (callback == nullptr)
     {

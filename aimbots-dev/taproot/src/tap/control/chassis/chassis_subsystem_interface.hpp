@@ -20,17 +20,15 @@
 #ifndef CHASSIS_SUBSYSTEM_INTERFACE_
 #define CHASSIS_SUBSYSTEM_INTERFACE_
 
-#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
-#include "tap/mock/dji_motor_mock.hpp"
-#else
 #include "tap/motor/dji_motor.hpp"
-#endif
 
 #include "../subsystem.hpp"
 
-namespace tap::control::chassis {
-class ChassisSubsystemInterface : public Subsystem {
-   public:
+namespace tap::control::chassis
+{
+class ChassisSubsystemInterface : public Subsystem
+{
+public:
     ChassisSubsystemInterface(Drivers *drivers) : Subsystem(drivers) {}
 
     /**

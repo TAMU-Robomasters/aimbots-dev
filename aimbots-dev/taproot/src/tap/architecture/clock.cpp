@@ -27,6 +27,12 @@ namespace arch
 {
 namespace clock
 {
+/**
+ * Global static variable storing time for testing. It's value is returned from the `getTime*()`
+ * functions and is set by `setTime()`. Note this is a static global variable accessible
+ * from _any_ test, so you must assume that `getTimeMilliseconds()` value is undefined until
+ * you set it.
+ */
 uint32_t currTimeMilliseconds = 0;
 
 void setTime(uint32_t timeMilliseconds) { currTimeMilliseconds = timeMilliseconds; }

@@ -36,7 +36,7 @@ namespace sensors
  * the user to query gyro, accel, angle, and temperature data. Single query and streaming
  * modes supported.
  */
-class Mpu6500TerminalSerialHandler : public communication::serial::ITerminalSerialCallback
+class Mpu6500TerminalSerialHandler : public communication::serial::TerminalSerialCallbackInterface
 {
 public:
     static constexpr char HEADER[] = "mpu6500";

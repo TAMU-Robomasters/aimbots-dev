@@ -229,6 +229,8 @@ files = [
     env.File(r"src/modm/platform/uart/uart_2.cpp"),
     env.File(r"src/modm/platform/uart/uart_3.cpp"),
     env.File(r"src/modm/platform/uart/uart_6.cpp"),
+    env.File(r"src/modm/platform/uart/uart_7.cpp"),
+    env.File(r"src/modm/platform/uart/uart_8.cpp"),
     env.File(r"src/modm/ui/display/character_display.cpp"),
     env.File(r"src/modm/ui/display/font/all_caps_3x5.cpp"),
     env.File(r"src/modm/ui/display/font/arcade_classic.cpp"),
