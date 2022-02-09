@@ -3,8 +3,8 @@
 # 
 *.pyc
 
-aimbots-dev/build
-aimbots-dev/Pipfile.lock
+/build
+/Pipfile.lock
 project.xml.log
 
 .vscode/.cortex-debug.peripherals.state.json
