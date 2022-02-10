@@ -18,7 +18,8 @@ namespace src::Feeder{
         //update rpms
     }
 
-    void FeederSubsystem::setDesiredOutput(int32_t speed){
+    int32_t FeederSubsystem::setDesiredOutput(int32_t speed){
         feederMotor.setDesiredOutput(speed);
+        return speed;
     }
 }

@@ -13,9 +13,9 @@ namespace src::Feeder {
              tap::Drivers* drivers);
         
         mockable void initialize() override;
-        void refresh() override;
+        mockable void refresh() override;
 
-        mockable void setDesiredOutput(int32_t speed);
+        mockable int32_t setDesiredOutput(int32_t speed);
 
     #ifndef ENV_UNIT_TESTS
             private:
