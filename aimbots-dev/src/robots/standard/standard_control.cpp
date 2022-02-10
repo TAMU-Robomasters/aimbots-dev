@@ -14,7 +14,8 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
 //
-#include "subsystems/flywheel/flywheel.hpp"
+#include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/shooter_command.hpp"
 
 using namespace src::Chassis;
 
@@ -33,27 +34,28 @@ namespace StandardControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
-src::Flywheel::FlywheelSubsystem flywheel(drivers());
+src::Shooter::ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand},
+    {&chassisDriveCommand, &shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
-    drivers->commandScheduler.registerSubsystem(&flywheel);
+    drivers->commandScheduler.registerSubsystem(&shooter);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    flywheel.initialize();
+    shooter.initialize();
 }
 
 // Set default command here -----------------------------------------------

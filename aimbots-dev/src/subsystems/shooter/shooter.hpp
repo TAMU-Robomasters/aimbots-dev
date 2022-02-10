@@ -1,35 +1,39 @@
 #pragma once
-
-#include "tap/control/subsystem.hpp"
+#include <vector>
+//
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
-
-namespace src::Flywheel {
+//
+#include "tap/architecture/clock.hpp"
+#include "tap/control/subsystem.hpp"
+namespace src::Shooter {
 
     enum MotorIndex{
         TOP = 0,
         BOT = 1
     };
 
-    class FlywheelSubsystem : public tap::control::Subsystem {
+    class ShooterSubsystem : public tap::control::Subsystem {
         public:
-        FlywheelSubsystem(tap::Drivers* drivers);
+        ShooterSubsystem(tap::Drivers* drivers);
 
         mockable void initialize() override;
         void refresh() override;
 
-        void setDesiredOutputs(float r);
+        void setDesiredOutputs(float RPM);
 
-        void calculateFlywheel(float r);
+        std::vector<float> calculateShooter(float RPM);
 
         private:
         DJIMotor topWheel, bottomWheel;
         DJIMotor* motors[2];
         float targetRPMs[2];
         static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
+        float lastTime;
+        SmoothPID PID;
 
         public: 
         inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
         inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
     };
-}; //namespace src::Flywheel
+}; //namespace src::Shooter
