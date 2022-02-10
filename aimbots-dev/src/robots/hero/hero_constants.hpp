@@ -11,6 +11,10 @@ static constexpr float VELOCITY_PID_KP = 20.0f;
 static constexpr float VELOCITY_PID_KI = 0.2f;
 static constexpr float VELOCITY_PID_KD = 0.0f;
 static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
+
+/**
+ * @brief Position PID constants
+ */
 static constexpr float POSITION_PID_KP = 20.0f;
 static constexpr float POSITION_PID_KI = 0.2f;
 static constexpr float POSITION_PID_KD = 0.0f;
@@ -23,6 +27,7 @@ static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
  * -20 ~ 0 ~ 20 A.
  */
 static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
+static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
 
 // Mechanical chassis constants, all in m
 /**

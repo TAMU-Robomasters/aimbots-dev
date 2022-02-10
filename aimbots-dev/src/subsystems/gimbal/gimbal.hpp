@@ -13,20 +13,23 @@ public:
     void initialize() override;
     void refresh() override;
 
-    inline void setYawAngleInDegrees(float angle);
-    inline void setPitchAngleInDegrees(float angle);
-    inline void setYawAngleInRadians(float angle);
-    inline void setPitchAngleInRadians(float angle);
+    const char* getName() override { return "Gimbal"; }
 
-    inline void displaceYawAngleInDegrees(float displacement);
-    inline void displacePitchAngleInDegrees(float displacement);
-    inline void displaceYawAngleInRadians(float displacement);
-    inline void displacePitchAngleInRadians(float displacement);
+    inline void setYawMotorOutputAngleInDegrees(float angle);
+    inline void setYawMotorOutputAngleInRadians(float angle);
+    inline void displaceYawMotorOutputAngleInDegrees(float angle);
+    inline void displaceYawMotorOutputAngleInRadians(float angle);
 
-    float getCurrentYawAngleInDegrees() const;
-    float getCurrentPitchAngleInDegrees() const;
-    float getCurrentYawAngleInRadians() const;
-    float getCurrentPitchAngleInRadians() const;
+    inline void setPitchMotorOutputAngleInDegrees(float angle);
+    inline void setPitchMotorOutputAngleInRadians(float angle);
+    inline void displacePitchMotorOutputAngleInDegrees(float angle);
+    inline void displacePitchMotorOutputAngleInRadians(float angle);
+
+    inline float getCurrentYawAngleInDegrees() const;
+    inline float getCurrentYawAngleInRadians() const;
+    inline float getCurrentPitchAngleInDegrees() const;
+    inline float getCurrentPitchAngleInRadians() const;
+
     inline float getTargetYawAngleInDegrees() const;
     inline float getTargetPitchAngleInDegrees() const;
     inline float getTargetYawAngleInRadians() const;
@@ -38,6 +41,9 @@ private:
 
     StockPID yawPID;
     StockPID pitchPID;
+
+    float currentYawAngle;   // in Radians
+    float currentPitchAngle; // in Radians
 
     float targetYawAngle;   // in Radians
     float targetPitchAngle; // in Radians

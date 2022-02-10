@@ -14,6 +14,14 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 0;
 // static constexpr float VELOCITY_PID_KD = 0.0f;
 // static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 
+// /**
+//  * @brief Position PID constants
+//  */
+// static constexpr float POSITION_PID_KP = 20.0f;
+// static constexpr float POSITION_PID_KI = 0.2f;
+// static constexpr float POSITION_PID_KD = 0.0f;
+// static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
