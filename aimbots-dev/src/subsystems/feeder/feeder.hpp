@@ -12,12 +12,10 @@ namespace src::Feeder {
          FeederSubsystem(
              tap::Drivers* drivers);
         
-        template <class... Args>
-
         mockable void initialize() override;
         void refresh() override;
 
-        void setDesiredOutput(float speed);
+        mockable void setDesiredOutput(int32_t speed);
 
     #ifndef ENV_UNIT_TESTS
             private:
@@ -27,7 +25,7 @@ namespace src::Feeder {
             static constexpr CANBus FEED_BUS = CANBus::CAN_BUS2;
         
         float targetRPM;
-        DJIMotor* feederMotor; 
+        DJIMotor feederMotor; 
 
         //commands
     };
