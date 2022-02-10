@@ -4,6 +4,8 @@
 #include <tap/algorithms/smooth_pid.hpp>
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/control/command.hpp>
+#include <tap/architecture/clock.hpp>
+
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"
@@ -27,7 +29,7 @@ using MotorID = tap::motor::MotorId;
 
 using TapCommand = tap::control::Command;
 
-namespace clock = tap::arch::clock;
+// using clock = tap::arch::clock;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;

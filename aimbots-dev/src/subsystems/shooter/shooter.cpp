@@ -1,5 +1,8 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "utils/common_types.hpp"
+#include <tap/architecture/clock.hpp>
+
+
 namespace src::Shooter{
 
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
@@ -23,7 +26,7 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
 }
 
 void ShooterSubsystem::initialize(){
-    lastTime = clock::getTimeMilliseconds();
+    lastTime = (float)tap::arch::clock::getTimeMilliseconds();
     topWheel.initialize();
     bottomWheel.initialize();
 }
@@ -34,7 +37,7 @@ void ShooterSubsystem::refresh(){
 
 std::vector<float>  ShooterSubsystem::calculateShooter(float RPM_Target){
     //calculate rpm
-    float time = clock::getTimeMilliseconds();
+    float time = (float)tap::arch::clock::getTimeMilliseconds();
     float dt  = time - lastTime;
     float topError = RPM_Target - float(topWheel.getShaftRPM());
     float botError = RPM_Target - float(bottomWheel.getShaftRPM());

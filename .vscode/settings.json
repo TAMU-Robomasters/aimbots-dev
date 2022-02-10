@@ -3,7 +3,7 @@
     "files.exclude": {
         "**/.git": false,
     },
-    "files.autoSave": "off",
+    "files.autoSave": "afterDelay",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",
@@ -83,7 +83,7 @@
         "span": "cpp",
         "stop_token": "cpp"
     },
-    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.errorSquiggles": "Disabled",
     "C_Cpp.default.includePath": [
         "aimbots-dev/taproot/src",
         "aimbots-dev/src",
