@@ -37,7 +37,14 @@ env.Tool("size")
 env.Tool("template")
 env.Tool("utils")
 env.Tool("utils_buildpath")
-env["GCC_PATH"] = dirname(dirname(realpath(shutil.which(env["CC"]))))
+c_compiler_name = env["CC"]
+c_compiler_path = shutil.which(c_compiler_name)
+
+if c_compiler_path is None:
+    print(f'Selected compiler "{c_compiler_name}" not found on PATH. Please add its installation directory to the PATH environment variable.')
+    exit(1)
+
+env["GCC_PATH"] = dirname(dirname(realpath(c_compiler_path)))
 
 # Toolchain configuration
 env.Append(CPPDEFINES = [
@@ -229,6 +236,8 @@ files = [
     env.File(r"src/modm/platform/uart/uart_2.cpp"),
     env.File(r"src/modm/platform/uart/uart_3.cpp"),
     env.File(r"src/modm/platform/uart/uart_6.cpp"),
+    env.File(r"src/modm/platform/uart/uart_7.cpp"),
+    env.File(r"src/modm/platform/uart/uart_8.cpp"),
     env.File(r"src/modm/ui/display/character_display.cpp"),
     env.File(r"src/modm/ui/display/font/all_caps_3x5.cpp"),
     env.File(r"src/modm/ui/display/font/arcade_classic.cpp"),

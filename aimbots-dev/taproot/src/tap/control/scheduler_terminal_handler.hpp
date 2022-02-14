@@ -28,7 +28,7 @@ namespace tap
 class Drivers;
 namespace control
 {
-class SchedulerTerminalHandler : public communication::serial::ITerminalSerialCallback
+class SchedulerTerminalHandler : public communication::serial::TerminalSerialCallbackInterface
 {
 public:
     static constexpr char HEADER[] = "scheduler";

@@ -46,25 +46,19 @@ void SchedulerTerminalHandler::terminalSerialStreamCallback(modm::IOStream& outp
 bool SchedulerTerminalHandler::terminalSerialCallback(
     char* inputLine,
     modm::IOStream& outputStream,
-    bool)
+    bool streamingEnabled)
 {
     char* arg = strtokR(inputLine, communication::serial::TerminalSerial::DELIMITERS, &inputLine);
 
-    if (arg == nullptr || strcmp(arg, "-H") == 0)
-    {
-        outputStream << USAGE;
-        return arg != nullptr;
-    }
-    else if (strcmp(arg, "allsubcmd") == 0)
+    if (arg != nullptr && strcmp(arg, "allsubcmd") == 0)
     {
         printInfo(outputStream);
         return true;
     }
     else
     {
-        outputStream << "Command not found, try again, type \"scheduler -H\" for more."
-                     << modm::endl;
-        return false;
+        outputStream << USAGE;
+        return (arg != nullptr) && !streamingEnabled && (strcmp(arg, "-H") == 0);
     }
 }
 

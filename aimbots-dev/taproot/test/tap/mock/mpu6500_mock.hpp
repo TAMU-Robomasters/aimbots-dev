@@ -37,7 +37,7 @@ public:
     MOCK_METHOD(void, init, (), (override));
     MOCK_METHOD(void, periodicIMUUpdate, (), (override));
     MOCK_METHOD(bool, read, (), (override));
-    MOCK_METHOD(bool, initialized, (), (const override));
+    MOCK_METHOD(tap::sensors::Mpu6500::ImuState, getImuState, (), (const override));
     MOCK_METHOD(float, getAx, (), (const override));
     MOCK_METHOD(float, getAy, (), (const override));
     MOCK_METHOD(float, getAz, (), (const override));

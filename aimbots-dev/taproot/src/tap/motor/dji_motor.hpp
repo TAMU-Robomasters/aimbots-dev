@@ -29,8 +29,12 @@
 
 namespace tap::motor
 {
-// for declaring a new motor, must be one of these motor
-// identifiers
+/**
+ * CAN IDs for the feedback messages sent by DJI motor controllers. Motor `i` in the set
+ * {1, 2,...,8} sends feedback data with in a CAN message with ID 0x200 + `i`.
+ * for declaring a new motor, must be one of these motor
+ * identifiers
+ */
 enum MotorId : int32_t
 {
     MOTOR1 = 0X201,
@@ -43,61 +47,110 @@ enum MotorId : int32_t
     MOTOR8 = 0x208,
 };
 
-// extend the CanRxListener class, which allows one to connect a
-// motor to the receive handler and use the class's built in
-// receive handler
+/**
+ * A class designed to interface with DJI brand motors and motor controllers over CAN.
+ * This includes the C610 and C620 motor controllers and the GM6020 motor (that has a
+ * built-in motor controller).
+ *
+ * @note: the default positive rotation direction (i.e.: when `this->isMotorInverted()
+ *      == false`) is counter clockwise when looking at the shaft from the side opposite
+ *      the motor. This is specified in the C620 user manual (page 18).
+ *
+ * DJI motor encoders store a consistent encoding for a given angle across power-cycles.
+ * This means the encoder angle reported by the motor can have meaning if the encoding
+ * for an angle is unique as it is for the GM6020s. However for geared motors like the
+ * M3508 where a full encoder revolution does not correspond 1:1 to a shaft revolution,
+ * it is impossible to know the orientation of the shaft given just the encoder value.
+ *
+ * Extends the CanRxListener class to attach a message handler for feedback data from the
+ * motor to the CAN Rx dispatch handler.
+ */
 class DjiMotor : public can::CanRxListener, public MotorInterface
 {
 public:
     // 0 - 8191 for dji motors
     static constexpr uint16_t ENC_RESOLUTION = 8192;
 
-    // construct new motor
+    /**
+     * @param drivers a pointer to the drivers struct
+     * @param desMotorIdentifier the ID of this motor controller
+     * @param motorCanBus the CAN bus the motor is on
+     * @param isInverted if `false` the positive rotation direction of the shaft is
+     *      counter-clockwise when looking at the shaft from the side opposite the motor.
+     *      If `true` then the positive rotation direction will be clockwise.
+     * @param name a name to associate with the motor for use in the motor menu
+     * @param encoderWrapped the starting encoderValue to store for this motor.
+     *      Will be overwritten by the first reported encoder value from the motor
+     * @param encoderRevolutions the starting number of encoder revolutions to store.
+     *      See comment for DjiMotor::encoderRevolutions for more details.
+     */
     DjiMotor(
         Drivers* drivers,
         MotorId desMotorIdentifier,
         tap::can::CanBus motorCanBus,
         bool isInverted,
         const char* name,
-        uint16_t encWrapped = ENC_RESOLUTION / 2,
-        int64_t encRevolutions = 0);
+        uint16_t encoderWrapped = ENC_RESOLUTION / 2,
+        int64_t encoderRevolutions = 0);
 
     mockable ~DjiMotor();
 
     void initialize() override;
 
-    // formerly encoderstore
     int64_t getEncoderUnwrapped() const override;
 
-    // formerly encoderstore
     uint16_t getEncoderWrapped() const override;
 
     DISALLOW_COPY_AND_ASSIGN(DjiMotor)
 
-    // overrides virtual method in the can class, called every time a message is
-    // received by the can receive handler
+    /**
+     * Overrides virtual method in the can class, called every time a message with the
+     * CAN message id this class is attached to is received by the can receive handler.
+     * Parses the data in the message and updates this class's fields accordingly.
+     *
+     * @param[in] message the message to be processed.
+     */
     void processMessage(const modm::can::Message& message) override { parseCanRxData(message); }
 
-    // Accept a larger value in case someone is stupid and gave something smaller or greater
-    // than 2^16, then limit it.
-    // Limiting should typically be done on a motor by motor basis in a wrapper class, this
-    // is simply a sanity check.
+    /**
+     * Set the desired output for the motor. The meaning of this value is motor
+     * controller specific.
+     *
+     * @param[in] desiredOutput the desired motor output. Limited to the range of a 16-bit int.
+     *
+     * @note: `desiredOutput` is cast to an int16_t and limited to an int16_t's range! The
+     *      user should make sure their value is in range. The declaration takes an int32_t
+     *      in hopes to mitigate overflow.
+     */
     void setDesiredOutput(int32_t desiredOutput) override;
 
+    /**
+     * @return `true` if a CAN message has been received from the motor within the last
+     *      `MOTOR_DISCONNECT_TIME` ms, `false` otherwise.
+     */
     bool isMotorOnline() const override;
 
-    // Serializes send data and deposits it in a message to be sent.
+    /**
+     * Serializes send data and deposits it in a message to be sent.
+     */
     mockable void serializeCanSendData(modm::can::Message* txMessage) const;
 
-    // getter functions
+    /**
+     * @return the raw `desiredOutput` value which will be sent to the motor controller
+     *      (specified via `setDesiredOutput()`)
+     */
     int16_t getOutputDesired() const override;
 
     mockable uint32_t getMotorIdentifier() const;
 
+    /**
+     * @return the temperature of the motor as reported by the motor in degrees Celsius
+     */
     int8_t getTemperature() const override;
 
     int16_t getTorque() const override;
 
+    /** For interpreting the sign of return value see class comment */
     int16_t getShaftRPM() const override;
 
     mockable bool isMotorInverted() const;
@@ -135,10 +188,15 @@ private:
 
     const char* motorName;
 
-    // formerly encoderstore
+    /**
+     * Updates the stored encoder value given a newly received encoder value
+     * special logic necessary for keeping track of unwrapped encoder value.
+     */
     void updateEncoderValue(uint16_t newEncWrapped);
 
-    // Parses receive data given message with the correct identifier.
+    /**
+     * Parses the data from a DJI motor feedback CAN message.
+     */
     void parseCanRxData(const modm::can::Message& message);
 
     Drivers* drivers;
@@ -155,12 +213,26 @@ private:
 
     int16_t torque;
 
+    /**
+     * If `false` the positive rotation direction of the shaft is counter-clockwise when
+     * looking at the shaft from the side opposite the motor. If `true` then the positive
+     * rotation direction will be clockwise.
+     */
     bool motorInverted;
 
-    // formerly encoderstore
+    /**
+     * The raw encoder value reported by the motor controller. It wraps around from
+     * {0..8191}, hence "Wrapped"
+     */
     uint16_t encoderWrapped;
 
-    // formerly encoderstore
+    /**
+     * Absolute unwrapped encoder position =
+     *      encoderRevolutions * ENCODER_RESOLUTION + encoderWrapped
+     * This lets us keep track of some sense of absolute position even while
+     * raw encoderValue continuosly loops within {0..8191}. Origin value is
+     * arbitrary.
+     */
     int64_t encoderRevolutions;
 
     tap::arch::MilliTimeout motorDisconnectTimeout;

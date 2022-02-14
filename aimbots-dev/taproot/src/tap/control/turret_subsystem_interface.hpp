@@ -22,7 +22,7 @@
 
 #include "tap/algorithms/contiguous_float.hpp"
 
-#include "../subsystem.hpp"
+#include "subsystem.hpp"
 
 namespace tap::control::turret
 {

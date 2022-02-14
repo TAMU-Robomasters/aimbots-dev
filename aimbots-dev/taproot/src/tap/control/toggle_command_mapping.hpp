@@ -32,6 +32,9 @@ class RemoteMapState;
 /**
  * A CommandMapping that adds `Command`s when the contained mapping
  * is toggled, and removes the `Command`s when the mapping is untoggled.
+ *
+ * When all of the commands in the toggle command mapping naturally ends,
+ * the toggle command mapping's internal state is reset to being not toggled.
  */
 class ToggleCommandMapping : public CommandMapping
 {

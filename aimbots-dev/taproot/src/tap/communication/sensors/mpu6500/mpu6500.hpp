@@ -47,6 +47,24 @@ namespace sensors
 class Mpu6500 : public ::modm::pt::Protothread
 {
 public:
+    /**
+     * Possible IMU states for the Mpu6500.
+     */
+    enum class ImuState
+    {
+        /** Indicates the IMU's init function was not called or initialization failed, so data from
+           this class will be undefined. */
+        IMU_NOT_CONNECTED,
+        /** Indicates the IMU is connected and reading data, but calibration offsets have not been
+           computed. */
+        IMU_NOT_CALIBRATED,
+        /** Indicates the IMU is in the process of computing calibration offsets. Data read when the
+           IMU is in this state is undefined. */
+        IMU_CALIBRATING,
+        /** Indicates the IMU is connected and calibration offsets have been computed. */
+        IMU_CALIBRATED,
+    };
+
     Mpu6500(Drivers *drivers);
     DISALLOW_COPY_AND_ASSIGN(Mpu6500)
     mockable ~Mpu6500() = default;
@@ -75,10 +93,17 @@ public:
     mockable bool read();
 
     /**
-     * To be safe, whenever you call the functions below, call this function to insure
-     * the data you are about to receive is not garbage.
+     * Returns the state of the IMU. Can be not connected, connected but not calibrated, calibrating
+     * or calibrated. When not connected, IMU data is undefiend. When not calibrated, IMU data is
+     * valid but the computed yaw angle data will drift. When calibrating, the IMU data is invalid.
+     * When calibrated, the IMU data is valid and assuming proper calibration the IMU data should
+     * not drift.
+     *
+     * To be safe, whenever you call functions that return IMU (acceleration, gyroscope,
+     * temperature, and angle) data, call this function to ensure the data you are about to receive
+     * is not undefined.
      */
-    mockable bool initialized() const;
+    mockable inline ImuState getImuState() const { return imuState; }
 
     /**
      * Returns the acceleration reading in the x direction, in
@@ -143,6 +168,11 @@ public:
     mockable float getTiltAngle();
 
     /**
+     * Uninitializes the mpu6500 and enters calibration mode.
+     */
+    mockable void requestCalibration();
+
+    /**
      * Use for converting from gyro values we receive to more conventional degrees / second.
      */
     static constexpr float LSB_D_PER_S_TO_D_PER_S = 16.384f;
@@ -156,9 +186,9 @@ private:
     static constexpr float ACCELERATION_SENSITIVITY = 4096.0f;
 
     /**
-     * The number of samples we take in order to determine the mpu offsets.
+     * The number of samples we take while calibrating in order to determine the mpu offsets.
      */
-    static constexpr float MPU6500_OFFSET_SAMPLES = 500;
+    static constexpr float MPU6500_OFFSET_SAMPLES = 1000;
 
     /**
      * The number of bytes read to read acceleration, gyro, and temperature.
@@ -225,7 +255,7 @@ private:
 
     Drivers *drivers;
 
-    bool imuInitialized = false;
+    ImuState imuState = ImuState::IMU_NOT_CONNECTED;
 
     tap::arch::MicroTimeout readRegistersTimeout;
     uint8_t tx = 0;  /// Byte used for reading data in the read protothread
@@ -244,15 +274,7 @@ private:
 
     uint8_t rxBuff[ACC_GYRO_TEMPERATURE_BUFF_RX_SIZE] = {0};
 
-    /**
-     * Compute the gyro offset values. @note this function blocks.
-     */
-    void calculateGyroOffset();
-
-    /**
-     * Calibrate accelerometer offset values. @note this function blocks.
-     */
-    void calculateAccOffset();
+    int calibrationSample = 0;
 
     // Functions for interacting with hardware directly.
 
@@ -288,12 +310,6 @@ private:
      * from that point.
      */
     void spiReadRegisters(uint8_t regAddr, uint8_t *pData, uint8_t len);
-
-    /**
-     * Reads the temperature high/low registers of the mpu6500 in a
-     * blocking fashion.
-     */
-    void readTemperatureBlocking();
 };
 
 }  // namespace sensors

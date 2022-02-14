@@ -39,7 +39,7 @@ public:
     MOCK_METHOD(
         void,
         addHeader,
-        (const char *, communication::serial::ITerminalSerialCallback *),
+        (const char *, communication::serial::TerminalSerialCallbackInterface *),
         (override));
 };  // class TerminalSerialMock
 }  // namespace mock
