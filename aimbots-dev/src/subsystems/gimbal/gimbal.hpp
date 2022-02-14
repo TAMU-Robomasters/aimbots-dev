@@ -1,6 +1,7 @@
 #pragma once
 
 #include <drivers.hpp>
+#include <modm/math.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 
@@ -13,34 +14,34 @@ public:
     void initialize() override;
     void refresh() override;
 
-    const char* getName() override { return "Gimbal"; }
+    const char* getName() override { return "Gimbal Subsystem"; }
 
-    inline void setYawMotorOutputAngleInDegrees(float angle);
-    inline void setYawMotorOutputAngleInRadians(float angle);
-    inline void displaceYawMotorOutputAngleInDegrees(float angle);
-    inline void displaceYawMotorOutputAngleInRadians(float angle);
+    void setYawMotorOutput(float output);
+    void setPitchMotorOutput(float output);
 
-    inline void setPitchMotorOutputAngleInDegrees(float angle);
-    inline void setPitchMotorOutputAngleInRadians(float angle);
-    inline void displacePitchMotorOutputAngleInDegrees(float angle);
-    inline void displacePitchMotorOutputAngleInRadians(float angle);
+    inline void setTargetYawAngleInDegrees(float angle) { targetYawAngle = modm::toRadian(angle); }
+    inline void setTargetYawAngleInRadians(float angle) { targetYawAngle = angle; }
+    inline void displacePitchYawAngleInDegrees(float delta) { targetYawAngle = currentYawAngle + modm::toRadian(delta); }
+    inline void displacePitchYawAngleInRadians(float delta) { targetYawAngle = currentYawAngle + delta; }
 
-    inline float getCurrentYawAngleInDegrees() const;
-    inline float getCurrentYawAngleInRadians() const;
-    inline float getCurrentPitchAngleInDegrees() const;
-    inline float getCurrentPitchAngleInRadians() const;
+    inline void setTargetPitchAngleInDegrees(float angle) { targetPitchAngle = modm::toRadian(angle); }
+    inline void setTargetPitchAngleInRadians(float angle) { targetPitchAngle = angle; }
+    inline void displaceTargetPitchAngleInDegrees(float delta) { targetPitchAngle = currentPitchAngle + modm::toRadian(delta); }
+    inline void displaceTargetPitchAngleInRadians(float delta) { targetPitchAngle = currentPitchAngle + delta; }
 
-    inline float getTargetYawAngleInDegrees() const;
-    inline float getTargetPitchAngleInDegrees() const;
-    inline float getTargetYawAngleInRadians() const;
-    inline float getTargetPitchAngleInRadians() const;
+    inline float getCurrentYawAngleInDegrees() const { return modm::toDegree(currentYawAngle); }
+    inline float getCurrentYawAngleInRadians() const { return currentYawAngle; }
+    inline float getCurrentPitchAngleInDegrees() const { return modm::toDegree(currentPitchAngle); }
+    inline float getCurrentPitchAngleInRadians() const { return currentPitchAngle; }
+
+    inline float getTargetYawAngleInDegrees() const { return modm::toDegree(targetYawAngle); }
+    inline float getTargetYawAngleInRadians() const { return targetYawAngle; }
+    inline float getTargetPitchAngleInDegrees() const { return modm::toDegree(targetPitchAngle); }
+    inline float getTargetPitchAngleInRadians() const { return targetPitchAngle; }
 
 private:
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
-
-    StockPID yawPID;
-    StockPID pitchPID;
 
     float currentYawAngle;   // in Radians
     float currentPitchAngle; // in Radians
