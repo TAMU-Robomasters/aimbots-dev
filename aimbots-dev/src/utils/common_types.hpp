@@ -6,6 +6,7 @@
 #include <tap/control/command.hpp>
 #include <tap/architecture/clock.hpp>
 
+// #include <bit_cast>
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"
@@ -36,3 +37,6 @@ using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
+
+// template <uint32_t f>
+// using bitToFloat = std::bit_cast<float>(f);

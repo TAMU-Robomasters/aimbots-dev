@@ -3,6 +3,7 @@
 #include <tap/architecture/clock.hpp>
 
 
+
 namespace src::Shooter{
 
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
@@ -26,7 +27,7 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
 }
 
 void ShooterSubsystem::initialize(){
-    lastTime = (float)tap::arch::clock::getTimeMilliseconds();
+    lastTime = tap::arch::clock::getTimeMilliseconds();
     topWheel.initialize();
     bottomWheel.initialize();
 }
@@ -37,8 +38,9 @@ void ShooterSubsystem::refresh(){
 
 std::vector<float>  ShooterSubsystem::calculateShooter(float RPM_Target){
     //calculate rpm
-    float time = (float)tap::arch::clock::getTimeMilliseconds();
-    float dt  = time - lastTime;
+    uint32_t time = tap::arch::clock::getTimeMilliseconds();
+    float dt =  ShooterSubsystem::ieee_float(time) -  ShooterSubsystem::ieee_float(lastTime);
+    // float dt  = std::bit_cast<float>(time) - std::bit_cast<float>(lastTime);
     float topError = RPM_Target - float(topWheel.getShaftRPM());
     float botError = RPM_Target - float(bottomWheel.getShaftRPM());
     float topRPM = PID.runController(topError,0, dt)+RPM_Target;
@@ -53,6 +55,15 @@ std::vector<float>  ShooterSubsystem::calculateShooter(float RPM_Target){
 void ShooterSubsystem::setDesiredOutputs(float RPM){
     topWheel.setDesiredOutput(RPM);
     bottomWheel.setDesiredOutput(RPM);
+}
+
+
+//this needs to be moved to a math class if it works. if not welp it can be deleted.
+float ShooterSubsystem::ieee_float(uint32_t f){
+    static_assert(sizeof(float) == sizeof f, "`float` has a weird size.");
+    float ret;
+    std::memcpy(&ret, &f, sizeof(float));
+    return ret;
 }
 
 }; //namespace src::Shooter

@@ -10,7 +10,6 @@ TEST(shooter, TEST_CALCULATE_FLYWHEEL){
     tap::Drivers d;
     src::Shooter::ShooterSubsystem c(&d);
 
-
     c.initialize();    
     std::vector<float> rpm = c.calculateShooter(100.0f);
     // float rpm [1] = c.calculateShooter(100);

@@ -29,8 +29,11 @@ namespace src::Shooter {
         DJIMotor* motors[2];
         float targetRPMs[2];
         static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
-        float lastTime;
+        uint32_t lastTime;
         SmoothPID PID;
+
+   // will need to be removed if this work and moved to a math class or get rewriten. 
+        float ieee_float(uint32_t time);
 
         public: 
         inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
