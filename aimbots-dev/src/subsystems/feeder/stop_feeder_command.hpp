@@ -8,9 +8,9 @@
 
 namespace src::Feeder {
 
-class StopFeeder : public TapCommand {
+class StopFeederCommand : public TapCommand {
    public:
-    StopFeeder(src::Drivers*, FeederSubsystem*);
+    StopFeederCommand(src::Drivers*, FeederSubsystem*);
     void initialize() override;
 
     void execute() override;

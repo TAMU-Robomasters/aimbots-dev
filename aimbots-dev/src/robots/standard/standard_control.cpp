@@ -13,6 +13,10 @@
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
+//
+#include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/run_feeder_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
 
 using namespace src::Chassis;
 
@@ -31,9 +35,12 @@ namespace StandardControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
+FeederSubsystem feeder(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+RunFeederCommand runFeederCommand(drivers(), &feeder, 1.0f);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -41,9 +48,15 @@ HoldCommandMapping leftSwitchUp(
     {&chassisDriveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&runFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&feeder);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -53,7 +66,7 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    // no default commands should be set
+    feeder.setDefaultCommand(&stopFeederCommand);
 }
 
 // Set commands scheduled on startup

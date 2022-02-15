@@ -15,7 +15,9 @@ namespace src::Feeder {
         mockable void initialize() override;
         mockable void refresh() override;
 
-        mockable int32_t setDesiredOutput(int32_t speed);
+        mockable void setDesiredOutput();
+
+        mockable int32_t updateRPM(int32_t rpm);
 
     #ifndef ENV_UNIT_TESTS
             private:
