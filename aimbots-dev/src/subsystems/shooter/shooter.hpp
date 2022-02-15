@@ -8,35 +8,32 @@
 #include "tap/control/subsystem.hpp"
 namespace src::Shooter {
 
-    enum MotorIndex{
-        TOP = 0,
-        BOT = 1
-    };
+enum MotorIndex {
+    TOP = 0,
+    BOT = 1
+};
 
-    class ShooterSubsystem : public tap::control::Subsystem {
-        public:
-        ShooterSubsystem(tap::Drivers* drivers);
+class ShooterSubsystem : public tap::control::Subsystem {
+   public:
+    ShooterSubsystem(tap::Drivers* drivers);
 
-        mockable void initialize() override;
-        void refresh() override;
+    mockable void initialize() override;
+    void refresh() override;
 
-        void setDesiredOutputs(float RPM);
+    void setDesiredOutputs(float RPM);
 
-        std::vector<float> calculateShooter(float RPM);
+    std::vector<float> calculateShooter(float RPM);
 
-        private:
-        DJIMotor topWheel, bottomWheel;
-        DJIMotor* motors[2];
-        float targetRPMs[2];
-        static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
-        uint32_t lastTime;
-        SmoothPID PID;
+   private:
+    DJIMotor topWheel, bottomWheel;
+    DJIMotor* motors[2];
+    float targetRPMs[2];
+    static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
+    uint32_t lastTime;
+    SmoothPID PID;
 
-   // will need to be removed if this work and moved to a math class or get rewriten. 
-        float ieee_float(uint32_t time);
-
-        public: 
-        inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
-        inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
-    };
-}; //namespace src::Shooter
+   public:
+    inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
+    inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
+};
+};  // namespace src::Shooter
