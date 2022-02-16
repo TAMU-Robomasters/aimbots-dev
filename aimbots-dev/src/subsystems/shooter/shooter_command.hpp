@@ -11,7 +11,7 @@ namespace src::Shooter {
 class ShooterCommand : public TapCommand
 {
     public:
-    ShooterCommand(src::Drivers* drivers, ShooterSubsystem* flywheel);
+    ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
@@ -27,4 +27,4 @@ class ShooterCommand : public TapCommand
     ShooterSubsystem* shooter;
 };
 
-}//namespace src::Flywheel
+}//namespace src::Shooter

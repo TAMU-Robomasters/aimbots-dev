@@ -6,7 +6,7 @@
 
 namespace src::Shooter {
 
-    ShooterCommand::ShooterCommand(src::Drivers* drivers, ShooterSubsystem* flywheel){
+    ShooterCommand::ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter){
         this->drivers = drivers;
         this->shooter = shooter;
     }
