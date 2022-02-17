@@ -39,6 +39,8 @@ public:
     inline float getTargetPitchAngleInDegrees() const { return modm::toDegree(targetPitchAngle); }
     inline float getTargetPitchAngleInRadians() const { return targetPitchAngle; }
 
+    #include <utils/robot_constants.hpp>
+
 private:
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
@@ -48,8 +50,6 @@ private:
 
     float targetYawAngle;   // in Radians
     float targetPitchAngle; // in Radians
-
-    #include <utils/robot_constants.hpp>
 };
 
 }  // namespace src::Gimbal

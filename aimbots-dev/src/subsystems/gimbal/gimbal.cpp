@@ -54,11 +54,15 @@ void GimbalSubsystem::initialize() {
 }
 
 void GimbalSubsystem::refresh(){
-    uint16_t currentYawEncoderPosition   = yawMotor.getEncoderWrapped();
-    uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
+    if(yawMotor.isMotorOnline()) {
+        uint16_t currentYawEncoderPosition   = yawMotor.getEncoderWrapped();
+        currentYawAngle = wrappedEncoderValueToRadians(currentYawEncoderPosition);
+    }
 
-    currentYawAngle   = wrappedEncoderValueToRadians(currentYawEncoderPosition);
-    currentPitchAngle = wrappedEncoderValueToRadians(currentPitchEncoderPosition);
+    if(pitchMotor.isMotorOnline()) {
+        uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
+        currentPitchAngle = wrappedEncoderValueToRadians(currentPitchEncoderPosition);
+    }
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output)

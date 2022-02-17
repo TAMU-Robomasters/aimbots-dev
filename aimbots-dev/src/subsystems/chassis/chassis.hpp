@@ -13,8 +13,8 @@ namespace src::Chassis {
         LF = 1,        //	|___| | |___|	    |  | |__
         RF = 2,        //	      |      	       |
         RB = 3         //	 ___  |  ___ 	   __  |  __
-                       //	| 0 |_|_| 3 |	  |  |_|_ __|
-                       //	|___|   |___|	  |__|    __|
+                       //	| 0 |_|_| 3 |	  | /|_|_ __|
+                       //	|___|   |___|	  |/_|    __|
     };
 
     class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
