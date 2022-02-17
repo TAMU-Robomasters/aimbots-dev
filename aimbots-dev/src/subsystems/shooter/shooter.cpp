@@ -48,10 +48,10 @@ void ShooterSubsystem::refresh() {
 void ShooterSubsystem::calculateShooter(float RPM_Target) {
     // calculate rpm
     float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-    // float dt = time - lastTime; 
-    float dt = 1; // only for moc testing.
-    float topError = RPM_Target - 90; //static_cast<float>(topWheel.getShaftRPM());
-    float botError = RPM_Target - 110; //static_cast<float>(bottomWheel.getShaftRPM());
+    float dt = time - lastTime;
+    // float dt = 1; // only for moc testing.
+    float topError = RPM_Target - static_cast<float>(topWheel.getShaftRPM());
+    float botError = RPM_Target - static_cast<float>(bottomWheel.getShaftRPM());
     this->targetRPMs[0] = topWheelPID.runController(topError, 0, dt) + RPM_Target;
     this->targetRPMs[1] = bottomWheelPID.runController(botError, 0, dt) + RPM_Target;
    
