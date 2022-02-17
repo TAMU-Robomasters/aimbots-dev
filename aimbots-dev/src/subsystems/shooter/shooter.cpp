@@ -9,15 +9,25 @@ namespace src::Shooter {
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
                                                             topWheel(drivers, TOP_SHOOTER_ID, FLY_BUS, false, "Flywheel One"),
                                                             bottomWheel(drivers, BOT_SHOOTER_ID, FLY_BUS, false, "Flywheel Two"),
-                                                            PID(
+                                                            topWheelPID(
+                                                                1,
                                                                 0,
                                                                 0,
+                                                                10,
+                                                                1000,
+                                                                1,
+                                                                1,
+                                                                1,
+                                                                0),
+                                                             bottomWheelPID(
+                                                                1.0f,
                                                                 0,
                                                                 0,
-                                                                0,
-                                                                0,
-                                                                0,
-                                                                0,
+                                                                10,
+                                                                1000,
+                                                                1,
+                                                                1,
+                                                                1,
                                                                 0) {
     motors[TOP] = &topWheel;
     motors[BOT] = &bottomWheel;
@@ -33,24 +43,29 @@ void ShooterSubsystem::refresh() {
     // update motor rpms
 }
 
-std::vector<float> ShooterSubsystem::calculateShooter(float RPM_Target) {
+//TODO: need to change this so that it is an array and not a vector. Also need to update it so that it actually uses better kp, kd, ki values.
+
+void ShooterSubsystem::calculateShooter(float RPM_Target) {
     // calculate rpm
     float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-    float dt = time - lastTime;
-    // float dt  = std::bit_cast<float>(time) - std::bit_cast<float>(lastTime);
-    float topError = RPM_Target - float(topWheel.getShaftRPM());
-    float botError = RPM_Target - float(bottomWheel.getShaftRPM());
-    float topRPM = PID.runController(topError, 0, dt) + RPM_Target;
-    float bottomRPM = PID.runController(botError, 0, dt) + RPM_Target;
+    // float dt = time - lastTime; 
+    float dt = 1; // only for moc testing.
+    float topError = RPM_Target - 90; //static_cast<float>(topWheel.getShaftRPM());
+    float botError = RPM_Target - 110; //static_cast<float>(bottomWheel.getShaftRPM());
+    this->targetRPMs[0] = topWheelPID.runController(topError, 0, dt) + RPM_Target;
+    this->targetRPMs[1] = bottomWheelPID.runController(botError, 0, dt) + RPM_Target;
+   
+    // std::cout << "Top RPM: " << topRPM << std::endl;
+    // std::cout << "Bottom RPM: " << bottomRPM << std::endl;
 
     lastTime = time;
-    std::vector<float> rpm = {topRPM, bottomRPM};
-    return rpm;
+
+    // return RPM;
 }
 
-void ShooterSubsystem::setDesiredOutputs(float RPM) {
-    topWheel.setDesiredOutput(RPM);
-    bottomWheel.setDesiredOutput(RPM);
+void ShooterSubsystem::setDesiredOutputs() {
+    topWheel.setDesiredOutput(targetRPMs[0]);
+    bottomWheel.setDesiredOutput(targetRPMs[1]);
 }
 
 };  // namespace src::Shooter

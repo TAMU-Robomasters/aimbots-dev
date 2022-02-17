@@ -20,18 +20,20 @@ class ShooterSubsystem : public tap::control::Subsystem {
     mockable void initialize() override;
     void refresh() override;
 
-    void setDesiredOutputs(float RPM);
+    void setDesiredOutputs();
 
-    std::vector<float> calculateShooter(float RPM);
+    void calculateShooter(float RPM_Target);
 
+
+    float targetRPMs[2];
    private:
     DJIMotor topWheel, bottomWheel;
     DJIMotor* motors[2];
-    float targetRPMs[2];
     static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
     uint32_t lastTime;
-    SmoothPID PID;
-
+    SmoothPID topWheelPID;
+    SmoothPID bottomWheelPID;
+    
    public:
     inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
     inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
