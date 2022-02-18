@@ -7,8 +7,7 @@
 using namespace tap::communication::serial;
 using namespace tap::algorithms;
 
-namespace StandardControl {
-
+namespace src::control {
 /**
  * @brief Gets the current X input from the operator.
  * As the remote only returns user input every 17ms, analog input is interpolated to get a smoother usable value.
@@ -95,4 +94,4 @@ float OperatorInterface::getGimbalPitchInput() {
     return 0.0f;
 }
 
-}  // namespace StandardControl
+}  // namespace src::control

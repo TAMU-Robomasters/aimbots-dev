@@ -57,7 +57,7 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *drivers) {
+void startupCommands(src::Drivers *) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -73,14 +73,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    StandardControl::initializeSubsystems();
+    StandardControl::registerSubsystems(drivers);
+    StandardControl::setDefaultCommands(drivers);
+    StandardControl::startupCommands(drivers);
+    StandardControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif

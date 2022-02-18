@@ -1,5 +1,7 @@
 #include "subsystems/chassis/chassis.hpp"
 
+#include <drivers.hpp>
+
 #include "utils/common_types.hpp"
 
 using namespace tap::algorithms;
@@ -48,8 +50,8 @@ ChassisSubsystem::ChassisSubsystem(
 #endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-      wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix()),
-      velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix())
+      velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+      wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
 //
 {
 #ifdef TARGET_SENTRY
@@ -116,9 +118,11 @@ void ChassisSubsystem::setDesiredOutputs(float x, float y, float r) {
 #if defined(TARGET_SENTRY)
     calculateRail(x);
 #elif defined(SWERVE)
-    calculateSwerve(x, y, r);
+    calculateSwerve(x, y, r,
+                    ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
-    calculateMecanum(x, y, r);
+    calculateMecanum(x, y, r,
+                     ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
 }
 
@@ -154,9 +158,29 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
         -y - x + chassisRotateTranslated * rightBackRotationRatio,
         -maxWheelSpeed,
         maxWheelSpeed);
+
+    desiredRotation = r;
 }
 
-void ChassisSubsystem::calculateSwerve(float, float, float) {}
+float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotationDesiredWheelspeed) {
+    // what we will multiply x and y speed by to take into account rotation
+    float rTranslationalGain = 1.0f;
+
+    // the x and y movement will be slowed by a fraction of auto rotation amount for maximizing
+    // power consumption when the wheel rotation speed for chassis rotationis greater than the
+    // MIN_ROTATION_THRESHOLD
+    if (fabsf(chassisRotationDesiredWheelspeed) > MIN_ROTATION_THRESHOLD) {
+        // power(max revolve speed - specified revolve speed, 2)
+        // / power(max revolve speed, 2)
+        rTranslationalGain = powf(MAX_WHEEL_SPEED_SINGLE_MOTOR + MIN_ROTATION_THRESHOLD -
+                                      fabsf(chassisRotationDesiredWheelspeed) / MAX_WHEEL_SPEED_SINGLE_MOTOR,
+                                  2.0f);
+        rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
+    }
+    return rTranslationalGain;
+}
+
+void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
 
 void ChassisSubsystem::calculateRail(float) {}
 

@@ -1,25 +1,62 @@
 #include "chassis_rel_drive.hpp"
 
-namespace src::Chassis::Movement {
+#include "utils/robot_specific_inc.hpp"
 
-void calculateChassisRelativeTargets(src::Drivers* drivers,
-                                     ChassisSubsystem* chassis,
-                                     float moveX,
-                                     float moveY,
-                                     float rotate) {
-    Matrix<float, 3, 1> c;
-    c[0][1] = moveX;
-    c[1][1] = moveY;
-    c[2][1] = rotate;
+namespace src::Chassis::Movement::Relative {
+
+void calculateUserDesiredMovement(src::Drivers* drivers,
+                                  ChassisSubsystem* chassis,
+                                  float* desiredXSpeed,
+                                  float* desiredYSpeed,
+                                  float desiredChassisRotation) {
+    if (drivers == nullptr || chassis == nullptr || desiredXSpeed == nullptr || desiredYSpeed == nullptr) {
+        return;
+    }
+
+    const float MAX_WHEEL_SPEED = ChassisSubsystem::getMaxUserWheelSpeed(
+        drivers->refSerial.getRefSerialReceivingData(),
+        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+    // what we will multiply x and y speed by to take into account rotation
+    float rTranslationalGain =
+        chassis->calculateRotationTranslationalGain(desiredChassisRotation) * MAX_WHEEL_SPEED;
+
+    *desiredXSpeed = limitVal<float>(
+                         drivers->controlOperatorInterface.getChassisXInput(),
+                         -rTranslationalGain,
+                         rTranslationalGain) *
+                     MAX_WHEEL_SPEED;
+
+    *desiredYSpeed = limitVal<float>(
+                         drivers->controlOperatorInterface.getChassisYInput(),
+                         -rTranslationalGain,
+                         rTranslationalGain) *
+                     MAX_WHEEL_SPEED;
 }
 
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
-    // put code here too ig... (yeah)
-    // take input from user
+    const float MAX_WHEEL_SPEED = ChassisSubsystem::getMaxUserWheelSpeed(
+        drivers->refSerial.getRefSerialReceivingData(),
+        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-    // calculate chassis relative targets
+    float chassisRotationDesiredWheelspeed =
+        drivers->controlOperatorInterface.getChassisRotationInput() * MAX_WHEEL_SPEED;
+
+    float chassisXDesiredWheelspeed = 0.0f;
+    float chassisYDesiredWheelspeed = 0.0f;
+
+    calculateUserDesiredMovement(
+        drivers,
+        chassis,
+        &chassisXDesiredWheelspeed,
+        &chassisYDesiredWheelspeed,
+        chassisRotationDesiredWheelspeed);
 
     // set chassis targets using setDesiredOutputs
-    chassis->setDesiredOutputs(0, 0, 0);
+    chassis->setDesiredOutputs(
+        chassisXDesiredWheelspeed,
+        chassisYDesiredWheelspeed,
+        chassisRotationDesiredWheelspeed);
+    // chassis->setDesiredOutputs(0, 0, 0);
 }
-}  // namespace src::Chassis::Movement
+}  // namespace src::Chassis::Movement::Relative

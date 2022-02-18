@@ -66,3 +66,25 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+
+/**
+ * @brief Power constants for chassis
+ */
+static constexpr int MIN_WHEEL_SPEED_SINGLE_MOTOR = 4000;
+static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
+static constexpr int MIN_CHASSIS_POWER = 40;
+static constexpr int MAX_CHASSIS_POWER = 120;
+static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
+    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
+
+/**
+ * @brief Behavior constants for chassis
+ */
+
+/**
+ * The minimum desired wheel speed for chassis rotation, measured in RPM before
+ * we start slowing down translational speed.
+ */
+static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;

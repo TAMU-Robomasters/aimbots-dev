@@ -2,11 +2,11 @@
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "tap/util_macros.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 using namespace tap::algorithms;
 
-namespace StandardControl {
+namespace src::control {
 
 class OperatorInterface {
    private:
@@ -33,4 +33,4 @@ class OperatorInterface {
     mockable float getGimbalPitchInput();
 };
 
-}  // namespace StandardControl
+}  // namespace src::control
