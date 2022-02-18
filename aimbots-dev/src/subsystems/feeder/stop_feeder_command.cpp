@@ -6,10 +6,12 @@ namespace src::Feeder {
             addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
         }
     
-    void StopFeederCommand::initialize() {}
+    void StopFeederCommand::initialize() {
+        feeder->updateRPM(0.0f);
+    }
 
     void StopFeederCommand::execute() {
-          feeder->setDesiredOutput(0); 
+          feeder->setDesiredOutput(); 
     }
 
     void StopFeederCommand::end(bool) {}

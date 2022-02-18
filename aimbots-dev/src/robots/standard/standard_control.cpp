@@ -19,6 +19,7 @@
 #include "subsystems/feeder/stop_feeder_command.hpp"
 
 using namespace src::Chassis;
+using namespace src::Feeder;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here

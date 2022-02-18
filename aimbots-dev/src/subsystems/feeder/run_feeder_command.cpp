@@ -1,4 +1,4 @@
-#include "run_feeder_command_commmand.hpp"
+#include "run_feeder_command.hpp"
 
 namespace src::Feeder {
     RunFeederCommand::RunFeederCommand(src::Drivers * drivers, FeederSubsystem * feeder, float speed)
@@ -6,10 +6,12 @@ namespace src::Feeder {
             addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
         }
     
-    void RunFeederCommand::initialize() {}
+    void RunFeederCommand::initialize() {
+        feeder->updateRPM(speed);
+    }
 
     void RunFeederCommand::execute() {
-          feeder->setDesiredOutput(speed); 
+          feeder->setDesiredOutput(); 
     }
 
     void RunFeederCommand::end(bool) {}
