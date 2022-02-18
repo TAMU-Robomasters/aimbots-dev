@@ -35,9 +35,9 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
     void setDesiredOutputs(float x, float y, float r);
 
-    void calculateMecanum(float x, float y, float r);  // normal 4wd mecanum robots
-    void calculateSwerve(float x, float y, float r);   // swerve drive robots
-    void calculateRail(float x);                       // sentry rail robots
+    void calculateMecanum(float x, float y, float r, float maxWheelSpeed = 1000);  // normal 4wd mecanum robots
+    void calculateSwerve(float x, float y, float r);                               // swerve drive robots
+    void calculateRail(float x);                                                   // sentry rail robots
 
     inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
 

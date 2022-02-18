@@ -1,5 +1,9 @@
 #include "subsystems/chassis/chassis.hpp"
 
+#include "utils/common_types.hpp"
+
+using namespace tap::algorithms;
+
 namespace src::Chassis {
 
 // Allows user to call a DJIMotor member function on all chassis motors
@@ -13,7 +17,8 @@ void ChassisSubsystem::ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args
     }
 }
 
-// Allows user to call function for all chassis motors that takes a DJIMotor and some arguments
+// Allows user to call function for all chassis motors that takes the wheel index, wheel_per_motor index, and any arguments
+// For a non-DJIMotor member function to be usable by ForAllChassisMotors, it must take two integers as arguments so it can identify the wheel and motor
 template <class... Args>
 void ChassisSubsystem::ForAllChassisMotors(void (ChassisSubsystem::*func)(int, int, Args...), Args... args) {
     for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
@@ -117,7 +122,38 @@ void ChassisSubsystem::setDesiredOutputs(float x, float y, float r) {
 #endif
 }
 
-void ChassisSubsystem::calculateMecanum(float x, float y, float r) {
+void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
+    // get distance from wheel to center of wheelbase
+    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+
+    // offset gimbal center from center of wheelbase so we rotate around the gimbal
+    float leftFrontRotationRatio =
+        modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightFrontRotationRatio =
+        modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
+    float leftBackRotationRatio =
+        modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightBackRotationRatio =
+        modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
+
+    float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
+
+    targetRPMs[LF][0] = limitVal<float>(
+        y + x + chassisRotateTranslated * leftFrontRotationRatio,
+        -maxWheelSpeed,
+        maxWheelSpeed);
+    targetRPMs[RF][0] = limitVal<float>(
+        y - x + chassisRotateTranslated * rightFrontRotationRatio,
+        -maxWheelSpeed,
+        maxWheelSpeed);
+    targetRPMs[LB][0] = limitVal<float>(
+        -y + x + chassisRotateTranslated * leftBackRotationRatio,
+        -maxWheelSpeed,
+        maxWheelSpeed);
+    targetRPMs[RB][0] = limitVal<float>(
+        -y - x + chassisRotateTranslated * rightBackRotationRatio,
+        -maxWheelSpeed,
+        maxWheelSpeed);
 }
 
 void ChassisSubsystem::calculateSwerve(float, float, float) {}
