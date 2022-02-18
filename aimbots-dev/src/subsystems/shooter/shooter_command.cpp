@@ -4,6 +4,8 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+#ifndef TARGET_ENGINEER
+
 namespace src::Shooter {
 
     ShooterCommand::ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter){
@@ -38,3 +40,5 @@ namespace src::Shooter {
     }
 
 }//namespace src::Shooter
+
+#endif //#ifndef TARGET_ENGINEER

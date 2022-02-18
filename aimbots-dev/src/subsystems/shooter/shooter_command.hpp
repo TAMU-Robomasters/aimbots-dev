@@ -6,6 +6,8 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+#ifndef TARGET_ENGINEER
+
 namespace src::Shooter {
 
 class ShooterCommand : public TapCommand
@@ -28,3 +30,5 @@ class ShooterCommand : public TapCommand
 };
 
 }//namespace src::Shooter
+
+#endif

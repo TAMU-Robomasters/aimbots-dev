@@ -4,6 +4,8 @@
 
 #include "utils/common_types.hpp"
 
+#ifndef TARGET_ENGINEER
+
 namespace src::Shooter {
 
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
@@ -69,3 +71,5 @@ void ShooterSubsystem::setDesiredOutputs() {
 }
 
 };  // namespace src::Shooter
+
+#endif //#ifndef TARGET_ENGINEER
