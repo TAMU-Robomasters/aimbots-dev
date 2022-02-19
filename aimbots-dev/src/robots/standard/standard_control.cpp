@@ -43,12 +43,18 @@ src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &shooterCommand},
+    {&chassisDriveCommand}, //&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// HoldRepeatCommandMapping leftSwitchUpRepeat(
+//     drivers(),
+    // {&shooterCommand},
+    // RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    
+    
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
-    drivers->commandScheduler.registerSubsystem(&chassis);
+    // drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&shooter);
 }
 
@@ -61,6 +67,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
+    shooter.setDefaultCommand(&shooterCommand);
 }
 
 // Set commands scheduled on startup
@@ -70,11 +77,14 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the standard's parts so we
     //       can make sure they're fully operational.
+    drivers->commandScheduler.addCommand(&shooterCommand);
+    
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+   // drivers->commandMapper.addMap(&leftSwitchUpRepeat);
 }
 
 }  // namespace StandardControl
