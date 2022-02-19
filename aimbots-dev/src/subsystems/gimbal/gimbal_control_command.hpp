@@ -9,7 +9,10 @@ namespace src::Gimbal {
 
 class GimbalControlCommand : public tap::control::Command {
 public:
-    GimbalControlCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*);
+    GimbalControlCommand(src::Drivers*,
+                         GimbalSubsystem*,
+                         GimbalChassisRelativeController*,
+                         float inputSensitivity);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -26,6 +29,7 @@ private:
 
     GimbalChassisRelativeController* controller;
 
+    float    userInputSensitivityFactor;
     uint32_t previousTime;
 };
 

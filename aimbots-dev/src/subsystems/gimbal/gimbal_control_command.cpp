@@ -4,11 +4,15 @@
 
 namespace src::Gimbal {
 
-GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem, GimbalChassisRelativeController* gimbalController)
+GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
+                                           GimbalSubsystem* gimbalSubsystem,
+                                           GimbalChassisRelativeController* gimbalController,
+                                           float inputSensitivity)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
+      userInputSensitivityFactor(inputSensitivity),
       previousTime(0) { }
 
 void GimbalControlCommand::initialize() {
@@ -21,14 +25,12 @@ void GimbalControlCommand::execute() {
     uint32_t deltaTime   = currentTime - previousTime;
     previousTime         = currentTime;
 
-    // FIXME: Factor in user input
     float targetYawAngle = gimbal->getTargetYawAngleInRadians() +
-                           0.0f;
+                           userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
     controller->runYawController(deltaTime, targetYawAngle);
 
-    // FIXME: Factor in user input
     float targetPitchAngle = gimbal->getTargetPitchAngleInRadians() +
-                             0.0f;
+                           userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
     controller->runPitchController(deltaTime, targetPitchAngle);
 }
 
