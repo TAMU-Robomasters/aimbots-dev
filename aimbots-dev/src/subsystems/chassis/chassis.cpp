@@ -2,6 +2,7 @@
 
 #include <drivers.hpp>
 
+#include "tap/communication/gpio/leds.hpp"
 #include "utils/common_types.hpp"
 
 using namespace tap::algorithms;

@@ -13,6 +13,10 @@ ChassisDriveCommand::ChassisDriveCommand(src::Drivers* drivers, ChassisSubsystem
 void ChassisDriveCommand::initialize() {}
 
 void ChassisDriveCommand::execute() {
+    drivers->leds.set(tap::gpio::Leds::B, true);
+    drivers->leds.set(tap::gpio::Leds::D, true);
+    drivers->leds.set(tap::gpio::Leds::F, true);
+    drivers->leds.set(tap::gpio::Leds::H, true);
     Movement::Relative::onExecute(drivers, chassis);
 }
 
