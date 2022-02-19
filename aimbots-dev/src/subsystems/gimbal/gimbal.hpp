@@ -1,7 +1,7 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <modm/math.hpp>
+#include <tap/algorithms/math_user_utils.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
@@ -35,10 +35,10 @@ public:
     inline float getCurrentPitchAngleInDegrees() const { return modm::toDegree(currentPitchAngle.getValue()); }
     inline float getCurrentPitchAngleInRadians() const { return currentPitchAngle.getValue(); }
 
-    inline float getCurrentYawAngleFromCenterInDegrees() const;
-    inline float getCurrentYawAngleFromCenterInRadians() const;
-    inline float getCurrentPitchAngleFromCenterInDegrees() const;
-    inline float getCurrentPitchAngleFromCenterInRadians() const;
+    float getCurrentYawAngleFromCenterInDegrees() const;
+    float getCurrentYawAngleFromCenterInRadians() const;
+    float getCurrentPitchAngleFromCenterInDegrees() const;
+    float getCurrentPitchAngleFromCenterInRadians() const;
 
     inline tap::algorithms::ContiguousFloat const& getContiguousCurrentYawAngle() const { return currentYawAngle; }
     inline tap::algorithms::ContiguousFloat const& getContiguousCurrentPitchAngle() const { return currentPitchAngle; }

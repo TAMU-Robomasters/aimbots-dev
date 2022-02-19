@@ -1,7 +1,5 @@
 #pragma once
 
-#include <tap/algorithms/math_user_utils.hpp>
-
 namespace src::Gimbal::Calculations {
 
 /**

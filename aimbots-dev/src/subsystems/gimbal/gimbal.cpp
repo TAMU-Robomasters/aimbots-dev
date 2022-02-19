@@ -1,7 +1,5 @@
 #include "gimbal.hpp"
 
-#include <tap/algorithms/math_user_utils.hpp>
-
 //
 // Conversion helper functions
 //

@@ -1,4 +1,4 @@
-#include "gimbal_chassis_relative_controller.hpp";
+#include "gimbal_chassis_relative_controller.hpp"
 
 #include <subsystems/gimbal/controllers/gimbal_gravity_helper.hpp>
 

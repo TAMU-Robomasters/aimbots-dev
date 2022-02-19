@@ -1,5 +1,7 @@
 #include "gimbal_gravity_helper.hpp"
 
+#include <tap/algorithms/math_user_utils.hpp>
+
 float computeGravitationalForceOffset(
     float cgX,
     float cgZ,
@@ -9,7 +11,7 @@ float computeGravitationalForceOffset(
     bool isCGXZero = tap::algorithms::compareFloatClose(cgX, 0.0f, 1E-5);
     bool isCGZZero = tap::algorithms::compareFloatClose(cgZ, 0.0f, 1E-5);
 
-    if(isCGZZero && isCGZZero) {
+    if(isCGXZero && isCGZZero) {
         return 0.0f;
     }
 

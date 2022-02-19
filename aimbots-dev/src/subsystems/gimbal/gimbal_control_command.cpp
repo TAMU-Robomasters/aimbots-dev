@@ -39,6 +39,8 @@ bool GimbalControlCommand::isReady() { return !isFinished(); }
 bool GimbalControlCommand::isFinished() const { return !controller->isOnline(); }
 
 void GimbalControlCommand::end(bool interrupted) {
+    (void)interrupted;
+
     gimbal->setYawMotorOutput(0);
     gimbal->setPitchMotorOutput(0);
 }
