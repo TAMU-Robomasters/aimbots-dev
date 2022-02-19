@@ -35,6 +35,16 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
+static constexpr float YAW_START_ANGLE = 90.0f;
+static constexpr float PITCH_START_ANGLE = 90.0f;
+
+/**
+ * Constants for gimbal gravity compensation
+ */
+static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_X = 0.0f; // millimeters
+static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z = 0.0f; // millimeters
+static constexpr float GRAVITY_COMPENSATION_MAX          = 10.0f;
+
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
