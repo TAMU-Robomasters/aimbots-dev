@@ -13,7 +13,9 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       userInputSensitivityFactor(inputSensitivity),
-      previousTime(0) { }
+      previousTime(0) {
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
+}
 
 void GimbalControlCommand::initialize() {
     controller->initialize();
