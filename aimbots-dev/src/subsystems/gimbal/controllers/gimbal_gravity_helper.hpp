@@ -3,7 +3,7 @@
 namespace src::Gimbal::Calculations {
 
 /**
- * This came from UW's code. The original source file can be found
+ * This came from UW's code (huge thanks to the g's at UW). The original source file can be found
  * here: https://github.com/uw-advanced-robotics/aruw-mcb/blob/develop/aruw-mcb-project/src/aruwsrc/control/turret/algorithms/turret_gravity_compensation.hpp
  * 
  * @param[in] cgX The center of gravity relative to the center of the turret's pitch pivot point

@@ -11,10 +11,12 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_control_command.hpp"
+#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/controllers/constants/gimbal_controller_constants.hpp"
 
-using namespace src::Chassis;
+using namespace src::Gimbal;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -30,30 +32,26 @@ using namespace tap::control;
 namespace StandardControl {
 
 // Define subsystems here ------------------------------------------------
-ChassisSubsystem chassis(drivers());
+GimbalSubsystem gimbal(drivers());
+
+GimbalChassisRelativeController gimbalController(&gimbal, Constants::ChassisRelative::YAW_PID_CONFIG, Constants::ChassisRelative::PITCH_PID_CONFIG);
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-
-// Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {&chassisDriveCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 1.0f);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
-    drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&gimbal);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    chassis.initialize();
+    gimbal.initialize();
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {
-    // no default commands should be set
+void setDefaultCommands(src::Drivers* drivers) {
+    gimbal.setDefaultCommand(&gimbalControlCommand);
 }
 
 // Set commands scheduled on startup
@@ -63,12 +61,11 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the standard's parts so we
     //       can make sure they're fully operational.
+    drivers->commandScheduler.addCommand(&gimbalControlCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-}
+void registerIOMappings(src::Drivers *drivers) { }
 
 }  // namespace StandardControl
 

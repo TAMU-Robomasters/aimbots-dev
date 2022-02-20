@@ -90,7 +90,7 @@
             "presentation": {
                 "panel": "new"
             },
-            "command": "pipenv run scons build profile=debug profiling=true",
+            "command": "pipenv run scons build profile=debug profiling=false",
             "group": "build",
             "problemMatcher": [],
             "options": {

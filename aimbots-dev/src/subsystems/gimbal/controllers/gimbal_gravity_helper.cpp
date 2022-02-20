@@ -2,6 +2,8 @@
 
 #include <tap/algorithms/math_user_utils.hpp>
 
+namespace src::Gimbal::Calculations {
+
 float computeGravitationalForceOffset(
     float cgX,
     float cgZ,
@@ -23,4 +25,6 @@ float computeGravitationalForceOffset(
     }
 
     return gravityCompensationMax * cosf(gimbalCGPolarTheta + pitchAngleFromCenter);
+}
+
 }

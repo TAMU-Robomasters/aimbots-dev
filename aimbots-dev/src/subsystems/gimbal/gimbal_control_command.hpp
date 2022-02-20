@@ -31,6 +31,7 @@ private:
 
     float    userInputSensitivityFactor;
     uint32_t previousTime;
+    uint8_t  ledIndex;
 };
 
 }  // namespace src::Gimbal
