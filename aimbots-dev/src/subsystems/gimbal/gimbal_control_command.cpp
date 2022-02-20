@@ -41,22 +41,19 @@ void GimbalControlCommand::execute() {
     uint32_t deltaTime   = currentTime - previousTime;
     previousTime         = currentTime;
 
-    /*
+    /* Don't worry about the complicated stuff until we can get simple movement
     float targetYawAngle = gimbal->getTargetYawAngleInRadians() +
                            userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
-    */
 
     // Flip the target angle every 2 seconds
     float targetYawAngle = 0.0f;
-    if(currentTime % 1000 == 0) {
+    if(currentTime % 2000 == 0) {
        targetYawAngle = (targetYawAngle == 0.0f) ? M_PI : 0.0f;
     }
     controller->runYawController(deltaTime, targetYawAngle);
 
-    /*
     float targetPitchAngle = gimbal->getTargetPitchAngleInRadians() +
-                           userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
-    */
+                             userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
 
     // Flip the target angle every 2 seconds
     float targetPitchAngle = 0.0f;
@@ -64,6 +61,10 @@ void GimbalControlCommand::execute() {
         targetPitchAngle = (targetPitchAngle == 0.0f) ? M_PI : 0.0f;
     }
     controller->runPitchController(deltaTime, targetPitchAngle);
+    */
+
+    gimbal->setPitchMotorOutput(20.0f);
+    gimbal->setYawMotorOutput(20.0f);
 
     // Just a moving led so we know this code is running
     if(currentTime % 500 == 0) {
@@ -74,7 +75,6 @@ void GimbalControlCommand::execute() {
             drivers->leds.set(pins[7], false);
         ledIndex = (ledIndex + 1) % 8;
     }
-
 }
 
 bool GimbalControlCommand::isReady() { return !isFinished(); }
