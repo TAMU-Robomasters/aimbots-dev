@@ -54,7 +54,7 @@ HoldCommandMapping leftSwitchUp(
     
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
-    // drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&shooter);
 }
 

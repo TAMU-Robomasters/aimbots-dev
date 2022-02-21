@@ -3,6 +3,7 @@
 #include "tap/control/subsystem.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
+#include "tap/communication/gpio/leds.hpp"
 
 #ifndef TARGET_ENGINEER
 
@@ -15,7 +16,7 @@ namespace src::Shooter {
     }
 
     void ShooterCommand::initialize(){
-        shooter->initialize();
+        //shooter->initialize();
         // shooter->calculateShooter(100.0f);
         // shooter->setDesiredOutputs();
     }
@@ -24,11 +25,11 @@ namespace src::Shooter {
     void ShooterCommand::execute(){
         // drivers->leds.set(tap::gpio::Leds::A, true);
         drivers->leds.set(tap::gpio::Leds::B, true);
-        drivers->leds.set(tap::gpio::Leds::C, true);
-        drivers->leds.set(tap::gpio::Leds::D, true);
+        drivers->leds.set(tap::gpio::Leds::C, false);
+        drivers->leds.set(tap::gpio::Leds::D, false);
         drivers->leds.set(tap::gpio::Leds::E, true);
-        drivers->leds.set(tap::gpio::Leds::F, true);
-        drivers->leds.set(tap::gpio::Leds::G, true);
+        drivers->leds.set(tap::gpio::Leds::F, false);
+        drivers->leds.set(tap::gpio::Leds::G, false);
         drivers->leds.set(tap::gpio::Leds::H, true);
 
         shooter->calculateShooter(400.0f);        
