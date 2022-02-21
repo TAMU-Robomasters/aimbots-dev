@@ -40,7 +40,7 @@ FeederSubsystem feeder(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-RunFeederCommand runFeederCommand(drivers(), &feeder, 1.0f);
+RunFeederCommand runFeederCommand(drivers(), &feeder, 60.0f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 // Define command mappings here -------------------------------------------
@@ -51,7 +51,7 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand},
+    {&stopFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -63,15 +63,17 @@ void registerSubsystems(src::Drivers *drivers) {
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
+    feeder.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
+    feeder.setDefaultCommand(&runFeederCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
+    //drivers->commandScheduler.addCommand(&runFeederCommand);
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -82,6 +84,7 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace StandardControl

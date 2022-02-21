@@ -11,7 +11,15 @@ namespace src::Feeder {
     }
 
     void StopFeederCommand::execute() {
-          feeder->setDesiredOutput(); 
+        feeder->setDesiredOutput();
+        drivers->leds.set(tap::gpio::Leds::A,false);
+        drivers->leds.set(tap::gpio::Leds::B,false);
+        drivers->leds.set(tap::gpio::Leds::C,false);
+        drivers->leds.set(tap::gpio::Leds::D,false);
+        drivers->leds.set(tap::gpio::Leds::E,false);
+        drivers->leds.set(tap::gpio::Leds::F,true);
+        drivers->leds.set(tap::gpio::Leds::G,false);
+        drivers->leds.set(tap::gpio::Leds::H,true); 
     }
 
     void StopFeederCommand::end(bool) {}

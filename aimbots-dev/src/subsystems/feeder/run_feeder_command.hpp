@@ -6,6 +6,8 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+#include "tap/communication/gpio/leds.hpp"
+
 namespace src::Feeder {
 
 class RunFeederCommand : public TapCommand {
