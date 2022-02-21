@@ -2,6 +2,11 @@
 
 #include "utils/robot_specific_inc.hpp"
 
+float xFromRemote = 0.0f;
+
+int8_t chassisXDesiredWheelspeedWatch = 0;
+int8_t chassisYDesiredWheelspeedWatch = 0;
+
 namespace src::Chassis::Movement::Relative {
 
 void calculateUserDesiredMovement(src::Drivers* drivers,
@@ -57,6 +62,9 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         chassisXDesiredWheelspeed,
         chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);
+
+    chassisXDesiredWheelspeedWatch = (int8_t)(chassisXDesiredWheelspeed * 127);
+    chassisYDesiredWheelspeedWatch = (int8_t)(chassisYDesiredWheelspeed * 127);
     // chassis->setDesiredOutputs(0, 0, 0);
 }
 }  // namespace src::Chassis::Movement::Relative

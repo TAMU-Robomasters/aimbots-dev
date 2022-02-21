@@ -7,6 +7,9 @@
 using namespace tap::communication::serial;
 using namespace tap::algorithms;
 
+int8_t finalXWatch = 0;
+uint32_t timeCtr = 0;
+
 namespace src::control {
 /**
  * @brief Gets the current X input from the operator.
@@ -30,6 +33,8 @@ float OperatorInterface::getChassisXInput() {
     // Scales analog values by values defined in standard_constants.hpp to speedshift input
     finalX *= drivers->remote.keyPressed(tap::Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
     finalX *= drivers->remote.keyPressed(tap::Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+
+    finalXWatch = (int8_t)(finalX * 127.0f);
 
     return finalX;
 }

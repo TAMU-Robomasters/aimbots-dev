@@ -42,6 +42,28 @@ ChassisSubsystem::ChassisSubsystem(
       leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
       rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHAS_BUS, false, "Right Front Wheel Motor"),
       rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHAS_BUS, false, "Right Back Wheel Motor"),
+
+      leftBackWheelVelPID(VELOCITY_PID_KP,
+                          VELOCITY_PID_KI,
+                          VELOCITY_PID_KD,
+                          VELOCITY_PID_MAX_ERROR_SUM,
+                          VELOCITY_PID_MAX_OUTPUT),
+      leftFrontWheelVelPID(VELOCITY_PID_KP,
+                           VELOCITY_PID_KI,
+                           VELOCITY_PID_KD,
+                           VELOCITY_PID_MAX_ERROR_SUM,
+                           VELOCITY_PID_MAX_OUTPUT),
+      rightFrontWheelVelPID(VELOCITY_PID_KP,
+                            VELOCITY_PID_KI,
+                            VELOCITY_PID_KD,
+                            VELOCITY_PID_MAX_ERROR_SUM,
+                            VELOCITY_PID_MAX_OUTPUT),
+      rightBackWheelVelPID(VELOCITY_PID_KP,
+                           VELOCITY_PID_KI,
+                           VELOCITY_PID_KD,
+                           VELOCITY_PID_MAX_ERROR_SUM,
+                           VELOCITY_PID_MAX_OUTPUT),
+
 #ifdef SWERVE
       leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHAS_BUS, false, "Left Back Yaw Motor"),
       leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHAS_BUS, false, "Left Front Yaw Motor"),
@@ -144,19 +166,19 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
     targetRPMs[LF][0] = limitVal<float>(
-        y + x + chassisRotateTranslated * leftFrontRotationRatio,
+        x + y + chassisRotateTranslated * leftFrontRotationRatio,
         -maxWheelSpeed,
         maxWheelSpeed);
     targetRPMs[RF][0] = limitVal<float>(
-        y - x + chassisRotateTranslated * rightFrontRotationRatio,
+        x - y + chassisRotateTranslated * rightFrontRotationRatio,
         -maxWheelSpeed,
         maxWheelSpeed);
     targetRPMs[LB][0] = limitVal<float>(
-        -y + x + chassisRotateTranslated * leftBackRotationRatio,
+        -x + y + chassisRotateTranslated * leftBackRotationRatio,
         -maxWheelSpeed,
         maxWheelSpeed);
     targetRPMs[RB][0] = limitVal<float>(
-        -y - x + chassisRotateTranslated * rightBackRotationRatio,
+        -x - y + chassisRotateTranslated * rightBackRotationRatio,
         -maxWheelSpeed,
         maxWheelSpeed);
 
