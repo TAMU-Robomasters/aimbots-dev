@@ -7,7 +7,7 @@
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
 
-#ifndef TARGET_ENGINEER
+//#ifndef TARGET_ENGINEER
 namespace src::Shooter {
 
 enum MotorIndex {
@@ -42,4 +42,4 @@ class ShooterSubsystem : public tap::control::Subsystem {
 };
 };  // namespace src::Shooter
 
-#endif //#ifndef TARGET_ENGINEER
+//#endif TARGET_ENGINEER

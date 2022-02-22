@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 
 #include "drivers.hpp"
-#include "tap/control/subsystem.hpp"
 #include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/shooter_command.hpp"
 
-// using ::testing::NiceMock;
+using ::testing::NiceMock;
 TEST(shooter, TEST_CALCULATE_FLYWHEEL){
-    tap::Drivers d;
+    src::Drivers d;
     src::Shooter::ShooterSubsystem c(&d);
-    // src::Shooter::ShooterCommand shooterCMD(&d, &c)
+    //src::Shooter::ShooterCommand shooterCMD(&d, &c);
     // c.initialize();
 
     c.calculateShooter(100.0f);

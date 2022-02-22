@@ -4,34 +4,16 @@
 #include <tap/communication/gpio/leds.hpp>
 #include "utils/common_types.hpp"
 
-#ifndef TARGET_ENGINEER
+// #ifndef TARGET_ENGINEER
 
 namespace src::Shooter {
 
-ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),
-                                                                 
+ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),            
                                                             topWheel(drivers, TOP_SHOOTER_ID, FLY_BUS, false, "Flywheel One"),
                                                             bottomWheel(drivers, BOT_SHOOTER_ID, FLY_BUS, false, "Flywheel Two"),
-                                                            topWheelPID(
-                                                                1.0f,
-                                                                0,
-                                                                0,
-                                                                10,
-                                                                1000,
-                                                                1,
-                                                                1,
-                                                                1,
-                                                                0),
-                                                             bottomWheelPID(
-                                                                1.0f,
-                                                                0,
-                                                                0,
-                                                                10,
-                                                                1000,
-                                                                1,
-                                                                1,
-                                                                1,
-                                                                0) {
+                                                            topWheelPID(1.0f,0,0,10,1000,1,1,1,0),
+                                                            bottomWheelPID(1.0f,0,0,10,1000,1,1,1,0) 
+{
     motors[TOP] = &topWheel;
     motors[BOT] = &bottomWheel;
 }
@@ -45,8 +27,6 @@ void ShooterSubsystem::initialize() {
 
 void ShooterSubsystem::refresh() {
     // update motor rpms
-    calculateShooter(400.0f);
-    setDesiredOutputs();
 }
 
 
@@ -75,4 +55,4 @@ void ShooterSubsystem::setDesiredOutputs() {
 
 };  // namespace src::Shooter
 
-#endif //#ifndef TARGET_ENGINEER
+// #endif //#ifndef TARGET_ENGINEER

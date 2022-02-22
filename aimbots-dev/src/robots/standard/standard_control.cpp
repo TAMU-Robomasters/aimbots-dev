@@ -43,7 +43,7 @@ src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand}, //&shooterCommand},
+    {&chassisDriveCommand, &shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldRepeatCommandMapping leftSwitchUpRepeat(

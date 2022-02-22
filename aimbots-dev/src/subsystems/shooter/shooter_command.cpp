@@ -5,7 +5,7 @@
 #include "utils/robot_constants.hpp"
 #include "tap/communication/gpio/leds.hpp"
 
-#ifndef TARGET_ENGINEER
+//#ifndef TARGET_ENGINEER
 
 namespace src::Shooter {
 
@@ -53,4 +53,4 @@ namespace src::Shooter {
 
 }//namespace src::Shooter
 
-#endif //#ifndef TARGET_ENGINEER
+//#endif //#ifndef TARGET_ENGINEER
