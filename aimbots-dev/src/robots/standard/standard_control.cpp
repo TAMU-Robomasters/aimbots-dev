@@ -73,7 +73,7 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    //drivers->commandScheduler.addCommand(&runFeederCommand);
+    drivers->commandScheduler.addCommand(&runFeederCommand);
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
