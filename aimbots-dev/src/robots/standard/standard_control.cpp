@@ -39,6 +39,11 @@ GimbalChassisRelativeController gimbalController(&gimbal, Constants::ChassisRela
 // Define commands here ---------------------------------------------------
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 1.0f);
 
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {&gimbalControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
@@ -50,9 +55,7 @@ void initializeSubsystems() {
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers* drivers) {
-    gimbal.setDefaultCommand(&gimbalControlCommand);
-}
+void setDefaultCommands(src::Drivers* drivers) { }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -61,11 +64,12 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the standard's parts so we
     //       can make sure they're fully operational.
-    drivers->commandScheduler.addCommand(&gimbalControlCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { }
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&leftSwitchUp);
+}
 
 }  // namespace StandardControl
 

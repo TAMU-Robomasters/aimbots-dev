@@ -24,11 +24,11 @@ static constexpr MotorID LEFT_BACK_WHEEL_ID   = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID  = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID  = MotorID::MOTOR4;
-static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
-static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
+static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR1;
+static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR2;
 
 static constexpr CANBus CHASSIS_CAN_BUS = CANBus::CAN_BUS2;
-static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS1;
+static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS2;
 
 /**
  * This max output is measured in the c620 robomaster translated current.

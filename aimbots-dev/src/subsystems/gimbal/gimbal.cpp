@@ -8,22 +8,11 @@ static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
 
-//
-// Motor output helper
-//
-// TODO: In the future we might want to add some ability to limit the
-//       rotation of the motors, but for now this should be fine.
-//
-
 static inline void setMotorOutput(DJIMotor* motor, float output) {
-    // Here we limit the output of the motor so we don't have any weird
-    // overflow problems when it gets casted down to a 16-bit integer.
-
-    // FIXME: Get rid of these magic numbers
-    output = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
+    tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
 
     if(motor->isMotorOnline()) {
-        motor->setDesiredOutput(output);
+        motor->setDesiredOutput((int32_t)output);
     }
 }
 
@@ -49,11 +38,14 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
 void GimbalSubsystem::initialize() {
     yawMotor.initialize();
     pitchMotor.initialize();
+
+    yawMotor.setDesiredOutput(0);
+    pitchMotor.setDesiredOutput(0);
 }
 
-void GimbalSubsystem::refresh(){
+void GimbalSubsystem::refresh() {
     if(yawMotor.isMotorOnline()) {
-        uint16_t currentYawEncoderPosition   = yawMotor.getEncoderWrapped();
+        uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
     }
 
@@ -63,13 +55,11 @@ void GimbalSubsystem::refresh(){
     }
 }
 
-void GimbalSubsystem::setYawMotorOutput(float output)
-{
+void GimbalSubsystem::setYawMotorOutput(float output) {
     setMotorOutput(&yawMotor, output);
 }
 
-void GimbalSubsystem::setPitchMotorOutput(float output)
-{
+void GimbalSubsystem::setPitchMotorOutput(float output) {
     setMotorOutput(&pitchMotor, output);
 }
 

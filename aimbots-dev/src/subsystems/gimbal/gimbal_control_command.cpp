@@ -5,6 +5,9 @@
 
 namespace src::Gimbal {
 
+static float rightVertical = 0.0f;
+static float desiredOut = 0.0f;
+
 static tap::gpio::Leds::LedPin pins[8] = {
     tap::gpio::Leds::A,
     tap::gpio::Leds::B,
@@ -32,7 +35,6 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
 }
 
 void GimbalControlCommand::initialize() {
-    controller->initialize();
     previousTime = tap::arch::clock::getTimeMilliseconds();
 }
 
@@ -45,26 +47,31 @@ void GimbalControlCommand::execute() {
     float targetYawAngle = gimbal->getTargetYawAngleInRadians() +
                            userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
 
+    controller->runYawController(deltaTime, targetYawAngle);
     // Flip the target angle every 2 seconds
     float targetYawAngle = 0.0f;
     if(currentTime % 2000 == 0) {
        targetYawAngle = (targetYawAngle == 0.0f) ? M_PI : 0.0f;
     }
-    controller->runYawController(deltaTime, targetYawAngle);
 
     float targetPitchAngle = gimbal->getTargetPitchAngleInRadians() +
                              userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
 
+    controller->runPitchController(deltaTime, targetPitchAngle);
     // Flip the target angle every 2 seconds
     float targetPitchAngle = 0.0f;
     if (currentTime % 2000 == 0) {
         targetPitchAngle = (targetPitchAngle == 0.0f) ? M_PI : 0.0f;
     }
-    controller->runPitchController(deltaTime, targetPitchAngle);
     */
 
-    gimbal->setPitchMotorOutput(20.0f);
-    gimbal->setYawMotorOutput(20.0f);
+    rightVertical = drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
+    // float rightHorizontal = drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
+    desiredOut = 3000 * rightVertical;
+
+    gimbal->setPitchMotorOutput(desiredOut);
+    gimbal->setYawMotorOutput(desiredOut);
+    // gimbal->setYawMotorOutput(200.0f * rightHorizontal);
 
     // Just a moving led so we know this code is running
     if(currentTime % 500 == 0) {
@@ -77,9 +84,9 @@ void GimbalControlCommand::execute() {
     }
 }
 
-bool GimbalControlCommand::isReady() { return !isFinished(); }
+bool GimbalControlCommand::isReady() { return true; }
 
-bool GimbalControlCommand::isFinished() const { return !controller->isOnline(); }
+bool GimbalControlCommand::isFinished() const { return false; }
 
 void GimbalControlCommand::end(bool) {
     gimbal->setYawMotorOutput(0);
