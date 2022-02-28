@@ -1,14 +1,14 @@
 #pragma once
 
-#include <tap/control/command.hpp>
-#include <subsystems/gimbal/gimbal.hpp>
-#include <subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp>
 #include <drivers.hpp>
+#include <subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp>
+#include <subsystems/gimbal/gimbal.hpp>
+#include <tap/control/command.hpp>
 
 namespace src::Gimbal {
 
 class GimbalControlCommand : public tap::control::Command {
-public:
+   public:
     GimbalControlCommand(src::Drivers*,
                          GimbalSubsystem*,
                          GimbalChassisRelativeController*,
@@ -23,15 +23,15 @@ public:
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-private:
-    src::Drivers*    drivers;
+   private:
+    src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
     GimbalChassisRelativeController* controller;
 
-    float    userInputSensitivityFactor;
+    float userInputSensitivityFactor;
     uint32_t previousTime;
-    uint8_t  ledIndex;
+    uint8_t ledIndex;
 };
 
 }  // namespace src::Gimbal
