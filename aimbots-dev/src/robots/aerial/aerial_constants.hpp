@@ -44,8 +44,8 @@ static constexpr float POSITION_PID_MAX_OUTPUT = 10.0f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static constexpr float YAW_START_ANGLE = 90.0f;
-static constexpr float PITCH_START_ANGLE = 90.0f;
+static constexpr float YAW_START_ANGLE = M_PI_2;
+static constexpr float PITCH_START_ANGLE = M_PI_2;
 
 /**
  * Constants for gimbal gravity compensation

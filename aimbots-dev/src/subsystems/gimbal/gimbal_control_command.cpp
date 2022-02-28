@@ -64,12 +64,10 @@ void GimbalControlCommand::execute() {
     */
 
     rightVertical = drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
-    // float rightHorizontal = drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
     desiredOut = 3000 * rightVertical;
 
     gimbal->setPitchMotorOutput(desiredOut);
     gimbal->setYawMotorOutput(desiredOut);
-    // gimbal->setYawMotorOutput(200.0f * rightHorizontal);
 
     // Just a moving led so we know this code is running
     if (currentTime % 500 == 0) {

@@ -32,8 +32,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
                  "PITCH_MOTOR"),
       currentYawAngle(0.0f, 0.0f, M_TWOPI),
       currentPitchAngle(0.0f, 0.0f, M_TWOPI),
-      targetYawAngle(0.0f),
-      targetPitchAngle(0.0f) {}
+      targetYawAngle(YAW_START_ANGLE),
+      targetPitchAngle(PITCH_START_ANGLE) {}
 
 void GimbalSubsystem::initialize() {
     yawMotor.initialize();
@@ -65,7 +65,7 @@ void GimbalSubsystem::setPitchMotorOutput(float output) {
 
 float GimbalSubsystem::getCurrentYawAngleFromCenterInDegrees() const {
     return tap::algorithms::ContiguousFloat(
-               modm::toDegree(currentYawAngle.getValue()) - YAW_START_ANGLE,
+               modm::toDegree(currentYawAngle.getValue() - YAW_START_ANGLE),
                -180.0f,
                180.0f)
         .getValue();
@@ -73,7 +73,7 @@ float GimbalSubsystem::getCurrentYawAngleFromCenterInDegrees() const {
 
 float GimbalSubsystem::getCurrentYawAngleFromCenterInRadians() const {
     return tap::algorithms::ContiguousFloat(
-               currentYawAngle.getValue() - modm::toRadian(YAW_START_ANGLE),
+               currentYawAngle.getValue() - YAW_START_ANGLE,
                -M_PI,
                M_PI)
         .getValue();
@@ -81,7 +81,7 @@ float GimbalSubsystem::getCurrentYawAngleFromCenterInRadians() const {
 
 float GimbalSubsystem::getCurrentPitchAngleFromCenterInDegrees() const {
     return tap::algorithms::ContiguousFloat(
-               modm::toDegree(currentPitchAngle.getValue()) - PITCH_START_ANGLE,
+               modm::toDegree(currentPitchAngle.getValue() - PITCH_START_ANGLE),
                -180.0f,
                180.0f)
         .getValue();
@@ -89,7 +89,7 @@ float GimbalSubsystem::getCurrentPitchAngleFromCenterInDegrees() const {
 
 float GimbalSubsystem::getCurrentPitchAngleFromCenterInRadians() const {
     return tap::algorithms::ContiguousFloat(
-               currentPitchAngle.getValue() - modm::toRadian(PITCH_START_ANGLE),
+               currentPitchAngle.getValue() - PITCH_START_ANGLE,
                -M_PI,
                M_PI)
         .getValue();
