@@ -1,13 +1,13 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <utils/common_types.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
+#include <utils/common_types.hpp>
 
 namespace src::Gimbal {
 
 class GimbalChassisRelativeController {
-public:
+   public:
     GimbalChassisRelativeController(GimbalSubsystem*,
                                     tap::algorithms::SmoothPidConfig const& yawPIDConfig,
                                     tap::algorithms::SmoothPidConfig const& pitchPIDConfig);
@@ -18,11 +18,12 @@ public:
     void runPitchController(float deltaTime, float targetPitchAngle);
 
     bool isOnline() const;
-private:
+
+   private:
     GimbalSubsystem* gimbal;
 
     SmoothPID yawPID;
     SmoothPID pitchPID;
 };
 
-}  // src::Gimbal
+}  // namespace src::Gimbal

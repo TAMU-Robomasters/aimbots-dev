@@ -5,7 +5,7 @@ namespace src::Gimbal::Calculations {
 /**
  * This came from UW's code (huge thanks to the g's at UW). The original source file can be found
  * here: https://github.com/uw-advanced-robotics/aruw-mcb/blob/develop/aruw-mcb-project/src/aruwsrc/control/turret/algorithms/turret_gravity_compensation.hpp
- * 
+ *
  * @param[in] cgX The center of gravity relative to the center of the turret's pitch pivot point
  *      in the X (forward/back) direction. The "X" direction lies along the plane that the turret
  *      is pointing. Units in millimeters. Positive is forward, negative is backwards.
@@ -29,4 +29,4 @@ float computeGravitationalForceOffset(
     float pitchAngleFromCenter,
     float gravityCompensationMax);
 
-} // namespace src::Gimbal::Calculations
+}  // namespace src::Gimbal::Calculations

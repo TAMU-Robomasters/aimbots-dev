@@ -9,7 +9,7 @@ GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem
                                                                  tap::algorithms::SmoothPidConfig const& pitchPIDConfig)
     : gimbal(gimbalSubsystem),
       yawPID(yawPIDConfig),
-      pitchPID(pitchPIDConfig) { }
+      pitchPID(pitchPIDConfig) {}
 
 void GimbalChassisRelativeController::initialize() {
     yawPID.reset();
@@ -34,18 +34,18 @@ void GimbalChassisRelativeController::runPitchController(float deltaTime, float 
     float positionControllerError = gimbal->getContiguousCurrentPitchAngle().difference(gimbal->getTargetPitchAngleInRadians());
 
     float pitchPIDOutput = yawPID.runController(positionControllerError,
-                                              gimbal->getPitchMotorVelocity(),
-                                              deltaTime);
+                                                gimbal->getPitchMotorVelocity(),
+                                                deltaTime);
 
     pitchPIDOutput += Calculations::computeGravitationalForceOffset(
-        GimbalSubsystem::GIMBAL_CENTER_OF_GRAVITY_OFFSET_X,
-        GimbalSubsystem::GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z,
+        GIMBAL_CENTER_OF_GRAVITY_OFFSET_X,
+        GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z,
         -gimbal->getCurrentPitchAngleFromCenterInRadians(),
-        GimbalSubsystem::GRAVITY_COMPENSATION_MAX);
+        GRAVITY_COMPENSATION_MAX);
 
     gimbal->setPitchMotorOutput(pitchPIDOutput);
 }
 
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
 
-} // namespace src::Gimbal
+}  // namespace src::Gimbal

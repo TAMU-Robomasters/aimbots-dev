@@ -1,15 +1,15 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <tap/algorithms/math_user_utils.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
+#include <tap/algorithms/math_user_utils.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 
 namespace src::Gimbal {
 
 class GimbalSubsystem : public tap::control::Subsystem {
-public:
+   public:
     GimbalSubsystem(src::Drivers*);
 
     void initialize() override;
@@ -48,17 +48,17 @@ public:
     inline float getTargetPitchAngleInDegrees() const { return modm::toDegree(targetPitchAngle); }
     inline float getTargetPitchAngleInRadians() const { return targetPitchAngle; }
 
-    #include <utils/robot_constants.hpp>
+#include <utils/robot_specific_inc.hpp>
 
-private:
+   private:
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
 
-    tap::algorithms::ContiguousFloat currentYawAngle;   // in Radians
-    tap::algorithms::ContiguousFloat currentPitchAngle; // in Radians
+    tap::algorithms::ContiguousFloat currentYawAngle;    // in Radians
+    tap::algorithms::ContiguousFloat currentPitchAngle;  // in Radians
 
-    float targetYawAngle;   // in Radians
-    float targetPitchAngle; // in Radians
+    float targetYawAngle;    // in Radians
+    float targetPitchAngle;  // in Radians
 
     static inline float getMotorVelocity(DJIMotor const* motor) {
         return 360 / 60 * motor->getShaftRPM();

@@ -11,10 +11,10 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
+#include "subsystems/gimbal/controllers/constants/gimbal_controller_constants.hpp"
+#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/constants/gimbal_controller_constants.hpp"
 
 using namespace src::Gimbal;
 
@@ -50,12 +50,12 @@ void initializeSubsystems() {
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers* drivers) {
+void setDefaultCommands(src::Drivers *drivers) {
     gimbal.setDefaultCommand(&gimbalControlCommand);
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -65,7 +65,7 @@ void startupCommands(src::Drivers *) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { }
+void registerIOMappings(src::Drivers *drivers) {}
 
 }  // namespace StandardControl
 

@@ -13,8 +13,7 @@ static tap::gpio::Leds::LedPin pins[8] = {
     tap::gpio::Leds::E,
     tap::gpio::Leds::F,
     tap::gpio::Leds::G,
-    tap::gpio::Leds::H
-};
+    tap::gpio::Leds::H};
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
@@ -26,8 +25,7 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       controller(gimbalController),
       userInputSensitivityFactor(inputSensitivity),
       previousTime(0),
-      ledIndex(0)
-{
+      ledIndex(0) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
@@ -38,8 +36,8 @@ void GimbalControlCommand::initialize() {
 
 void GimbalControlCommand::execute() {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
-    uint32_t deltaTime   = currentTime - previousTime;
-    previousTime         = currentTime;
+    uint32_t deltaTime = currentTime - previousTime;
+    previousTime = currentTime;
 
     /* Don't worry about the complicated stuff until we can get simple movement
     float targetYawAngle = gimbal->getTargetYawAngleInRadians() +
@@ -67,9 +65,9 @@ void GimbalControlCommand::execute() {
     gimbal->setYawMotorOutput(20.0f);
 
     // Just a moving led so we know this code is running
-    if(currentTime % 500 == 0) {
+    if (currentTime % 500 == 0) {
         drivers->leds.set(pins[ledIndex], true);
-        if(ledIndex > 0)
+        if (ledIndex > 0)
             drivers->leds.set(pins[ledIndex - 1], false);
         else
             drivers->leds.set(pins[7], false);
