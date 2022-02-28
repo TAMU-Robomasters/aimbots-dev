@@ -21,19 +21,20 @@
 #define DRIVERS_HPP_
 
 #include "tap/drivers.hpp"
+#include "utils/robot_specific_inc.hpp"
 
-namespace src
-{
-class Drivers : public tap::Drivers
-{
+namespace src {
+class Drivers : public tap::Drivers {
     friend class DriversSingleton;
 
 #ifdef ENV_UNIT_TESTS
-public:
+   public:
 #endif
-    Drivers() : tap::Drivers() {}
+    Drivers() : tap::Drivers(),
+                controlOperatorInterface(this) {}
 
-public:
+   public:
+    control::OperatorInterface controlOperatorInterface;
 };  // class Drivers
 
 }  // namespace src

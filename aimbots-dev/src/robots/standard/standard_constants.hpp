@@ -1,8 +1,23 @@
 #pragma once
 #include "utils/common_types.hpp"
 
+/**
+ * @brief Defines the number of motors created for the chassis.
+ */
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
+
+/**
+ * @brief Definitions for operator interface constants (may change based on preference of drivers)
+ *
+ */
+static constexpr int16_t USER_MOUSE_YAW_MAX = 1000;
+static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
+static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
+static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
+
+static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 /**
  * @brief Velocity PID constants
@@ -75,3 +90,25 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+
+/**
+ * @brief Power constants for chassis
+ */
+static constexpr int MIN_WHEEL_SPEED_SINGLE_MOTOR = 4000;
+static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
+static constexpr int MIN_CHASSIS_POWER = 40;
+static constexpr int MAX_CHASSIS_POWER = 120;
+static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
+    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
+
+/**
+ * @brief Behavior constants for chassis
+ */
+
+/**
+ * The minimum desired wheel speed for chassis rotation, measured in RPM before
+ * we start slowing down translational speed.
+ */
+static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
