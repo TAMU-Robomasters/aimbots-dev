@@ -10,9 +10,9 @@
             ],
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src",
-                "aimbots-dev/taproot/test",
-                "aimbots-dev/test"
+                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src",
+                "aimbots-src/taproot/test",
+                "aimbots-src/test"
             ],
             "intelliSenseMode": "gcc-x64",
             "browse": {
@@ -28,7 +28,7 @@
             ],
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/sim-modm/hosted-linux/modm/src"
+                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src"
             ],
             "intelliSenseMode": "gcc-x64",
             "browse": {
@@ -39,10 +39,10 @@
             "name": "Hardware",
             "includePath": [
                 "${default}",
-                "aimbots-dev/taproot/modm/src",
-                "aimbots-dev/taproot/modm/ext/cmsis/core",
-                "aimbots-dev/taproot/modm/ext/cmsis/device",
-                "aimbots-dev/taproot/modm/ext/cmsis/dsp"
+                "aimbots-src/taproot/modm/src",
+                "aimbots-src/taproot/modm/ext/cmsis/core",
+                "aimbots-src/taproot/modm/ext/cmsis/device",
+                "aimbots-src/taproot/modm/ext/cmsis/dsp"
             ],
             "intelliSenseMode": "gcc-arm64",
             "browse": {

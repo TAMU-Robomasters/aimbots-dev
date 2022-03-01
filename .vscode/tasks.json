@@ -13,7 +13,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -29,7 +29,7 @@
             },
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -42,7 +42,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -55,7 +55,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -68,7 +68,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -81,7 +81,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -94,7 +94,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -107,7 +107,7 @@
             "group": "build",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -120,7 +120,7 @@
             "group": "none",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         },
         {
@@ -133,7 +133,7 @@
             "group": "none",
             "problemMatcher": [],
             "options": {
-                "cwd": "${workspaceRoot}/aimbots-dev"
+                "cwd": "${workspaceRoot}/aimbots-src"
             }
         }
     ]
