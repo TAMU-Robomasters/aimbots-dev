@@ -2,7 +2,7 @@
 
 namespace src::Feeder {
     RunFeederCommand::RunFeederCommand(src::Drivers * drivers, FeederSubsystem * feeder, float speed)
-        : drivers(drivers),feeder(feeder) {
+        : drivers(drivers),feeder(feeder),speed(speed) {
             addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
         }
     
@@ -15,9 +15,9 @@ namespace src::Feeder {
         drivers->leds.set(tap::gpio::Leds::B,false);
         drivers->leds.set(tap::gpio::Leds::C,true);
         drivers->leds.set(tap::gpio::Leds::D,false);
-        drivers->leds.set(tap::gpio::Leds::E,false);
+        drivers->leds.set(tap::gpio::Leds::E,true); 
         drivers->leds.set(tap::gpio::Leds::F,false);
-        drivers->leds.set(tap::gpio::Leds::G,false);
+        drivers->leds.set(tap::gpio::Leds::G,true);
         drivers->leds.set(tap::gpio::Leds::H,false); 
         feeder->setDesiredOutput();
     }

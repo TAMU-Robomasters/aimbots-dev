@@ -40,7 +40,7 @@ FeederSubsystem feeder(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-RunFeederCommand runFeederCommand(drivers(), &feeder, 60.0f);
+RunFeederCommand runFeederCommand(drivers(), &feeder, 3000.0f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 // Define command mappings here -------------------------------------------
@@ -51,7 +51,7 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&stopFeederCommand},
+    {&runFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -68,12 +68,12 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&runFeederCommand);
+    feeder.setDefaultCommand(&stopFeederCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    drivers->commandScheduler.addCommand(&runFeederCommand);
+    //drivers->commandScheduler.addCommand(&runFeederCommand);
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
