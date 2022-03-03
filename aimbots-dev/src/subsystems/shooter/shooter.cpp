@@ -9,10 +9,10 @@
 namespace src::Shooter {
 
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),            
-                                                            topWheel(drivers, TOP_SHOOTER_ID, FLY_BUS, false, "Flywheel One"),
-                                                            bottomWheel(drivers, BOT_SHOOTER_ID, FLY_BUS, false, "Flywheel Two"),
-                                                            topWheelPID(1.0f,0,0,10,1000,1,1,1,0),
-                                                            bottomWheelPID(1.0f,0,0,10,1000,1,1,1,0) 
+                                                            topWheel(drivers, TOP_SHOOTER_ID, SHOOTER_BUS, false, "Flywheel One"),
+                                                            bottomWheel(drivers, BOT_SHOOTER_ID, SHOOTER_BUS, false, "Flywheel Two"),
+                                                            topWheelPID(10.0f,0,0,10,1000,1,1,1,0),
+                                                            bottomWheelPID(10.0f,0,0,10,1000,1,1,1,0) 
 {
     motors[TOP] = &topWheel;
     motors[BOT] = &bottomWheel;
@@ -27,9 +27,11 @@ void ShooterSubsystem::initialize() {
 
 void ShooterSubsystem::refresh() {
     // update motor rpms
+    calculateShooter(9000.0f);
 }
 
-
+float PIDout = 0.0f;
+float displayShaftSpeed = 0.0f;
 //TODO: need to change this so that it is an array and not a vector. Also need to update it so that it actually uses better kp, kd, ki values.
 
 void ShooterSubsystem::calculateShooter(float RPM_Target) {
@@ -40,21 +42,22 @@ void ShooterSubsystem::calculateShooter(float RPM_Target) {
     // float dt = 1; // only for moc testing.
     float topError = RPM_Target - static_cast<float>(topWheel.getShaftRPM());
     float botError = RPM_Target - static_cast<float>(bottomWheel.getShaftRPM());
-    this->targetRPMs[0] = topWheelPID.runController(topError, 0, dt) + RPM_Target;
-    this->targetRPMs[1] = bottomWheelPID.runController(botError, 0, dt) + RPM_Target;
-    
+    this->targetRPMs[0] = topWheelPID.runController(topError, 0, dt);// + RPM_Target;
+    this->targetRPMs[1] = bottomWheelPID.runController(botError, 0, dt);// + RPM_Target;
+    PIDout = this->targetRPMs[0];
+    displayShaftSpeed = static_cast<float>(topWheel.getShaftRPM());
     lastTime = time;
 
     // return RPM;
 }
 
 void ShooterSubsystem::setDesiredOutputs() {
-    //topWheel.setDesiredOutput(targetRPMs[0]);
-    //bottomWheel.setDesiredOutput(targetRPMs[1]);
+    topWheel.setDesiredOutput(targetRPMs[0]);
+    bottomWheel.setDesiredOutput(targetRPMs[1]);
     //emergency test lines
     //can be very violent!!1!
-    topWheel.setDesiredOutput(3000.0f);
-    bottomWheel.setDesiredOutput(3000.0f);
+    // topWheel.setDesiredOutput(1000.0f);
+    // bottomWheel.setDesiredOutput(1000.0f);
 }
 
 };  // namespace src::Shooter

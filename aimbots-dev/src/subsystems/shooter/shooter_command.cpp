@@ -39,7 +39,7 @@ namespace src::Shooter {
         drivers->leds.set(tap::gpio::Leds::G, false);
         drivers->leds.set(tap::gpio::Leds::H, true);
 
-        shooter->calculateShooter(3000.0f); //3000 is a reasonable speed 
+        shooter->calculateShooter(8500.0f); //3000 is a reasonable speed 
         shooter->setDesiredOutputs();
     }
     void ShooterCommand::end(bool interrupted){
