@@ -16,6 +16,13 @@ namespace src::Shooter {
     }
 
     void ShooterCommand::initialize(){
+        drivers->leds.set(tap::gpio::Leds::B, true);
+        drivers->leds.set(tap::gpio::Leds::C, false);
+        drivers->leds.set(tap::gpio::Leds::D, false);
+        drivers->leds.set(tap::gpio::Leds::E, true);
+        drivers->leds.set(tap::gpio::Leds::F, false);
+        drivers->leds.set(tap::gpio::Leds::G, false);
+        drivers->leds.set(tap::gpio::Leds::H, true);
         //shooter->initialize();
         // shooter->calculateShooter(100.0f);
         // shooter->setDesiredOutputs();
@@ -32,7 +39,7 @@ namespace src::Shooter {
         drivers->leds.set(tap::gpio::Leds::G, false);
         drivers->leds.set(tap::gpio::Leds::H, true);
 
-        shooter->calculateShooter(400.0f);        
+        shooter->calculateShooter(3000.0f); //3000 is a reasonable speed 
         shooter->setDesiredOutputs();
     }
     void ShooterCommand::end(bool interrupted){

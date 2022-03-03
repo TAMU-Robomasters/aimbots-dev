@@ -12,7 +12,9 @@ namespace src::Shooter {
 
 enum MotorIndex {
     TOP = 0,
-    BOT = 1
+    BOT = 1,
+    TOP2 = 2,
+    BOT2 = 3
 };
 
 class ShooterSubsystem : public tap::control::Subsystem {
@@ -31,11 +33,16 @@ class ShooterSubsystem : public tap::control::Subsystem {
    private:
     DJIMotor topWheel, bottomWheel;
     DJIMotor* motors[2];
-    static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
+    //static constexpr CANBus FLY_BUS = CANBus::CAN_BUS1;
+    static constexpr CANBus FLY_BUS = CANBus::CAN_BUS2;
+    //emergency testing line for if there is a chassis but no gimbal
+    //if the code works, the robot will become extremely violent in a short amount of time
     uint32_t lastTime;
     SmoothPID topWheelPID;
     SmoothPID bottomWheelPID;
-    
+    #ifdef TARGET_SENTRY
+    DJIMotor topWheel2, bottomWheel2;
+    #endif //#ifdef TARGET_SENTRY
    public:
     inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
     inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }

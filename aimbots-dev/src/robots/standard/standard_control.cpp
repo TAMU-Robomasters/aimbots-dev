@@ -41,17 +41,13 @@ ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
+HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all
     drivers(),
-    {&chassisDriveCommand, &shooterCommand},
+    //{&chassisDriveCommand, &shooterCommand},
+    {&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    
 
-// HoldRepeatCommandMapping leftSwitchUpRepeat(
-//     drivers(),
-    // {&shooterCommand},
-    // RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-    
-    
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -84,7 +80,6 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-   // drivers->commandMapper.addMap(&leftSwitchUpRepeat);
 }
 
 }  // namespace StandardControl

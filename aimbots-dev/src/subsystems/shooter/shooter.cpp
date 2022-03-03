@@ -49,8 +49,12 @@ void ShooterSubsystem::calculateShooter(float RPM_Target) {
 }
 
 void ShooterSubsystem::setDesiredOutputs() {
-    topWheel.setDesiredOutput(targetRPMs[0]);
-    bottomWheel.setDesiredOutput(targetRPMs[1]);
+    //topWheel.setDesiredOutput(targetRPMs[0]);
+    //bottomWheel.setDesiredOutput(targetRPMs[1]);
+    //emergency test lines
+    //can be very violent!!1!
+    topWheel.setDesiredOutput(3000.0f);
+    bottomWheel.setDesiredOutput(3000.0f);
 }
 
 };  // namespace src::Shooter
