@@ -8,22 +8,20 @@ namespace src::Gimbal {
 
 class GimbalChassisRelativeController {
    public:
-    GimbalChassisRelativeController(GimbalSubsystem*,
-                                    tap::algorithms::SmoothPidConfig const& yawPIDConfig,
-                                    tap::algorithms::SmoothPidConfig const& pitchPIDConfig);
+    GimbalChassisRelativeController(GimbalSubsystem*);
 
     void initialize();
 
-    void runYawController(float deltaTime, float targetYawAngle);
-    void runPitchController(float deltaTime, float targetPitchAngle);
+    void runYawController(float targetYawAngle);
+    void runPitchController(float targetPitchAngle);
 
     bool isOnline() const;
 
    private:
     GimbalSubsystem* gimbal;
 
-    SmoothPID yawPID;
-    SmoothPID pitchPID;
+    StockPID yawPID;
+    StockPID pitchPID;
 };
 
 }  // namespace src::Gimbal

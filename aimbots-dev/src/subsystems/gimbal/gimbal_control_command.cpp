@@ -5,9 +5,8 @@
 
 namespace src::Gimbal {
 
-static float rightVertical = 0.0f;
-static float desiredOut = 0.0f;
-
+// FIXME: Remove this.
+static uint8_t ledIndex = 0;
 static tap::gpio::Leds::LedPin pins[8] = {
     tap::gpio::Leds::A,
     tap::gpio::Leds::B,
@@ -16,7 +15,8 @@ static tap::gpio::Leds::LedPin pins[8] = {
     tap::gpio::Leds::E,
     tap::gpio::Leds::F,
     tap::gpio::Leds::G,
-    tap::gpio::Leds::H};
+    tap::gpio::Leds::H,
+};
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
@@ -26,50 +26,38 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
-      userInputSensitivityFactor(inputSensitivity),
-      previousTime(0),
-      ledIndex(0) {
+      userInputSensitivityFactor(inputSensitivity) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalControlCommand::initialize() {
-    previousTime = tap::arch::clock::getTimeMilliseconds();
-}
+void GimbalControlCommand::initialize() {}
+
+static float currentYawAngle = 0.0f;
+static float currentPitchAngle = 0.0f;
 
 void GimbalControlCommand::execute() {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
-    uint32_t deltaTime = currentTime - previousTime;
-    previousTime = currentTime;
 
-    /* Don't worry about the complicated stuff until we can get simple movement
-    float targetYawAngle = gimbal->getTargetYawAngleInRadians() +
+    // These are static varibles so we watch the values while debugging.
+    currentYawAngle = gimbal->getCurrentYawAngle(AngleUnit::Degrees);
+    currentPitchAngle = gimbal->getCurrentPitchAngle(AngleUnit::Degrees);
+
+    // NOTE: For now we don't want to run this. We don't know how the motor is oriented.
+    //       So, depending on how the motor is mounted, target angle could be inaccessible,
+    //       which could cause us to either damage the motors or the hardware.
+
+    /*
+    float targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Radians) +
                            userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_HORIZONTAL);
+    controller->runYawController(targetYawAngle);
 
-    controller->runYawController(deltaTime, targetYawAngle);
-    // Flip the target angle every 2 seconds
-    float targetYawAngle = 0.0f;
-    if(currentTime % 2000 == 0) {
-       targetYawAngle = (targetYawAngle == 0.0f) ? M_PI : 0.0f;
-    }
-
-    float targetPitchAngle = gimbal->getTargetPitchAngleInRadians() +
+    float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Radians) +
                              userInputSensitivityFactor * drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
-
-    controller->runPitchController(deltaTime, targetPitchAngle);
-    // Flip the target angle every 2 seconds
-    float targetPitchAngle = 0.0f;
-    if (currentTime % 2000 == 0) {
-        targetPitchAngle = (targetPitchAngle == 0.0f) ? M_PI : 0.0f;
-    }
+    controller->runPitchController(targetPitchAngle);
     */
 
-    rightVertical = drivers->remote.getChannel(tap::Remote::Channel::RIGHT_VERTICAL);
-    desiredOut = 3000 * rightVertical;
-
-    gimbal->setPitchMotorOutput(desiredOut);
-    gimbal->setYawMotorOutput(desiredOut);
-
-    // Just a moving led so we know this code is running
+    // FIXME: Remove this.
+    // This just moves the LED so we know that this code is running.
     if (currentTime % 500 == 0) {
         drivers->leds.set(pins[ledIndex], true);
         if (ledIndex > 0)

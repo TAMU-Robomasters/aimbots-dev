@@ -24,14 +24,12 @@ class GimbalControlCommand : public tap::control::Command {
     void end(bool interrupted) override;
 
    private:
-    src::Drivers* drivers;
-    GimbalSubsystem* gimbal;
+    src::Drivers*    drivers;
 
+    GimbalSubsystem* gimbal;
     GimbalChassisRelativeController* controller;
 
     float userInputSensitivityFactor;
-    uint32_t previousTime;
-    uint8_t ledIndex;
 };
 
 }  // namespace src::Gimbal
