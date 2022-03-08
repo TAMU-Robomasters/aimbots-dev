@@ -40,7 +40,7 @@ FeederSubsystem feeder(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-RunFeederCommand runFeederCommand(drivers(), &feeder, 3000.0f);
+RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 // Define command mappings here -------------------------------------------
@@ -73,12 +73,12 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    //drivers->commandScheduler.addCommand(&runFeederCommand);
-    // no startup commands should be set
-    // yet...
-    // TODO: Possibly add some sort of hardware test command
-    //       that will move all the standard's parts so we
-    //       can make sure they're fully operational.
+    // drivers->commandScheduler.addCommand(&runFeederCommand);
+    //  no startup commands should be set
+    //  yet...
+    //  TODO: Possibly add some sort of hardware test command
+    //        that will move all the standard's parts so we
+    //        can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------
@@ -90,14 +90,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    StandardControl::initializeSubsystems();
+    StandardControl::registerSubsystems(drivers);
+    StandardControl::setDefaultCommands(drivers);
+    StandardControl::startupCommands(drivers);
+    StandardControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif

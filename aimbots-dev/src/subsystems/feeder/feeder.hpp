@@ -7,29 +7,33 @@
 
 namespace src::Feeder {
 
-    class FeederSubsystem : public tap::control::Subsystem {
-        public:
-         FeederSubsystem(
-             tap::Drivers* drivers);
-        
-        mockable void initialize() override;
-        mockable void refresh() override;
+class FeederSubsystem : public tap::control::Subsystem {
+   public:
+    FeederSubsystem(
+        tap::Drivers* drivers);
 
-        mockable void setDesiredOutput();
+    mockable void initialize() override;
+    mockable void refresh() override;
 
-        mockable int32_t updateRPM(int32_t rpm);
+    void updateMotorVelocityPID();
 
-    #ifndef ENV_UNIT_TESTS
-            private:
-    #else
-            public:
-    #endif     
-            static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-        
-        float targetRPM;
-        DJIMotor feederMotor; 
+    mockable void setDesiredOutput();
 
-        //commands
-    };
+    mockable float setTargetRPM(float rpm);
 
-}
+    tap::algorithms::SmoothPid feederVelPID;
+
+#ifndef ENV_UNIT_TESTS
+   private:
+#else
+   public:
+#endif
+    static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+
+    float targetRPM;
+    DJIMotor feederMotor;
+
+    // commands
+};
+
+}  // namespace src::Feeder

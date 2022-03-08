@@ -2,17 +2,16 @@
 
 #include "drivers.hpp"
 #include "subsystems/feeder/feeder.hpp"
+#include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
-
-#include "tap/communication/gpio/leds.hpp"
 
 namespace src::Feeder {
 
 class RunFeederCommand : public TapCommand {
    public:
-    RunFeederCommand(src::Drivers*, FeederSubsystem*, float);
+    RunFeederCommand(src::Drivers*, FeederSubsystem*);
     void initialize() override;
 
     void execute() override;
@@ -29,4 +28,4 @@ class RunFeederCommand : public TapCommand {
     float speed;
 };
 
-}  // namespace src::Chassis
+}  // namespace src::Feeder

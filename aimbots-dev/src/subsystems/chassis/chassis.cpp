@@ -1,15 +1,15 @@
 #include "subsystems/chassis/chassis.hpp"
 
-namespace src::Chassis{
+namespace src::Chassis {
 
-    template <class... Args>
-    void ChassisSubsystem::ForChassisMotors(void (DJIMotor::*func)(Args...), Args... args){
-        for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++){
-            (motors[i][0]->*func)(args...);
+template <class... Args>
+void ChassisSubsystem::ForChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
+    for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        (motors[i][0]->*func)(args...);
 #ifdef SWERVE
-(motors[i][1]->*func)(args...);
+        (motors[i][1]->*func)(args...);
 #endif
-}
+    }
 }
 
 ChassisSubsystem::ChassisSubsystem(
@@ -91,5 +91,4 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r) {
 void ChassisSubsystem::calculateSwerve(float, float, float) {}
 
 void ChassisSubsystem::calculateRail(float) {}
-}
-;  // namespace src::Chassis
+};  // namespace src::Chassis
