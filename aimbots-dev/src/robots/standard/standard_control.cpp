@@ -17,6 +17,8 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/shooter_command.hpp"
 
+#include "subsystems/shooter/shooter_default_command.hpp"
+
 using namespace src::Chassis;
 
 /*
@@ -39,14 +41,16 @@ src::Shooter::ShooterSubsystem shooter(drivers());
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
+src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all
+HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
     drivers(),
     //{&chassisDriveCommand, &shooterCommand},
     {&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
     
+
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -63,7 +67,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
-    shooter.setDefaultCommand(&shooterCommand);
+    //shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -73,8 +77,6 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the standard's parts so we
     //       can make sure they're fully operational.
-    drivers->commandScheduler.addCommand(&shooterCommand);
-    
 }
 
 // Register IO mappings here -----------------------------------------------

@@ -17,6 +17,7 @@ enum MotorIndex {
     BOT2 = 3
 };
 
+
 class ShooterSubsystem : public tap::control::Subsystem {
    public:
     ShooterSubsystem(tap::Drivers* drivers);
@@ -27,6 +28,8 @@ class ShooterSubsystem : public tap::control::Subsystem {
     void setDesiredOutputs();
 
     void calculateShooter(float RPM_Target);
+
+    void setZeroOutput();
 
 
     float targetRPMs[2];

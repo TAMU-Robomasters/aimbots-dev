@@ -8,8 +8,9 @@
 
 namespace src::Shooter {
 
+
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),            
-                                                            topWheel(drivers, TOP_SHOOTER_ID, SHOOTER_BUS, false, "Flywheel One"),
+                                                            topWheel(drivers, TOP_SHOOTER_ID, SHOOTER_BUS, true, "Flywheel One"),
                                                             bottomWheel(drivers, BOT_SHOOTER_ID, SHOOTER_BUS, false, "Flywheel Two"),
                                                             topWheelPID(10.0f,0,0,10,1000,1,1,1,0),
                                                             bottomWheelPID(10.0f,0,0,10,1000,1,1,1,0) 
@@ -22,21 +23,25 @@ void ShooterSubsystem::initialize() {
     lastTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
     topWheel.initialize();
     bottomWheel.initialize();
-    //tap::Drivers driver = *drivers;
+    //tap::Drivers driver = *drivers; -- no clue what this was intended to do
 }
 
+//Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
-    // update motor rpms
-    calculateShooter(9000.0f);
+    setDesiredOutputs();
 }
 
 float PIDout = 0.0f;
 float displayShaftSpeed = 0.0f;
-//TODO: need to change this so that it is an array and not a vector. Also need to update it so that it actually uses better kp, kd, ki values.
+//TODO: need to tune PID
 
+/**
+ * @brief Calculates shooter RPM values using PIDs and stores values in a list
+ * 
+ * @param RPM_Target target RPM for the PIDs
+ */
 void ShooterSubsystem::calculateShooter(float RPM_Target) {
     // calculate rpm
-
     float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
     float dt = time - lastTime;
     // float dt = 1; // only for moc testing.
@@ -47,8 +52,6 @@ void ShooterSubsystem::calculateShooter(float RPM_Target) {
     PIDout = this->targetRPMs[0];
     displayShaftSpeed = static_cast<float>(topWheel.getShaftRPM());
     lastTime = time;
-
-    // return RPM;
 }
 
 void ShooterSubsystem::setDesiredOutputs() {
@@ -58,6 +61,11 @@ void ShooterSubsystem::setDesiredOutputs() {
     //can be very violent!!1!
     // topWheel.setDesiredOutput(1000.0f);
     // bottomWheel.setDesiredOutput(1000.0f);
+}
+
+void ShooterSubsystem::setZeroOutput(){
+    topWheel.setDesiredOutput(0.0f);
+    bottomWheel.setDesiredOutput(0.0f);
 }
 
 };  // namespace src::Shooter
