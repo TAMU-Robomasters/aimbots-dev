@@ -24,7 +24,7 @@ namespace src::Feeder {
     #else
             public:
     #endif     
-            static constexpr CANBus FEED_BUS = CANBus::CAN_BUS2;
+            static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
         
         float targetRPM;
         DJIMotor feederMotor; 
