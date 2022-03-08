@@ -74,7 +74,9 @@
         "variant": "cpp",
         "SConstruct": "python",
         "SConscript": "python",
-        "*.source": "cpp"
+        "*.source": "cpp",
+        "bit": "cpp",
+        "stop_token": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [

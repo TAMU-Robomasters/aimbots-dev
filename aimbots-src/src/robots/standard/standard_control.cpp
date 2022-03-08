@@ -13,8 +13,13 @@
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
+//
+#include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/run_feeder_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
 
 using namespace src::Chassis;
+using namespace src::Feeder;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -31,9 +36,12 @@ namespace StandardControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
+FeederSubsystem feeder(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+RunFeederCommand runFeederCommand(drivers(), &feeder);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -41,33 +49,42 @@ HoldCommandMapping leftSwitchUp(
     {&chassisDriveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&runFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&feeder);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
+    feeder.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    // no default commands should be set
+    feeder.setDefaultCommand(&stopFeederCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *) {
-    // no startup commands should be set
-    // yet...
-    // TODO: Possibly add some sort of hardware test command
-    //       that will move all the standard's parts so we
-    //       can make sure they're fully operational.
+    // drivers->commandScheduler.addCommand(&runFeederCommand);
+    //  no startup commands should be set
+    //  yet...
+    //  TODO: Possibly add some sort of hardware test command
+    //        that will move all the standard's parts so we
+    //        can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace StandardControl
