@@ -3,7 +3,7 @@
     "files.exclude": {
         "**/.git": false,
     },
-    "files.autoSave": "off",
+    "files.autoSave": "afterDelay",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",
@@ -76,6 +76,11 @@
         "SConscript": "python",
         "*.source": "cpp",
         "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
         "stop_token": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
@@ -95,4 +100,5 @@
             100
         ]
     },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
 }

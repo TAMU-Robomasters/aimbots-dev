@@ -13,6 +13,9 @@ static constexpr float VELOCITY_PID_KD = 0.0f;
 static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 
 static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR1;
+//
+static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR1;
+static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR2;
 
 /**
  * This max output is measured in the c620 robomaster translated current.

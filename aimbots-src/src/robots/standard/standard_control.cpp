@@ -17,6 +17,9 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/shooter_command.hpp"
+#include "subsystems/shooter/shooter_default_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -42,12 +45,21 @@ FeederSubsystem feeder(drivers());
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
+src::Shooter::ShooterSubsystem shooter(drivers());
+
+// Define commands here ---------------------------------------------------
+ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
+src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
+HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
     drivers(),
-    {&chassisDriveCommand},
+    //{&chassisDriveCommand, &shooterCommand},
+    {&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    
+
 
 HoldCommandMapping rightSwitchUp(
     drivers(),
@@ -58,17 +70,21 @@ HoldCommandMapping rightSwitchUp(
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&feeder);
+    drivers->commandScheduler.registerSubsystem(&shooter);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
     feeder.initialize();
+    shooter.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
+    // no default commands should be set
+    //shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -100,4 +116,4 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
 }
 }  // namespace src::Control
 
-#endif
+#endif //TARGET_STANDARD
