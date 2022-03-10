@@ -28,6 +28,7 @@ void ShooterSubsystem::initialize() {
 
 //Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
+    calculateShooter(RPM_target);
     setDesiredOutputs();
 }
 
@@ -61,6 +62,16 @@ void ShooterSubsystem::setDesiredOutputs() {
     //can be very violent!!1!
     // topWheel.setDesiredOutput(1000.0f);
     // bottomWheel.setDesiredOutput(1000.0f);
+}
+
+//a setter >:)
+void ShooterSubsystem::setRPMTarget(float rpm) {
+    this->RPM_target = rpm;
+}
+
+//different from 'setZeroOutput' because it sets the PID target to zero as opposed to putting 0 power into motors
+void ShooterSubsystem::setZeroTarget(){
+    this->RPM_target = 0.0f;
 }
 
 void ShooterSubsystem::setZeroOutput(){

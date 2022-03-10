@@ -16,11 +16,6 @@ namespace src::Shooter {
     }
 
     void ShooterCommand::initialize(){
-    }
-    
-    // set the flywheel to a certain speed once the command is called
-    void ShooterCommand::execute(){
-        // drivers->leds.set(tap::gpio::Leds::A, true);
         drivers->leds.set(tap::gpio::Leds::B, true);
         drivers->leds.set(tap::gpio::Leds::C, false);
         drivers->leds.set(tap::gpio::Leds::D, false);
@@ -28,8 +23,13 @@ namespace src::Shooter {
         drivers->leds.set(tap::gpio::Leds::F, false);
         drivers->leds.set(tap::gpio::Leds::G, false);
         drivers->leds.set(tap::gpio::Leds::H, true);
-
-        shooter->calculateShooter(8500.0f); //3000 is a reasonable speed 
+        shooter->setRPMTarget(8500.0f);
+    }
+    
+    // set the flywheel to a certain speed once the command is called
+    void ShooterCommand::execute(){
+        // drivers->leds.set(tap::gpio::Leds::A, true);
+        //shooter->calculateShooter(8500.0f); //3000 is a reasonable speed 
     }
     
     void ShooterCommand::end(bool interrupted){
@@ -42,8 +42,10 @@ namespace src::Shooter {
         drivers->leds.set(tap::gpio::Leds::G, true);
         drivers->leds.set(tap::gpio::Leds::H, false);
         (void)interrupted;
-        shooter->targetRPMs[0] = 0.0f;
-        shooter->targetRPMs[1] = 0.0f;
+
+        shooter->setZeroTarget();
+        //shooter->targetRPMs[0] = 0.0f;
+        //shooter->targetRPMs[1] = 0.0f;
         //setZeroOutput();
     }
 

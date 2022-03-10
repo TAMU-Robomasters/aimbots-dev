@@ -29,10 +29,15 @@ class ShooterSubsystem : public tap::control::Subsystem {
 
     void calculateShooter(float RPM_Target);
 
+    void setRPMTarget(float rpm);
+
+    void setZeroTarget();
+
     void setZeroOutput();
 
 
     float targetRPMs[2];
+    float RPM_target;
    private:
     DJIMotor topWheel, bottomWheel;
     DJIMotor* motors[2];
