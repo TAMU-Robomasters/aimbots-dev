@@ -40,27 +40,21 @@ namespace StandardControl {
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
+src::Shooter::ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-src::Shooter::ShooterSubsystem shooter(drivers());
-
-// Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
     drivers(),
-    //{&chassisDriveCommand, &shooterCommand},
-    {&shooterCommand},
+    {&chassisDriveCommand,&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
     
-
-
 HoldCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand},
