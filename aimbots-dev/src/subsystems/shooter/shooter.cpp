@@ -38,8 +38,10 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
 
 void ShooterSubsystem::initialize() {
     lastTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
+
     ForAllShooterMotors(&DJIMotor::initialize);
-    ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0));
+
+    ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0.0f));
 }
 
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
