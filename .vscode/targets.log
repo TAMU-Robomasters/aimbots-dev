@@ -1,217 +1,162 @@
-make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
- 
-# GNU Make 4.3
-# Built for x86_64-pc-msys
-# Copyright (C) 1988-2020 Free Software Foundation, Inc.
-# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-# This is free software: you are free to change and redistribute it.
-# There is NO WARRANTY, to the extent permitted by law.
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
-# Make data base, printed on Tue Jan 25 15:41:17 2022
+# This program built for i386-apple-darwin11.3.0
+
+# Make data base, printed on Fri Mar 11 15:39:32 2022
 
 # Variables
 
-# environment
-FPS_BROWSER_APP_PROFILE_STRING = Internet Explorer
-# environment
-SYSTEMDRIVE = C:
-# environment
-LC_ALL = C
-# environment
-USERPROFILE = C:\Users\s2sid
-# environment
-LOCALAPPDATA = C:\Users\s2sid\AppData\Local
-# environment
-VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-f390bbea-e2f5-44dd-be60-988cae018b47-sock
-# environment
-VSCODE_CWD = C:\WINDOWS\System32
-# environment
-SYSTEMROOT = C:\WINDOWS
-# environment
-PROCESSOR_LEVEL = 6
-# environment
-PSMODULEPATH = C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
-# default
-MAKE_COMMAND := make
-# automatic
-@D = $(patsubst %/,%,$(dir $@))
-# environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_11040_CITBJTUMASHGFYAH
-# environment
-FPS_BROWSER_USER_PROFILE_STRING = Default
-# environment
-VSCODE_HANDLES_UNCAUGHT_ERRORS = true
-# default
-.VARIABLES := 
-# automatic
-%D = $(patsubst %/,%,$(dir $%))
-# automatic
-^D = $(patsubst %/,%,$(dir $^))
-# environment
-VSCODE_LOG_STACK = false
-# automatic
-%F = $(notdir $%)
-# environment
-VSCODE_CODE_CACHE_PATH = C:\Users\s2sid\AppData\Roaming\Code\CachedData\899d46d82c4c95423fb7e10e68eba52050e30ba3
-# environment
-LANG = C
-# default
-.LOADED := 
-# environment
-TMP = /cygdrive/c/Users/s2sid/AppData/Local/Temp
-# makefile
-MAKEFLAGS = pqrR
-# environment
-ONEDRIVE = C:\Users\s2sid\OneDrive
-# makefile
-CURDIR := /cygdrive/d/RobomasterProg/aimbots-dev
-# environment
-VSCODE_PIPE_LOGGING = true
-# environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
-# automatic
-*D = $(patsubst %/,%,$(dir $*))
-# environment
-PROGRAMFILES = C:\Program Files
-# environment
-MFLAGS = -pqrR
-# default
-.SHELLFLAGS := -c
-# environment
-COMMONPROGRAMW6432 = C:\Program Files\Common Files
-# automatic
-+D = $(patsubst %/,%,$(dir $+))
-# makefile
-MAKEFILE_LIST := 
-# automatic
-@F = $(notdir $@)
-# environment
-VSCODE_VERBOSE_LOGGING = true
-# environment
-VSCODE_PID = 11040
-# automatic
-?D = $(patsubst %/,%,$(dir $?))
-# automatic
-*F = $(notdir $*)
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
-# environment
-VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
-# default
-MAKE_HOST := x86_64-pc-msys
-# environment
-PROGRAMDATA = C:\ProgramData
-# default
-SHELL := /bin/sh
-# environment
-HOMEPATH = \Users\s2sid
-# default
-MAKECMDGOALS := all
-# environment
-DRIVERDATA = C:\Windows\System32\Drivers\DriverData
-# environment
-COMSPEC = C:\WINDOWS\system32\cmd.exe
-# environment
-WINDIR = C:\WINDOWS
-# environment
-MAKELEVEL := 0
-# default
-MAKE = $(MAKE_COMMAND)
-# environment
-PATH = /cygdrive/c/WINDOWS/system32:/cygdrive/c/WINDOWS:/cygdrive/c/WINDOWS/System32/Wbem:/cygdrive/c/WINDOWS/System32/WindowsPowerShell/v1.0:/cygdrive/c/WINDOWS/System32/OpenSSH:/cygdrive/c/Program Files/Microsoft VS Code/bin:/cygdrive/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/cygdrive/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/usr/bin:/cygdrive/c/Program Files/PROS/cli:/cygdrive/c/Program Files/Git/cmd:/cygdrive/c/Program Files/PuTTY:/cygdrive/d/RobomasterProg/Taproot Libraries/winlibs-x86_64-posix-seh-gcc-11.2.0-llvm-13.0.0-mingw-w64ucrt-9.0.0-r2/mingw64/bin:/cygdrive/c/Users/s2sid/AppData/Local/Programs/Python/Python39/Scripts:/cygdrive/c/Users/s2sid/AppData/Local/Programs/Python/Python39:/cygdrive/c/Users/s2sid/AppData/Local/Microsoft/WindowsApps:/cygdrive/c/Users/s2sid/AppData/Local/gitkraken/bin:/cygdrive/d/RobomasterProg/Taproot Libraries/openocd-20210729/OpenOCD-20210729-0.11.0/bin:/cygdrive/d/RobomasterProg/Taproot Libraries/gcc-arm-none-eabi-10.3-2021.10-win32/gcc-arm-none-eabi-10.3-2021.10/bin:/cygdrive/d/RobomasterProg/Taproot Libraries/pipenv_storage/bin
-# environment
-COMPUTERNAME = DESKTOP-1Q4ME1A
-# default
-MAKEFILES := 
-# automatic
-^F = $(notdir $^)
-# environment
-PROMPT = $P$G
-# environment
-LOGONSERVER = \\DESKTOP-1Q4ME1A
-# environment
-VSCODE_LOG_NATIVE = false
-# environment
-USERNAME = s2sid
-# environment
-COMMONPROGRAMFILES = C:\Program Files\Common Files
 # automatic
 ?F = $(notdir $?)
 # environment
-PROGRAMW6432 = C:\Program Files
-# environment
-PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+VSCODE_LOG_NATIVE = false
 # automatic
-+F = $(notdir $+)
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/sidp/Personal/RobomasterProg/aimbots-dev
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile
+MAKEFILE_LIST := 
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+INFOPATH = /opt/homebrew/share/info:
+# environment
+P9K_SSH = 0
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-115aea9d-5023-409f-acde-089d431a8200.sock
+# environment
+VSCODE_CWD = /
+# environment
+PATH = /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.yoOqvXcqCK/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+VSCODE_PIPE_LOGGING = true
+# environment
+PWD = /Users/sidp/Personal/RobomasterProg/aimbots-dev
+# environment
+HOMEBREW_CELLAR = /opt/homebrew/Cellar
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
-USERDOMAIN = DESKTOP-1Q4ME1A
-# 'override' directive
-GNUMAKEFLAGS := 
+MANPATH = /opt/homebrew/share/man::
 # environment
-OS = Windows_NT
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-PROS_TOOLCHAIN = C:\Program Files\PROS\toolchain\usr
+HOME = /Users/sidp
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/8908a9ca0f221f36507231afb39d2d8d1e182702
+# environment
+LOGNAME = sidp
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+ZSH = /Users/sidp/.oh-my-zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 1
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = sidp
 # makefile
 .DEFAULT_GOAL := 
 # environment
-LIBRARY_PATH = D:\RobomasterProg\Taproot Libraries\googletest-g++-win-1.10.0\googletest-g++-win-1.10.0\lib:
+LESS = -R
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
 # default
-MAKE_VERSION := 4.3
-# environment
-PROGRAMFILES(X86) = C:\Program Files (x86)
-# environment
-!D: = d:\RobomasterProg\aimbots-dev
-# environment
-USERDOMAIN_ROAMINGPROFILE = DESKTOP-1Q4ME1A
-# environment
-NUMBER_OF_PROCESSORS = 4
-# environment
-PUBLIC = C:\Users\Public
-# environment
-PYTHONPATH = D:\RobomasterProg\Taproot Libraries\pipenv_storage
-# environment
-APPDATA = C:\Users\s2sid\AppData\Roaming
-# environment
-HOMEDRIVE = C:
-# environment
-PROCESSOR_ARCHITECTURE = AMD64
-# environment
-CPLUS_INCLUDE_PATH = D:\RobomasterProg\Taproot Libraries\googletest-g++-win-1.10.0\googletest-g++-win-1.10.0\include;
-# environment
-VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
-# environment
-HOME = /home/s2sid
-# environment
-COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
-# environment
-ELECTRON_RUN_AS_NODE = 1
-# environment
-TEMP = /cygdrive/c/Users/s2sid/AppData/Local/Temp
-# environment
-VSCODE_IPC_HOOK = \\.\pipe\7407b60860d9d5992a9dd25b7b6348d7-1.63.2-main-sock
-# environment
-TERM = xterm-256color
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
 # default
-.RECIPEPREFIX := 
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.65.1-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.2468937.2468943
+# environment
+HOMEBREW_PREFIX = /opt/homebrew
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+HOMEBREW_REPOSITORY = /opt/homebrew
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
 # automatic
 <F = $(notdir $<)
+# environment
+PAGER = less
+# environment
+LC_ALL = C
+# automatic
+^F = $(notdir $^)
 # default
 SUFFIXES := 
-# environment
-ALLUSERSPROFILE = C:\ProgramData
-# environment
-SESSIONNAME = Console
 # default
-.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+.INCLUDE_DIRS = /usr/local/include
 # environment
-PROCESSOR_REVISION = 4e03
+MAKELEVEL := 0
 # environment
-PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 78 Stepping 3, GenuineIntel
+LANG = C
+# environment
+VSCODE_PID = 54018
 # variable set hash-table stats:
-# Load=99/1024=10%, Rehash=0, Collisions=11/120=9%
+# Load=72/1024=7%, Rehash=0, Collisions=1/93=1%
 
 # Pattern-specific Variable Values
 
@@ -219,9 +164,9 @@ PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 78 Stepping 3, GenuineIntel
 
 # Directories
 
-# . (device 3438617517, inode 844424930921037): 17 files, no impossibilities.
+# . (device 16777230, inode 788717): 18 files, no impossibilities.
 
-# 17 files, no impossibilities in 1 directories.
+# 18 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -230,11 +175,39 @@ PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 78 Stepping 3, GenuineIntel
 # Files
 
 # Not a target:
+all:
+#  Command-line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 Makefile:
+#  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
 #  Failed to be updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+makefile:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # Not a target:
 .DEFAULT:
@@ -243,40 +216,30 @@ Makefile:
 #  File has not been updated.
 
 # Not a target:
-all:
-#  Command line target.
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has not been updated.
-
-# Not a target:
-makefile:
-#  Implicit rule search has been done.
-#  File does not exist.
-#  File has been updated.
-#  Failed to be updated.
-
-# Not a target:
 GNUmakefile:
+#  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has been updated.
 #  Failed to be updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # files hash-table stats:
-# Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
+# Load=6/1024=1%, Rehash=0, Collisions=0/17=0%
 # VPATH Search Paths
 
-# No 'vpath' search paths.
+# No `vpath' search paths.
 
-# No general ('VPATH' variable) search path.
+# No general (`VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 217 B / avg = 9 B
-# current buf: size = 8162 B / used = 217 B / count = 23 / avg = 9 B
+# # of strings in strcache: 0
+# # of strcache buffers: 0
+# strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
+# strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# strcache performance: lookups = 25 / hit rate = 8%
-# hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=0/25=0%
-# Finished Make data base on Tue Jan 25 15:41:17 2022
+# Finished Make data base on Fri Mar 11 15:39:32 2022
 
+ 
+make: *** No rule to make target `all'.  Stop.
  

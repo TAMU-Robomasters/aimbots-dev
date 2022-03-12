@@ -2,72 +2,67 @@
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
-#include "utils/common_types.hpp"
 
-// #ifndef TARGET_ENGINEER
+#include "utils/common_types.hpp"
 
 namespace src::Shooter {
 
-
-ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : Subsystem(drivers),            
-                                                            topWheel(drivers, TOP_SHOOTER_ID, SHOOTER_BUS, true, "Flywheel One"),
-                                                            bottomWheel(drivers, BOT_SHOOTER_ID, SHOOTER_BUS, false, "Flywheel Two"),
-                                                            topWheelPID(10.0f,0,0,10,1000,1,1,1,0),
-                                                            bottomWheelPID(10.0f,0,0,10,1000,1,1,1,0) 
+ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
+    : Subsystem(drivers),
+      flywheel1(drivers, SHOOTER_1_ID, SHOOTER_BUS, true, "Flywheel One"),
+      flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, false, "Flywheel Two"),
+      flywheel1VelPID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+      flywheel2VelPID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+#ifdef TARGET_SENTRY
+      flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, true, "Flywheel Three"),
+      flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, false, "Flywheel Four"),
+      flywheel3PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+      flywheel4PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+#endif
+      targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix())
+//
 {
-    motors[TOP] = &topWheel;
-    motors[BOT] = &bottomWheel;
+    motors[TOP][0] = &flywheel1;  // or RIGHT, same thing
+    motors[BOT][0] = &flywheel2;  // or LEFT, same thing
+    velocityPIDs[TOP][0] = &flywheel1VelPID;
+    velocityPIDs[BOT][0] = &flywheel2VelPID;
+#ifdef TARGET_SENTRY
+    motors[TOP_LEFT][0] = &flywheel3;
+    motors[BOT_LEFT][0] = &flywheel4;
+    velocityPIDs[TOP_LEFT][0] = &flywheel3PID;
+    velocityPIDs[BOT_LEFT][0] = &flywheel4PID;
+#endif
 }
 
 void ShooterSubsystem::initialize() {
     lastTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-    topWheel.initialize();
-    bottomWheel.initialize();
-    //tap::Drivers driver = *drivers; -- no clue what this was intended to do
+    ForAllShooterMotors(&DJIMotor::initialize);
+    ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0));
 }
 
-//Update the actual RPMs of the motors; the calculation is called from ShooterCommand
+// Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
-    setDesiredOutputs();
+    ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }
 
 float PIDout = 0.0f;
 float displayShaftSpeed = 0.0f;
-//TODO: need to tune PID
-
-/**
- * @brief Calculates shooter RPM values using PIDs and stores values in a list
- * 
- * @param RPM_Target target RPM for the PIDs
- */
-void ShooterSubsystem::calculateShooter(float RPM_Target) {
-    // calculate rpm
+// TODO: need to tune PID
+void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
     float dt = time - lastTime;
-    // float dt = 1; // only for moc testing.
-    float topError = RPM_Target - static_cast<float>(topWheel.getShaftRPM());
-    float botError = RPM_Target - static_cast<float>(bottomWheel.getShaftRPM());
-    this->targetRPMs[0] = topWheelPID.runController(topError, 0, dt);// + RPM_Target;
-    this->targetRPMs[1] = bottomWheelPID.runController(botError, 0, dt);// + RPM_Target;
-    PIDout = this->targetRPMs[0];
-    displayShaftSpeed = static_cast<float>(topWheel.getShaftRPM());
+
+    float err = targetRPMs[motorIdx][1] - motors[motorIdx][1]->getShaftRPM();
+    float PIDOut = velocityPIDs[motorIdx][1]->runControllerDerivateError(err, dt);
+
+    motors[motorIdx][1]->setDesiredOutput(static_cast<int32_t>(PIDOut));
     lastTime = time;
 }
 
-void ShooterSubsystem::setDesiredOutputs() {
-    topWheel.setDesiredOutput(targetRPMs[0]);
-    bottomWheel.setDesiredOutput(targetRPMs[1]);
-    //emergency test lines
-    //can be very violent!!1!
-    // topWheel.setDesiredOutput(1000.0f);
-    // bottomWheel.setDesiredOutput(1000.0f);
-}
-
-void ShooterSubsystem::setZeroOutput(){
-    topWheel.setDesiredOutput(0.0f);
-    bottomWheel.setDesiredOutput(0.0f);
+void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
+    targetRPMs[motorIdx][1] = targetRPM;
 }
 
 };  // namespace src::Shooter
-
-// #endif //#ifndef TARGET_ENGINEER

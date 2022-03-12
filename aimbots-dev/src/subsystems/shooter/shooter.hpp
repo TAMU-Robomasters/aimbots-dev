@@ -1,11 +1,10 @@
 #pragma once
 #include <vector>
-//
-#include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
-//
+
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
+#include "utils/common_types.hpp"
+#include "utils/robot_constants.hpp"
 
 //#ifndef TARGET_ENGINEER
 namespace src::Shooter {
@@ -13,43 +12,62 @@ namespace src::Shooter {
 enum MotorIndex {
     TOP = 0,
     BOT = 1,
-    TOP2 = 2,
-    BOT2 = 3
+    RIGHT = 0,
+    LEFT = 1,
+    TOP_RIGHT = 0,
+    BOT_RIGHT = 1,
+    TOP_LEFT = 2,
+    BOT_LEFT = 3,
 };
-
 
 class ShooterSubsystem : public tap::control::Subsystem {
    public:
     ShooterSubsystem(tap::Drivers* drivers);
 
+    // Allows user to call a DJIMotor member function on all shooter motors
+    template <class... Args>
+    void ForAllShooterMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+            (motors[i][1]->*func)(args...);
+        }
+    }
+
+    template <class... Args>
+    void ForAllShooterMotors(void (ShooterSubsystem::*func)(MotorIndex, Args...), Args... args) {
+        for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+            MotorIndex mi = static_cast<MotorIndex>(i);
+            (this->*func)(mi, args...);
+        }
+    }
+
     mockable void initialize() override;
     void refresh() override;
 
-    void setDesiredOutputs();
+    void updateMotorVelocityPID(MotorIndex motorIdx);
 
-    void calculateShooter(float RPM_Target);
+    void setTargetRPM(MotorIndex motorIdx, float targetRPM);
 
-    void setZeroOutput();
-
-
-    float targetRPMs[2];
+#ifndef ENV_UNIT_TESTS
    private:
-    DJIMotor topWheel, bottomWheel;
-    DJIMotor* motors[2];
-    //static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-    //emergency testing line for if there is a chassis but no gimbal
-    //if the code works, the robot will become extremely violent in a short amount of time
-    uint32_t lastTime;
-    SmoothPID topWheelPID;
-    SmoothPID bottomWheelPID;
-    #ifdef TARGET_SENTRY
-    DJIMotor topWheel2, bottomWheel2;
-    #endif //#ifdef TARGET_SENTRY
+#else
    public:
-    inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
-    inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
+#endif
+
+    DJIMotor flywheel1, flywheel2;
+    SmoothPID flywheel1VelPID, flywheel2VelPID;
+
+#ifdef TARGET_SENTRY
+    DJIMotor flywheel3, flywheel4;
+    SmoothPID flywheel3PID, flywheel4PID;
+#endif
+
+    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
+    Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
+    Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
+
+    Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
+
+    uint32_t lastTime;
 };
 };  // namespace src::Shooter
-
-//#endif TARGET_ENGINEER

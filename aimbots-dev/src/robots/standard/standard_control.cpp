@@ -16,7 +16,6 @@
 //
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/shooter_command.hpp"
-
 #include "subsystems/shooter/shooter_default_command.hpp"
 
 using namespace src::Chassis;
@@ -44,13 +43,11 @@ src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
+HoldCommandMapping leftSwitchUp(  // you MUST map commands to run them at all (we think)
     drivers(),
     //{&chassisDriveCommand, &shooterCommand},
     {&shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-    
-
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -67,11 +64,11 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
-    //shooter.setDefaultCommand(&shooterDefaultCommand);
+    // shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *drivers) {
+void startupCommands(src::Drivers *) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -87,14 +84,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    StandardControl::initializeSubsystems();
+    StandardControl::registerSubsystems(drivers);
+    StandardControl::setDefaultCommands(drivers);
+    StandardControl::startupCommands(drivers);
+    StandardControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
-#endif //TARGET_STANDARD
+#endif  // TARGET_STANDARD
