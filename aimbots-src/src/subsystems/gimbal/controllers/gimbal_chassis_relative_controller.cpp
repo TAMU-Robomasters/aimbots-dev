@@ -1,7 +1,6 @@
 #include "gimbal_chassis_relative_controller.hpp"
 
 #include <utils/robot_specific_inc.hpp>
-#include <subsystems/gimbal/controllers/gimbal_gravity_helper.hpp>
 
 namespace src::Gimbal {
 
@@ -27,30 +26,36 @@ void GimbalChassisRelativeController::initialize() {
     pitchPID.reset();
 }
 
-void GimbalChassisRelativeController::runYawController(float desiredYawAngle) {
-    gimbal->setTargetYawAngle(AngleUnit::Radians, desiredYawAngle);
+static float outputPitch = 0.0f;
+static float outputYaw   = 0.0f;
 
-    float positionControllerError = gimbal->getCurrentYawAngleAsContiguousFloat().difference(gimbal->getTargetYawAngle(AngleUnit::Radians));
+void GimbalChassisRelativeController::runYawController(float desiredYawAngle) {
+    gimbal->setTargetYawAngle(AngleUnit::Degrees, desiredYawAngle);
+
+    float positionControllerError = modm::toDegree(gimbal->getCurrentYawAngleAsContiguousFloat().difference(gimbal->getTargetYawAngle(AngleUnit::Degrees)));
 
     yawPID.update(positionControllerError);
     float yawPIDOutput = yawPID.getValue();
 
+    outputYaw = yawPIDOutput;
     gimbal->setYawMotorOutput(yawPIDOutput);
 }
 
 void GimbalChassisRelativeController::runPitchController(float desiredPitchAngle) {
-    gimbal->setTargetPitchAngle(AngleUnit::Radians, desiredPitchAngle);
+    // limitVal looks backwards, but that's because PITCH_HARDSTOP_HIGH is a lower
+    // encoder angle than PITCH_HARDSTOP_LOW because of the way the motor is mounted.
 
-    float positionControllerError = gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians));
+    // FIXME: This might not work work for all robots, so verify this is valid before
+    //        running the code.
+    desiredPitchAngle = tap::algorithms::limitVal(desiredPitchAngle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+    gimbal->setTargetPitchAngle(AngleUnit::Degrees, desiredPitchAngle);
+
+    float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
     pitchPID.update(positionControllerError);
     float pitchPIDOutput = pitchPID.getValue();
 
-    pitchPIDOutput += Calculations::computeGravitationalForceOffset(
-        GIMBAL_CENTER_OF_GRAVITY_OFFSET_X,
-        GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z,
-        -gimbal->getCurrentPitchAngleFromCenter(AngleUnit::Radians),
-        GRAVITY_COMPENSATION_MAX);
+    outputPitch = pitchPIDOutput;
 
     gimbal->setPitchMotorOutput(pitchPIDOutput);
 }

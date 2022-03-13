@@ -78,13 +78,13 @@
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
-        "aimbots-dev/taproot/src",
-        "aimbots-dev/src",
+        "aimbots-src/taproot/src",
+        "aimbots-src/src",
     ],
     "C_Cpp.default.cppStandard": "c++20",
     "C_Cpp.default.cStandard": "c11",
     "C_Cpp.default.forcedInclude": [
-        "aimbots-dev/robot-type/robot_type.hpp"
+        "aimbots-src/robot-type/robot_type.hpp"
     ],
     "[markdown]": {
         "editor.wordWrap": "off",

@@ -49,8 +49,11 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     tap::algorithms::ContiguousFloat currentYawAngle;    // in Radians
     tap::algorithms::ContiguousFloat currentPitchAngle;  // in Radians
+
     float targetYawAngle;    // in Radians
     float targetPitchAngle;  // in Radians
+
+    static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 };
 
 }  // namespace src::Gimbal

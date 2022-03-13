@@ -35,7 +35,7 @@ GimbalSubsystem gimbal(drivers());
 
 // Define commands here ---------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 1.0f);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.02f, 0.3f);
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -56,10 +56,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers* drivers) { }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *drivers) {
-    // Just so we can read motor data without having a remote
-    drivers->commandScheduler.addCommand(&gimbalControlCommand);
-}
+void startupCommands(src::Drivers *drivers) { }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {

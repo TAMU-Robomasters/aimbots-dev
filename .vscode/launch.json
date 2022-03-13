@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "Build Tests - Debug",
-            "program": "${workspaceFolder}/aimbots-dev/build/tests/scons-debug/aimbots-dev-tests.elf",
+            "program": "${workspaceFolder}/aimbots-src/build/tests/scons-debug/aimbots-dev-tests.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -26,7 +26,7 @@
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "Build Sim - Debug",
-            "program": "${workspaceFolder}/aimbots-dev/build/sim/scons-debug/aimbots-dev.elf",
+            "program": "${workspaceFolder}/aimbots-src/build/sim/scons-debug/aimbots-dev.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -48,10 +48,10 @@
             "servertype": "openocd",
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "Program - Debug",
-            "executable": "./aimbots-dev/build/hardware/scons-debug/aimbots-dev.elf",
+            "executable": "./aimbots-src/build/hardware/scons-debug/aimbots-dev.elf",
             "device": "STM32F427II",
             "configFiles": [
-                "./aimbots-dev/openocd.cfg"
+                "./aimbots-src/openocd.cfg"
             ]
         }
     ]

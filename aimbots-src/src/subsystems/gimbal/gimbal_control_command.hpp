@@ -12,7 +12,8 @@ class GimbalControlCommand : public tap::control::Command {
     GimbalControlCommand(src::Drivers*,
                          GimbalSubsystem*,
                          GimbalChassisRelativeController*,
-                         float inputSensitivity);
+                         float inputYawSensitivity,
+                         float inputPitchSensitiity);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -29,7 +30,8 @@ class GimbalControlCommand : public tap::control::Command {
     GimbalSubsystem* gimbal;
     GimbalChassisRelativeController* controller;
 
-    float userInputSensitivityFactor;
+    float userInputYawSensitivityFactor;
+    float userInputPitchSensitivityFactor;
 };
 
 }  // namespace src::Gimbal
