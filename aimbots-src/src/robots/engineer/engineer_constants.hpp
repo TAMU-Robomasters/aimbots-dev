@@ -50,22 +50,12 @@ static constexpr float PITCH_START_ANGLE = M_PI_2;
 static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
 
-/**
- * Constants for gimbal gravity compensation
- */
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_X = 0.0f; // millimeters
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z = 0.0f; // millimeters
-static constexpr float GRAVITY_COMPENSATION_MAX          = 10.0f;
-
 static constexpr MotorID LEFT_BACK_WHEEL_ID   = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID  = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID  = MotorID::MOTOR4;
 static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
-
-static constexpr CANBus CHASSIS_CAN_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS2;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,

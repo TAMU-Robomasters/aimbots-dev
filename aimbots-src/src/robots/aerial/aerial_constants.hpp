@@ -50,19 +50,10 @@ static constexpr float PITCH_START_ANGLE = M_PI_2;
 static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
 
-/**
- * Constants for gimbal gravity compensation
- */
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_X = 0.0f; // millimeters
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z = 0.0f; // millimeters
-static constexpr float GRAVITY_COMPENSATION_MAX          = 10.0f;
-
 // static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 static constexpr MotorID YAW_MOTOR_ID   = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
-
-static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS1;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

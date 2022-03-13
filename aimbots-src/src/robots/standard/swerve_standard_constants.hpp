@@ -54,13 +54,6 @@ static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
 
 /**
- * Constants for gimbal gravity compensation
- */
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_X = 0.0f; // millimeters
-static constexpr float GIMBAL_CENTER_OF_GRAVITY_OFFSET_Z = 0.0f; // millimeters
-static constexpr float GRAVITY_COMPENSATION_MAX          = 10.0f;
-
-/**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
  */
 static constexpr int MAX_3508_ENC_RPM = 7000;
