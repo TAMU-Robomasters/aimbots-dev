@@ -206,5 +206,4 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
 void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
 
 void ChassisSubsystem::calculateRail(float) {}
-
 };  // namespace src::Chassis

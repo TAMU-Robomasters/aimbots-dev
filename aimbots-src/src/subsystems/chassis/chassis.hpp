@@ -72,7 +72,7 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
         }
     }
 
-#ifndef ENV_UNIT_TESTS
+#ifndef ENV_UNIT_TESTS 
    private:
 #else
    public:

@@ -23,9 +23,9 @@ static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 static constexpr MotorID RAIL_WHEEL_ID  = MotorID::MOTOR1;
 static constexpr MotorID YAW_MOTOR_ID   = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
-
-static constexpr CANBus CHASSIS_CAN_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus GIMBAL_CAN_BUS  = CANBus::CAN_BUS2;
+//
+static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR1;
+static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR2;
 
 /**
  * This max output is measured in the c620 robomaster translated current.

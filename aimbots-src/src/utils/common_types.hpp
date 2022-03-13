@@ -4,6 +4,9 @@
 #include <tap/algorithms/smooth_pid.hpp>
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/control/command.hpp>
+#include <tap/architecture/clock.hpp>
+
+// #include <bit_cast>
 
 #include "tap/algorithms/math_user_utils.hpp"
 
@@ -28,8 +31,15 @@ using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;
 
+using TapCommand = tap::control::Command;
+
+// using clock = tap::arch::clock;
+
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
+
+// template <uint32_t f>
+// using bitToFloat = std::bit_cast<float>(f);

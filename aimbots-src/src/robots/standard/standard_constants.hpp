@@ -7,6 +7,7 @@
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
+static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
  *
@@ -41,7 +42,11 @@ static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID  = MotorID::MOTOR4;
 static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
-
+//
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+//
+static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR3;
+static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR4;
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
