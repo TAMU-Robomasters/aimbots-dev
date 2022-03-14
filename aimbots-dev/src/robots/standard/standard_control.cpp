@@ -45,8 +45,7 @@ src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(  // you MUST map commands to run them at all (we think)
     drivers(),
-    //{&chassisDriveCommand, &shooterCommand},
-    {&shooterCommand},
+    {&chassisDriveCommand, &shooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

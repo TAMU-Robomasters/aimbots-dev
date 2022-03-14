@@ -17,35 +17,18 @@ ShooterCommand::ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter)
 }
 
 void ShooterCommand::initialize() {
+    //declare fixed 8500 RPM target until command is descheduled
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM,8500.0f);
+    //3000 is a reasonable speed
 }
 
 // set the flywheel to a certain speed once the command is called
 void ShooterCommand::execute() {
-    // drivers->leds.set(tap::gpio::Leds::A, true);
-    drivers->leds.set(tap::gpio::Leds::B, true);
-    drivers->leds.set(tap::gpio::Leds::C, false);
-    drivers->leds.set(tap::gpio::Leds::D, false);
-    drivers->leds.set(tap::gpio::Leds::E, true);
-    drivers->leds.set(tap::gpio::Leds::F, false);
-    drivers->leds.set(tap::gpio::Leds::G, false);
-    drivers->leds.set(tap::gpio::Leds::H, true);
-
-    // set the target RPMs
-    // shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM);
-    // 3000 is a reasonable speed
 }
 
 void ShooterCommand::end(bool) {
-    // switch the lights to see if ShooterCommand::end gets called -- delete later!
-    drivers->leds.set(tap::gpio::Leds::B, false);
-    drivers->leds.set(tap::gpio::Leds::C, true);
-    drivers->leds.set(tap::gpio::Leds::D, true);
-    drivers->leds.set(tap::gpio::Leds::E, false);
-    drivers->leds.set(tap::gpio::Leds::F, true);
-    drivers->leds.set(tap::gpio::Leds::G, true);
-    drivers->leds.set(tap::gpio::Leds::H, false);
-
-    // shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM);
+    //declare motors stop w/ PID upon command deschedule
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM,0.0f);
 }
 
 bool ShooterCommand::isReady() {

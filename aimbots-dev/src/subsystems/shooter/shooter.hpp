@@ -43,8 +43,21 @@ class ShooterSubsystem : public tap::control::Subsystem {
     mockable void initialize() override;
     void refresh() override;
 
+    /**
+     * @brief Updates velocity PID and motor RPM for a single motor. Intended for use with ForAllShooterMotors().
+     * Should be called continuously in subsystem refresh
+     * 
+     * @param motorIdx index for DJIMotor matrix
+     */
     void updateMotorVelocityPID(MotorIndex motorIdx);
 
+    /**
+     * @brief Changes the target RPM for a single motor. Intended for use with ForAllShooterMotors(), 
+     * and should be called from a command to declare intended RPM. Does not necessarily need to be called continuously
+     * 
+     * @param motorIdx index for DJIMotor matrix
+     * @param targetRPM intended target RPM
+     */
     void setTargetRPM(MotorIndex motorIdx, float targetRPM);
 
 #ifndef ENV_UNIT_TESTS
@@ -54,7 +67,7 @@ class ShooterSubsystem : public tap::control::Subsystem {
 #endif
 
     DJIMotor flywheel1, flywheel2;
-    SmoothPID flywheel1VelPID, flywheel2VelPID;
+    SmoothPID flywheel1PID, flywheel2PID;
 
 #ifdef TARGET_SENTRY
     DJIMotor flywheel3, flywheel4;
@@ -66,7 +79,7 @@ class ShooterSubsystem : public tap::control::Subsystem {
     Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
-    Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
+    Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
 
     uint32_t lastTime;
 };
