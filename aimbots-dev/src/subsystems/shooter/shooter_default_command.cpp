@@ -17,21 +17,11 @@ ShooterDefaultCommand::ShooterDefaultCommand(src::Drivers* drivers, ShooterSubsy
 }
 
 void ShooterDefaultCommand::initialize() {
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 0.0f);
 }
 
 // set the flywheel to a certain speed once the command is called
 void ShooterDefaultCommand::execute() {
-    drivers->leds.set(tap::gpio::Leds::B, false);
-    drivers->leds.set(tap::gpio::Leds::C, true);
-    drivers->leds.set(tap::gpio::Leds::D, true);
-    drivers->leds.set(tap::gpio::Leds::E, false);
-    drivers->leds.set(tap::gpio::Leds::F, true);
-    drivers->leds.set(tap::gpio::Leds::G, true);
-    drivers->leds.set(tap::gpio::Leds::H, false);
-
-    // stop >:(
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 0.0f);
-    // 3000 is a reasonable speed
 }
 
 void ShooterDefaultCommand::end(bool) {
