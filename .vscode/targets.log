@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Fri Mar 11 15:39:32 2022
+# Make data base, printed on Wed Mar 23 17:35:53 2022
 
 # Variables
 
@@ -42,7 +42,7 @@ INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-115aea9d-5023-409f-acde-089d431a8200.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-4ef22565-c2da-4489-9562-daefe5b53cb3.sock
 # environment
 VSCODE_CWD = /
 # environment
@@ -56,7 +56,7 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.yoOqvXcqCK/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.EsBpJIIlVZ/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -76,7 +76,7 @@ HOME = /Users/sidp
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/8908a9ca0f221f36507231afb39d2d8d1e182702
+VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/c722ca6c7eed3d7987c0d5c3df5c45f6b15e77d1
 # environment
 LOGNAME = sidp
 # environment
@@ -114,7 +114,7 @@ TMPDIR = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.65.1-main.sock
+VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.65.2-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -122,7 +122,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.2468937.2468943
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.3038591.3038597
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -154,7 +154,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 54018
+VSCODE_PID = 2401
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=1/93=1%
 
@@ -238,7 +238,7 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Fri Mar 11 15:39:32 2022
+# Finished Make data base on Wed Mar 23 17:35:53 2022
 
  
 make: *** No rule to make target `all'.  Stop.

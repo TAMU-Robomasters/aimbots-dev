@@ -55,5 +55,4 @@ bool ShooterCommand::isReady() {
 bool ShooterCommand::isFinished() const {
     return false;
 }
-
 }  // namespace src::Shooter
