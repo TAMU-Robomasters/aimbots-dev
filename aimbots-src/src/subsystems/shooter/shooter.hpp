@@ -24,7 +24,12 @@ class ShooterSubsystem : public tap::control::Subsystem {
    public:
     ShooterSubsystem(tap::Drivers* drivers);
 
-    // Allows user to call a DJIMotor member function on all shooter motors
+    /**
+     * Allows user to call a DJIMotor member function on all shooter motors
+     *
+     * @param function pointer to a member function of DJIMotor
+     * @param args arguments to pass to the member function
+     */
     template <class... Args>
     void ForAllShooterMotors(void (DJIMotor::*func)(Args...), Args... args) {
         for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
@@ -32,6 +37,12 @@ class ShooterSubsystem : public tap::control::Subsystem {
         }
     }
 
+    /**
+     * Allows user to call a ShooterSubsystem function on all shooter motors.
+     *
+     * @param function pointer to a member function of ShooterSubsystem that takes a MotorIndex as it's first argument
+     * @param args arguments to pass to the member function
+     */
     template <class... Args>
     void ForAllShooterMotors(void (ShooterSubsystem::*func)(MotorIndex, Args...), Args... args) {
         for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
@@ -44,8 +55,8 @@ class ShooterSubsystem : public tap::control::Subsystem {
     void refresh() override;
 
     /**
-     * @brief Updates velocity PID and motor RPM for a single motor. Intended for use with ForAllShooterMotors().
-     * Should be called continuously in subsystem refresh
+     * @brief Updates velocity PID and motor RPM for a single motor. Can be used with ForAllShooterMotors().
+     * Should be called continuously in subsystem refresh.
      *
      * @param motorIdx index for DJIMotor matrix
      */

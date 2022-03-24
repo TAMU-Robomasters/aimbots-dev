@@ -24,8 +24,8 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
 {
-    motors[TOP][0] = &flywheel1;  // or RIGHT, same thing
-    motors[BOT][0] = &flywheel2;  // or LEFT, same thing
+    motors[TOP][0] = &flywheel1;  // TOP == RIGHT
+    motors[BOT][0] = &flywheel2;  // BOT == LEFT
     velocityPIDs[TOP][0] = &flywheel1PID;
     velocityPIDs[BOT][0] = &flywheel2PID;
 #ifdef TARGET_SENTRY
