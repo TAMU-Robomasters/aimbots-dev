@@ -5,7 +5,7 @@
 namespace src::utils {
 
 struct SmoothPIDWrapper {
-    uint32_t lastTime;
+    float lastTime;
     tap::algorithms::SmoothPid pid;
 
     SmoothPIDWrapper(
@@ -30,19 +30,19 @@ struct SmoothPIDWrapper {
               tRProportionalKalman,
               errDeadzone) {}
 
-    void runController(float error, float rotationalSpeed) {
-        float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-        float dt = time - lastTime;
-        pid.runController(error, rotationalSpeed, dt);
-        lastTime = time;
+    float runController(float error, float derivativeInput) {
+        float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
+        float dt = currTime - lastTime;
+        lastTime = currTime;
+        return pid.runController(error, derivativeInput, dt);
     }
 
-    void runControllerDerivateError(float error) {
-        float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-        float dt = time - lastTime;
-        pid.runControllerDerivateError(error, dt);
-        lastTime = time;
+    float runControllerDerivateError(float error) {
+        float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
+        float dt = currTime - lastTime;
+        lastTime = currTime;
+        return pid.runControllerDerivateError(error, dt);
     }
-}
+};
 
 }  // namespace src::utils

@@ -46,15 +46,15 @@ class ShooterSubsystem : public tap::control::Subsystem {
     /**
      * @brief Updates velocity PID and motor RPM for a single motor. Intended for use with ForAllShooterMotors().
      * Should be called continuously in subsystem refresh
-     * 
+     *
      * @param motorIdx index for DJIMotor matrix
      */
     void updateMotorVelocityPID(MotorIndex motorIdx);
 
     /**
-     * @brief Changes the target RPM for a single motor. Intended for use with ForAllShooterMotors(), 
+     * @brief Changes the target RPM for a single motor. Intended for use with ForAllShooterMotors(),
      * and should be called from a command to declare intended RPM. Does not necessarily need to be called continuously
-     * 
+     *
      * @param motorIdx index for DJIMotor matrix
      * @param targetRPM intended target RPM
      */
@@ -80,7 +80,5 @@ class ShooterSubsystem : public tap::control::Subsystem {
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
-
-    uint32_t lastTime;
 };
 };  // namespace src::Shooter

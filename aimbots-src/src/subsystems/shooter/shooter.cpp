@@ -37,8 +37,6 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
 }
 
 void ShooterSubsystem::initialize() {
-    lastTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-
     ForAllShooterMotors(&DJIMotor::initialize);
 
     ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0.0f));
@@ -49,8 +47,8 @@ void ShooterSubsystem::refresh() {
     ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }
 
-float PIDout = 0.0f;
-float displayShaftSpeed = 0.0f;
+float PIDoutDisplay = 0.0f;
+float shaftSpeedDisplay = 0.0f;
 // TODO: need to tune PID
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
@@ -58,7 +56,6 @@ void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
 
     motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(PIDOut));
-    lastTime = time;
 }
 
 void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
