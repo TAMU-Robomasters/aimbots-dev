@@ -17,9 +17,9 @@ ShooterCommand::ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter)
 }
 
 void ShooterCommand::initialize() {
-    //declare fixed 8500 RPM target until command is descheduled
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM,8500.0f);
-    //3000 is a reasonable speed
+    // declare fixed 8500 RPM target until command is descheduled
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 8500.0f);
+    // 3000 is a reasonable speed
 }
 
 // set the flywheel to a certain speed once the command is called
@@ -27,8 +27,8 @@ void ShooterCommand::execute() {
 }
 
 void ShooterCommand::end(bool) {
-    //declare motors stop w/ PID upon command deschedule
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM,0.0f);
+    // declare motors stop w/ PID upon command deschedule
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 0.0f);
 }
 
 bool ShooterCommand::isReady() {

@@ -54,11 +54,8 @@ float displayShaftSpeed = 0.0f;
 // TODO: need to tune PID
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
-    float time = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-    float dt = time - lastTime;
-
     float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
-    float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err, dt);
+    float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
 
     motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(PIDOut));
     lastTime = time;
