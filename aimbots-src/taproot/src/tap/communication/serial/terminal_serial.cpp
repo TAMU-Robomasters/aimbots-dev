@@ -22,11 +22,7 @@
 #include "tap/algorithms/strtok.hpp"
 #include "tap/drivers.hpp"
 
-namespace tap
-{
-namespace communication
-{
-namespace serial
+namespace tap::communication::serial
 {
 constexpr char TerminalSerial::DELIMITERS[];
 
@@ -136,6 +132,4 @@ void TerminalSerial::printUsage()
     }
     stream << "  and <args> is specific to <header> (query <header> -H for more help)\n";
 }
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial

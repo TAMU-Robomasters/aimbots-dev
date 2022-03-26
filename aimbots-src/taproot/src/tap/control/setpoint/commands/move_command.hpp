@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_ROTATE_COMMAND_HPP_
-#define AGITATOR_ROTATE_COMMAND_HPP_
+#ifndef TAPROOT_MOVE_COMMAND_HPP_
+#define TAPROOT_MOVE_COMMAND_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/algorithms/ramp.hpp"
@@ -119,4 +119,4 @@ private:
 
 }  // namespace tap
 
-#endif  // AGITATOR_ROTATE_COMMAND_HPP_
+#endif  // TAPROOT_MOVE_COMMAND_HPP_

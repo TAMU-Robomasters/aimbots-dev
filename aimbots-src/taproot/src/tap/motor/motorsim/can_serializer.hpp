@@ -17,10 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef PLATFORM_HOSTED
+#ifndef TAPROOT_CAN_SERIALIZER_HPP_
+#define TAPROOT_CAN_SERIALIZER_HPP_
 
-#ifndef CAN_SERIALIZER_HPP_
-#define CAN_SERIALIZER_HPP_
+#ifdef PLATFORM_HOSTED
 
 #include <array>
 #include <cstdint>
@@ -69,6 +69,6 @@ private:
 
 }  // namespace tap
 
-#endif  // CAN_SERIALIZER_HPP_
-
 #endif  // PLATFORM_HOSTED
+
+#endif  // TAPROOT_CAN_SERIALIZER_HPP_

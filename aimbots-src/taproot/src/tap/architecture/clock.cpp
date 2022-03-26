@@ -21,27 +21,31 @@
 
 #include "clock.hpp"
 
-namespace tap
-{
-namespace arch
-{
-namespace clock
-{
-/**
- * Global static variable storing time for testing. It's value is returned from the `getTime*()`
- * functions and is set by `setTime()`. Note this is a static global variable accessible
- * from _any_ test, so you must assume that `getTimeMilliseconds()` value is undefined until
- * you set it.
- */
-uint32_t currTimeMilliseconds = 0;
+#include "modm/architecture/interface/assert.h"
 
-void setTime(uint32_t timeMilliseconds) { currTimeMilliseconds = timeMilliseconds; }
+namespace tap::arch::clock
+{
+static ClockStub *globalStubInstance = nullptr;
 
-uint32_t getTimeMilliseconds() { return currTimeMilliseconds; }
+ClockStub::ClockStub()
+{
+    modm_assert(
+        globalStubInstance == nullptr,
+        "ClockStub",
+        "multiple clock stubs defined at the same time");
+    globalStubInstance = this;
+}
+ClockStub::~ClockStub() { globalStubInstance = nullptr; }
 
-uint32_t getTimeMicroseconds() { return currTimeMilliseconds * 1000; }
-}  // namespace clock
-}  // namespace arch
-}  // namespace tap
+uint32_t getTimeMilliseconds()
+{
+    return globalStubInstance == nullptr ? 0 : globalStubInstance->time;
+}
+
+uint32_t getTimeMicroseconds()
+{
+    return globalStubInstance == nullptr ? 0 : 1000 * globalStubInstance->time;
+}
+}  // namespace tap::arch::clock
 
 #endif

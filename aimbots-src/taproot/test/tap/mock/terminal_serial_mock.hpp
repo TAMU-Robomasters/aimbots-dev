@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TERMINAL_SERIAL_MOCK_HPP_
-#define TERMINAL_SERIAL_MOCK_HPP_
+#ifndef TAPROOT_TERMINAL_SERIAL_MOCK_HPP_
+#define TAPROOT_TERMINAL_SERIAL_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -45,4 +45,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  // TERMINAL_SERIAL_MOCK_HPP_
+#endif  // TAPROOT_TERMINAL_SERIAL_MOCK_HPP_

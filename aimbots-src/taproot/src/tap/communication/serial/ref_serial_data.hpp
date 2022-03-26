@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REF_SERIAL_DATA_HPP_
-#define REF_SERIAL_DATA_HPP_
+#ifndef TAPROOT_REF_SERIAL_DATA_HPP_
+#define TAPROOT_REF_SERIAL_DATA_HPP_
 
 #include <cinttypes>
 
@@ -26,7 +26,9 @@
 
 #include "modm/architecture/utils.hpp"
 
-namespace tap::serial
+#include "dji_serial.hpp"
+
+namespace tap::communication::serial
 {
 /**
  * Contains enum and struct definitions used in the `RefSerial` class.
@@ -69,7 +71,7 @@ public:
     {
     public:
         RobotToRobotMessageHandler() {}
-        virtual void operator()(const DJISerial::SerialMessage &message) = 0;
+        virtual void operator()(const DJISerial::ReceivedSerialMessage &message) = 0;
     };
 
     /**
@@ -81,45 +83,45 @@ public:
     public:
         enum class GameStage : uint8_t
         {
-            PREMATCH = 0,        /// Pre-competition. stage
-            SETUP = 1,           /// Setup stage.
-            INITIALIZATION = 2,  /// Initialization stage.
-            COUNTDOWN = 3,       /// 5-second countdown.
-            IN_GAME = 4,         /// In middle of the game.
-            END_GAME = 5,        /// Calculating competition results.
+            PREMATCH = 0,        ///< Pre-competition. stage
+            SETUP = 1,           ///< Setup stage.
+            INITIALIZATION = 2,  ///< Initialization stage.
+            COUNTDOWN = 3,       ///< 5-second countdown.
+            IN_GAME = 4,         ///< In middle of the game.
+            END_GAME = 5,        ///< Calculating competition results.
         };
 
         enum class GameWinner : uint8_t
         {
-            DRAW = 0,  /// Match was a draw.
-            RED = 1,   /// Red team won the match.
-            BLUE = 2,  /// Blue team won the match.
+            DRAW = 0,  ///< Match was a draw.
+            RED = 1,   ///< Red team won the match.
+            BLUE = 2,  ///< Blue team won the match.
         };
 
         enum class ArmorId : uint8_t
         {
-            FRONT = 0,  /// armor #0 (front).
-            LEFT = 1,   /// armor #1 (left).
-            REAR = 2,   /// armor #2 (rear).
-            RIGHT = 3,  /// armor #3 (right).
-            TOP = 4,    /// armor #4 (top).
+            FRONT = 0,  ///< armor #0 (front).
+            LEFT = 1,   ///< armor #1 (left).
+            REAR = 2,   ///< armor #2 (rear).
+            RIGHT = 3,  ///< armor #3 (right).
+            TOP = 4,    ///< armor #4 (top).
         };
 
         enum class DamageType : uint8_t
         {
-            ARMOR_DAMAGE = 0,           /// Armor damage.
-            MODULE_OFFLINE = 1,         /// Module offline.
-            BARREL_OVER_SPEED = 2,      /// Firing speed too high.
-            BARREL_OVERHEAT = 3,        /// Barrel overheat.
-            CHASSIS_POWER_OVERRUN = 4,  /// Chassis power overrun.
-            COLLISION = 5,              /// Armor plate collision.
+            ARMOR_DAMAGE = 0,           ///< Armor damage.
+            MODULE_OFFLINE = 1,         ///< Module offline.
+            BARREL_OVER_SPEED = 2,      ///< Firing speed too high.
+            BARREL_OVERHEAT = 3,        ///< Barrel overheat.
+            CHASSIS_POWER_OVERRUN = 4,  ///< Chassis power overrun.
+            COLLISION = 5,              ///< Armor plate collision.
         };
 
         enum class RobotPower : uint8_t
         {
-            GIMBAL_HAS_POWER = modm::Bit0,   /// 1 if there is 24V output to gimbal, 0 for 0V.
-            CHASSIS_HAS_POWER = modm::Bit1,  /// 1 if there is 24V output to chassis, 0 for 0V.
-            SHOOTER_HAS_POWER = modm::Bit2,  /// 1 if there is 24V output to shooter, 0 for 0V.
+            GIMBAL_HAS_POWER = modm::Bit0,   ///< 1 if there is 24V output to gimbal, 0 for 0V.
+            CHASSIS_HAS_POWER = modm::Bit1,  ///< 1 if there is 24V output to chassis, 0 for 0V.
+            SHOOTER_HAS_POWER = modm::Bit2,  ///< 1 if there is 24V output to shooter, 0 for 0V.
         };
         MODM_FLAGS8(RobotPower);
 
@@ -147,28 +149,28 @@ public:
 
         struct DamageEvent
         {
-            uint16_t damageAmount;  /// Amount of damage received
-            uint32_t timestampMs;   /// Time when damage was received (in milliseconds).
+            uint16_t damageAmount;  ///< Amount of damage received
+            uint32_t timestampMs;   ///< Time when damage was received (in milliseconds).
         };
 
         enum BulletType
         {
-            AMMO_17 = 1,  /// 17 mm projectile ammo.
-            AMMO_42 = 2,  /// 42 mm projectile ammo.
+            AMMO_17 = 1,  ///< 17 mm projectile ammo.
+            AMMO_42 = 2,  ///< 42 mm projectile ammo.
         };
 
         enum MechanismID
         {
-            TURRET_17MM_1 = 1,
-            TURRET_17MM_2 = 2,
-            TURRET_42MM = 3,
+            TURRET_17MM_1 = 0,
+            TURRET_17MM_2 = 1,
+            TURRET_42MM = 2,
         };
 
         struct GameData
         {
-            GameStage gameStage;          /// Current stage in the game.
-            uint16_t stageTimeRemaining;  /// Remaining time in the current stage (in seconds).
-            GameWinner gameWinner;        /// Results of the match.
+            GameStage gameStage;          ///< Current stage in the game.
+            uint16_t stageTimeRemaining;  ///< Remaining time in the current stage (in seconds).
+            GameWinner gameWinner;        ///< Results of the match.
         };
 
         /**
@@ -194,65 +196,68 @@ public:
 
         struct ChassisData
         {
-            uint16_t volt;         /// Output voltage to the chassis (in mV).
-            uint16_t current;      /// Output current to the chassis (in mA).
-            float power;           /// Output power to the chassis (in W).
-            uint16_t powerBuffer;  /// Chassis power buffer (in J).
-            float x, y, z;         /// x, y, z coordinate of the chassis.
+            uint16_t volt;         ///< Output voltage to the chassis (in mV).
+            uint16_t current;      ///< Output current to the chassis (in mA).
+            float power;           ///< Output power to the chassis (in W).
+            uint16_t powerBuffer;  ///< Chassis power buffer (in J).
+            float x, y, z;         ///< x, y, z coordinate of the chassis.
             uint16_t powerConsumptionLimit;
         };
 
         struct TurretData
         {
-            BulletType bulletType;           /// 17mm or 42mm last projectile shot.
-            MechanismID launchMechanismID;   /// Either 17mm mechanism 1, 3, or 42 mm mechanism.
-            uint8_t firingFreq;              /// Firing frequency (in Hz).
-            uint16_t heat17ID1;              /// Current 17mm turret heat, ID2.
-            uint16_t heat17ID2;              /// ID2 turret heat.
-            uint16_t heatCoolingRate17ID1;   /// 17mm turret cooling value per second, ID1.
-            uint16_t heatCoolingRate17ID2;   /// ID2.
-            uint16_t heatLimit17ID1;         /// 17mm turret heat limit, ID1.
-            uint16_t heatLimit17ID2;         /// ID2.
-            uint16_t barrelSpeedLimit17ID1;  /// 17mm turret barrel speed limit, ID1.
-            uint16_t barrelSpeedLimit17ID2;  /// ID2.
-            uint16_t heat42;                 /// Current 42mm turret heat.
-            uint16_t heatCoolingRate42;      /// 42mm turret cooling value per second.
-            uint16_t heatLimit42;            /// 42mm turret heat limit.
-            uint16_t barrelSpeedLimit42;     /// 42mm turret barrel speed.
-            uint16_t bulletsRemaining17;  /// Number of bullets remaining in sentinel and drone only
-                                          /// (500 max) if in RMUC, or any robot in RMUL.
-            uint16_t bulletsRemaining42;  /// Number of bullets remaining in hero if in RMUL or 0 if
-                                          /// in RMUC.
-            float bulletSpeed;            /// Last bullet speed (in m/s).
-            float yaw;                    /// Barrel yaw position (degree).
+            BulletType bulletType;           ///< 17mm or 42mm last projectile shot.
+            MechanismID launchMechanismID;   ///< Either 17mm mechanism 1, 3, or 42 mm mechanism.
+            uint8_t firingFreq;              ///< Firing frequency (in Hz).
+            uint16_t heat17ID1;              ///< Current 17mm turret heat, ID2.
+            uint16_t heat17ID2;              ///< ID2 turret heat.
+            uint16_t heatCoolingRate17ID1;   ///< 17mm turret cooling value per second, ID1.
+            uint16_t heatCoolingRate17ID2;   ///< ID2.
+            uint16_t heatLimit17ID1;         ///< 17mm turret heat limit, ID1.
+            uint16_t heatLimit17ID2;         ///< ID2.
+            uint16_t barrelSpeedLimit17ID1;  ///< 17mm turret barrel speed limit, ID1.
+            uint16_t barrelSpeedLimit17ID2;  ///< ID2.
+            uint16_t heat42;                 ///< Current 42mm turret heat.
+            uint16_t heatCoolingRate42;      ///< 42mm turret cooling value per second.
+            uint16_t heatLimit42;            ///< 42mm turret heat limit.
+            uint16_t barrelSpeedLimit42;     ///< 42mm turret barrel speed.
+            uint16_t bulletsRemaining17;     ///< Number of bullets remaining in sentinel and drone
+                                             ///< only (500 max) if in RMUC, or any robot in RMUL.
+            uint16_t bulletsRemaining42;  ///< Number of bullets remaining in hero if in RMUL or 0
+                                          ///< if in RMUC.
+            float bulletSpeed;            ///< Last bullet speed (in m/s).
+            float yaw;                    ///< Barrel yaw position (degree).
+            uint32_t lastReceivedLaunchingInfoTimestamp;  ///< Last time in milliseconds that the
+                                                          ///< real-time launching information
+                                                          ///< message was received
         };
 
         struct RobotData
         {
-            RobotId robotId;          /// Robot type and team.
-            uint8_t robotLevel;       /// Current level of this robot (1-3).
-            uint16_t previousHp;      /// Health of this robot before damage was
-                                      /// received, used to calculate receivedDps
-                                      /// if no damage was received recently,
-                                      /// previousHp = currentHp.
-            uint16_t currentHp;       /// Current health of this robot.
-            uint16_t maxHp;           /// Max health of this robot.
-            RobotPower_t robotPower;  /// Flags indicating which parts of the robot have power
-            ArmorId damagedArmorId;   /// Armor ID that was damaged.
-            DamageType damageType;    /// Cause of damage.
-            float receivedDps;        /// Damage per second received.
-            ChassisData chassis;      /// Chassis power draw and position data.
-            TurretData turret;        /// Turret firing and heat data.
-            RobotHpData allRobotHp;   /// Current HP of all the robots.
-            uint16_t remainingCoins;  /// Number of remaining coins left to spend.
-            RobotBuffStatus_t robotBuffStatus;  /// Status of all buffs on the robot
-            uint16_t aerialEnergyStatus;        /// Countdown timer that indicates how much time the
-                                                /// aerial has left to fire
-            RFIDActivationStatus_t rfidStatus;  /// The current status of which RFID zones
-                                                /// are being activated by the current robot.
-            uint32_t robotDataReceivedTimestamp;  /// Most recent time at which data with message
-                                                  /// id `REF_MESSAGE_TYPE_ROBOT_STATUS` has been
-                                                  /// received.
+            RobotId robotId;          ///< Robot type and team.
+            uint8_t robotLevel;       ///< Current level of this robot (1-3).
+            uint16_t previousHp;      ///< Health of this robot before damage was
+                                      ///< received, used to calculate receivedDps
+                                      ///< if no damage was received recently,
+                                      ///< previousHp = currentHp.
+            uint16_t currentHp;       ///< Current health of this robot.
+            uint16_t maxHp;           ///< Max health of this robot.
+            RobotPower_t robotPower;  ///< Flags indicating which parts of the robot have power
+            ArmorId damagedArmorId;   ///< Armor ID that was damaged.
+            DamageType damageType;    ///< Cause of damage.
+            float receivedDps;        ///< Damage per second received.
+            ChassisData chassis;      ///< Chassis power draw and position data.
+            TurretData turret;        ///< Turret firing and heat data.
+            RobotHpData allRobotHp;   ///< Current HP of all the robots.
+            uint16_t remainingCoins;  ///< Number of remaining coins left to spend.
+            RobotBuffStatus_t robotBuffStatus;  ///< Status of all buffs on the robot
+            uint16_t aerialEnergyStatus;  ///< Countdown timer that indicates how much time the
+                                          ///< aerial has left to fire
+            RFIDActivationStatus_t rfidStatus;    ///< The current status of which RFID zones
+                                                  ///< are being activated by the current robot.
+            uint32_t robotDataReceivedTimestamp;  ///< Most recent time at which data with message
+                                                  ///< id `REF_MESSAGE_TYPE_ROBOT_STATUS` has been
+                                                  ///< received.
         };
     };
 
@@ -304,17 +309,6 @@ public:
         };
 
         /**
-         * All referee data will be prefixed by a header of this structure
-         */
-        struct FrameHeader
-        {
-            uint8_t SOF;  /// Also known as the "content ID" in the ref system protocol appendix
-            uint16_t dataLength;
-            uint8_t seq;
-            uint8_t CRC8;
-        } modm_packed;
-
-        /**
          * Each graphic message has a graphic header inside of the message data.
          */
         struct InteractiveHeader
@@ -350,7 +344,7 @@ public:
 
         struct DeleteGraphicLayerMessage
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             uint8_t deleteOperation;
@@ -360,7 +354,7 @@ public:
 
         struct Graphic1Message
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             GraphicData graphicData;
@@ -369,7 +363,7 @@ public:
 
         struct RobotToRobotMessage
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             uint8_t dataAndCRC16[115];
@@ -377,7 +371,7 @@ public:
 
         struct Graphic2Message
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             GraphicData graphicData[2];
@@ -386,7 +380,7 @@ public:
 
         struct Graphic5Message
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             GraphicData graphicData[5];
@@ -395,7 +389,7 @@ public:
 
         struct Graphic7Message
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             GraphicData graphicData[7];
@@ -404,7 +398,7 @@ public:
 
         struct GraphicCharacterMessage
         {
-            FrameHeader frameHeader;
+            DJISerial::FrameHeader frameHeader;
             uint16_t cmdId;
             InteractiveHeader interactiveHeader;
             GraphicData graphicData;
@@ -459,6 +453,6 @@ inline RefSerialData::RobotId operator-(RefSerialData::RobotId id1, RefSerialDat
     return static_cast<RefSerialData::RobotId>(
         static_cast<uint16_t>(id1) - static_cast<uint16_t>(id2));
 }
-}  // namespace tap::serial
+}  // namespace tap::communication::serial
 
-#endif  // REF_SERIAL_DATA_HPP_
+#endif  // TAPROOT_REF_SERIAL_DATA_HPP_

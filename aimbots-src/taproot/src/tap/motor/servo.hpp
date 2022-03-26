@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVO_HPP_
-#define SERVO_HPP_
+#ifndef TAPROOT_SERVO_HPP_
+#define TAPROOT_SERVO_HPP_
 
 #include "tap/algorithms/ramp.hpp"
 #include "tap/communication/gpio/pwm.hpp"
@@ -119,4 +119,4 @@ private:
 
 }  // namespace tap
 
-#endif  // SERVO_HPP_
+#endif  // TAPROOT_SERVO_HPP_

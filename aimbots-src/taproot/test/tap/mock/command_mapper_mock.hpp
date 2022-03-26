@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_MAPPER_MOCK_HPP_
-#define COMMAND_MAPPER_MOCK_HPP_
+#ifndef TAPROOT_COMMAND_MAPPER_MOCK_HPP_
+#define TAPROOT_COMMAND_MAPPER_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -38,7 +38,11 @@ public:
     MOCK_METHOD(
         void,
         handleKeyStateChange,
-        (uint16_t, Remote::SwitchState, Remote::SwitchState, bool, bool),
+        (uint16_t,
+         tap::communication::serial::Remote::SwitchState,
+         tap::communication::serial::Remote::SwitchState,
+         bool,
+         bool),
         (override));
     MOCK_METHOD(void, addMap, (tap::control::CommandMapping *), (override));
     MOCK_METHOD(std::size_t, getSize, (), (const override));
@@ -46,4 +50,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  // COMMAND_MAPPER_MOCK_HPP_
+#endif  // TAPROOT_COMMAND_MAPPER_MOCK_HPP_

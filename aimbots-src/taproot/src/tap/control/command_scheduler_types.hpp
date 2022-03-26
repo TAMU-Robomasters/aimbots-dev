@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_SCHEDULER_TYPES_HPP_
-#define COMMAND_SCHEDULER_TYPES_HPP_
+#ifndef TAPROOT_COMMAND_SCHEDULER_TYPES_HPP_
+#define TAPROOT_COMMAND_SCHEDULER_TYPES_HPP_
 
 #include <cinttypes>
 
@@ -28,4 +28,4 @@ typedef uint64_t command_scheduler_bitmap_t;
 typedef uint64_t subsystem_scheduler_bitmap_t;
 }  // namespace tap::control
 
-#endif  // COMMAND_SCHEDULER_TYPES_HPP_
+#endif  // TAPROOT_COMMAND_SCHEDULER_TYPES_HPP_

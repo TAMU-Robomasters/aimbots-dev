@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TOGGLE_COMMAND_MAPPING_HPP_
-#define TOGGLE_COMMAND_MAPPING_HPP_
+#ifndef TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
+#define TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
 
 #include "command_mapping.hpp"
 
@@ -69,4 +69,4 @@ private:
 }  // namespace control
 }  // namespace tap
 
-#endif  //  TOGGLE_COMMAND_MAPPING_HPP_
+#endif  // TAPROOT_ TOGGLE_COMMAND_MAPPING_HPP_

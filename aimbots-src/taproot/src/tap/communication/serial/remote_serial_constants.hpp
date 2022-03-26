@@ -17,12 +17,12 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REMOTE_SERIAL_CONSTANTS_HPP_
-#define REMOTE_SERIAL_CONSTANTS_HPP_
+#ifndef TAPROOT_REMOTE_SERIAL_CONSTANTS_HPP_
+#define TAPROOT_REMOTE_SERIAL_CONSTANTS_HPP_
 
-namespace tap::serial::bound_ports
+namespace tap::communication::serial::bound_ports
 {
     static constexpr Uart::UartPort REMOTE_SERIAL_UART_PORT = Uart::UartPort::Uart1;
-}  // namespace tap::serial::bound_ports
+}  // namespace tap::communication::serial::bound_ports
 
-#endif  // REMOTE_SERIAL_CONSTANTS_HPP_
+#endif  // TAPROOT_REMOTE_SERIAL_CONSTANTS_HPP_

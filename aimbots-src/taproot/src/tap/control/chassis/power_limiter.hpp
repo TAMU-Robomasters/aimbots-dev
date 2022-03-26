@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef POWER_LIMITER_HPP_
-#define POWER_LIMITER_HPP_
+#ifndef TAPROOT_POWER_LIMITER_HPP_
+#define TAPROOT_POWER_LIMITER_HPP_
 
 #include "tap/communication/gpio/analog.hpp"
 #include "tap/communication/sensors/current/current_sensor_interface.hpp"
@@ -114,4 +114,4 @@ private:
 };
 }  // namespace tap::control::chassis
 
-#endif  // POWER_LIMITER_HPP_
+#endif  // TAPROOT_POWER_LIMITER_HPP_

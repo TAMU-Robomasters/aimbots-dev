@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CRC_HPP_
-#define CRC_HPP_
+#ifndef TAPROOT_CRC_HPP_
+#define TAPROOT_CRC_HPP_
 
 #include <cstdint>
 
@@ -59,4 +59,4 @@ uint16_t calculateCRC16(
 
 }  // namespace tap
 
-#endif  // CRC_HPP_
+#endif  // TAPROOT_CRC_HPP_

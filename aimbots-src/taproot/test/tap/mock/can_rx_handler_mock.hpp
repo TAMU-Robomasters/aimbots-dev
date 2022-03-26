@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_RX_HANDLER_MOCK_HPP_
-#define CAN_RX_HANDLER_MOCK_HPP_
+#ifndef TAPROOT_CAN_RX_HANDLER_MOCK_HPP_
+#define TAPROOT_CAN_RX_HANDLER_MOCK_HPP_
 
 #include <iostream>
 
@@ -48,4 +48,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  //  CAN_RX_HANDLER_MOCK_HPP_
+#endif  //  TAPROOT_CAN_RX_HANDLER_MOCK_HPP_

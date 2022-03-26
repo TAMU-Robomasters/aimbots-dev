@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_BUS_HPP_
-#define CAN_BUS_HPP_
+#ifndef TAPROOT_CAN_BUS_HPP_
+#define TAPROOT_CAN_BUS_HPP_
 
 namespace tap::can
 {
@@ -29,4 +29,4 @@ enum class CanBus
 };
 }
 
-#endif  // CAN_BUS_HPP_
+#endif  // TAPROOT_CAN_BUS_HPP_

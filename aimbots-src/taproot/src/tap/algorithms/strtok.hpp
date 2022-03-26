@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef STRTOK_HPP_
-#define STRTOK_HPP_
+#ifndef TAPROOT_STRTOK_HPP_
+#define TAPROOT_STRTOK_HPP_
 
 #ifndef __DOXYGEN__
 
@@ -30,4 +30,4 @@ char *strtokR(char *s, const char *delim, char **savePtr);
 
 #endif
 
-#endif  // STRTOK_HPP_
+#endif  // TAPROOT_STRTOK_HPP_

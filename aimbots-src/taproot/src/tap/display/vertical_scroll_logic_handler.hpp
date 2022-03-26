@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef VERTICAL_SCROLL_LOGIC_HANDLER_HPP_
-#define VERTICAL_SCROLL_LOGIC_HANDLER_HPP_
+#ifndef TAPROOT_VERTICAL_SCROLL_LOGIC_HANDLER_HPP_
+#define TAPROOT_VERTICAL_SCROLL_LOGIC_HANDLER_HPP_
 
 #include <inttypes.h>
 
@@ -111,4 +111,4 @@ private:
 }  // namespace display
 }  // namespace tap
 
-#endif  // VERTICAL_SCROLL_LOGIC_HANDLER_HPP_
+#endif  // TAPROOT_VERTICAL_SCROLL_LOGIC_HANDLER_HPP_

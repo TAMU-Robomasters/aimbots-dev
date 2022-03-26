@@ -17,8 +17,9 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CONDITIONAL_TIMER_HPP_
-#define CONDITIONAL_TIMER_HPP_
+#ifndef TAPROOT_CONDITIONAL_TIMER_HPP_
+#define TAPROOT_CONDITIONAL_TIMER_HPP_
+
 #include <cstdint>
 
 #include "timeout.hpp"

@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef CREATE_ERRORS_HPP_
-#define CREATE_ERRORS_HPP_
+
+#ifndef TAPROOT_CREATE_ERRORS_HPP_
+#define TAPROOT_CREATE_ERRORS_HPP_
 
 #include "system_error.hpp"
 
@@ -43,4 +44,4 @@ namespace tap::errors
 
 }  // namespace tap::errors
 
-#endif  // CREATE_ERRORS_HPP_
+#endif  // TAPROOT_TAPROOT_CREATE_ERRORS_HPP_

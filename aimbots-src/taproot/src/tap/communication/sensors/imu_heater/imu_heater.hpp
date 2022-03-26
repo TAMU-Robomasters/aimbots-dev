@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MPU6500_HEATER_HPP_
-#define MPU6500_HEATER_HPP_
+#ifndef TAPROOT_IMU_HEATER_HPP_
+#define TAPROOT_IMU_HEATER_HPP_
 
 #include "tap/util_macros.hpp"
 
@@ -78,4 +78,4 @@ private:
 }  // namespace sensors
 }  // namespace tap
 
-#endif  // MPU6500_HEATER_HPP_
+#endif  // TAPROOT_MPU6500_HEATER_HPP_

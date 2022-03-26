@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ENDIANNESS_WRAPPERS
-#define ENDIANNESS_WRAPPERS
+#ifndef TAPROOT_ENDIANNESS_WRAPPERS_HPP_
+#define TAPROOT_ENDIANNESS_WRAPPERS_HPP_
 
 #include <cstdint>
 #include <cstring>
@@ -179,4 +179,4 @@ inline float bigEndianInt16ToFloat(const uint8_t *buff)
 }  // namespace arch
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_ENDIANNESS_WRAPPERS_HPP_

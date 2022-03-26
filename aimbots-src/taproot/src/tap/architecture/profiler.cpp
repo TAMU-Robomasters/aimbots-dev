@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -19,92 +19,55 @@
 
 #include "profiler.hpp"
 
+#include "tap/drivers.hpp"
+#include "tap/errors/create_errors.hpp"
+
 #include "../algorithms/math_user_utils.hpp"
 
 #include "clock.hpp"
 
-#ifdef RUN_WITH_PROFILING
+namespace tap::arch
+{
+Profiler::Profiler(tap::Drivers *drivers) : drivers(drivers) {}
 
-namespace tap
+std::size_t Profiler::push(const char *profile)
 {
-namespace arch
-{
-static int findIndex(
-    modm::DynamicArray<modm::Pair<const char*, Profiler::MinMaxAvgStruct>>& times,
-    const char* profile,
-    bool shouldAdd)
-{
-    auto iter = times.begin();
-
-    for (int i = 0; iter != times.end(); ++iter, ++i)
+    auto index = elementNameToIndexMap.find(profile);
+    if (index != elementNameToIndexMap.end())
     {
-        if ((*iter).getFirst() == profile || strcmp((*iter).getFirst(), profile) == 0)
-        {
-            return i;
-        }
+        ProfilerData *data = &profiledElements[index->second];
+        data->prevPushedTime = clock::getTimeMicroseconds();
+        return index->second;
     }
-
-    if (!shouldAdd)
+    else if (!profiledElements.isFull())
     {
-        return -1;
+        profiledElements.append(ProfilerData(profile));
+        std::size_t key = profiledElements.getSize() - 1;
+        elementNameToIndexMap[profile] = key;
+        profiledElements[key].prevPushedTime = clock::getTimeMicroseconds();
+        return key;
     }
-
-    times.append({profile, {}});
-
-    return times.getSize() - 1;
+    else
+    {
+        RAISE_ERROR(drivers, "profiler full, no more additional profiling data allowed");
+        return profiledElements.getSize();
+    }
 }
 
-static Profiler::MinMaxAvgStruct find(
-    modm::DynamicArray<modm::Pair<const char*, Profiler::MinMaxAvgStruct>>& times,
-    const char* profile,
-    bool shouldAdd)
+void Profiler::pop(std::size_t key)
 {
-    int index = findIndex(times, profile, shouldAdd);
-
-    if (index != -1)
+    if (key >= profiledElements.getSize())
     {
-        return times[index].getSecond();
+        RAISE_ERROR(drivers, "attempting to pop profile, but never pushed");
     }
-
-    return {};
+    else
+    {
+        ProfilerData *data = &profiledElements[key];
+        uint32_t dt = clock::getTimeMicroseconds() - data->prevPushedTime;
+        data->max = std::max(dt, data->max);
+        data->min = std::min(dt, data->min);
+        data->avg = algorithms::lowPassFilter(data->avg, dt, AVG_LOW_PASS_ALPHA);
+    }
 }
 
-void Profiler::push(const char* profile)
-{
-    profileStack.prepend(profile);
-    profiles.append(profile);
-    timeStack.prepend(tap::arch::clock::getTimeMicroseconds());
-}
-void Profiler::pop()
-{
-    const char* profile = profileStack.getFront();
-    uint32_t ellapsedTime = tap::arch::clock::getTimeMicroseconds() - timeStack.getFront();
-    timeStack.removeFront();
-    profileStack.removeFront();
-
-    MinMaxAvgStruct time = find(times, profile, true);
-
-    if (time.min > ellapsedTime)
-    {
-        time.min = ellapsedTime;
-    }
-    else if (time.max < ellapsedTime)
-    {
-        time.max = ellapsedTime;
-    }
-
-    time.avg = algorithms::lowPassFilter(time.avg, ellapsedTime, 0.01f);
-    time.totalValues += 1;
-
-    times[findIndex(times, profile, false)].second = time;
-}
-
-uint64_t Profiler::getAvgTime(const char* profile) { return find(times, profile, false).avg; }
-uint64_t Profiler::getMinTime(const char* profile) { return find(times, profile, false).min; }
-uint64_t Profiler::getMaxTime(const char* profile) { return find(times, profile, false).max; }
-void Profiler::reset(const char* profile) { times[findIndex(times, profile, false)].second = {}; }
-
-}  // namespace arch
-
-}  // namespace tap
-#endif
+}  // namespace tap::arch

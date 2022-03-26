@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CALIBRATE_COMMAND_HPP_
-#define CALIBRATE_COMMAND_HPP_
+#ifndef TAPROOT_CALIBRATE_COMMAND_HPP_
+#define TAPROOT_CALIBRATE_COMMAND_HPP_
 
 #include "tap/control/command.hpp"
 #include "tap/drivers.hpp"
@@ -75,4 +75,4 @@ private:
 
 }  // namespace tap
 
-#endif  // CALIBRATE_COMMAND_HPP_
+#endif  // TAPROOT_CALIBRATE_COMMAND_HPP_

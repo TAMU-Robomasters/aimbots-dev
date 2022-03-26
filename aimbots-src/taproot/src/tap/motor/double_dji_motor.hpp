@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DOUBLE_DJI_MOTOR_HPP_
-#define DOUBLE_DJI_MOTOR_HPP_
+#ifndef TAPROOT_DOUBLE_DJI_MOTOR_HPP_
+#define TAPROOT_DOUBLE_DJI_MOTOR_HPP_
 
 #include "dji_motor.hpp"
 #include "motor_interface.hpp"
@@ -77,4 +77,4 @@ private:
 };
 }  // namespace tap::motor
 
-#endif  // DOUBLE_DJI_MOTOR_HPP_
+#endif  // TAPROOT_DOUBLE_DJI_MOTOR_HPP_

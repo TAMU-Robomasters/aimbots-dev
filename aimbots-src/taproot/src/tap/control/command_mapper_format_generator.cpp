@@ -24,6 +24,8 @@
 #include "command_mapping.hpp"
 #include "remote_map_state.hpp"
 
+using namespace tap::communication::serial;
+
 namespace tap
 {
 namespace control

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MPU6500_CONFIG_HPP_
-#define MPU6500_CONFIG_HPP_
+#ifndef TAPROOT_MPU6500_CONFIG_HPP_
+#define TAPROOT_MPU6500_CONFIG_HPP_
 
 // See register datasheet for more information about configuring the mpu6500:
 // https://3cfeqx1hf82y3xcoull08ihx-wpengine.netdna-ssl.com/wp-content/uploads/2015/02/MPU-6500-Register-Map2.pdf
@@ -192,4 +192,4 @@
     (MPU6500_SIGNAL_PATH_RESET_GYRO_RST | MPU6500_SIGNAL_PATH_RESET_ACCEL_RST | \
      MPU6500_SIGNAL_PATH_RESET_TEMP_RST)
 
-#endif  // MPU6500_CONFIG_HPP_
+#endif  // TAPROOT_MPU6500_CONFIG_HPP_

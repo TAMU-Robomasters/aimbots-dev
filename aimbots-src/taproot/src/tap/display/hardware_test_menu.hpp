@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HARDWARE_TEST_MENU_HPP_
-#define HARDWARE_TEST_MENU_HPP_
+#ifndef TAPROOT_HARDWARE_TEST_MENU_HPP_
+#define TAPROOT_HARDWARE_TEST_MENU_HPP_
 
 #include "tap/control/command_scheduler_types.hpp"
 
@@ -63,4 +63,4 @@ private:
 }  // namespace display
 }  // namespace tap
 
-#endif  // HARDWARE_TEST_MENU_HPP_
+#endif  // TAPROOT_HARDWARE_TEST_MENU_HPP_

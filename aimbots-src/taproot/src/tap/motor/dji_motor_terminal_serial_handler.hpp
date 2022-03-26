@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_
-#define DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_
+#ifndef TAPROOT_DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_
+#define TAPROOT_DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_
 
 #include "tap/communication/serial/terminal_serial.hpp"
 #include "tap/util_macros.hpp"
@@ -76,4 +76,4 @@ private:
 }  // namespace motor
 }  // namespace tap
 
-#endif  // DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_
+#endif  // TAPROOT_DJI_MOTOR_TERMINAL_SERIAL_HANDLER_HPP_

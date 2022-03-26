@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SENSOR_INTERFACE_HPP_
-#define SENSOR_INTERFACE_HPP_
+#ifndef TAPROOT_SENSOR_INTERFACE_HPP_
+#define TAPROOT_SENSOR_INTERFACE_HPP_
 
 namespace tap::communication::sensors
 {
@@ -38,4 +38,4 @@ public:
 };
 }  // namespace tap::communication::sensors
 
-#endif  // SENSOR_INTERFACE_HPP_
+#endif  // TAPROOT_SENSOR_INTERFACE_HPP_

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SUBSYSTEM_HPP_
-#define SUBSYSTEM_HPP_
+#ifndef TAPROOT_SUBSYSTEM_HPP_
+#define TAPROOT_SUBSYSTEM_HPP_
 
 #include <cstdint>
 
@@ -144,4 +144,4 @@ public:
 
 }  // namespace tap
 
-#endif  // SUBSYSTEM_HPP_
+#endif  // TAPROOT_SUBSYSTEM_HPP_

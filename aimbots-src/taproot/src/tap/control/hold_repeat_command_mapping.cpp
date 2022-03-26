@@ -33,23 +33,37 @@ void HoldRepeatCommandMapping::executeCommandMapping(const RemoteMapState &currS
     if (mappingSubset(currState) &&
         !(mapState.getNegKeysUsed() && negKeysSubset(mapState, currState)))
     {
-        for (Command *cmd : mappedCommands)
+        for (std::size_t i = 0; i < mappedCommands.size(); i++)
         {
+            Command *cmd = mappedCommands[i];
             if (!drivers->commandScheduler.isCommandScheduled(cmd))
             {
-                drivers->commandScheduler.addCommand(cmd);
+                if (okToScheduleCommand(i))
+                {
+                    drivers->commandScheduler.addCommand(cmd);
+                    incrementRescheduleCount(i);
+                }
             }
         }
-        commandsScheduled = true;
+        held = true;
     }
     else
     {
-        // While Commands may not be scheduled this prevents the unnecessary call of the
-        // removeCommand function from the scheduler.
-        if (commandsScheduled && endCommandsWhenNotHeld)
+        // remove commands if the commands were previously scheduled and we actually want to end
+        // commands when not held
+        if (held)
         {
-            removeCommands();
-            commandsScheduled = false;
+            held = false;
+
+            if (endCommandsWhenNotHeld)
+            {
+                removeCommands();
+            }
+
+            for (std::size_t i = 0; i < rescheduleCounts.size(); i++)
+            {
+                rescheduleCounts[i] = 0;
+            }
         }
     }
 }

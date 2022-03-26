@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef __PERIODIC_TIMER_HPP__
-#define __PERIODIC_TIMER_HPP__
+#ifndef TAPROOT_PERIODIC_TIMER_HPP_
+#define TAPROOT_PERIODIC_TIMER_HPP_
 
 #include "tap/architecture/timeout.hpp"
 
@@ -105,4 +105,5 @@ using PeriodicMicroTimer = PeriodicTimer<MicroTimeout>;
 
 }  // namespace arch
 }  // namespace tap
-#endif
+
+#endif  // TAPROOT_PERIODIC_TIMER_HPP_

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REF_SERIAL_MOCK_HPP_
-#define REF_SERIAL_MOCK_HPP_
+#ifndef TAPROOT_REF_SERIAL_MOCK_HPP_
+#define TAPROOT_REF_SERIAL_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -29,7 +29,7 @@ namespace tap
 {
 namespace mock
 {
-class RefSerialMock : public serial::RefSerial
+class RefSerialMock : public tap::communication::serial::RefSerial
 {
 public:
     RefSerialMock(Drivers* drivers);
@@ -38,7 +38,7 @@ public:
     MOCK_METHOD(
         void,
         messageReceiveCallback,
-        (const tap::serial::DJISerial::SerialMessage&),
+        (const tap::communication::serial::DJISerial::ReceivedSerialMessage&),
         (override));
     MOCK_METHOD(bool, getRefSerialReceivingData, (), (const override));
     MOCK_METHOD(const Rx::RobotData&, getRobotData, (), (const override));
@@ -99,4 +99,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  // REF_SERIAL_MOCK_HPP_
+#endif  // TAPROOT_REF_SERIAL_MOCK_HPP_

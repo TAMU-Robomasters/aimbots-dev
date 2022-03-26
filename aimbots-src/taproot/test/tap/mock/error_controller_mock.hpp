@@ -17,12 +17,22 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ERROR_CONTROLLER_MOCK_HPP_
-#define ERROR_CONTROLLER_MOCK_HPP_
+#ifndef TAPROOT_ERROR_CONTROLLER_MOCK_HPP_
+#define TAPROOT_ERROR_CONTROLLER_MOCK_HPP_
+
+#include <string>
 
 #include <gmock/gmock.h>
 
 #include "tap/errors/error_controller.hpp"
+
+/**
+ * @param[in] error Error to check.
+ * @param[in] substr Substring to check in the error description for.
+ */
+bool errorDescriptionContainsSubstr(
+    const tap::errors::SystemError& error,
+    const std::string& substr);
 
 namespace tap
 {
@@ -39,4 +49,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  // ERROR_CONTROLLER_MOCK_HPP_
+#endif  // TAPROOT_ERROR_CONTROLLER_MOCK_HPP_

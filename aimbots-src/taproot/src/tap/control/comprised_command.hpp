@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef __COMPRISED_COMMAND_HPP__
-#define __COMPRISED_COMMAND_HPP__
+#ifndef TAPROOT_COMPRISED_COMMAND_HPP_
+#define TAPROOT_COMPRISED_COMMAND_HPP_
 
 #include "command.hpp"
 #include "command_scheduler.hpp"
@@ -63,4 +63,4 @@ protected:
 
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_COMPRISED_COMMAND_HPP_

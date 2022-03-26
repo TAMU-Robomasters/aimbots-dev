@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TERMINAL_DEVICE_STUB_HPP_
-#define TERMINAL_DEVICE_STUB_HPP_
+#ifndef TAPROOT_TERMINAL_DEVICE_STUB_HPP_
+#define TAPROOT_TERMINAL_DEVICE_STUB_HPP_
 
 #include <queue>
 #include <string>
@@ -72,4 +72,4 @@ private:
 };
 }  // namespace tap::stub
 
-#endif  // TERMINAL_DEVICE_STUB_HPP_
+#endif  // TAPROOT_TERMINAL_DEVICE_STUB_HPP_

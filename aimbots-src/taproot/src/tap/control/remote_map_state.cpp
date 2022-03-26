@@ -23,10 +23,34 @@
 
 #include "tap/errors/create_errors.hpp"
 
+using namespace tap::communication::serial;
+
 namespace tap
 {
 namespace control
 {
+RemoteMapState::RemoteMapState(
+    tap::communication::serial::Remote::SwitchState leftss,
+    tap::communication::serial::Remote::SwitchState rightss,
+    const std::list<tap::communication::serial::Remote::Key> &keySet,
+    const std::list<tap::communication::serial::Remote::Key> &negKeySet,
+    bool mouseButtonLeftPressed,
+    bool mouseButtonRightPressed)
+{
+    initLSwitch(leftss);
+    initRSwitch(rightss);
+    initKeys(keySet);
+    initNegKeys(negKeySet);
+    if (mouseButtonLeftPressed)
+    {
+        initLMouseButton();
+    }
+    if (mouseButtonRightPressed)
+    {
+        initRMouseButton();
+    }
+}
+
 RemoteMapState::RemoteMapState(Remote::Switch swh, Remote::SwitchState switchState)
 {
     if (swh == Remote::Switch::LEFT_SWITCH)

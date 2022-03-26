@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ANALOG_HPP_
-#define ANALOG_HPP_
+#ifndef TAPROOT_ANALOG_HPP_
+#define TAPROOT_ANALOG_HPP_
 
 #include <cstdint>
 
@@ -67,4 +67,4 @@ public:
 
 }  // namespace tap
 
-#endif  // ANALOG_HPP_
+#endif  // TAPROOT_ANALOG_HPP_

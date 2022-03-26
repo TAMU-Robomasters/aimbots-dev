@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef M3508_CONSTANTS_HPP_
-#define M3508_CONSTANTS_HPP_
+#ifndef TAPROOT_M3508_CONSTANTS_HPP_
+#define TAPROOT_M3508_CONSTANTS_HPP_
 
 #include "motor_constants.hpp"
 
@@ -40,4 +40,4 @@ public:
 };
 }  // namespace tap::motor
 
-#endif  // M3508_CONSTANTS_HPP_
+#endif  // TAPROOT_M3508_CONSTANTS_HPP_

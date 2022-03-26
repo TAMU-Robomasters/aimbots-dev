@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_UNJAM_COMMAND_HPP_
-#define AGITATOR_UNJAM_COMMAND_HPP_
+#ifndef TAPROOT_UNJAM_COMMAND_HPP_
+#define TAPROOT_UNJAM_COMMAND_HPP_
 
 #include <cstdint>
 
@@ -159,4 +159,4 @@ private:
 
 }  // namespace tap
 
-#endif  // AGITATOR_UNJAM_COMMAND_HPP_
+#endif  // TAPROOT_UNJAM_COMMAND_HPP_

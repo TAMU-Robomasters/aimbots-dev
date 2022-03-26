@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SETPOINT_SUBSYSTEM_HPP_
-#define SETPOINT_SUBSYSTEM_HPP_
+#ifndef TAPROOT_SETPOINT_SUBSYSTEM_HPP_
+#define TAPROOT_SETPOINT_SUBSYSTEM_HPP_
 
 #include "tap/control/subsystem.hpp"
 
@@ -115,4 +115,4 @@ public:
 
 }  // namespace tap
 
-#endif  // SETPOINT_SUBSYSTEM_HPP_
+#endif  // TAPROOT_SETPOINT_SUBSYSTEM_HPP_

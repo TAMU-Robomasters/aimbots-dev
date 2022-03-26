@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef UART_HPP
-#define UART_HPP
+#ifndef TAPROOT_UART_HPP_
+#define TAPROOT_UART_HPP_
 
 #include <cstdint>
 #include <cstdlib>
@@ -31,9 +31,7 @@
 #include "tap/board/board.hpp"
 #include "tap/util_macros.hpp"
 
-namespace tap
-{
-namespace serial
+namespace tap::communication::serial
 {
 /**
  * Class that wraps modm's Uart implementation.
@@ -176,8 +174,6 @@ public:
     mockable void flushWriteBuffer(UartPort port);
 };
 
-}  // namespace serial
+}  // namespace tap::communication::serial
 
-}  // namespace tap
-
-#endif
+#endif  // TAPROOT_UART_HPP_

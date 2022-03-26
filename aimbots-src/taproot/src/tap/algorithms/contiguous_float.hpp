@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CONTIGUOUS_FLOAT_HPP_
-#define CONTIGUOUS_FLOAT_HPP_
+#ifndef TAPROOT_CONTIGUOUS_FLOAT_HPP_
+#define TAPROOT_CONTIGUOUS_FLOAT_HPP_
 
 namespace tap
 {
@@ -199,4 +199,4 @@ private:
 
 }  // namespace tap
 
-#endif  // CONTIGUOUS_FLOAT_HPP_
+#endif  // TAPROOT_CONTIGUOUS_FLOAT_HPP_

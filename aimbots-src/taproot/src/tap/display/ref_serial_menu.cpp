@@ -21,6 +21,8 @@
 
 #include "tap/drivers.hpp"
 
+using namespace tap::communication::serial;
+
 namespace tap::display
 {
 RefSerialMenu::RefSerialMenu(
@@ -81,7 +83,7 @@ void RefSerialMenu::printRobotTypeId(modm::IOStream& stream)
 {
     const auto& robotData = drivers->refSerial.getRobotData();
     stream << "Robot ID: " << static_cast<int>(robotData.robotId) << ", "
-           << (serial::RefSerialData::isBlueTeam(robotData.robotId) ? "BLUE" : "RED") << modm::endl;
+           << (RefSerialData::isBlueTeam(robotData.robotId) ? "BLUE" : "RED") << modm::endl;
 }
 
 void RefSerialMenu::printHp(modm::IOStream& stream)
@@ -93,7 +95,7 @@ void RefSerialMenu::printHp(modm::IOStream& stream)
 void RefSerialMenu::print17mmSpeed(modm::IOStream& stream)
 {
     const auto& robotData = drivers->refSerial.getRobotData();
-    float bulletSpeed17 = robotData.turret.bulletType == serial::RefSerialData::Rx::AMMO_17
+    float bulletSpeed17 = robotData.turret.bulletType == RefSerialData::Rx::AMMO_17
                               ? robotData.turret.bulletSpeed
                               : 0;
     stream.printf(
@@ -112,7 +114,7 @@ void RefSerialMenu::print17mmHeat(modm::IOStream& stream)
 void RefSerialMenu::print42mmSpeed(modm::IOStream& stream)
 {
     const auto& robotData = drivers->refSerial.getRobotData();
-    float bulletSpeed42 = robotData.turret.bulletType == serial::RefSerialData::Rx::AMMO_17
+    float bulletSpeed42 = robotData.turret.bulletType == RefSerialData::Rx::AMMO_17
                               ? 0
                               : robotData.turret.bulletSpeed;
     stream.printf(

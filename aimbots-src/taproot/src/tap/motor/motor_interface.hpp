@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MOTOR_INTERFACE_HPP_
-#define MOTOR_INTERFACE_HPP_
+#ifndef TAPROOT_MOTOR_INTERFACE_HPP_
+#define TAPROOT_MOTOR_INTERFACE_HPP_
 
 #include <cstdint>
 
@@ -40,4 +40,4 @@ public:
 
 }  // namespace tap::motor
 
-#endif  //  MOTOR_INTERFACE_HPP_
+#endif  // TAPROOT_MOTOR_INTERFACE_HPP_

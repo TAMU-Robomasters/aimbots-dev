@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MOTOR_SPECIFIC_MENU_HPP_
-#define MOTOR_SPECIFIC_MENU_HPP_
+#ifndef TAPROOT_MOTOR_SPECIFIC_MENU_HPP_
+#define TAPROOT_MOTOR_SPECIFIC_MENU_HPP_
 
 #include "modm/ui/menu/abstract_menu.hpp"
 
@@ -61,4 +61,4 @@ private:
 }  // namespace display
 }  // namespace tap
 
-#endif  // MOTOR_SPECIFIC_MENU_HPP_
+#endif  // TAPROOT_MOTOR_SPECIFIC_MENU_HPP_

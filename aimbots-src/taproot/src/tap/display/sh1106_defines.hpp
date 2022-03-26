@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SH1106_DEFINES_HPP
-#define SH1106_DEFINES_HPP
+#ifndef TAPROOT_SH1106_DEFINES_HPP_
+#define TAPROOT_SH1106_DEFINES_HPP_
 
 namespace tap
 {
@@ -82,4 +82,4 @@ namespace display
 }  // namespace display
 }  // namespace tap
 
-#endif  // SH1106_DEFINES_HPP
+#endif  // TAPROOT_SH1106_DEFINES_HPP_

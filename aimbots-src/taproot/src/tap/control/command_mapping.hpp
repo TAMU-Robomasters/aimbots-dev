@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_MAPPING_HPP_
-#define COMMAND_MAPPING_HPP_
+#ifndef TAPROOT_COMMAND_MAPPING_HPP_
+#define TAPROOT_COMMAND_MAPPING_HPP_
 
 #include <vector>
 
@@ -130,4 +130,4 @@ protected:
 }  // namespace control
 }  // namespace tap
 
-#endif  // COMMAND_MAPPING_HPP_
+#endif  // TAPROOT_COMMAND_MAPPING_HPP_
