@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_MAPPING_HPP_
-#define COMMAND_MAPPING_HPP_
+#ifndef TAPROOT_COMMAND_MAPPING_HPP_
+#define TAPROOT_COMMAND_MAPPING_HPP_
 
 #include <vector>
 
@@ -121,8 +121,13 @@ protected:
      * Removes all the `Command`s from the main CommandScheduler.
      */
     void removeCommands();
+
+    /**
+     * @return True if none of the associated commands are scheduled.
+     */
+    bool noCommandsScheduled() const;
 };  // class CommandMapping
 }  // namespace control
 }  // namespace tap
 
-#endif  // COMMAND_MAPPING_HPP_
+#endif  // TAPROOT_COMMAND_MAPPING_HPP_

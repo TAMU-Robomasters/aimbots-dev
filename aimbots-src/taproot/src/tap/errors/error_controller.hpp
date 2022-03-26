@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ERROR_CONTROLLER_HPP_
-#define ERROR_CONTROLLER_HPP_
+#ifndef TAPROOT_ERROR_CONTROLLER_HPP_
+#define TAPROOT_ERROR_CONTROLLER_HPP_
 
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/serial/terminal_serial.hpp"
@@ -41,7 +41,7 @@ namespace tap::errors
  *
  * Use the `RAISE_ERROR` macro to add errors to the main ErrorController.
  */
-class ErrorController : public tap::communication::serial::ITerminalSerialCallback
+class ErrorController : public tap::communication::serial::TerminalSerialCallbackInterface
 {
 public:
     static constexpr std::size_t ERROR_LIST_MAX_SIZE = 16;
@@ -93,4 +93,4 @@ private:
 };  // class ErrorController
 }  // namespace tap::errors
 
-#endif  // ERROR_CONTROLLER_HPP_
+#endif  // TAPROOT_ERROR_CONTROLLER_HPP_

@@ -17,9 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MATH_USER_UTILS_HPP_
-#define MATH_USER_UTILS_HPP_
+#ifndef TAPROOT_MATH_USER_UTILS_HPP_
+#define TAPROOT_MATH_USER_UTILS_HPP_
 
+#include <cinttypes>
 #include <cmath>
 #include <cstring>
 
@@ -29,9 +30,12 @@ namespace tap
 {
 namespace algorithms
 {
+/// Acceleration due to gravity, in m/s^2.
+static constexpr float ACCELERATION_GRAVITY = 9.80665f;
+
 /**
  * Use this instead of the == operator when asserting equality for floats.
- * Performs \code fabsf(val1-val2)<epsilon\endcode
+ * Performs \code fabsf(val1-val2)<=epsilon\endcode
  *
  * @param[in] val1 the first value to compare.
  * @param[in] val2 the second value to compare.
@@ -42,7 +46,7 @@ namespace algorithms
  */
 inline bool compareFloatClose(float val1, float val2, float epsilon)
 {
-    return fabsf(val1 - val2) < epsilon;
+    return fabsf(val1 - val2) <= epsilon;
 }
 
 /**
@@ -77,7 +81,7 @@ inline T limitVal(T val, T min, T max)
 
 /**
  * A simple floating point low pass filter, e.g.
- * \f$y_{filtered} = \alpha * y_{n+1} + (1-\alpha) \cdot y_n\f$
+ * \f$y_{filtered} = \alpha \cdot y_{n+1} + (1-\alpha) \cdot y_n\f$
  *
  * Here is a simple use case. To use the low pass filter, pass
  * in the val you are low passing in as the first parameter and
@@ -86,15 +90,15 @@ inline T limitVal(T val, T min, T max)
  * val = lowPassFilter(val, newValue, 0.1f);
  * \endcode
  *
- * @note only use this if you are willing to introduce some lag into
+ * @note Only use this if you are willing to introduce some lag into
  *      your system, and be careful if you do.
- * @param[in] prevValue the previous low passed value.
- * @param[in] newValue the new data to be passed into the low pass filter.
- * @param[in] alpha the amount of smoothing. The larger the alpha, the
+ * @param[in] prevValue The previous low passed value.
+ * @param[in] newValue The new data to be passed into the low pass filter.
+ * @param[in] alpha The amount of smoothing. The larger the alpha, the
  *      less smoothing occurs. An alpha of 1 means that you want to favor
  *      the newValue and thus is not doing any filtering. Must be between
  *      [0, 1].
- * @return the newly low passed filter data.
+ * @return The newly low passed filter data.
  */
 inline float lowPassFilter(float prevValue, float newValue, float alpha)
 {
@@ -132,8 +136,29 @@ float fastInvSqrt(float x);
  */
 void rotateVector(float* x, float* y, float radians);
 
+/**
+ * Constexpr ceil
+ * (https://stackoverflow.com/questions/31952237/looking-for-a-constexpr-ceil-function).
+ */
+constexpr int32_t ceil(float num)
+{
+    return (static_cast<float>(static_cast<int32_t>(num)) == num)
+               ? static_cast<int32_t>(num)
+               : static_cast<int32_t>(num) + ((num > 0) ? 1 : 0);
+}
+
+/**
+ * Returns the sign of the value passed in. Either -1, 0, or 1. Works for all base types and any
+ * types that implement construction from an int. Faster than copysign.
+ */
+template <typename T>
+int getSign(T val)
+{
+    return (T(0) < val) - (val < T(0));
+}
+
 }  // namespace algorithms
 
 }  // namespace tap
 
-#endif  // MATH_USER_UTILS_HPP_
+#endif  // TAPROOT_MATH_USER_UTILS_HPP_

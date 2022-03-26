@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_HPP_
-#define COMMAND_HPP_
+#ifndef TAPROOT_COMMAND_HPP_
+#define TAPROOT_COMMAND_HPP_
 
 #include "tap/util_macros.hpp"
 
@@ -138,4 +138,4 @@ private:
 
 }  // namespace tap
 
-#endif  // COMMAND_HPP_
+#endif  // TAPROOT_COMMAND_HPP_

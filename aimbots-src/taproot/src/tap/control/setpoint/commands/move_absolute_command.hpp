@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_ABSOLUTE_ROTATE_COMMAND_HPP_
-#define AGITATOR_ABSOLUTE_ROTATE_COMMAND_HPP_
+#ifndef TAPROOT_MOVE_ABSOLUTE_COMMAND_HPP_
+#define TAPROOT_MOVE_ABSOLUTE_COMMAND_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/algorithms/ramp.hpp"
@@ -33,14 +33,14 @@ namespace control
 namespace setpoint
 {
 /**
- * A command that uses an `SetpointSubsystem` to rotate to the same
- * angle everytime, attemping to rotate at the given angular velocity.
- * (Consistency doesn't work across motor disconnects). This command
+ * A command that uses an `SetpointSubsystem` to move to the same
+ * position/value everytime, attemping to rotate at the given velocity.
+ * (Coordinates may shift if motor disconnects). This command
  * ends immediately if the agitator is jammed, and upon ending will
  * stop the connected agitator by setting its target position to its
  * current position.
  *
- * Agitator angles are relative, and the "0"-angle is changed when
+ * Subsystem values are relative, and the "0"-value is changed when
  * the agitator is calibrated.
  */
 class MoveAbsoluteCommand : public tap::control::Command
@@ -49,24 +49,28 @@ public:
     /**
      * @param[in] setpointSubsystem the subsystem this command manipulates.
      * @param[in] setpoint the target value the controlled variable
-     *  should attempt to reach
-     * @param[in] speed The angular speed the agitator should
-     *  attempt to move at in milliradians/second
-     * @param[in] setpointTolerance the command will consider the target angle
-     *  as reached when it's distance to the target is within this value
+     *      should reach
+     * @param[in] speed The speed the subsystem should attempt to move its value
+     *      at in  units/second (where "units" are the same as those the setpoint uses)
+     * @param[in] setpointTolerance the command will consider the target value
+     *      as reached when it's distance to the target is within this value
      * @param[in] shouldAutomaticallyClearJam the command will clear the subsystem's
-     *  jam state without any unjamming performed
+     *      jam state without any unjamming performed
+     * @param[in] setSetpointToTargetOnEnd the command will set the subsystem's setpoint
+     *      to the target value when ending if true, otherwise it will set the setpoint to
+     *      the subsystem's current value.
      */
     explicit MoveAbsoluteCommand(
         tap::control::setpoint::SetpointSubsystem* setpointSubsystem,
-        float targetAngle,
-        uint32_t agitatorRotateSpeed,
+        float setpoint,
+        float speed,
         float setpointTolerance,
-        bool shouldAutomaticallyClearJam);
+        bool shouldAutomaticallyClearJam,
+        bool setSetpointToTargetOnEnd);
 
-    const char* getName() const override { return "open hopper lid"; }
+    const char* getName() const override { return "move absolute"; }
 
-    bool isReady() override { return !setpointSubsystem->isJammed(); }
+    bool isReady() override;
 
     void initialize() override;
 
@@ -80,22 +84,26 @@ protected:
     tap::control::setpoint::SetpointSubsystem* setpointSubsystem;
 
 private:
-    /* target angle for the agitator to reach when command is called.*/
-    float targetAngle;
+    /**
+     * target value for the subsystem to reach when command is called.
+     */
+    float setpoint;
 
-    tap::algorithms::Ramp rampToTargetAngle;
+    tap::algorithms::Ramp rampToSetpoint;
 
     /**
-     * The angular speed the agitator should attempt to move at in
-     * milliradians/second.
+     * The speed the subsystem should attempt to move at in
+     * setpoint-units / second.
      */
-    uint32_t agitatorRotateSpeed;
+    float speed;
 
-    float agitatorSetpointTolerance;
+    float setpointTolerance;
 
-    uint32_t agitatorPrevRotateTime;
+    uint32_t prevMoveTime;
 
     bool automaticallyClearJam;
+
+    bool setSetpointToTargetOnEnd;
 };  // class MoveAbsoluteCommand
 
 }  // namespace setpoint
@@ -104,4 +112,4 @@ private:
 
 }  // namespace tap
 
-#endif  // AGITATOR_ABSOLUTE_ROTATE_COMMAND_HPP_
+#endif  // TAPROOT_MOVE_ABSOLUTE_COMMAND_HPP_

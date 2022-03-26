@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HOSTED_TERMINAL_DEVICE_HPP_
-#define HOSTED_TERMINAL_DEVICE_HPP_
+#ifndef TAPROOT_HOSTED_TERMINAL_DEVICE_HPP_
+#define TAPROOT_HOSTED_TERMINAL_DEVICE_HPP_
 
 #ifdef PLATFORM_HOSTED
 
@@ -37,9 +37,9 @@ class thread;
 namespace tap
 {
 class Drivers;
-namespace communication
-{
-namespace serial
+}
+
+namespace tap::communication::serial
 {
 /**
  * A device that interacts with stdin and stdout to be used
@@ -78,10 +78,8 @@ private:
 
     void readCin();
 };  // class HostedTerminalDevice
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial
 
 #endif
 
-#endif  // HOSTED_TERMINAL_DEVICE_HPP_
+#endif  // TAPROOT_HOSTED_TERMINAL_DEVICE_HPP_

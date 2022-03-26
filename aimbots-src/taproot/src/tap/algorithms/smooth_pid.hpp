@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SMOOTH_PID_HPP_
-#define SMOOTH_PID_HPP_
+#ifndef TAPROOT_SMOOTH_PID_HPP_
+#define TAPROOT_SMOOTH_PID_HPP_
 
 #include <cstdint>
 
@@ -28,6 +28,25 @@ namespace tap
 {
 namespace algorithms
 {
+struct SmoothPidConfig
+{
+    float kp = 0.0f;
+    float ki = 0.0f;
+    float kd = 0.0f;
+    float maxICumulative = 0.0f;
+    float maxOutput = 0.0f;
+    float tQDerivativeKalman = 1.0f;   /**< The system noise covariance for the kalman filter that
+                                        * is applied to the derivative of the error. */
+    float tRDerivativeKalman = 0.0f;   /**< The measurement noise covariance for the kalman filter
+                                        * that is applied to the derivative of the error. */
+    float tQProportionalKalman = 1.0f; /**< The system noise covariance for the kalman filter that
+                                        *  is applied to the proportional error. */
+    float tRProportionalKalman = 0.0f; /**< The measurement noise covariance for the kalman filter
+                                        * that is applied to the proportional error. */
+    float errDeadzone = 0.0f;          /**< Within [-errDeadzone, errDeadzone], the PID controller
+                                        * error will be set to 0. */
+};
+
 class SmoothPid
 {
 public:
@@ -41,17 +60,9 @@ public:
         float tRDerivativeKalman,
         float tQProportionalKalman,
         float tRProportionalKalman,
-        float errDeadzone = 0.0f)
-        : kp(kp),
-          ki(ki),
-          kd(kd),
-          maxICumulative(maxICumulative),
-          maxOutput(maxOutput),
-          errDeadzone(errDeadzone),
-          proportionalKalman(tQProportionalKalman, tRProportionalKalman),
-          derivativeKalman(tQDerivativeKalman, tRDerivativeKalman)
-    {
-    }
+        float errDeadzone = 0.0f);
+
+    SmoothPid(const SmoothPidConfig &pidConfig);
 
     float runController(float error, float rotationalSpeed, float dt);
 
@@ -61,18 +72,16 @@ public:
 
     void reset();
 
-    inline void setP(float p) { kp = p; }
-    inline void setI(float i) { ki = i; }
-    inline void setD(float d) { kd = d; }
+    inline void setP(float p) { config.kp = p; }
+    inline void setI(float i) { config.ki = i; }
+    inline void setD(float d) { config.kd = d; }
+    inline void setMaxICumulative(float maxICumulative) { config.maxICumulative = maxICumulative; }
+    inline void setMaxOutput(float maxOutput) { config.maxOutput = maxOutput; }
+    inline void setErrDeadzone(float errDeadzone) { config.errDeadzone = errDeadzone; }
 
 private:
     // gains and constants, to be set by the user
-    float kp = 0.0f;
-    float ki = 0.0f;
-    float kd = 0.0f;
-    float maxICumulative = 0.0f;
-    float maxOutput = 0.0f;
-    float errDeadzone = 0.0f;
+    SmoothPidConfig config;
 
     // while these could be local, debugging pid is much easier if they are not
     float currErrorP = 0.0f;
@@ -89,4 +98,4 @@ private:
 
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_SMOOTH_PID_HPP_

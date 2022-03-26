@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MOTOR_JAM_DETECTOR_
-#define MOTOR_JAM_DETECTOR_
+#ifndef TAPROOT_SETPOINT_CONTINUOUS_JAM_CHECKER_HPP_
+#define TAPROOT_SETPOINT_CONTINUOUS_JAM_CHECKER_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/architecture/conditional_timer.hpp"
@@ -83,6 +83,11 @@ public:
         return jamTimeout.execute(!withinTolerance);
     }
 
+    /**
+     * @return the jamming distance tolerance of this jam checker
+     */
+    inline float getJamSetpointTolerance() const { return distanceTolerance; }
+
 private:
     SetpointSubsystem* setpointSubsystem;
     tap::arch::ConditionalMilliTimer jamTimeout;
@@ -95,4 +100,4 @@ private:
 
 }  // namespace tap
 
-#endif  // MOTOR_JAM_DETECTOR_
+#endif  // TAPROOT_SETPOINT_CONTINUOUS_JAM_CHECKER_HPP_

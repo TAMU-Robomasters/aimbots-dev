@@ -17,12 +17,12 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REF_SERIAL_CONSTANTS_HPP_
-#define REF_SERIAL_CONSTANTS_HPP_
+#ifndef TAPROOT_REF_SERIAL_CONSTANTS_HPP_
+#define TAPROOT_REF_SERIAL_CONSTANTS_HPP_
 
-namespace tap::serial::bound_ports
+namespace tap::communication::serial::bound_ports
 {
     static constexpr Uart::UartPort REF_SERIAL_UART_PORT = Uart::UartPort::Uart6;
-}  // namespace tap::serial::bound_ports
+}  // namespace tap::communication::serial::bound_ports
 
-#endif  // REF_SERIAL_CONSTANTS_HPP_
+#endif  // TAPROOT_REF_SERIAL_CONSTANTS_HPP_

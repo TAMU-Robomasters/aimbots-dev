@@ -24,9 +24,7 @@
 
 using namespace Board;
 
-namespace tap
-{
-namespace serial
+namespace tap::communication::serial
 {
 bool Uart::read(UartPort port, uint8_t *data)
 {
@@ -45,6 +43,10 @@ bool Uart::read(UartPort port, uint8_t *data)
             return Usart3::read(*data);
         case UartPort::Uart6:
             return Usart6::read(*data);
+        case UartPort::Uart7:
+            return Uart7::read(*data);
+        case UartPort::Uart8:
+            return Uart8::read(*data);
         default:
             return false;
     }
@@ -69,6 +71,10 @@ std::size_t Uart::read(UartPort port, uint8_t *data, std::size_t length)
             return Usart3::read(data, length);
         case UartPort::Uart6:
             return Usart6::read(data, length);
+        case UartPort::Uart7:
+            return Uart7::read(data, length);
+        case UartPort::Uart8:
+            return Uart8::read(data, length);
         default:
             return 0;
     }
@@ -91,6 +97,10 @@ std::size_t Uart::discardReceiveBuffer(UartPort port)
             return Usart3::discardReceiveBuffer();
         case UartPort::Uart6:
             return Usart6::discardReceiveBuffer();
+        case UartPort::Uart7:
+            return Uart7::discardReceiveBuffer();
+        case UartPort::Uart8:
+            return Uart8::discardReceiveBuffer();
         default:
             return 0;
     }
@@ -114,6 +124,10 @@ bool Uart::write(UartPort port, uint8_t data)
             return Usart3::write(data);
         case UartPort::Uart6:
             return Usart6::write(data);
+        case UartPort::Uart7:
+            return Uart7::write(data);
+        case UartPort::Uart8:
+            return Uart8::write(data);
         default:
             return false;
     }
@@ -138,6 +152,10 @@ std::size_t Uart::write(UartPort port, const uint8_t *data, std::size_t length)
             return Usart3::write(data, length);
         case UartPort::Uart6:
             return Usart6::write(data, length);
+        case UartPort::Uart7:
+            return Uart7::write(data, length);
+        case UartPort::Uart8:
+            return Uart8::write(data, length);
         default:
             return 0;
     }
@@ -160,6 +178,10 @@ bool Uart::isWriteFinished(UartPort port) const
             return Usart3::isWriteFinished();
         case UartPort::Uart6:
             return Usart6::isWriteFinished();
+        case UartPort::Uart7:
+            return Uart7::isWriteFinished();
+        case UartPort::Uart8:
+            return Uart8::isWriteFinished();
         default:
             return false;
     }
@@ -185,12 +207,16 @@ void Uart::flushWriteBuffer(UartPort port)
         case UartPort::Uart6:
             Usart6::flushWriteBuffer();
             break;
+        case UartPort::Uart7:
+            Uart7::flushWriteBuffer();
+            break;
+        case UartPort::Uart8:
+            Uart8::flushWriteBuffer();
+            break;
         default:
             break;
     }
 #endif
 }
 
-}  // namespace serial
-
-}  // namespace tap
+}  // namespace tap::communication::serial

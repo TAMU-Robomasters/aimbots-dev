@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MPU6500_MOCK_HPP_
-#define MPU6500_MOCK_HPP_
+#ifndef TAPROOT_MPU6500_MOCK_HPP_
+#define TAPROOT_MPU6500_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -37,7 +37,7 @@ public:
     MOCK_METHOD(void, init, (), (override));
     MOCK_METHOD(void, periodicIMUUpdate, (), (override));
     MOCK_METHOD(bool, read, (), (override));
-    MOCK_METHOD(bool, initialized, (), (const override));
+    MOCK_METHOD(tap::sensors::Mpu6500::ImuState, getImuState, (), (const override));
     MOCK_METHOD(float, getAx, (), (const override));
     MOCK_METHOD(float, getAy, (), (const override));
     MOCK_METHOD(float, getAz, (), (const override));
@@ -53,4 +53,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  //  MPU6500_MOCK_HPP_
+#endif  //  TAPROOT_MPU6500_MOCK_HPP_

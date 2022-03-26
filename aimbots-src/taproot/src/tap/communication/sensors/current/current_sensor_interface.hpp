@@ -17,13 +17,24 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "control_operator_interface_mock.hpp"
+#ifndef TAPROOT_CURRENT_SENSOR_INTERFACE_HPP_
+#define TAPROOT_CURRENT_SENSOR_INTERFACE_HPP_
 
-namespace tap::mock
+#include "tap/communication/sensors/sensor_interface.hpp"
+
+namespace tap::communication::sensors::current
 {
-ControlOperatorInterfaceMock::ControlOperatorInterfaceMock(tap::Drivers *drivers)
-    : tap::control::ControlOperatorInterface(drivers)
+/**
+ * Interface for a generic current sensor.
+ */
+class CurrentSensorInterface : public tap::communication::sensors::SensorInterface
 {
-}
-ControlOperatorInterfaceMock::~ControlOperatorInterfaceMock() {}
-}  // namespace tap::mock
+public:
+    /**
+     * @return The current read by the current sensor, in milliamps.
+     */
+    virtual float getCurrentMa() const = 0;
+};
+}  // namespace tap::communication::sensors::current
+
+#endif  // TAPROOT_CURRENT_SENSOR_INTERFACE_HPP_

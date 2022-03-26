@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_SCHEDULER_HPP_
-#define COMMAND_SCHEDULER_HPP_
+#ifndef TAPROOT_COMMAND_SCHEDULER_HPP_
+#define TAPROOT_COMMAND_SCHEDULER_HPP_
 
 #include <iterator>
 
@@ -33,6 +33,23 @@ namespace control
 {
 class Command;
 class Subsystem;
+
+/**
+ * Abstract base class for a functor that defines how a robot is considered
+ * "disconnected" in the CommandScheduler. When the functor returns true, the
+ * robot is then considered disconnected and will end all Commands in the
+ * CommandScheduler and disallow new Commands from being added.
+ *
+ * By default, the SafeDisconnectFunction will always return false, i.e.,
+ * allow the CommandScheduler to continue running Commands in a
+ * "disconnected" state.
+ */
+class SafeDisconnectFunction
+{
+public:
+    SafeDisconnectFunction(){};
+    virtual bool operator()() { return false; }
+};
 
 /**
  * Class for handling all the commands you would like to currently run.
@@ -91,7 +108,11 @@ class Subsystem;
 class CommandScheduler
 {
 public:
-    CommandScheduler(Drivers* drivers, bool masterScheduler = false);
+    CommandScheduler(
+        Drivers* drivers,
+        bool masterScheduler = false,
+        SafeDisconnectFunction* safeDisconnectFunction =
+            &CommandScheduler::defaultSafeDisconnectFunction);
     DISALLOW_COPY_AND_ASSIGN(CommandScheduler)
     mockable ~CommandScheduler();
 
@@ -165,6 +186,14 @@ public:
      *      an error is added to the error handler.
      */
     mockable void registerSubsystem(Subsystem* subsystem);
+
+    /**
+     * @brief Set the SafeDisconnectFunction to the given function.
+     *
+     * @param[in] func the function that the CommandScheduler will use to
+     *      determine what constitutes a "disconnected" state.
+     */
+    mockable void setSafeDisconnectFunction(SafeDisconnectFunction* func);
 
     /**
      * @param[in] subsystem the subsystem to check
@@ -264,6 +293,8 @@ private:
     static constexpr float MAX_ALLOWABLE_SCHEDULER_RUNTIME = 100;
     static constexpr int MAX_SUBSYSTEM_COUNT = sizeof(subsystem_scheduler_bitmap_t) * 8;
     static constexpr int MAX_COMMAND_COUNT = sizeof(command_scheduler_bitmap_t) * 8;
+    static constexpr subsystem_scheduler_bitmap_t LSB_ONE_HOT_SUBSYSTEM_BITMAP = 1;
+    static constexpr command_scheduler_bitmap_t LSB_ONE_HOT_COMMAND_BITMAP = 1;
     static constexpr int INVALID_ITER_INDEX = -1;
 
     /**
@@ -298,7 +329,24 @@ private:
      */
     static bool masterSchedulerExists;
 
+    /**
+     * Returns true if the remote is disconnected and the safeDisconnectMode flag is
+     * enabled.
+     */
+    bool safeDisconnected();
+
     Drivers* drivers;
+
+    /**
+     * A global SafeDisconnectFunction used by CommandScheduler by default.
+     */
+    static SafeDisconnectFunction defaultSafeDisconnectFunction;
+
+    /**
+     * The SafeDisconnectFunction used by the CommandScheduler to determine
+     * the "disconnected" state.
+     */
+    SafeDisconnectFunction* safeDisconnectFunction;
 
     /**
      * Each bit in the bitmap represents a unique subsystem that has been constructed
@@ -329,4 +377,4 @@ private:
 
 }  // namespace tap
 
-#endif  // COMMAND_SCHEDULER_HPP_
+#endif  // TAPROOT_COMMAND_SCHEDULER_HPP_

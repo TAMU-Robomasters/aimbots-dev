@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef UTIL_MACROS_HPP_
-#define UTIL_MACROS_HPP_
+#ifndef TAPROOT_UTIL_MACROS_HPP_
+#define TAPROOT_UTIL_MACROS_HPP_
 
 #define DISALLOW_COPY_AND_ASSIGN(Typename) \
     Typename(const Typename &) = delete;   \
@@ -34,4 +34,4 @@
 
 #define UNUSED(var) (void)(var)
 
-#endif  // UTIL_MACROS_HPP_
+#endif  // TAPROOT_UTIL_MACROS_HPP_

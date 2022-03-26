@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRESS_COMMAND_MAPPING_HPP_
-#define PRESS_COMMAND_MAPPING_HPP_
+#ifndef TAPROOT_PRESS_COMMAND_MAPPING_HPP_
+#define TAPROOT_PRESS_COMMAND_MAPPING_HPP_
 
 #include "command_mapping.hpp"
 
@@ -62,4 +62,5 @@ private:
 };  // class PressCommandMapping
 }  // namespace control
 }  // namespace tap
-#endif  // PRESS_COMMAND_MAPPING_HPP_
+
+#endif  // TAPROOT_PRESS_COMMAND_MAPPING_HPP_

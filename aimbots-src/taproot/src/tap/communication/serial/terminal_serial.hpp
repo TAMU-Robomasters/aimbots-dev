@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TERMINAL_SERIAL_HPP_
-#define TERMINAL_SERIAL_HPP_
+#ifndef TAPROOT_TERMINAL_SERIAL_HPP_
+#define TAPROOT_TERMINAL_SERIAL_HPP_
 
 #include <cstring>
 #include <map>
@@ -43,15 +43,15 @@
 namespace tap
 {
 class Drivers;
-namespace communication
-{
-namespace serial
+}
+
+namespace tap::communication::serial
 {
 /**
  * If you would like to interact with the terminal, extend this class and implement
  * the callback.
  */
-class ITerminalSerialCallback
+class TerminalSerialCallbackInterface
 {
 public:
     /**
@@ -71,14 +71,14 @@ public:
      * Called repeatedly by the TerminalSerial when in streaming mode.
      */
     virtual void terminalSerialStreamCallback(modm::IOStream &outputStream) = 0;
-};  // class ITerminalSerialCallback
+};  // class TerminalSerialCallbackInterface
 
 /**
  * Handles incoming requests from the "terminal". The "terminal" is either
  * a uart line connected to a computer with a serial connection open or
- * when runing on the simulator, stdin/stdout.
+ * when running on the simulator, stdin/stdout.
  *
- * To add a handler to the terminal, extend the ITerminalSerialCallback
+ * To add a handler to the terminal, extend the TerminalSerialCallbackInterface
  * and add it to an instance of the TerminalSerial class via `addHeader`.
  * Whenever the header is received on the terminal line, the contents of
  * the message (minus the header and any flags specified for the TerminalSerial)
@@ -87,9 +87,9 @@ public:
  * @note If the "-S" flag is specified directly after the header, the terminal
  *      enters streaming mode. In this mode, so long as terminalSerialCallback
  *      returns true when streaming mode is initially enabled, the
- *      ITerminalSerialCallback's `terminalSerialStreamCallback` function will
+ *      TerminalSerialCallbackInterface's `terminalSerialStreamCallback` function will
  *      be called repeatedly until the user enters any new key presses. If you
- *      design an ITerminalSerialCallback that does not need/handle streaming,
+ *      design an TerminalSerialCallbackInterface that does not need/handle streaming,
  *      simply check the argument in `terminalSerialCallback` called `streamingEnabled`
  *      `return false` and write to the `outputStream` to notify the user that
  *      streaming is not enabled. An example of where you would use streaming
@@ -100,6 +100,8 @@ class TerminalSerial
 {
 public:
     static constexpr char DELIMITERS[] = " \t";
+    static constexpr int MAX_LINE_LENGTH = 256;
+    static constexpr int STREAMING_PERIOD = 500;
 
     explicit TerminalSerial(Drivers *drivers);
 
@@ -111,12 +113,9 @@ public:
 
     mockable void update();
 
-    mockable void addHeader(const char *header, ITerminalSerialCallback *callback);
+    mockable void addHeader(const char *header, TerminalSerialCallbackInterface *callback);
 
 private:
-    static constexpr int MAX_LINE_LENGTH = 256;
-    static constexpr int STREAMING_PERIOD = 500;
-
     // Use either an IO device that interacts with UART or with stdin/stdout.
 #ifdef PLATFORM_HOSTED
 #ifdef ENV_UNIT_TESTS
@@ -150,7 +149,7 @@ private:
      * Used when in streaming mode to signify the serial callback that has taken
      * control of writing to the IOStream
      */
-    ITerminalSerialCallback *currStreamer;
+    TerminalSerialCallbackInterface *currStreamer = nullptr;
 
     tap::arch::PeriodicMilliTimer streamingTimer;
 
@@ -159,7 +158,8 @@ private:
         bool operator()(const char *c1, const char *c2) const { return strcmp(c1, c2) < 0; }
     };
 
-    std::map<const char *, ITerminalSerialCallback *, cmpByStringEquality> headerCallbackMap;
+    std::map<const char *, TerminalSerialCallbackInterface *, cmpByStringEquality>
+        headerCallbackMap;
 
     Drivers *drivers;
 
@@ -167,8 +167,6 @@ private:
 
     void printUsage();
 };  // class TerminalSerial
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial
 
-#endif  // TERMINAL_SERIAL_HPP_
+#endif  // TAPROOT_TERMINAL_SERIAL_HPP_

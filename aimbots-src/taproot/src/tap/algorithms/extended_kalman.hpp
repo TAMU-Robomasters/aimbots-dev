@@ -21,8 +21,8 @@
  * Copyright (c) 2019 Sanger_X
  */
 
-#ifndef KALMAN_HPP_
-#define KALMAN_HPP_
+#ifndef TAPROOT_EXTENDED_KALMAN_HPP_
+#define TAPROOT_EXTENDED_KALMAN_HPP_
 
 namespace tap
 {
@@ -70,8 +70,8 @@ public:
      * \f{eqnarray*}{
      * x(k | k-1) & = & A \cdot X(k-1 | k-1) + B \cdot U(k) + W(K)\\
      * p(k | k-1) & = & A \cdot p(k-1 | k-1) \cdot A^\prime + Q\\
-     * kg(k) & = & p(k | k-1) * \frac{H^\prime}{H * p(k | k-1) * H^\prime + R}\\
-     * x(k | k) & = & X(k | k - 1) + kg(k) \cdot (Z(k) - H * X(k | k-1))\\
+     * kg(k) & = & p(k | k-1) \cdot \frac{H^\prime}{H \cdot p(k | k-1) \cdot H^\prime + R}\\
+     * x(k | k) & = & X(k | k - 1) + kg(k) \cdot (Z(k) - H \cdot X(k | k-1))\\
      * p(k | k) & = & (I - kg(k) \cdot H) \cdot P(k | k-1)
      * \f}
      *
@@ -91,22 +91,22 @@ public:
     void reset();
 
 private:
-    float xLast;  /// last optimal prediction.
-    float xMid;   /// forcast optimal prediction.
-    float xNow;   /// current optimal prediction.
-    float pMid;   /// predicted covariance.
-    float pNow;   /// current covariance.
-    float pLast;  /// previous covariance.
-    float kg;     /// kalman gain.
-    float A;      /// system parameter.
-    float B;      /// system parameter.
-    float Q;      /// system parameter
-    float R;      /// system parameter.
-    float H;      /// system parameter.
+    float xLast;  ///< last optimal prediction.
+    float xMid;   ///< forcast optimal prediction.
+    float xNow;   ///< current optimal prediction.
+    float pMid;   ///< predicted covariance.
+    float pNow;   ///< current covariance.
+    float pLast;  ///< previous covariance.
+    float kg;     ///< kalman gain.
+    float A;      ///< system parameter.
+    float B;      ///< system parameter.
+    float Q;      ///< system parameter
+    float R;      ///< system parameter.
+    float H;      ///< system parameter.
 };                // class ExtendedKalman
 
 }  // namespace algorithms
 
 }  // namespace tap
 
-#endif  // KALMAN_HPP_
+#endif  // TAPROOT_EXTENDED_KALMAN_HPP_

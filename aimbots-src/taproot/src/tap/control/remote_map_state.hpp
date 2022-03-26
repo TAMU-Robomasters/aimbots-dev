@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REMOTE_MAP_STATE_HPP_
-#define REMOTE_MAP_STATE_HPP_
+#ifndef TAPROOT_REMOTE_MAP_STATE_HPP_
+#define TAPROOT_REMOTE_MAP_STATE_HPP_
 
 #include <cstdint>
 #include <list>
@@ -57,11 +57,36 @@ public:
      */
     enum class MouseButton
     {
-        LEFT,  /// The left mouse button.
-        RIGHT  /// The right mouse button.
+        LEFT,  ///< The left mouse button.
+        RIGHT  ///< The right mouse button.
     };
 
     RemoteMapState() = default;
+
+    /**
+     * Generic constructor that takes all possible remote map state configurations for maximum
+     * configurability, initializes the RemoteMapState with all given information.
+     *
+     * @param[in] leftss The switch state for the left switch. If `UNKNOWN`, the switch state will
+     * not be initialized.
+     * @param[in] rightss The switch state for the right switch. If `UNKNOWN`, the switch state will
+     * not be initialized.
+     * @param[in] keySet The set of keys to use for initialization.
+     * @param[in] negKeySet The set of keys to be used as negations in the RemoteMapState.
+     * @param[in] mouseButtonLeftPressed Initialize the RemoteMapState to match a remote map state
+     * when the left mouse button is pressed.
+     * @param[in] mouseButtonRightPressed Initialize the RemoteMapState to match a remote map state
+     * when the right mouse button is pressed.
+     * @note `keySet` and `negKeySet` must be mutally exclusive sets, otherwise the `negKeySet` will
+     * not be properly initialized.
+     */
+    RemoteMapState(
+        tap::communication::serial::Remote::SwitchState leftss,
+        tap::communication::serial::Remote::SwitchState rightss,
+        const std::list<tap::communication::serial::Remote::Key> &keySet,
+        const std::list<tap::communication::serial::Remote::Key> &negKeySet,
+        bool mouseButtonLeftPressed,
+        bool mouseButtonRightPressed);
 
     /**
      * Initializes a RemoteMapState with a single switch to the given switch state.
@@ -69,7 +94,9 @@ public:
      * @param[in] swh The switch to use in the map state.
      * @param[in] switchState The switch state of the given switch.
      */
-    RemoteMapState(Remote::Switch swh, Remote::SwitchState switchState);
+    RemoteMapState(
+        tap::communication::serial::Remote::Switch swh,
+        tap::communication::serial::Remote::SwitchState switchState);
 
     /**
      * Initializes a RemoteMapState with particular switch states for both remote
@@ -78,7 +105,9 @@ public:
      * @param[in] leftss The switch state for the left switch.
      * @param[in] rightss The switch state for the right switch.
      */
-    RemoteMapState(Remote::SwitchState leftss, Remote::SwitchState rightss);
+    RemoteMapState(
+        tap::communication::serial::Remote::SwitchState leftss,
+        tap::communication::serial::Remote::SwitchState rightss);
 
     /**
      * Initializes a RemoteMapState with a particular set of keys and optionally a
@@ -90,8 +119,8 @@ public:
      *      `negKeySet` will not be properly initialized.
      */
     RemoteMapState(
-        const std::list<Remote::Key> &keySet,
-        const std::list<Remote::Key> &negKeySet = {});
+        const std::list<tap::communication::serial::Remote::Key> &keySet,
+        const std::list<tap::communication::serial::Remote::Key> &negKeySet = {});
 
     /**
      * Initializes a RemoteMapState with a particular mouse button and set of keys and
@@ -105,8 +134,8 @@ public:
      */
     RemoteMapState(
         RemoteMapState::MouseButton button,
-        const std::list<Remote::Key> &keySet,
-        const std::list<Remote::Key> &negKeySet = {});
+        const std::list<tap::communication::serial::Remote::Key> &keySet,
+        const std::list<tap::communication::serial::Remote::Key> &negKeySet = {});
 
     /**
      * Initializes a RemoteMapState that will use the given mouse button (either left or
@@ -119,12 +148,12 @@ public:
     /**
      * Initializes the left switch with the particular `Remote::SwitchState` provided.
      */
-    void initLSwitch(Remote::SwitchState ss);
+    void initLSwitch(tap::communication::serial::Remote::SwitchState ss);
 
     /**
      * Initializes the right switch with the particular `Remote::SwitchState` provided.
      */
-    void initRSwitch(Remote::SwitchState ss);
+    void initRSwitch(tap::communication::serial::Remote::SwitchState ss);
 
     /**
      * Initializes the keys to the bit mapped set of keys provided.
@@ -141,12 +170,12 @@ public:
     /**
      * @see `initKeys`. Interprets the list and passes that on as a bit mapped set of keys.
      */
-    void initKeys(const std::list<Remote::Key> &keySet);
+    void initKeys(const std::list<tap::communication::serial::Remote::Key> &keySet);
 
     /**
      * @see `initNegKeys`. Interprets the list and passes that on as a bit mapped set of keys.
      */
-    void initNegKeys(const std::list<Remote::Key> &negKeySet);
+    void initNegKeys(const std::list<tap::communication::serial::Remote::Key> &negKeySet);
 
     /**
      * Initializes the left mouse button to be mapped when clicked.
@@ -213,14 +242,16 @@ public:
 
     bool getRMouseButton() const { return rMouseButton; }
 
-    Remote::SwitchState getLSwitch() const { return lSwitch; }
+    tap::communication::serial::Remote::SwitchState getLSwitch() const { return lSwitch; }
 
-    Remote::SwitchState getRSwitch() const { return rSwitch; }
+    tap::communication::serial::Remote::SwitchState getRSwitch() const { return rSwitch; }
 
 private:
-    Remote::SwitchState lSwitch = Remote::SwitchState::UNKNOWN;
+    tap::communication::serial::Remote::SwitchState lSwitch =
+        tap::communication::serial::Remote::SwitchState::UNKNOWN;
 
-    Remote::SwitchState rSwitch = Remote::SwitchState::UNKNOWN;
+    tap::communication::serial::Remote::SwitchState rSwitch =
+        tap::communication::serial::Remote::SwitchState::UNKNOWN;
 
     uint16_t keys = 0;
 
@@ -233,4 +264,4 @@ private:
 }  // namespace control
 }  // namespace tap
 
-#endif  // REMOTE_MAP_STATE_HPP_
+#endif  // TAPROOT_REMOTE_MAP_STATE_HPP_

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MPU6500_TERMINAL_SERIAL_HANDLER_HPP_
-#define MPU6500_TERMINAL_SERIAL_HANDLER_HPP_
+#ifndef TAPROOT_MPU6500_TERMINAL_SERIAL_HANDLER_HPP_
+#define TAPROOT_MPU6500_TERMINAL_SERIAL_HANDLER_HPP_
 
 #include "tap/communication/serial/terminal_serial.hpp"
 #include "tap/util_macros.hpp"
@@ -36,7 +36,7 @@ namespace sensors
  * the user to query gyro, accel, angle, and temperature data. Single query and streaming
  * modes supported.
  */
-class Mpu6500TerminalSerialHandler : public communication::serial::ITerminalSerialCallback
+class Mpu6500TerminalSerialHandler : public communication::serial::TerminalSerialCallbackInterface
 {
 public:
     static constexpr char HEADER[] = "mpu6500";
@@ -93,4 +93,4 @@ private:
 }  // namespace sensors
 }  // namespace tap
 
-#endif  // MPU6500_TERMINAL_SERIAL_HANDLER_HPP_
+#endif  // TAPROOT_MPU6500_TERMINAL_SERIAL_HANDLER_HPP_

@@ -17,13 +17,13 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "dji_serial.hpp"
-
 #include "tap/architecture/clock.hpp"
 #include "tap/architecture/endianness_wrappers.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
+
+#include "dji_serial.hpp"
 
 /**
  * Macro that wraps uart read for ease of readability in code.
@@ -33,19 +33,7 @@
  */
 #define READ(data, length) drivers->uart.read(this->port, data, length)
 
-/**
- * Macro that wraps uart write for ease of readability in code.
- * @param[in] data Byte array from which data will be write.
- * @param[in] length The number of bytes to write.
- * @return 0 if writing is currently in progress (meaning we can't write to the bus currently), or
- *      the number of bytes successfully written.
- */
-#define WRITE(data, length) \
-    (drivers->uart.isWriteFinished(this->port) ? drivers->uart.write(this->port, data, length) : 0)
-
-namespace tap
-{
-namespace serial
+namespace tap::communication::serial
 {
 DJISerial::DJISerial(Drivers *drivers, Uart::UartPort port, bool isRxCRCEnforcementEnabled)
     : port(port),
@@ -53,15 +41,11 @@ DJISerial::DJISerial(Drivers *drivers, Uart::UartPort port, bool isRxCRCEnforcem
       newMessage(),
       mostRecentMessage(),
       frameCurrReadByte(0),
-      frameHeader(),
       rxCrcEnabled(isRxCRCEnforcementEnabled),
-      txBuffer(),
-      drivers(drivers),
-      txMessage()
+      drivers(drivers)
 {
 }
 
-// TODO allow for configurable baudrate, see taproot#50
 void DJISerial::initialize()
 {
     switch (this->port)
@@ -78,50 +62,15 @@ void DJISerial::initialize()
         case Uart::UartPort::Uart6:
             drivers->uart.init<Uart::UartPort::Uart6, 115200>();
             break;
+        case Uart::UartPort::Uart7:
+            drivers->uart.init<Uart::UartPort::Uart7, 115200>();
+            break;
+        case Uart::UartPort::Uart8:
+            drivers->uart.init<Uart::UartPort::Uart8, 115200>();
+            break;
         default:
             break;
     }
-}
-
-bool DJISerial::send()
-{
-    txBuffer[0] = SERIAL_HEAD_BYTE;
-    txBuffer[FRAME_DATA_LENGTH_OFFSET] = txMessage.length & 0xFF;
-    txBuffer[FRAME_DATA_LENGTH_OFFSET + 1] = (txMessage.length >> 8) & 0xFF;
-    txBuffer[FRAME_SEQUENCENUM_OFFSET] = txMessage.sequenceNumber;
-    txBuffer[FRAME_CRC8_OFFSET] = algorithms::calculateCRC8(txBuffer, 4);
-    txBuffer[FRAME_TYPE_OFFSET] = (txMessage.type) & 0xFF;
-    txBuffer[FRAME_TYPE_OFFSET + 1] = (txMessage.type >> 8) & 0xFF;
-
-    // we can't send, trying to send too much
-    if (FRAME_HEADER_LENGTH + txMessage.length + FRAME_CRC16_LENGTH >= SERIAL_TX_BUFF_SIZE)
-    {
-        RAISE_ERROR(
-            drivers,
-            "dji serial attempting to send greater than SERIAL_TX_BUFF_SIZE bytes");
-        return false;
-    }
-
-    memcpy(txBuffer + FRAME_HEADER_LENGTH, txMessage.data, txMessage.length);
-
-    // add crc16
-    uint16_t CRC16Val =
-        algorithms::calculateCRC16(txBuffer, FRAME_HEADER_LENGTH + txMessage.length);
-    txBuffer[FRAME_HEADER_LENGTH + txMessage.length] = CRC16Val;
-    txBuffer[FRAME_HEADER_LENGTH + txMessage.length + 1] = CRC16Val >> 8;
-
-    uint32_t totalSize = FRAME_HEADER_LENGTH + txMessage.length + FRAME_CRC16_LENGTH;
-    uint32_t messageLengthSent = WRITE(txBuffer, totalSize);
-    if (messageLengthSent != totalSize)
-    {
-        return false;
-        // the message did not completely send
-        RAISE_ERROR(
-            drivers,
-            "the message did not completely send");
-    }
-    txMessage.messageTimestamp = arch::clock::getTimeMilliseconds();
-    return true;
 }
 
 void DJISerial::updateSerial()
@@ -131,70 +80,49 @@ void DJISerial::updateSerial()
         case SERIAL_HEADER_SEARCH:
         {
             // keep scanning for the head byte as long as you are here and have not yet found it.
-            uint8_t serialHeadCheck = 0;
-            while (djiSerialRxState == SERIAL_HEADER_SEARCH && READ(&serialHeadCheck, 1))
+            while (djiSerialRxState == SERIAL_HEADER_SEARCH && READ(&newMessage.header.headByte, 1))
             {
                 // we found it, store the head byte
-                if (serialHeadCheck == SERIAL_HEAD_BYTE)
+                if (newMessage.header.headByte == SERIAL_HEAD_BYTE)
                 {
-                    frameHeader[0] = SERIAL_HEAD_BYTE;
-                    newMessage.headByte = SERIAL_HEAD_BYTE;
                     djiSerialRxState = PROCESS_FRAME_HEADER;
+                    frameCurrReadByte = 0;
                 }
             }
-
             break;
         }
         case PROCESS_FRAME_HEADER:  // the frame header consists of the length, type, and CRC8
         {
-            // Read from the buffer. Keep track of the index in the frameHeader array using the
-            // frameCurrReadByte. +1 at beginning and -1 on the end since the serial head
-            // byte is part of the frame but has already been processed.
             frameCurrReadByte += READ(
-                frameHeader + frameCurrReadByte + 1,
-                FRAME_HEADER_LENGTH - frameCurrReadByte - 1);
+                reinterpret_cast<uint8_t *>(&newMessage) + frameCurrReadByte + 1,
+                sizeof(newMessage.header) - frameCurrReadByte - 1);
 
             // We have the complete message header in the frameHeader buffer
-            if (frameCurrReadByte == FRAME_HEADER_LENGTH - 1)
+            if (frameCurrReadByte == sizeof(newMessage.header) - 1)
             {
                 frameCurrReadByte = 0;
-
-                // process length
-                newMessage.length = (frameHeader[FRAME_DATA_LENGTH_OFFSET + 1] << 8) |
-                                    frameHeader[FRAME_DATA_LENGTH_OFFSET];
-                // process sequence number (counter)
-                newMessage.sequenceNumber = frameHeader[FRAME_SEQUENCENUM_OFFSET];
-                newMessage.type =
-                    frameHeader[FRAME_TYPE_OFFSET + 1] << 8 | frameHeader[FRAME_TYPE_OFFSET];
-
-                if (newMessage.length == 0 ||
-                    newMessage.length >=
-                        SERIAL_RX_BUFF_SIZE - (FRAME_HEADER_LENGTH + FRAME_CRC16_LENGTH))
-                {
-                    djiSerialRxState = SERIAL_HEADER_SEARCH;
-                    RAISE_ERROR(
-                        drivers,
-                        "invalid message length received");
-                    return;
-                }
 
                 // check crc8 on header
                 if (rxCrcEnabled)
                 {
-                    uint8_t CRC8 = frameHeader[FRAME_CRC8_OFFSET];
                     // don't look at crc8 or frame type when calculating crc8
-                    if (!verifyCRC8(frameHeader, FRAME_HEADER_LENGTH - 3, CRC8))
+                    if (!verifyCRC8(
+                            reinterpret_cast<uint8_t *>(&newMessage),
+                            sizeof(newMessage.header) - 1,
+                            newMessage.header.CRC8))
                     {
                         djiSerialRxState = SERIAL_HEADER_SEARCH;
-                        RAISE_ERROR(
-                            drivers,
-                            "CRC8 failure");
+                        RAISE_ERROR(drivers, "CRC8 failure");
                         return;
                     }
                 }
 
-                // Calculate header portion of crc16
-                currCrc16 = algorithms::calculateCRC16(frameHeader, FRAME_HEADER_LENGTH);
+                if (newMessage.header.dataLength >= SERIAL_RX_BUFF_SIZE)
+                {
+                    djiSerialRxState = SERIAL_HEADER_SEARCH;
+                    RAISE_ERROR(drivers, "received message length longer than allowed max");
+                    return;
+                }
 
                 // move on to processing message body
                 djiSerialRxState = PROCESS_FRAME_DATA;
@@ -203,43 +131,39 @@ void DJISerial::updateSerial()
         }
         case PROCESS_FRAME_DATA:  // READ bulk of message
         {
-            // add on extra 2 bytes for crc enforcement, and READ bytes until
-            // the length has been reached
+            int bytesToRead = sizeof(newMessage.messageType) + newMessage.header.dataLength;
             if (rxCrcEnabled)
             {
-                frameCurrReadByte += READ(
-                    newMessage.data + frameCurrReadByte,
-                    newMessage.length + 2 - frameCurrReadByte);
-            }
-            else
-            {
-                frameCurrReadByte += READ(
-                    newMessage.data + frameCurrReadByte,
-                    newMessage.length - frameCurrReadByte);
+                bytesToRead += 2;
             }
 
-            if ((frameCurrReadByte == newMessage.length && !rxCrcEnabled) ||
-                (frameCurrReadByte == newMessage.length + 2 && rxCrcEnabled))
+            frameCurrReadByte += READ(
+                reinterpret_cast<uint8_t *>(&newMessage) + sizeof(newMessage.header) +
+                    frameCurrReadByte,
+                bytesToRead - frameCurrReadByte);
+
+            if (frameCurrReadByte == bytesToRead)
             {
-                frameCurrReadByte = 0;
                 if (rxCrcEnabled)
                 {
-                    uint16_t CRC16;
-                    arch::convertFromLittleEndian(&CRC16, newMessage.data + newMessage.length);
-                    currCrc16 =
-                        algorithms::calculateCRC16(newMessage.data, newMessage.length, currCrc16);
-                    if (currCrc16 != CRC16)
+                    // move crc16 to `CRC16` position (currently in the data section if <
+                    // SERIAL_RX_BUFF_SIZE length sent)
+                    memcpy(
+                        &newMessage.CRC16,
+                        newMessage.data + newMessage.header.dataLength,
+                        sizeof(newMessage.CRC16));
+
+                    if (newMessage.CRC16 !=
+                        algorithms::calculateCRC16(
+                            reinterpret_cast<uint8_t *>(&newMessage),
+                            sizeof(newMessage.header) + sizeof(newMessage.messageType) +
+                                newMessage.header.dataLength))
                     {
                         djiSerialRxState = SERIAL_HEADER_SEARCH;
-                        RAISE_ERROR(
-                            drivers,
-                            "CRC16 failure");
+                        RAISE_ERROR(drivers, "CRC16 failure");
                         return;
                     }
                 }
-
-                // update the time and copy over the message to the most recent message
-                newMessage.messageTimestamp = arch::clock::getTimeMilliseconds();
 
                 mostRecentMessage = newMessage;
 
@@ -247,14 +171,10 @@ void DJISerial::updateSerial()
 
                 djiSerialRxState = SERIAL_HEADER_SEARCH;
             }
-            else if (
-                (frameCurrReadByte > newMessage.length && !rxCrcEnabled) ||
-                (frameCurrReadByte > newMessage.length + 2 && rxCrcEnabled))
+            else if (frameCurrReadByte > bytesToRead)
             {
                 frameCurrReadByte = 0;
-                RAISE_ERROR(
-                    drivers,
-                    "Invalid message length");
+                RAISE_ERROR(drivers, "Invalid message length");
                 djiSerialRxState = SERIAL_HEADER_SEARCH;
             }
             break;
@@ -262,6 +182,4 @@ void DJISerial::updateSerial()
     }
 }
 
-}  // namespace serial
-
-}  // namespace tap
+}  // namespace tap::communication::serial

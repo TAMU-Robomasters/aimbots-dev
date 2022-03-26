@@ -17,10 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef PLATFORM_HOSTED
+#ifndef TAPROOT_MOTOR_SIM_HPP_
+#define TAPROOT_MOTOR_SIM_HPP_
 
-#ifndef MOTOR_SIM_HPP_
-#define MOTOR_SIM_HPP_
+#ifdef PLATFORM_HOSTED
 
 #include <cmath>
 #include <cstdint>
@@ -108,7 +108,7 @@ private:
     float KT = 0;                 // (N*m)/A
     float WT_GRAD = 0;            // RPM/(N*m)
 
-    /** Initializes constant variables based on motor type */
+    /// Initializes constant variables based on motor type
     void initConstants(MotorType type);
 
     /* Class Variables */
@@ -122,6 +122,6 @@ private:
 
 }  // namespace tap
 
-#endif  // MOTOR_SIM_HPP_
-
 #endif  // PLATFORM_HOSTED
+
+#endif  // TAPROOT_MOTOR_SIM_HPP_

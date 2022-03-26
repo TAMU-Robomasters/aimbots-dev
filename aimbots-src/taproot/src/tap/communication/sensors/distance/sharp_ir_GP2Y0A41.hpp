@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SHARP_IR_HPP_
-#define SHARP_IR_HPP_
+#ifndef TAPROOT_SHARP_IR_GP2Y0A41_HPP_
+#define TAPROOT_SHARP_IR_GP2Y0A41_HPP_
 
 #include "analog_distance_sensor.hpp"
 
@@ -66,4 +66,4 @@ private:
 
 }  // namespace tap
 
-#endif  // SHARP_IR_HPP_
+#endif  // TAPROOT_SHARP_IR_GP2Y0A41_HPP_

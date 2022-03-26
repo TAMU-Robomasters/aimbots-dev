@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
-#define LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
+#ifndef TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
+#define TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
 
 #include <cstdint>
 
@@ -42,11 +42,11 @@ public:
     /**
      * Updates the interpolation using the newValue.
      *
-     * @note only call this when you receive a new value (use remote rx
+     * @note Only call this when you receive a new value (use remote rx
      *      counter to tell when there is new data from the remote, for
      *      example).
      * @note This function should be called with increasing values of `currTime`.
-     * @param[in] newValue the new data used in the interpolation.
+     * @param[in] newValue The new data used in the interpolation.
      * @param[in] currTime The time that this function was called.
      */
     void update(float newValue, uint32_t currTime);
@@ -58,10 +58,10 @@ public:
      *
      * @note Slope is defined by the previous two values passed into the `update`
      *      function, a period preceeding `lastUpdateCallTime`.
-     * @note use a millisecond-resolution timer, e.g.
-     *      `tap::arch::clock::getTimeMilliseconds()`
-     * @param[in] currTime the current clock time, in ms.
-     * @return the interpolated value.
+     * @note Use a millisecond-resolution timer, e.g.
+     *      `tap::arch::clock::getTimeMilliseconds()`.
+     * @param[in] currTime The current clock time, in ms.
+     * @return The interpolated value.
      */
     float getInterpolatedValue(uint32_t currTime)
     {
@@ -86,11 +86,11 @@ public:
     void reset(float initialValue, uint32_t initialTime);
 
 private:
-    uint32_t lastUpdateCallTime;    /// The previous timestamp from when update was called.
-    ContiguousFloat previousValue;  /// The previous data value.
-    float slope;  /// The current slope, calculated using the previous and most current data.
+    uint32_t lastUpdateCallTime;    ///< The previous timestamp from when update was called.
+    ContiguousFloat previousValue;  ///< The previous data value.
+    float slope;  ///< The current slope, calculated using the previous and most current data.
 };                // class LinearInterpolationPredictorContiguous
 
 }  // namespace tap::algorithms
 
-#endif  // LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
+#endif  // TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_

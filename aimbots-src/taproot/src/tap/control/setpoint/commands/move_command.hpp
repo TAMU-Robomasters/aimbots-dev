@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_ROTATE_COMMAND_HPP_
-#define AGITATOR_ROTATE_COMMAND_HPP_
+#ifndef TAPROOT_MOVE_COMMAND_HPP_
+#define TAPROOT_MOVE_COMMAND_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/algorithms/ramp.hpp"
@@ -36,41 +36,47 @@ namespace control
 namespace setpoint
 {
 /**
- * Rotates the connected agitator some angle in some desired time. Currently
- * pass in a rotate velocity and it uses `tap::arch::getTimeMilliseconds()`
- * to determine the proper ramp increment.
+ * Displaces the connected subsystem some value in some desired time. Currently
+ * pass in a displacement and time to move and it uses `tap::arch::getTimeMilliseconds()`
+ * to determine the speed to move at.
+ *
+ * Ends if subsystem is offline.
  */
 class MoveCommand : public tap::control::Command
 {
 public:
     /**
-     * @param[in] setpointSubsystem The agitator associated with the rotate command.
-     * @param[in] agitatorAngleChange The desired rotation angle, in radians.
-     * @param[in] agitatorRotateTime The time it takes to rotate the agitator to the desired angle
-     *      in milliseconds.
-     * @param[in] agitatorPauseAfterRotateTime The time that the command will wait after rotating to
-     *      the desired angle before the command is considered complete.
-     * @param[in] setpointTolerance The angle difference between current and desired angle when the
-     *      command will be considered to be completed (used in the `isFinished` function). Only set
-     *      this if you want a different tolerance. `SETPOINT_TOLERANCE` is usually fine.
-     * @param[in] agitatorSetToFinalAngle `true` if you would like the agitator on `end` to set to
-     *      the final desired rotation angle, `false` otherwise (in which case the final desired
-     * angle set may be slightly shorter than the true desired angle change).
+     * @param[in] setpointSubsystem The subsystem associated with the rotate command.
+     * @param[in] targetDisplacement The desired change in subsystem value in subsystem units.
+     * @param[in] moveTime The time it takes to move the subsystem to the desired
+     *      value in milliseconds.
+     * @param[in] pauseAfterMoveTime Time in milliseconds that the command will wait after
+     *      reaching the target displacement before the command is considered complete.
+     * @param[in] setToTargetOnEnd if `true` the command will set the subsystem setpoint
+     *      to the ideal target value on an uninterrupted `end()` if subsystem is online and
+     *      unjammed, otherwise the subsystem will always set the setpoint to the its current value
+     *      on `end()`.
+     * @param[in] setpointTolerance The difference between current and desired value when the
+     *      command will be considered to be completed (used in the `isFinished` function). Uses
+     *      the same units as the subsystem's setpoint.
      * @attention the ramp value is calculated by finding the rotation speed
-     *      (\f$agitatorAngleChange / agitatorRotateTime\f$), and then multiplying this by
+     *      (\f$targetDisplacement / moveTime\f$), and then multiplying this by
      *      the period (how often the ramp is called)
      */
     MoveCommand(
         SetpointSubsystem* setpointSubsystem,
-        float agitatorAngleChange,
-        uint32_t agitatorRotateTime,
-        uint32_t agitatorPauseAfterRotateTime,
-        bool agitatorSetToFinalAngle,
-        float setpointTolerance = SETPOINT_TOLERANCE);
+        float targetDisplacement,
+        uint32_t moveTime,
+        uint32_t pauseAfterMoveTime,
+        bool setToTargetOnEnd,
+        float setpointTolerance);
 
-    const char* getName() const override { return "agitator rotate"; }
+    const char* getName() const override { return "move command"; }
 
-    bool isReady() override { return !setpointSubsystem->isJammed(); }
+    bool isReady() override
+    {
+        return !setpointSubsystem->isJammed() && setpointSubsystem->isOnline();
+    }
 
     void initialize() override;
 
@@ -81,31 +87,30 @@ public:
     bool isFinished() const override;
 
 private:
-    /**
-     * The angle at which the agitator is considered to have reached its setpoint.
-     */
-    static constexpr float SETPOINT_TOLERANCE = M_PI / 16.0f;
-
     SetpointSubsystem* setpointSubsystem;
 
-    float agitatorTargetAngleChange;
+    /**
+     * The target setpoint displacement from the current setpoint everytime this command
+     * is run.
+     */
+    float targetDisplacement;
 
-    tap::algorithms::Ramp rampToTargetAngle;
+    tap::algorithms::Ramp rampToTargetValue;
 
     /**
-     * The time you want the agitator to take to rotate to the desired angle, in milliseconds.
+     * The time you want the subsystem to take to rotate to the desired value, in milliseconds.
      */
-    uint32_t agitatorDesiredRotateTime;
+    uint32_t moveTime;
 
-    uint32_t agitatorMinRotatePeriod;
+    tap::arch::MilliTimeout minMoveTimeout;
 
-    tap::arch::MilliTimeout agitatorMinRotateTimeout;
+    uint32_t pauseAfterMoveTime;
 
-    float agitatorSetpointTolerance;
+    float setpointTolerance;
 
-    uint32_t agitatorPrevRotateTime;
+    uint32_t previousMoveTime;
 
-    bool agitatorSetToFinalAngle;
+    bool setToTargetOnEnd;
 };  // class MoveCommand
 
 }  // namespace setpoint
@@ -114,4 +119,4 @@ private:
 
 }  // namespace tap
 
-#endif  // AGITATOR_ROTATE_COMMAND_HPP_
+#endif  // TAPROOT_MOVE_COMMAND_HPP_

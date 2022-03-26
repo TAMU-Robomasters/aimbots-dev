@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef UART_HPP
-#define UART_HPP
+#ifndef TAPROOT_UART_HPP_
+#define TAPROOT_UART_HPP_
 
 #include <cstdint>
 #include <cstdlib>
@@ -31,9 +31,7 @@
 #include "tap/board/board.hpp"
 #include "tap/util_macros.hpp"
 
-namespace tap
-{
-namespace serial
+namespace tap::communication::serial
 {
 /**
  * Class that wraps modm's Uart implementation.
@@ -51,6 +49,8 @@ public:
         Uart2,
         Uart3,
         Uart6,
+        Uart7,
+        Uart8,
     };
 
 #ifdef PLATFORM_HOSTED
@@ -99,6 +99,16 @@ public:
         {
             modm::platform::Usart6::connect<GpioG14::Tx, GpioG9::Rx>();
             modm::platform::Usart6::initialize<Board::SystemClock, baudrate>(parity);
+        }
+        else if constexpr (port == UartPort::Uart7)
+        {
+            modm::platform::Uart7::connect<GpioE8::Tx, GpioE7::Rx>();
+            modm::platform::Uart7::initialize<Board::SystemClock, baudrate>(parity);
+        }
+        else if constexpr (port == UartPort::Uart8)
+        {
+            modm::platform::Uart8::connect<GpioE1::Tx, GpioE0::Rx>();
+            modm::platform::Uart8::initialize<Board::SystemClock, baudrate>(parity);
         }
 #endif
     }
@@ -164,8 +174,6 @@ public:
     mockable void flushWriteBuffer(UartPort port);
 };
 
-}  // namespace serial
+}  // namespace tap::communication::serial
 
-}  // namespace tap
-
-#endif
+#endif  // TAPROOT_UART_HPP_

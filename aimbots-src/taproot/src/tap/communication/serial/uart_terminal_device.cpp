@@ -21,11 +21,7 @@
 
 #include "tap/drivers.hpp"
 
-namespace tap
-{
-namespace communication
-{
-namespace serial
+namespace tap::communication::serial
 {
 UartTerminalDevice::UartTerminalDevice(Drivers *drivers) : drivers(drivers) {}
 
@@ -39,6 +35,4 @@ bool UartTerminalDevice::read(char &c)
 void UartTerminalDevice::write(char c) { drivers->uart.write(TERMINAL_UART_PORT, c); }
 
 void UartTerminalDevice::flush() { drivers->uart.flushWriteBuffer(TERMINAL_UART_PORT); }
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial

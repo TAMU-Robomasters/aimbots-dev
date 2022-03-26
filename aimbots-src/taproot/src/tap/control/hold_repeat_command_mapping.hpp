@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HOLD_REPEAT_MAPPING_HPP_
-#define HOLD_REPEAT_MAPPING_HPP_
+#ifndef TAPROOT_HOLD_REPEAT_COMMAND_MAPPING_HPP_
+#define TAPROOT_HOLD_REPEAT_COMMAND_MAPPING_HPP_
 
 #include "command_mapping.hpp"
 
@@ -30,26 +30,43 @@ class Command;
 class RemoteMapState;
 
 /**
- * A CommandMapping that adds `Command`s when the contained
- * mapping is a subset of the remote mapping. If a Command finishes and the
- * contained mapping is still a subset of the remote mapping, it is added again.
- * It then removes the `Command`s when the mapping is no longer a subset.
+ * A CommandMapping that adds `Command`s when the contained mapping is a subset of the remote
+ * mapping. If a Command finishes and the contained mapping is still a subset of the remote mapping,
+ * it is added again. It then removes the `Command`s when the mapping is no longer a subset if
+ * endCommandsWhenNotHeld is true, or doesn't end commands if endCommandsWhenNotHeld is false.
+ * Furthermore, will stop scheduling commands if maxTimesToSchedule is not -1 after the command has
+ * been added to the scheduler maxTimesToSchedule.
  *
- * Additionally, When neg keys are being used and the mapping's neg keys
- * are a subset of the remote map state, the `Command`s are removed.
+ * Additionally, When neg keys are being used and the mapping's neg keys are a subset of the remote
+ * map state, the `Command`s are removed.
  */
 class HoldRepeatCommandMapping : public CommandMapping
 {
 public:
     /**
      * Constructor must take the set of `Command`s and the RemoteMapState.
+     *
+     * @param[in] drivers Global drivers instance.
+     * @param[in] cmds vector of commands that will be scheduled by this command mapping.
+     * @param[in] rms RemoteMapState that controls when commands will be scheduled.
+     * @param[in] endCommandsWhenNotHeld If `true`, the commands will be forcibly ended by the
+     * command mapping when no longer being held. Otherwise, the commands will naturally finish.
+     * @param[in] maxTimesToSchedule Number of times to reschedule each of the commands. If -1 is
+     * passed in, the command mapping will continue to reschedule the commands forever. If there are
+     * multiple commands that have the potential to end, each command will be scheduled
+     * maxTimesToSchedule.
      */
     HoldRepeatCommandMapping(
         Drivers *drivers,
         const std::vector<Command *> cmds,
-        const RemoteMapState &rms)
+        const RemoteMapState &rms,
+        bool endCommandsWhenNotHeld,
+        int maxTimesToSchedule = -1)
         : CommandMapping(drivers, cmds, rms),
-          commandsScheduled(false)
+          held(false),
+          endCommandsWhenNotHeld(endCommandsWhenNotHeld),
+          maxTimesToSchedule(maxTimesToSchedule),
+          rescheduleCounts(mappedCommands.size(), 0)
     {
     }
 
@@ -60,10 +77,29 @@ public:
 
     void executeCommandMapping(const RemoteMapState &currState) override;
 
+    /// Set the maximum times each of commands should be re-scheduled.
+    inline mockable void setMaxTimesToSchedule(int maxTimes) { maxTimesToSchedule = maxTimes; }
+
 private:
-    bool commandsScheduled;
+    bool held;
+    bool endCommandsWhenNotHeld;
+    int maxTimesToSchedule;
+    std::vector<int> rescheduleCounts;
+
+    inline void incrementRescheduleCount(int cmdIndex)
+    {
+        if (maxTimesToSchedule != -1)
+        {
+            rescheduleCounts[cmdIndex] += 1;
+        }
+    }
+
+    inline bool okToScheduleCommand(int cmdIndex) const
+    {
+        return (maxTimesToSchedule == -1) || (rescheduleCounts[cmdIndex] < maxTimesToSchedule);
+    }
 };  // class HoldRepeatCommandMapping
 }  // namespace control
 }  // namespace tap
 
-#endif  // HOLD_REPEAT_COMMAND_MAPPING_HPP_
+#endif  // TAPROOT_HOLD_REPEAT_COMMAND_MAPPING_HPP_

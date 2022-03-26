@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef UART_MOCK_HPP_
-#define UART_MOCK_HPP_
+#ifndef TAPROOT_UART_MOCK_HPP_
+#define TAPROOT_UART_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -28,29 +28,49 @@ namespace tap
 {
 namespace mock
 {
-class UartMock : public tap::serial::Uart
+class UartMock : public tap::communication::serial::Uart
 {
 public:
     UartMock();
     virtual ~UartMock();
 
-    MOCK_METHOD(bool, read, (tap::serial::Uart::UartPort port, uint8_t *data), (override));
+    MOCK_METHOD(
+        bool,
+        read,
+        (tap::communication::serial::Uart::UartPort port, uint8_t *data),
+        (override));
     MOCK_METHOD(
         std::size_t,
         read,
-        (tap::serial::Uart::UartPort port, uint8_t *data, std::size_t length),
+        (tap::communication::serial::Uart::UartPort port, uint8_t *data, std::size_t length),
         (override));
-    MOCK_METHOD(std::size_t, discardReceiveBuffer, (tap::serial::Uart::UartPort port), (override));
-    MOCK_METHOD(bool, write, (tap::serial::Uart::UartPort port, uint8_t data), (override));
+    MOCK_METHOD(
+        std::size_t,
+        discardReceiveBuffer,
+        (tap::communication::serial::Uart::UartPort port),
+        (override));
+    MOCK_METHOD(
+        bool,
+        write,
+        (tap::communication::serial::Uart::UartPort port, uint8_t data),
+        (override));
     MOCK_METHOD(
         std::size_t,
         write,
-        (tap::serial::Uart::UartPort port, const uint8_t *data, std::size_t length),
+        (tap::communication::serial::Uart::UartPort port, const uint8_t *data, std::size_t length),
         (override));
-    MOCK_METHOD(bool, isWriteFinished, (tap::serial::Uart::UartPort port), (const override));
-    MOCK_METHOD(void, flushWriteBuffer, (tap::serial::Uart::UartPort port), (override));
+    MOCK_METHOD(
+        bool,
+        isWriteFinished,
+        (tap::communication::serial::Uart::UartPort port),
+        (const override));
+    MOCK_METHOD(
+        void,
+        flushWriteBuffer,
+        (tap::communication::serial::Uart::UartPort port),
+        (override));
 };  // class UartMock
 }  // namespace mock
 }  // namespace tap
 
-#endif  // UART_MOCK_HPP_
+#endif  // TAPROOT_UART_MOCK_HPP_

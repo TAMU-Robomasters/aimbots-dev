@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_CALIBRATE_COMMAND_HPP_
-#define AGITATOR_CALIBRATE_COMMAND_HPP_
+#ifndef TAPROOT_CALIBRATE_COMMAND_HPP_
+#define TAPROOT_CALIBRATE_COMMAND_HPP_
 
 #include "tap/control/command.hpp"
 #include "tap/drivers.hpp"
@@ -33,22 +33,28 @@ namespace setpoint
 class SetpointSubsystem;
 
 /**
- * Default command that can be used to calibrate the agitator (spam calls
- * `calibrateHere`). By default, the agitator will keep calling `calibrateHere`
- * until the agitator is connected, however this command is for the following:
+ * Default command that can be used to calibrate the setpoint subsystem (spam calls
+ * `calibrateHere`, which upon success will cause the setpoints current position to be the
+ * new zero point (i.e.: setpointSubsystem->getCurrentValue() will return 0 at the current
+ * position)). By default, the setpoint subsystem will keep calling `calibrateHere` until the
+ * setpoint subsystem is connected, however this command is for the following:
  *  - A placeholder command initially.
- *  - Allows you to recalibrate an agitator that has already been calibrated if necessary.
+ *  - Allows you to recalibrate an setpoint subsystem that has already been calibrated if necessary.
+ *
+ * The command will not complete until it has successfully calibrated the subsystem (or
+ * is interrupted)
  */
 class CalibrateCommand : public tap::control::Command
 {
 public:
     /**
-     * @param[in] agitator The subsystem this command is dependent upon.
+     * @param[in] setpointSubsystem The subsystem this command is dependent upon.
      */
-    explicit CalibrateCommand(
-        tap::control::setpoint::SetpointSubsystem* angularPositionalSubsystem);
+    explicit CalibrateCommand(SetpointSubsystem* setpointSubsystem);
 
     const char* getName() const override { return "agitator calibrate"; }
+
+    bool isReady() override;
 
     void initialize() override;
 
@@ -60,6 +66,7 @@ public:
 
 private:
     tap::control::setpoint::SetpointSubsystem* setpointSubsystem;
+    bool calibrationSuccessful;
 };  // class CalibrateCommand
 
 }  // namespace setpoint
@@ -68,4 +75,4 @@ private:
 
 }  // namespace tap
 
-#endif  // AGITATOR_CALIBRATE_COMMAND_HPP_
+#endif  // TAPROOT_CALIBRATE_COMMAND_HPP_

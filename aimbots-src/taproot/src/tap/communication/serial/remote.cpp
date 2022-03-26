@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -23,12 +23,11 @@
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "tap/drivers.hpp"
+#include "tap/errors/create_errors.hpp"
 
 #include "remote_serial_constants.hpp"
 
-using namespace tap::serial;
-
-namespace tap
+namespace tap::communication::serial
 {
 void Remote::initialize()
 {
@@ -96,24 +95,13 @@ Remote::SwitchState Remote::getSwitch(Switch sw) const
     return SwitchState::UNKNOWN;
 }
 
-int16_t Remote::getMouseX() const { return remote.mouse.x; }
-
-int16_t Remote::getMouseY() const { return remote.mouse.y; }
-
-int16_t Remote::getMouseZ() const { return remote.mouse.z; }
-
-bool Remote::getMouseL() const { return remote.mouse.l; }
-
-bool Remote::getMouseR() const { return remote.mouse.r; }
-
-bool Remote::keyPressed(Key key) const { return (remote.key & (1 << (uint8_t)key)) != 0; }
-
-int16_t Remote::getWheel() const { return remote.wheel; }
-
 void Remote::parseBuffer()
 {
-    // values implemented by shifting bits across based on the dr16
-    // values documentation and code created last year
+    // this is a wonky encoding implemented by our "good pal Li Qingzhi" as stated by a chinese
+    // translated document our team acquired a while back; refer to this document for the protocol
+    // encoding: https://drive.google.com/file/d/1a5kaTsDvG89KQwy3fkLVkxKaQJfJCsnu/view?usp=sharing
+
+    // remote joystick information
     remote.rightHorizontal = (rxBuffer[0] | rxBuffer[1] << 8) & 0x07FF;
     remote.rightHorizontal -= 1024;
     remote.rightVertical = (rxBuffer[1] >> 3 | rxBuffer[2] << 5) & 0x07FF;
@@ -122,51 +110,9 @@ void Remote::parseBuffer()
     remote.leftHorizontal -= 1024;
     remote.leftVertical = (rxBuffer[4] >> 1 | rxBuffer[5] << 7) & 0x07FF;
     remote.leftVertical -= 1024;
-    // the first 6 bytes refer to the remote channel values
 
-    // switches on the dji remote - their input is registered
-    switch (((rxBuffer[5] >> 4) & 0x000C) >> 2)
-    {
-        case 1:
-            remote.leftSwitch = SwitchState::UP;
-            break;
-        case 3:
-            remote.leftSwitch = SwitchState::MID;
-            break;
-        case 2:
-            remote.leftSwitch = SwitchState::DOWN;
-            break;
-        default:
-            remote.leftSwitch = SwitchState::UNKNOWN;
-            break;
-    }
-
-    switch ((rxBuffer[5] >> 4) & 0x003)
-    {
-        case 1:
-            remote.rightSwitch = SwitchState::UP;
-            break;
-        case 3:
-            remote.rightSwitch = SwitchState::MID;
-            break;
-        case 2:
-            remote.rightSwitch = SwitchState::DOWN;
-            break;
-        default:
-            remote.rightSwitch = SwitchState::UNKNOWN;
-            break;
-    }
-
-    // remaining 12 bytes (based on the DBUS_BUF_LEN variable
-    // being 18) use mouse and keyboard data
-    // 660 is the max value from the remote, so gaining a higher
-    // value would be impractical.
-    // as such, the method returns null, exiting the method.
-    if ((abs(remote.rightHorizontal) > 660) || (abs(remote.rightVertical) > 660) ||
-        (abs(remote.leftHorizontal) > 660) || (abs(remote.leftVertical) > 660))
-    {
-        return;
-    }
+    remote.leftSwitch = static_cast<Remote::SwitchState>((rxBuffer[5] >> 6) & 0x03);
+    remote.rightSwitch = static_cast<Remote::SwitchState>((rxBuffer[5] >> 4) & 0x03);
 
     // mouse input
     remote.mouse.x = rxBuffer[6] | (rxBuffer[7] << 8);    // x axis
@@ -177,8 +123,17 @@ void Remote::parseBuffer()
 
     // keyboard capture
     remote.key = rxBuffer[14] | rxBuffer[15] << 8;
-    // Remote wheel
+    // remote wheel
     remote.wheel = (rxBuffer[16] | rxBuffer[17] << 8) - 1024;
+
+    // the remote joystick and wheel values must be <= abs(660)
+    if ((abs(remote.rightHorizontal) > STICK_MAX_VALUE) ||
+        (abs(remote.rightVertical) > STICK_MAX_VALUE) ||
+        (abs(remote.leftHorizontal) > STICK_MAX_VALUE) ||
+        (abs(remote.leftVertical) > STICK_MAX_VALUE) || (abs(remote.wheel) > STICK_MAX_VALUE))
+    {
+        RAISE_ERROR(drivers, "invalid remote joystick values");
+    }
 
     drivers->commandMapper.handleKeyStateChange(
         remote.key,
@@ -219,8 +174,14 @@ void Remote::reset()
     remote.key = 0;
     remote.wheel = 0;
     clearRxBuffer();
+
+    // Refresh command mapper with all keys deactivated. This prevents bug where
+    // command states enter defaults when remote reconnects even if key/switch
+    // state should do otherwise
+    drivers->commandMapper
+        .handleKeyStateChange(0, SwitchState::UNKNOWN, SwitchState::UNKNOWN, false, false);
 }
 
 uint32_t Remote::getUpdateCounter() const { return remote.updateCounter; }
 
-}  // namespace tap
+}  // namespace tap::communication::serial

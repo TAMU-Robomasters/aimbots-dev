@@ -17,11 +17,13 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ENDIANNESS_WRAPPERS
-#define ENDIANNESS_WRAPPERS
+#ifndef TAPROOT_ENDIANNESS_WRAPPERS_HPP_
+#define TAPROOT_ENDIANNESS_WRAPPERS_HPP_
 
 #include <cstdint>
 #include <cstring>
+
+#include "modm/architecture/detect.hpp"
 
 namespace tap
 {
@@ -33,20 +35,20 @@ namespace arch
  *
  * @tparam T the type to be read.
  * @param[in] data the number to be read.
- * @param[in] dataOut the reference to the array in which the
+ * @param[out] bytesOut the reference to the array in which the
  *      bytes will be stored.
  * @param[in] forward an indication of if the number's bytes
  *      should be read forwards or not.
  */
 template <typename T>
-inline void dataToByteArray(T data, uint8_t *dataOut, bool forward)
+inline void dataToByteArray(T data, uint8_t *bytesOut, bool forward)
 {
     int numBytes = sizeof(T);
     for (int i = 0; i < numBytes; i++)
     {
         int index = forward ? i : numBytes - 1 - i;
         uint8_t byte = (data >> (8 * index)) & 0xff;
-        dataOut[i] = byte;
+        bytesOut[i] = byte;
     }
 }
 
@@ -55,20 +57,20 @@ inline void dataToByteArray(T data, uint8_t *dataOut, bool forward)
  * the given number reference.
  *
  * @tparam T the type to be read.
- * @param[in] data the reference to the number in which the
+ * @param[out] data the reference to the number in which the
  *      byte array's numeric representation will be stored
- * @param[in] dataIn the byte array to be read
+ * @param[in] bytesIn the byte array to be read
  * @param[in] forward an indication of if the byte array should
  *      be read forwards or not
  */
 template <typename T>
-inline void byteArrayToData(T *data, const uint8_t *dataIn, bool forward)
+inline void byteArrayToData(T *data, const uint8_t *bytesIn, bool forward)
 {
     int numBytes = sizeof(T);
     for (int i = 0; i < numBytes; i++)
     {
         int index = forward ? i : numBytes - 1 - i;
-        uint8_t byte = (*(dataIn + index));
+        uint8_t byte = (*(bytesIn + index));
         *(reinterpret_cast<uint8_t *>(data) + i) = byte;
     }
 }
@@ -82,16 +84,16 @@ inline void byteArrayToData(T *data, const uint8_t *dataIn, bool forward)
  *
  * @tparam T the type to be read.
  * @param[in] data the number to be read
- * @param[in] dataOut the reference to the array in which the
+ * @param[out] bytesOut the reference to the array in which the
  *      bytes will be stored
  */
 template <typename T>
-void convertToLittleEndian(T data, uint8_t *dataOut)
+void convertToLittleEndian(T data, uint8_t *bytesOut)
 {
-#ifdef LITTLE_ENDIAN
-    memcpy(dataOut, &data, sizeof(T));
+#if MODM_IS_LITTLE_ENDIAN
+    memcpy(bytesOut, &data, sizeof(T));
 #else
-    dataToByteArray(data, dataOut, false);
+    dataToByteArray(data, bytesOut, false);
 #endif
 }
 
@@ -104,16 +106,16 @@ void convertToLittleEndian(T data, uint8_t *dataOut)
  *
  * @tparam T the type to be read.
  * @param[in] data the number to be read
- * @param[in] dataOut the reference to the array in which the
+ * @param[out] bytesOut the reference to the array in which the
  *      bytes will be stored
  */
 template <typename T>
-void convertToBigEndian(T data, uint8_t *dataOut)
+void convertToBigEndian(T data, uint8_t *bytesOut)
 {
-#ifdef LITTLE_ENDIAN
-    dataToByteArray(data, dataOut, false);
+#if MODM_IS_LITTLE_ENDIAN
+    dataToByteArray(data, bytesOut, false);
 #else
-    memcpy(dataOut, &data, sizeof(T));
+    memcpy(bytesOut, &data, sizeof(T));
 #endif
 }
 
@@ -126,17 +128,17 @@ void convertToBigEndian(T data, uint8_t *dataOut)
  * are read and stored in reverse order.
  *
  * @tparam T the type to be read.
- * @param[in] data the reference to the number in which the
+ * @param[out] data the reference to the number in which the
  *      byte array's numeric representation will be stored
- * @param[in] dataIn the byte array to be read from little endian
+ * @param[in] bytesIn the byte array to be read from little endian
  */
 template <typename T>
-void convertFromLittleEndian(T *data, const uint8_t *dataIn)
+void convertFromLittleEndian(T *data, const uint8_t *bytesIn)
 {
-#ifdef LITTLE_ENDIAN
-    *data = *reinterpret_cast<const T *>(dataIn);
+#if MODM_IS_LITTLE_ENDIAN
+    *data = *reinterpret_cast<const T *>(bytesIn);
 #else
-    byteArrayToData(data, dataIn, false);
+    byteArrayToData(data, bytesIn, false);
 #endif
 }
 
@@ -149,21 +151,32 @@ void convertFromLittleEndian(T *data, const uint8_t *dataIn)
  * are read and stored in reverse order.
  *
  * @tparam T the type to be read.
- * @param[in] data the reference to the number in which the
+ * @param[out] data the reference to the number in which the
  *      byte array's numeric representation will be stored
- * @param[in] dataIn the byte array to be read from big endian
+ * @param[in] bytesIn the byte array to be read from big endian
  */
 template <typename T>
-void convertFromBigEndian(T *data, const uint8_t *dataIn)
+void convertFromBigEndian(T *data, const uint8_t *bytesIn)
 {
-#ifdef LITTLE_ENDIAN
-    byteArrayToData(data, dataIn, false);
+#if MODM_IS_LITTLE_ENDIAN
+    byteArrayToData(data, bytesIn, false);
 #else
-    *data = *reinterpret_cast<const T *>(dataIn);
+    *data = *reinterpret_cast<const T *>(bytesIn);
 #endif
+}
+
+/**
+ * Convert int16_t stored in big endian format in buff to a floating point value.
+ *
+ * @param[in] buff Buffer containing two bytes representing an int16_t in big endian format.
+ * @return A float, the converted int16_t in floating point form.
+ */
+inline float bigEndianInt16ToFloat(const uint8_t *buff)
+{
+    return static_cast<float>(static_cast<int16_t>((*(buff)) | (*(buff + 1) << 8)));
 }
 
 }  // namespace arch
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_ENDIANNESS_WRAPPERS_HPP_

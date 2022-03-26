@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TOGGLE_COMMAND_MAPPING_HPP_
-#define TOGGLE_COMMAND_MAPPING_HPP_
+#ifndef TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
+#define TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
 
 #include "command_mapping.hpp"
 
@@ -32,6 +32,9 @@ class RemoteMapState;
 /**
  * A CommandMapping that adds `Command`s when the contained mapping
  * is toggled, and removes the `Command`s when the mapping is untoggled.
+ *
+ * When all of the commands in the toggle command mapping naturally ends,
+ * the toggle command mapping's internal state is reset to being not toggled.
  */
 class ToggleCommandMapping : public CommandMapping
 {
@@ -66,4 +69,4 @@ private:
 }  // namespace control
 }  // namespace tap
 
-#endif  //  TOGGLE_COMMAND_MAPPING_HPP_
+#endif  // TAPROOT_ TOGGLE_COMMAND_MAPPING_HPP_

@@ -46,8 +46,8 @@
  * error handling is complete.
  */
 
-#ifndef __MOTOR_MANAGER_HPP__
-#define __MOTOR_MANAGER_HPP__
+#ifndef TAPROOT_DJI_MOTOR_TX_HANDLER_HPP_
+#define TAPROOT_DJI_MOTOR_TX_HANDLER_HPP_
 
 #include <limits.h>
 
@@ -107,4 +107,4 @@ private:
 
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_DJI_MOTOR_TX_HANDLER_HPP_

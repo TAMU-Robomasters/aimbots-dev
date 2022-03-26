@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DUMMY_ALLOCATOR_HPP_
-#define DUMMY_ALLOCATOR_HPP_
+#ifndef TAPROOT_DUMMY_ALLOCATOR_HPP_
+#define TAPROOT_DUMMY_ALLOCATOR_HPP_
 
 #include "modm/utils/allocator/allocator_base.hpp"
 
@@ -41,4 +41,4 @@ public:
 }  // namespace display
 }  // namespace tap
 
-#endif  // DUMMY_ALLOCATOR_HPP_
+#endif  // TAPROOT_DUMMY_ALLOCATOR_HPP_

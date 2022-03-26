@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SH1106_HPP
-#define SH1106_HPP
+#ifndef TAPROOT_SH1106_HPP_
+#define TAPROOT_SH1106_HPP_
 
 #include "modm/architecture/driver/atomic/flag.hpp"
 #include "modm/architecture/interface/delay.hpp"
@@ -95,4 +95,4 @@ private:
 #include "sh1106_impl.hpp"
 #endif
 
-#endif  // SH1106_HPP
+#endif  // TAPROOT_SH1106_HPP_

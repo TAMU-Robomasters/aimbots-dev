@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INTERFACES_ANGULAR_POSITIONAL_SUBSYSTEM_HPP_
-#define INTERFACES_ANGULAR_POSITIONAL_SUBSYSTEM_HPP_
+#ifndef TAPROOT_SETPOINT_SUBSYSTEM_HPP_
+#define TAPROOT_SETPOINT_SUBSYSTEM_HPP_
 
 #include "tap/control/subsystem.hpp"
 
@@ -62,6 +62,13 @@ public:
      * @return The current value of the controlled variable.
      */
     virtual float getCurrentValue() const = 0;
+
+    /**
+     * @return the jamming tolerance. This is the maximum distance between
+     *      the ideal setpoint and current value of the controlled variable
+     *      at which the subsystem will never consider itself jammed.
+     */
+    virtual float getJamSetpointTolerance() const = 0;
 
     /**
      * Attempts to calibrate the subsystem at the current position, such that
@@ -108,4 +115,4 @@ public:
 
 }  // namespace tap
 
-#endif  // INTERFACES_ANGULAR_POSITIONAL_SUBSYSTEM_HPP_
+#endif  // TAPROOT_SETPOINT_SUBSYSTEM_HPP_

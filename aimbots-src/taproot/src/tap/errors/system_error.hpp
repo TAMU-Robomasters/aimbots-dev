@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SYSTEM_ERROR_HPP_
-#define SYSTEM_ERROR_HPP_
+#ifndef TAPROOT_SYSTEM_ERROR_HPP_
+#define TAPROOT_SYSTEM_ERROR_HPP_
 
 namespace tap::errors
 {
@@ -49,4 +49,4 @@ private:
 };  // class SystemError
 }  // namespace tap::errors
 
-#endif  // SYSTEM_ERROR_HPP_
+#endif  // TAPROOT_SYSTEM_ERROR_HPP_

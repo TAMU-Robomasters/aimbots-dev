@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DISTANCE_SENSOR_H_
-#define DISTANCE_SENSOR_H_
+#ifndef TAPROOT_DISTANCE_SENSOR_HPP_
+#define TAPROOT_DISTANCE_SENSOR_HPP_
 
 namespace tap
 {
@@ -65,18 +65,15 @@ public:
     float getDistance() const;
 
 protected:
-    /// Distance from sensor
-    float distance;
+    float distance;  ///< Distance from sensor.
 
-    /// Lower boundary for reliable readings
-    float minDistance;
+    float minDistance;  ///< Lower boundary for reliable readings.
 
-    /// Upper boundary for reliable readings
-    float maxDistance;
-};  // class DistanceSensor
+    float maxDistance;  ///< Upper boundary for reliable readings.
+};
 
 }  // namespace sensors
 
 }  // namespace tap
 
-#endif  // DISTANCE_SENSOR_H_
+#endif  // TAPROOT_DISTANCE_SENSOR_HPP_

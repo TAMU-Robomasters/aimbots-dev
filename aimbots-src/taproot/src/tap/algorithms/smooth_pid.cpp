@@ -27,24 +27,59 @@ namespace tap
 {
 namespace algorithms
 {
+SmoothPid::SmoothPid(
+    float kp,
+    float ki,
+    float kd,
+    float maxICumulative,
+    float maxOutput,
+    float tQDerivativeKalman,
+    float tRDerivativeKalman,
+    float tQProportionalKalman,
+    float tRProportionalKalman,
+    float errDeadzone)
+    : config(
+          {kp,
+           ki,
+           kd,
+           maxICumulative,
+           maxOutput,
+           tQDerivativeKalman,
+           tRDerivativeKalman,
+           tQProportionalKalman,
+           tRProportionalKalman,
+           errDeadzone}),
+      proportionalKalman(tQProportionalKalman, tRProportionalKalman),
+      derivativeKalman(tQDerivativeKalman, tRDerivativeKalman)
+{
+}
+
+SmoothPid::SmoothPid(const SmoothPidConfig &pidConfig)
+    : config(pidConfig),
+      proportionalKalman(pidConfig.tQProportionalKalman, pidConfig.tRProportionalKalman),
+      derivativeKalman(pidConfig.tQDerivativeKalman, pidConfig.tRDerivativeKalman)
+{
+}
+
 float SmoothPid::runController(float error, float errorDerivative, float dt)
 {
-    if (abs(error) < errDeadzone)
+    if (abs(error) < config.errDeadzone)
     {
         error = 0.0f;
     }
 
     // p
-    currErrorP = kp * proportionalKalman.filterData(error);
+    currErrorP = config.kp * proportionalKalman.filterData(error);
     // i
     currErrorI = limitVal<float>(
-        currErrorI + ki * proportionalKalman.getLastFiltered() * dt,
-        -maxICumulative,
-        maxICumulative);
+        currErrorI + config.ki * proportionalKalman.getLastFiltered() * dt,
+        -config.maxICumulative,
+        config.maxICumulative);
     // d
-    currErrorD = -kd * derivativeKalman.filterData(errorDerivative);
+    currErrorD = -config.kd * derivativeKalman.filterData(errorDerivative);
     // total
-    output = limitVal<float>(currErrorP + currErrorI + currErrorD, -maxOutput, maxOutput);
+    output =
+        limitVal<float>(currErrorP + currErrorI + currErrorD, -config.maxOutput, config.maxOutput);
     return output;
 }
 

@@ -17,8 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_RX_HANDLER_HPP_
-#define CAN_RX_HANDLER_HPP_
+#ifndef TAPROOT_CAN_RX_HANDLER_HPP_
+#define TAPROOT_CAN_RX_HANDLER_HPP_
+
+#include <cstdint>
 
 #include "tap/util_macros.hpp"
 
@@ -32,8 +34,9 @@ class Message;
 namespace tap
 {
 class Drivers;
+}
 
-namespace can
+namespace tap::can
 {
 class CanRxListener;
 
@@ -58,6 +61,13 @@ class CanRxListener;
  * pollCanData function be called at a very high frequency,
  * so call this in a high frequency thread.
  *
+ * @note The CAN handler can handle 64 CAN ids between [`0x1E4`, `0x224`). In the middle of this
+ *      range, CAN ids [`0x201`, `0x20B`] are used by the `DjiMotor` objects to receive data from
+ *      DJI branded motors. If you would like to define your own protocol, it is recommended to
+ *      avoid avoid using CAN ids in this range.
+ * @note the DjiMotor driver reserves `0x1FF` and `0x200` for commanding motors,
+ *      and thus you should not attach listeners for these ids.
+ *
  * @see `CanRxListener` for information about how to properly create
  *      add a listener to the handler.
  * @see `Can` for modm CAN wrapper functions.
@@ -65,9 +75,27 @@ class CanRxListener;
 class CanRxHandler
 {
 public:
+    static constexpr uint16_t MIN_CAN_ID = 0x1E4;
+    static constexpr uint16_t NUM_CAN_IDS = 64;
+    static constexpr uint16_t MAX_CAN_ID = MIN_CAN_ID + NUM_CAN_IDS;
+
     CanRxHandler(Drivers* drivers);
     mockable ~CanRxHandler() = default;
     DISALLOW_COPY_AND_ASSIGN(CanRxHandler)
+
+    /**
+     * Given a CAN identifier, returns the "normalized" id between [0, NUM_CAN_IDS), or a
+     * value >= NUM_CAN_IDS if the canId is outside the range specified.
+     */
+    static inline uint16_t lookupTableIndexForCanId(uint16_t canId)
+    {
+        if (canId < MIN_CAN_ID)
+        {
+            return NUM_CAN_IDS;
+        }
+
+        return canId - MIN_CAN_ID;
+    }
 
     /**
      * Call this function to add a CanRxListener to the list of CanRxListener's
@@ -81,8 +109,9 @@ public:
      *      something already in the `CanRxHandler`, an error is thrown and
      *      the handler does not add the listener.
      * @see `CanRxListener`
+     *
      * @param[in] listener the listener to be attached ot the handler.
-     * @return true if listener successfully added, false otherwise.
+     * @return `true` if listener successfully added, `false` otherwise.
      */
     mockable void attachReceiveHandler(CanRxListener* const listener);
 
@@ -99,53 +128,50 @@ public:
 
     /**
      * Removes the passed in `CanRxListener` from the `CanRxHandler`. If the
-     * listener isn't in the handler, the
+     * listener isn't in the handler, an error will be added to the `ErrorController`
+     * and the state of the `CanRxHandler` will not change.
+     *
+     * @param[in] rxListener The listener to remove from the handler.
      */
     mockable void removeReceiveHandler(const CanRxListener& rxListener);
 
 private:
-    static const int MAX_RECEIVE_UNIQUE_HEADER_CAN1 = 8;
-    static const int MAX_RECEIVE_UNIQUE_HEADER_CAN2 = 8;
-    static const int LOWEST_RECEIVE_ID = 0x201;
-
     Drivers* drivers;
 
     /**
      * Stores pointers to the `CanRxListeners` for CAN 1, referenced when
      * a new message is received.
      */
-    CanRxListener* messageHandlerStoreCan1[MAX_RECEIVE_UNIQUE_HEADER_CAN1];
+    CanRxListener* messageHandlerStoreCan1[NUM_CAN_IDS];
 
     /**
      * Stores pointers to the `CanRxListeners` for CAN 2, referenced when
      * a new message is received.
      */
-    CanRxListener* messageHandlerStoreCan2[MAX_RECEIVE_UNIQUE_HEADER_CAN2];
+    CanRxListener* messageHandlerStoreCan2[NUM_CAN_IDS];
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 public:
 #endif
 
     void attachReceiveHandler(
-        CanRxListener* const CanRxHndl,
-        CanRxListener** messageHandlerStore,
-        int messageHandlerStoreSize);
+        CanRxListener* const canRxListener,
+        CanRxListener** messageHandlerStore);
 
     void processReceivedCanData(
         const modm::can::Message& rxMessage,
-        CanRxListener* const* messageHandlerStore,
-        int messageHandlerStoreSize);
+        CanRxListener* const* messageHandlerStore);
 
     void removeReceiveHandler(
-        const CanRxListener& listener,
-        CanRxListener** messageHandlerStore,
-        int messageHandlerStoreSize);
+        const CanRxListener& canRxListener,
+        CanRxListener** messageHandlerStore);
 
-    tap::can::CanRxListener** getHandlerStore(tap::can::CanBus bus);
+    inline CanRxListener** getHandlerStore(CanBus bus)
+    {
+        return bus == CanBus::CAN_BUS1 ? messageHandlerStoreCan1 : messageHandlerStoreCan2;
+    }
 };  // class CanRxHandler
 
-}  // namespace can
+}  // namespace tap::can
 
-}  // namespace tap
-
-#endif  // CAN_RX_HANDLER_HPP_
+#endif  // TAPROOT_CAN_RX_HANDLER_HPP_

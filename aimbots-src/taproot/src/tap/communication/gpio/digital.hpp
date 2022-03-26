@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DIGITAL_HPP_
-#define DIGITAL_HPP_
+#ifndef TAPROOT_DIGITAL_HPP_
+#define TAPROOT_DIGITAL_HPP_
 
 #ifndef PLATFORM_HOSTED
 #include "modm/platform.hpp"
@@ -120,4 +120,4 @@ public:
 
 }  // namespace tap
 
-#endif  // DIGITAL_HPP_
+#endif  // TAPROOT_DIGITAL_HPP_

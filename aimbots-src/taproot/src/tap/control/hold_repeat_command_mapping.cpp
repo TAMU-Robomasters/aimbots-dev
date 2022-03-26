@@ -27,26 +27,43 @@ namespace control
 {
 void HoldRepeatCommandMapping::executeCommandMapping(const RemoteMapState &currState)
 {
+    // if mapping subset of the current remote map state and if the neg keys are not used or the neg
+    // keys are not pressed, schedule or reschedule command
+    // see `RemoteMapState` class comment if confused about neg keys
     if (mappingSubset(currState) &&
         !(mapState.getNegKeysUsed() && negKeysSubset(mapState, currState)))
     {
-        for (Command *cmd : mappedCommands)
+        for (std::size_t i = 0; i < mappedCommands.size(); i++)
         {
+            Command *cmd = mappedCommands[i];
             if (!drivers->commandScheduler.isCommandScheduled(cmd))
             {
-                drivers->commandScheduler.addCommand(cmd);
+                if (okToScheduleCommand(i))
+                {
+                    drivers->commandScheduler.addCommand(cmd);
+                    incrementRescheduleCount(i);
+                }
             }
         }
-        commandsScheduled = true;
+        held = true;
     }
     else
     {
-        // While Commands may not be scheduled this prevents the unnecessary call of the
-        // removeCommand function from the scheduler.
-        if (commandsScheduled)
+        // remove commands if the commands were previously scheduled and we actually want to end
+        // commands when not held
+        if (held)
         {
-            removeCommands();
-            commandsScheduled = false;
+            held = false;
+
+            if (endCommandsWhenNotHeld)
+            {
+                removeCommands();
+            }
+
+            for (std::size_t i = 0; i < rescheduleCounts.size(); i++)
+            {
+                rescheduleCounts[i] = 0;
+            }
         }
     }
 }

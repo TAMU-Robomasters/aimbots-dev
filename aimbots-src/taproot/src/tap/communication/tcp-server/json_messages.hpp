@@ -17,9 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef TAPROOT_JSON_MESSAGES_HPP_
+#define TAPROOT_JSON_MESSAGES_HPP_
+
 #ifdef PLATFORM_HOSTED
-#ifndef JSONMESSAGES_HPP_
-#define JSONMESSAGES_HPP_
 
 #include <string>
 
@@ -51,6 +52,6 @@ std::string makeMotorMessage(const tap::motor::DjiMotor& motor);
 
 }  // namespace tap
 
-#endif  // JSONMESSAGES_HPP_
-
 #endif  // PLATFORM_HOSTED
+
+#endif  // TAPROOT_JSON_MESSAGES_HPP_

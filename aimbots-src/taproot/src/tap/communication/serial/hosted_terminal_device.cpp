@@ -24,11 +24,7 @@
 #include <iostream>
 #include <thread>
 
-namespace tap
-{
-namespace communication
-{
-namespace serial
+namespace tap::communication::serial
 {
 HostedTerminalDevice::HostedTerminalDevice(Drivers *drivers)
     : drivers(drivers),
@@ -76,8 +72,6 @@ bool HostedTerminalDevice::read(char &c)
 void HostedTerminalDevice::write(char c) { ::std::cout << c; }
 
 void HostedTerminalDevice::flush() { ::std::cout.flush(); }
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial
 
 #endif

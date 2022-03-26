@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_RX_LISTENER_MOCK_HPP_
-#define CAN_RX_LISTENER_MOCK_HPP_
+#ifndef TAPROOT_CAN_RX_LISTENER_MOCK_HPP_
+#define TAPROOT_CAN_RX_LISTENER_MOCK_HPP_
 
 #include <iostream>
 
@@ -36,7 +36,7 @@ class CanRxListenerMock : public tap::can::CanRxListener
 {
 public:
     CanRxListenerMock(tap::Drivers* drivers, uint32_t id, tap::can::CanBus bus);
-    ~CanRxListenerMock();
+    virtual ~CanRxListenerMock();
 
     MOCK_METHOD(void, processMessage, (const modm::can::Message& message), (override));
 
@@ -44,4 +44,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  //  CAN_RX_LISTENER_MOCK_HPP_
+#endif  //  TAPROOT_CAN_RX_LISTENER_MOCK_HPP_

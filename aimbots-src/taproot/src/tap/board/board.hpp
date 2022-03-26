@@ -30,8 +30,8 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef BOARD_HPP_
-#define BOARD_HPP_
+#ifndef TAPROOT_BOARD_HPP_
+#define TAPROOT_BOARD_HPP_
 
 #ifndef PLATFORM_HOSTED
 #include "modm/architecture/interface/clock.hpp"
@@ -120,10 +120,6 @@ struct SystemClock
 };
 
 #ifndef PLATFORM_HOSTED
-
-// initialize a button built into mcb
-
-using Button = GpioInputB2;
 
 // initialize 9 green Leds and 1 red LED
 // leds 1-8 used for error handling codes
@@ -214,11 +210,9 @@ inline void initialize()
     SysTickTimer::initialize<SystemClock>();
     // init 24V output
     PowerOuts::setOutput(modm::Gpio::High);
-    // init button on board
-    Button::setInput();
 #endif
 }
 
 }  // namespace Board
 
-#endif  // BOARD_HPP_
+#endif  // TAPROOT_BOARD_HPP_

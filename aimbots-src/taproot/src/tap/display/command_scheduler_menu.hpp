@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_SCHEDULER_MENU_HPP_
-#define COMMAND_SCHEDULER_MENU_HPP_
+#ifndef TAPROOT_COMMAND_SCHEDULER_MENU_HPP_
+#define TAPROOT_COMMAND_SCHEDULER_MENU_HPP_
 
 #include "tap/architecture/periodic_timer.hpp"
 #include "tap/control/command_scheduler_types.hpp"
@@ -71,4 +71,4 @@ private:
 }  // namespace display
 }  // namespace tap
 
-#endif  // COMMAND_SCHEDULER_MENU_HPP_
+#endif  // TAPROOT_COMMAND_SCHEDULER_MENU_HPP_
