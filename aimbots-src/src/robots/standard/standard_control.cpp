@@ -50,15 +50,15 @@ src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
 src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
+HoldCommandMapping leftSwitchUp(  //you MUST map commands to run them at all (we think)
     drivers(),
-    {&chassisDriveCommand,&shooterCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-    
+    {&chassisDriveCommand, &shooterCommand},
+    RemoteMapState(tap::communication::serial::Remote::Switch::LEFT_SWITCH, tap::communication::serial::Remote::SwitchState::UP));
+
 HoldCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    RemoteMapState(tap::communication::serial::Remote::Switch::RIGHT_SWITCH, tap::communication::serial::Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -100,14 +100,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
-#endif //TARGET_STANDARD
+#endif  //TARGET_STANDARD
