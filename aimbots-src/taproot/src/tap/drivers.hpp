@@ -62,16 +62,14 @@
 #include "tap/control/command_scheduler.hpp"
 #endif
 
-namespace tap
-{
-class Drivers
-{
+namespace tap {
+class Drivers {
     friend class DriversSingleton;
 
 #ifdef ENV_UNIT_TESTS
-public:
+   public:
 #else
-protected:
+   protected:
 #endif
     Drivers()
         : profiler(this),
@@ -97,7 +95,8 @@ protected:
 #else
           commandScheduler(this, true)
 #endif
-          {}
+    {
+    }
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
     arch::Profiler profiler;
@@ -120,7 +119,7 @@ protected:
     testing::NiceMock<mock::Mpu6500TerminalSerialHandlerMock> mpu6500TerminalSerialHandler;
     testing::NiceMock<mock::CommandSchedulerMock> commandScheduler;
 #else
-public:
+   public:
     arch::Profiler profiler;
     gpio::Analog analog;
     can::Can can;

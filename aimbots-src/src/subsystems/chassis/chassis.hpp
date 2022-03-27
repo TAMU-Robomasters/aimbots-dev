@@ -22,11 +22,37 @@ namespace src::Chassis {
         ChassisSubsystem(  // Default chassis constructor
             tap::Drivers* drivers);
 
+        /**
+         * Allows user to call a DJIMotor member function on all chassis motors
+         *
+         * @param function pointer to a member function of DJIMotor
+         * @param args arguments to pass to the member function
+         */
         template <class... Args>
-        void ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args);
+        void ChassisSubsystem::ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
+            for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+                (motors[i][0]->*func)(args...);
+#ifdef SWERVE
+                (motors[i][1]->*func)(args...);
+#endif
+            }
+        }
 
+        /**
+         * Allows user to call a ShooterSubsystem function on all shooter motors.
+         *
+         * @param function pointer to a member function of ShooterSubsystem that takes a MotorIndex as it's first argument
+         * @param args arguments to pass to the member function
+         */
         template <class... Args>
-        void ForAllChassisMotors(void (ChassisSubsystem::*func)(int, int, Args...), Args... args);
+        void ChassisSubsystem::ForAllChassisMotors(void (ChassisSubsystem::*func)(int, int, Args...), Args... args) {
+            for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+                (this->*func)(i, 0, args...);
+#ifdef SWERVE
+                (this->*func)(i, 1, args...);
+#endif
+            }
+        }
 
         mockable void initialize() override;
         void refresh() override;
