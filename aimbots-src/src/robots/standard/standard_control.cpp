@@ -78,7 +78,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     // no default commands should be set
-    //shooter.setDefaultCommand(&shooterDefaultCommand);
+    // shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup

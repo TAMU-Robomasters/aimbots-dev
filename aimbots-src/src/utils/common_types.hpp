@@ -1,10 +1,11 @@
 #pragma once
 
 #include <modm/math/filter/pid.hpp>
-#include <tap/algorithms/smooth_pid.hpp>
+#include <tap/architecture/clock.hpp>
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/control/command.hpp>
-#include <tap/architecture/clock.hpp>
+
+#include "pid/smooth_pid_wrap.hpp"
 
 // #include <bit_cast>
 
@@ -22,7 +23,7 @@ using DJIMotor = tap::motor::DjiMotor;
 #include "tap/control/chassis/power_limiter.hpp"
 
 using StockPID = modm::Pid<float>;
-using SmoothPID = tap::algorithms::SmoothPid;
+using SmoothPID = src::utils::SmoothPIDWrapper;
 
 using CANBus = tap::can::CanBus;
 
