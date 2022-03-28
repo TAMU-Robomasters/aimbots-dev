@@ -6,6 +6,7 @@
 #include <tap/control/command.hpp>
 
 #include "pid/smooth_pid_wrap.hpp"
+#include "tap/communication/serial/remote.hpp"
 
 // #include <bit_cast>
 
@@ -34,8 +35,9 @@ using MotorID = tap::motor::MotorId;
 
 using TapCommand = tap::control::Command;
 
-// using clock = tap::arch::clock;
+using Remote = tap::communication::serial::Remote;
 
+// using clock = tap::arch::clock;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 

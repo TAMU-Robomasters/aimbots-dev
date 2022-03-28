@@ -34,7 +34,7 @@ class Drivers : public tap::Drivers {
                 controlOperatorInterface(this) {}
 
    public:
-    control::OperatorInterface controlOperatorInterface;
+    Control::OperatorInterface controlOperatorInterface;
 };  // class Drivers
 
 }  // namespace src

@@ -6,7 +6,7 @@
 
 using namespace tap::algorithms;
 
-namespace src::control {
+namespace src::Control {
 
 class OperatorInterface {
    private:
@@ -33,4 +33,4 @@ class OperatorInterface {
     mockable float getGimbalPitchInput();
 };
 
-}  // namespace src::control
+}  // namespace src::Control
