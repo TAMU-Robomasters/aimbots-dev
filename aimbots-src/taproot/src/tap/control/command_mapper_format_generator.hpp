@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMAND_MAPPER_FORMAT_GENERATOR_HPP_
-#define COMMAND_MAPPER_FORMAT_GENERATOR_HPP_
+#ifndef TAPROOT_COMMAND_MAPPER_FORMAT_GENERATOR_HPP_
+#define TAPROOT_COMMAND_MAPPER_FORMAT_GENERATOR_HPP_
 
 #include <string>
 #include <string_view>
@@ -57,10 +57,11 @@ private:
 
     const std::string formattedRemoteMapState(const RemoteMapState &ms) const;
     const std::string formattedMappedCommands(const std::vector<Command *> mc) const;
-    constexpr std::string_view switchStateToString(Remote::SwitchState state) const;
+    constexpr std::string_view switchStateToString(
+        tap::communication::serial::Remote::SwitchState state) const;
     const std::string keyMapToString(uint16_t keys) const;
 };  // class CommandMapperFormatGenerator
 }  // namespace control
 }  // namespace tap
 
-#endif  // COMMAND_MAPPER_FORMAT_GENERATOR_HPP_
+#endif  // TAPROOT_COMMAND_MAPPER_FORMAT_GENERATOR_HPP_

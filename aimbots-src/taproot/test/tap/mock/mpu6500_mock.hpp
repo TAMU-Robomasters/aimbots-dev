@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MPU6500_MOCK_HPP_
-#define MPU6500_MOCK_HPP_
+#ifndef TAPROOT_MPU6500_MOCK_HPP_
+#define TAPROOT_MPU6500_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -53,4 +53,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  //  MPU6500_MOCK_HPP_
+#endif  //  TAPROOT_MPU6500_MOCK_HPP_

@@ -9,72 +9,48 @@ using namespace tap::algorithms;
 
 namespace src::Chassis {
 
-// Allows user to call a DJIMotor member function on all chassis motors
-template <class... Args>
-void ChassisSubsystem::ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
-    for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-        (motors[i][0]->*func)(args...);
-#ifdef SWERVE
-        (motors[i][1]->*func)(args...);
-#endif
-    }
-}
-
-// Allows user to call function for all chassis motors that takes the wheel index, wheel_per_motor index, and any arguments
-// For a non-DJIMotor member function to be usable by ForAllChassisMotors, it must take two integers as arguments so it can identify the wheel and motor
-template <class... Args>
-void ChassisSubsystem::ForAllChassisMotors(void (ChassisSubsystem::*func)(int, int, Args...), Args... args) {
-    for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-        (this->*func)(i, 0, args...);
-#ifdef SWERVE
-        (this->*func)(i, 1, args...);
-#endif
-    }
-}
-
 ChassisSubsystem::ChassisSubsystem(
-    tap::Drivers* drivers)
-    : ChassisSubsystemInterface(drivers),
+    tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
 #ifdef TARGET_SENTRY
-      railWheel(drivers, RAIL_WHEEL_ID, CHAS_BUS, false, "Rail Motor"),
+                             railWheel(drivers, RAIL_WHEEL_ID, CHAS_BUS, false, "Rail Motor"),
 #else
-      leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHAS_BUS, false, "Left Back Wheel Motor"),
-      leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
-      rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHAS_BUS, false, "Right Front Wheel Motor"),
-      rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHAS_BUS, false, "Right Back Wheel Motor"),
+                             leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHAS_BUS, false, "Left Back Wheel Motor"),
+                             leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
+                             rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHAS_BUS, false, "Right Front Wheel Motor"),
+                             rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHAS_BUS, false, "Right Back Wheel Motor"),
 
-      leftBackWheelVelPID(VELOCITY_PID_KP,
-                          VELOCITY_PID_KI,
-                          VELOCITY_PID_KD,
-                          VELOCITY_PID_MAX_ERROR_SUM,
-                          VELOCITY_PID_MAX_OUTPUT),
-      leftFrontWheelVelPID(VELOCITY_PID_KP,
-                           VELOCITY_PID_KI,
-                           VELOCITY_PID_KD,
-                           VELOCITY_PID_MAX_ERROR_SUM,
-                           VELOCITY_PID_MAX_OUTPUT),
-      rightFrontWheelVelPID(VELOCITY_PID_KP,
-                            VELOCITY_PID_KI,
-                            VELOCITY_PID_KD,
-                            VELOCITY_PID_MAX_ERROR_SUM,
-                            VELOCITY_PID_MAX_OUTPUT),
-      rightBackWheelVelPID(VELOCITY_PID_KP,
-                           VELOCITY_PID_KI,
-                           VELOCITY_PID_KD,
-                           VELOCITY_PID_MAX_ERROR_SUM,
-                           VELOCITY_PID_MAX_OUTPUT),
+                             leftBackWheelVelPID(VELOCITY_PID_KP,
+                                                 VELOCITY_PID_KI,
+                                                 VELOCITY_PID_KD,
+                                                 VELOCITY_PID_MAX_ERROR_SUM,
+                                                 VELOCITY_PID_MAX_OUTPUT),
+                             leftFrontWheelVelPID(VELOCITY_PID_KP,
+                                                  VELOCITY_PID_KI,
+                                                  VELOCITY_PID_KD,
+                                                  VELOCITY_PID_MAX_ERROR_SUM,
+                                                  VELOCITY_PID_MAX_OUTPUT),
+                             rightFrontWheelVelPID(VELOCITY_PID_KP,
+                                                   VELOCITY_PID_KI,
+                                                   VELOCITY_PID_KD,
+                                                   VELOCITY_PID_MAX_ERROR_SUM,
+                                                   VELOCITY_PID_MAX_OUTPUT),
+                             rightBackWheelVelPID(VELOCITY_PID_KP,
+                                                  VELOCITY_PID_KI,
+                                                  VELOCITY_PID_KD,
+                                                  VELOCITY_PID_MAX_ERROR_SUM,
+                                                  VELOCITY_PID_MAX_OUTPUT),
 
 #ifdef SWERVE
-      leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHAS_BUS, false, "Left Back Yaw Motor"),
-      leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHAS_BUS, false, "Left Front Yaw Motor"),
-      rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHAS_BUS, false, "Right Front Yaw Motor"),
-      rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHAS_BUS, false, "Right Back Yaw Motor"),
+                             leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHAS_BUS, false, "Left Back Yaw Motor"),
+                             leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHAS_BUS, false, "Left Front Yaw Motor"),
+                             rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHAS_BUS, false, "Right Front Yaw Motor"),
+                             rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHAS_BUS, false, "Right Back Yaw Motor"),
 #endif
 #endif
-      targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-      motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-      velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-      wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
+                             targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
 //
 {
 #ifdef TARGET_SENTRY
@@ -130,11 +106,11 @@ void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 }
 
-void ChassisSubsystem::updateMotorVelocityPID(int WheelIdx, int motorPerWheelIdx) {
-    float err = targetRPMs[WheelIdx][motorPerWheelIdx] - motors[WheelIdx][motorPerWheelIdx]->getShaftRPM();
-    velocityPIDs[WheelIdx][motorPerWheelIdx]->update(err);
+void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
+    float err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
+    velocityPIDs[WheelIdx][MotorPerWheelIdx]->update(err);
 
-    motors[WheelIdx][motorPerWheelIdx]->setDesiredOutput(velocityPIDs[WheelIdx][motorPerWheelIdx]->getValue());
+    motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(velocityPIDs[WheelIdx][MotorPerWheelIdx]->getValue());
 }
 
 void ChassisSubsystem::setDesiredOutputs(float x, float y, float r) {

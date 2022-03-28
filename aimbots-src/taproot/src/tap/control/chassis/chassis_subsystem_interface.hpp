@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CHASSIS_SUBSYSTEM_INTERFACE_
-#define CHASSIS_SUBSYSTEM_INTERFACE_
+#ifndef TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
+#define TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
 
 #include "tap/motor/dji_motor.hpp"
 
@@ -26,6 +26,9 @@
 
 namespace tap::control::chassis
 {
+/**
+ * @brief Abstract interface for a robot chassis.
+ */
 class ChassisSubsystemInterface : public Subsystem
 {
 public:
@@ -40,7 +43,12 @@ public:
     virtual inline int16_t getLeftBackRpmActual() const = 0;
     virtual inline int16_t getRightFrontRpmActual() const = 0;
     virtual inline int16_t getRightBackRpmActual() const = 0;
+
+    /**
+     * @return `true` iff all motors are online
+     */
+    virtual inline bool allMotorsOnline() const = 0;
 };
 }  // namespace tap::control::chassis
 
-#endif  // CHASSIS_SUBSYSTEM_INTERFACE_
+#endif  // TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_

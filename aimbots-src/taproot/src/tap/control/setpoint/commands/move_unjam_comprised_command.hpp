@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AGITATOR_SHOOT_COMPRISED_COMMAND_HPP_
-#define AGITATOR_SHOOT_COMPRISED_COMMAND_HPP_
+#ifndef TAPROOT_MOVE_UNJAM_COMPRISED_COMMAND_HPP_
+#define TAPROOT_MOVE_UNJAM_COMPRISED_COMMAND_HPP_
 
 #include "tap/control/comprised_command.hpp"
 
@@ -109,4 +109,4 @@ protected:
 
 }  // namespace tap
 
-#endif  // AGITATOR_SHOOT_COMPRISED_COMMAND_HPP_
+#endif  // TAPROOT_MOVE_UNJAM_COMPRISED_COMMAND_HPP_

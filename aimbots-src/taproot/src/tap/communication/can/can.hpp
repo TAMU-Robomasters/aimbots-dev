@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_HPP_
-#define CAN_HPP_
+#ifndef TAPROOT_CAN_HPP_
+#define TAPROOT_CAN_HPP_
 
 #include "tap/util_macros.hpp"
 
@@ -104,4 +104,4 @@ public:
 }  // namespace can
 }  // namespace tap
 
-#endif  // CAN_HPP_
+#endif  // TAPROOT_CAN_HPP_

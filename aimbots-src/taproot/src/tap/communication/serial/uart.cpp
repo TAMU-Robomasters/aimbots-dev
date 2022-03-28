@@ -24,9 +24,7 @@
 
 using namespace Board;
 
-namespace tap
-{
-namespace serial
+namespace tap::communication::serial
 {
 bool Uart::read(UartPort port, uint8_t *data)
 {
@@ -221,6 +219,4 @@ void Uart::flushWriteBuffer(UartPort port)
 #endif
 }
 
-}  // namespace serial
-
-}  // namespace tap
+}  // namespace tap::communication::serial

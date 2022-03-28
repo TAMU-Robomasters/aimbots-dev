@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef __serial_h_
-#define __serial_h_
+#ifndef TAPROOT_DJI_SERIAL_HPP_
+#define TAPROOT_DJI_SERIAL_HPP_
 
 #include <cstdint>
 
@@ -29,7 +29,9 @@
 namespace tap
 {
 class Drivers;
-namespace serial
+}
+
+namespace tap::communication::serial
 {
 /**
  * A serial handler that implements a specific protocol to be used for
@@ -72,32 +74,60 @@ namespace serial
  */
 class DJISerial
 {
-private:
-    static const uint16_t SERIAL_RX_BUFF_SIZE = 256;
-    static const uint16_t SERIAL_TX_BUFF_SIZE = 256;
-    static const uint16_t SERIAL_HEAD_BYTE = 0xA5;
-    static const uint8_t FRAME_DATA_LENGTH_OFFSET = 1;
-    static const uint8_t FRAME_SEQUENCENUM_OFFSET = 3;
-    static const uint8_t FRAME_CRC8_OFFSET = 4;
-    static const uint8_t FRAME_HEADER_LENGTH = 7;
-    static const uint8_t FRAME_TYPE_OFFSET = 5;
-    static const uint8_t FRAME_CRC16_LENGTH = 2;
-    static constexpr uint16_t SERIAL_RX_FRAME_HEADER_AND_BUF_SIZE =
-        SERIAL_RX_BUFF_SIZE + FRAME_HEADER_LENGTH;
-
 public:
     /**
-     * A container for storing TX and RX messages.
+     * The serial message's frame header.
      */
+    struct FrameHeader
+    {
+        uint8_t headByte;
+        uint16_t dataLength;
+        uint8_t seq;
+        uint8_t CRC8;
+    } modm_packed;
+
+    /**
+     * A container for storing and sending message over serial.
+     */
+    template <int DATA_SIZE>
     struct SerialMessage
     {
-        uint8_t headByte;  /// Use `SERIAL_HEAD_BYTE`.
-        uint16_t length;   /// Must be less than SERIAL_RX_BUFF_SIZE or SERIAL_TX_BUFF_SIZE.
-        uint16_t type;     /// The type is specified and interpreted by a derived class.
-        uint8_t data[SERIAL_RX_BUFF_SIZE];
-        uint32_t messageTimestamp;  /// The timestamp is in milliseconds.
-        uint8_t sequenceNumber;     /// A derived class may increment this for debugging purposes.
-    };
+        /**
+         * Constructs a SerialMessage. In doing so this constructor configures the message header.
+         *
+         * @param[in] seq Message sequence number, an optional parameter.
+         */
+        explicit SerialMessage(uint8_t seq = 0)
+        {
+            header.headByte = 0xa5;
+            header.dataLength = sizeof(data);
+            header.seq = seq;
+            header.CRC8 = tap::algorithms::calculateCRC8(
+                reinterpret_cast<uint8_t *>(&header),
+                sizeof(header) - 1);
+        }
+
+        /**
+         * Sets the CRC16 value in the struct. This should be called after writing data to the
+         * message struct.
+         */
+        void setCRC16()
+        {
+            CRC16 = tap::algorithms::calculateCRC16(
+                reinterpret_cast<uint8_t *>(this),
+                sizeof(*this) - 2);
+        }
+
+        FrameHeader header;
+        uint16_t messageType;
+        uint8_t data[DATA_SIZE];
+        uint16_t CRC16;
+    } modm_packed;
+
+    static const uint16_t SERIAL_RX_BUFF_SIZE = 256;
+    static const uint16_t SERIAL_HEAD_BYTE = 0xA5;
+
+    using ReceivedSerialMessage = SerialMessage<SERIAL_RX_BUFF_SIZE>;
 
     /**
      * Construct a Serial object.
@@ -137,11 +167,9 @@ public:
      * @param[in] completeMessage a reference to the full message that has
      *      just been received by this class.
      */
-    virtual void messageReceiveCallback(const SerialMessage &completeMessage) = 0;
+    virtual void messageReceiveCallback(const ReceivedSerialMessage &completeMessage) = 0;
 
 private:
-    // RX related information.
-
     enum SerialRxState
     {
         SERIAL_HEADER_SEARCH,  /// A header byte has not yet been received.
@@ -156,36 +184,19 @@ private:
     SerialRxState djiSerialRxState;
 
     /// Message in middle of being constructed.
-    SerialMessage newMessage;
+    ReceivedSerialMessage newMessage;
 
     /// Most recent complete message.
-    SerialMessage mostRecentMessage;
+    ReceivedSerialMessage mostRecentMessage;
+
     /**
-     * The current zero indexed byte that is being read from the `Uart` class.
-     * Reset after the header is read (so increments from 0 to the header length
-     * then reset to 0 and increments again from 0 to the message length, or
-     * message length + 2 if crc enforcement is enabled).
+     * The current zero indexed byte that is being read from the `Uart` class. An absolute index
+     * into the `newMessage` object. `newMessage` reinterpreted as a uint8_t array and elements read
+     * from serial are placed into the message.
      */
     uint16_t frameCurrReadByte;
-    /**
-     * Stores the incoming header. After the frame is received, it is transferred to
-     * `newMessage`.
-     */
-    uint8_t frameHeader[FRAME_HEADER_LENGTH];
 
     bool rxCrcEnabled;
-
-    /**
-     * Currently calculated crc16 value. The crc16 is computed it two parts - the header and
-     * the main body. Between receiving the header and the body, we store the intermediate
-     * crc value here.
-     */
-    uint16_t currCrc16 = 0;
-
-    // TX related information.
-
-    /// TX buffer.
-    uint8_t txBuffer[SERIAL_TX_BUFF_SIZE];
 
     /**
      * Calculate CRC8 of given array and compare against expectedCRC8.
@@ -202,24 +213,8 @@ private:
 
 protected:
     Drivers *drivers;
-
-    /**
-     * Subclasses can access the message that this class sends as to allow
-     * for modification.
-     */
-    SerialMessage txMessage;
-
-    /**
-     * Send a Message. This constructs a message from the `txMessage`,
-     * which is protected and should be manipulated by a derived class.
-     *
-     * @return true if succeed, false if failed.
-     */
-    bool send();
 };
 
-}  // namespace serial
+}  // namespace tap::communication::serial
 
-}  // namespace tap
-
-#endif
+#endif  // TAPROOT_DJI_SERIAL_HPP_

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LEDS_HPP_
-#define LEDS_HPP_
+#ifndef TAPROOT_LEDS_HPP_
+#define TAPROOT_LEDS_HPP_
 
 #include <cstdint>
 
@@ -83,4 +83,4 @@ public:
 
 }  // namespace tap
 
-#endif  // LEDS_HPP_
+#endif  // TAPROOT_LEDS_HPP_

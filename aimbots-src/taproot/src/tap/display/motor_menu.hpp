@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MOTOR_MENU_HPP_
-#define MOTOR_MENU_HPP_
+#ifndef TAPROOT_MOTOR_MENU_HPP_
+#define TAPROOT_MOTOR_MENU_HPP_
 
 #include "tap/communication/can/can_bus.hpp"
 
@@ -69,4 +69,5 @@ private:
 };
 }  // namespace display
 }  // namespace tap
-#endif  // MOTOR_MENU_HPP_
+
+#endif  // TAPROOT_MOTOR_MENU_HPP_

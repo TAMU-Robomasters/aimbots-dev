@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TIMEOUT_HPP
-#define TIMEOUT_HPP
+#ifndef TAPROOT_TIMEOUT_HPP_
+#define TAPROOT_TIMEOUT_HPP_
 
 #include <cstdint>
 
@@ -114,4 +114,4 @@ using MilliTimeout = Timeout<tap::arch::clock::getTimeMilliseconds>;
 }  // namespace arch
 }  // namespace tap
 
-#endif
+#endif  // TAPROOT_TIMEOUT_HPP_

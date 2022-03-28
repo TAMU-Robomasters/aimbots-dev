@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CAN_RX_HANDLER_HPP_
-#define CAN_RX_HANDLER_HPP_
+#ifndef TAPROOT_CAN_RX_HANDLER_HPP_
+#define TAPROOT_CAN_RX_HANDLER_HPP_
 
 #include <cstdint>
 
@@ -174,4 +174,4 @@ public:
 
 }  // namespace tap::can
 
-#endif  // CAN_RX_HANDLER_HPP_
+#endif  // TAPROOT_CAN_RX_HANDLER_HPP_

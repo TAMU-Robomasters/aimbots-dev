@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_
-#define SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_
+#ifndef TAPROOT_SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_
+#define TAPROOT_SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -41,4 +41,4 @@ public:
 }  // namespace mock
 }  // namespace tap
 
-#endif  //  SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_
+#endif  // TAPROOT_SCHEDULER_TERMINAL_HANDLER_MOCK_HPP_

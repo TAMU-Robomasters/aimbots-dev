@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TURRET_SUBSYSTEM_INTERFACE_
-#define TURRET_SUBSYSTEM_INTERFACE_
+#ifndef TAPROOT_TURRET_SUBSYSTEM_INTERFACE_HPP_
+#define TAPROOT_TURRET_SUBSYSTEM_INTERFACE_HPP_
 
 #include "tap/algorithms/contiguous_float.hpp"
 
@@ -106,4 +106,4 @@ public:
 };
 }  // namespace tap::control::turret
 
-#endif  // TURRET_SUBSYSTEM_INTERFACE_
+#endif  // TAPROOT_TURRET_SUBSYSTEM_INTERFACE_HPP_

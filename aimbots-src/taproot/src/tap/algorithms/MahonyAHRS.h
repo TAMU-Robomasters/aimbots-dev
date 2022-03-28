@@ -41,7 +41,26 @@ private:
 
 public:
     Mahony();
-    void begin(float sampleFrequency) { invSampleFreq = 1.0f / sampleFrequency; }
+    void begin(float sampleFrequency, float kp, float ki)
+    {
+        invSampleFreq = 1.0f / sampleFrequency;
+        twoKp = 2.0f * kp;
+        twoKi = 2.0f * ki;
+    }
+    void reset()
+    {
+        q0 = 1.0f;
+        q1 = 0.0f;
+        q2 = 0.0f;
+        q3 = 0.0f;
+        integralFBx = 0.0f;
+        integralFBy = 0.0f;
+        integralFBz = 0.0f;
+        anglesComputed = 0;
+        roll = 0.0f;
+        pitch = 0.0f;
+        yaw = 0.0f;
+    }
     void update(
         float gx,
         float gy,

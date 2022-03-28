@@ -26,6 +26,7 @@
 #include "remote_map_state.hpp"
 
 using namespace tap::errors;
+using namespace tap::communication::serial;
 
 namespace tap
 {

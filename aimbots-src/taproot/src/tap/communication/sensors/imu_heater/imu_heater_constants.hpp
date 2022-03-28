@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef IMU_HEATER_CONSTANTS_HPP_
-#define IMU_HEATER_CONSTANTS_HPP_
+#ifndef TAPROOT_IMU_HEATER_CONSTANTS_HPP_
+#define TAPROOT_IMU_HEATER_CONSTANTS_HPP_
 
 #include "tap/communication/gpio/pwm.hpp"
 
@@ -27,4 +27,4 @@ namespace tap::sensors::bound_ports
     static constexpr tap::gpio::Pwm::Timer IMU_HEATER_TIMER = tap::gpio::Pwm::Timer::TIMER3;
 }  // tap::sensors
 
-#endif  // IMU_HEATER_CONSTANTS_HPP_
+#endif  // TAPROOT_IMU_HEATER_CONSTANTS_HPP_

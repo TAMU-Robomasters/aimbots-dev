@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MOTOR_CONSTANTS_HPP_
-#define MOTOR_CONSTANTS_HPP_
+#ifndef TAPROOT_MOTOR_CONSTANTS_HPP_
+#define TAPROOT_MOTOR_CONSTANTS_HPP_
 
 namespace tap::motor
 {
@@ -40,4 +40,4 @@ public:
 };
 }  // namespace tap::motor
 
-#endif  // MOTOR_CONSTANTS_HPP_
+#endif  // TAPROOT_MOTOR_CONSTANTS_HPP_

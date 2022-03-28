@@ -22,7 +22,7 @@
 namespace tap::mock
 {
 RobotToRobotMessageHandlerMock::RobotToRobotMessageHandlerMock()
-    : tap::serial::RefSerial::RobotToRobotMessageHandler()
+    : tap::communication::serial::RefSerial::RobotToRobotMessageHandler()
 {
 }
 }  // namespace tap::mock

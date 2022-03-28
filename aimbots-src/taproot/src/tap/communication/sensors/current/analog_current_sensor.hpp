@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ANALOG_CURRENT_SENSOR_HPP_
-#define ANALOG_CURRENT_SENSOR_HPP_
+#ifndef TAPROOT_ANALOG_CURRENT_SENSOR_HPP_
+#define TAPROOT_ANALOG_CURRENT_SENSOR_HPP_
 
 #include "tap/communication/gpio/analog.hpp"
 
@@ -74,4 +74,4 @@ private:
 
 }  // namespace tap::communication::sensors::current
 
-#endif  // ANALOG_CURRENT_SENSOR_HPP_
+#endif  // TAPROOT_ANALOG_CURRENT_SENSOR_HPP_

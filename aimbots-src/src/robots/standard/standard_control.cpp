@@ -60,7 +60,7 @@ ShooterCommand shooterCommand(drivers(), &shooter);
 ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp( //you MUST map commands to run them at all (we think)
+HoldCommandMapping leftSwitchUp(  //you MUST map commands to run them at all (we think)
     drivers(),
     {&chassisDriveCommand,&gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -88,7 +88,9 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-	feeder.setDefaultCommand(&stopFeederCommand);
+    feeder.setDefaultCommand(&stopFeederCommand);
+    // no default commands should be set
+    // shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -103,16 +105,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
-
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
-#endif //TARGET_STANDARD
+#endif  //TARGET_STANDARD

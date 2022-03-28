@@ -21,6 +21,6 @@
 
 namespace tap::mock
 {
-RefSerialMock::RefSerialMock(Drivers *drivers) : serial::RefSerial(drivers) {}
+RefSerialMock::RefSerialMock(Drivers *drivers) : tap::communication::serial::RefSerial(drivers) {}
 RefSerialMock::~RefSerialMock() {}
 }  // namespace tap::mock

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef BUZZER_HPP_
-#define BUZZER_HPP_
+#ifndef TAPROOT_BUZZER_HPP_
+#define TAPROOT_BUZZER_HPP_
 
 #include <cstdint>
 
@@ -48,4 +48,4 @@ void silenceBuzzer(gpio::Pwm *pwmController);
 }  // namespace buzzer
 }  // namespace tap
 
-#endif  // BUZZER_HPP_
+#endif  // TAPROOT_BUZZER_HPP_

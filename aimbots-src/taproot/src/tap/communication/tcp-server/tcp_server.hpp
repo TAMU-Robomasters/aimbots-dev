@@ -17,10 +17,10 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifdef PLATFORM_HOSTED
+#ifndef TAPROOT_TCP_SERVER_HPP_
+#define TAPROOT_TCP_SERVER_HPP_
 
-#ifndef TCPSERVER_HPP_
-#define TCPSERVER_HPP_
+#ifdef PLATFORM_HOSTED
 
 #ifdef __linux__
 #include <netinet/in.h>
@@ -131,6 +131,6 @@ int32_t readInt32(int16_t fileDescriptor);
 
 }  // namespace tap
 
-#endif  // TCP_SERVER_HPP_
-
 #endif  // PLATFORM_HOSTED
+
+#endif  // TAPROOT_TCP_SERVER_HPP_

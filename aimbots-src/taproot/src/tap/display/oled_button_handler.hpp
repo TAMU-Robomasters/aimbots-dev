@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OLED_BUTTON_HANDLER_HPP_
-#define OLED_BUTTON_HANDLER_HPP_
+#ifndef TAPROOT_OLED_BUTTON_HANDLER_HPP_
+#define TAPROOT_OLED_BUTTON_HANDLER_HPP_
 
 #include "modm/math/filter/debounce.hpp"
 #include "modm/ui/menu/view_stack.hpp"
@@ -76,4 +76,4 @@ private:
 }  // namespace display
 }  // namespace tap
 
-#endif  // BUTTON_HANDLER_HPP_
+#endif  // TAPROOT_BUTTON_HANDLER_HPP_

@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REF_SERIAL_HPP_
-#define REF_SERIAL_HPP_
+#ifndef TAPROOT_REF_SERIAL_HPP_
+#define TAPROOT_REF_SERIAL_HPP_
 
 #include <cstdint>
 #include <unordered_map>
@@ -34,7 +34,9 @@
 namespace tap
 {
 class Drivers;
-namespace serial
+}
+
+namespace tap::communication::serial
 {
 /**
  * A class designed to communicate with the 2021 version of the RoboMaster
@@ -112,7 +114,7 @@ public:
     /**
      * Handles the types of messages defined above in the RX message handlers section.
      */
-    void messageReceiveCallback(const SerialMessage& completeMessage) override;
+    void messageReceiveCallback(const ReceivedSerialMessage& completeMessage) override;
 
     mockable bool getRefSerialReceivingData() const;
 
@@ -269,7 +271,7 @@ public:
      * @param[in] msgLen The length of the message. This includes only the length of the data
      *      and not the length of the cmdId or frame tail.
      */
-    static void configFrameHeader(Tx::FrameHeader* header, uint16_t msgLen);
+    static void configFrameHeader(FrameHeader* header, uint16_t msgLen);
     static void configInteractiveHeader(
         Tx::InteractiveHeader* header,
         uint16_t cmdId,
@@ -345,70 +347,68 @@ private:
      * Decodes ref serial message containing the game stage and time remaining
      * in the game.
      */
-    bool decodeToGameStatus(const SerialMessage& message);
+    bool decodeToGameStatus(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the postmatch result of a game.
      */
-    bool decodeToGameResult(const SerialMessage& message);
+    bool decodeToGameResult(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the robot HP of all robots in the match.
      */
-    bool decodeToAllRobotHP(const SerialMessage& message);
+    bool decodeToAllRobotHP(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing occupation status of various field zones.
      */
-    bool decodeToSiteEventData(const SerialMessage& message);
+    bool decodeToSiteEventData(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the firing/driving heat limits and cooling
      * rates for the robot.
      */
-    bool decodeToRobotStatus(const SerialMessage& message);
+    bool decodeToRobotStatus(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the actual power and heat data for the turret
      * and chassis.
      */
-    bool decodeToPowerAndHeat(const SerialMessage& message);
+    bool decodeToPowerAndHeat(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the position of the robot on the field and
      * the robot heading.
      */
-    bool decodeToRobotPosition(const SerialMessage& message);
+    bool decodeToRobotPosition(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the robot buff status of the robot.
      */
-    bool decodeToRobotBuffs(const SerialMessage& message);
+    bool decodeToRobotBuffs(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the energy status, a countdown timer from 30 seconds to
      * 0 seconds.
      */
-    bool decodeToAerialEnergyStatus(const SerialMessage& message);
+    bool decodeToAerialEnergyStatus(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing containing the damaged armor and damage type
      * last taken by the robot.
      */
-    bool decodeToDamageStatus(const SerialMessage& message);
+    bool decodeToDamageStatus(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the previously fired bullet type and firing
      * frequency.
      */
-    bool decodeToProjectileLaunch(const SerialMessage& message);
+    bool decodeToProjectileLaunch(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the number of bullets remaining in the robot
      * (only certain match types will send this information).
      */
-    bool decodeToBulletsRemain(const SerialMessage& message);
+    bool decodeToBulletsRemain(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing which RFID buff zones are currently activated.
      */
-    bool decodeToRFIDStatus(const SerialMessage& message);
-    bool handleRobotToRobotCommunication(const SerialMessage& message);
+    bool decodeToRFIDStatus(const ReceivedSerialMessage& message);
+    bool handleRobotToRobotCommunication(const ReceivedSerialMessage& message);
 
     void updateReceivedDamage();
     void processReceivedDamage(uint32_t timestamp, int32_t damageTaken);
 };
 
-}  // namespace serial
+}  // namespace tap::communication::serial
 
-}  // namespace tap
-
-#endif  // REF_SERIAL_HPP_
+#endif  // TAPROOT_REF_SERIAL_HPP_

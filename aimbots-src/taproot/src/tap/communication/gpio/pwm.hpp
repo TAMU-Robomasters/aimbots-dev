@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PWM_HPP_
-#define PWM_HPP_
+#ifndef TAPROOT_PWM_HPP_
+#define TAPROOT_PWM_HPP_
 
 #include <cstdint>
 
@@ -127,4 +127,4 @@ private:
 
 }  // namespace tap
 
-#endif  // PWM_HPP_
+#endif  // TAPROOT_PWM_HPP_

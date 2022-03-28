@@ -17,12 +17,12 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef UART_TERMINAL_DEVICE_CONSTANTS_HPP_
-#define UART_TERMINAL_DEVICE_CONSTANTS_HPP_
+#ifndef TAPROOT_UART_TERMINAL_DEVICE_CONSTANTS_HPP_
+#define TAPROOT_UART_TERMINAL_DEVICE_CONSTANTS_HPP_
 
-namespace tap::serial::bound_ports
+namespace tap::communication::serial::bound_ports
 {
     static constexpr Uart::UartPort TERMINAL_SERIAL_UART_PORT = Uart::UartPort::Uart3;
-}  // namespace tap::serial::bound_ports
+}  // namespace tap::communication::serial::bound_ports
 
-#endif  // UART_TERMINAL_DEVICE_CONSTANTS_HPP_
+#endif  // TAPROOT_UART_TERMINAL_DEVICE_CONSTANTS_HPP_

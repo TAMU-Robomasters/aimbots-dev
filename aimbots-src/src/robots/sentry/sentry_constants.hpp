@@ -4,6 +4,7 @@
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 1;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
+static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
 /**
  * @brief Velocity PID constants
  */
@@ -24,8 +25,10 @@ static constexpr MotorID RAIL_WHEEL_ID  = MotorID::MOTOR1;
 static constexpr MotorID YAW_MOTOR_ID   = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 //
-static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR1;
-static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR2;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
+static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
 
 /**
  * This max output is measured in the c620 robomaster translated current.

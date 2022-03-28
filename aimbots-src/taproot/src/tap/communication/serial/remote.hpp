@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REMOTE_HPP_
-#define REMOTE_HPP_
+#ifndef TAPROOT_REMOTE_HPP_
+#define TAPROOT_REMOTE_HPP_
 
 #include <cstdint>
 
@@ -31,10 +31,17 @@
 namespace tap
 {
 class Drivers;
+}
 
+namespace tap::communication::serial
+{
 /**
  * A unique UART handler that uses timing in leu of DBUS communication (modm does not
  * support DBUS) to interact with the DR16 receiver.
+ *
+ * Information for implementation was translated from a user manual for the DR16 that was
+ * only available in Chinese. AI-Translated version of document available here:
+ * https://drive.google.com/file/d/1-ZGe4mXVhxP4IEmHccphnzKzYWJyw3C3/view?usp=sharing
  */
 class Remote
 {
@@ -68,10 +75,10 @@ public:
      */
     enum class SwitchState
     {
-        UNKNOWN,
-        UP,
-        MID,
-        DOWN
+        UNKNOWN = 0,
+        UP = 1,
+        DOWN = 2,
+        MID = 3,
     };
 
     /**
@@ -129,37 +136,40 @@ public:
     /**
      * @return The current mouse x value.
      */
-    mockable int16_t getMouseX() const;
+    mockable inline int16_t getMouseX() const { return remote.mouse.x; }
 
     /**
      * @return The current mouse y value.
      */
-    mockable int16_t getMouseY() const;
+    mockable inline int16_t getMouseY() const { return remote.mouse.y; }
 
     /**
      * @return The current mouse z value.
      */
-    mockable int16_t getMouseZ() const;
+    mockable inline int16_t getMouseZ() const { return remote.mouse.z; }
 
     /**
      * @return The current mouse l value.
      */
-    mockable bool getMouseL() const;
+    mockable inline bool getMouseL() const { return remote.mouse.l; }
 
     /**
      * @return The current mouse r value.
      */
-    mockable bool getMouseR() const;
+    mockable inline bool getMouseR() const { return remote.mouse.r; }
 
     /**
      * @return `true` if the given `key` is pressed, `false` otherwise.
      */
-    mockable bool keyPressed(Key key) const;
+    mockable inline bool keyPressed(Key key) const
+    {
+        return (remote.key & (1 << static_cast<uint8_t>(key))) != 0;
+    }
 
     /**
      * @return the value of the wheel, between `[-STICK_MAX_VALUE, STICK_MAX_VALUE]`.
      */
-    mockable int16_t getWheel() const;
+    mockable inline int16_t getWheel() const { return remote.wheel; }
 
     /**
      * @return the number of times remote info has been received.
@@ -167,11 +177,11 @@ public:
     mockable uint32_t getUpdateCounter() const;
 
 private:
-    static const int REMOTE_BUF_LEN = 18;              /// Length of the remote recieve buffer.
-    static const int REMOTE_READ_TIMEOUT = 6;          /// Timeout delay between valid packets.
-    static const int REMOTE_DISCONNECT_TIMEOUT = 100;  /// Timeout delay for remote disconnect.
-    static const int REMOTE_INT_PRI = 12;              /// Interrupt priority.
-    static constexpr float STICK_MAX_VALUE = 660.0f;   /// Max value received by one of the sticks.
+    static const int REMOTE_BUF_LEN = 18;              ///< Length of the remote recieve buffer.
+    static const int REMOTE_READ_TIMEOUT = 6;          ///< Timeout delay between valid packets.
+    static const int REMOTE_DISCONNECT_TIMEOUT = 100;  ///< Timeout delay for remote disconnect.
+    static const int REMOTE_INT_PRI = 12;              ///< Interrupt priority.
+    static constexpr float STICK_MAX_VALUE = 660.0f;   ///< Max value received by one of the sticks.
 
     /// The current remote information
     struct RemoteInfo
@@ -183,16 +193,17 @@ private:
         int16_t leftVertical = 0;
         SwitchState leftSwitch = SwitchState::UNKNOWN;
         SwitchState rightSwitch = SwitchState::UNKNOWN;
+        /// Mouse information
         struct
-        {  /// Mouse information
+        {
             int16_t x = 0;
             int16_t y = 0;
             int16_t z = 0;
             bool l = false;
             bool r = false;
         } mouse;
-        uint16_t key = 0;   /// Keyboard information
-        int16_t wheel = 0;  /// Remote wheel information
+        uint16_t key = 0;   ///< Keyboard information
+        int16_t wheel = 0;  ///< Remote wheel information
     };
 
     Drivers *drivers;
@@ -221,6 +232,6 @@ private:
     void reset();
 };  // class Remote
 
-}  // namespace tap
+}  // namespace tap::communication::serial
 
-#endif  // REMOTE_HPP_
+#endif  // TAPROOT_REMOTE_HPP_

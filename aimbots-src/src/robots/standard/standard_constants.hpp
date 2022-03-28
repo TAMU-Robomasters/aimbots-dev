@@ -45,8 +45,8 @@ static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
-static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR3;
-static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR4;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.

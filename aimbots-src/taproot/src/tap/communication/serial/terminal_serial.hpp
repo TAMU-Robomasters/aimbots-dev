@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TERMINAL_SERIAL_HPP_
-#define TERMINAL_SERIAL_HPP_
+#ifndef TAPROOT_TERMINAL_SERIAL_HPP_
+#define TAPROOT_TERMINAL_SERIAL_HPP_
 
 #include <cstring>
 #include <map>
@@ -43,9 +43,9 @@
 namespace tap
 {
 class Drivers;
-namespace communication
-{
-namespace serial
+}
+
+namespace tap::communication::serial
 {
 /**
  * If you would like to interact with the terminal, extend this class and implement
@@ -167,8 +167,6 @@ private:
 
     void printUsage();
 };  // class TerminalSerial
-}  // namespace serial
-}  // namespace communication
-}  // namespace tap
+}  // namespace tap::communication::serial
 
-#endif  // TERMINAL_SERIAL_HPP_
+#endif  // TAPROOT_TERMINAL_SERIAL_HPP_

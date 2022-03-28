@@ -17,21 +17,54 @@ enum WheelIndex {  // index used to easily navigate wheel matrices
                    //	|___|   |___|	  |__|    __|
 };
 
+enum MotorOnWheelIndex {
+    DRIVER = 0,  // in this case driver indicates the motor rotating the drive wheels
+    YAW = 1
+};
+
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
    public:
     ChassisSubsystem(  // Default chassis constructor
         tap::Drivers* drivers);
 
+    /**
+     * Allows user to call a DJIMotor member function on all chassis motors
+     *
+     * @param function pointer to a member function of DJIMotor
+     * @param args arguments to pass to the member function
+     */
     template <class... Args>
-    void ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args);
+    void ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+            (motors[i][0]->*func)(args...);
+#ifdef SWERVE
+            (motors[i][1]->*func)(args...);
+#endif
+        }
+    }
 
+    /**
+     * Allows user to call a ChassisSubsystem function on all chassis motors.
+     *
+     * @param function pointer to a member function of ChassisSubsystem that takes a WheelIndex
+     * as its first argument and the motor-per-wheel index as the second argument
+     * @param args arguments to pass to the member function
+     */
     template <class... Args>
-    void ForAllChassisMotors(void (ChassisSubsystem::*func)(int, int, Args...), Args... args);
+    void ForAllChassisMotors(void (ChassisSubsystem::*func)(WheelIndex, MotorOnWheelIndex, Args...), Args... args) {
+        for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+            WheelIndex mi = static_cast<WheelIndex>(i);
+            (this->*func)(mi, DRIVER, args...);
+#ifdef SWERVE
+            (this->*func)(mi, YAW, args...);
+#endif
+        }
+    }
 
     mockable void initialize() override;
     void refresh() override;
 
-    void updateMotorVelocityPID(int WheelIdx, int motorPerWheelIdx);
+    void updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
     /**
      * @brief Updates the desired wheel RPM based on the input x, y, and rotation movement components.
@@ -72,7 +105,18 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
         }
     }
 
-#ifndef ENV_UNIT_TESTS 
+    inline bool allMotorsOnline() const override {
+        for (int i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+            for (int j = 0; j < MOTORS_PER_WHEEL; j++) {
+                if (!motors[i][j]->isMotorOnline()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+#ifndef ENV_UNIT_TESTS
    private:
 #else
    public:

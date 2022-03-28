@@ -17,7 +17,7 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SH1106_HPP
+#ifndef TAPROOT_SH1106_HPP_
 #error "Don't include this file directly, use 'sh1106.hpp' instead!"
 #endif
 

@@ -19,9 +19,17 @@
 
 #include "error_controller_mock.hpp"
 
+bool errorDescriptionContainsSubstr(
+    const tap::errors::SystemError& error,
+    const std::string& substr)
+{
+    std::string errorStr = error.getDescription();
+    return errorStr.find(substr) != std::string::npos;
+}
+
 namespace tap::mock
 {
-ErrorControllerMock::ErrorControllerMock(tap::Drivers *drivers)
+ErrorControllerMock::ErrorControllerMock(tap::Drivers* drivers)
     : tap::errors::ErrorController(drivers)
 {
 }

@@ -1,11 +1,10 @@
 #pragma once
 #include <vector>
-//
-#include "utils/common_types.hpp"
-#include "utils/robot_specific_inc.hpp"
-//
+
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
+#include "utils/common_types.hpp"
+#include "utils/robot_constants.hpp"
 
 //#ifndef TARGET_ENGINEER
 namespace src::Shooter {
@@ -13,48 +12,84 @@ namespace src::Shooter {
 enum MotorIndex {
     TOP = 0,
     BOT = 1,
-    TOP2 = 2,
-    BOT2 = 3
+    RIGHT = 0,
+    LEFT = 1,
+    TOP_RIGHT = 0,
+    BOT_RIGHT = 1,
+    TOP_LEFT = 2,
+    BOT_LEFT = 3,
 };
-
 
 class ShooterSubsystem : public tap::control::Subsystem {
    public:
     ShooterSubsystem(tap::Drivers* drivers);
 
+    /**
+     * Allows user to call a DJIMotor member function on all shooter motors
+     *
+     * @param function pointer to a member function of DJIMotor
+     * @param args arguments to pass to the member function
+     */
+    template <class... Args>
+    void ForAllShooterMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+            (motors[i][1]->*func)(args...);
+        }
+    }
+
+    /**
+     * Allows user to call a ShooterSubsystem function on all shooter motors.
+     *
+     * @param function pointer to a member function of ShooterSubsystem that takes a MotorIndex as it's first argument
+     * @param args arguments to pass to the member function
+     */
+    template <class... Args>
+    void ForAllShooterMotors(void (ShooterSubsystem::*func)(MotorIndex, Args...), Args... args) {
+        for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+            MotorIndex mi = static_cast<MotorIndex>(i);
+            (this->*func)(mi, args...);
+        }
+    }
+
     mockable void initialize() override;
     void refresh() override;
 
-    void setDesiredOutputs();
+    /**
+     * @brief Updates velocity PID and motor RPM for a single motor. Can be used with ForAllShooterMotors().
+     * Should be called continuously in subsystem refresh.
+     *
+     * @param motorIdx index for DJIMotor matrix
+     */
+    void updateMotorVelocityPID(MotorIndex motorIdx);
 
-    void calculateShooter(float RPM_Target);
+    /**
+     * @brief Changes the target RPM for a single motor. Intended for use with ForAllShooterMotors(),
+     * and should be called from a command to declare intended RPM. Does not necessarily need to be called continuously
+     *
+     * @param motorIdx index for DJIMotor matrix
+     * @param targetRPM intended target RPM
+     */
+    void setTargetRPM(MotorIndex motorIdx, float targetRPM);
 
-    void setRPMTarget(float rpm);
-
-    void setZeroTarget();
-
-    void setZeroOutput();
-
-
-    float targetRPMs[2];
-    float RPM_target;
+#ifndef ENV_UNIT_TESTS
    private:
-    DJIMotor topWheel, bottomWheel;
-    DJIMotor* motors[2];
-    //static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-    //emergency testing line for if there is a chassis but no gimbal
-    //if the code works, the robot will become extremely violent in a short amount of time
-    uint32_t lastTime;
-    SmoothPID topWheelPID;
-    SmoothPID bottomWheelPID;
-    #ifdef TARGET_SENTRY
-    DJIMotor topWheel2, bottomWheel2;
-    #endif //#ifdef TARGET_SENTRY
+#else
    public:
-    inline int16_t getTopWheelRpmActual() const { return topWheel.getShaftRPM(); }
-    inline int16_t getBottomWheelRpmActual() const { return bottomWheel.getShaftRPM(); }
+#endif
+
+    DJIMotor flywheel1, flywheel2;
+    SmoothPID flywheel1PID, flywheel2PID;
+
+#ifdef TARGET_SENTRY
+    DJIMotor flywheel3, flywheel4;
+    SmoothPID flywheel3PID, flywheel4PID;
+#endif
+
+    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
+    Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
+    Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
+
+    Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
 };
 };  // namespace src::Shooter
-
-//#endif TARGET_ENGINEER

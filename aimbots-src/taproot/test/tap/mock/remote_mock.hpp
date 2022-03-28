@@ -17,8 +17,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REMOTE_MOCK_HPP_
-#define REMOTE_MOCK_HPP_
+#ifndef TAPROOT_REMOTE_MOCK_HPP_
+#define TAPROOT_REMOTE_MOCK_HPP_
 
 #include <gmock/gmock.h>
 
@@ -28,7 +28,7 @@ namespace tap
 {
 namespace mock
 {
-class RemoteMock : public tap::Remote
+class RemoteMock : public tap::communication::serial::Remote
 {
 public:
     RemoteMock(tap::Drivers *drivers);
@@ -37,18 +37,26 @@ public:
     MOCK_METHOD(void, initialize, (), (override));
     MOCK_METHOD(void, read, (), (override));
     MOCK_METHOD(bool, isConnected, (), (const override));
-    MOCK_METHOD(float, getChannel, (tap::Remote::Channel ch), (const override));
-    MOCK_METHOD(tap::Remote::SwitchState, getSwitch, (tap::Remote::Switch sw), (const override));
+    MOCK_METHOD(
+        float,
+        getChannel,
+        (tap::communication::serial::Remote::Channel ch),
+        (const override));
+    MOCK_METHOD(
+        tap::communication::serial::Remote::SwitchState,
+        getSwitch,
+        (tap::communication::serial::Remote::Switch sw),
+        (const override));
     MOCK_METHOD(int16_t, getMouseX, (), (const override));
     MOCK_METHOD(int16_t, getMouseY, (), (const override));
     MOCK_METHOD(int16_t, getMouseZ, (), (const override));
     MOCK_METHOD(bool, getMouseL, (), (const override));
     MOCK_METHOD(bool, getMouseR, (), (const override));
-    MOCK_METHOD(bool, keyPressed, (tap::Remote::Key key), (const override));
+    MOCK_METHOD(bool, keyPressed, (tap::communication::serial::Remote::Key key), (const override));
     MOCK_METHOD(int16_t, getWheel, (), (const override));
     MOCK_METHOD(uint32_t, getUpdateCounter, (), (const override));
 };  // class RemoteMock
 }  // namespace mock
 }  // namespace tap
 
-#endif  // REMOTE_MOCK_HPP_
+#endif  // TAPROOT_REMOTE_MOCK_HPP_

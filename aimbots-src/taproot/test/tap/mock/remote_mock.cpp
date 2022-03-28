@@ -21,6 +21,6 @@
 
 namespace tap::mock
 {
-RemoteMock::RemoteMock(tap::Drivers *drivers) : tap::Remote(drivers) {}
+RemoteMock::RemoteMock(tap::Drivers *drivers) : tap::communication::serial::Remote(drivers) {}
 RemoteMock::~RemoteMock() {}
 }  // namespace tap::mock
