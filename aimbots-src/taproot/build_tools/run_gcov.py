@@ -83,6 +83,10 @@ def run_gcov(env, source, alias="run_gcov"):
 
             files_to_include = glob.glob(os.path.abspath('src/**/*[.cpp|.hpp]'), recursive=True)
             files_to_include.extend(glob.glob(os.path.abspath('taproot/src/**/*[.cpp|.hpp]'), recursive=True))
+
+            files_to_exclude_from_coverage = glob.glob(os.path.abspath('taproot/src/**/MahonyAHRS.*'), recursive=True)
+            files_to_include = [ file for file in files_to_include if file not in files_to_exclude_from_coverage ]
+
             lcov_only_view_src_cmd = ['lcov', '-e', COVERAGE_INFO_FILE]
             lcov_only_view_src_cmd.extend(files_to_include)
             lcov_only_view_src_cmd.extend(['-o', COVERAGE_INFO_FILE])
