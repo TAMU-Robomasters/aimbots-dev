@@ -17,12 +17,19 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+//
+#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_control_command.hpp"
+//
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/shooter_command.hpp"
 #include "subsystems/shooter/shooter_default_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
+using namespace src::Gimbal;
+using namespace src::Shooter;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -40,30 +47,34 @@ namespace StandardControl {
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
-src::Shooter::ShooterSubsystem shooter(drivers());
+GimbalSubsystem gimbal(drivers());
+ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
-src::Shooter::ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
+GimbalChassisRelativeController gimbalController(&gimbal);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.02f, 0.3f);
+ShooterCommand shooterCommand(drivers(), &shooter);
+ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(  //you MUST map commands to run them at all (we think)
     drivers(),
-    {&chassisDriveCommand, &shooterCommand},
-    RemoteMapState(tap::communication::serial::Remote::Switch::LEFT_SWITCH, tap::communication::serial::Remote::SwitchState::UP));
-
+    {&chassisDriveCommand,&gimbalControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand},
-    RemoteMapState(tap::communication::serial::Remote::Switch::RIGHT_SWITCH, tap::communication::serial::Remote::SwitchState::UP));
+    {&runFeederCommand,&shooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&feeder);
+    drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
 }
 
@@ -71,6 +82,7 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     feeder.initialize();
+    gimbal.initialize();
     shooter.initialize();
 }
 
@@ -82,14 +94,7 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
-    // drivers->commandScheduler.addCommand(&runFeederCommand);
-    //  no startup commands should be set
-    //  yet...
-    //  TODO: Possibly add some sort of hardware test command
-    //        that will move all the standard's parts so we
-    //        can make sure they're fully operational.
-}
+void startupCommands(src::Drivers *) {}
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {

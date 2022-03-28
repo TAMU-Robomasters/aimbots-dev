@@ -13,12 +13,21 @@ static constexpr float VELOCITY_PID_KD = 0.0f;
 static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 
 /**
+ * @brief Position PID constants
+ */
+static constexpr float POSITION_PID_KP = 20.0f;
+static constexpr float POSITION_PID_KI = 0.2f;
+static constexpr float POSITION_PID_KD = 0.0f;
+static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+
+/**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
  * The corresponding speed controller output torque current range is
  * -20 ~ 0 ~ 20 A.
  */
 static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
+static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
 
 // Mechanical chassis constants, all in m
 /**
@@ -35,10 +44,18 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr float YAW_START_ANGLE = M_PI_2;
+static constexpr float PITCH_START_ANGLE = M_PI_2;
+#error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
+static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
+static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
+
+static constexpr MotorID LEFT_BACK_WHEEL_ID   = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID  = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
-static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID  = MotorID::MOTOR4;
+static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
+static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,
