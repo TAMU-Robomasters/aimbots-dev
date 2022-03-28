@@ -25,7 +25,7 @@ class GimbalControlCommand : public tap::control::Command {
     void end(bool interrupted) override;
 
    private:
-    src::Drivers*    drivers;
+    src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
     GimbalChassisRelativeController* controller;

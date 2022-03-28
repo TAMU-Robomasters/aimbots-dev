@@ -67,14 +67,16 @@ float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue() - YAW_START_ANGLE) : currentYawAngle.getValue() - YAW_START_ANGLE,
                (unit == AngleUnit::Degrees) ? -180.0f : M_PI,
-               (unit == AngleUnit::Degrees) ?  180.0f : M_PI).getValue();
+               (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
+        .getValue();
 }
 
 float GimbalSubsystem::getCurrentPitchAngleFromCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue() - PITCH_START_ANGLE) : currentPitchAngle.getValue() - PITCH_START_ANGLE,
                (unit == AngleUnit::Degrees) ? -180.0f : M_PI,
-               (unit == AngleUnit::Degrees) ?  180.0f : M_PI).getValue();
+               (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
+        .getValue();
 }
 
 }  // namespace src::Gimbal

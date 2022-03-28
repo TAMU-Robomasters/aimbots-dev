@@ -6,39 +6,37 @@ namespace src::Gimbal {
 
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
-      yawPID(
-        POSITION_PID_KP,
-        POSITION_PID_KI,
-        POSITION_PID_KD,
-        POSITION_PID_MAX_ERROR_SUM,
-        POSITION_PID_MAX_OUTPUT
-      ),
-      pitchPID(
-        POSITION_PID_KP,
-        POSITION_PID_KI,
-        POSITION_PID_KD,
-        POSITION_PID_MAX_ERROR_SUM,
-        POSITION_PID_MAX_OUTPUT
-      ) {}
+      yawPositionPID(
+          POSITION_PID_KP,
+          POSITION_PID_KI,
+          POSITION_PID_KD,
+          POSITION_PID_MAX_ERROR_SUM,
+          POSITION_PID_MAX_OUTPUT),
+      pitchPositionPID(
+          POSITION_PID_KP,
+          POSITION_PID_KI,
+          POSITION_PID_KD,
+          POSITION_PID_MAX_ERROR_SUM,
+          POSITION_PID_MAX_OUTPUT) {}
 
 void GimbalChassisRelativeController::initialize() {
-    yawPID.reset();
-    pitchPID.reset();
+    yawPositionPID.reset();
+    pitchPositionPID.reset();
 }
 
 static float outputPitch = 0.0f;
-static float outputYaw   = 0.0f;
+static float outputYaw = 0.0f;
 
 void GimbalChassisRelativeController::runYawController(float desiredYawAngle) {
     gimbal->setTargetYawAngle(AngleUnit::Degrees, desiredYawAngle);
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentYawAngleAsContiguousFloat().difference(gimbal->getTargetYawAngle(AngleUnit::Degrees)));
 
-    yawPID.update(positionControllerError);
-    float yawPIDOutput = yawPID.getValue();
+    yawPositionPID.update(positionControllerError);
+    float yawPositionPIDOutput = yawPositionPID.getValue();
 
-    outputYaw = yawPIDOutput;
-    gimbal->setYawMotorOutput(yawPIDOutput);
+    outputYaw = yawPositionPIDOutput;
+    gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
 
 void GimbalChassisRelativeController::runPitchController(float desiredPitchAngle) {
@@ -52,12 +50,12 @@ void GimbalChassisRelativeController::runPitchController(float desiredPitchAngle
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
-    pitchPID.update(positionControllerError);
-    float pitchPIDOutput = pitchPID.getValue();
+    pitchPositionPID.update(positionControllerError);
+    float pitchPositionPIDOutput = pitchPositionPID.getValue();
 
-    outputPitch = pitchPIDOutput;
+    outputPitch = pitchPositionPIDOutput;
 
-    gimbal->setPitchMotorOutput(pitchPIDOutput);
+    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
 }
 
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }

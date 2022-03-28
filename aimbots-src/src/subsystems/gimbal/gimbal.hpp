@@ -5,6 +5,7 @@
 #include <tap/algorithms/math_user_utils.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
+#include <utils/robot_specific_inc.hpp>
 
 namespace src::Gimbal {
 
@@ -28,9 +29,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setPitchMotorOutput(float output);
 
     inline float getTargetYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetYawAngle) : targetYawAngle; }
-    inline void  setTargetYawAngle(AngleUnit unit, float angle) { targetYawAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
+    inline void setTargetYawAngle(AngleUnit unit, float angle) { targetYawAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
     inline float getTargetPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetPitchAngle) : targetPitchAngle; }
-    inline void  setTargetPitchAngle(AngleUnit unit, float angle) { targetPitchAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
+    inline void setTargetPitchAngle(AngleUnit unit, float angle) { targetPitchAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
 
     inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }
     inline float getCurrentPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue()) : currentPitchAngle.getValue(); }
@@ -40,8 +41,6 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     inline tap::algorithms::ContiguousFloat const& getCurrentYawAngleAsContiguousFloat() const { return currentYawAngle; }
     inline tap::algorithms::ContiguousFloat const& getCurrentPitchAngleAsContiguousFloat() const { return currentPitchAngle; }
-
-#include <utils/robot_specific_inc.hpp>
 
    private:
     DJIMotor yawMotor;

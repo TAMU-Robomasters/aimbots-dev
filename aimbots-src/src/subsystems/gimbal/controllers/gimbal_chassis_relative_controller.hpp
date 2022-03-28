@@ -20,8 +20,8 @@ class GimbalChassisRelativeController {
    private:
     GimbalSubsystem* gimbal;
 
-    StockPID yawPID;
-    StockPID pitchPID;
+    StockPID yawPositionPID;
+    StockPID pitchPositionPID;
 };
 
 }  // namespace src::Gimbal
