@@ -12,8 +12,8 @@ class GimbalChassisRelativeController {
 
     void initialize();
 
-    void runYawController(float targetYawAngle);
-    void runPitchController(float targetPitchAngle);
+    void runYawController(AngleUnit unit, float targetYawAngle);
+    void runPitchController(AngleUnit unit, float targetPitchAngle);
 
     bool isOnline() const;
 
