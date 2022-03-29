@@ -33,7 +33,7 @@ class ShooterSubsystem : public tap::control::Subsystem {
     template <class... Args>
     void ForAllShooterMotors(void (DJIMotor::*func)(Args...), Args... args) {
         for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
-            (motors[i][1]->*func)(args...);
+            (motors[i][0]->*func)(args...);
         }
     }
 

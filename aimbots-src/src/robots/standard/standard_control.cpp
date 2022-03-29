@@ -41,6 +41,7 @@ src::driversFunc drivers = src::DoNotUse_getDrivers;
 
 using namespace tap;
 using namespace tap::control;
+using namespace tap::communication::serial;
 
 namespace StandardControl {
 
@@ -55,16 +56,16 @@ ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 GimbalChassisRelativeController gimbalController(&gimbal);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.02f, 0.3f);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 ShooterCommand shooterCommand(drivers(), &shooter);
 ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(  //you MUST map commands to run them at all (we think)
+HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisDriveCommand,&gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-    
+
 HoldCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand,&shooterCommand},
