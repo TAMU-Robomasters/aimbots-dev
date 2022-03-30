@@ -1,19 +1,7 @@
 #include "gimbal.hpp"
 
-//
-// Conversion helper functions
-//
-
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
-}
-
-static inline void setMotorOutput(DJIMotor* motor, float output) {
-    tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
-
-    if (motor->isMotorOnline()) {
-        motor->setDesiredOutput(output);
-    }
 }
 
 namespace src::Gimbal {
@@ -47,20 +35,26 @@ void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
+
+        // flush whatever our current output is to the motors
+        yawMotor.setDesiredOutput(desiredYawMotorOutput);
     }
 
     if (pitchMotor.isMotorOnline()) {
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
         currentPitchAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
+
+        // flush whatever our current output is to the motors
+        pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
     }
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {
-    setMotorOutput(&yawMotor, output);
+    desiredYawMotorOutput = limitVal(output, 0.0f, 30000.0f);
 }
 
 void GimbalSubsystem::setPitchMotorOutput(float output) {
-    setMotorOutput(&pitchMotor, output);
+    desiredPitchMotorOutput = limitVal(output, 0.0f, 30000.0f);
 }
 
 float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {
