@@ -11,8 +11,8 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
     : Subsystem(drivers),
       flywheel1(drivers, SHOOTER_1_ID, SHOOTER_BUS, true, "Flywheel One"),
       flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, false, "Flywheel Two"),
-      flywheel1PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
-      flywheel2PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+      flywheel1PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
+      flywheel2PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
 #ifdef TARGET_SENTRY
       flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, true, "Flywheel Three"),
       flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, false, "Flywheel Four"),
@@ -54,7 +54,8 @@ float shaftSpeedDisplay = 0.0f;
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
     float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
-
+    PIDoutDisplay = err;
+    shaftSpeedDisplay = motors[motorIdx][0]->getShaftRPM();
     motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(PIDOut));
 }
 

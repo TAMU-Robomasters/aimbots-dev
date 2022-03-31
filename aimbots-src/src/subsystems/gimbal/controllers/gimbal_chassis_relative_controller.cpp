@@ -7,16 +7,16 @@ namespace src::Gimbal {
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
       yawPositionPID(
-          POSITION_PID_KP,
-          POSITION_PID_KI,
-          POSITION_PID_KD,
-          POSITION_PID_MAX_ERROR_SUM,
+          YAW_POSITION_PID_KP,
+          YAW_POSITION_PID_KI,
+          YAW_POSITION_PID_KD,
+          YAW_POSITION_PID_MAX_ERROR_SUM,
           POSITION_PID_MAX_OUTPUT),
       pitchPositionPID(
-          POSITION_PID_KP,
-          POSITION_PID_KI,
-          POSITION_PID_KD,
-          POSITION_PID_MAX_ERROR_SUM,
+          PITCH_POSITION_PID_KP,
+          PITCH_POSITION_PID_KI,
+          PITCH_POSITION_PID_KD,
+          PITCH_POSITION_PID_MAX_ERROR_SUM,
           POSITION_PID_MAX_OUTPUT) {}
 
 void GimbalChassisRelativeController::initialize() {
@@ -36,7 +36,7 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
 }
 
 void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float desiredPitchAngle) {
-    desiredPitchAngle = limitPitchAngle((unit == AngleUnit::Degrees) ? modm::toRadian(desiredPitchAngle) : desiredPitchAngle);
+    desiredPitchAngle = limitPitchAngle((unit == AngleUnit::Degrees) ? desiredPitchAngle : modm::toRadian(desiredPitchAngle));
     gimbal->setTargetPitchAngle(unit, desiredPitchAngle);
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));

@@ -59,8 +59,8 @@ class GimbalSubsystem : public tap::control::Subsystem {
     float targetYawAngle;    // in Radians
     float targetPitchAngle;  // in Radians
 
-    uint16_t desiredYawMotorOutput;
-    uint16_t desiredPitchMotorOutput;
+    float desiredYawMotorOutput;
+    float desiredPitchMotorOutput;
 
     static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 };

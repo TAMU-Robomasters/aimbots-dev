@@ -31,10 +31,15 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float POSITION_PID_KP = 600.0f;
-static constexpr float POSITION_PID_KI = 0.0f;
-static constexpr float POSITION_PID_KD = 1000.0f;
-static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float YAW_POSITION_PID_KP = 600.0f;
+static constexpr float YAW_POSITION_PID_KI = 0.0f;
+static constexpr float YAW_POSITION_PID_KD = 30000.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+
+static constexpr float PITCH_POSITION_PID_KP = 600.0f;
+static constexpr float PITCH_POSITION_PID_KI = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD = 100.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
@@ -74,7 +79,7 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 // FIXME: These work for thee testbed standard, so they need to
 //        adjusted once we have real standard robots
 static constexpr float YAW_START_ANGLE = 0.0f;
-static constexpr float PITCH_START_ANGLE = modm::toRadian(66.66f);
+static constexpr float PITCH_START_ANGLE = 66.66f;
 static constexpr float PITCH_HARDSTOP_LOW = 90.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 20.0f;
 

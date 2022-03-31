@@ -20,8 +20,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
                  "Pitch Motor"),
       currentYawAngle(0.0f, 0.0f, M_TWOPI),
       currentPitchAngle(0.0f, 0.0f, M_TWOPI),
-      targetYawAngle(YAW_START_ANGLE),
-      targetPitchAngle(PITCH_START_ANGLE) {}
+      targetYawAngle(modm::toRadian(YAW_START_ANGLE)),
+      targetPitchAngle(modm::toRadian(PITCH_START_ANGLE)) {}
 
 void GimbalSubsystem::initialize() {
     yawMotor.initialize();
@@ -50,11 +50,11 @@ void GimbalSubsystem::refresh() {
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {
-    desiredYawMotorOutput = limitVal(output, 0.0f, 30000.0f);
+    desiredYawMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
 }
 
 void GimbalSubsystem::setPitchMotorOutput(float output) {
-    desiredPitchMotorOutput = limitVal(output, 0.0f, 30000.0f);
+    desiredPitchMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
 }
 
 float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {
