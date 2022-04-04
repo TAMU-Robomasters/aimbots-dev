@@ -35,7 +35,7 @@ void playNote(gpio::Pwm *pwmController, uint32_t frequency)
     else
     {
         pwmController->write(0.5f, gpio::Pwm::Buzzer);
-        pwmController->setTimerFrequency(gpio::Pwm::TIMER12, frequency);
+        pwmController->setTimerFrequency(gpio::Pwm::TIMER4, frequency);
     }
 }
 

@@ -202,10 +202,11 @@ struct GpioH1::Oscout<Peripheral::Rcc>
 {
 	using Gpio = GpioH1;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Oscout;
-	static constexpr int af = -1;
+	static constexpr int af = 0;
 	inline static void
 	connect()
 	{
+		setAlternateFunction(0);
 	}
 };
 /// @endcond

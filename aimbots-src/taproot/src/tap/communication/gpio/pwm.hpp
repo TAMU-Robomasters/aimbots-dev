@@ -39,11 +39,13 @@ class Pwm
 {
 public:
 
+    static constexpr uint32_t DEFAULT_TIMER1_FREQUENCY = 2000;
+
     static constexpr uint32_t DEFAULT_TIMER8_FREQUENCY = 2000;
 
-    static constexpr uint32_t DEFAULT_TIMER12_FREQUENCY = 2000;
+    static constexpr uint32_t DEFAULT_TIMER4_FREQUENCY = 2000;
 
-    static constexpr uint32_t DEFAULT_TIMER3_FREQUENCY = 2000;
+    static constexpr uint32_t DEFAULT_TIMER10_FREQUENCY = 2000;
 
     Pwm() = default;
     DISALLOW_COPY_AND_ASSIGN(Pwm)
@@ -51,19 +53,23 @@ public:
 
     enum Pin
     {
-        W,
-        X,
-        Y,
-        Z,
+        C1,
+        C2,
+        C3,
+        C4,
+        C5,
+        C6,
+        C7,
         Buzzer,
         ImuHeater,
     };
 
     enum Timer
     {
+        TIMER1,
         TIMER8,
-        TIMER12,
-        TIMER3,
+        TIMER4,
+        TIMER10,
     };
 
     mockable void init();
@@ -104,23 +110,29 @@ private:
     };
 
     /**
+     * Overflow as calculated by the modm Timer1 object in its getPeriod function.
+     * This is what the Auto Reload Register is set to and the pwm duty is scaled to
+     * a value between 0 and this value.
+     */
+    uint16_t timer1CalculatedOverflow;
+    /**
      * Overflow as calculated by the modm Timer8 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
     uint16_t timer8CalculatedOverflow;
     /**
-     * Overflow as calculated by the modm Timer12 object in its getPeriod function.
+     * Overflow as calculated by the modm Timer4 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
-    uint16_t timer12CalculatedOverflow;
+    uint16_t timer4CalculatedOverflow;
     /**
-     * Overflow as calculated by the modm Timer3 object in its getPeriod function.
+     * Overflow as calculated by the modm Timer10 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
-    uint16_t timer3CalculatedOverflow;
+    uint16_t timer10CalculatedOverflow;
 };  // class Pwm
 
 }  // namespace gpio

@@ -165,8 +165,6 @@ public:
 	using BitBang = GpioSignal;
 	/// Connect to Eth
 	using Crs = GpioSignal;
-	/// Connect to Fmc
-	using Sdcke0 = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -181,12 +179,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::Eth),
 			"GpioH2::Crs only connects to Eth!");
-	};
-	template< Peripheral peripheral >
-	struct Sdcke0 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH2::Sdcke0 only connects to Fmc!");
 	};
 	/// @endcond
 private:
@@ -215,18 +207,6 @@ struct GpioH2::Crs<Peripheral::Eth>
 	connect()
 	{
 		setAlternateFunction(11);
-	}
-};
-template<>
-struct GpioH2::Sdcke0<Peripheral::Fmc>
-{
-	using Gpio = GpioH2;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdcke0;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 /// @endcond

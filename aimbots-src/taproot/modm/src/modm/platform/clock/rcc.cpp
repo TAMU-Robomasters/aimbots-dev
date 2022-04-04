@@ -123,20 +123,6 @@ Rcc::enablePll(PllSource source, const PllFactors& pllFactors, uint32_t waitCycl
 	return tmp;
 }
 
-bool
-Rcc::enableOverdriveMode(uint32_t waitCycles)
-{
-	PWR->CR |= PWR_CR_ODEN;
-	auto waitCounter = waitCycles;
-	while (!(PWR->CSR & PWR_CSR_ODRDY))
-		if (--waitCounter == 0) return false;
-
-	PWR->CR |= PWR_CR_ODSWEN;
-	while (!(PWR->CSR & PWR_CSR_ODSWRDY))
-		if (--waitCycles == 0) return false;
-
-	return true;
-}
 // ----------------------------------------------------------------------------
 bool
 Rcc::enableSystemClock(SystemClockSource src, uint32_t waitCycles)

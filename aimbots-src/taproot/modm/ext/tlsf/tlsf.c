@@ -13,7 +13,7 @@
 #endif
 
 #define MODM_TLFS_SL_INDEX_COUNT_LOG2 4
-#define MODM_TLFS_FL_INDEX_MAX 18
+#define MODM_TLFS_FL_INDEX_MAX 17
 
 /*
 ** This prevents the usage of newlib's `assert` and `printf` functions,

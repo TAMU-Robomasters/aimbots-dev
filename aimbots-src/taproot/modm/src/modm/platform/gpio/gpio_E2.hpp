@@ -163,12 +163,8 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using A23 = GpioSignal;
-	/// Connect to Sai1
-	using Mclka = GpioSignal;
-	/// Connect to Spi4
-	using Sck = GpioSignal;
 	/// Connect to Sys
 	using Traceclk = GpioSignal;
 	/// Connect to Eth
@@ -185,20 +181,8 @@ public:
 	template< Peripheral peripheral >
 	struct A23 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE2::A23 only connects to Fmc!");
-	};
-	template< Peripheral peripheral >
-	struct Mclka { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Sai1),
-			"GpioE2::Mclka only connects to Sai1!");
-	};
-	template< Peripheral peripheral >
-	struct Sck { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi4),
-			"GpioE2::Sck only connects to Spi4!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE2::A23 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Traceclk { static void connect();
@@ -230,7 +214,7 @@ struct GpioE2::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioE2::A23<Peripheral::Fmc>
+struct GpioE2::A23<Peripheral::Fsmc>
 {
 	using Gpio = GpioE2;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::A23;
@@ -239,30 +223,6 @@ struct GpioE2::A23<Peripheral::Fmc>
 	connect()
 	{
 		setAlternateFunction(12);
-	}
-};
-template<>
-struct GpioE2::Mclka<Peripheral::Sai1>
-{
-	using Gpio = GpioE2;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Mclka;
-	static constexpr int af = 6;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(6);
-	}
-};
-template<>
-struct GpioE2::Sck<Peripheral::Spi4>
-{
-	using Gpio = GpioE2;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sck;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
 	}
 };
 template<>

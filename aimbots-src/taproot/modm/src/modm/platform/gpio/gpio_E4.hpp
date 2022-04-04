@@ -163,14 +163,10 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using A20 = GpioSignal;
 	/// Connect to Dcmi
 	using D4 = GpioSignal;
-	/// Connect to Sai1
-	using Fsa = GpioSignal;
-	/// Connect to Spi4
-	using Nss = GpioSignal;
 	/// Connect to Sys
 	using Traced1 = GpioSignal;
 	/// @}
@@ -185,26 +181,14 @@ public:
 	template< Peripheral peripheral >
 	struct A20 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE4::A20 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE4::A20 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct D4 { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Dcmi),
 			"GpioE4::D4 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct Fsa { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Sai1),
-			"GpioE4::Fsa only connects to Sai1!");
-	};
-	template< Peripheral peripheral >
-	struct Nss { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi4),
-			"GpioE4::Nss only connects to Spi4!");
 	};
 	template< Peripheral peripheral >
 	struct Traced1 { static void connect();
@@ -230,7 +214,7 @@ struct GpioE4::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioE4::A20<Peripheral::Fmc>
+struct GpioE4::A20<Peripheral::Fsmc>
 {
 	using Gpio = GpioE4;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::A20;
@@ -251,30 +235,6 @@ struct GpioE4::D4<Peripheral::Dcmi>
 	connect()
 	{
 		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioE4::Fsa<Peripheral::Sai1>
-{
-	using Gpio = GpioE4;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Fsa;
-	static constexpr int af = 6;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(6);
-	}
-};
-template<>
-struct GpioE4::Nss<Peripheral::Spi4>
-{
-	using Gpio = GpioE4;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Nss;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
 	}
 };
 template<>

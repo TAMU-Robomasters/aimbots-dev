@@ -163,7 +163,7 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using A9 = GpioSignal;
 	/// @}
 #endif
@@ -177,8 +177,8 @@ public:
 	template< Peripheral peripheral >
 	struct A9 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioF15::A9 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioF15::A9 only connects to Fsmc!");
 	};
 	/// @endcond
 private:
@@ -198,7 +198,7 @@ struct GpioF15::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioF15::A9<Peripheral::Fmc>
+struct GpioF15::A9<Peripheral::Fsmc>
 {
 	using Gpio = GpioF15;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::A9;

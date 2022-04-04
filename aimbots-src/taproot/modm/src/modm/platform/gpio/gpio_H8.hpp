@@ -163,8 +163,6 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
-	using D16 = GpioSignal;
 	/// Connect to Dcmi
 	using Hsync = GpioSignal;
 	/// Connect to I2c3
@@ -177,12 +175,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::BitBang),
 			"GpioH8::BitBang only connects to software drivers!");
-	};
-	template< Peripheral peripheral >
-	struct D16 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH8::D16 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
 	struct Hsync { static void connect();
@@ -212,18 +204,6 @@ struct GpioH8::BitBang<Peripheral::BitBang>
 	static constexpr Gpio::Signal Signal = Gpio::Signal::BitBang;
 	static constexpr int af = -1;
 	inline static void connect() {}
-};
-template<>
-struct GpioH8::D16<Peripheral::Fmc>
-{
-	using Gpio = GpioH8;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D16;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
-	}
 };
 template<>
 struct GpioH8::Hsync<Peripheral::Dcmi>

@@ -165,9 +165,9 @@ public:
 	using BitBang = GpioSignal;
 	/// Connect to Tim1
 	using Bkin = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using D12 = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Da12 = GpioSignal;
 	/// @}
 #endif
@@ -187,14 +187,14 @@ public:
 	template< Peripheral peripheral >
 	struct D12 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE15::D12 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE15::D12 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Da12 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE15::Da12 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE15::Da12 only connects to Fsmc!");
 	};
 	/// @endcond
 private:
@@ -226,7 +226,7 @@ struct GpioE15::Bkin<Peripheral::Tim1>
 	}
 };
 template<>
-struct GpioE15::D12<Peripheral::Fmc>
+struct GpioE15::D12<Peripheral::Fsmc>
 {
 	using Gpio = GpioE15;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::D12;
@@ -238,7 +238,7 @@ struct GpioE15::D12<Peripheral::Fmc>
 	}
 };
 template<>
-struct GpioE15::Da12<Peripheral::Fmc>
+struct GpioE15::Da12<Peripheral::Fsmc>
 {
 	using Gpio = GpioE15;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Da12;

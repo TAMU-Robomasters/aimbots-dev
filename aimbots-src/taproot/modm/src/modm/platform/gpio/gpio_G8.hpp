@@ -163,14 +163,10 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Spi6
-	using Nss = GpioSignal;
 	/// Connect to Eth
 	using Ppsout = GpioSignal;
 	/// Connect to Usart6
 	using Rts = GpioSignal;
-	/// Connect to Fmc
-	using Sdclk = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -179,12 +175,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::BitBang),
 			"GpioG8::BitBang only connects to software drivers!");
-	};
-	template< Peripheral peripheral >
-	struct Nss { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi6),
-			"GpioG8::Nss only connects to Spi6!");
 	};
 	template< Peripheral peripheral >
 	struct Ppsout { static void connect();
@@ -197,12 +187,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::Usart6),
 			"GpioG8::Rts only connects to Usart6!");
-	};
-	template< Peripheral peripheral >
-	struct Sdclk { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioG8::Sdclk only connects to Fmc!");
 	};
 	/// @endcond
 private:
@@ -220,18 +204,6 @@ struct GpioG8::BitBang<Peripheral::BitBang>
 	static constexpr Gpio::Signal Signal = Gpio::Signal::BitBang;
 	static constexpr int af = -1;
 	inline static void connect() {}
-};
-template<>
-struct GpioG8::Nss<Peripheral::Spi6>
-{
-	using Gpio = GpioG8;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Nss;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
 };
 template<>
 struct GpioG8::Ppsout<Peripheral::Eth>
@@ -255,18 +227,6 @@ struct GpioG8::Rts<Peripheral::Usart6>
 	connect()
 	{
 		setAlternateFunction(8);
-	}
-};
-template<>
-struct GpioG8::Sdclk<Peripheral::Fmc>
-{
-	using Gpio = GpioG8;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdclk;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 /// @endcond

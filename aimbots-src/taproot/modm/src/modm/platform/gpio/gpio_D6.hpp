@@ -163,18 +163,10 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Dcmi
-	using D10 = GpioSignal;
-	/// Connect to Spi3
-	using Mosi = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Nwait = GpioSignal;
 	/// Connect to Usart2
 	using Rx = GpioSignal;
-	/// Connect to I2s3
-	using Sd = GpioSignal;
-	/// Connect to Sai1
-	using Sda = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -185,40 +177,16 @@ public:
 			"GpioD6::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct D10 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Dcmi),
-			"GpioD6::D10 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct Mosi { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi3),
-			"GpioD6::Mosi only connects to Spi3!");
-	};
-	template< Peripheral peripheral >
 	struct Nwait { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioD6::Nwait only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioD6::Nwait only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Rx { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Usart2),
 			"GpioD6::Rx only connects to Usart2!");
-	};
-	template< Peripheral peripheral >
-	struct Sd { static void connect();
-		static_assert(
-			(peripheral == Peripheral::I2s3),
-			"GpioD6::Sd only connects to I2s3!");
-	};
-	template< Peripheral peripheral >
-	struct Sda { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Sai1),
-			"GpioD6::Sda only connects to Sai1!");
 	};
 	/// @endcond
 private:
@@ -238,31 +206,7 @@ struct GpioD6::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioD6::D10<Peripheral::Dcmi>
-{
-	using Gpio = GpioD6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D10;
-	static constexpr int af = 13;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioD6::Mosi<Peripheral::Spi3>
-{
-	using Gpio = GpioD6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Mosi;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
-struct GpioD6::Nwait<Peripheral::Fmc>
+struct GpioD6::Nwait<Peripheral::Fsmc>
 {
 	using Gpio = GpioD6;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Nwait;
@@ -283,30 +227,6 @@ struct GpioD6::Rx<Peripheral::Usart2>
 	connect()
 	{
 		setAlternateFunction(7);
-	}
-};
-template<>
-struct GpioD6::Sd<Peripheral::I2s3>
-{
-	using Gpio = GpioD6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sd;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
-struct GpioD6::Sda<Peripheral::Sai1>
-{
-	using Gpio = GpioD6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sda;
-	static constexpr int af = 6;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(6);
 	}
 };
 /// @endcond

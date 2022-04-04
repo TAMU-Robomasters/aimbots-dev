@@ -34,26 +34,33 @@ void Pwm::init()
 {
 #ifndef PLATFORM_HOSTED
 
-    Timer8::connect<PWMOutPinW::Ch1, PWMOutPinX::Ch2, PWMOutPinY::Ch3, PWMOutPinZ::Ch4>();
+    Timer1::connect<PWMOutPinC1::Ch1, PWMOutPinC2::Ch2, PWMOutPinC3::Ch3, PWMOutPinC4::Ch4>();
+    Timer1::enable();
+    Timer1::setMode(Timer1::Mode::UpCounter);
+    timer1CalculatedOverflow = Timer1::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER1_FREQUENCY);
+    Timer1::start();
+    Timer1::enableOutput();
+
+    Timer8::connect<PWMOutPinC5::Ch1, PWMOutPinC6::Ch2, PWMOutPinC7::Ch3>();
     Timer8::enable();
     Timer8::setMode(Timer8::Mode::UpCounter);
     timer8CalculatedOverflow = Timer8::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER8_FREQUENCY);
     Timer8::start();
     Timer8::enableOutput();
 
-    Timer12::connect<PWMOutPinBuzzer::Ch1>();
-    Timer12::enable();
-    Timer12::setMode(Timer12::Mode::UpCounter);
-    timer12CalculatedOverflow = Timer12::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER12_FREQUENCY);
-    Timer12::start();
-    Timer12::enableOutput();
+    Timer4::connect<PWMOutPinBuzzer::Ch3>();
+    Timer4::enable();
+    Timer4::setMode(Timer4::Mode::UpCounter);
+    timer4CalculatedOverflow = Timer4::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER4_FREQUENCY);
+    Timer4::start();
+    Timer4::enableOutput();
 
-    Timer3::connect<PWMOutPinImuHeater::Ch2>();
-    Timer3::enable();
-    Timer3::setMode(Timer3::Mode::UpCounter);
-    timer3CalculatedOverflow = Timer3::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER3_FREQUENCY);
-    Timer3::start();
-    Timer3::enableOutput();
+    Timer10::connect<PWMOutPinImuHeater::Ch1>();
+    Timer10::enable();
+    Timer10::setMode(Timer10::Mode::UpCounter);
+    timer10CalculatedOverflow = Timer10::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER10_FREQUENCY);
+    Timer10::start();
+    Timer10::enableOutput();
 
 #endif
     // Set all out pins to 0 duty
@@ -63,10 +70,13 @@ void Pwm::init()
 void Pwm::writeAllZeros()
 {
 #ifndef PLATFORM_HOSTED
-    write(0.0f, Pin::W);
-    write(0.0f, Pin::X);
-    write(0.0f, Pin::Y);
-    write(0.0f, Pin::Z);
+    write(0.0f, Pin::C1);
+    write(0.0f, Pin::C2);
+    write(0.0f, Pin::C3);
+    write(0.0f, Pin::C4);
+    write(0.0f, Pin::C5);
+    write(0.0f, Pin::C6);
+    write(0.0f, Pin::C7);
     write(0.0f, Pin::Buzzer);
     write(0.0f, Pin::ImuHeater);
 #endif
@@ -81,41 +91,59 @@ void Pwm::write(float duty, Pin pin)
     duty = limitVal<float>(duty, 0.0f, 1.0f);
     switch (pin)
     {
-        case Pin::W:
+        case Pin::C1:
+            Timer1::configureOutputChannel(
+                Ch1,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C2:
+            Timer1::configureOutputChannel(
+                Ch2,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C3:
+            Timer1::configureOutputChannel(
+                Ch3,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C4:
+            Timer1::configureOutputChannel(
+                Ch4,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C5:
             Timer8::configureOutputChannel(
                 Ch1,
                 Timer8::OutputCompareMode::Pwm,
                 duty * timer8CalculatedOverflow);
             break;
-        case Pin::X:
+        case Pin::C6:
             Timer8::configureOutputChannel(
                 Ch2,
                 Timer8::OutputCompareMode::Pwm,
                 duty * timer8CalculatedOverflow);
             break;
-        case Pin::Y:
+        case Pin::C7:
             Timer8::configureOutputChannel(
                 Ch3,
                 Timer8::OutputCompareMode::Pwm,
                 duty * timer8CalculatedOverflow);
             break;
-        case Pin::Z:
-            Timer8::configureOutputChannel(
-                Ch4,
-                Timer8::OutputCompareMode::Pwm,
-                duty * timer8CalculatedOverflow);
-            break;
         case Pin::Buzzer:
-            Timer12::configureOutputChannel(
-                Ch1,
-                Timer12::OutputCompareMode::Pwm,
-                duty * timer12CalculatedOverflow);
+            Timer4::configureOutputChannel(
+                Ch3,
+                Timer4::OutputCompareMode::Pwm,
+                duty * timer4CalculatedOverflow);
             break;
         case Pin::ImuHeater:
-            Timer3::configureOutputChannel(
-                Ch2,
-                Timer3::OutputCompareMode::Pwm,
-                duty * timer3CalculatedOverflow);
+            Timer10::configureOutputChannel(
+                Ch1,
+                Timer10::OutputCompareMode::Pwm,
+                duty * timer10CalculatedOverflow);
             break;
         default:
             break;
@@ -131,14 +159,17 @@ void Pwm::setTimerFrequency(Timer timer, uint32_t frequency)
 #else
     switch (timer)
     {
+        case TIMER1:
+            timer1CalculatedOverflow = Timer1::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+            break;
         case TIMER8:
             timer8CalculatedOverflow = Timer8::setPeriod<Board::SystemClock>(1'000'000 / frequency);
             break;
-        case TIMER12:
-            timer12CalculatedOverflow = Timer12::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+        case TIMER4:
+            timer4CalculatedOverflow = Timer4::setPeriod<Board::SystemClock>(1'000'000 / frequency);
             break;
-        case TIMER3:
-            timer3CalculatedOverflow = Timer3::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+        case TIMER10:
+            timer10CalculatedOverflow = Timer10::setPeriod<Board::SystemClock>(1'000'000 / frequency);
             break;
     }
 #endif
@@ -151,14 +182,17 @@ void Pwm::pause(Timer timer)
 #else
     switch (timer)
     {
+        case TIMER1:
+            Timer1::pause();
+            break;
         case TIMER8:
             Timer8::pause();
             break;
-        case TIMER12:
-            Timer12::pause();
+        case TIMER4:
+            Timer4::pause();
             break;
-        case TIMER3:
-            Timer3::pause();
+        case TIMER10:
+            Timer10::pause();
             break;
     }
 #endif
@@ -171,14 +205,17 @@ void Pwm::start(Timer timer)
 #else
     switch (timer)
     {
+        case TIMER1:
+            Timer1::start();
+            break;
         case TIMER8:
             Timer8::start();
             break;
-        case TIMER12:
-            Timer12::start();
+        case TIMER4:
+            Timer4::start();
             break;
-        case TIMER3:
-            Timer3::start();
+        case TIMER10:
+            Timer10::start();
             break;
     }
 #endif
