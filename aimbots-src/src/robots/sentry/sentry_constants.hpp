@@ -89,8 +89,9 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 // Values specific for Sentry hardware setup
 static constexpr float YAW_START_ANGLE = 61.0f;
 static constexpr float PITCH_START_ANGLE = 220.0f;
-static constexpr float PITCH_HARDSTOP_LOW = 250.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 170.0f;
+
+static constexpr float PITCH_HARDSTOP_LOW = 270.0f;
+static constexpr float PITCH_HARDSTOP_HIGH = 155.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
