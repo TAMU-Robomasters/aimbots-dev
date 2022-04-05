@@ -1,1 +1,1 @@
-cd "$FORNIX_FOLDER/aimbots-dev"
+cd "$FORNIX_FOLDER/aimbots-src"

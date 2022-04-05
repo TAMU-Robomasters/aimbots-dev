@@ -74,7 +74,14 @@
         "variant": "cpp",
         "SConstruct": "python",
         "SConscript": "python",
-        "*.source": "cpp"
+        "*.source": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp"
     },
     "search.exclude": {
         "**/node_modules": true,
@@ -83,13 +90,13 @@
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
-        "aimbots-dev/taproot/src",
-        "aimbots-dev/src",
+        "aimbots-src/taproot/src",
+        "aimbots-src/src",
     ],
     "C_Cpp.default.cppStandard": "c++20",
     "C_Cpp.default.cStandard": "c11",
     "C_Cpp.default.forcedInclude": [
-        "aimbots-dev/robot-type/robot_type.hpp"
+        "aimbots-src/robot-type/robot_type.hpp"
     ],
     "[markdown]": {
         "editor.wordWrap": "off",
@@ -98,4 +105,5 @@
             100
         ]
     },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
 }

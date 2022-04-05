@@ -3,8 +3,8 @@
 # 
 *.pyc
 
-/build
-/Pipfile.lock
+aimbots-src/build
+aimbots-src/Pipfile.lock
 project.xml.log
 
 .vscode/.cortex-debug.peripherals.state.json
@@ -17,6 +17,8 @@ gcov-result
 docs/_build
 docs/api
 docs/doxyoutput
+
+.DS_Store
 
 # 
 # standard

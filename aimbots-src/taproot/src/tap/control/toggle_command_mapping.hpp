@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ *
+ * This file is part of Taproot.
+ *
+ * Taproot is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Taproot is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
+#define TAPROOT_TOGGLE_COMMAND_MAPPING_HPP_
+
+#include "command_mapping.hpp"
+
+namespace tap
+{
+namespace control
+{
+class Command;
+class RemoteMapState;
+
+/**
+ * A CommandMapping that adds `Command`s when the contained mapping
+ * is toggled, and removes the `Command`s when the mapping is untoggled.
+ *
+ * When all of the commands in the toggle command mapping naturally ends,
+ * the toggle command mapping's internal state is reset to being not toggled.
+ */
+class ToggleCommandMapping : public CommandMapping
+{
+public:
+    /**
+     * Constructor must take the set of `Command`s and the RemoteMapState.
+     */
+    ToggleCommandMapping(
+        Drivers *drivers,
+        const std::vector<Command *> cmds,
+        const RemoteMapState &rms)
+        : CommandMapping(drivers, cmds, rms),
+          pressed(false),
+          toggled(false)
+    {
+    }
+
+    virtual ~ToggleCommandMapping() = default;
+
+    /**
+     * See the class description details about how the commands are added and
+     * removed.
+     *
+     * @param[in] currState The current RemoteMapState of the remote.
+     */
+    void executeCommandMapping(const RemoteMapState &currState) override;
+
+private:
+    bool pressed;
+    bool toggled;
+};  // class ToggleCommandMapping
+}  // namespace control
+}  // namespace tap
+
+#endif  // TAPROOT_ TOGGLE_COMMAND_MAPPING_HPP_

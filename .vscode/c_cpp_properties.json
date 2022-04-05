@@ -2,37 +2,53 @@
     "configurations": [
         {
             "name": "Test",
-            "defines": ["${default}", "ENV_UNIT_TESTS", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "defines": [
+                "${default}",
+                "ENV_UNIT_TESTS",
+                "PLATFORM_HOSTED",
+                "RUN_WITH_PROFILING"
+            ],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/hosted-linux/modm/src",
-                "template-project/taproot/test",
-                "template-project/test"
+                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src",
+                "aimbots-src/taproot/test",
+                "aimbots-src/test"
             ],
             "intelliSenseMode": "gcc-x64",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
         },
         {
             "name": "Sim",
-            "defines": ["${default}", "PLATFORM_HOSTED", "RUN_WITH_PROFILING"],
+            "defines": [
+                "${default}",
+                "PLATFORM_HOSTED",
+                "RUN_WITH_PROFILING"
+            ],
             "includePath": [
                 "${default}",
-                "template-project/taproot/sim-modm/hosted-linux/modm/src"
+                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src"
             ],
             "intelliSenseMode": "gcc-x64",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
         },
         {
             "name": "Hardware",
             "includePath": [
                 "${default}",
-                "template-project/taproot/modm/src",
-                "template-project/taproot/modm/ext/cmsis/core",
-                "template-project/taproot/modm/ext/cmsis/device",
-                "template-project/taproot/modm/ext/cmsis/dsp"        
+                "aimbots-src/taproot/modm/src",
+                "aimbots-src/taproot/modm/ext/cmsis/core",
+                "aimbots-src/taproot/modm/ext/cmsis/device",
+                "aimbots-src/taproot/modm/ext/cmsis/dsp"
             ],
-            "intelliSenseMode": "gcc-arm",
-            "browse": { "limitSymbolsToIncludedHeaders": true }
+            "intelliSenseMode": "gcc-arm64",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4
