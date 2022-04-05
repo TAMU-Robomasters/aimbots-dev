@@ -64,3 +64,13 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+
+static constexpr float SHOOTER_PID_KP = 50.0f;
+static constexpr float SHOOTER_PID_KI = 0.0f;
+static constexpr float SHOOTER_PID_KD = 0.0f;
+static constexpr float SHOOTER_MAX_I_CUMULATIVE = 10.0f;
+static constexpr float SHOOTER_MAX_OUTPUT = 30000.0f;
+static constexpr float SHOOTER_TQ_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float SHOOTER_TR_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float SHOOTER_TQ_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr float SHOOTER_TR_PROPORTIONAL_KALMAN = 1.0f;
