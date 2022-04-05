@@ -23,7 +23,7 @@ void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
     float targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
-                           userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL);
+                           (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL) * YAW_MOTOR_DIRECTION);
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
     float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -

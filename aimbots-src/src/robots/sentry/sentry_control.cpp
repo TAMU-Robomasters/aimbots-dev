@@ -14,10 +14,22 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
 //
+#include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/run_feeder_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
+//
+#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_control_command.hpp"
+//
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/shooter_command.hpp"
+#include "subsystems/shooter/shooter_default_command.hpp"
 
 using namespace src::Chassis;
+using namespace src::Feeder;
+using namespace src::Gimbal;
+using namespace src::Shooter;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -34,32 +46,49 @@ namespace SentryControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
-src::Shooter::ShooterSubsystem shooter(drivers());
+FeederSubsystem feeder(drivers());
+GimbalSubsystem gimbal(drivers());
+ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
+RunFeederCommand runFeederCommand(drivers(), &feeder);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
+GimbalChassisRelativeController gimbalController(&gimbal);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
+ShooterCommand shooterCommand(drivers(), &shooter);
+ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &shooterCommand},
+    {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&runFeederCommand, &shooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&feeder);
+    drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
+    feeder.initialize();
+    gimbal.initialize();
     shooter.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
+    feeder.setDefaultCommand(&stopFeederCommand);
     // no default commands should be set
 }
 
@@ -75,19 +104,20 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
-}  // namespace StandardControl
+}  // namespace SentryControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        SentryControl::initializeSubsystems();
-        SentryControl::registerSubsystems(drivers);
-        SentryControl::setDefaultCommands(drivers);
-        SentryControl::startupCommands(drivers);
-        SentryControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    SentryControl::initializeSubsystems();
+    SentryControl::registerSubsystems(drivers);
+    SentryControl::setDefaultCommands(drivers);
+    SentryControl::startupCommands(drivers);
+    SentryControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
-#endif //TARGET_SENTRY
+#endif  // TARGET_SENTRY

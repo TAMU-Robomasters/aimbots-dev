@@ -16,8 +16,8 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
 #ifdef TARGET_SENTRY
       flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, true, "Flywheel Three"),
       flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, false, "Flywheel Four"),
-      flywheel3PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
-      flywheel4PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+      flywheel3PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
+      flywheel4PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
 #endif
       targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
@@ -43,6 +43,7 @@ void ShooterSubsystem::initialize() {
 }
 
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
+
 void ShooterSubsystem::refresh() {
     ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }

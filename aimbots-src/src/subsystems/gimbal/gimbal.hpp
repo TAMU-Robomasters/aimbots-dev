@@ -1,4 +1,5 @@
 #pragma once
+#ifndef TARGET_ENGINEER
 
 #include <drivers.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
@@ -61,8 +62,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
-
-    static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 };
 
 }  // namespace src::Gimbal
+#endif

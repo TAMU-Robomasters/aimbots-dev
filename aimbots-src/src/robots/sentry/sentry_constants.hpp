@@ -1,10 +1,25 @@
 #pragma once
 #include "utils/common_types.hpp"
 
+/**
+ * @brief Defines the number of motors created for the chassis.
+ */
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 1;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
+/**
+ * @brief Definitions for operator interface constants (may change based on preference of drivers)
+ *
+ */
+static constexpr int16_t USER_MOUSE_YAW_MAX = 1000;
+static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
+static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
+static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
+
+static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float SHIFT_SCALAR = (1.0f / 2);
+
 /**
  * @brief Velocity PID constants
  */
@@ -16,15 +31,30 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float POSITION_PID_KP = 20.0f;
-static constexpr float POSITION_PID_KI = 0.2f;
-static constexpr float POSITION_PID_KD = 0.0f;
-static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float YAW_POSITION_PID_KP = 600.0f;
+static constexpr float YAW_POSITION_PID_KI = 0.0f;
+static constexpr float YAW_POSITION_PID_KD = 1.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 
-static constexpr MotorID RAIL_WHEEL_ID  = MotorID::MOTOR1;
-static constexpr MotorID YAW_MOTOR_ID   = MotorID::MOTOR5;
+static constexpr float PITCH_POSITION_PID_KP = 600.0f;
+static constexpr float PITCH_POSITION_PID_KI = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD = 1.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+
+static constexpr float FEEDER_MOTOR_DIRECTION = -1;
+static constexpr float YAW_MOTOR_DIRECTION = -1;
+
+// CAN Bus 1
+static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR3;
+static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
-//
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
+
+static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
+
+// CAN Bus 2
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
@@ -54,11 +84,12 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = M_PI_2;
-static constexpr float PITCH_START_ANGLE = M_PI_2;
-#error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
-static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
+// FIXME: These work for thee testbed standard, so they need to
+//        adjusted for sentry
+static constexpr float YAW_START_ANGLE = 61.0f;
+static constexpr float PITCH_START_ANGLE = 208.0f;
+static constexpr float PITCH_HARDSTOP_LOW = 250.0f;
+static constexpr float PITCH_HARDSTOP_HIGH = 170.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
@@ -71,3 +102,27 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+
+/**
+ * @brief Power constants for chassis
+ */
+static constexpr int MIN_WHEEL_SPEED_SINGLE_MOTOR = 4000;
+static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
+static constexpr int MIN_CHASSIS_POWER = 40;
+static constexpr int MAX_CHASSIS_POWER = 120;
+static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
+    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
+
+/**
+ * @brief Behavior constants for chassis
+ */
+
+/**
+ * The minimum desired wheel speed for chassis rotation, measured in RPM before
+ * we start slowing down translational speed.
+ */
+static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
+
+// Used to reverse Feeder Motor direction, should only be 1 or -1

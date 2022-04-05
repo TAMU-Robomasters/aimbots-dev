@@ -1,5 +1,5 @@
-#ifdef TARGET_STANDARD
-#include "standard_control_interface.hpp"
+#ifdef TARGET_SENTRY
+#include "sentry_control_interface.hpp"
 
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"

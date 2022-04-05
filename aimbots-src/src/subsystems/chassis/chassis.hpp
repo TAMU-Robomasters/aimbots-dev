@@ -121,15 +121,15 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 #else
    public:
 #endif
-    static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
 
+    float desiredRotation = 0.0f;
 #ifdef TARGET_SENTRY
     DJIMotor railWheel;
     StockPID railWheelVelPID;
+
 #else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
     StockPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
-    float desiredRotation = 0.0f;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
     StockPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;

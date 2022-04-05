@@ -20,6 +20,9 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
+static constexpr float FEEDER_MOTOR_DIRECTION = 1;
+static constexpr float YAW_MOTOR_DIRECTION = 1;
+
 /**
  * @brief Velocity PID constants
  */
@@ -52,6 +55,11 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+
+static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.

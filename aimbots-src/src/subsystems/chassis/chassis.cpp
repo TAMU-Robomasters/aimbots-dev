@@ -13,6 +13,11 @@ ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
 #ifdef TARGET_SENTRY
                              railWheel(drivers, RAIL_WHEEL_ID, CHAS_BUS, false, "Rail Motor"),
+                             railWheelVelPID(VELOCITY_PID_KP,
+                                             VELOCITY_PID_KI,
+                                             VELOCITY_PID_KD,
+                                             VELOCITY_PID_MAX_ERROR_SUM,
+                                             VELOCITY_PID_MAX_OUTPUT),
 #else
                              leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHAS_BUS, false, "Left Back Wheel Motor"),
                              leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
@@ -181,5 +186,7 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
 
 void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
 
-void ChassisSubsystem::calculateRail(float) {}
+void ChassisSubsystem::calculateRail(float) {
+    targetRPMs[RAIL][0] = 0.0f;
+}
 };  // namespace src::Chassis

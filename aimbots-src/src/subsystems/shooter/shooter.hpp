@@ -85,8 +85,6 @@ class ShooterSubsystem : public tap::control::Subsystem {
     SmoothPID flywheel3PID, flywheel4PID;
 #endif
 
-    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-
     Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
