@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
+cd "$MAIN_FOLDER" 2>/dev/null
 pipenv run scons build
