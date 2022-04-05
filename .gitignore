@@ -18,7 +18,7 @@ docs/_build
 docs/api
 docs/doxyoutput
 
-#.DS_Store
+.DS_Store
 
 # 
 # standard
@@ -52,7 +52,7 @@ docs/doxyoutput
 # MacOS
 # 
 # General
-#.DS_Store
+.DS_Store
 .AppleDouble
 .LSOverride
 
