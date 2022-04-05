@@ -23,6 +23,7 @@
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/architecture/profiler.hpp"
 #include "tap/mock/analog_mock.hpp"
+#include "tap/mock/bmi088_mock.hpp"
 #include "tap/mock/can_mock.hpp"
 #include "tap/mock/can_rx_handler_mock.hpp"
 #include "tap/mock/command_mapper_mock.hpp"
@@ -46,6 +47,7 @@
 #include "tap/communication/gpio/digital.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/communication/gpio/pwm.hpp"
+#include "tap/communication/sensors/bmi088/bmi088.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/communication/serial/terminal_serial.hpp"
@@ -86,6 +88,7 @@ protected:
           errorController(this),
           djiMotorTerminalSerialHandler(this),
           djiMotorTxHandler(this),
+          bmi088(this),
 #ifdef ENV_UNIT_TESTS
           commandScheduler(this)
 #else
@@ -110,6 +113,7 @@ protected:
     testing::StrictMock<mock::ErrorControllerMock> errorController;
     testing::NiceMock<mock::DjiMotorTerminalSerialHandlerMock> djiMotorTerminalSerialHandler;
     testing::NiceMock<mock::DjiMotorTxHandlerMock> djiMotorTxHandler;
+    testing::NiceMock<mock::Bmi088Mock> bmi088;
     testing::NiceMock<mock::CommandSchedulerMock> commandScheduler;
 #else
 public:
@@ -129,6 +133,7 @@ public:
     errors::ErrorController errorController;
     motor::DjiMotorTerminalSerialHandler djiMotorTerminalSerialHandler;
     motor::DjiMotorTxHandler djiMotorTxHandler;
+    communication::sensors::bmi088::Bmi088 bmi088;
     control::CommandScheduler commandScheduler;
 #endif
 };  // class Drivers

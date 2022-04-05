@@ -41,6 +41,7 @@
     <module>taproot:communication:gpio:leds</module>
     <module>taproot:communication:gpio:digital</module>
     <module>taproot:communication:tcp-server</module>
+    <module>taproot:communication:sensors:bmi088</module>
 
     <!-- Only supported on RoboMaster Development Board Type A -->
     <!-- <module>taproot:communication:sensors:mpu6500</module>
