@@ -71,6 +71,8 @@ class ShooterSubsystem : public tap::control::Subsystem {
      */
     void setTargetRPM(MotorIndex motorIdx, float targetRPM);
 
+    void setDesiredOutput(MotorIndex motorIdx);
+
 #ifndef ENV_UNIT_TESTS
    private:
 #else
@@ -86,6 +88,7 @@ class ShooterSubsystem : public tap::control::Subsystem {
 #endif
 
     Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
+    Matrix<float, SHOOTER_MOTOR_COUNT, 1> desiredOutputs;
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;

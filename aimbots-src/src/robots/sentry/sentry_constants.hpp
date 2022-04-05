@@ -33,14 +33,15 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
  */
 static constexpr float YAW_POSITION_PID_KP = 600.0f;
 static constexpr float YAW_POSITION_PID_KI = 0.0f;
-static constexpr float YAW_POSITION_PID_KD = 1.0f;
+static constexpr float YAW_POSITION_PID_KD = 25000.0f;
 static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 
 static constexpr float PITCH_POSITION_PID_KP = 600.0f;
 static constexpr float PITCH_POSITION_PID_KI = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD = 1.0f;
+static constexpr float PITCH_POSITION_PID_KD = 1000.0f;
 static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 
+// Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_MOTOR_DIRECTION = -1;
 static constexpr float YAW_MOTOR_DIRECTION = -1;
 
@@ -50,8 +51,9 @@ static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
 
-static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
 
 // CAN Bus 2
@@ -84,10 +86,9 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-// FIXME: These work for thee testbed standard, so they need to
-//        adjusted for sentry
+// Values specific for Sentry hardware setup
 static constexpr float YAW_START_ANGLE = 61.0f;
-static constexpr float PITCH_START_ANGLE = 208.0f;
+static constexpr float PITCH_START_ANGLE = 220.0f;
 static constexpr float PITCH_HARDSTOP_LOW = 250.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 170.0f;
 
@@ -124,5 +125,3 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  * we start slowing down translational speed.
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
-
-// Used to reverse Feeder Motor direction, should only be 1 or -1

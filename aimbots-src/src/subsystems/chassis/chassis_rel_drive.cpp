@@ -58,7 +58,7 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         chassisRotationDesiredWheelspeed);
 
     // set chassis targets using setDesiredOutputs
-    chassis->setDesiredOutputs(
+    chassis->setTargetRPMs(
         chassisXDesiredWheelspeed,
         chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);

@@ -93,7 +93,7 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *drivers) {
+void startupCommands(src::Drivers *) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command

@@ -56,7 +56,7 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
-static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 

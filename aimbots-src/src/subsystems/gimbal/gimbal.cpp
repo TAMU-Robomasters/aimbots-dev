@@ -44,6 +44,7 @@ void GimbalSubsystem::refresh() {
         // flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
     }
+    currentYawAngleDebug = getCurrentYawAngle(AngleUnit::Degrees);
 
     if (pitchMotor.isMotorOnline()) {
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();

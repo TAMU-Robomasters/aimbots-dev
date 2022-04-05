@@ -43,6 +43,10 @@ struct SmoothPIDWrapper {
         lastTime = currTime;
         return pid.runControllerDerivateError(error, dt);
     }
+
+    float getOutput() {
+        return pid.getOutput();
+    }
 };
 
 }  // namespace src::utils
