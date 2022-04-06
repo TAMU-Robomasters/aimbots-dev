@@ -5,6 +5,29 @@
 
 namespace src::Gimbal {
 
+constexpr float constAbs(float value)
+{
+    return (value < 0.0f) ? (value * -1.0f) : value;
+}
+
+//
+// NOTE: This function assumes the hardstops are in degrees.
+// TODO: Validate that this functions as it should.
+//
+constexpr float getPitchMotorDirection()
+{
+    constexpr float intialDirection = (PITCH_HARDSTOP_HIGH < PITCH_HARDSTOP_LOW) ? 1.0f : -1.0f;
+
+    // If 0 is somewhere in our available arc of pitch, then we need
+    // to flip the direction, because the previous condition would be
+    // incorrect.
+    if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
+        return intialDirection * -1.0f;
+    }
+
+    return intialDirection;
+}
+
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
                                            GimbalChassisRelativeController* gimbalController,
@@ -23,11 +46,11 @@ void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
     float targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
-                           (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL) * YAW_MOTOR_DIRECTION);
+                           (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL)) * YAW_MOTOR_DIRECTION;
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
     float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
-                             userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL);
+                             (userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL)) * getPitchMotorDirection();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 
