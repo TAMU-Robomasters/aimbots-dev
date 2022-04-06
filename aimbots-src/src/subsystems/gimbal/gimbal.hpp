@@ -10,11 +10,9 @@
 
 namespace src::Gimbal {
 
-inline float limitPitchAngle(float angle) {
-    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH)
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
-    else
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+constexpr float constAbs(float value)
+{
+    return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
 enum class AngleUnit : uint8_t {

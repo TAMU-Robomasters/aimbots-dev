@@ -4,6 +4,19 @@
 
 namespace src::Gimbal {
 
+static constexpr int THING = 1;
+
+static inline float limitPitchAngle(float angle) {
+    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH) {
+        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
+    } else if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
+        // FIXME: Implement this check
+        return 0.0f;
+    } else {
+        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+    }
+}
+
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
       yawPositionPID(

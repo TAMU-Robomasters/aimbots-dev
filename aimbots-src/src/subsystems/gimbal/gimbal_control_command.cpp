@@ -5,11 +5,6 @@
 
 namespace src::Gimbal {
 
-constexpr float constAbs(float value)
-{
-    return (value < 0.0f) ? (value * -1.0f) : value;
-}
-
 //
 // NOTE: This function assumes the hardstops are in degrees.
 // TODO: Validate that this functions as it should.
