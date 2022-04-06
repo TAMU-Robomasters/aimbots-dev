@@ -33,7 +33,7 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
  */
 static constexpr float YAW_POSITION_PID_KP                    = 600.0f;
 static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
-static constexpr float YAW_POSITION_PID_KD                    = 25000.0f;
+static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
 static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
 static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
 static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
@@ -42,7 +42,7 @@ static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
 static constexpr float PITCH_POSITION_PID_KP                    = 600.0f;
 static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD                    = 1000.0f;
+static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
 static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
 static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
 static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
