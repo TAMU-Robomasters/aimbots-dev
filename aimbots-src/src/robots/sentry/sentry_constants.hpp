@@ -31,15 +31,23 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float YAW_POSITION_PID_KP = 600.0f;
-static constexpr float YAW_POSITION_PID_KI = 0.0f;
-static constexpr float YAW_POSITION_PID_KD = 25000.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float YAW_POSITION_PID_KP                    = 600.0f;
+static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
+static constexpr float YAW_POSITION_PID_KD                    = 25000.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
+static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
-static constexpr float PITCH_POSITION_PID_KP = 600.0f;
-static constexpr float PITCH_POSITION_PID_KI = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD = 1000.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float PITCH_POSITION_PID_KP                    = 600.0f;
+static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD                    = 1000.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
+static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
 // Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_MOTOR_DIRECTION = -1;
