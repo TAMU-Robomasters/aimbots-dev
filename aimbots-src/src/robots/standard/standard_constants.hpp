@@ -132,3 +132,16 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  * we start slowing down translational speed.
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
+
+/**
+ * @brief PID constants for shooter
+ */
+static constexpr float SHOOTER_PID_KP = 50.0f;
+static constexpr float SHOOTER_PID_KI = 0.0f;
+static constexpr float SHOOTER_PID_KD = 0.0f;
+static constexpr float SHOOTER_MAX_I_CUMULATIVE = 10.0f;
+static constexpr float SHOOTER_MAX_OUTPUT = 30000.0f;
+static constexpr float SHOOTER_TQ_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float SHOOTER_TR_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float SHOOTER_TQ_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr float SHOOTER_TR_PROPORTIONAL_KALMAN = 1.0f;
