@@ -44,38 +44,6 @@ void Leds::set(Leds::LedPin pin, bool isSet)
 #else
     switch (pin)
     {
-        case Leds::LedPin::A:
-            LedA::set(isSet);
-            break;
-
-        case Leds::LedPin::B:
-            LedB::set(isSet);
-            break;
-
-        case Leds::LedPin::C:
-            LedC::set(isSet);
-            break;
-
-        case Leds::LedPin::D:
-            LedD::set(isSet);
-            break;
-
-        case Leds::LedPin::E:
-            LedE::set(isSet);
-            break;
-
-        case Leds::LedPin::F:
-            LedF::set(isSet);
-            break;
-
-        case Leds::LedPin::G:
-            LedG::set(isSet);
-            break;
-
-        case Leds::LedPin::H:
-            LedH::set(isSet);
-            break;
-
         case Leds::LedPin::Green:
             LedGreen::set(isSet);
             break;
@@ -83,7 +51,10 @@ void Leds::set(Leds::LedPin pin, bool isSet)
         case Leds::LedPin::Red:
             LedRed::set(isSet);
             break;
-    }
+        
+        case Leds::LedPin::Blue:
+            LedBlue::set(isSet);
+    } 
 #endif
 }
 }  // namespace gpio

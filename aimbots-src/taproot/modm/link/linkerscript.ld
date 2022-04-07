@@ -14,13 +14,12 @@
 
 MEMORY
 {
-	FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 2097152
+	FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 1048576
 	CCM (rw) : ORIGIN = 0x10000000, LENGTH = 65536
 	SRAM1 (rwx) : ORIGIN = 0x20000000, LENGTH = 114688
 	SRAM2 (rwx) : ORIGIN = 0x2001C000, LENGTH = 16384
-	SRAM3 (rwx) : ORIGIN = 0x20020000, LENGTH = 65536
 	BACKUP (rwx) : ORIGIN = 0x40024000, LENGTH = 4096
-	CONT_SRAM1 (rwx) : ORIGIN = 0x20000000, LENGTH = 196608
+	CONT_SRAM1 (rwx) : ORIGIN = 0x20000000, LENGTH = 131072
     
 }
 
@@ -32,8 +31,6 @@ __sram1_start = ORIGIN(SRAM1);
 __sram1_end = ORIGIN(SRAM1) + LENGTH(SRAM1);
 __sram2_start = ORIGIN(SRAM2);
 __sram2_end = ORIGIN(SRAM2) + LENGTH(SRAM2);
-__sram3_start = ORIGIN(SRAM3);
-__sram3_end = ORIGIN(SRAM3) + LENGTH(SRAM3);
 __backup_start = ORIGIN(BACKUP);
 __backup_end = ORIGIN(BACKUP) + LENGTH(BACKUP);
 OUTPUT_FORMAT("elf32-littlearm")
@@ -207,41 +204,6 @@ SECTIONS
 		__heap_sram2_end = .;
 	} >CONT_SRAM1
 
-	.data_sram3 :
-	{
-		. = ALIGN(4);
-		__data_sram3_load = LOADADDR(.data_sram3);
-		__data_sram3_start = .;
-		*(.data_sram3 .data_sram3.*)
-		. = ALIGN(4);
-	} >CONT_SRAM1 AT >FLASH
-
-	__data_sram3_end = .;
-
-	.bss_sram3 (NOLOAD) :
-	{
-		. = ALIGN(4);
-		__bss_sram3_start = .;
-		*(.bss_sram3 .bss_sram3.*)
-		. = ALIGN(4);
-		__bss_sram3_end = .;
-	} >CONT_SRAM1
-	.noinit_sram3 (NOLOAD) :
-	{
-		. = ALIGN(4);
-		__noinit_sram3_start = .;
-		*(.noinit_sram3 .noinit_sram3.*)
-		. = ALIGN(4);
-		__noinit_sram3_end = .;
-	} >CONT_SRAM1
-	.heap_sram3 (NOLOAD) :
-	{
-		. = ALIGN(4);
-		__heap_sram3_start = .;
-		. = MAX(ABSOLUTE(.), ORIGIN(SRAM3) + LENGTH(SRAM3));
-		__heap_sram3_end = .;
-	} >CONT_SRAM1
-
 
 
 
@@ -350,8 +312,6 @@ SECTIONS
 		LONG(__bss_end)
 		LONG(__bss_sram2_start)
 		LONG(__bss_sram2_end)
-		LONG(__bss_sram3_start)
-		LONG(__bss_sram3_end)
 		LONG(__bss_backup_start)
 		LONG(__bss_backup_end)
 		LONG(__bss_ccm_start)
@@ -365,9 +325,6 @@ SECTIONS
 		LONG(__data_sram2_load)
 		LONG(__data_sram2_start)
 		LONG(__data_sram2_end)
-		LONG(__data_sram3_load)
-		LONG(__data_sram3_start)
-		LONG(__data_sram3_end)
 		LONG(__data_backup_load)
 		LONG(__data_backup_start)
 		LONG(__data_backup_end)
@@ -404,9 +361,6 @@ SECTIONS
 		LONG(0x001f)
 		LONG(__heap_sram2_start)
 		LONG(__heap_sram2_end)
-		LONG(0x001f)
-		LONG(__heap_sram3_start)
-		LONG(__heap_sram3_end)
 		LONG(0x4009)
 		LONG(__heap_backup_start)
 		LONG(__heap_backup_end)

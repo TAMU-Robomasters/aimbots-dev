@@ -4,6 +4,19 @@
 
 namespace src::Gimbal {
 
+static constexpr int THING = 1;
+
+static inline float limitPitchAngle(float angle) {
+    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH) {
+        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
+    } else if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
+        // FIXME: Implement this check
+        return 0.0f;
+    } else {
+        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+    }
+}
+
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
       yawPositionPID(
@@ -11,17 +24,25 @@ GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem
           YAW_POSITION_PID_KI,
           YAW_POSITION_PID_KD,
           YAW_POSITION_PID_MAX_ERROR_SUM,
-          POSITION_PID_MAX_OUTPUT),
+          POSITION_PID_MAX_OUTPUT,
+          YAW_POSITION_PID_Q_DERIVATIVE_KALMAN,
+          YAW_POSITION_PID_R_DERIVATIVE_KALMAN,
+          YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN,
+          YAW_POSITION_PID_R_PROPORTIONAL_KALMAN),
       pitchPositionPID(
           PITCH_POSITION_PID_KP,
           PITCH_POSITION_PID_KI,
           PITCH_POSITION_PID_KD,
           PITCH_POSITION_PID_MAX_ERROR_SUM,
-          POSITION_PID_MAX_OUTPUT) {}
+          POSITION_PID_MAX_OUTPUT,
+          PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN,
+          PITCH_POSITION_PID_R_DERIVATIVE_KALMAN,
+          PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN,
+          PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN) {}
 
 void GimbalChassisRelativeController::initialize() {
-    yawPositionPID.reset();
-    pitchPositionPID.reset();
+    yawPositionPID.pid.reset();
+    pitchPositionPID.pid.reset();
 }
 
 void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredYawAngle) {
@@ -29,8 +50,7 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentYawAngleAsContiguousFloat().difference(gimbal->getTargetYawAngle(AngleUnit::Radians)));
 
-    yawPositionPID.update(positionControllerError);
-    float yawPositionPIDOutput = yawPositionPID.getValue();
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
@@ -41,8 +61,7 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float d
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
-    pitchPositionPID.update(positionControllerError);
-    float pitchPositionPIDOutput = pitchPositionPID.getValue();
+    float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
     gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
 }

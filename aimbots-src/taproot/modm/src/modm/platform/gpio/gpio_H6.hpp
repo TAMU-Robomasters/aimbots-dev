@@ -165,14 +165,8 @@ public:
 	using BitBang = GpioSignal;
 	/// Connect to Tim12
 	using Ch1 = GpioSignal;
-	/// Connect to Dcmi
-	using D8 = GpioSignal;
 	/// Connect to Eth
 	using Rxd2 = GpioSignal;
-	/// Connect to Spi5
-	using Sck = GpioSignal;
-	/// Connect to Fmc
-	using Sdne1 = GpioSignal;
 	/// Connect to I2c2
 	using Smba = GpioSignal;
 	/// @}
@@ -191,28 +185,10 @@ public:
 			"GpioH6::Ch1 only connects to Tim12!");
 	};
 	template< Peripheral peripheral >
-	struct D8 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Dcmi),
-			"GpioH6::D8 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
 	struct Rxd2 { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Eth),
 			"GpioH6::Rxd2 only connects to Eth!");
-	};
-	template< Peripheral peripheral >
-	struct Sck { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi5),
-			"GpioH6::Sck only connects to Spi5!");
-	};
-	template< Peripheral peripheral >
-	struct Sdne1 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH6::Sdne1 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
 	struct Smba { static void connect();
@@ -250,18 +226,6 @@ struct GpioH6::Ch1<Peripheral::Tim12>
 	}
 };
 template<>
-struct GpioH6::D8<Peripheral::Dcmi>
-{
-	using Gpio = GpioH6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D8;
-	static constexpr int af = 13;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(13);
-	}
-};
-template<>
 struct GpioH6::Rxd2<Peripheral::Eth>
 {
 	using Gpio = GpioH6;
@@ -271,30 +235,6 @@ struct GpioH6::Rxd2<Peripheral::Eth>
 	connect()
 	{
 		setAlternateFunction(11);
-	}
-};
-template<>
-struct GpioH6::Sck<Peripheral::Spi5>
-{
-	using Gpio = GpioH6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sck;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
-struct GpioH6::Sdne1<Peripheral::Fmc>
-{
-	using Gpio = GpioH6;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdne1;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 template<>

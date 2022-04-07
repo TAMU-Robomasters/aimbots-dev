@@ -1,3 +1,4 @@
+#ifdef TARGET_STANDARD
 #include "standard_control_interface.hpp"
 
 #include "tap/architecture/clock.hpp"
@@ -100,3 +101,5 @@ float OperatorInterface::getGimbalPitchInput() {
 }
 
 }  // namespace src::Control
+
+#endif

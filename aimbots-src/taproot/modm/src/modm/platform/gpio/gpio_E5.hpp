@@ -163,16 +163,12 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using A21 = GpioSignal;
 	/// Connect to Tim9
 	using Ch1 = GpioSignal;
 	/// Connect to Dcmi
 	using D6 = GpioSignal;
-	/// Connect to Spi4
-	using Miso = GpioSignal;
-	/// Connect to Sai1
-	using Scka = GpioSignal;
 	/// Connect to Sys
 	using Traced2 = GpioSignal;
 	/// @}
@@ -187,8 +183,8 @@ public:
 	template< Peripheral peripheral >
 	struct A21 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE5::A21 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE5::A21 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Ch1 { static void connect();
@@ -201,18 +197,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::Dcmi),
 			"GpioE5::D6 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct Miso { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi4),
-			"GpioE5::Miso only connects to Spi4!");
-	};
-	template< Peripheral peripheral >
-	struct Scka { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Sai1),
-			"GpioE5::Scka only connects to Sai1!");
 	};
 	template< Peripheral peripheral >
 	struct Traced2 { static void connect();
@@ -238,7 +222,7 @@ struct GpioE5::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioE5::A21<Peripheral::Fmc>
+struct GpioE5::A21<Peripheral::Fsmc>
 {
 	using Gpio = GpioE5;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::A21;
@@ -271,30 +255,6 @@ struct GpioE5::D6<Peripheral::Dcmi>
 	connect()
 	{
 		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioE5::Miso<Peripheral::Spi4>
-{
-	using Gpio = GpioE5;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Miso;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
-struct GpioE5::Scka<Peripheral::Sai1>
-{
-	using Gpio = GpioE5;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Scka;
-	static constexpr int af = 6;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(6);
 	}
 };
 template<>

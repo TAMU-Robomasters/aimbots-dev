@@ -163,12 +163,8 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Spi5
-	using Nss = GpioSignal;
 	/// Connect to I2c2
 	using Sda = GpioSignal;
-	/// Connect to Fmc
-	using Sdnwe = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -179,22 +175,10 @@ public:
 			"GpioH5::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct Nss { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi5),
-			"GpioH5::Nss only connects to Spi5!");
-	};
-	template< Peripheral peripheral >
 	struct Sda { static void connect();
 		static_assert(
 			(peripheral == Peripheral::I2c2),
 			"GpioH5::Sda only connects to I2c2!");
-	};
-	template< Peripheral peripheral >
-	struct Sdnwe { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH5::Sdnwe only connects to Fmc!");
 	};
 	/// @endcond
 private:
@@ -214,18 +198,6 @@ struct GpioH5::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioH5::Nss<Peripheral::Spi5>
-{
-	using Gpio = GpioH5;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Nss;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
 struct GpioH5::Sda<Peripheral::I2c2>
 {
 	using Gpio = GpioH5;
@@ -235,18 +207,6 @@ struct GpioH5::Sda<Peripheral::I2c2>
 	connect()
 	{
 		setAlternateFunction(4);
-	}
-};
-template<>
-struct GpioH5::Sdnwe<Peripheral::Fmc>
-{
-	using Gpio = GpioH5;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdnwe;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 /// @endcond

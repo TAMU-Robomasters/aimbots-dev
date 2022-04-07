@@ -40,25 +40,13 @@ public:
     mockable ~Leds() = default;
 
     /**
-     * The LED letters correspond to the letters written next to the LEDs
-     * on the RoboMaster type A board. The `Green` LED is the led next
-     * to the button (opposite from the 8 LEDs labeled by letters).  The
-     * `Red` LED is the led directly adjacent to the `Green` LED. A third
-     * red LED is triggered when you supply 24V to the board and is not
-     * controllable.
+     * The LEDs correspond to the color on the RoboMaster type C board.
      */
     enum LedPin
     {
-        A = 0,
-        B,
-        C,
-        D,
-        E,
-        F,
-        G,
-        H,
         Green,
-        Red
+        Red,
+        Blue
     };
 
     /**

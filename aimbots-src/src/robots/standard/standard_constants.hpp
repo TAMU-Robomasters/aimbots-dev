@@ -20,6 +20,9 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
+static constexpr float FEEDER_MOTOR_DIRECTION = 1;
+static constexpr float YAW_MOTOR_DIRECTION = 1;
+
 /**
  * @brief Velocity PID constants
  */
@@ -31,15 +34,23 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float YAW_POSITION_PID_KP = 600.0f;
-static constexpr float YAW_POSITION_PID_KI = 0.0f;
-static constexpr float YAW_POSITION_PID_KD = 30000.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float YAW_POSITION_PID_KP                    = 600.0f;
+static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
+static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
+static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
-static constexpr float PITCH_POSITION_PID_KP = 600.0f;
-static constexpr float PITCH_POSITION_PID_KI = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD = 100.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float PITCH_POSITION_PID_KP                    = 600.0f;
+static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
+static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
@@ -52,6 +63,11 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.

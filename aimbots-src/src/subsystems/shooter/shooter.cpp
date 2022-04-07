@@ -51,8 +51,10 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
         SHOOTER_TR_DERIVATIVE_KALMAN,
         SHOOTER_TQ_PROPORTIONAL_KALMAN,
         SHOOTER_TR_PROPORTIONAL_KALMAN ),
+
 #endif
       targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      desiredOutputs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
@@ -75,25 +77,35 @@ void ShooterSubsystem::initialize() {
     ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0.0f));
 }
 
+float PIDoutDisplay = 0.0f;
+float shaftSpeedDisplay = 0.0f;
+
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
-}
+    shaftSpeedDisplay = 69.0f;
+    if (motors[TOP][0]->isMotorOnline()) {
+        shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
+        PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
+    }
 
-float PIDoutDisplay = 0.0f;
-float shaftSpeedDisplay = 0.0f;
-// TODO: need to tune PID
+    ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput);
+}
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
     float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
-    PIDoutDisplay = err;
-    shaftSpeedDisplay = motors[motorIdx][0]->getShaftRPM();
-    motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(PIDOut));
+    desiredOutputs[motorIdx][0] = PIDOut;
 }
 
 void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
     targetRPMs[motorIdx][0] = targetRPM;
 }
 
+float powerDisplay = 0.0f;
+
+void ShooterSubsystem::setDesiredOutput(MotorIndex motorIdx) {
+    powerDisplay = 4.2f;
+    motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[motorIdx][0]));
+}
 };  // namespace src::Shooter

@@ -12,12 +12,17 @@ namespace src::Chassis {
 ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
 #ifdef TARGET_SENTRY
-                             railWheel(drivers, RAIL_WHEEL_ID, CHAS_BUS, false, "Rail Motor"),
+                             railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
+                             railWheelVelPID(VELOCITY_PID_KP,
+                                             VELOCITY_PID_KI,
+                                             VELOCITY_PID_KD,
+                                             VELOCITY_PID_MAX_ERROR_SUM,
+                                             VELOCITY_PID_MAX_OUTPUT),
 #else
-                             leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHAS_BUS, false, "Left Back Wheel Motor"),
-                             leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHAS_BUS, false, "Left Front Wheel Motor"),
-                             rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHAS_BUS, false, "Right Front Wheel Motor"),
-                             rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHAS_BUS, false, "Right Back Wheel Motor"),
+                             leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
+                             leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
+                             rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
+                             rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
 
                              leftBackWheelVelPID(VELOCITY_PID_KP,
                                                  VELOCITY_PID_KI,
@@ -41,13 +46,14 @@ ChassisSubsystem::ChassisSubsystem(
                                                   VELOCITY_PID_MAX_OUTPUT),
 
 #ifdef SWERVE
-                             leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHAS_BUS, false, "Left Back Yaw Motor"),
-                             leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHAS_BUS, false, "Left Front Yaw Motor"),
-                             rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHAS_BUS, false, "Right Front Yaw Motor"),
-                             rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHAS_BUS, false, "Right Back Yaw Motor"),
+                             leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
+                             leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
+                             rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
+                             rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
 #endif
 #endif
                              targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
@@ -98,24 +104,27 @@ ChassisSubsystem::ChassisSubsystem(
 
 void ChassisSubsystem::initialize() {
     ForAllChassisMotors(&DJIMotor::initialize);
-    setDesiredOutputs(0, 0, 0);
+    setTargetRPMs(0, 0, 0);
 }
 
 void ChassisSubsystem::refresh() {
     // update motor rpm based on the robot type?
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
+
+    ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
 }
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
     velocityPIDs[WheelIdx][MotorPerWheelIdx]->update(err);
 
-    motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(velocityPIDs[WheelIdx][MotorPerWheelIdx]->getValue());
+    desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getValue();
 }
 
-void ChassisSubsystem::setDesiredOutputs(float x, float y, float r) {
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
 #if defined(TARGET_SENTRY)
-    calculateRail(x);
+    calculateRail(x,
+                  ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(SWERVE)
     calculateSwerve(x, y, r,
                     ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
@@ -123,6 +132,10 @@ void ChassisSubsystem::setDesiredOutputs(float x, float y, float r) {
     calculateMecanum(x, y, r,
                      ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
+}
+
+void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
+    motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[WheelIdx][MotorPerWheelIdx]));
 }
 
 void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
@@ -181,5 +194,8 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
 
 void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
 
-void ChassisSubsystem::calculateRail(float) {}
+void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) {
+    targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed);
+}
+
 };  // namespace src::Chassis

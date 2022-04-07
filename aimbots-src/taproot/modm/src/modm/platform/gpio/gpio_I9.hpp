@@ -163,8 +163,6 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
-	using D30 = GpioSignal;
 	/// Connect to Can1
 	using Rx = GpioSignal;
 	/// @}
@@ -175,12 +173,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::BitBang),
 			"GpioI9::BitBang only connects to software drivers!");
-	};
-	template< Peripheral peripheral >
-	struct D30 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioI9::D30 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
 	struct Rx { static void connect();
@@ -204,18 +196,6 @@ struct GpioI9::BitBang<Peripheral::BitBang>
 	static constexpr Gpio::Signal Signal = Gpio::Signal::BitBang;
 	static constexpr int af = -1;
 	inline static void connect() {}
-};
-template<>
-struct GpioI9::D30<Peripheral::Fmc>
-{
-	using Gpio = GpioI9;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D30;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
-	}
 };
 template<>
 struct GpioI9::Rx<Peripheral::Can1>

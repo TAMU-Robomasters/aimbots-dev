@@ -31,6 +31,7 @@ class FeederSubsystem : public tap::control::Subsystem {
     static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
     float targetRPM;
+    float desiredOutput;
     DJIMotor feederMotor;
 
     // commands

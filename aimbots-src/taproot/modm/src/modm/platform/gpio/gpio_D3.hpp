@@ -163,16 +163,10 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to I2s2
-	using Ck = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Clk = GpioSignal;
 	/// Connect to Usart2
 	using Cts = GpioSignal;
-	/// Connect to Dcmi
-	using D5 = GpioSignal;
-	/// Connect to Spi2
-	using Sck = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -183,34 +177,16 @@ public:
 			"GpioD3::BitBang only connects to software drivers!");
 	};
 	template< Peripheral peripheral >
-	struct Ck { static void connect();
-		static_assert(
-			(peripheral == Peripheral::I2s2),
-			"GpioD3::Ck only connects to I2s2!");
-	};
-	template< Peripheral peripheral >
 	struct Clk { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioD3::Clk only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioD3::Clk only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Cts { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Usart2),
 			"GpioD3::Cts only connects to Usart2!");
-	};
-	template< Peripheral peripheral >
-	struct D5 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Dcmi),
-			"GpioD3::D5 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct Sck { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi2),
-			"GpioD3::Sck only connects to Spi2!");
 	};
 	/// @endcond
 private:
@@ -230,19 +206,7 @@ struct GpioD3::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioD3::Ck<Peripheral::I2s2>
-{
-	using Gpio = GpioD3;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Ck;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
-};
-template<>
-struct GpioD3::Clk<Peripheral::Fmc>
+struct GpioD3::Clk<Peripheral::Fsmc>
 {
 	using Gpio = GpioD3;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Clk;
@@ -263,30 +227,6 @@ struct GpioD3::Cts<Peripheral::Usart2>
 	connect()
 	{
 		setAlternateFunction(7);
-	}
-};
-template<>
-struct GpioD3::D5<Peripheral::Dcmi>
-{
-	using Gpio = GpioD3;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D5;
-	static constexpr int af = 13;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioD3::Sck<Peripheral::Spi2>
-{
-	using Gpio = GpioD3;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sck;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
 	}
 };
 /// @endcond

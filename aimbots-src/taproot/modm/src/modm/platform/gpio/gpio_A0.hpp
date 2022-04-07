@@ -386,10 +386,11 @@ struct GpioA0::Wkup<Peripheral::Sys>
 {
 	using Gpio = GpioA0;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Wkup;
-	static constexpr int af = -1;
+	static constexpr int af = 0;
 	inline static void
 	connect()
 	{
+		setAlternateFunction(0);
 	}
 };
 /// @endcond

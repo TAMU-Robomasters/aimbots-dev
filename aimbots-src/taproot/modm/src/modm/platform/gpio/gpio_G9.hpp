@@ -163,14 +163,12 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Nce3 = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Ne2 = GpioSignal;
 	/// Connect to Usart6
 	using Rx = GpioSignal;
-	/// Connect to Dcmi
-	using Vsync = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -183,26 +181,20 @@ public:
 	template< Peripheral peripheral >
 	struct Nce3 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioG9::Nce3 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioG9::Nce3 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Ne2 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioG9::Ne2 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioG9::Ne2 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Rx { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Usart6),
 			"GpioG9::Rx only connects to Usart6!");
-	};
-	template< Peripheral peripheral >
-	struct Vsync { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Dcmi),
-			"GpioG9::Vsync only connects to Dcmi!");
 	};
 	/// @endcond
 private:
@@ -222,7 +214,7 @@ struct GpioG9::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioG9::Nce3<Peripheral::Fmc>
+struct GpioG9::Nce3<Peripheral::Fsmc>
 {
 	using Gpio = GpioG9;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Nce3;
@@ -234,7 +226,7 @@ struct GpioG9::Nce3<Peripheral::Fmc>
 	}
 };
 template<>
-struct GpioG9::Ne2<Peripheral::Fmc>
+struct GpioG9::Ne2<Peripheral::Fsmc>
 {
 	using Gpio = GpioG9;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Ne2;
@@ -255,18 +247,6 @@ struct GpioG9::Rx<Peripheral::Usart6>
 	connect()
 	{
 		setAlternateFunction(8);
-	}
-};
-template<>
-struct GpioG9::Vsync<Peripheral::Dcmi>
-{
-	using Gpio = GpioG9;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Vsync;
-	static constexpr int af = 13;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(13);
 	}
 };
 /// @endcond

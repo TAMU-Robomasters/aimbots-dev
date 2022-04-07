@@ -1,4 +1,5 @@
 #pragma once
+#ifndef TARGET_ENGINEER
 
 #include <drivers.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
@@ -9,11 +10,9 @@
 
 namespace src::Gimbal {
 
-inline float limitPitchAngle(float angle) {
-    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH)
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
-    else
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+constexpr float constAbs(float value)
+{
+    return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
 enum class AngleUnit : uint8_t {
@@ -49,6 +48,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
     inline tap::algorithms::ContiguousFloat const& getCurrentYawAngleAsContiguousFloat() const { return currentYawAngle; }
     inline tap::algorithms::ContiguousFloat const& getCurrentPitchAngleAsContiguousFloat() const { return currentPitchAngle; }
 
+    inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
+    inline float getPitchMotorRPM() const { return (pitchMotor.isMotorOnline()) ? pitchMotor.getShaftRPM() : 0.0f; }
+
    private:
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
@@ -61,8 +63,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
-
-    static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 };
 
 }  // namespace src::Gimbal
+#endif

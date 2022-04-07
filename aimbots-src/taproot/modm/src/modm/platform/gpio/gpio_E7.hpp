@@ -163,14 +163,12 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using D4 = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Da4 = GpioSignal;
 	/// Connect to Tim1
 	using Etr = GpioSignal;
-	/// Connect to Uart7
-	using Rx = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -183,26 +181,20 @@ public:
 	template< Peripheral peripheral >
 	struct D4 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE7::D4 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE7::D4 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Da4 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE7::Da4 only connects to Fmc!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE7::Da4 only connects to Fsmc!");
 	};
 	template< Peripheral peripheral >
 	struct Etr { static void connect();
 		static_assert(
 			(peripheral == Peripheral::Tim1),
 			"GpioE7::Etr only connects to Tim1!");
-	};
-	template< Peripheral peripheral >
-	struct Rx { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Uart7),
-			"GpioE7::Rx only connects to Uart7!");
 	};
 	/// @endcond
 private:
@@ -222,7 +214,7 @@ struct GpioE7::BitBang<Peripheral::BitBang>
 	inline static void connect() {}
 };
 template<>
-struct GpioE7::D4<Peripheral::Fmc>
+struct GpioE7::D4<Peripheral::Fsmc>
 {
 	using Gpio = GpioE7;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::D4;
@@ -234,7 +226,7 @@ struct GpioE7::D4<Peripheral::Fmc>
 	}
 };
 template<>
-struct GpioE7::Da4<Peripheral::Fmc>
+struct GpioE7::Da4<Peripheral::Fsmc>
 {
 	using Gpio = GpioE7;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Da4;
@@ -255,18 +247,6 @@ struct GpioE7::Etr<Peripheral::Tim1>
 	connect()
 	{
 		setAlternateFunction(1);
-	}
-};
-template<>
-struct GpioE7::Rx<Peripheral::Uart7>
-{
-	using Gpio = GpioE7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Rx;
-	static constexpr int af = 8;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(8);
 	}
 };
 /// @endcond

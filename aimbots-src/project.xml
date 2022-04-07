@@ -14,16 +14,15 @@
     <option name="taproot:build:include_sconstruct">False</option>
 
     <!-- For RoboMaster Development Board Type A -->
-    <option name="taproot:dev_board">rm-dev-board-a</option>
+    <!-- <option name="taproot:dev_board">rm-dev-board-a</option>
     <option name="taproot:communication:serial:terminal_serial:uart_port">Uart3</option>
     <option name="taproot:communication:serial:ref_serial:uart_port">Uart6</option>
     <option name="taproot:board:digital_in_pins">A,B,C,D</option>
     <option name="taproot:board:digital_out_pins">E,F,G,H,Laser</option>
     <option name="taproot:board:analog_in_pins">S,T,U,V,OledJoystick</option>
-    <option name="taproot:board:pwm_pins">W,X,Y,Z,Buzzer,ImuHeater</option>
+    <option name="taproot:board:pwm_pins">W,X,Y,Z,Buzzer,ImuHeater</option> -->
 
     <!-- For RoboMaster Development Board Type C -->
-    <!--
     <option name="taproot:dev_board">rm-dev-board-c</option>
     <option name="taproot:communication:serial:terminal_serial:uart_port">Uart1</option>
     <option name="taproot:communication:serial:ref_serial:uart_port">Uart6</option>
@@ -31,7 +30,7 @@
     <option name="taproot:board:digital_out_pins">B13,B14,B15,Laser</option>
     <option name="taproot:board:analog_in_pins"></option>
     <option name="taproot:board:pwm_pins">C1,C2,C3,C4,C5,C6,C7,Buzzer,ImuHeater</option>
-    -->
+   
 
   </options>
   <modules>
@@ -42,9 +41,10 @@
     <module>taproot:communication:gpio:leds</module>
     <module>taproot:communication:gpio:digital</module>
     <module>taproot:communication:tcp-server</module>
+    <module>taproot:communication:sensors:bmi088</module>
 
     <!-- Only supported on RoboMaster Development Board Type A -->
-    <module>taproot:communication:sensors:mpu6500</module>
-    <module>taproot:display</module>
+    <!-- <module>taproot:communication:sensors:mpu6500</module>
+    <module>taproot:display</module> -->
   </modules>
 </library>

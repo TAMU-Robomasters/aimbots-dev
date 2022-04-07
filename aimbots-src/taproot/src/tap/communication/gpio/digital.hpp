@@ -52,10 +52,9 @@ public:
      */
     enum InputPin
     {
-        A,
-        B,
-        C,
-        D,
+        PF1,
+        PF0,
+        B12,
     };
 
     /**
@@ -63,10 +62,9 @@ public:
      */
     enum OutputPin
     {
-        E,
-        F,
-        G,
-        H,
+        B13,
+        B14,
+        B15,
         Laser,
     };
 
