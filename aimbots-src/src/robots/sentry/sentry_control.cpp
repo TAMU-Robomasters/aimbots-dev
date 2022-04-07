@@ -22,9 +22,9 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 //
+#include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/shooter_command.hpp"
-#include "subsystems/shooter/shooter_default_command.hpp"
+#include "subsystems/shooter/stop_shooter_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -50,14 +50,17 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 
+// Robot Specific Controllers ------------------------------------------------
+GimbalChassisRelativeController gimbalController(&gimbal);
+
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-GimbalChassisRelativeController gimbalController(&gimbal);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
-ShooterCommand shooterCommand(drivers(), &shooter);
-ShooterDefaultCommand shooterDefaultCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter);
+RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
+StopShooterCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -65,9 +68,14 @@ HoldCommandMapping leftSwitchUp(
     {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &shooterCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -89,7 +97,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    // no default commands should be set
+    shooter.setDefaultCommand(&shooterDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -105,6 +113,7 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
 }
 
 }  // namespace SentryControl

@@ -10,10 +10,9 @@
 
 namespace src::Shooter {
 
-class ShooterCommand : public TapCommand
-{
-    public:
-    ShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+class StopShooterCommand : public TapCommand {
+   public:
+    StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
@@ -22,13 +21,13 @@ class ShooterCommand : public TapCommand
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "shooter subsystem"; }
+    const char* getName() const override { return "shooter default command"; }
 
-    private:
+   private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
 };
 
-}//namespace src::Shooter
+}  // namespace src::Shooter
 
 //#endif

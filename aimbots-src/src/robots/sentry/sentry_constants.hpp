@@ -31,23 +31,25 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float YAW_POSITION_PID_KP                    = 600.0f;
-static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
-static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
-static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
-static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_KP = 600.0f;
+static constexpr float YAW_POSITION_PID_KI = 0.0f;
+static constexpr float YAW_POSITION_PID_KD = 500.0f;
+static constexpr float YAW_POSITION_PID_MAX_I_CUMULATIVE = 10.0f;
+static constexpr float YAW_POSITION_PID_MAX_OUTPUT = 16000.0f;
+static constexpr float YAW_POSITION_PID_TQ_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float YAW_POSITION_PID_TR_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float YAW_POSITION_PID_TQ_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr float YAW_POSITION_PID_TR_PROPORTIONAL_KALMAN = 1.0f;
 
-static constexpr float PITCH_POSITION_PID_KP                    = 600.0f;
-static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
-static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_KP = 1000.0f;
+static constexpr float PITCH_POSITION_PID_KI = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD = 150.0f;
+static constexpr float PITCH_POSITION_PID_MAX_I_CUMULATIVE = 10.0f;
+static constexpr float PITCH_POSITION_PID_MAX_OUTPUT = 16000.0f;
+static constexpr float PITCH_POSITION_PID_TQ_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float PITCH_POSITION_PID_TR_DERIVATIVE_KALMAN = 1.0f;
+static constexpr float PITCH_POSITION_PID_TQ_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr float PITCH_POSITION_PID_TR_PROPORTIONAL_KALMAN = 1.0f;
 
 // Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_MOTOR_DIRECTION = -1;
@@ -69,6 +71,11 @@ static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
+
+static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_3_DIRECTION = false;
+static constexpr bool SHOOTER_4_DIRECTION = true;
 
 /**
  * This max output is measured in the c620 robomaster translated current.
