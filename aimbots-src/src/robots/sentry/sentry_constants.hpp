@@ -73,9 +73,9 @@ static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
 
 static constexpr bool SHOOTER_1_DIRECTION = true;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
-static constexpr bool SHOOTER_4_DIRECTION = true;
+static constexpr bool SHOOTER_4_DIRECTION = false;
 
 /**
  * This max output is measured in the c620 robomaster translated current.
