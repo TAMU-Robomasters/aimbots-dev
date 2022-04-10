@@ -4,6 +4,7 @@
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/control/command.hpp>
+#include <tap/control/comprised_command.hpp>
 
 #include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/serial/remote.hpp"
@@ -29,6 +30,7 @@ using SmoothPID = src::utils::SmoothPIDWrapper;
 using CANBus = tap::can::CanBus;
 
 using TapCommand = tap::control::Command;
+using TapComprisedCommand = tap::control::ComprisedCommand;
 using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;

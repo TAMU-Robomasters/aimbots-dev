@@ -10,9 +10,9 @@
 
 namespace src::Shooter {
 
-class StopShooterCommand : public TapCommand {
+class BrakeShooterCommand : public TapCommand {
    public:
-    StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+    BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
@@ -21,7 +21,7 @@ class StopShooterCommand : public TapCommand {
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "shooter stop command"; }
+    const char* getName() const override { return "shooter brake command"; }
 
    private:
     src::Drivers* drivers;

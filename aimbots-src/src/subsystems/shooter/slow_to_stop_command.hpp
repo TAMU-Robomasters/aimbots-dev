@@ -1,7 +1,9 @@
 #pragma once
 
 #include "drivers.hpp"
+#include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/stop_shooter_command.hpp"
 #include "tap/control/subsystem.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
@@ -10,9 +12,9 @@
 
 namespace src::Shooter {
 
-class StopShooterCommand : public TapCommand {
+class SlowToStopCommand : public TapComprisedCommand {
    public:
-    StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+    SlowToStopCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
@@ -21,11 +23,14 @@ class StopShooterCommand : public TapCommand {
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "shooter stop command"; }
+    const char* getName() const override { return "Slow To Stop Command"; }
 
    private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
+
+    BrakeShooterCommand brake_command;
+    StopShooterCommand stop_command;
 };
 
 }  // namespace src::Shooter

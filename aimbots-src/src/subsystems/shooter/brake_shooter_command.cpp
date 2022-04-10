@@ -1,4 +1,4 @@
-#include "subsystems/shooter/stop_shooter_command.hpp"
+#include "subsystems/shooter/brake_shooter_command.hpp"
 
 #include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
@@ -10,29 +10,29 @@
 
 namespace src::Shooter {
 
-StopShooterCommand::StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
+BrakeShooterCommand::BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
     this->drivers = drivers;
     this->shooter = shooter;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void StopShooterCommand::initialize() {
+void BrakeShooterCommand::initialize() {
 }
 
 // set the flywheel to a certain speed once the command is called
-void StopShooterCommand::execute() {
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, 0.0f);
+void BrakeShooterCommand::execute() {
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, -100.0f);
 }
 
-void StopShooterCommand::end(bool) {
+void BrakeShooterCommand::end(bool) {
 }
 
-bool StopShooterCommand::isReady() {
+bool BrakeShooterCommand::isReady() {
     return true;
 }
 
-bool StopShooterCommand::isFinished() const {
-    return false;
+bool BrakeShooterCommand::isFinished() const {
+    return (shooter->getMotorSpeed(TOP) < 100.0f);
 }
 
 }  // namespace src::Shooter

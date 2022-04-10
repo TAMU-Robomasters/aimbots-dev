@@ -54,7 +54,7 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
 
 #endif
       targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
-      desiredOutputs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      desiredOutputs(Matrix<int32_t, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
@@ -82,20 +82,25 @@ float shaftSpeedDisplay = 0.0f;
 
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
-    ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
-    shaftSpeedDisplay = 69.0f;
+    // Debug info
     if (motors[TOP][0]->isMotorOnline()) {
         shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
         PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
     }
 
-    ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput);
+    ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
+}
+
+float ShooterSubsystem::getMotorSpeed(MotorIndex motorIdx) const {
+    return motors[motorIdx][0]->getShaftRPM();
 }
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
-    float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
-    float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
-    desiredOutputs[motorIdx][0] = PIDOut;
+    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info to it
+        float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
+        float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
+        setDesiredOutput(motorIdx, PIDOut);
+    }
 }
 
 void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
@@ -104,8 +109,14 @@ void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
 
 float powerDisplay = 0.0f;
 
-void ShooterSubsystem::setDesiredOutput(MotorIndex motorIdx) {
-    powerDisplay = 4.2f;
-    motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[motorIdx][0]));
+void ShooterSubsystem::setDesiredOutput(MotorIndex motorIdx, float desiredOutput) {
+    desiredOutputs[motorIdx][0] = static_cast<int32_t>(desiredOutput);
 }
+
+void ShooterSubsystem::setDesiredOutputToMotor(MotorIndex motorIdx) {
+    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when setting to it
+        motors[motorIdx][0]->setDesiredOutput(desiredOutputs[motorIdx][0]);
+    }
+}
+
 };  // namespace src::Shooter
