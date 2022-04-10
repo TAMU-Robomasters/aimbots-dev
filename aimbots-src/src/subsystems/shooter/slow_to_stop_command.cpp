@@ -19,10 +19,16 @@ SlowToStopCommand::SlowToStopCommand(src::Drivers* drivers, ShooterSubsystem* sh
 
 void SlowToStopCommand::initialize() {
     this->comprisedCommandScheduler.addCommand(&brake_command);
+    brakeFinished = false;
 }
 
 // Run the brake command until it's finished, then run the stop command to keep the flywheels at 0 speed
 void SlowToStopCommand::execute() {
+    if(!this->comprisedCommandScheduler.isCommandScheduled(&brake_command) && !brakeFinished) {
+        brakeFinished = true;
+        this->comprisedCommandScheduler.addCommand(&stop_command);
+    }
+    this->comprisedCommandScheduler.run(); //taproot docs say this is safe 👍
 }
 
 void SlowToStopCommand::end(bool) {
@@ -32,6 +38,7 @@ bool SlowToStopCommand::isReady() {
     return true;
 }
 
+//this command will auto-deschedule when we want to move
 bool SlowToStopCommand::isFinished() const {
     return false;
 }

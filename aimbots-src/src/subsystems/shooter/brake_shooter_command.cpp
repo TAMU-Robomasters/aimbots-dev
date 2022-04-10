@@ -32,7 +32,8 @@ bool BrakeShooterCommand::isReady() {
 }
 
 bool BrakeShooterCommand::isFinished() const {
-    return (shooter->getMotorSpeed(TOP) < 100.0f);
+    float speed = shooter->getMotorSpeed(TOP);
+    return (speed>0 ? speed : -speed < 100.0f); //couldn't find math.abs()
 }
 
 }  // namespace src::Shooter

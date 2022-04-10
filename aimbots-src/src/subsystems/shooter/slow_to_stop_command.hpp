@@ -31,6 +31,7 @@ class SlowToStopCommand : public TapComprisedCommand {
 
     BrakeShooterCommand brake_command;
     StopShooterCommand stop_command;
+    bool brakeFinished;
 };
 
 }  // namespace src::Shooter

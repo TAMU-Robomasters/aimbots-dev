@@ -25,6 +25,7 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
+#include "subsystems/shooter/slow_to_stop_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -60,7 +61,7 @@ RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
-StopShooterCommand shooterDefaultCommand(drivers(), &shooter);
+SlowToStopCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(

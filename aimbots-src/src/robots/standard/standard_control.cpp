@@ -25,6 +25,7 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
+#include "subsystems/shooter/slow_to_stop_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -58,7 +59,7 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 GimbalChassisRelativeController gimbalController(&gimbal);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
-StopShooterCommand shooterDefaultCommand(drivers(), &shooter);
+SlowToStopCommand shooterDefaultCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -90,6 +91,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
+    shooter.setDefaultCommand(&shooterDefaultCommand);
     // no default commands should be set
 }
 
