@@ -4,17 +4,6 @@
 
 namespace src::Gimbal {
 
-static inline float limitPitchAngle(float angle) {
-    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH) {
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
-    } else if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
-        // FIXME: Implement this check
-        return 0.0f;
-    } else {
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
-    }
-}
-
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
       yawPositionPID(
@@ -57,7 +46,6 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
 }
 
 void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float desiredPitchAngle) {
-    desiredPitchAngle = limitPitchAngle((unit == AngleUnit::Degrees) ? desiredPitchAngle : modm::toRadian(desiredPitchAngle));
     gimbal->setTargetPitchAngle(unit, desiredPitchAngle);
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));

@@ -5,24 +5,6 @@
 
 namespace src::Gimbal {
 
-//
-// NOTE: This function assumes the hardstops are in degrees.
-// TODO: Validate that this functions as it should.
-//
-constexpr float getPitchMotorDirection()
-{
-    constexpr float intialDirection = (PITCH_HARDSTOP_HIGH < PITCH_HARDSTOP_LOW) ? 1.0f : -1.0f;
-
-    // If 0 is somewhere in our available arc of pitch, then we need
-    // to flip the direction, because the previous condition would be
-    // incorrect.
-    if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
-        return intialDirection * -1.0f;
-    }
-
-    return intialDirection;
-}
-
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
                                            GimbalChassisRelativeController* gimbalController,
