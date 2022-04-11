@@ -21,7 +21,9 @@ void BrakeShooterCommand::initialize() {
 
 // set the flywheel to a certain speed once the command is called
 void BrakeShooterCommand::execute() {
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, -100.0f);
+    float brakePower = 100.0f;
+    float highestSpeed = shooter->getHighestMotorSpeed();
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, std::copysign(brakePower, highestSpeed));
 }
 
 void BrakeShooterCommand::end(bool) {
@@ -32,8 +34,8 @@ bool BrakeShooterCommand::isReady() {
 }
 
 bool BrakeShooterCommand::isFinished() const {
-    float speed = shooter->getMotorSpeed(TOP);
-    return (speed>0 ? speed : -speed < 100.0f); //couldn't find math.abs()
+    float speedTolerance = 100.0f;
+    return fabs(shooter->getMotorSpeed(TOP)) < speedTolerance;  // replace with getHighestMotorSpeed()
 }
 
 }  // namespace src::Shooter

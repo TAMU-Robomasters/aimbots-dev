@@ -24,8 +24,8 @@
 //
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/slow_to_stop_command.hpp"
+#include "subsystems/shooter/stop_shooter_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -61,19 +61,23 @@ RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
-SlowToStopCommand shooterDefaultCommand(drivers(), &shooter);
+BrakeShooterCommand slowShooterCommand(drivers(), &shooter);
+SlowToStopCommand slowStopShooterCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
+// Enables both chassis and gimbal control
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
+// Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand, &runShooterWithFeederCommand},
@@ -98,7 +102,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    shooter.setDefaultCommand(&shooterDefaultCommand);
+    shooter.setDefaultCommand(&slowShooterCommand);
 }
 
 // Set commands scheduled on startup

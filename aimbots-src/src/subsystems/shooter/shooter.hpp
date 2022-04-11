@@ -53,6 +53,8 @@ class ShooterSubsystem : public tap::control::Subsystem {
     mockable void initialize() override;
     void refresh() override;
 
+    float getHighestMotorSpeed() const;
+
     float getMotorSpeed(MotorIndex motorIdx) const;
 
     /**

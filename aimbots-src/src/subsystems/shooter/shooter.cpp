@@ -91,12 +91,30 @@ void ShooterSubsystem::refresh() {
     ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
 }
 
+// Returns the speed of the shooter motor with the highest absolute value of RPM
+float ShooterSubsystem::getHighestMotorSpeed() const {
+    float highestMotorSpeed = 0.0f;
+    for (int i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+        MotorIndex mi = static_cast<MotorIndex>(i);
+        if (motors[mi][0]->isMotorOnline()) {
+            float motorSpeed = motors[mi][0]->getShaftRPM();
+            if (fabs(motorSpeed) > highestMotorSpeed) {
+                highestMotorSpeed = motorSpeed;
+            }
+        }
+    }
+    return highestMotorSpeed;
+}
+
 float ShooterSubsystem::getMotorSpeed(MotorIndex motorIdx) const {
-    return motors[motorIdx][0]->getShaftRPM();
+    if (motors[motorIdx][0]->isMotorOnline()) {
+        return motors[motorIdx][0]->getShaftRPM();
+    }
+    return 0.0f;
 }
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
-    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info to it
+    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info from it
         float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
         float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
         setDesiredOutput(motorIdx, PIDOut);
@@ -118,5 +136,4 @@ void ShooterSubsystem::setDesiredOutputToMotor(MotorIndex motorIdx) {
         motors[motorIdx][0]->setDesiredOutput(desiredOutputs[motorIdx][0]);
     }
 }
-
 };  // namespace src::Shooter
