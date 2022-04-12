@@ -12,7 +12,7 @@ namespace src::Shooter {
 
 class BrakeShooterCommand : public TapCommand {
    public:
-    BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+    BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, float brakePower);
     void initialize() override;
 
     void execute() override;
@@ -26,6 +26,7 @@ class BrakeShooterCommand : public TapCommand {
    private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
+    StockPID brakePID;
 };
 
 }  // namespace src::Shooter

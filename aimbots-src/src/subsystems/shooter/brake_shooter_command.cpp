@@ -9,33 +9,34 @@
 //#ifndef TARGET_ENGINEER
 
 namespace src::Shooter {
-
-BrakeShooterCommand::BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
+static int highestSpeedDebug = 0;
+BrakeShooterCommand::BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, float brakePower)
+    : brakePID(brakePower, 0, 0, 0.0f, 2000.0f) {
     this->drivers = drivers;
     this->shooter = shooter;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void BrakeShooterCommand::initialize() {
-}
+void BrakeShooterCommand::initialize() {}
 
 // set the flywheel to a certain speed once the command is called
 void BrakeShooterCommand::execute() {
-    float brakePower = 100.0f;
+    brakePID.update(-shooter->getHighestMotorSpeed());
+    float output = brakePID.getValue();
     float highestSpeed = shooter->getHighestMotorSpeed();
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, std::copysign(brakePower, highestSpeed));
+    highestSpeedDebug = (int) highestSpeed;
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, output);
 }
 
-void BrakeShooterCommand::end(bool) {
-}
+void BrakeShooterCommand::end(bool) {}
 
 bool BrakeShooterCommand::isReady() {
     return true;
 }
 
 bool BrakeShooterCommand::isFinished() const {
-    float speedTolerance = 100.0f;
-    return fabs(shooter->getMotorSpeed(TOP)) < speedTolerance;  // replace with getHighestMotorSpeed()
+    float speedTolerance = 1000.0f;
+    return shooter->getHighestMotorSpeed() < speedTolerance;  // replace with getHighestMotorSpeed()
 }
 
 }  // namespace src::Shooter

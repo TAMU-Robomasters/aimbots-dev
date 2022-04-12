@@ -8,16 +8,18 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+
 //#ifndef TARGET_ENGINEER
 
 namespace src::Shooter {
 
-class SlowToStopCommand : public TapComprisedCommand {
+class StopShooterComprisedCommand : public TapComprisedCommand {
    public:
-    SlowToStopCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+    StopShooterComprisedCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
+    
     void end(bool interrupted) override;
     bool isReady() override;
 
