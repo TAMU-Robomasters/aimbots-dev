@@ -1,11 +1,14 @@
 #include "utils/limit_switch.hpp"
 
 namespace utils {
-    LimitSwitch::LimitSwitch(InputPins rxPin) {}
+    LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin) 
+        : tap::control::Command(),
+            drivers(drivers),
+            rxPin(rxPin) {}
 
 
         bool LimitSwitch::readSwitch() {
-            return tap::gpio::Digital::read(rxPin);
+            return drivers->digital.read(rxPin);
         }
 
         bool LimitSwitch::updateSwitch(){
@@ -19,6 +22,22 @@ namespace utils {
             }
             return false;
         }
+
+        void LimitSwitch::initialize() {
+            return;
+        }
+
+        bool LimitSwitch::isReady() {
+            return true;
+        }
+
+        bool LimitSwitch::isFinished() const {
+            return false;
+        }
+
+        void LimitSwitch::execute() {
+        }
+
 
         bool LimitSwitch::isStateChanged(bool currentState) {
             if (currentState != previousState) {
