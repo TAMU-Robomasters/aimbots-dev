@@ -8,6 +8,8 @@
 
 #include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/serial/remote.hpp"
+#include "tap/communication/gpio/digital.hpp" //maybe not
+
 
 // #include <bit_cast>
 
@@ -45,6 +47,9 @@ using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
+
+
+using InputPins = tap::gpio::Digital::InputPin;
 
 // template <uint32_t f>
 // using bitToFloat = std::bit_cast<float>(f);
