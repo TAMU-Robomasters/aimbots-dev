@@ -24,8 +24,13 @@ using DJIMotor = tap::motor::DjiMotor;
 #include "modm/math/matrix.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 
+static constexpr float M3508_MAX_OUTPUT = 30000.0f;
+static constexpr float M2006_MAX_OUTPUT = 10000.0f;
+static constexpr float GM6020_MAX_OUTPUT = 16000.0f;
+
 using StockPID = modm::Pid<float>;
 using SmoothPID = src::utils::SmoothPIDWrapper;
+using SmoothPIDConfig = tap::algorithms::SmoothPidConfig;
 
 using CANBus = tap::can::CanBus;
 
@@ -45,6 +50,3 @@ using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
-
-// template <uint32_t f>
-// using bitToFloat = std::bit_cast<float>(f);

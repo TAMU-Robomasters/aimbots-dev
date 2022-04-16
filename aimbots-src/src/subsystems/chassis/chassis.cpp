@@ -13,37 +13,17 @@ ChassisSubsystem::ChassisSubsystem(
     tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
 #ifdef TARGET_SENTRY
                              railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
-                             railWheelVelPID(VELOCITY_PID_KP,
-                                             VELOCITY_PID_KI,
-                                             VELOCITY_PID_KD,
-                                             VELOCITY_PID_MAX_ERROR_SUM,
-                                             VELOCITY_PID_MAX_OUTPUT),
+                             railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 #else
                              leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
                              leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
                              rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
                              rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
 
-                             leftBackWheelVelPID(VELOCITY_PID_KP,
-                                                 VELOCITY_PID_KI,
-                                                 VELOCITY_PID_KD,
-                                                 VELOCITY_PID_MAX_ERROR_SUM,
-                                                 VELOCITY_PID_MAX_OUTPUT),
-                             leftFrontWheelVelPID(VELOCITY_PID_KP,
-                                                  VELOCITY_PID_KI,
-                                                  VELOCITY_PID_KD,
-                                                  VELOCITY_PID_MAX_ERROR_SUM,
-                                                  VELOCITY_PID_MAX_OUTPUT),
-                             rightFrontWheelVelPID(VELOCITY_PID_KP,
-                                                   VELOCITY_PID_KI,
-                                                   VELOCITY_PID_KD,
-                                                   VELOCITY_PID_MAX_ERROR_SUM,
-                                                   VELOCITY_PID_MAX_OUTPUT),
-                             rightBackWheelVelPID(VELOCITY_PID_KP,
-                                                  VELOCITY_PID_KI,
-                                                  VELOCITY_PID_KD,
-                                                  VELOCITY_PID_MAX_ERROR_SUM,
-                                                  VELOCITY_PID_MAX_OUTPUT),
+                             leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+                             leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+                             rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+                             rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 
 #ifdef SWERVE
                              leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
@@ -55,7 +35,7 @@ ChassisSubsystem::ChassisSubsystem(
                              targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             velocityPIDs(Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
 //
 {
@@ -116,9 +96,9 @@ void ChassisSubsystem::refresh() {
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
-    velocityPIDs[WheelIdx][MotorPerWheelIdx]->update(err);
+    velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(err);
 
-    desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getValue();
+    desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
@@ -174,6 +154,12 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     desiredRotation = r;
 }
 
+void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
+
+void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) {
+    targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed);
+}
+
 float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotationDesiredWheelspeed) {
     // what we will multiply x and y speed by to take into account rotation
     float rTranslationalGain = 1.0f;
@@ -190,12 +176,6 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
         rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
     }
     return rTranslationalGain;
-}
-
-void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
-
-void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) {
-    targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed);
 }
 
 };  // namespace src::Chassis

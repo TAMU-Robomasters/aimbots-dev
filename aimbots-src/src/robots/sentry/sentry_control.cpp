@@ -22,11 +22,11 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 //
+#include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/brake_shooter_command.hpp"
+#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -62,7 +62,7 @@ RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
-//BrakeShooterCommand brakeStopShooterCommand(drivers(), &shooter);
+// BrakeShooterCommand brakeStopShooterCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
