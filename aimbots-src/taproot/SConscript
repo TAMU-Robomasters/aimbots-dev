@@ -1,0 +1,188 @@
+# Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+#
+# This file is part of Taproot.
+#
+# Taproot is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Taproot is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
+
+import shutil
+from os.path import abspath
+import platform
+import sys
+Import("env")
+Import("args")
+
+
+LINKERSCRIPT_FILE = abspath("modm/link/linkerscript.ld")
+HOSTED_LIBS = ["pthread"]
+GTEST_LIBS = ["gtest", "gtest_main", "gmock", "gmock_main"]
+COVERAGE_LIBS = ["-lgcov"]
+HARDWARE_MODM_PATH = "modm"
+
+
+def _get_hosted_target_name_for_current_platform():
+    os_type = platform.system()
+    try:
+        return {
+            "Windows": "hosted-windows",
+            "Darwin": "hosted-darwin",
+            "Linux": "hosted-linux",
+        }[os_type]
+    except KeyError:
+        raise ValueError(f"Unknown host OS {os_type}")
+
+
+def _get_sim_modm_instance_path():
+    return f"sim-modm/{_get_hosted_target_name_for_current_platform()}/modm"
+
+
+# Set up target environment-specific paths
+if args["TARGET_ENV"] == "tests" or args["TARGET_ENV"] == "sim":
+    modm_path = _get_sim_modm_instance_path()
+elif args["TARGET_ENV"] == "hardware":
+    modm_path = HARDWARE_MODM_PATH
+
+
+# Build modm library, modm's SConscript should be ran before any of the build code defined below
+env.SConscript(dirs=[modm_path], exports=["env"])
+
+if ((args["TARGET_ENV"] == "tests" or args["TARGET_ENV"] == "sim") and
+        sys.platform == "win32" and shutil.which("lld") != None):
+    # Use lld for linking when on Windows targeting the hosted environment
+    # as MinGW linking is slow as hecc. Do this after modm's SConscript
+    # is run as otherwise all LINKFLAGS are overwritten
+    env.AppendUnique(LINKFLAGS=["-fuse-ld=lld"])
+    # remove modm linkflags which lld won't accept, it seems lld uses --relax
+    # by default anyways: plus this flag shouldn't have any effects when linking
+    # for x86_64
+    env["LINKFLAGS"].remove("-Wl,--relax")
+
+env["LINKERSCRIPT_FILE"] = LINKERSCRIPT_FILE
+
+# Set the number of threads unless it has already been set to anything but 1
+if GetOption("num_jobs") == 1:
+    SetOption("num_jobs", 8)
+
+
+if sys.platform == "win32":
+    # Workaround for "The command line is too long" error from Windows' libc when executing a long
+    # command.
+    # Adapted from: https://github.com/SCons/scons/wiki/LongCmdLinesOnWin32
+
+    import subprocess
+
+    def win32_spawn_via_popen(_sh, _escape, cmd, args, env):
+        # Blind argument concatenation is generally dangerous but args seem to already come in
+        # escaped+quoted.
+        # "args" is intended to be the target's argv, and thus the first entry is the program name
+        # itself. We strip this and replace it with the explicit target command before passing it to
+        # Popen. Windows will internally compute an appropriate argv.
+        concatenated_args = " ".join(args[1:])
+        command_with_args = cmd + " " + concatenated_args
+
+        # Provided shell and escape function are ignored. It is not clear under what cases scons
+        # uses the features of a host shell so it's unused for simplicity.
+
+        proc = subprocess.Popen(
+            command_with_args,
+            stdin=None,
+            stdout=None,
+            stderr=None,
+            shell=False,
+            env=env
+        )
+        _stdout, _stderr = proc.communicate()
+        status_code = proc.wait()
+        return status_code
+
+    env['SPAWN'] = win32_spawn_via_popen
+
+
+# References:
+#   GCC flags: https://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
+#   Scons API: https://www.scons.org/doc/latest/HTML/scons-user/apa.html
+#
+# You can append one or multiple options like this
+#     env.Append(CCFLAGS="-pedantic")
+#     env.Append(CCFLAGS=["-pedantic", "-pedantic-errors"])
+# If you need to remove options, you need to do this:
+#     env["CCFLAGS"].remove("-pedantic")
+# Note that a lot of options also have a "-no-{option}" option
+# that may overwrite previous options.
+
+# Add build-specific flags
+if args["BUILD_PROFILE"] == "debug":
+    env.AppendUnique(CCFLAGS=["-fno-inline"])
+elif args["BUILD_PROFILE"] == "fast":
+    if "-g3" in env["CCFLAGS"]:
+        env["CCFLAGS"].remove("-g3")
+    env.AppendUnique(CCFLAGS=["-O0"])
+elif args["BUILD_PROFILE"] == "release":
+    # Replace -Os with -O3
+    if "-Os" in env["CCFLAGS"]:
+        env["CCFLAGS"].remove("-Os")
+    env.AppendUnique(CCFLAGS=["-O2"])
+
+# Add profiling-specific flags
+if args["PROFILING"] == "true":
+    env.AppendUnique(CPPFLAGS=["-DRUN_WITH_PROFILING"])
+
+# Add target-specific flags
+if args["TARGET_ENV"] == "sim":
+    env.AppendUnique(CPPFLAGS=["-DPLATFORM_HOSTED"])
+    env.AppendUnique(LIBS=HOSTED_LIBS)
+elif args["TARGET_ENV"] == "tests":
+    env.AppendUnique(CPPFLAGS=[
+        "-DPLATFORM_HOSTED",
+        "-DENV_UNIT_TESTS",
+    ])
+    env.AppendUnique(LIBS=GTEST_LIBS)
+    env.AppendUnique(LIBS=HOSTED_LIBS)
+
+    # Add flags necessary for coverage
+    if COMMAND_LINE_TARGETS[0] == "run-tests-gcov":
+        env.AppendUnique(CPPFLAGS=[
+            "-fprofile-arcs",
+            "-ftest-coverage"])
+        env.AppendUnique(LIBS=COVERAGE_LIBS)
+else:  # hardware target env
+    # Update linkerscript file
+    env["LINKFLAGS"].remove("-Tmodm/link/linkerscript.ld")
+    env.AppendUnique(LINKFLAGS=["-T" + LINKERSCRIPT_FILE])
+
+# Add any additional flags the user chooses specify
+if "additional-ccflags" in ARGUMENTS:
+    env.AppendUnique(CCFLAGS=[*ARGUMENTS["additional-ccflags"].split(",")])
+
+
+# Add src and (optionally) test directory to environment's include path
+env.AppendUnique(CPPPATH=[abspath("src")])
+env.AppendUnique(CPPPATH=[abspath("ext")])
+if args["TARGET_ENV"] == "tests":
+    env.AppendUnique(CPPPATH=[abspath("test")])
+
+# Build external library, external SConscript should be ran before any of the build code defined below
+env.SConscript(dirs=["ext"], exports=["env"])
+
+# Find all files that need to be built with the library (files in src and ext, files
+# in test if target environment is tests)
+files = env.FindSourceFiles("src")
+
+# Construct the static library
+library = env.StaticLibrary(target="taproot", source=files)
+
+# Add library to the environment
+env.AppendUnique(LIBS=[library])
+env.AppendUnique(LIBPATH=[abspath(str(library[0].get_dir()))])
+
+Return("library")

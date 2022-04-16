@@ -1,0 +1,221 @@
+/*
+ * Copyright (c) 2013-2014, 2016, Kevin Läufer
+ * Copyright (c) 2014, 2017, Sascha Schade
+ * Copyright (c) 2014-2018, Niklas Hauser
+ * Copyright (c) 2017, Fabian Greif
+ * Copyright (c) 2018, Christopher Durand
+ *
+ * This file is part of the modm project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+// ----------------------------------------------------------------------------
+
+#ifndef MODM_STM32_CAN1_HPP
+#define MODM_STM32_CAN1_HPP
+
+#include <modm/architecture/interface/can.hpp>
+#include <modm/platform/gpio/connector.hpp>
+#include "../device.hpp"
+
+#include "can_bit_timings.hpp"
+#include "can_filter.hpp"
+
+
+namespace modm
+{
+
+namespace platform
+{
+
+/**
+ * @brief		Basic Extended CAN1
+ *
+ * The Basic Extended CAN peripheral, named bxCAN, interfaces the CAN
+ * network. It supports the CAN protocols version 2.0A and B. It has
+ * been designed to manage a high number of incoming messages
+ * efficiently with a minimum CPU load.
+ *
+ * ## Filter
+ *
+ * For connectivity line devices there are 28 filter banks,
+ * i=0 .. 27, in other devices there are 14 filter banks i = 0 ..13.
+ *
+ * The 28 filter banks for the connectivity line devices are
+ * shared between CAN1 and CAN2.
+ *
+ * ## Configuration
+ * You can set the buffer size using the `tx_buffer` and `rx_buffer` parameters.
+ *
+ * @author		Fabian Greif <fabian.greif@rwth-aachen.de>
+ * @ingroup		modm_platform_can modm_platform_can_1
+ */
+class Can1 : public ::modm::Can
+{
+public:
+	enum class
+	Mode : uint32_t
+	{
+		Normal		= 0,
+		ListenOnly	= CAN_BTR_SILM,
+		LoopBack	= CAN_BTR_LBKM,
+		ListenOnlyLoopBack	= CAN_BTR_SILM | CAN_BTR_LBKM,
+	};
+
+	// Expose jinja template parameters to be checked by e.g. drivers or application
+	static constexpr size_t RxBufferSize = 32;
+	static constexpr size_t TxBufferSize = 32;
+
+private:
+	/// Private Initializer with computed prescaler and timing constants
+	static bool
+	initializeWithPrescaler(uint16_t prescaler, uint8_t bs1, uint8_t bs2,
+			uint32_t interruptPriority, Mode startupMode, bool overwriteOnOverrun);
+public:
+	template< template<Peripheral _> class... Signals >
+	static void
+	connect(Gpio::InputType inputType = Gpio::InputType::Floating)
+	{
+		using Connector = GpioConnector<Peripheral::Can1, Signals...>;
+		using Tx = typename Connector::template GetSignal< Gpio::Signal::Tx >;
+		using Rx = typename Connector::template GetSignal< Gpio::Signal::Rx >;
+		static_assert(Connector::template IsValid<Tx> and Connector::template IsValid<Rx> and sizeof...(Signals) == 2,
+					  "Can1::connect() requires one Tx and one Rx signal!");
+
+		// Connector::disconnect();
+		Tx::setOutput(Gpio::OutputType::PushPull);
+		Rx::setInput(inputType);
+		Connector::connect();
+	}
+
+	/**
+	 * Enables the clock for the CAN controller and resets all settings
+	 *
+	 * \param bitrate
+	 * 			CAN bitrate (defined in driver/connectivity/can/message.hpp)
+	 * \param interruptPriority
+	 * 			Interrupt vector priority (0=highest to 15=lowest)
+	 * \param overwriteOnOverrun
+	 * 			Once a receive FIFO is full the next incoming message
+	 * 			will overwrite the previous one if \c true otherwise
+	 * 			the incoming message will be discarded
+	 *
+	 * \warning	Has to called after connect(), but before any
+	 * 			other function from this class!
+	 */
+	template< class SystemClock, bitrate_t bitrate=kbps(125), percent_t tolerance=pct(1) >
+	[[nodiscard]] static inline bool
+	initialize(	uint32_t interruptPriority, Mode startupMode = Mode::Normal,
+				bool overwriteOnOverrun = true)
+	{
+		using Timings = CanBitTiming<SystemClock::Can1, bitrate>;
+
+		Timings::template assertBitrateInTolerance<tolerance>();
+
+		return initializeWithPrescaler(
+			Timings::getPrescaler(),
+			Timings::getBS1(),
+			Timings::getBS2(),
+			interruptPriority,
+			startupMode,
+			overwriteOnOverrun);
+	}
+
+	/**
+	 * The the operating mode.
+	 *
+	 * Default after initialization is the normal mode.
+	 */
+	static void
+	setMode(Mode mode);
+
+	static void
+	setAutomaticRetransmission(bool retransmission);
+
+public:
+	// Can Interface Methods
+	static bool
+	isMessageAvailable();
+
+	static bool
+	getMessage(can::Message& message, uint8_t *filter_id=nullptr);
+
+	static bool
+	isReadyToSend();
+
+	static bool
+	sendMessage(const can::Message& message);
+
+public:
+	// Extended Functionality
+	/**
+	 * Get Receive Error Counter.
+	 *
+	 * In case of an error during reception, this counter is
+	 * incremented by 1 or by 8 depending on the error condition as
+	 * defined by the CAN standard. After every successful reception
+	 * the counter is decremented by 1 or reset to 120 if its value
+	 * was higher than 128. When the counter value exceeds 127, the
+	 * CAN controller enters the error passive state.
+	 */
+	static inline uint8_t
+	getReceiveErrorCounter()
+	{
+		return (CAN1->ESR & CAN_ESR_REC) >> 24;
+	}
+
+	/**
+	 * Get Transmit Error Counter.
+	 *
+	 */
+	static inline uint8_t
+	getTransmitErrorCounter()
+	{
+		return (CAN1->ESR & CAN_ESR_TEC) >> 16;
+	}
+
+	static BusState
+	getBusState();
+
+	/**
+	 * Enable the error and status change interrupt.
+	 *
+	 * Can be generated by the following events:
+	 * - Error condition, for more details on error conditions please
+	 *   refer to the CAN Error Status register (CAN_ESR).
+	 * - Wakeup condition, SOF monitored on the CAN Rx signal.
+	 * - Entry into Sleep mode
+	 *
+	 * You need to create you own interrupt handler for this interrupt.
+	 * The interrupt handler has a fixed name:
+	 * \code
+	 * MODM_ISR(CAN1_SCE)
+	 * {
+	 *     ...
+	 *
+	 *     // e.g. Acknowledge interrupt
+	 *     CAN1->MSR = CAN_MSR_ERRI;
+	 * }
+	 * \endcode
+	 *
+	 * \param interruptEnable
+	 * 			Upper 24-bit of the CAN_IER register. E.g.:
+	 * 			 - CAN_IER_BOFIE
+	 * 			 - CAN_IER_EPVIE
+	 * 			 - ...
+	 * 			See Reference Manual >> bxCAN >> CAN_IER Register
+	 * \param interruptPriority
+	 * 			Interrupt vector priority (0=highest to 15=lowest)
+	 */
+	static void
+	enableStatusChangeInterrupt(uint32_t interruptEnable,
+			uint32_t interruptPriority);
+};
+
+}	// namespace platform
+
+}	// namespace modm
+
+#endif	//  MODM_STM32_CAN1_HPP
