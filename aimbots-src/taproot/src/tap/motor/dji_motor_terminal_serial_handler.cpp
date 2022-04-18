@@ -63,8 +63,8 @@ bool DjiMotorTerminalSerialHandler::terminalSerialCallback(
             char* indexEnd;
             motorId = strtol(arg, &indexEnd, 10);
             if (indexEnd != arg + strlen(arg) ||
-                motorId < (DJI_MOTOR_NORMALIZED_ID(MotorId::MOTOR1) + 1) ||
-                motorId > (DJI_MOTOR_NORMALIZED_ID(MotorId::MOTOR8) + 1))
+                motorId < (DJI_MOTOR_TO_NORMALIZED_ID(MotorId::MOTOR1) + 1) ||
+                motorId > (DJI_MOTOR_TO_NORMALIZED_ID(MotorId::MOTOR8) + 1))
             {
                 outputStream << "motorinfo: Invalid motorID" << modm::endl << USAGE;
                 return false;
@@ -189,7 +189,7 @@ void DjiMotorTerminalSerialHandler::getMotorInfoToString(
 {
     if (motor != nullptr)
     {
-        outputStream << (DJI_MOTOR_NORMALIZED_ID(motor->getMotorIdentifier()) + 1) << ". "
+        outputStream << (DJI_MOTOR_TO_NORMALIZED_ID(motor->getMotorIdentifier()) + 1) << ". "
                      << motor->getName() << ": online: " << (motor->isMotorOnline() ? "yes" : "no")
                      << ", enc: " << motor->getEncoderWrapped() << ", rpm: " << motor->getShaftRPM()
                      << ", out des: " << motor->getOutputDesired() << modm::endl;

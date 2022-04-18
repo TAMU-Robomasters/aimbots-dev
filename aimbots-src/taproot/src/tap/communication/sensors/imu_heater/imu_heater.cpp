@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -23,7 +23,7 @@
 
 #include "imu_heater_constants.hpp"
 
-namespace tap::sensors
+namespace tap::communication::sensors::imu_heater
 {
 ImuHeater::ImuHeater(Drivers *drivers)
     : drivers(drivers),
@@ -58,4 +58,4 @@ void ImuHeater::runTemperatureController(float temperature)
         std::max(0.0f, imuTemperatureController.getValue()),
         tap::gpio::Pwm::ImuHeater);
 }
-}  // namespace tap::sensors
+}  // namespace tap::communication::sensors::imu_heater

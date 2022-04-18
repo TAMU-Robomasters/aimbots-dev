@@ -34,19 +34,20 @@ using namespace modm::platform;
 #endif
 using namespace modm::literals;
 
-void tap::can::Can::initialize() {
+void tap::can::Can::initialize()
+{
 #ifndef PLATFORM_HOSTED
     CanFilter::setStartFilterBankForCan2(14);
     // initialize CAN 1
     Can1::connect<GpioD0::Rx, GpioD1::Tx>(Gpio::InputType::PullUp);
-    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can2", "initialize-failed");
+    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can1", "initialize-failed");
     // receive every message for CAN 1
     CanFilter::setFilter(
         0,
         CanFilter::FIFO0,
         CanFilter::StandardIdentifier(0),
         CanFilter::StandardFilterMask(0));
-    Can2::connect<GpioB5::Rx, GpioB6::Tx>(Gpio::InputType::PullUp);  // type-C only change, will be lost on taproot regeneration
+    Can2::connect<GpioB5::Rx, GpioB6::Tx>(Gpio::InputType::PullUp);
     modm_assert((Can2::initialize<Board::SystemClock, 1000_kbps>(12)), "Can2", "initialize-failed");
     // receive every message for CAN 2
     CanFilter::setFilter(
@@ -57,11 +58,13 @@ void tap::can::Can::initialize() {
 #endif
 }
 
-bool tap::can::Can::isMessageAvailable(tap::can::CanBus bus) const {
+bool tap::can::Can::isMessageAvailable(tap::can::CanBus bus) const
+{
 #ifdef PLATFORM_HOSTED
     return tap::motorsim::SimHandler::readyToSend(bus);
 #else
-    switch (bus) {
+    switch (bus)
+    {
         case CanBus::CAN_BUS1:
             return Can1::isMessageAvailable();
         case CanBus::CAN_BUS2:
@@ -72,11 +75,13 @@ bool tap::can::Can::isMessageAvailable(tap::can::CanBus bus) const {
 #endif
 }
 
-bool tap::can::Can::getMessage(tap::can::CanBus bus, modm::can::Message* message) {
+bool tap::can::Can::getMessage(tap::can::CanBus bus, modm::can::Message* message)
+{
 #ifdef PLATFORM_HOSTED
     return tap::motorsim::SimHandler::sendMessage(bus, message);
 #else
-    switch (bus) {
+    switch (bus)
+    {
         case CanBus::CAN_BUS1:
             return Can1::getMessage(*message);
         case CanBus::CAN_BUS2:
@@ -87,12 +92,14 @@ bool tap::can::Can::getMessage(tap::can::CanBus bus, modm::can::Message* message
 #endif
 }
 
-bool tap::can::Can::isReadyToSend(CanBus bus) const {
+bool tap::can::Can::isReadyToSend(CanBus bus) const
+{
 #ifdef PLATFORM_HOSTED
     UNUSED(bus);
     return true;
 #else
-    switch (bus) {
+    switch (bus)
+    {
         case CanBus::CAN_BUS1:
             return Can1::isReadyToSend();
         case CanBus::CAN_BUS2:
@@ -103,11 +110,13 @@ bool tap::can::Can::isReadyToSend(CanBus bus) const {
 #endif
 }
 
-bool tap::can::Can::sendMessage(CanBus bus, const modm::can::Message& message) {
+bool tap::can::Can::sendMessage(CanBus bus, const modm::can::Message& message)
+{
 #ifdef PLATFORM_HOSTED
     return tap::motorsim::SimHandler::getMessage(bus, message);
 #else
-    switch (bus) {
+    switch (bus)
+    {
         case CanBus::CAN_BUS1:
             return Can1::sendMessage(message);
         case CanBus::CAN_BUS2:

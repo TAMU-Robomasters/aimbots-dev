@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -23,7 +23,7 @@
 #include "modm/architecture/interface/register.hpp"
 #include "modm/math/utils.hpp"
 
-namespace tap::communication::sensors::bmi088
+namespace tap::communication::sensors::imu::bmi088
 {
 /**
  * For register tables and descriptions, refer to the bmi088 datasheet:
@@ -440,6 +440,6 @@ public:
     };
 };
 
-}  // namespace tap::communication::sensors::bmi088
+}  // namespace tap::communication::sensors::imu::bmi088
 
 #endif  // TAPROOT_BMI088_DATA_HPP_

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -29,7 +29,7 @@
 
 #include "bmi088_data.hpp"
 
-namespace tap::communication::sensors::bmi088
+namespace tap::communication::sensors::imu::bmi088
 {
 class Bmi088Hal
 {
@@ -249,6 +249,6 @@ public:
 #endif
 };
 
-}  // namespace tap::communication::sensors::bmi088
+}  // namespace tap::communication::sensors::imu::bmi088
 
 #endif  // TAPROOT_BMI088_HAL_HPP_

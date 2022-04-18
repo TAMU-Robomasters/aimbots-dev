@@ -20,36 +20,64 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
-/**
- * @brief Velocity PID constants
- */
-static constexpr float VELOCITY_PID_KP = 20.0f;
-static constexpr float VELOCITY_PID_KI = 0.2f;
-static constexpr float VELOCITY_PID_KD = 0.0f;
-static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 20.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 29.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 /**
  * @brief Position PID constants
  */
-static constexpr float YAW_POSITION_PID_KP = 600.0f;
-static constexpr float YAW_POSITION_PID_KI = 0.0f;
-static constexpr float YAW_POSITION_PID_KD = 500.0f;
-static constexpr float YAW_POSITION_PID_MAX_I_CUMULATIVE = 10.0f;
-static constexpr float YAW_POSITION_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float YAW_POSITION_PID_TQ_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float YAW_POSITION_PID_TR_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float YAW_POSITION_PID_TQ_PROPORTIONAL_KALMAN = 1.0f;
-static constexpr float YAW_POSITION_PID_TR_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
+    .kp = 600.0f,
+    .ki = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-static constexpr float PITCH_POSITION_PID_KP = 1000.0f;
-static constexpr float PITCH_POSITION_PID_KI = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD = 150.0f;
-static constexpr float PITCH_POSITION_PID_MAX_I_CUMULATIVE = 10.0f;
-static constexpr float PITCH_POSITION_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float PITCH_POSITION_PID_TQ_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float PITCH_POSITION_PID_TR_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float PITCH_POSITION_PID_TQ_PROPORTIONAL_KALMAN = 1.0f;
-static constexpr float PITCH_POSITION_PID_TR_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 // Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_MOTOR_DIRECTION = -1;
@@ -76,15 +104,6 @@ static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = false;
-
-/**
- * This max output is measured in the c620 robomaster translated current.
- * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
- * The corresponding speed controller output torque current range is
- * -20 ~ 0 ~ 20 A.
- */
-static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
 
 // Mechanical chassis constants, all in m
 /**
@@ -120,15 +139,19 @@ static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
 
-static constexpr float SHOOTER_PID_KP = 50.0f;
-static constexpr float SHOOTER_PID_KI = 0.0f;
-static constexpr float SHOOTER_PID_KD = 0.0f;
-static constexpr float SHOOTER_MAX_I_CUMULATIVE = 10.0f;
-static constexpr float SHOOTER_MAX_OUTPUT = 30000.0f;
-static constexpr float SHOOTER_TQ_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float SHOOTER_TR_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float SHOOTER_TQ_PROPORTIONAL_KALMAN = 1.0f;
-static constexpr float SHOOTER_TR_PROPORTIONAL_KALMAN = 1.0f;
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 50.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 30000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 /**
  * @brief Power constants for chassis

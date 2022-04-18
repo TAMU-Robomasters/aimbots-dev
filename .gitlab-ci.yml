@@ -44,17 +44,28 @@ clang-format:
   stage: Quality
   needs: []
   script:
-    - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r aimbots-src/src/ aimbots-src/test/
+    - python3 /run-clang-format.py --clang-format-executable clang-format-10 -r aimbots-dev/src/ aimbots-dev/test/
   except: *verification_except
 
-Policy Checks:
+"Policy Checks":
   stage: Quality
-  needs: []
-  script:
-    - python3 ./scripts/check_singleton_drivers.py ./aimbots-src/src/ 
-    - python3 ./scripts/check_license_headers.py
   variables:
-    GIT_SUBMODULE_STRATEGY: none
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - python3 ./taproot-scripts/check_singleton_drivers.py DoNotUse_getDrivers
+        -p ./aimbots-dev/src/
+        -w drivers_singleton.cpp
+            drivers_singleton.hpp
+            main.cpp
+
+    - python3 ./taproot-scripts/check_license_headers.py
+        -p aimbots-dev
+        -i './**/__init__.py' 'taproot/**/*' 'taproot-scripts/**/*' 'aimbots-dev/taproot/**/*' 'docs/**/*' 'aimbots-dev/robot-type/robot_type.hpp'
+        -o 'Advanced Robotics at the University of Washington'
+
+    - python3 ./taproot-scripts/check_header_guard.py aimbots-dev/src aimbots-dev/test/
+
+    - ./taproot-scripts/check_taproot_submodule.sh ./aimbots-dev ./taproot
   except: *verification_except
 
 # Hidden jobs to be extended for each robot
@@ -65,7 +76,7 @@ Policy Checks:
     - cd aimbots-src
     - python3 $(which scons) build robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror
     - python3 $(which scons) size robot=TARGET_$ROBOT -j${NUM_JOBS} additional-ccflags=-Werror > size.txt
-    - python3 ../scripts/parse_metrics.py $ROBOT
+    - python3 ../taproot-scripts/parse_metrics.py -i size.txt -o metrics.txt --identifier $ROBOT
     - cp $DEFAULT_BUILD_ELF_FILE ../$ARTIFACT_PATH/aimbots-src-$ROBOT.elf
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME-$ROBOT-mcb"

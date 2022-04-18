@@ -20,7 +20,7 @@
 #ifndef TAPROOT_CHASSIS_DISPLACEMENT_OBSERVER_INTERFACE_HPP_
 #define TAPROOT_CHASSIS_DISPLACEMENT_OBSERVER_INTERFACE_HPP_
 
-#include "modm/math/geometry/vector.hpp"
+#include "modm/math/geometry/vector3.hpp"
 
 namespace tap::algorithms::odometry
 {
@@ -64,13 +64,18 @@ public:
      * Returns the chassis displacement in chassis frame since some fixed arbitrary
      * point in time near startup.
      *
+     * @param[out] velocity if valid data is available the x, y, and z of this pointed to
+     *      vector that will be populated with the appropriate velocity in implementation
+     *      specific units.
      * @param[out] displacement if valid data is available the x, y, and z of this pointed
      *      to vector will be populated with the appropriate absolute displacement in implementation
      *      specific units.
      *
      * @return `true` if valid chassis displacement data was available, `false` otherwise.
      */
-    virtual bool getChassisDisplacement(modm::Vector<float, 3>* const displacement) const = 0;
+    virtual bool getVelocityChassisDisplacement(
+        modm::Vector3f* const velocity,
+        modm::Vector3f* const displacement) const = 0;
 };
 
 }  // namespace tap::algorithms::odometry

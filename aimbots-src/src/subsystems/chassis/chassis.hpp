@@ -119,6 +119,11 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
         return true;
     }
 
+    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
+        // no proper override because we don't have a need for this function yet
+        return Matrix<float, 3, 1>::zeroMatrix();
+    }
+
 #ifndef ENV_UNIT_TESTS
    private:
 #else
@@ -129,14 +134,14 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
 #ifdef TARGET_SENTRY
     DJIMotor railWheel;
-    StockPID railWheelVelPID;
+    SmoothPID railWheelVelPID;
 
 #else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
-    StockPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
+    SmoothPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
-    StockPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
+    SmoothPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
 #endif
 #endif
 
@@ -147,7 +152,7 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
     // ChassisPowerLimiter powerLimiter;
 
-    Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
+    Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
     Matrix<float, 4, 3> wheelLocationMatrix;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -22,7 +22,7 @@
 
 #include "tap/communication/gpio/pwm.hpp"
 
-namespace tap::sensors::bound_ports
+namespace tap::communication::sensors::imu_heater::bound_ports
 {
     static constexpr tap::gpio::Pwm::Timer IMU_HEATER_TIMER = tap::gpio::Pwm::Timer::TIMER10;
 }  // tap::sensors

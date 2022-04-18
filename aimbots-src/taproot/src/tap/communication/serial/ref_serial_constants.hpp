@@ -20,6 +20,8 @@
 #ifndef TAPROOT_REF_SERIAL_CONSTANTS_HPP_
 #define TAPROOT_REF_SERIAL_CONSTANTS_HPP_
 
+#include "uart.hpp"
+
 namespace tap::communication::serial::bound_ports
 {
     static constexpr Uart::UartPort REF_SERIAL_UART_PORT = Uart::UartPort::Uart6;

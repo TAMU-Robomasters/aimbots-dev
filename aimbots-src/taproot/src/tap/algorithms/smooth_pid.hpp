@@ -45,26 +45,25 @@ struct SmoothPidConfig
                                         * that is applied to the proportional error. */
     float errDeadzone = 0.0f;          /**< Within [-errDeadzone, errDeadzone], the PID controller
                                         * error will be set to 0. */
+    float errorDerivativeFloor = 0.0f; /**< Minimum error value at which the PID controller will
+                                        * compute and apply the derivative term. */
 };
 
 class SmoothPid
 {
 public:
-    SmoothPid(
-        float kp,
-        float ki,
-        float kd,
-        float maxICumulative,
-        float maxOutput,
-        float tQDerivativeKalman,
-        float tRDerivativeKalman,
-        float tQProportionalKalman,
-        float tRProportionalKalman,
-        float errDeadzone = 0.0f);
-
     SmoothPid(const SmoothPidConfig &pidConfig);
 
-    float runController(float error, float rotationalSpeed, float dt);
+    /**
+     * Runs the PID controller. Should be called frequently for best results.
+     *
+     * @param[in] error The error (in user-defined units) between some target and measured value.
+     * @param[in] errorDerivative The derivative of the error passed in above (in user-defined units
+     * / time).
+     * @param[in] dt The difference in time between the time this function is being called and the
+     * last time this function was called.
+     */
+    virtual float runController(float error, float errorDerivative, float dt);
 
     float runControllerDerivateError(float error, float dt);
 

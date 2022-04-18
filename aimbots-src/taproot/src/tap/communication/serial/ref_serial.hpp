@@ -27,6 +27,7 @@
 #include "tap/util_macros.hpp"
 
 #include "modm/container/deque.hpp"
+#include "modm/processing/protothread/semaphore.hpp"
 
 #include "dji_serial.hpp"
 #include "ref_serial_data.hpp"
@@ -129,202 +130,6 @@ public:
     mockable const Rx::GameData& getGameData() const;
 
     /**
-     * Configures the `graphicData` with all data generic to the type of graphic being configured.
-     *
-     * For sending graphics, the general schema is to create a `Graphic<n>Message` struct, configure
-     * the individual `GraphicData` structs in the graphic message using the `configGraphicGenerics`
-     * and then `config<Line|Rectangle|Circle|etc.>` functions. Finally, send the graphic message
-     * using `sendGraphic`.
-     *
-     * For example, to configure and send a line graphic (`refSerial` is a pointer to the global
-     * `RefSerial` object):
-     *
-     * ```
-     * Graphic1Message msg;
-     * refSerial->configGraphicGenerics(&msg.graphicData, "\x00\x00\x01", RefSerial::ADD_GRAPHIC,1,
-     * YELLOW); refSerial->configLine(4, 100, 100, 200, 200, &msg.graphicData);
-     * refSerial->sendGraphic(&msg);
-     * ```
-     *
-     * @param[out] graphicData The structure where generic data will be stored.
-     * @param[in] name The name of the graphic.
-     * @param[in] operation The graphic operation to be done (add/remove, etc).
-     * @param[in] layer The graphic layer the graphic will be located at. Must be between 0-9
-     * @param[in] color The color of the graphic.
-     */
-    static void configGraphicGenerics(
-        Tx::GraphicData* graphicData,
-        const uint8_t* name,
-        Tx::AddGraphicOperation operation,
-        uint8_t layer,
-        Tx::GraphicColor color);
-    /**
-     * Configures `sharedData` with a line graphic whose parameters are specified.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configLine(
-        uint16_t width,
-        uint16_t startX,
-        uint16_t startY,
-        uint16_t endX,
-        uint16_t endY,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures `sharedData` with a rectangle graphic whose parameters are specified.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configRectangle(
-        uint16_t width,
-        uint16_t startX,
-        uint16_t startY,
-        uint16_t endX,
-        uint16_t endY,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures `sharedData` with a circle graphic whose parameters are specified.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configCircle(
-        uint16_t width,
-        uint16_t centerX,
-        uint16_t centerY,
-        uint16_t radius,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures `sharedData` with an ellipse graphic whose parameters are specified.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configEllipse(
-        uint16_t width,
-        uint16_t centerX,
-        uint16_t centerY,
-        uint16_t xLen,
-        uint16_t yLen,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures `sharedData` with an arc graphic whose parameters are specified.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configArc(
-        uint16_t startAngle,
-        uint16_t endAngle,
-        uint16_t width,
-        uint16_t centerX,
-        uint16_t centerY,
-        uint16_t xLen,
-        uint16_t yLen,
-        Tx::GraphicData* sharedData);
-    // Recommended font size and line width ratio is 10:1.
-    /**
-     * Configures `sharedData` with a floating point number.
-     *
-     * @note This function doesn't work because of known issues in the referee system
-     *      server.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configFloatingNumber(
-        uint16_t fontSize,
-        uint16_t decimalPrecision,
-        uint16_t width,
-        uint16_t startX,
-        uint16_t startY,
-        float value,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures `sharedData` with an integer.
-     *
-     * @note This function doesn't display negative numbers properly because of known
-     *      issues in the referee system server.
-     *
-     * @param[out] sharedData The graphic data struct to configure.
-     */
-    static void configInteger(
-        uint16_t fontSize,
-        uint16_t width,
-        uint16_t startX,
-        uint16_t startY,
-        int32_t value,
-        Tx::GraphicData* sharedData);
-    /**
-     * Configures a character message in the passed in `GraphicCharacterMessage`.
-     *
-     * @param[out] sharedData The message to configure.
-     */
-    static void configCharacterMsg(
-        uint16_t fontSize,
-        uint16_t width,
-        uint16_t startX,
-        uint16_t startY,
-        const char* dataToPrint,
-        Tx::GraphicCharacterMessage* sharedData);
-
-    /**
-     * Properly constructs the frame header and places it in the passed in `header`.
-     *
-     * @param[out] header The frame header struct to store the constructed frame header.
-     * @param[in] msgLen The length of the message. This includes only the length of the data
-     *      and not the length of the cmdId or frame tail.
-     */
-    static void configFrameHeader(FrameHeader* header, uint16_t msgLen);
-    static void configInteractiveHeader(
-        Tx::InteractiveHeader* header,
-        uint16_t cmdId,
-        RobotId senderId,
-        uint16_t receiverId);
-
-    /**
-     * Deletes an entire graphic layer or the entire screen
-     *
-     * @param[in] graphicOperation Whether to delete a single layer or the entire screen.
-     * @param[in] graphicLayer The layer to remove. Must be between 0-9
-     */
-    mockable void deleteGraphicLayer(
-        Tx::DeleteGraphicOperation graphicOperation,
-        uint8_t graphicLayer);
-
-    /**
-     * This function and the ones below all configure the message header and sends the specified
-     * message struct to the referee system unless `configMsgHeader` or `sendMsg` are false.
-     *
-     * @param[in] graphicMsg The graphic message to send. Note that this struct is updated
-     *      with header information in this function.
-     * @param[in] configMsgHeader Whether or not to update the `graphicMsg`'s header information.
-     * @param[in] sendMsg Whether or not to send the message.
-     */
-    mockable void sendGraphic(
-        Tx::Graphic1Message* graphicMsg,
-        bool configMsgHeader = true,
-        bool sendMsg = true);
-    mockable void sendGraphic(
-        Tx::Graphic2Message* graphicMsg,
-        bool configMsgHeader = true,
-        bool sendMsg = true);
-    mockable void sendGraphic(
-        Tx::Graphic5Message* graphicMsg,
-        bool configMsgHeader = true,
-        bool sendMsg = true);
-    mockable void sendGraphic(
-        Tx::Graphic7Message* graphicMsg,
-        bool configMsgHeader = true,
-        bool sendMsg = true);
-    mockable void sendGraphic(
-        Tx::GraphicCharacterMessage* graphicMsg,
-        bool configMsgHeader = true,
-        bool sendMsg = true);
-
-    mockable void sendRobotToRobotMsg(
-        Tx::RobotToRobotMessage* robotToRobotMsg,
-        uint16_t msgId,
-        RobotId receiverId,
-        uint16_t msgLen);
-
-    /**
      * Returns a robot id that is of the same color of this robot's
      * ID. This allows you to specify you want to send to one robot
      * and then based on your team it will be sent to the correct robot
@@ -336,12 +141,21 @@ public:
         uint16_t msgId,
         RobotToRobotMessageHandler* handler);
 
+    /**
+     * Used by `RefSerialTransmitter`. It is necessary to acquire this lock to coordinate sending
+     * ref serial data from different protothreads.
+     */
+    void acquireTransmissionSemaphore() { transmissionSemaphore.acquire(); }
+
+    void releaseTransmissionSemaphore() { transmissionSemaphore.release(); }
+
 private:
     Rx::RobotData robotData;
     Rx::GameData gameData;
     modm::BoundedDeque<Rx::DamageEvent, DPS_TRACKER_DEQUE_SIZE> receivedDpsTracker;
     arch::MilliTimeout refSerialOfflineTimeout;
     std::unordered_map<uint16_t, RobotToRobotMessageHandler*> msgIdToRobotToRobotHandlerMap;
+    modm::pt::Semaphore transmissionSemaphore;
 
     /**
      * Decodes ref serial message containing the game stage and time remaining

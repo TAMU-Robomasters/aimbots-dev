@@ -47,7 +47,7 @@
 #include "tap/communication/gpio/digital.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/communication/gpio/pwm.hpp"
-#include "tap/communication/sensors/bmi088/bmi088.hpp"
+#include "tap/communication/sensors/imu/bmi088/bmi088.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/communication/serial/terminal_serial.hpp"
@@ -133,7 +133,7 @@ public:
     errors::ErrorController errorController;
     motor::DjiMotorTerminalSerialHandler djiMotorTerminalSerialHandler;
     motor::DjiMotorTxHandler djiMotorTxHandler;
-    communication::sensors::bmi088::Bmi088 bmi088;
+    communication::sensors::imu::bmi088::Bmi088 bmi088;
     control::CommandScheduler commandScheduler;
 #endif
 };  // class Drivers

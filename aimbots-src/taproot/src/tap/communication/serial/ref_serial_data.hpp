@@ -433,7 +433,8 @@ public:
                     std::is_same<T, Graphic2Message>::value ||
                     std::is_same<T, Graphic5Message>::value ||
                     std::is_same<T, Graphic7Message>::value ||
-                    std::is_same<T, GraphicCharacterMessage>::value,
+                    std::is_same<T, GraphicCharacterMessage>::value ||
+                    std::is_same<T, RobotToRobotMessage>::value,
                 "Invalid type, getWaitTimeAfterGraphicSendMs only takes in ref serial message "
                 "types.");
 
