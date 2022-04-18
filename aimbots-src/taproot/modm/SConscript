@@ -218,6 +218,7 @@ files = [
     env.File(r"src/modm/platform/core/startup.c"),
     env.File(r"src/modm/platform/core/startup_platform.c"),
     env.File(r"src/modm/platform/core/vectors.c"),
+    env.File(r"src/modm/platform/flash/flash.cpp"),
     env.File(r"src/modm/platform/gpio/enable.cpp"),
     env.File(r"src/modm/platform/heap/heap_tlsf.cpp"),
     env.File(r"src/modm/platform/spi/spi_master_1.cpp"),

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -34,7 +34,7 @@ using namespace modm::literals;
 using namespace tap::arch;
 using namespace Board;
 
-namespace tap::communication::sensors::bmi088
+namespace tap::communication::sensors::imu::bmi088
 {
 #if defined(PLATFORM_HOSTED)
 #define DELAY_MS(ms)
@@ -283,4 +283,4 @@ void Bmi088::setAndCheckGyroRegister(Gyro::Register reg, Gyro::Registers_t value
     }
 }
 
-}  // namespace tap::communication::sensors::bmi088
+}  // namespace tap::communication::sensors::imu::bmi088

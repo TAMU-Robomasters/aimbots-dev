@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -17,11 +17,13 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "bmi088_hal.hpp"
+#include "ref_serial_transmitter_mock.hpp"
 
-#if defined(ENV_UNIT_TESTS)
-namespace tap::communication::sensors::bmi088
+namespace tap::mock
 {
-std::deque<uint8_t> Bmi088Hal::rxData;
+RefSerialTransmitterMock::RefSerialTransmitterMock(Drivers *drivers)
+    : tap::communication::serial::RefSerialTransmitter(drivers)
+{
 }
-#endif
+RefSerialTransmitterMock::~RefSerialTransmitterMock() {}
+}  // namespace tap::mock

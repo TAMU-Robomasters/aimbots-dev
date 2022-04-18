@@ -26,6 +26,7 @@
 #include "platform/core/hardware_init.hpp"
 #include "platform/core/heap_table.hpp"
 #include "platform/core/peripherals.hpp"
+#include "platform/flash/flash.hpp"
 #include "platform/gpio/base.hpp"
 #include "platform/gpio/connector.hpp"
 #include "platform/gpio/connector_detail.hpp"

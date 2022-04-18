@@ -5,7 +5,7 @@ namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
     : Subsystem(drivers),
-      feederVelPID(20, 0, 0, 0, 8000, 1, 0, 1, 0),
+      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
       desiredOutput(0),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, false, "Feeder Motor") {

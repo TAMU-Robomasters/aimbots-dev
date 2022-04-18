@@ -35,7 +35,7 @@ namespace tap::motor
  * for declaring a new motor, must be one of these motor
  * identifiers
  */
-enum MotorId : int32_t
+enum MotorId : uint32_t
 {
     MOTOR1 = 0X201,
     MOTOR2 = 0x202,
@@ -64,6 +64,9 @@ enum MotorId : int32_t
  *
  * Extends the CanRxListener class to attach a message handler for feedback data from the
  * motor to the CAN Rx dispatch handler.
+ *
+ * @note Currently there is no error handling for using a motor without having it be properly
+ * initialize. You must call the `initialize` function in order for this class to work properly.
  */
 class DjiMotor : public can::CanRxListener, public MotorInterface
 {

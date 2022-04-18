@@ -27,33 +27,6 @@ namespace tap
 {
 namespace algorithms
 {
-SmoothPid::SmoothPid(
-    float kp,
-    float ki,
-    float kd,
-    float maxICumulative,
-    float maxOutput,
-    float tQDerivativeKalman,
-    float tRDerivativeKalman,
-    float tQProportionalKalman,
-    float tRProportionalKalman,
-    float errDeadzone)
-    : config(
-          {kp,
-           ki,
-           kd,
-           maxICumulative,
-           maxOutput,
-           tQDerivativeKalman,
-           tRDerivativeKalman,
-           tQProportionalKalman,
-           tRProportionalKalman,
-           errDeadzone}),
-      proportionalKalman(tQProportionalKalman, tRProportionalKalman),
-      derivativeKalman(tQDerivativeKalman, tRDerivativeKalman)
-{
-}
-
 SmoothPid::SmoothPid(const SmoothPidConfig &pidConfig)
     : config(pidConfig),
       proportionalKalman(pidConfig.tQProportionalKalman, pidConfig.tRProportionalKalman),
@@ -77,6 +50,12 @@ float SmoothPid::runController(float error, float errorDerivative, float dt)
         config.maxICumulative);
     // d
     currErrorD = -config.kd * derivativeKalman.filterData(errorDerivative);
+    if (fabs(error) < config.errorDerivativeFloor)
+    {
+        // the error is less than some amount, so round derivative output to 0
+        // done to avoid high frequency control oscilations in some systems
+        currErrorD = 0.0f;
+    }
     // total
     output =
         limitVal<float>(currErrorP + currErrorI + currErrorD, -config.maxOutput, config.maxOutput);

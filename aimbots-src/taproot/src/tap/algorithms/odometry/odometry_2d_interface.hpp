@@ -43,6 +43,11 @@ public:
      * @return The current location (x and y coordinate) and orientation (in radians).
      */
     virtual modm::Location2D<float> getCurrentLocation2D() const = 0;
+
+    /**
+     * @return The current x and y velocity (in m/s).
+     */
+    virtual modm::Vector2f getCurrentVelocity2D() const = 0;
 };
 
 }  // namespace tap::algorithms::odometry

@@ -6,26 +6,8 @@ namespace src::Gimbal {
 
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
-      yawPositionPID(
-          YAW_POSITION_PID_KP,
-          YAW_POSITION_PID_KI,
-          YAW_POSITION_PID_KD,
-          YAW_POSITION_PID_MAX_I_CUMULATIVE,
-          YAW_POSITION_PID_MAX_OUTPUT,
-          YAW_POSITION_PID_TQ_DERIVATIVE_KALMAN,
-          YAW_POSITION_PID_TR_DERIVATIVE_KALMAN,
-          YAW_POSITION_PID_TQ_PROPORTIONAL_KALMAN,
-          YAW_POSITION_PID_TR_PROPORTIONAL_KALMAN),
-      pitchPositionPID(
-          PITCH_POSITION_PID_KP,
-          PITCH_POSITION_PID_KI,
-          PITCH_POSITION_PID_KD,
-          PITCH_POSITION_PID_MAX_I_CUMULATIVE,
-          PITCH_POSITION_PID_MAX_OUTPUT,
-          PITCH_POSITION_PID_TQ_DERIVATIVE_KALMAN,
-          PITCH_POSITION_PID_TR_DERIVATIVE_KALMAN,
-          PITCH_POSITION_PID_TQ_PROPORTIONAL_KALMAN,
-          PITCH_POSITION_PID_TR_PROPORTIONAL_KALMAN) {}
+      yawPositionPID(YAW_POSITION_PID_CONFIG),
+      pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
 
 void GimbalChassisRelativeController::initialize() {
     yawPositionPID.pid.reset();

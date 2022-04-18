@@ -17,10 +17,10 @@
  * along with aimbots-src.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ENV_UNIT_TESTS
-
 #ifndef DRIVERS_SINGLETON_HPP_
 #define DRIVERS_SINGLETON_HPP_
+
+#ifndef ENV_UNIT_TESTS
 
 #include "drivers.hpp"
 
