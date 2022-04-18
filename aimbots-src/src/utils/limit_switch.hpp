@@ -1,40 +1,38 @@
 #pragma once
 
 // #include "tap/communication/gpio/pwm.hpp"
-// 
+//
 #include "drivers.hpp"
+#include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "utils/common_types.hpp"
-#include "tap/communication/gpio/digital.hpp" //maybe not
-#include "tap/control/command.hpp"
 
 namespace utils {
 
-enum LimitSwitchState{
-            PRESSED = 1,
-            RELEASED = 0,
+enum LimitSwitchState {
+    PRESSED = 1,
+    RELEASED = 0,
 };
 
-class LimitSwitch{
-        public:
-            LimitSwitch(src::Drivers* drivers, InputPins rxPin);
+class LimitSwitch {
+   public:
+    LimitSwitch(src::Drivers* drivers, InputPins rxPin);
 
-            bool readSwitch();
+    bool readSwitch();
 
-            void updateSwitch();
+    void updateSwitch();
 
-            bool isRising() const;
-            bool isFalling() const;
-            bool isPressed() const;
-            bool isReleased() const;
+    bool isRising() const;
+    bool isFalling() const;
+    bool isPressed() const;
+    bool isReleased() const;
 
-        private:
-            InputPins rxPin;
-            src::Drivers* drivers;
-            LimitSwitchState currSwitchState;
-            LimitSwitchState prevSwitchState;
+   private:
+    InputPins rxPin;
+    src::Drivers* drivers;
+    LimitSwitchState currSwitchState;
+    LimitSwitchState prevSwitchState;
 
-            bool isStateChanged(bool currentState);
-
+    bool isStateChanged(bool currentState);
 };
 
-} // namespace utils
+}  // namespace utils
