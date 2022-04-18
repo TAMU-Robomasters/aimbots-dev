@@ -2,8 +2,7 @@
 
 namespace utils {
     LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin) 
-        : tap::control::Command(),
-            drivers(drivers),
+        :   drivers(drivers),
             rxPin(rxPin) {}
 
 
@@ -11,38 +10,17 @@ namespace utils {
             return drivers->digital.read(rxPin);
         }
 
-        bool LimitSwitch::updateSwitch(){
-            bool state = readSwitch();
+        void LimitSwitch::updateSwitch() {
+            prevSwitchState = currSwitchState;
 
-            if (isStateChanged(state)) {
-                previousState = !previousState;
-                if (state) {
-                    return true;
-                }
-            }
-            return false;
+            currSwitchState = static_cast<LimitSwitchState>(readSwitch());
         }
 
-        void LimitSwitch::initialize() {
-            return;
+        bool LimitSwitch::isRising() const{
+            return (currSwitchState == LimitSwitchState::PRESSED) && (prevSwitchState == LimitSwitchState::RELEASED);
         }
 
-        bool LimitSwitch::isReady() {
-            return true;
-        }
-
-        bool LimitSwitch::isFinished() const {
-            return false;
-        }
-
-        void LimitSwitch::execute() {
-        }
-
-
-        bool LimitSwitch::isStateChanged(bool currentState) {
-            if (currentState != previousState) {
-                return true;
-            }
-            return false;
+        bool LimitSwitch::isFalling() const{
+            return (currSwitchState == LimitSwitchState::RELEASED) && (prevSwitchState == LimitSwitchState::PRESSED);
         }
 }   // namespace utils

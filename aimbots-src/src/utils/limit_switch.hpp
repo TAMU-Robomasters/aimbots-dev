@@ -9,28 +9,29 @@
 
 namespace utils {
 
-class LimitSwitch : public tap::control::Command  {
+enum LimitSwitchState{
+            PRESSED = 1,
+            RELEASED = 0,
+};
+
+class LimitSwitch{
         public:
             LimitSwitch(src::Drivers* drivers, InputPins rxPin);
-            // bool updateSwitch();
+
             bool readSwitch();
 
-            bool isReady() override;
+            void updateSwitch();
 
-            void initialize() override;
+            bool isRising() const;
+            bool isFalling() const;
+            bool isPressed() const;
+            bool isReleased() const;
 
-            void execute() override;
-
-            // void end(bool interrupted) override;
-
-            bool isFinished() const override;
-            
-            bool updateSwitch();
         private:
             InputPins rxPin;
             src::Drivers* drivers;
-
-            bool previousState;
+            LimitSwitchState currSwitchState;
+            LimitSwitchState prevSwitchState;
 
             bool isStateChanged(bool currentState);
 
