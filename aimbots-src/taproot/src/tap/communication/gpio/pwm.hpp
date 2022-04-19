@@ -55,9 +55,7 @@ public:
     {
         C1,
         C2,
-        C3,
         C4,
-        C5,
         C6,
         C7,
         Buzzer,
@@ -105,8 +103,8 @@ private:
     {
         Ch1 = 1,
         Ch2 = 2,
-        Ch3 = 3,
         Ch4 = 4,
+        Ch3 = 3,
     };
 
     /**
