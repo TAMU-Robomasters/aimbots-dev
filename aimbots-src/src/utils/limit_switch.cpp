@@ -1,9 +1,32 @@
 #include "utils/limit_switch.hpp"
 
-namespace utils {
-LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin)
-    : drivers(drivers),
-      rxPin(rxPin) {}
+LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin, EdgeType edge)
+    : Subsystem(drivers),
+    rxPin(rxPin),
+    counter(0),
+    edge(static_cast<EdgeType>(edge)) {};
+
+void LimitSwitch::initialize() { //awesome
+}
+
+void LimitSwitch::refresh() {
+    updateSwitch();
+    if (edge) { // == EdgeType::RISING == 1
+        counter += (isRising() ? 1 : 0);
+        //counter = counter  % mod
+    } 
+    else {
+        counter += (isFalling() ? 1 : 0);
+    }
+//   counter += (edge ? limitSwitch.isRising() ? 1 : 0 : limitSwitch.isFalling() ? 1 : 0);
+//uncomment this line ^^ to run the code faster
+    /*
+    if (counter==mod) {
+        //DO event
+        counter =0;
+    }
+    */
+}
 
 bool LimitSwitch::readSwitch() {
     return drivers->digital.read(rxPin);
@@ -22,4 +45,7 @@ bool LimitSwitch::isRising() const {
 bool LimitSwitch::isFalling() const {
     return (currSwitchState == LimitSwitchState::RELEASED) && (prevSwitchState == LimitSwitchState::PRESSED);
 }
-}  // namespace utils
+
+bool LimitSwitch::isStateChanged() const {
+    return (currSwitchState != prevSwitchState);
+}

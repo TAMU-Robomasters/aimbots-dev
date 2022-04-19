@@ -8,7 +8,8 @@ FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
       feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
       desiredOutput(0),
-      feederMotor(drivers, FEEDER_ID, FEED_BUS, false, "Feeder Motor") {
+      feederMotor(drivers, FEEDER_ID, FEED_BUS, false, "Feeder Motor")
+      {
 }
 
 void FeederSubsystem::initialize() {

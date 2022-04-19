@@ -4,6 +4,7 @@
 #include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/limit_switch.hpp"
 
 namespace src::Feeder {
 

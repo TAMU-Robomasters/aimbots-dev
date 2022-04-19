@@ -1,38 +1,41 @@
 #pragma once
 
-// #include "tap/communication/gpio/pwm.hpp"
-//
 #include "drivers.hpp"
+#include "tap/control/subsystem.hpp"
 #include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "utils/common_types.hpp"
-
-namespace utils {
 
 enum LimitSwitchState {
     PRESSED = 1,
     RELEASED = 0,
 };
+enum EdgeType {
+    FALLING = 0,
+    RISING = 1,
+};
 
-class LimitSwitch {
-   public:
-    LimitSwitch(src::Drivers* drivers, InputPins rxPin);
 
-    bool readSwitch();
-
-    void updateSwitch();
-
-    bool isRising() const;
-    bool isFalling() const;
-    bool isPressed() const;
-    bool isReleased() const;
-
-   private:
+class LimitSwitch : public tap::control::Subsystem {
+private:
     InputPins rxPin;
     src::Drivers* drivers;
     LimitSwitchState currSwitchState;
     LimitSwitchState prevSwitchState;
 
-    bool isStateChanged(bool currentState);
-};
+    //optional
+    int counter;
+    const EdgeType edge; //which edge to count with in refresh
+public:
+    LimitSwitch(src::Drivers* drivers, InputPins rxPin, EdgeType edge);
 
-}  // namespace utils
+    void initialize() override;
+    void refresh() override;
+    //
+    bool readSwitch();
+    void updateSwitch();
+    bool isRising() const;
+    bool isFalling() const;
+    bool isStateChanged() const;
+    int getCurrentCount(int n) const;
+
+};
