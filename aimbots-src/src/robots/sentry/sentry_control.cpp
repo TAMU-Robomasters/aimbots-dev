@@ -27,6 +27,8 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+//
+#include "subsystems/sensors/limit_switch.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -51,6 +53,8 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+LimitSwitch limitSwitchOne(drivers(), tap::gpio::Digital::InputPin::C6, EdgeType::RISING);
+LimitSwitch limitSwitchTwo(drivers(), tap::gpio::Digital::InputPin::C7, EdgeType::RISING);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -90,6 +94,8 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&limitSwitchOne);
+    drivers->commandScheduler.registerSubsystem(&limitSwitchTwo);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -98,6 +104,8 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    limitSwitchOne.initialize();
+    limitSwitchTwo.initialize();
 }
 
 // Set default command here -----------------------------------------------

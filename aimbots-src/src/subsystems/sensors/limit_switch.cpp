@@ -1,14 +1,16 @@
-#include "utils/limit_switch.hpp"
+#include "subsystems/sensors/limit_switch.hpp"
 
 LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin, EdgeType edge)
     : Subsystem(drivers),
     rxPin(rxPin),
     counter(0),
-    edge(static_cast<EdgeType>(edge)) {};
+    edge(edge) {};
 
 void LimitSwitch::initialize() { //awesome
+    drivers->digital.configureInputPullMode(rxPin, modm::platform::Gpio::InputType::Floating);
 }
 
+int counter_debug = 0;
 void LimitSwitch::refresh() {
     updateSwitch();
     if (edge) { // == EdgeType::RISING == 1
@@ -18,6 +20,8 @@ void LimitSwitch::refresh() {
     else {
         counter += (isFalling() ? 1 : 0);
     }
+
+    counter_debug = counter;
 //   counter += (edge ? limitSwitch.isRising() ? 1 : 0 : limitSwitch.isFalling() ? 1 : 0);
 //uncomment this line ^^ to run the code faster
     /*
