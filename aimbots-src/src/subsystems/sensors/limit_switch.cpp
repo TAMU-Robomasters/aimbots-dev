@@ -7,13 +7,13 @@ LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin, EdgeType edge)
     edge(edge) {};
 
 void LimitSwitch::initialize() { //awesome
-    drivers->digital.configureInputPullMode(rxPin, modm::platform::Gpio::InputType::Floating);
+    drivers->digital.configureInputPullMode(rxPin, modm::platform::Gpio::InputType::PullUp);
 }
 
 int counter_debug = 0;
 void LimitSwitch::refresh() {
     updateSwitch();
-    if (edge) { // == EdgeType::RISING == 1
+    if (edge == RISING) { // == EdgeType::RISING == 1
         counter += (isRising() ? 1 : 0);
         //counter = counter  % mod
     } 
@@ -36,10 +36,11 @@ bool LimitSwitch::readSwitch() {
     return drivers->digital.read(rxPin);
 }
 
+int state = 0;
 void LimitSwitch::updateSwitch() {
     prevSwitchState = currSwitchState;
-
     currSwitchState = static_cast<LimitSwitchState>(readSwitch());
+    state = static_cast<int>(currSwitchState);
 }
 
 bool LimitSwitch::isRising() const {

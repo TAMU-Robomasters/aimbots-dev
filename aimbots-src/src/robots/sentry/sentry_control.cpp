@@ -95,7 +95,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&limitSwitchOne);
-    drivers->commandScheduler.registerSubsystem(&limitSwitchTwo);
+    // drivers->commandScheduler.registerSubsystem(&limitSwitchTwo);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -105,7 +105,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     limitSwitchOne.initialize();
-    limitSwitchTwo.initialize();
+    // limitSwitchTwo.initialize();
 }
 
 // Set default command here -----------------------------------------------
