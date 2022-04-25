@@ -6,13 +6,12 @@
 //        no idea if these interrupts are used by something else
 
 MODM_ISR(EXTI9_5) {  // using GPIO_C6, EXTI9_5_IRQn referenced as the "ExternalInterruptIRQ" in gpio_C6.hpp
-    utils::UltrasonicDistanceSensor::LeftEchoTriggerPin::acknowledgeExternalInterruptFlag();
+    utils::UltrasonicDistanceSensor::LeftEchoPin::acknowledgeExternalInterruptFlag();
     utils::UltrasonicDistanceSensor::handleLeftEchoEnd();
 }
 
-static bool hitRightRisingEdge = false;
 MODM_ISR(EXTI15_10) {
-    utils::UltrasonicDistanceSensor::RightEchoTriggerPin::acknowledgeExternalInterruptFlag();
+    utils::UltrasonicDistanceSensor::RightEchoPin::acknowledgeExternalInterruptFlag();
     utils::UltrasonicDistanceSensor::handleRightEchoEnd();
 }
 
@@ -20,8 +19,9 @@ namespace utils {
 
 float UltrasonicDistanceSensor::distanceLeft = 0.0f;
 float UltrasonicDistanceSensor::distanceRight = 0.0f;
+float UltrasonicDistanceSensor::echoStartTimeMS = 0.0f;
 tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
-tap::arch::Timeout UltrasonicDistanceSensor::pulseTimer;
+tap::arch::MilliTimeout UltrasonicDistanceSensor::pulseTimer;
 
 void UltrasonicDistanceSensor::handleLeftEchoEnd() {
     // Check how long it's been since we sent the trigger pulse and find the distance from that
@@ -35,18 +35,19 @@ void UltrasonicDistanceSensor::handleRightEchoEnd() {
     distanceRight = ((echoFinishTime - echoStartTimeMS) * 1000) * CM_PER_uS;
 }
 
-UltrasonicDistanceSensor::UltrasonicDistanceSensor(src::Drivers* drivers, uint16_t txPin, uint16_t rxPin) {}
+UltrasonicDistanceSensor::UltrasonicDistanceSensor(src::Drivers* drivers)
+    : drivers(drivers) {}
 
 void UltrasonicDistanceSensor::initialize() {
-    LeftEchoTriggerPin::setInput(modm::platform::Gpio::InputType::PullDown);
-    LeftEchoTriggerPin::enableExternalInterruptVector(0);
-    LeftEchoTriggerPin::enableExternalInterrupt();
-    LeftEchoTriggerPin::setInputTrigger(modm::platform::Gpio::InputTrigger::FallingEdge);
+    LeftEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
+    LeftEchoPin::enableExternalInterruptVector(0);
+    LeftEchoPin::enableExternalInterrupt();
+    LeftEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::FallingEdge);
 
-    RightEchoTriggerPin::setInput(modm::platform::Gpio::InputType::PullDown);
-    RightEchoTriggerPin::enableExternalInterruptVector(0);
-    RightEchoTriggerPin::enableExternalInterrupt();
-    RightEchoTriggerPin::setInputTrigger(modm::platform::Gpio::InputTrigger::FallingEdge);
+    RightEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
+    RightEchoPin::enableExternalInterruptVector(0);
+    RightEchoPin::enableExternalInterrupt();
+    RightEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::FallingEdge);
 }
 
 void UltrasonicDistanceSensor::update() {
@@ -57,13 +58,14 @@ void UltrasonicDistanceSensor::update() {
     // the echo signal has gone high, but hasn't finished yet.
 
     if (echoTimer.execute()) {
-        LeftEchoTriggerPin::setOutput(true);
-        RightEchoTriggerPin::setOutput(true);
+        drivers->digital.set(LEFT_TRIGGER_PIN, true);
+        drivers->digital.set(RIGHT_TRIGGER_PIN, true);
         pulseTimer.restart(1);
     }
+
     if (pulseTimer.execute()) {
-        LeftEchoTriggerPin::setOutput(false);
-        RightEchoTriggerPin::setOutput(false);
+        drivers->digital.set(LEFT_TRIGGER_PIN, false);
+        drivers->digital.set(RIGHT_TRIGGER_PIN, false);
         echoStartTimeMS = tap::arch::clock::getTimeMilliseconds();
     }
 }

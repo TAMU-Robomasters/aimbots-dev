@@ -22,6 +22,7 @@
 
 #include "tap/drivers.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/ultrasonic_distance_sensor.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -31,9 +32,15 @@ class Drivers : public tap::Drivers {
    public:
 #endif
     Drivers() : tap::Drivers(),
+#ifdef TARGET_SENTRY
+                distanceSensor(this),
+#endif
                 controlOperatorInterface(this) {}
 
    public:
+#ifdef TARGET_SENTRY
+    ::utils::UltrasonicDistanceSensor distanceSensor;
+#endif
     Control::OperatorInterface controlOperatorInterface;
 };  // class Drivers
 
