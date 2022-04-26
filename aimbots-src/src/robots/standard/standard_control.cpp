@@ -22,10 +22,11 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 //
+#include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/slow_to_stop_command.hpp"
+#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -52,24 +53,35 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 
+// Robot Specific Controllers ------------------------------------------------
+GimbalChassisRelativeController gimbalController(&gimbal);
+
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-GimbalChassisRelativeController gimbalController(&gimbal);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
-SlowToStopCommand shooterDefaultCommand(drivers(), &shooter);
+RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
+StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
+// Enables both chassis and gimbal control
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// Runs shooter only
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+// Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -91,12 +103,17 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    shooter.setDefaultCommand(&shooterDefaultCommand);
-    // no default commands should be set
+    shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {}
+void startupCommands(src::Drivers *) {
+    // no startup commands should be set
+    // yet...
+    // TODO: Possibly add some sort of hardware test command
+    //       that will move all the parts so we
+    //       can make sure they're fully operational.
+}
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {

@@ -20,53 +20,82 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
-static constexpr float FEEDER_MOTOR_DIRECTION = 1;
-static constexpr float YAW_MOTOR_DIRECTION = 1;
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 20.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 29.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 /**
- * @brief Chassis Velocity PID constants
+ * @brief Position PID constants
  */
-static constexpr float VELOCITY_PID_KP = 20.0f;
-static constexpr float VELOCITY_PID_KI = 0.2f;
-static constexpr float VELOCITY_PID_KD = 0.0f;
-static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
+    .kp = 600.0f,
+    .ki = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-/**
- * @brief Gimbal Position PID constants
- */
-static constexpr float YAW_POSITION_PID_KP = 600.0f;
-static constexpr float YAW_POSITION_PID_KI = 0.0f;
-static constexpr float YAW_POSITION_PID_KD = 0.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
-static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
-static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
-static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
-static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-static constexpr float PITCH_POSITION_PID_KP = 600.0f;
-static constexpr float PITCH_POSITION_PID_KI = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD = 0.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
-static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
-static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 50.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 30000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
-/**
- * @brief PID constants for shooter
- */
-static constexpr float SHOOTER_PID_KP = 50.0f;
-static constexpr float SHOOTER_PID_KI = 0.0f;
-static constexpr float SHOOTER_PID_KD = 0.0f;
-static constexpr float SHOOTER_MAX_I_CUMULATIVE = 10.0f;
-static constexpr float SHOOTER_MAX_OUTPUT = 30000.0f;
-static constexpr float SHOOTER_TQ_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float SHOOTER_TR_DERIVATIVE_KALMAN = 1.0f;
-static constexpr float SHOOTER_TQ_PROPORTIONAL_KALMAN = 1.0f;
-static constexpr float SHOOTER_TR_PROPORTIONAL_KALMAN = 1.0f;
-
-static constexpr bool SHOOTER_1_DIRECTION = true;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+// Used to reverse Feeder Motor direction, should only be 1 or -1
+static constexpr float FEEDER_MOTOR_DIRECTION = -1;
+static constexpr float YAW_MOTOR_DIRECTION = -1;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
@@ -81,8 +110,12 @@ static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
+static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 
 /**
  * This max output is measured in the c620 robomaster translated current.
