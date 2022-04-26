@@ -34,9 +34,8 @@ class UltrasonicDistanceSensor {
     static tap::arch::PeriodicMilliTimer echoTimer;
     static tap::arch::MilliTimeout pulseTimer;
 
-    // FIXME: Set these right somehow. (Probably have to add the pins to the "project.xml")
-    static constexpr tap::gpio::Digital::OutputPin LEFT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::Laser;
-    static constexpr tap::gpio::Digital::OutputPin RIGHT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::Laser;
+    static constexpr tap::gpio::Digital::OutputPin LEFT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C2;
+    static constexpr tap::gpio::Digital::OutputPin RIGHT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C4;
     static constexpr uint16_t CM_PER_uS = 1 / 58.0f;
 };
 

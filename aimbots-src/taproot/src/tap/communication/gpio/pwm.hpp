@@ -54,8 +54,6 @@ public:
     enum Pin
     {
         C1,
-        C2,
-        C4,
         C6,
         C7,
         Buzzer,
@@ -103,7 +101,6 @@ private:
     {
         Ch1 = 1,
         Ch2 = 2,
-        Ch4 = 4,
         Ch3 = 3,
     };
 
