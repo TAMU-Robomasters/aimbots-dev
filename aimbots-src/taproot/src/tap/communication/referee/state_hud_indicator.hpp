@@ -22,7 +22,7 @@
 
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
-#include "tap/communication/serial/ref_serial_transmitter.hpp"
+#include "tap/drivers.hpp"
 
 #include "modm/processing/resumable.hpp"
 
@@ -95,11 +95,11 @@ public:
     static constexpr uint32_t MIN_UPDATE_PERIOD = 500;
 
     StateHUDIndicator(
-        tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
+        tap::Drivers *drivers,
         tap::communication::serial::RefSerial::Tx::Graphic1Message *graphic,
         UpdateHUDIndicatorState updateFunction,
         T initialState)
-        : refSerialTransmitter(refSerialTransmitter),
+        : drivers(drivers),
           graphic(graphic),
           updateFunction(updateFunction),
           initialState(initialState),
@@ -116,7 +116,7 @@ public:
 
         // Initially add the graphic
         graphic->graphicData.operation = tap::communication::serial::RefSerial::Tx::ADD_GRAPHIC;
-        RF_CALL(refSerialTransmitter.sendGraphic(graphic));
+        drivers->refSerial.sendGraphic(graphic);
         // In future calls to sendGraphic only modify the graphic
         graphic->graphicData.operation =
             tap::communication::serial::RefSerial::Tx::ADD_GRAPHIC_MODIFY;
@@ -134,7 +134,7 @@ public:
         if (indicatorChanged)
         {
             // resend graphic if color changed
-            RF_CALL(refSerialTransmitter.sendGraphic(graphic));
+            drivers->refSerial.sendGraphic(graphic);
             indicatorChanged = false;
             delayTimeout.restart(
                 tap::communication::serial::RefSerialData::Tx::getWaitTimeAfterGraphicSendMs(
@@ -159,7 +159,7 @@ public:
     }
 
 private:
-    tap::communication::serial::RefSerialTransmitter &refSerialTransmitter;
+    tap::Drivers *drivers;
 
     tap::communication::serial::RefSerial::Tx::Graphic1Message *graphic;
 
