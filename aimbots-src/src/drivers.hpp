@@ -22,6 +22,7 @@
 
 #include "tap/drivers.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/custom_imu/nxp_bmi088.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -31,10 +32,12 @@ class Drivers : public tap::Drivers {
    public:
 #endif
     Drivers() : tap::Drivers(),
-                controlOperatorInterface(this) {}
+                controlOperatorInterface(this),
+                imu(this) {}
 
    public:
     Control::OperatorInterface controlOperatorInterface;
+    ::utils::NXPBMI088 imu;
 };  // class Drivers
 
 }  // namespace src
