@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "tap/algorithms/MahonyAHRS.h"
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 #include "tap/communication/sensors/imu_heater/imu_heater.hpp"
@@ -10,6 +9,7 @@
 
 #include "tap/communication/sensors/imu/bmi088/bmi088_data.hpp"
 
+#include "drivers.hpp"
 #include "utils/custom_imu/nxp_fusion.hpp"
 
 namespace utils {
@@ -50,7 +50,7 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
      */
     static constexpr float BMI088_OFFSET_SAMPLES = 1000;
 
-    NXPBMI088(tap::Drivers *drivers);
+    NXPBMI088(src::Drivers *drivers);
 
     /**
      * Starts and configures the bmi088. Blocks for < 200 ms.
@@ -127,7 +127,7 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
         float temperature;
     } data;
 
-    tap::Drivers *drivers;
+    src::Drivers *drivers;
 
     ImuState imuState = ImuState::IMU_NOT_CONNECTED;
 

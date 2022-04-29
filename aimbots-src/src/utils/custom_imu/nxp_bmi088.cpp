@@ -45,7 +45,7 @@ namespace utils
 #define DELAY_US(us) modm::delay_us(us);
 #endif
 
-NXPBMI088::NXPBMI088(tap::Drivers *drivers) : drivers(drivers), imuHeater(drivers) {}
+NXPBMI088::NXPBMI088(src::Drivers *drivers) : drivers(drivers), imuHeater(drivers) {}
 
 NXPBMI088::ImuState NXPBMI088::getImuState() const { return imuState; }
 
@@ -223,9 +223,9 @@ void NXPBMI088::periodicIMUUpdate()
             data.accG[ImuData::X],
             data.accG[ImuData::Y],
             data.accG[ImuData::Z],
-            0.0f, // Magnetometer place holders
-            0.0f,
-            0.0f);
+            drivers->magnetometer.getX(),
+            drivers->magnetometer.getY(),
+            drivers->magnetometer.getZ());
     }
 
     imuHeater.runTemperatureController(data.temperature);
