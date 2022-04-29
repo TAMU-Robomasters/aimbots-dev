@@ -23,6 +23,7 @@
 #include "tap/drivers.hpp"
 #include "utils/robot_specific_inc.hpp"
 #include "utils/custom_imu/nxp_bmi088.hpp"
+#include "utils/custom_imu/magnetometer/ist8310.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -33,11 +34,13 @@ class Drivers : public tap::Drivers {
 #endif
     Drivers() : tap::Drivers(),
                 controlOperatorInterface(this),
-                imu(this) {}
+                imu(this),
+                magnetometer() {}
 
    public:
     Control::OperatorInterface controlOperatorInterface;
     ::utils::NXPBMI088 imu;
+    ::utils::Ist8310 magnetometer;
 };  // class Drivers
 
 }  // namespace src
