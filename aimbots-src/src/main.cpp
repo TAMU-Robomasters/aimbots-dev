@@ -102,12 +102,19 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
     // drivers->mpu6500.init();
+    drivers->imu.initialize(100.0f);
+    drivers->imu.requestRecalibration();
+
     drivers->refSerial.initialize();
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
     drivers->magnetometer.init();
 }
+
+float yaw, pitch, roll;
+float magX, magY, magZ;
+int imuStatus = 0;
 
 static void updateIo(src::Drivers *drivers) {
 #ifdef PLATFORM_HOSTED
@@ -117,6 +124,19 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    // drivers->mpu6500.read();
     drivers->magnetometer.update();
+
+    imuStatus = static_cast<int>(drivers->imu.getImuState());
+
+    // if (drivers->imu.getImuState() == tap::communication::sensors::imu::ImuInterface::ImuState::IMU_CALIBRATED) {
+    drivers->imu.periodicIMUUpdate();
+    
+    yaw = drivers->imu.getYaw();
+    pitch = drivers->imu.getPitch();
+    roll = drivers->imu.getRoll();
+
+    magX = drivers->magnetometer.getX();
+    magY = drivers->magnetometer.getY();
+    magZ = drivers->magnetometer.getZ();
+    // }
 }

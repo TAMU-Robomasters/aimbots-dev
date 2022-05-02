@@ -228,7 +228,7 @@ void NXPSensorFusion::update(float gx, float gy, float gz, float ax, float ay, f
 	// *********************************************************************************
 	// initial orientation lock to accelerometer and magnetometer eCompass orientation
 	// *********************************************************************************
-	if (fabsf(mx) >= 20.0f && fabsf(mx) >= 20.0f && fabsf(mx) >= 20.0f) {
+	if (fabsf(mx) >= 20.0f && fabsf(my) >= 20.0f && fabsf(mz) >= 20.0f) {
 		ValidMagCal = 1;
 	} else {
 		ValidMagCal = 0;
