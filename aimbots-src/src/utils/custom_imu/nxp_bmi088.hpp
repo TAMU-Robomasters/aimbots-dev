@@ -9,8 +9,9 @@
 
 #include "tap/communication/sensors/imu/bmi088/bmi088_data.hpp"
 
-#include "drivers.hpp"
 #include "utils/custom_imu/nxp_fusion.hpp"
+
+namespace src { class Drivers; }
 
 namespace utils {
 
@@ -55,7 +56,7 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
     /**
      * Starts and configures the bmi088. Blocks for < 200 ms.
      */
-    mockable void initialize(float sampleFrequency, float mahonyKp, float mahonyKi);
+    mockable void initialize(float sampleFrequency);
 
     /**
      * Call this function at 500 Hz. Reads IMU data and performs the mahony AHRS algorithm to

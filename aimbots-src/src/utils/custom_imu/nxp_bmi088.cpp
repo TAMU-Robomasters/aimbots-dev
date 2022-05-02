@@ -21,7 +21,6 @@
 
 #include "tap/architecture/endianness_wrappers.hpp"
 #include "tap/board/board.hpp"
-#include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
 #include "modm/math/geometry/angle.hpp"
@@ -29,6 +28,8 @@
 
 #include "tap/communication/sensors/imu/bmi088/bmi088_data.hpp"
 #include "tap/communication/sensors/imu/bmi088/bmi088_hal.hpp"
+
+#include "drivers.hpp"
 
 using namespace modm::literals;
 using namespace tap::arch;
@@ -70,7 +71,7 @@ void NXPBMI088::requestRecalibration()
     }
 }
 
-void NXPBMI088::initialize(float sampleFrequency, float mahonyKp, float mahonyKi)
+void NXPBMI088::initialize(float sampleFrequency)
 {
 #if !defined(PLATFORM_HOSTED)
     ImuCS1Accel::GpioOutput();

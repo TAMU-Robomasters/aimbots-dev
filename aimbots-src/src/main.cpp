@@ -106,7 +106,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
-    drivers->magnetometer.initialize();
+    drivers->magnetometer.init();
 }
 
 static void updateIo(src::Drivers *drivers) {

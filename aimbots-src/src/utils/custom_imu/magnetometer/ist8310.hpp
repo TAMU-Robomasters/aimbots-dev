@@ -1,15 +1,17 @@
 #pragma once
 
-#include <modm/architecture/interface/i2c_device.hpp>
 #include <modm/processing/resumable.hpp>
+#include <modm/architecture/interface/i2c_device.hpp>
+
+#include "ist8310_data.hpp"
 
 namespace utils {
 
-class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
+class Ist8310 : modm::I2cDevice<Ist8310Data::IST_I2C_MASTER> {
    public:
     Ist8310();
 
-    void initialize();
+    void init();
     void update();
     
     inline float getX() { return x; };
@@ -20,8 +22,8 @@ class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
     inline modm::ResumableResult<bool> readRegister(Ist8310Data::Register reg, size_t length = 1) {
         RF_BEGIN();
 
-        buffer[0] = uint8_t(reg);
-        this->transaction.configureWriteRead(buffer, 1, buffer, length);
+        raw_data_buffer[0] = uint8_t(reg);
+        this->transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, length);
 
         RF_END_RETURN_CALL(this->runTransaction());
     }
@@ -29,23 +31,24 @@ class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
     inline modm::ResumableResult<bool> writeToRegister(Ist8310Data::Register reg, uint8_t* output, size_t length = 1) {
         RF_BEGIN();
 
-        buffer[0] = uint8_t(reg);
-        this->transaction.configureWriteRead(buffer, 1, output, length);
+        raw_data_buffer[0] = uint8_t(reg);
+        this->transaction.configureWriteRead(raw_data_buffer, 1, output, length);
 
         RF_END_RETURN_CALL(this->runTransaction());
     }
 
     inline uint8_t readDeviceID() {
         readRegister(Ist8310Data::Register::WHO_AM_I);
-        return buffer[0];
+        return raw_data_buffer[0];
     }
 
     inline bool tryReadAxisData() {
         readRegister(Ist8310Data::Register::STATUS_1);
         // Don't continue if the data-ready bit isn't set
-        if(!(buffer[0] & uint8_t(Ist8310Data::RegisterData::STAT1_DATA_READY_MASK))) { return false; }
+        if(!(raw_data_buffer[0] & uint8_t(Ist8310Data::RegisterData::STAT1_DATA_READY_MASK))) { return false; }
 
         readRegister(Ist8310Data::Register::X_DATA_LOW, 6);
+        return true;
     }
 
     inline void setInterruptFlag(bool value) {
@@ -54,7 +57,7 @@ class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
         // There are some "reserved" fields in this register, so
         // We need to preserve whatever is in those bits. Which is
         // why we bitwise and the register with the clear mask.
-        uint8_t output = buffer[0] | (((value) ? Ist8310Data::RegisterData::INTERRUPT_BIT : 0));
+        uint8_t output = raw_data_buffer[0] | ((value) ? uint8_t(Ist8310Data::RegisterData::INTERRUPT_BIT) : 0);
         writeToRegister(Ist8310Data::Register::CONTROL_2, &output);
     }
 
@@ -64,7 +67,7 @@ class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
         // There are some "reserved" fields in this register, so
         // We need to preserve whatever is in those bits. Which is
         // why we bitwise and the register with the clear mask.
-        uint8_t output = (buffer[0] & Ist8310Data::RegisterData::PDCTRL_CLEAR_MASK) | Ist8310Data::RegisterData::NORMAL_PULSE_DURATION;
+        uint8_t output = (raw_data_buffer[0] & uint8_t(Ist8310Data::RegisterData::PDCTRL_CLEAR_MASK)) | uint8_t(Ist8310Data::RegisterData::NORMAL_PULSE_DURATION);
         writeToRegister(Ist8310Data::Register::PULSE_DURATION_CONTROL, &output);
     }
 
@@ -73,7 +76,7 @@ class Ist8310 : modm::I2cDevice<modm::I2cMaster, 4> {
     float z;
 
     bool isDeviceVerified;
-    uint8_t buffer[6];
+    uint8_t raw_data_buffer[6];
 };
 
 }
