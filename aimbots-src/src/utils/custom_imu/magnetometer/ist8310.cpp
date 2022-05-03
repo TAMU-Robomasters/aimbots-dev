@@ -1,7 +1,7 @@
 #include "ist8310.hpp"
 #include <cstdint>
 
-#include "modm/platform/i2c/i2c_master_1.hpp"
+#include "modm/platform/i2c/i2c_master_3.hpp"
 #include "drivers.hpp"
 
 #include "ist8310_data.hpp"
@@ -26,6 +26,9 @@ Ist8310::Ist8310()
       z(0.0f),
       isDeviceVerified(false) { }
 
+ uint8_t dbg_device_id = 0;
+ bool ping_success;
+
 void Ist8310::init() {
     // Reset the device so we can assume a default configuration
     Ist8310Data::RESET_PIN::setOutput(false);
@@ -33,17 +36,7 @@ void Ist8310::init() {
     Ist8310Data::RESET_PIN::setOutput(true);
     DELAY_MS(RESET_DELAY_MS);
 
-    uint8_t dev_id = readDeviceID();
-    if(dev_id != uint8_t(Ist8310Data::RegisterData::DEVICE_ID)) {
-        // FIXME: Propagate this error in some intelligent way...
-        isDeviceVerified = false;
-        return;
-    }
-
-    isDeviceVerified = true;
-
-    setInterruptFlag(true);
-    setDefaultPulseDuration();
+    dbg_device_id = readDeviceID();
 }
 
 void Ist8310::update() {

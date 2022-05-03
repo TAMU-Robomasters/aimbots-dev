@@ -2,13 +2,13 @@
 #include <cstdint>
 
 #include <modm/platform/gpio/gpio_G6.hpp>
-#include <modm/platform/i2c/i2c_master_1.hpp>
+#include <modm/platform/i2c/i2c_master_3.hpp>
 
 namespace utils::Ist8310Data {
 // All this came from the ist8310 datasheet: https://intofpv.com/attachment.php?aid=8104
 
 using RESET_PIN = modm::platform::GpioG6;
-using IST_I2C_MASTER = modm::platform::I2cMaster1;
+using IST_I2C_MASTER = modm::platform::I2cMaster3;
 
 static constexpr uint8_t I2C_ADDRESS = 0x0E;
 
