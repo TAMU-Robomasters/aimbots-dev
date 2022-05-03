@@ -35,10 +35,10 @@ void Ist8310::init() {
     Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
 
     // Reset the device so we can assume a default configuration
-    Ist8310Data::RESET_PIN::setOutput(true);
-    DELAY_MS(RESET_DELAY_MS);
-    Ist8310Data::RESET_PIN::setOutput(false);
-    DELAY_MS(RESET_DELAY_MS);
+    //Ist8310Data::RESET_PIN::setOutput(false);
+    //DELAY_MS(RESET_DELAY_MS);
+    //Ist8310Data::RESET_PIN::setOutput(true);
+    //DELAY_MS(RESET_DELAY_MS);
 
     ping_success = ping().getResult();
 }
