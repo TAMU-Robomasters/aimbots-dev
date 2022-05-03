@@ -44,8 +44,6 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/custom_imu/magnetometer/ist8310_data.hpp"
-#include "modm/platform/gpio/gpio_C9.hpp"
-#include "modm/platform/gpio/gpio_A8.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -72,10 +70,6 @@ int main() {
     src::Drivers *drivers = src::DoNotUse_getDrivers();
 
     Board::initialize();
-
-    utils::Ist8310Data::IST_I2C_MASTER::connect<modm::platform::GpioA8::Scl, modm::platform::GpioC9::Sda>();
-    utils::Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
-
 
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);

@@ -1,8 +1,9 @@
 #include "ist8310.hpp"
 #include <cstdint>
 
-#include "modm/platform/i2c/i2c_master_3.hpp"
-#include "drivers.hpp"
+#include "modm/platform/gpio/gpio_C9.hpp"
+#include "modm/platform/gpio/gpio_A8.hpp"
+#include "tap/board/board.hpp"
 
 #include "ist8310_data.hpp"
 
@@ -30,13 +31,16 @@ Ist8310::Ist8310()
  bool ping_success;
 
 void Ist8310::init() {
+    Ist8310Data::IST_I2C_MASTER::connect<modm::platform::GpioA8::Scl, modm::platform::GpioC9::Sda>();
+    Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
+
     // Reset the device so we can assume a default configuration
-    Ist8310Data::RESET_PIN::setOutput(false);
-    DELAY_MS(RESET_DELAY_MS);
     Ist8310Data::RESET_PIN::setOutput(true);
     DELAY_MS(RESET_DELAY_MS);
+    Ist8310Data::RESET_PIN::setOutput(false);
+    DELAY_MS(RESET_DELAY_MS);
 
-    dbg_device_id = readDeviceID();
+    ping_success = ping().getResult();
 }
 
 void Ist8310::update() {
