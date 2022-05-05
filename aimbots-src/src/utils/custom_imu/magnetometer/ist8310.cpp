@@ -34,13 +34,15 @@ void Ist8310::init() {
     Ist8310Data::IST_I2C_MASTER::connect<modm::platform::GpioA8::Scl, modm::platform::GpioC9::Sda>();
     Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
 
-    // Reset the device so we can assume a default configuration
-    //Ist8310Data::RESET_PIN::setOutput(false);
-    //DELAY_MS(RESET_DELAY_MS);
-    //Ist8310Data::RESET_PIN::setOutput(true);
-    //DELAY_MS(RESET_DELAY_MS);
+    uint8_t dev_id = readDeviceID();
+    dbg_device_id = dev_id;
+    if(dev_id != uint8_t(Ist8310Data::RegisterData::DEVICE_ID)) {
+        isDeviceVerified = false;
+        return;
+    }
 
-    ping_success = ping().getResult();
+    setInterruptFlag(true);
+    setDefaultPulseDuration();
 }
 
 void Ist8310::update() {
