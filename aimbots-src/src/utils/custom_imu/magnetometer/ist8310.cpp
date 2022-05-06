@@ -34,7 +34,16 @@ void Ist8310::init() {
     Ist8310Data::IST_I2C_MASTER::connect<modm::platform::GpioA8::Scl, modm::platform::GpioC9::Sda>();
     Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
 
-    dbg_device_id = readDeviceID();
+    uint8_t dev_id = readDeviceID();
+    dbg_device_id = dev_id;
+    if(dev_id != uint8_t(Ist8310Data::RegisterData::DEVICE_ID))
+        isDeviceVerified = true;
+    else
+        isDeviceVerified = false;
+
+
+    setInterruptFlag(true);
+    setDefaultPulseDuration();
 }
 
 void Ist8310::update() {
