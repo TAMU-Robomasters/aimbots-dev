@@ -21,9 +21,10 @@ class Ist8310 : modm::I2cDevice<Ist8310Data::IST_I2C_MASTER> {
    private:
     inline modm::ResumableResult<bool> readRegister(Ist8310Data::Register reg, size_t length = 1) {
         RF_BEGIN();
+        (void)length;
 
         raw_data_buffer[0] = uint8_t(reg);
-        this->transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, length);
+        this->transaction.configureWrite(raw_data_buffer, 1);
 
         RF_END_RETURN_CALL(this->runTransaction());
     }
