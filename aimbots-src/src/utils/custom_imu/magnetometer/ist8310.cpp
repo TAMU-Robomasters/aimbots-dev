@@ -34,9 +34,7 @@ void Ist8310::init() {
     Ist8310Data::IST_I2C_MASTER::connect<modm::platform::GpioA8::Scl, modm::platform::GpioC9::Sda>();
     Ist8310Data::IST_I2C_MASTER::initialize<Board::SystemClock, 400000>();
 
-    // If this works that means the reason we're getting NACK
-    // is bc I fucked up the calling convention for the ist8310
-    ping_success = readRegister(Ist8310Data::Register::WHO_AM_I).getResult();
+    dbg_device_id = readDeviceID();
 }
 
 void Ist8310::update() {
