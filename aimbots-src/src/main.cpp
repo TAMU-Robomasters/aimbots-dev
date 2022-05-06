@@ -57,6 +57,9 @@ static void initializeIo(src::Drivers *drivers);
 // called as frequently.
 static void updateIo(src::Drivers *drivers);
 
+// HACK: REALLY UNSAFE FOR DEBUG ONLY
+uint8_t dbg_i2c_data[6];
+
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -111,7 +114,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
-    drivers->magnetometer.init();
+    drivers->magnetometer.init(dbg_i2c_data);
 }
 
 float yaw, pitch, roll;
@@ -132,7 +135,6 @@ static void updateIo(src::Drivers *drivers) {
 
     // if (drivers->imu.getImuState() == tap::communication::sensors::imu::ImuInterface::ImuState::IMU_CALIBRATED) {
     drivers->imu.periodicIMUUpdate();
-    
 
     //imu data with nxp alg
     yaw = drivers->imu.getYaw();
