@@ -3,6 +3,7 @@
 #include <modm/math/filter/pid.hpp>
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/can/can_bus.hpp>
+#include <tap/communication/serial/uart.hpp>
 #include <tap/control/command.hpp>
 #include <tap/control/comprised_command.hpp>
 
@@ -39,6 +40,7 @@ using TapComprisedCommand = tap::control::ComprisedCommand;
 using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;
+using UartPort = tap::communication::serial::Uart::UartPort;
 
 using TapCommand = tap::control::Command;
 
