@@ -22,6 +22,7 @@
 
 #include "tap/drivers.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/jetson_communicator.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -31,9 +32,13 @@ class Drivers : public tap::Drivers {
    public:
 #endif
     Drivers() : tap::Drivers(),
+#ifdef TARGET_SENTRY
+                cvCommunicator(this),
+#endif
                 controlOperatorInterface(this) {}
 
    public:
+    ::utils::JetsonCommunicator cvCommunicator;
     Control::OperatorInterface controlOperatorInterface;
 };  // class Drivers
 
