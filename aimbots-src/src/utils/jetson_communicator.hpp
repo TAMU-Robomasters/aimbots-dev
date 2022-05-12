@@ -10,6 +10,11 @@ namespace src { class Drivers; }
 
 namespace utils {
 
+enum class JetsonCommunicatorSerialState : uint8_t {
+    SearchingForMagic = 0,
+    AssemblingMessage,
+};
+
 class JetsonCommunicator {
    public:
     JetsonCommunicator(src::Drivers* drivers);
@@ -28,6 +33,9 @@ class JetsonCommunicator {
 
     uint8_t       rawSerialBuffer[sizeof(JetsonMessage)];
     JetsonMessage lastMessage;
+
+    JetsonCommunicatorSerialState currentSerialState;
+    size_t                        nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
 

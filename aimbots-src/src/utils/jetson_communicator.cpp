@@ -9,6 +9,8 @@ namespace utils {
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
       lastMessage(),
+      currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
+      nextByteIndex(0),
       jetsonOfflineTimeout() { }
 
 void JetsonCommunicator::initialize() {
@@ -17,30 +19,42 @@ void JetsonCommunicator::initialize() {
 }
 
 void JetsonCommunicator::updateSerial() {
-    size_t bytesRead = READ(&rawSerialBuffer[0], 1);
-    if (bytesRead != 1) return;
+    switch(currentSerialState) {
+        case JetsonCommunicatorSerialState::SearchingForMagic: {
+            size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
+            if (bytesRead != 1) return;
 
-    // We've gotten our first data from the Jetson, so we can restart this.
-    jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+            // We've gotten data from the Jetson, so we can restart this.
+            jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
-    // little endian moment
-    // The the first byte in the message will be the LSB of the magic number,
-    // so we only have to and it with 0xff, rather than shifting it right first.
-    while(rawSerialBuffer[0] != (JETSON_MESSAGE_MAGIC & 0xff)) {
-        bytesRead = READ(&rawSerialBuffer[0], 1);
-        if(bytesRead != 1) return;
+            // little endian moment
+            // The the first byte in the message will be the LSB of the magic number,
+            // so we only have to and it with 0xff, rather than shifting it right first.
+            if(rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff))
+                nextByteIndex++;
+            
+            if(nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
+                // We know that the magic is right, so we can just change the state. If the
+                // magic number wasn't an exact match, we wouldn't have gotten this far.
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
+            }
+            break;
+        }
+        case JetsonCommunicatorSerialState::AssemblingMessage: {
+            size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex++], 1);
+            if (bytesRead != 1) return;
+
+            // We've gotten data from the Jetson, so we can restart this.
+            jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+
+            if(nextByteIndex == sizeof(JetsonMessage)) {
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+                lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
+                nextByteIndex = 0;
+            }
+            break;
+        }
     }
-
-    bytesRead = READ(&rawSerialBuffer[1], 7);
-    if(bytesRead != 7) return;
-
-    uint64_t readMagic = *reinterpret_cast<uint64_t*>(&rawSerialBuffer[0]);
-    if(readMagic != JETSON_MESSAGE_MAGIC) return;
-
-    bytesRead = READ(&rawSerialBuffer[8], sizeof(JetsonMessage) - 8);
-    if(bytesRead != sizeof(JetsonMessage) - 8) return;
-
-    lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 }
 
 }

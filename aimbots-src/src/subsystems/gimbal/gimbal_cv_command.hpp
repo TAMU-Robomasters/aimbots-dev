@@ -22,6 +22,7 @@ class GimbalCVCommand : public tap::control::Command {
     inline bool isReady() override { return true; }
     inline bool isFinished() const override { return false; }
     inline void end(bool interrupted) override {
+        (void)interrupted;
         gimbal->setYawMotorOutput(0);
         gimbal->setPitchMotorOutput(0);
     }
