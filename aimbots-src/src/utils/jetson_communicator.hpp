@@ -31,11 +31,11 @@ class JetsonCommunicator {
    private:
     src::Drivers* drivers;
 
-    uint8_t       rawSerialBuffer[sizeof(JetsonMessage)];
+    alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
     JetsonMessage lastMessage;
 
     JetsonCommunicatorSerialState currentSerialState;
-    size_t                        nextByteIndex;
+    size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
 
