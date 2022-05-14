@@ -8,6 +8,7 @@ static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
+
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
  *
@@ -16,6 +17,9 @@ static constexpr int16_t USER_MOUSE_YAW_MAX = 1000;
 static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
 static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
 static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
+
+static constexpr float USER_JOYSTICK_YAW_SCALAR = 3.0f;
+static constexpr float USER_JOYSTICK_PITCH_SCALAR = 1.5f;
 
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
@@ -35,9 +39,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 29.0f,
+    .kp = 20.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.8f,
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -66,7 +70,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 1850.0f,
     .ki = 0.0f,
     .kd = 150.0f,
     .maxICumulative = 10.0f,
@@ -114,7 +118,7 @@ static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 
-static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 /**
@@ -143,10 +147,10 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // FIXME: These work for thee testbed standard, so they need to
 //        adjusted once we have real standard robots
-static constexpr float YAW_START_ANGLE = 0.0f;
-static constexpr float PITCH_START_ANGLE = 66.66f;
-static constexpr float PITCH_HARDSTOP_LOW = 90.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 20.0f;
+static constexpr float YAW_START_ANGLE = 163.0f;
+static constexpr float PITCH_START_ANGLE = 117.0f;
+static constexpr float PITCH_HARDSTOP_LOW = 134.0f;
+static constexpr float PITCH_HARDSTOP_HIGH = 74.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

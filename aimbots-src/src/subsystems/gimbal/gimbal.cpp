@@ -57,12 +57,17 @@ void GimbalSubsystem::refresh() {
     }
 }
 
+float yawMotorOutputDisplay = 0.0f;
+float pitchMotorOutputDisplay = 0.0f;
+
 void GimbalSubsystem::setYawMotorOutput(float output) {
     desiredYawMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
+    yawMotorOutputDisplay = desiredYawMotorOutput;
 }
 
 void GimbalSubsystem::setPitchMotorOutput(float output) {
     desiredPitchMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
+    pitchMotorOutputDisplay = desiredPitchMotorOutput;
 }
 
 float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {

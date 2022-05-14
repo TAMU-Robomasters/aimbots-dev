@@ -21,7 +21,7 @@ void RunShooterCommand::initialize() {
 }
 
 void RunShooterCommand::execute() {
-    // declare fixed 8500 RPM target until command is descheduled
+    // declare fixed 10000 RPM target until command is descheduled
     shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 10000.0f);
 
     shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);

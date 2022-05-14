@@ -13,7 +13,7 @@ class GimbalControlCommand : public tap::control::Command {
                          GimbalSubsystem*,
                          GimbalChassisRelativeController*,
                          float inputYawSensitivity,
-                         float inputPitchSensitiity);
+                         float inputPitchSensitivity);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
