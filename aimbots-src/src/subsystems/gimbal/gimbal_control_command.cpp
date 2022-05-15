@@ -7,7 +7,7 @@ namespace src::Gimbal {
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
-                                           GimbalChassisRelativeController* gimbalController,
+                                           GimbalControllerInterface* gimbalController,
                                            float inputYawSensitivity,
                                            float inputPitchSensitivity)
     : tap::control::Command(),
@@ -23,7 +23,7 @@ void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
     // This just locks it to the the forward direction, specified by YAW_START_ANGLE
-    controller->runYawController();
+    controller->runYawController(AngleUnit::None, 0.0f);
 
     float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
                              (userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL)) * getPitchMotorDirection();

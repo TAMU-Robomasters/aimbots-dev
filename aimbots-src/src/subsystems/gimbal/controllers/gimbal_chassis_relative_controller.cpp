@@ -14,7 +14,10 @@ void GimbalChassisRelativeController::initialize() {
     pitchPositionPID.pid.reset();
 }
 
-void GimbalChassisRelativeController::runYawController() {
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredPitchAngle) {
+    UNUSED(unit);
+    UNUSED(desiredPitchAngle);
+
     // NOTE: If you are finding that the gimbal is lagging behind the
     //       chassis a fair bit and you came here to find out why,
     //       you should be able to just tune the PID constants until

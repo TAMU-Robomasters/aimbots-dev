@@ -2,19 +2,20 @@
 
 #include <drivers.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
+#include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 #include <utils/common_types.hpp>
 #include <utils/pid/smooth_pid_wrap.hpp>
 
 namespace src::Gimbal {
 
-class GimbalChassisRelativeController {
+class GimbalChassisRelativeController : public GimbalControllerInterface {
    public:
     GimbalChassisRelativeController(GimbalSubsystem*);
 
-    void initialize();
+    void initialize() override;
 
-    void runYawController();
-    void runPitchController(AngleUnit unit, float targetPitchAngle);
+    void runYawController(AngleUnit unit, float targetYawAngle) override;
+    void runPitchController(AngleUnit unit, float targetPitchAngle) override;
 
     bool isOnline() const;
 

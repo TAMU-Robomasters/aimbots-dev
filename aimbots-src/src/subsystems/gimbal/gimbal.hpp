@@ -31,6 +31,7 @@ constexpr float getPitchMotorDirection()
 }
 
 enum class AngleUnit : uint8_t {
+    None,
     Degrees,
     Radians,
 };
