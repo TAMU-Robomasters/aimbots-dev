@@ -2,6 +2,7 @@
 
 #include <drivers.hpp>
 #include <modm/platform/uart/uart_1.hpp>
+#include <chrono>
 
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
@@ -11,11 +12,10 @@ namespace src::vision {
     JetsonCommunicator::JetsonCommunicator(src::Drivers * drivers)
         : drivers(drivers),
           rawSerialByte(0),
+          messageBuffer(visionBuffer<512>(JETSON_END_BYTE)),
           lastMessage(),
           nextByteIndex(0),
-          jetsonOfflineTimeout() {
-        visionBuffer<512, uint8_t> messageBuffer(JETSON_END_BYTE);
-    }
+          jetsonOfflineTimeout() {}
 
     void JetsonCommunicator::initialize() {
         jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
@@ -27,7 +27,7 @@ namespace src::vision {
     float yawOffsetDisplay = 0;
     float pitchOffsetDisplay = 0;
     CVState cvStateDisplay = CVState::CV_STATE_PATROL;
-    size_t rxBufferSize = 0;
+    int rxBufferSize = 0;
     uint8_t rawByteDisplay = 0;
     size_t bytesReadDisplay = 0;
 
@@ -44,6 +44,7 @@ namespace src::vision {
         // if (bytesRead == 0) {
         //     return;
         // }
+
         while (READ(&rawSerialByte, 1) > 0) {
             bytesReadDisplay++;
             rawByteDisplay = rawSerialByte;
@@ -55,7 +56,7 @@ namespace src::vision {
                     yawOffsetDisplay = lastMessage.targetYawOffset;
                     pitchOffsetDisplay = lastMessage.targetPitchOffset;
                     cvStateDisplay = lastMessage.cvState;
-                    rxBufferSize = messageBuffer.size();
+                    // rxBufferSize = messageBuffer.size();
                 }
                 // switch (rawMsg.first[0]) {
                 //     case aimAtTarget:

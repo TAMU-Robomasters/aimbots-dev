@@ -4,24 +4,24 @@
 
 namespace src::vision {
 
-    template <int maxSize, typename T = uint8_t>
+    template <int maxSize>
     class visionBuffer {
        private:
-        T buffer[maxSize];
+        uint8_t buffer[maxSize];
         int head = 0, tail = 0;
-        T end;
-        std::pair<T*, int> lastMsg = {nullptr, 0};
+        uint8_t end;
+        std::pair<uint8_t*, int> lastMsg = {nullptr, 0};
 
        public:
-        visionBuffer<maxSize, T>(T end = '\n') : end(end){};
+        visionBuffer<maxSize>(uint8_t end) : end(end){};
         ~visionBuffer() { delete[] lastMsg.first; }
 
-        T get(size_t index) { return buffer[index]; }
+        uint8_t get(size_t index) { return buffer[index]; }
 
         size_t getHead() { return head; }
         size_t getTail() { return tail; }
         size_t getMaxSize() { return maxSize; }
-        std::pair<T*, size_t> getLastMsg() { return lastMsg; }
+        std::pair<uint8_t*, size_t> getLastMsg() { return lastMsg; }
 
         bool isFull() { return head == (tail + 1) % maxSize; }
         bool isEmpty() { return tail == head; }
@@ -36,7 +36,7 @@ namespace src::vision {
             return 0;
         }
 
-        bool enqueue(T item) {
+        bool enqueue(uint8_t item) {
             if (item == end) {
                 this->reset();
                 return true;
@@ -49,11 +49,11 @@ namespace src::vision {
             return false;
         }
 
-        T dequeue() {
+        uint8_t dequeue() {
             if (this->isEmpty()) {
                 return 0;
             }
-            T item = buffer[head];
+            uint8_t item = buffer[head];
 
             head = (head + 1) % maxSize;
             return item;
@@ -64,8 +64,8 @@ namespace src::vision {
 
             if (lastMsg.first != NULL) delete[] lastMsg.first;
 
-            this->lastMsg.first = new T[sz];  // assign new memory to first ptr
-            this->lastMsg.second = sz;        // assign message size to size
+            this->lastMsg.first = new uint8_t[sz];  // assign new memory to first ptr
+            this->lastMsg.second = sz;              // assign message size to size
 
             for (size_t i = 0; i < sz; i++) {
                 lastMsg.first[i] = this->dequeue();

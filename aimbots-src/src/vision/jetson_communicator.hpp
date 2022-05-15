@@ -30,7 +30,7 @@ namespace src::vision {
         src::Drivers* drivers;
 
         uint8_t rawSerialByte;
-        visionBuffer<512, uint8_t> messageBuffer;
+        visionBuffer<512> messageBuffer;
         JetsonMessage lastMessage;
 
         size_t nextByteIndex;
