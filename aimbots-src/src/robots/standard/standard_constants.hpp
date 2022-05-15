@@ -117,6 +117,15 @@ static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
+//hopper constants
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C5;
+//taproot only accepts [0,1], which I assume correlates to 0-360 servo rotation
+static constexpr float HOPPER_PWM_MIN = 0.0;
+static constexpr float HOPPER_PWM_MAX = 1.0;
+//pwm percent per millisecond
+static constexpr float HOPPER_MAX_ACCELERATION = 1000.0;
+ 
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.

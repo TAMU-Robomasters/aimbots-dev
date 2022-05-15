@@ -50,3 +50,6 @@ using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
+
+#include "tap/motor/servo.hpp"
+using Servo = tap::motor::Servo;

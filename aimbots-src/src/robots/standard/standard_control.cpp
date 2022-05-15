@@ -27,11 +27,16 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+//
+#include "subsystems/hopper/hopper.hpp"
+#include "subsystems/hopper/open_hopper_command.hpp"
+#include "subsystems/hopper/close_hopper_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+using namespace src::Hopper;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -52,6 +57,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+HopperSubsystem hopper(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -64,6 +70,8 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+OpenHopperCommand openHopperCommand(drivers(), &hopper);
+CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 
 // Define command mappings here -------------------------------------------
 // Enables both chassis and gimbal control
@@ -90,6 +98,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&hopper);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -98,12 +107,14 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    hopper.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    //hopper.setDefaultCommand(&openHopperCommand);
 }
 
 // Set commands scheduled on startup
