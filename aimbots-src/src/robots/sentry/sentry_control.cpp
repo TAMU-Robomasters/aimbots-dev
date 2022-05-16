@@ -59,7 +59,6 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
-GimbalCVCommand gimbalCVCommand(drivers(), &gimbal, &gimbalController);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
@@ -73,11 +72,6 @@ HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-HoldCommandMapping leftSwitchMid(
-    drivers(),
-    {&chassisDriveCommand, &gimbalCVCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
@@ -125,7 +119,6 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
 }

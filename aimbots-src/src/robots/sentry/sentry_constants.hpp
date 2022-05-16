@@ -35,9 +35,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 20.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 5.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -105,7 +105,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = false;
 
-static constexpr bool FEEDER_DIRECTION = true;
+static constexpr bool FEEDER_DIRECTION = false;
 
 // Mechanical chassis constants, all in m
 /**
