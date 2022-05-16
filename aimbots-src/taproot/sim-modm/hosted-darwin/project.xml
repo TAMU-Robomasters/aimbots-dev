@@ -1,0 +1,30 @@
+<library>
+  <repositories>
+    <repository>
+      <path>../../../../taproot/modm/repo.lb</path>
+    </repository>
+  </repositories>
+  <options>
+    <option name="modm:build:project.name">taproot-sim</option>
+    <option name="modm:target">hosted-darwin</option>
+    <option name="modm:build:scons:include_sconstruct">False</option>
+  </options>
+  <modules>
+    <module>modm:architecture:atomic</module>
+    <module>modm:architecture:can</module>
+    <module>modm:architecture:delay</module>
+    <module>modm:build:scons</module>
+    <module>modm:container</module>
+    <module>modm:io</module>
+    <module>modm:math:filter</module>
+    <module>modm:math:geometry</module>
+    <module>modm:math:interpolation</module>
+    <module>modm:math:saturated</module>
+    <module>modm:math:utils</module>
+    <module>modm:platform:core</module>
+    <module>modm:processing</module>
+    <module>modm:processing:protothread</module>
+    <module>modm:ui:display</module>
+    <module>modm:ui:menu</module>
+  </modules>
+</library>
