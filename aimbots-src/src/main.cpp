@@ -126,7 +126,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    drivers->magnetometer.update();
 
     // if (drivers->imu.getImuState() == tap::communication::sensors::imu::ImuInterface::ImuState::IMU_CALIBRATED) {
     drivers->imu.periodicIMUUpdate();
