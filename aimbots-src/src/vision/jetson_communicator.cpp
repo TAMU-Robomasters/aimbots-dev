@@ -73,7 +73,7 @@ namespace src::vision {
                 // We've gotten data from the Jetson, so we can restart this.
                 jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
-                if (nextByteIndex == sizeof(JetsonMessage)) {
+                if (nextByteIndex == JETSON_MESSAGE_SIZE) {
                     lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 
                     memcpy(displayBuffer, rawSerialBuffer, sizeof(displayBuffer));
