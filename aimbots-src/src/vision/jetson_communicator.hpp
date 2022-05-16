@@ -13,6 +13,11 @@ class Drivers;
 
 namespace src::vision {
 
+    enum class JetsonCommunicatorSerialState : uint8_t {
+        SearchingForMagic = 0,
+        AssemblingMessage,
+    };
+
     class JetsonCommunicator {
        public:
         JetsonCommunicator(src::Drivers* drivers);
@@ -29,10 +34,11 @@ namespace src::vision {
        private:
         src::Drivers* drivers;
 
-        uint8_t rawSerialByte;
-        visionBuffer<512> messageBuffer;
+        alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
+        // visionBuffer<512> messageBuffer;
         JetsonMessage lastMessage;
 
+        JetsonCommunicatorSerialState currentSerialState;
         size_t nextByteIndex;
 
         tap::arch::MilliTimeout jetsonOfflineTimeout;

@@ -11,17 +11,18 @@ namespace src::vision {
         aimAtTarget = 'a',
     } jetsonMessageTypes;
 
+    static constexpr uint64_t JETSON_MESSAGE_MAGIC = 0xdeadbeefdeadbef;
+
     static constexpr uint8_t JETSON_END_BYTE = 'e';
 
     struct JetsonMessage {
-        uint8_t header;
-        int16_t targetYawOffset;
-        int16_t targetPitchOffset;
+        uint64_t magic;
+        float targetYawOffset;
+        float targetPitchOffset;
         CVState cvState;
-        uint8_t end;
     } __attribute__((packed));
 
     static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 
-    static_assert(JETSON_MESSAGE_SIZE == 7, "JetsonMessage is not the correct size");
+    static_assert(JETSON_MESSAGE_SIZE == 17, "JetsonMessage is not the correct size");
 }
