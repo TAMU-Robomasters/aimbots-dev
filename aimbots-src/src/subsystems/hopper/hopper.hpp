@@ -6,6 +6,12 @@
 
 namespace src::Hopper {
 
+enum HopperState : uint8_t {
+    CLOSED = 0,
+    OPEN = 1,
+    UNKNOWN = 2
+};
+
 class HopperSubsystem : public tap::control::Subsystem {
     public:
     HopperSubsystem(tap::Drivers* drivers);
@@ -26,14 +32,29 @@ class HopperSubsystem : public tap::control::Subsystem {
     void setHopperAngle(float desiredAngle);
 
     /**
-     * @brief wrapper for servo's isRampTargetMet.. maybe just make servo public member?
+     * @brief rough estimate for if servo movement finished
      * 
-     * @return true 
+     * @return true if pwm ramp finished
      * @return false 
      */
     bool isHopperReady() const;
 
+    /**
+     * @brief returns if hopper is open/closed/unknown
+     * 
+     * @return uint8_t 
+     */
+    uint8_t getHopperState() const;
+
+    /**
+     * @brief setter for hopper state integer
+     * 
+     */
+    void setHopperState(uint8_t new_state);
+
     private:
     Servo hopper;
+    uint8_t hopper_state;
+    uint32_t actionStartTime; //milliseconds
 };
 }; //namespace src::Hopper

@@ -31,6 +31,7 @@
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/close_hopper_command.hpp"
+#include "subsystems/hopper/toggle_hopper_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -72,24 +73,31 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
+CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
+ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 // Define command mappings here -------------------------------------------
-// Enables both chassis and gimbal control
+// Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisDriveCommand, &gimbalControlCommand, &closeHopperCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// Runs shooter only
+//opens hopper
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&openHopperCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+// Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand},
+    {&runShooterCommand, &closeHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// Runs shooter with feeder
+// Runs shooter with feeder and closes hopper
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -124,11 +132,14 @@ void startupCommands(src::Drivers *) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
 }
 

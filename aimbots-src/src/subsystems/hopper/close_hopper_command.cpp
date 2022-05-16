@@ -8,7 +8,7 @@ namespace src::Hopper {
     }
     
     void CloseHopperCommand::initialize() {
-        hopper->setHopperAngle(0.0);
+        hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
     }
 
     void CloseHopperCommand::execute() {

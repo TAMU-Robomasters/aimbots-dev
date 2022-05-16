@@ -8,11 +8,10 @@ namespace src::Hopper {
     }
     
     void OpenHopperCommand::initialize() {
-        hopper->setHopperAngle(90.0);
+        hopper->setHopperAngle(HOPPER_OPEN_ANGLE);
     }
 
     void OpenHopperCommand::execute() {
-
     }
     
     void OpenHopperCommand::end(bool) {

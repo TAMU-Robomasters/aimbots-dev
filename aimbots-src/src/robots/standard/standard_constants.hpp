@@ -118,12 +118,13 @@ static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 //hopper constants
-static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C5;
-//taproot only accepts [0,1], which I assume correlates to 0-360 servo rotation
-static constexpr float HOPPER_PWM_MIN = 0.0;
-static constexpr float HOPPER_PWM_MAX = 1.0;
-//pwm percent per millisecond
-static constexpr float HOPPER_MAX_ACCELERATION = 1000.0;
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C5; //ARBITRARY PIN, SHOULD CHANGE
+static constexpr float HOPPER_MAX_ACCELERATION = 1000.0; //pwm percent per millisecond
+static constexpr float HOPPER_MIN_ROTATION = 0.0; //closed angle (degrees)
+static constexpr float HOPPER_MAX_ROTATION = 90.0; //open angle
+static constexpr float HOPPER_CLOSED_ANGLE = 0.0;
+static constexpr float HOPPER_OPEN_ANGLE = 90.0;
+static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000; //milliseconds
  
 
 /**
