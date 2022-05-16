@@ -18,16 +18,16 @@ static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
 static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
 static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 
-static constexpr float USER_JOYSTICK_YAW_SCALAR = 3.0f;
-static constexpr float USER_JOYSTICK_PITCH_SCALAR = 1.5f;
+static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
+static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 2.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

@@ -14,9 +14,9 @@ void GimbalChassisRelativeController::initialize() {
     pitchPositionPID.pid.reset();
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredPitchAngle) {
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredYawAngle) {
     UNUSED(unit);
-    UNUSED(desiredPitchAngle);
+    UNUSED(desiredYawAngle);
 
     // NOTE: If you are finding that the gimbal is lagging behind the
     //       chassis a fair bit and you came here to find out why,
@@ -36,8 +36,7 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
     float positionControllerError =
         modm::toDegree(
             gimbal->getCurrentYawAngleAsContiguousFloat()
-                   .difference(gimbal->getTargetYawAngle(AngleUnit::Radians))
-        );
+                .difference(gimbal->getTargetYawAngle(AngleUnit::Radians)));
 
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
 
@@ -53,8 +52,7 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float d
     float positionControllerError =
         modm::toDegree(
             gimbal->getCurrentPitchAngleAsContiguousFloat()
-                   .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians))
-        );
+                .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
