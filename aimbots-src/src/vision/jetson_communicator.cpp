@@ -22,14 +22,15 @@ namespace src::vision {
         drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
     }
 
-    uint8_t displayBuffer[sizeof(JetsonMessage)];
+    uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 
     float yawOffsetDisplay = 0;
     float pitchOffsetDisplay = 0;
     CVState cvStateDisplay = CVState::CV_STATE_PATROL;
-    int rxBufferSize = 0;
-    uint8_t rawByteDisplay = 0;
-    size_t bytesReadDisplay = 0;
+    int readUnequal = 0;
+
+    int lastMsgTime = 0;
+    int msBetweenLastMessage = 0;
 
     /**
      * @brief Need to use modm's uart functions to read from the Jetson.
@@ -39,37 +40,13 @@ namespace src::vision {
      * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a JetsonMessage from our received bytes.
      */
     void JetsonCommunicator::updateSerial() {
-        // size_t bytesRead = READ(&rawSerialByte[0], 1);
-        // bytesReadDisplay = bytesRead;
-        // if (bytesRead == 0) {
-        //     return;
-        // }
+        if (modm::platform::Usart1::receiveBufferSize() >= JETSON_MESSAGE_SIZE) {
+            msBetweenLastMessage = tap::arch::clock::getTimeMilliseconds() - lastMsgTime;
+            lastMsgTime = tap::arch::clock::getTimeMilliseconds();
 
-        while (READ(&rawSerialByte, 1) > 0) {
-            if (rawSerialByte == '\n') {
-                bytesReadDisplay++;
-            }
-            rawByteDisplay = rawSerialByte;
-            // WRITE(&rawSerialByte, 1);
-            if (messageBuffer.enqueue(rawSerialByte)) {
-                // std::pair<uint8_t*, size_t> rawMsg = messageBuffer.getLastMsg();
-                uint8_t* rawMsg = messageBuffer.getLastMsg();
-                // rxBufferSize = rawMsg.second;
-                rxBufferSize = messageBuffer.getLastMsgSize();
-                if (rxBufferSize == (sizeof(JetsonMessage) - 1)) {
-                    lastMessage = *reinterpret_cast<JetsonMessage*>(rawMsg);
-                    yawOffsetDisplay = lastMessage.targetYawOffset;
-                    pitchOffsetDisplay = lastMessage.targetPitchOffset;
-                    cvStateDisplay = lastMessage.cvState;
-                    // rxBufferSize = messageBuffer.size();
-                }
-                // switch (rawMsg.first[0]) {
-                //     case aimAtTarget:
-                //         rxBufferSize = rawMsg.second;
-                //     default:
-                //         break;
-                // }
-            }
+            uint8_t rawData[JETSON_MESSAGE_SIZE];
+            size_t bytesRead = READ(rawData, JETSON_MESSAGE_SIZE);
+            readUnequal += (bytesRead != JETSON_MESSAGE_SIZE);
         }
     }
 }

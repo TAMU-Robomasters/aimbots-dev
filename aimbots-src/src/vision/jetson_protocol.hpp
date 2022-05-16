@@ -21,5 +21,7 @@ namespace src::vision {
         uint8_t end;
     } __attribute__((packed));
 
-    static_assert(sizeof(JetsonMessage) == 7, "JetsonMessage is not the correct size");
+    static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
+
+    static_assert(JETSON_MESSAGE_SIZE == 7, "JetsonMessage is not the correct size");
 }

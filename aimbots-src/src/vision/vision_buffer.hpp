@@ -10,8 +10,8 @@ namespace src::vision {
         uint8_t buffer[maxSize];
         int head = 0, tail = 0;
         uint8_t end;
-        uint8_t* retBuf;
-        int retSize;
+        uint8_t* retBuf = nullptr;
+        int retSize = 0;
         // std::pair<uint8_t*, int> lastMsg = {nullptr, 0};
 
        public:
@@ -66,7 +66,7 @@ namespace src::vision {
         void reset() {
             size_t sz = this->size();  // calculate size of current buffer
 
-            if (retBuf != NULL) delete[] retBuf;
+            if (retBuf != nullptr) delete[] retBuf;
 
             this->retBuf = new uint8_t[sz];  // assign new memory to first ptr
             this->retSize = sz;              // assign message size to size
