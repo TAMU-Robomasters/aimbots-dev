@@ -15,11 +15,11 @@ namespace src::vision {
 
     struct JetsonMessage {
         uint8_t header;
-        float targetYawOffset;
-        float targetPitchOffset;
+        int16_t targetYawOffset;
+        int16_t targetPitchOffset;
         CVState cvState;
         uint8_t end;
     } __attribute__((packed));
 
-    static_assert(sizeof(JetsonMessage) == 11, "JetsonMessage is not the correct size");
+    static_assert(sizeof(JetsonMessage) == 7, "JetsonMessage is not the correct size");
 }

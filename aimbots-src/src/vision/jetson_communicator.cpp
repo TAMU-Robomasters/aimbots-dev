@@ -46,13 +46,18 @@ namespace src::vision {
         // }
 
         while (READ(&rawSerialByte, 1) > 0) {
-            bytesReadDisplay++;
+            if (rawSerialByte == '\n') {
+                bytesReadDisplay++;
+            }
             rawByteDisplay = rawSerialByte;
+            // WRITE(&rawSerialByte, 1);
             if (messageBuffer.enqueue(rawSerialByte)) {
-                std::pair<uint8_t*, size_t> rawMsg = messageBuffer.getLastMsg();
-                rxBufferSize = rawMsg.second;
-                if (rawMsg.second == 10) {
-                    lastMessage = *reinterpret_cast<JetsonMessage*>(rawMsg.first);
+                // std::pair<uint8_t*, size_t> rawMsg = messageBuffer.getLastMsg();
+                uint8_t* rawMsg = messageBuffer.getLastMsg();
+                // rxBufferSize = rawMsg.second;
+                rxBufferSize = messageBuffer.getLastMsgSize();
+                if (rxBufferSize == (sizeof(JetsonMessage) - 1)) {
+                    lastMessage = *reinterpret_cast<JetsonMessage*>(rawMsg);
                     yawOffsetDisplay = lastMessage.targetYawOffset;
                     pitchOffsetDisplay = lastMessage.targetPitchOffset;
                     cvStateDisplay = lastMessage.cvState;

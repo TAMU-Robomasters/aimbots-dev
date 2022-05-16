@@ -10,18 +10,22 @@ namespace src::vision {
         uint8_t buffer[maxSize];
         int head = 0, tail = 0;
         uint8_t end;
-        std::pair<uint8_t*, int> lastMsg = {nullptr, 0};
+        uint8_t* retBuf;
+        int retSize;
+        // std::pair<uint8_t*, int> lastMsg = {nullptr, 0};
 
        public:
         visionBuffer<maxSize>(uint8_t end) : end(end){};
-        ~visionBuffer() { delete[] lastMsg.first; }
+        ~visionBuffer() { delete[] retBuf; }
 
         uint8_t get(size_t index) { return buffer[index]; }
 
         size_t getHead() { return head; }
         size_t getTail() { return tail; }
         size_t getMaxSize() { return maxSize; }
-        std::pair<uint8_t*, size_t> getLastMsg() { return lastMsg; }
+        // std::pair<uint8_t*, size_t> getLastMsg() { return lastMsg; }
+        uint8_t* getLastMsg() { return retBuf; }
+        int getLastMsgSize() { return retSize; }
 
         bool isFull() { return head == (tail + 1) % maxSize; }
         bool isEmpty() { return tail == head; }
@@ -62,13 +66,13 @@ namespace src::vision {
         void reset() {
             size_t sz = this->size();  // calculate size of current buffer
 
-            if (lastMsg.first != NULL) delete[] lastMsg.first;
+            if (retBuf != NULL) delete[] retBuf;
 
-            this->lastMsg.first = new uint8_t[sz];  // assign new memory to first ptr
-            this->lastMsg.second = sz;              // assign message size to size
+            this->retBuf = new uint8_t[sz];  // assign new memory to first ptr
+            this->retSize = sz;              // assign message size to size
 
             for (size_t i = 0; i < sz; i++) {
-                lastMsg.first[i] = this->dequeue();
+                retBuf[i] = this->dequeue();
             }
         }
     };
