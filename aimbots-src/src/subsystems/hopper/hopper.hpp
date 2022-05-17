@@ -26,23 +26,20 @@ class HopperSubsystem : public tap::control::Subsystem {
     //want to take 0-360 here and map to taproot 0-1
 
     /**
-     * @brief do not call continuously!1!
+     * @brief Sets angle for hopper servo to turn to and maintain (don't call continuously!!!)
      * 
      */
     void setHopperAngle(float desiredAngle);
 
     /**
-     * @brief rough estimate for if servo movement finished
+     * @brief Returns true if hopper PWM ramp is finished AND minimum delay (declared in standard_constants) has passed
      * 
-     * @return true if pwm ramp finished
-     * @return false 
      */
     bool isHopperReady() const;
 
     /**
-     * @brief returns if hopper is open/closed/unknown
-     * 
-     * @return uint8_t 
+     * @brief Returns the current state of the hopper as a uint8_t (check HopperState enum)
+     *  
      */
     uint8_t getHopperState() const;
 
