@@ -26,7 +26,8 @@ float feederPidDisplay = 0;
 
 void FeederSubsystem::updateMotorVelocityPID() {
     float err = targetRPM - feederMotor.getShaftRPM();
-    feederVelPID.runController(err, feederVelPID.runControllerDerivateError(err, 1), 1);
+    feederVelPID.runControllerDerivateError(err);
+    // feederVelPID.runController(err, feederVelPID.runControllerDerivateError(err, 1), 1);
     feederPidDisplay = feederVelPID.getOutput();
     desiredOutput = feederVelPID.getOutput();
 }
