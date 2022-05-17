@@ -4,38 +4,39 @@
 
 namespace src::Hopper {
 
-HopperSubsystem::HopperSubsystem(tap::Drivers* drivers)
-    : Subsystem(drivers),
-    hopper(drivers, HOPPER_PIN, HOPPER_MAX_ROTATION/360.0, HOPPER_MIN_ROTATION/360.0, HOPPER_MAX_ACCELERATION),
-    hopper_state(2)
-    {
+    HopperSubsystem::HopperSubsystem(tap::Drivers * drivers) : Subsystem(drivers),
+                                                               hopperMotor(drivers, HOPPER_PIN, 0.0f, 1.0f, 0.001f),
+                                                               hopper_state(2) {}
+
+    void HopperSubsystem::initialize() {}
+
+    void HopperSubsystem::refresh() {
+        // hopperMotor.setTargetPwm(90.0f);
+        hopperMotor.updateSendPwmRamp();
     }
 
-void HopperSubsystem::initialize() {
-}
+    float hopperAngleSetDisplay = 0.0f;
 
-void HopperSubsystem::refresh() {
-    hopper.updateSendPwmRamp();
-}
+    void HopperSubsystem::setHopperAngle(float desiredAngle) {
+        desiredAngle = 90.0f;
+        desiredAngle = tap::algorithms::limitVal<float>(desiredAngle, 0.0, 360.0) / 360.0;  //map 0-360 to 0-1
+        hopperAngleSetDisplay = desiredAngle;
+        hopperMotor.setTargetPwm(desiredAngle);
+        actionStartTime = tap::arch::clock::getTimeMilliseconds();
+    }
 
-void HopperSubsystem::setHopperAngle(float desiredAngle) {
-    desiredAngle = tap::algorithms::limitVal<float>(desiredAngle,0.0,360.0) / 360.0; //map 0-360 to 0-1
-    hopper.setTargetPwm(desiredAngle);
-    actionStartTime = tap::arch::clock::getTimeMilliseconds();
-}
+    bool HopperSubsystem::isHopperReady() const {
+        // return (hopperMotor.isRampTargetMet() &&
+        //         tap::arch::clock::getTimeMilliseconds() - actionStartTime > HOPPER_MIN_ACTION_DELAY);
+        return true;
+        //the delay is mostly just to keep commands from ending b4 they should, bc isRampTargetMet() is based on pwm ramp finishing
+    }
 
-bool HopperSubsystem::isHopperReady() const {
-    return (hopper.isRampTargetMet() && 
-    tap::arch::clock::getTimeMilliseconds() - actionStartTime > HOPPER_MIN_ACTION_DELAY);
-    //the delay is mostly just to keep commands from ending b4 they should, bc isRampTargetMet() is based on pwm ramp finishing
-}
+    uint8_t HopperSubsystem::getHopperState() const {
+        return hopper_state;
+    }
 
-uint8_t HopperSubsystem::getHopperState() const {
-    return hopper_state;
-}
-
-void HopperSubsystem::setHopperState(uint8_t new_state) {
-    hopper_state = new_state;
-}
-
-}; //namespace src::Hopper
+    void HopperSubsystem::setHopperState(uint8_t new_state) {
+        hopper_state = new_state;
+    }
+};  //namespace src::Hopper
