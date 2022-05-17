@@ -35,9 +35,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
-    .kd = 5.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -94,6 +94,8 @@ static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
 
+static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+
 // CAN Bus 2
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
@@ -105,7 +107,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = false;
 
-static constexpr bool FEEDER_DIRECTION = false;
+static constexpr bool FEEDER_DIRECTION = true;
 
 // Mechanical chassis constants, all in m
 /**

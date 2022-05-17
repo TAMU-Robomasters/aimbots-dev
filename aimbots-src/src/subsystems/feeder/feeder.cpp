@@ -31,12 +31,15 @@ void FeederSubsystem::updateMotorVelocityPID() {
     desiredOutput = feederVelPID.getOutput();
 }
 
+float targetRPMDisplay = 0;
+
 float FeederSubsystem::setTargetRPM(float rpm) {
-    targetRPM = rpm;
+    targetRPMDisplay = rpm;
+    this->targetRPM = rpm;
     return targetRPM;
 }
 
-void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity PID and sets the motor to that RPM
+void FeederSubsystem::setDesiredOutput() {  // takes     the input from the velocity PID and sets the motor to that RPM
     feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
 }
 }  // namespace src::Feeder
