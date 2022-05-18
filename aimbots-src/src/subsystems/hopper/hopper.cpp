@@ -4,11 +4,13 @@
 
 #include "utils/common_types.hpp"
 
+#define REMAP_HOPPER(x) (REMAP(x, HOPPER_MIN_ANGLE, HOPPER_MAX_ANGLE, HOPPER_MIN_PWM, HOPPER_MAX_PWM))
+
 namespace src::Hopper {
 
     HopperSubsystem::HopperSubsystem(tap::Drivers * drivers) : Subsystem(drivers),
                                                                drivers(drivers),
-                                                               hopperMotor(drivers, HOPPER_PIN, 0.85, 0.1325f, 0.01f),
+                                                               hopperMotor(drivers, HOPPER_PIN, HOPPER_MAX_PWM, HOPPER_MIN_PWM, HOPPER_PWM_RAMP_SPEED),
                                                                hopper_state(2) {}
 
     void HopperSubsystem::initialize() {
@@ -16,28 +18,23 @@ namespace src::Hopper {
     }
 
     float testVal = 0.85f;
-    // minimum pwm write value is 0.1325f
-    // maximum pwm write value is 0.85f
 
     void HopperSubsystem::refresh() {
-        // testVal = fmod(testVal + 0.0001f, 1.0f);
-        // hopperMotor.setTargetPwm(testVal);
         hopperMotor.updateSendPwmRamp();
-        // drivers->pwm.write(testVal, HOPPER_PIN);
     }
 
     float hopperAngleSetDisplay = 0.0f;
 
     void HopperSubsystem::setHopperAngle(float desiredAngle) {
-        desiredAngle = tap::algorithms::limitVal<float>(desiredAngle, 0.0f, 270.0f) / 270.0f;  //map 0-360 to 0-1
+        desiredAngle = tap::algorithms::limitVal<float>(desiredAngle, HOPPER_MIN_ANGLE, HOPPER_MAX_ANGLE);  // Limit inputs to min/max of motor
         hopperAngleSetDisplay = desiredAngle;
-        hopperMotor.setTargetPwm(desiredAngle);
+        hopperMotor.setTargetPwm(REMAP_HOPPER(desiredAngle));
         actionStartTime = tap::arch::clock::getTimeMilliseconds();
     }
 
     bool HopperSubsystem::isHopperReady() const {
-        // return (hopperMotor.isRampTargetMet() && (tap::arch::clock::getTimeMilliseconds() - actionStartTime) > HOPPER_MIN_ACTION_DELAY);
-        return true;
+        return (hopperMotor.isRampTargetMet() && (tap::arch::clock::getTimeMilliseconds() - actionStartTime) > HOPPER_MIN_ACTION_DELAY);
+        // return true;
         //the delay is mostly just to keep commands from ending b4 they should, bc isRampTargetMet() is based on pwm ramp finishing
     }
 
