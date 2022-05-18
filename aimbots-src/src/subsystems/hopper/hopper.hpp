@@ -50,6 +50,8 @@ namespace src::Hopper {
         void setHopperState(uint8_t new_state);
 
        private:
+        tap::Drivers* drivers;
+
         Servo hopperMotor;
         uint8_t hopper_state;
         uint32_t actionStartTime;  //milliseconds

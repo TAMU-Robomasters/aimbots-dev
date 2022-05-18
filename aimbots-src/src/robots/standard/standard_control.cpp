@@ -122,7 +122,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    hopper.setDefaultCommand(&openHopperCommand);
+    hopper.setDefaultCommand(&closeHopperCommand);
 }
 
 // Set commands scheduled on startup

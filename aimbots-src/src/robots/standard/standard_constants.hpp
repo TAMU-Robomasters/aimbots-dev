@@ -118,12 +118,12 @@ static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 // Hopper constants
-static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C5;  //ARBITRARY PIN, SHOULD CHANGE
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;  //ARBITRARY PIN, SHOULD CHANGE
 static constexpr float HOPPER_MAX_ACCELERATION = 1000.0f;              //pwm percent per millisecond
 static constexpr float HOPPER_MIN_ROTATION = 0.0f;                     //closed angle (degrees)
-static constexpr float HOPPER_MAX_ROTATION = 360.0f;                   //open angle
-static constexpr float HOPPER_CLOSED_ANGLE = 180.0f;
-static constexpr float HOPPER_OPEN_ANGLE = 360.0f;
+static constexpr float HOPPER_MAX_ROTATION = 270.0f;                   //open angle
+static constexpr float HOPPER_OPEN_ANGLE = 0.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 270.0f;
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  //milliseconds
 
 /**
