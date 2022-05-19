@@ -28,9 +28,9 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
+#include "subsystems/hopper/close_hopper_command.hpp"
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
-#include "subsystems/hopper/close_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 
 using namespace src::Chassis;
@@ -65,7 +65,7 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface*>(&gimbalController), USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface *>(&gimbalController), USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
@@ -80,10 +80,10 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand, &closeHopperCommand},
+    {&chassisDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-//opens hopper
+// opens hopper
 HoldCommandMapping rightSwitchDown(
     drivers(),
     {&openHopperCommand},
@@ -122,7 +122,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    hopper.setDefaultCommand(&closeHopperCommand);
+    // hopper.setDefaultCommand(&openHopperCommand);
 }
 
 // Set commands scheduled on startup
@@ -140,19 +140,20 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchDown);
 }
 
 }  // namespace StandardControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        StandardControl::initializeSubsystems();
-        StandardControl::registerSubsystems(drivers);
-        StandardControl::setDefaultCommands(drivers);
-        StandardControl::startupCommands(drivers);
-        StandardControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    StandardControl::initializeSubsystems();
+    StandardControl::registerSubsystems(drivers);
+    StandardControl::setDefaultCommands(drivers);
+    StandardControl::startupCommands(drivers);
+    StandardControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif  // TARGET_STANDARD

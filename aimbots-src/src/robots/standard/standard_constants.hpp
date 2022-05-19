@@ -27,7 +27,7 @@ static constexpr float SHIFT_SCALAR = (1.0f / 2);
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 2.0f,
+    .kd = 1.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -124,7 +124,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
 
-static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  //pwm percent per millisecond
+static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
 
 static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
 static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
@@ -132,8 +132,8 @@ static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
 static constexpr float HOPPER_MIN_ANGLE = 0.0f;
 static constexpr float HOPPER_MAX_ANGLE = 270.0f;
 
-static constexpr float HOPPER_OPEN_ANGLE = 0.0f;
-static constexpr float HOPPER_CLOSED_ANGLE = 270.0f;
+static constexpr float HOPPER_OPEN_ANGLE = 60.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 155.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
