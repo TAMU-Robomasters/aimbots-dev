@@ -27,11 +27,17 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+//
+#include "subsystems/hopper/hopper.hpp"
+#include "subsystems/hopper/open_hopper_command.hpp"
+#include "subsystems/hopper/close_hopper_command.hpp"
+#include "subsystems/hopper/toggle_hopper_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+using namespace src::Hopper;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -52,6 +58,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+HopperSubsystem hopper(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -64,24 +71,33 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+OpenHopperCommand openHopperCommand(drivers(), &hopper);
+CloseHopperCommand closeHopperCommand(drivers(), &hopper);
+CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
+ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 // Define command mappings here -------------------------------------------
-// Enables both chassis and gimbal control
+// Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisDriveCommand, &gimbalControlCommand, &closeHopperCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// Runs shooter only
+//opens hopper
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&openHopperCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+// Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand},
+    {&runShooterCommand, &closeHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// Runs shooter with feeder
+// Runs shooter with feeder and closes hopper
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -90,6 +106,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&hopper);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -98,12 +115,14 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    hopper.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    //hopper.setDefaultCommand(&openHopperCommand);
 }
 
 // Set commands scheduled on startup
@@ -113,11 +132,14 @@ void startupCommands(src::Drivers *) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
 }
