@@ -122,7 +122,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    //hopper.setDefaultCommand(&openHopperCommand);
+    hopper.setDefaultCommand(&closeHopperCommand);
 }
 
 // Set commands scheduled on startup
@@ -132,13 +132,11 @@ void startupCommands(src::Drivers *) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
-    
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
@@ -147,14 +145,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif  // TARGET_STANDARD
