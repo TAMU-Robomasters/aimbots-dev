@@ -47,12 +47,22 @@ void ShooterSubsystem::initialize() {
 float PIDoutDisplay = 0.0f;
 float shaftSpeedDisplay = 0.0f;
 
+float FWLeft1 = 0.0f;
+float FWLeft2 = 0.0f;
+float FWRight1 = 0.0f;
+float FWRight2 = 0.0f;
+
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     // Debug info
     if (motors[TOP][0]->isMotorOnline()) {
         shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
         PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
+
+        FWLeft1 = motors[TOP][0]->getShaftRPM();
+        FWLeft2 = motors[BOT][0]->getShaftRPM();
+        FWRight1 = motors[TOP][1]->getShaftRPM();
+        FWRight2 = motors[BOT][1]->getShaftRPM();
     }
 
     ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);

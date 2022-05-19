@@ -35,7 +35,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 20.0f,
     .ki = 0.01f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
