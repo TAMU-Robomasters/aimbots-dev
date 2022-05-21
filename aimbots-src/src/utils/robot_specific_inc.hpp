@@ -14,6 +14,7 @@
 
 #elif defined(TARGET_SENTRY)
 #include "robots/sentry/sentry_constants.hpp"
+#include "robots/sentry/sentry_control_interface.hpp"
 
 #elif defined(TARGET_STANDARD)
 #include "robots/standard/standard_constants.hpp"

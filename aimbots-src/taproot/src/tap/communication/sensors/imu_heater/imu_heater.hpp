@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2022 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -27,8 +27,9 @@
 namespace tap
 {
 class Drivers;
+}
 
-namespace sensors
+namespace tap::communication::sensors::imu_heater
 {
 class ImuHeater
 {
@@ -75,7 +76,6 @@ private:
 
     modm::Pid<float> imuTemperatureController;
 };
-}  // namespace sensors
-}  // namespace tap
+}  // namespace tap::communication::sensors::imu_heater
 
 #endif  // TAPROOT_MPU6500_HEATER_HPP_

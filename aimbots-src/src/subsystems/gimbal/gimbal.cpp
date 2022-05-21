@@ -33,34 +33,44 @@ void GimbalSubsystem::initialize() {
 
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
+        // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
 
-        // flush whatever our current output is to the motors
+        // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
     }
 
     if (pitchMotor.isMotorOnline()) {
+        // Update subsystem state to stay up-to-date with reality
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
         currentPitchAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
 
-        // flush whatever our current output is to the motors
+        // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
     }
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {
+    // This is limited since the datatype of the parameter to the function
+    // `DJIMotor::setDesiredOutput()` is an int16_t. So, to make sure that
+    // it isn't overflowed, we limit it within +/- 30,000, which is just
+    // the max and min of an int16_t (int16_t has a range of about +/- 32,000).
     desiredYawMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
 }
 
 void GimbalSubsystem::setPitchMotorOutput(float output) {
+    // This is limited since the datatype of the parameter to the function
+    // `DJIMotor::setDesiredOutput()` is an int16_t. So, to make sure that
+    // it isn't overflowed, we limit it within +/- 30,000, which is just
+    // the max and min of an int16_t (int16_t has a range of about +/- 32,000).
     desiredPitchMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
 }
 
 float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue() - YAW_START_ANGLE) : currentYawAngle.getValue() - YAW_START_ANGLE,
-               (unit == AngleUnit::Degrees) ? -180.0f : M_PI,
+               (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();
 }
@@ -68,7 +78,7 @@ float GimbalSubsystem::getCurrentYawAngleFromCenter(AngleUnit unit) const {
 float GimbalSubsystem::getCurrentPitchAngleFromCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue() - PITCH_START_ANGLE) : currentPitchAngle.getValue() - PITCH_START_ANGLE,
-               (unit == AngleUnit::Degrees) ? -180.0f : M_PI,
+               (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();
 }

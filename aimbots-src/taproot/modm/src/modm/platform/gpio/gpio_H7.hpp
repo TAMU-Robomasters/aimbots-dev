@@ -163,16 +163,10 @@ public:
 	/// @{
 	/// Connect to any software peripheral
 	using BitBang = GpioSignal;
-	/// Connect to Dcmi
-	using D9 = GpioSignal;
-	/// Connect to Spi5
-	using Miso = GpioSignal;
 	/// Connect to Eth
 	using Rxd3 = GpioSignal;
 	/// Connect to I2c3
 	using Scl = GpioSignal;
-	/// Connect to Fmc
-	using Sdcke1 = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -181,18 +175,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::BitBang),
 			"GpioH7::BitBang only connects to software drivers!");
-	};
-	template< Peripheral peripheral >
-	struct D9 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Dcmi),
-			"GpioH7::D9 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct Miso { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Spi5),
-			"GpioH7::Miso only connects to Spi5!");
 	};
 	template< Peripheral peripheral >
 	struct Rxd3 { static void connect();
@@ -205,12 +187,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::I2c3),
 			"GpioH7::Scl only connects to I2c3!");
-	};
-	template< Peripheral peripheral >
-	struct Sdcke1 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH7::Sdcke1 only connects to Fmc!");
 	};
 	/// @endcond
 private:
@@ -228,30 +204,6 @@ struct GpioH7::BitBang<Peripheral::BitBang>
 	static constexpr Gpio::Signal Signal = Gpio::Signal::BitBang;
 	static constexpr int af = -1;
 	inline static void connect() {}
-};
-template<>
-struct GpioH7::D9<Peripheral::Dcmi>
-{
-	using Gpio = GpioH7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D9;
-	static constexpr int af = 13;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioH7::Miso<Peripheral::Spi5>
-{
-	using Gpio = GpioH7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Miso;
-	static constexpr int af = 5;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(5);
-	}
 };
 template<>
 struct GpioH7::Rxd3<Peripheral::Eth>
@@ -275,18 +227,6 @@ struct GpioH7::Scl<Peripheral::I2c3>
 	connect()
 	{
 		setAlternateFunction(4);
-	}
-};
-template<>
-struct GpioH7::Sdcke1<Peripheral::Fmc>
-{
-	using Gpio = GpioH7;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdcke1;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 /// @endcond

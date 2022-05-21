@@ -6,7 +6,6 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
-//#ifndef TARGET_ENGINEER
 namespace src::Shooter {
 
 enum MotorIndex {
@@ -54,6 +53,10 @@ class ShooterSubsystem : public tap::control::Subsystem {
     mockable void initialize() override;
     void refresh() override;
 
+    float getHighestMotorSpeed() const;
+
+    float getMotorSpeed(MotorIndex motorIdx) const;
+
     /**
      * @brief Updates velocity PID and motor RPM for a single motor. Can be used with ForAllShooterMotors().
      * Should be called continuously in subsystem refresh.
@@ -71,6 +74,23 @@ class ShooterSubsystem : public tap::control::Subsystem {
      */
     void setTargetRPM(MotorIndex motorIdx, float targetRPM);
 
+    /**
+     * @brief Updates the desiredOutputs matrix with the desired output of a single motor.
+     * Intended to be called from commands.
+     *
+     * @param motorIdx
+     * @param desiredOutput
+     */
+    void setDesiredOutput(MotorIndex motorIdx, float desiredOutput);
+
+    /**
+     * @brief Sets the desired output of a single motor from the desiredOutputs matrix
+     * Should only be called once per loop for consistency in Shooter refresh.
+     *
+     * @param motorIdx
+     */
+    void setDesiredOutputToMotor(MotorIndex motorIdx);
+
 #ifndef ENV_UNIT_TESTS
    private:
 #else
@@ -85,9 +105,8 @@ class ShooterSubsystem : public tap::control::Subsystem {
     SmoothPID flywheel3PID, flywheel4PID;
 #endif
 
-    static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-
     Matrix<float, SHOOTER_MOTOR_COUNT, 1> targetRPMs;
+    Matrix<int32_t, SHOOTER_MOTOR_COUNT, 1> desiredOutputs;
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;

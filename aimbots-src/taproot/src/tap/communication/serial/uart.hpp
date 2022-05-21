@@ -46,11 +46,8 @@ public:
     enum UartPort
     {
         Uart1,
-        Uart2,
         Uart3,
         Uart6,
-        Uart7,
-        Uart8,
     };
 
 #ifdef PLATFORM_HOSTED
@@ -82,33 +79,18 @@ public:
 #ifndef PLATFORM_HOSTED
         if constexpr (port == UartPort::Uart1)
         {
-            modm::platform::Usart1::connect<GpioB7::Rx>();
+            modm::platform::Usart1::connect<GpioA9::Tx, GpioB7::Rx>();
             modm::platform::Usart1::initialize<Board::SystemClock, baudrate>(parity);
-        }
-        else if constexpr (port == UartPort::Uart2)
-        {
-            modm::platform::Usart2::connect<GpioD5::Tx, GpioD6::Rx>();
-            modm::platform::Usart2::initialize<Board::SystemClock, baudrate>(parity);
         }
         else if constexpr (port == UartPort::Uart3)
         {
-            modm::platform::Usart3::connect<GpioD8::Tx, GpioD9::Rx>();
+            modm::platform::Usart3::connect<GpioC11::Rx>();
             modm::platform::Usart3::initialize<Board::SystemClock, baudrate>(parity);
         }
         else if constexpr (port == UartPort::Uart6)
         {
             modm::platform::Usart6::connect<GpioG14::Tx, GpioG9::Rx>();
             modm::platform::Usart6::initialize<Board::SystemClock, baudrate>(parity);
-        }
-        else if constexpr (port == UartPort::Uart7)
-        {
-            modm::platform::Uart7::connect<GpioE8::Tx, GpioE7::Rx>();
-            modm::platform::Uart7::initialize<Board::SystemClock, baudrate>(parity);
-        }
-        else if constexpr (port == UartPort::Uart8)
-        {
-            modm::platform::Uart8::connect<GpioE1::Tx, GpioE0::Rx>();
-            modm::platform::Uart8::initialize<Board::SystemClock, baudrate>(parity);
         }
 #endif
     }

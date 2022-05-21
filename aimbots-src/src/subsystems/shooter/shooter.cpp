@@ -9,17 +9,19 @@ namespace src::Shooter {
 
 ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
     : Subsystem(drivers),
-      flywheel1(drivers, SHOOTER_1_ID, SHOOTER_BUS, true, "Flywheel One"),
-      flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, false, "Flywheel Two"),
-      flywheel1PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
-      flywheel2PID(50.0f, 0.0f, 0.0f, 10, 30000, 1, 1, 1, 0),
+      flywheel1(drivers, SHOOTER_1_ID, SHOOTER_BUS, SHOOTER_1_DIRECTION, "Flywheel One"),
+      flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, SHOOTER_2_DIRECTION, "Flywheel Two"),
+      flywheel1PID(SHOOTER_VELOCITY_PID_CONFIG),
+      flywheel2PID(SHOOTER_VELOCITY_PID_CONFIG),
 #ifdef TARGET_SENTRY
-      flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, true, "Flywheel Three"),
-      flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, false, "Flywheel Four"),
-      flywheel3PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
-      flywheel4PID(10.0f, 0, 0, 10, 1000, 1, 1, 1, 0),
+      flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, SHOOTER_3_DIRECTION, "Flywheel Three"),
+      flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, SHOOTER_4_DIRECTION, "Flywheel Four"),
+      flywheel3PID(SHOOTER_VELOCITY_PID_CONFIG),
+      flywheel4PID(SHOOTER_VELOCITY_PID_CONFIG),
+
 #endif
       targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      desiredOutputs(Matrix<int32_t, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
@@ -42,25 +44,63 @@ void ShooterSubsystem::initialize() {
     ForAllShooterMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0.0f));
 }
 
-// Update the actual RPMs of the motors; the calculation is called from ShooterCommand
-void ShooterSubsystem::refresh() {
-    ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
-}
-
 float PIDoutDisplay = 0.0f;
 float shaftSpeedDisplay = 0.0f;
-// TODO: need to tune PID
+
+// Update the actual RPMs of the motors; the calculation is called from ShooterCommand
+void ShooterSubsystem::refresh() {
+    // Debug info
+    if (motors[TOP][0]->isMotorOnline()) {
+        shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
+        PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
+    }
+
+    ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
+}
+
+// Returns the speed of the shooter motor with the highest absolute value of RPM
+float ShooterSubsystem::getHighestMotorSpeed() const {
+    float highestMotorSpeed = 0.0f;
+    for (int i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+        MotorIndex mi = static_cast<MotorIndex>(i);
+        if (motors[mi][0]->isMotorOnline()) {
+            float motorSpeed = motors[mi][0]->getShaftRPM();
+            if (fabs(motorSpeed) > highestMotorSpeed) {
+                highestMotorSpeed = motorSpeed;
+            }
+        }
+    }
+    return highestMotorSpeed;
+}
+
+float ShooterSubsystem::getMotorSpeed(MotorIndex motorIdx) const {
+    if (motors[motorIdx][0]->isMotorOnline()) {
+        return motors[motorIdx][0]->getShaftRPM();
+    }
+    return 0.0f;
+}
 
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
-    float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
-    float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
-    PIDoutDisplay = err;
-    shaftSpeedDisplay = motors[motorIdx][0]->getShaftRPM();
-    motors[motorIdx][0]->setDesiredOutput(static_cast<int32_t>(PIDOut));
+    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info from it
+        float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
+        float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
+        setDesiredOutput(motorIdx, PIDOut);
+    }
 }
 
 void ShooterSubsystem::setTargetRPM(MotorIndex motorIdx, float targetRPM) {
     targetRPMs[motorIdx][0] = targetRPM;
 }
 
+float powerDisplay = 0.0f;
+
+void ShooterSubsystem::setDesiredOutput(MotorIndex motorIdx, float desiredOutput) {
+    desiredOutputs[motorIdx][0] = static_cast<int32_t>(desiredOutput);
+}
+
+void ShooterSubsystem::setDesiredOutputToMotor(MotorIndex motorIdx) {
+    if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when setting to it
+        motors[motorIdx][0]->setDesiredOutput(desiredOutputs[motorIdx][0]);
+    }
+}
 };  // namespace src::Shooter

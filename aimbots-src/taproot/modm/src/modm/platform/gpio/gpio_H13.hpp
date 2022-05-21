@@ -165,8 +165,6 @@ public:
 	using BitBang = GpioSignal;
 	/// Connect to Tim8
 	using Ch1n = GpioSignal;
-	/// Connect to Fmc
-	using D21 = GpioSignal;
 	/// Connect to Can1
 	using Tx = GpioSignal;
 	/// @}
@@ -183,12 +181,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::Tim8),
 			"GpioH13::Ch1n only connects to Tim8!");
-	};
-	template< Peripheral peripheral >
-	struct D21 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH13::D21 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
 	struct Tx { static void connect();
@@ -223,18 +215,6 @@ struct GpioH13::Ch1n<Peripheral::Tim8>
 	connect()
 	{
 		setAlternateFunction(3);
-	}
-};
-template<>
-struct GpioH13::D21<Peripheral::Fmc>
-{
-	using Gpio = GpioH13;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D21;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 template<>

@@ -37,7 +37,7 @@ public:
     virtual ~DjiMotorTxHandlerMock();
 
     MOCK_METHOD(void, addMotorToManager, (tap::motor::DjiMotor * motor), (override));
-    MOCK_METHOD(void, processCanSendData, (), (override));
+    MOCK_METHOD(void, encodeAndSendCanData, (), (override));
     MOCK_METHOD(void, removeFromMotorManager, (const tap::motor::DjiMotor &motor), (override));
     MOCK_METHOD(
         const tap::motor::DjiMotor *,

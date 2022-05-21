@@ -167,8 +167,6 @@ public:
 	using Ch3n = GpioSignal;
 	/// Connect to Dcmi
 	using D11 = GpioSignal;
-	/// Connect to Fmc
-	using D23 = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -189,12 +187,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::Dcmi),
 			"GpioH15::D11 only connects to Dcmi!");
-	};
-	template< Peripheral peripheral >
-	struct D23 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioH15::D23 only connects to Fmc!");
 	};
 	/// @endcond
 private:
@@ -235,18 +227,6 @@ struct GpioH15::D11<Peripheral::Dcmi>
 	connect()
 	{
 		setAlternateFunction(13);
-	}
-};
-template<>
-struct GpioH15::D23<Peripheral::Fmc>
-{
-	using Gpio = GpioH15;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::D23;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 /// @endcond

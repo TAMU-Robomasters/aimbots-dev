@@ -3,7 +3,7 @@
     "files.exclude": {
         "**/.git": false,
     },
-    "files.autoSave": "off",
+    "files.autoSave": "afterDelay",
     "files.associations": {
         "array": "cpp",
         "string": "cpp",

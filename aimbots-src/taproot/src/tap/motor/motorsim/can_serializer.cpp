@@ -67,9 +67,9 @@ modm::can::Message CanSerializer::serializeFeedback(
 
 int8_t CanSerializer::idToPort(tap::motor::MotorId id)
 {
-    int32_t out = DJI_MOTOR_NORMALIZED_ID(id);
+    uint32_t out = DJI_MOTOR_TO_NORMALIZED_ID(id);
 
-    return (out >= 0 && out < tap::motor::DjiMotorTxHandler::DJI_MOTORS_PER_CAN) ? out : -1;
+    return (out < tap::motor::DjiMotorTxHandler::DJI_MOTORS_PER_CAN) ? out : -1;
 }
 
 }  // namespace motorsim

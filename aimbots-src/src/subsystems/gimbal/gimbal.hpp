@@ -1,4 +1,5 @@
 #pragma once
+#ifndef TARGET_ENGINEER
 
 #include <drivers.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
@@ -9,14 +10,28 @@
 
 namespace src::Gimbal {
 
-inline float limitPitchAngle(float angle) {
-    if constexpr (PITCH_HARDSTOP_LOW < PITCH_HARDSTOP_HIGH)
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_LOW, PITCH_HARDSTOP_HIGH);
-    else
-        return tap::algorithms::limitVal(angle, PITCH_HARDSTOP_HIGH, PITCH_HARDSTOP_LOW);
+constexpr inline float constAbs(float value)
+{
+    return (value < 0.0f) ? (value * -1.0f) : value;
+}
+
+// NOTE: This function assumes the hardstops are in degrees
+constexpr float getPitchMotorDirection()
+{
+    constexpr float intialDirection = (PITCH_HARDSTOP_HIGH < PITCH_HARDSTOP_LOW) ? 1.0f : -1.0f;
+
+    // If 0 is somewhere in our available arc of pitch, then we need
+    // to flip the direction, because the previous condition would be
+    // incorrect.
+    if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
+        return intialDirection * -1.0f;
+    }
+
+    return intialDirection;
 }
 
 enum class AngleUnit : uint8_t {
+    None,
     Degrees,
     Radians,
 };
@@ -38,7 +53,14 @@ class GimbalSubsystem : public tap::control::Subsystem {
     inline float getTargetYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetYawAngle) : targetYawAngle; }
     inline void setTargetYawAngle(AngleUnit unit, float angle) { targetYawAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
     inline float getTargetPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetPitchAngle) : targetPitchAngle; }
-    inline void setTargetPitchAngle(AngleUnit unit, float angle) { targetPitchAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
+    inline void setTargetPitchAngle(AngleUnit unit, float angle) {
+        angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
+        targetPitchAngle = ContiguousFloat::limitValue(
+            ContiguousFloat(angle, 0, M_TWOPI),
+            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_HARDSTOP_HIGH : PITCH_HARDSTOP_LOW),
+            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_HARDSTOP_LOW : PITCH_HARDSTOP_HIGH)
+        );
+    }
 
     inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }
     inline float getCurrentPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue()) : currentPitchAngle.getValue(); }
@@ -48,6 +70,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     inline tap::algorithms::ContiguousFloat const& getCurrentYawAngleAsContiguousFloat() const { return currentYawAngle; }
     inline tap::algorithms::ContiguousFloat const& getCurrentPitchAngleAsContiguousFloat() const { return currentPitchAngle; }
+
+    inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
+    inline float getPitchMotorRPM() const { return (pitchMotor.isMotorOnline()) ? pitchMotor.getShaftRPM() : 0.0f; }
 
    private:
     DJIMotor yawMotor;
@@ -61,8 +86,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
-
-    static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 };
 
 }  // namespace src::Gimbal
+#endif

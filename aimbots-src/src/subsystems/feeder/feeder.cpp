@@ -5,16 +5,18 @@ namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
     : Subsystem(drivers),
-      feederVelPID(20, 0, 0, 0, 8000, 1, 0, 1, 0),
+      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
-      feederMotor(drivers, FEEDER_ID, FEED_BUS, false, "Feeder Motor") {
+      desiredOutput(0),
+      feederMotor(drivers, FEEDER_ID, FEED_BUS, true, "Feeder Motor") {
 }
 
 void FeederSubsystem::initialize() {
     feederMotor.initialize();
 }
 
-void FeederSubsystem::refresh() {  // refreshes the velocity PID given the target RPM and the current RPM
+// refreshes the velocity PID given the target RPM and the current RPM
+void FeederSubsystem::refresh() {
     updateMotorVelocityPID();
 
     setDesiredOutput();
@@ -23,6 +25,7 @@ void FeederSubsystem::refresh() {  // refreshes the velocity PID given the targe
 void FeederSubsystem::updateMotorVelocityPID() {
     float err = targetRPM - feederMotor.getShaftRPM();
     feederVelPID.runController(err, feederVelPID.runControllerDerivateError(err, 1), 1);
+    desiredOutput = feederVelPID.getOutput();
 }
 
 float FeederSubsystem::setTargetRPM(float rpm) {
@@ -31,6 +34,6 @@ float FeederSubsystem::setTargetRPM(float rpm) {
 }
 
 void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity PID and sets the motor to that RPM
-    feederMotor.setDesiredOutput(feederVelPID.getOutput());
+    feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
 }
 }  // namespace src::Feeder

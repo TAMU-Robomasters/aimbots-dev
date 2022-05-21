@@ -62,7 +62,7 @@ private:
     Drivers* drivers;
 
     bool motorIdValid = false;
-    int motorId = 0;
+    uint32_t motorId = 0;
     bool canBusValid = false;
     int canBus = 0;
     bool printAll = false;

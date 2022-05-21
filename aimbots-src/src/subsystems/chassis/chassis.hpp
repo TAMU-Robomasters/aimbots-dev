@@ -76,11 +76,14 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
      * @param[in] r The desired velocity of the wheels to rotate.
      * See x for more information.
      */
-    void setDesiredOutputs(float x, float y, float r);
+    void setTargetRPMs(float x, float y, float r);
+
+    // Uses the desiredOutputs matrix to set the desired power of the motors
+    void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
     void calculateMecanum(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);   // swerve drive robots
-    void calculateRail(float x);                                            // sentry rail robots
+    void calculateRail(float x, float maxWheelSpeed);                       // sentry rail robots
 
     inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
 
@@ -116,33 +119,40 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
         return true;
     }
 
+    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
+        // no proper override because we don't have a need for this function yet
+        return Matrix<float, 3, 1>::zeroMatrix();
+    }
+
 #ifndef ENV_UNIT_TESTS
    private:
 #else
    public:
 #endif
-    static constexpr CANBus CHAS_BUS = CANBus::CAN_BUS2;
+
+    float desiredRotation = 0.0f;
 
 #ifdef TARGET_SENTRY
     DJIMotor railWheel;
-    StockPID railWheelVelPID;
+    SmoothPID railWheelVelPID;
+
 #else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
-    StockPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
-    float desiredRotation = 0.0f;
+    SmoothPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
-    StockPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
+    SmoothPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
 #endif
 #endif
 
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
+    Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> desiredOutputs;
 
     Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> motors;
 
     // ChassisPowerLimiter powerLimiter;
 
-    Matrix<StockPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
+    Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
     Matrix<float, 4, 3> wheelLocationMatrix;
 

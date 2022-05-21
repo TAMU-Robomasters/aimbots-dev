@@ -202,10 +202,11 @@ struct GpioC14::Osc32in<Peripheral::Rcc>
 {
 	using Gpio = GpioC14;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32in;
-	static constexpr int af = -1;
+	static constexpr int af = 0;
 	inline static void
 	connect()
 	{
+		setAlternateFunction(0);
 	}
 };
 /// @endcond

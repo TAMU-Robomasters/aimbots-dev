@@ -6,21 +6,34 @@
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 0;
 static constexpr uint8_t MOTORS_PER_WHEEL = 0;
 
-// /**
-//  * @brief Velocity PID constants
-//  */
-// static constexpr float VELOCITY_PID_KP = 20.0f;
-// static constexpr float VELOCITY_PID_KI = 0.2f;
-// static constexpr float VELOCITY_PID_KD = 0.0f;
-// static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
+/**
+ * @brief Velocity PID constants
+ */
+static constexpr float VELOCITY_PID_KP = 20.0f;
+static constexpr float VELOCITY_PID_KI = 0.2f;
+static constexpr float VELOCITY_PID_KD = 0.0f;
+static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 
-// /**
-//  * @brief Position PID constants
-//  */
-// static constexpr float POSITION_PID_KP = 20.0f;
-// static constexpr float POSITION_PID_KI = 0.2f;
-// static constexpr float POSITION_PID_KD = 0.0f;
-// static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+/**
+ * @brief Position PID constants
+ */
+static constexpr float YAW_POSITION_PID_KP                    = 0.0f;
+static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
+static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 0.0f;
+static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
+
+static constexpr float PITCH_POSITION_PID_KP                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 0.0f;
+static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
 /**
  * This max output is measured in the c620 robomaster translated current.

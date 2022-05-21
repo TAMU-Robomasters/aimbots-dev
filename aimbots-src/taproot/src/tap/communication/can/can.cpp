@@ -40,14 +40,14 @@ void tap::can::Can::initialize()
     CanFilter::setStartFilterBankForCan2(14);
     // initialize CAN 1
     Can1::connect<GpioD0::Rx, GpioD1::Tx>(Gpio::InputType::PullUp);
-    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can2", "initialize-failed");
+    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can1", "initialize-failed");
     // receive every message for CAN 1
     CanFilter::setFilter(
         0,
         CanFilter::FIFO0,
         CanFilter::StandardIdentifier(0),
         CanFilter::StandardFilterMask(0));
-    Can2::connect<GpioB12::Rx, GpioB13::Tx>(Gpio::InputType::PullUp);
+    Can2::connect<GpioB5::Rx, GpioB6::Tx>(Gpio::InputType::PullUp);
     modm_assert((Can2::initialize<Board::SystemClock, 1000_kbps>(12)), "Can2", "initialize-failed");
     // receive every message for CAN 2
     CanFilter::setFilter(

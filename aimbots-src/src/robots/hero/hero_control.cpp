@@ -14,8 +14,8 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
 //
+#include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/shooter_command.hpp"
 
 using namespace src::Chassis;
 
@@ -38,12 +38,12 @@ src::Shooter::ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-src::Shooter::ShooterCommand shooterCommand(drivers(), &shooter);
+src::Shooter::RunRunShooterCommand runShooterCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &shooterCommand},
+    {&chassisDriveCommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -80,14 +80,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace HeroControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        HeroControl::initializeSubsystems();
-        HeroControl::registerSubsystems(drivers);
-        HeroControl::setDefaultCommands(drivers);
-        HeroControl::startupCommands(drivers);
-        HeroControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    HeroControl::initializeSubsystems();
+    HeroControl::registerSubsystems(drivers);
+    HeroControl::setDefaultCommands(drivers);
+    HeroControl::startupCommands(drivers);
+    HeroControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
-#endif //TARGET_HERO
+#endif  // TARGET_HERO

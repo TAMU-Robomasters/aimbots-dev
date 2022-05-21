@@ -155,6 +155,9 @@ public:
      * If a Command is successfully added, the Command's `initialize()` function will
      * be called.
      *
+     * @note If the `commandToAdd` was already scheduled, it will be interrupted (its `end()`
+     *      will be called) and then the command will be rescheduled.
+     *
      * @param[in] commandToAdd the Command to be added to the scheduler.
      */
     mockable void addCommand(Command* commandToAdd);

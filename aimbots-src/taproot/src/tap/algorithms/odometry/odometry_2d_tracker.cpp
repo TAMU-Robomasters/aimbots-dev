@@ -32,11 +32,13 @@ namespace tap::algorithms::odometry
 {
 void Odometry2DTracker::update()
 {
-    modm::Vector<float, 3> chassisAbsoluteDisplacement;
+    modm::Vector3f chassisAbsoluteDisplacement;
+    modm::Vector3f chassisVelocity;
     float chassisYaw = 0.0f;
 
-    bool validDisplacementAvailable =
-        chassisDisplacementObserver->getChassisDisplacement(&chassisAbsoluteDisplacement);
+    bool validDisplacementAvailable = chassisDisplacementObserver->getVelocityChassisDisplacement(
+        &chassisVelocity,
+        &chassisAbsoluteDisplacement);
     bool validOrientationAvailable = chassisYawObserver->getChassisWorldYaw(&chassisYaw);
 
     if (validDisplacementAvailable)
@@ -57,6 +59,16 @@ void Odometry2DTracker::update()
             location.setOrientation(chassisYaw);
             location.move(
                 modm::Vector2f(displacementChassisRelative.x, displacementChassisRelative.y));
+
+            modm::Matrix<float, 3, 1> vel;
+            vel[0][0] = chassisVelocity.x;
+            vel[1][0] = chassisVelocity.y;
+            vel[2][0] = 0;  ///< Rotational velocity doesn't matter
+            tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
+                vel,
+                chassisYaw);
+            velocity.setX(vel[0][0]);
+            velocity.setY(vel[1][0]);
         }
 
         prevChassisAbsoluteDisplacement = chassisAbsoluteDisplacement;

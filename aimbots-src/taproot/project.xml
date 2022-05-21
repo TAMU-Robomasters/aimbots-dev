@@ -8,20 +8,14 @@
     <option name="modm:build:project.name">taproot</option>
     <option name="modm:build:openocd.cfg">openocd.cfg</option>
     <option name="modm:build:scons:include_sconstruct">False</option>
-    <option name="modm:target">stm32f427iih6</option>
+    <option name="modm:target">stm32f407igh6</option>
 
     <option name="modm:platform:uart:1:buffer.rx">256</option>
     <option name="modm:platform:uart:1:buffer.tx">256</option>
-    <option name="modm:platform:uart:2:buffer.rx">256</option>
-    <option name="modm:platform:uart:2:buffer.tx">256</option>
     <option name="modm:platform:uart:3:buffer.tx">256</option>
     <option name="modm:platform:uart:3:buffer.rx">256</option>
     <option name="modm:platform:uart:6:buffer.rx">256</option>
     <option name="modm:platform:uart:6:buffer.tx">256</option>
-    <option name="modm:platform:uart:7:buffer.tx">256</option>
-    <option name="modm:platform:uart:7:buffer.rx">256</option>
-    <option name="modm:platform:uart:8:buffer.tx">256</option>
-    <option name="modm:platform:uart:8:buffer.rx">256</option>
 
   </options>
   <modules>
@@ -48,6 +42,7 @@
     <module>modm:platform:can:2</module>
     <module>modm:platform:clock</module>
     <module>modm:platform:core</module>
+    <module>modm:platform:flash</module>
     <module>modm:platform:gpio</module>
     <module>modm:platform:heap</module>
     <module>modm:platform:random</module>
@@ -57,14 +52,9 @@
     <module>modm:platform:uart:6</module>
     <module>modm:platform:adc:1</module>
     <module>modm:platform:spi:1</module>
-    <module>modm:platform:i2c:2</module>
-    <module>modm:platform:timer:3</module>
-    <module>modm:platform:timer:12</module>
-    <module>modm:platform:spi:5</module>
-    <module>modm:platform:uart:2</module>
-    <module>modm:platform:uart:7</module>
-    <module>modm:platform:uart:8</module>
-    <module>modm:ui:display</module>
-    <module>modm:ui:menu</module>
+    <module>modm:platform:timer:1</module>
+    <module>modm:platform:timer:4</module>
+    <module>modm:platform:timer:10</module>
+    <module>modm:platform:adc:3</module>
   </modules>
 </library>

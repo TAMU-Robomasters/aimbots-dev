@@ -27,9 +27,13 @@
 #ifdef PLATFORM_HOSTED
 /// Wrap class functions that are not already virtual in this function if you wish to mock them.
 #define mockable virtual
+/// Use this instead of final if you want to mock a function when unit testing.
+#define final_mockable
 #else
 /// Wrap class functions that are not already virtual in this function if you wish to mock them.
 #define mockable
+/// Use this instead of final if you want to mock a function when unit testing.
+#define final_mockable final
 #endif
 
 #define UNUSED(var) (void)(var)

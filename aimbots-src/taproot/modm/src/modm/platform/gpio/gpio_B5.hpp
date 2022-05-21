@@ -175,8 +175,6 @@ public:
 	using Rx = GpioSignal;
 	/// Connect to I2s3
 	using Sd = GpioSignal;
-	/// Connect to Fmc
-	using Sdcke1 = GpioSignal;
 	/// Connect to I2c1
 	using Smba = GpioSignal;
 	/// Connect to Usbotghs
@@ -226,12 +224,6 @@ public:
 		static_assert(
 			(peripheral == Peripheral::I2s3),
 			"GpioB5::Sd only connects to I2s3!");
-	};
-	template< Peripheral peripheral >
-	struct Sdcke1 { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioB5::Sdcke1 only connects to Fmc!");
 	};
 	template< Peripheral peripheral >
 	struct Smba { static void connect();
@@ -344,18 +336,6 @@ struct GpioB5::Sd<Peripheral::I2s3>
 	connect()
 	{
 		setAlternateFunction(6);
-	}
-};
-template<>
-struct GpioB5::Sdcke1<Peripheral::Fmc>
-{
-	using Gpio = GpioB5;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Sdcke1;
-	static constexpr int af = 12;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(12);
 	}
 };
 template<>

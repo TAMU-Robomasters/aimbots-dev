@@ -167,10 +167,8 @@ public:
 	using D2 = GpioSignal;
 	/// Connect to Tim4
 	using Etr = GpioSignal;
-	/// Connect to Fmc
+	/// Connect to Fsmc
 	using Nbl0 = GpioSignal;
-	/// Connect to Uart8
-	using Rx = GpioSignal;
 	/// @}
 #endif
 	/// @cond
@@ -195,14 +193,8 @@ public:
 	template< Peripheral peripheral >
 	struct Nbl0 { static void connect();
 		static_assert(
-			(peripheral == Peripheral::Fmc),
-			"GpioE0::Nbl0 only connects to Fmc!");
-	};
-	template< Peripheral peripheral >
-	struct Rx { static void connect();
-		static_assert(
-			(peripheral == Peripheral::Uart8),
-			"GpioE0::Rx only connects to Uart8!");
+			(peripheral == Peripheral::Fsmc),
+			"GpioE0::Nbl0 only connects to Fsmc!");
 	};
 	/// @endcond
 private:
@@ -246,7 +238,7 @@ struct GpioE0::Etr<Peripheral::Tim4>
 	}
 };
 template<>
-struct GpioE0::Nbl0<Peripheral::Fmc>
+struct GpioE0::Nbl0<Peripheral::Fsmc>
 {
 	using Gpio = GpioE0;
 	static constexpr Gpio::Signal Signal = Gpio::Signal::Nbl0;
@@ -255,18 +247,6 @@ struct GpioE0::Nbl0<Peripheral::Fmc>
 	connect()
 	{
 		setAlternateFunction(12);
-	}
-};
-template<>
-struct GpioE0::Rx<Peripheral::Uart8>
-{
-	using Gpio = GpioE0;
-	static constexpr Gpio::Signal Signal = Gpio::Signal::Rx;
-	static constexpr int af = 8;
-	inline static void
-	connect()
-	{
-		setAlternateFunction(8);
 	}
 };
 /// @endcond
