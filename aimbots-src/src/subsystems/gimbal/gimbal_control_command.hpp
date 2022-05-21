@@ -8,7 +8,7 @@
 namespace src::Gimbal {
 
 
-enum movemnt{
+enum movementType{
     PATROL,
     CHASE,
     MANUAL
@@ -41,6 +41,7 @@ class GimbalControlCommand : public tap::control::Command {
     float userInputYawSensitivityFactor;
     float userInputPitchSensitivityFactor;
 
+    movementType movementType;
 
 #ifdef TARGET_SENTRY
     Matrix<float, 8, 2> gimbalPatrolLocations;
