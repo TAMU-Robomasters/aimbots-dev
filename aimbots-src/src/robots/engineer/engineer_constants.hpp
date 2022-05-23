@@ -46,7 +46,7 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 static constexpr float YAW_START_ANGLE = M_PI_2;
 static constexpr float PITCH_START_ANGLE = M_PI_2;
-#error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
+// #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
 static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
 
