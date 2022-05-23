@@ -20,5 +20,5 @@ for target in $targets; do
     echo ===============================================================================
     echo building $target
     echo ===============================================================================
-    /usr/bin/env python3 $(which scons) run-tests robot=$target
+    /usr/bin/env python3 $(which scons) run-tests robot=$target "$@"
 done
