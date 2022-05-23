@@ -42,10 +42,11 @@
 # 
 # 
 
-# for deploying code (doesn't auto-build on mac yet, but can be installed manually on mac)
+[[packages]]
+load = [ "stlink",]
+
 # [[packages]]
-# load = [ "segger-ozone",]
-# onlyIf = [ [ "stdenv", "isLinux",],]
+# load = [ "segger-ozone",] # Arm and Mac not supported in nix. Ozone itself doesn't run on arm at all
 
 # essential compile dependency
 [[packages]]

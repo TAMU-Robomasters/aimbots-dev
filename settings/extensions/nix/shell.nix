@@ -118,11 +118,6 @@ let
         '';
     }) else emptyOptions;
 
-
-    ozoneSnow = import (builtins.fetchurl "https://raw.githubusercontent.com/jeff-hykin/snowball/8d99e2a7d60ff2a7304a7b989bccdce5c8ce52ae/package/snowball.nix");
-    ozoneSnowball = (ozoneSnow.outputs (ozoneSnow.inputs // {}));
-    ozonePackage = ozoneSnowball.package0;
-    
 # using the above definitions
 in
     # 
