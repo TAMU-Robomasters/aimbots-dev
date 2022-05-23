@@ -43,9 +43,9 @@
 # 
 
 # for deploying code (doesn't auto-build on mac yet, but can be installed manually on mac)
-[[packages]]
-load = [ "segger-ozone",]
-onlyIf = [ [ "stdenv", "isLinux",],]
+# [[packages]]
+# load = [ "segger-ozone",]
+# onlyIf = [ [ "stdenv", "isLinux",],]
 
 # essential compile dependency
 [[packages]]
