@@ -5,14 +5,7 @@
 
 cd "$MAIN_FOLDER" 2>/dev/null
 
-targets="\
-    TARGET_STANDARD \
-    TARGET_SWERVE_STANDARD \
-    TARGET_ENGINEER \
-    TARGET_SWERVE_ENGINEER \
-    TARGET_HERO \
-    TARGET_SENTRY \
-    TARGET_AERIAL"
+targets="$(../commands/build/list_targets)"
 
 for target in $targets; do
     echo 
