@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# This script builds the hardware profile for each robot target.
+# Assumes you are in the build directory (where the SConstruct file is) 
+
+cd "$MAIN_FOLDER" 2>/dev/null
+
+_which_bot="$1"
+shift
+
+for target in $targets; do
+    echo ===============================================================================
+    echo building $target
+    echo ===============================================================================
+    /usr/bin/env python3 "$(which scons)" build robot="$_which_bot" additional-ccflags=-Werror "$@"
+done
