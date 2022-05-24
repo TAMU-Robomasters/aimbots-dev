@@ -37,7 +37,8 @@ void LimitSwitch::refresh() {
 }
 
 bool LimitSwitch::readSwitch() {
-    return drivers->digital.read(rxPin);
+    // return drivers->digital.read(rxPin);
+    return Board::DigitalInPinC5::read();
 }
 
 int state = 0;

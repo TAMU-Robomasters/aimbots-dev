@@ -119,6 +119,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
+
+    
 // drivers->mpu6500.read();
 #ifdef TARGET_SENTRY
     // drivers->cvCommunicator.updateSerial();

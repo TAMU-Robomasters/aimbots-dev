@@ -54,8 +54,8 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
-LimitSwitch limitSwitchOne(drivers(), tap::gpio::Digital::InputPin::C6, EdgeType::RISING);
-//LimitSwitch limitSwitchTwo(drivers(), tap::gpio::Digital::InputPin::C7, EdgeType::RISING);
+LimitSwitch limitSwitchLeft(drivers(), tap::gpio::Digital::InputPin::C6, EdgeType::RISING);
+LimitSwitch limitSwitchRight(drivers(), tap::gpio::Digital::InputPin::C5, EdgeType::RISING);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -95,8 +95,8 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&limitSwitchOne);
-    // drivers->commandScheduler.registerSubsystem(&limitSwitchTwo);
+    drivers->commandScheduler.registerSubsystem(&limitSwitchLeft);
+    drivers->commandScheduler.registerSubsystem(&limitSwitchRight);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -105,8 +105,8 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
-    limitSwitchOne.initialize();
-    // limitSwitchTwo.initialize();
+    limitSwitchLeft.initialize();
+    limitSwitchRight.initialize();
 }
 
 // Set default command here -----------------------------------------------
