@@ -39,6 +39,10 @@ class Pwm
 {
 public:
 
+    static constexpr uint32_t DEFAULT_TIMER1_FREQUENCY = 2000;
+
+    static constexpr uint32_t DEFAULT_TIMER8_FREQUENCY = 2000;
+
     static constexpr uint32_t DEFAULT_TIMER4_FREQUENCY = 2000;
 
     static constexpr uint32_t DEFAULT_TIMER10_FREQUENCY = 2000;
@@ -49,12 +53,19 @@ public:
 
     enum Pin
     {
+        C1,
+        C2,
+        C3,
+        C4,
+        C5,
         Buzzer,
         ImuHeater,
     };
 
     enum Timer
     {
+        TIMER1,
+        TIMER8,
         TIMER4,
         TIMER10,
     };
@@ -90,10 +101,24 @@ private:
 
     enum Ch
     {
-        Ch3 = 3,
         Ch1 = 1,
+        Ch2 = 2,
+        Ch3 = 3,
+        Ch4 = 4,
     };
 
+    /**
+     * Overflow as calculated by the modm Timer1 object in its getPeriod function.
+     * This is what the Auto Reload Register is set to and the pwm duty is scaled to
+     * a value between 0 and this value.
+     */
+    uint16_t timer1CalculatedOverflow;
+    /**
+     * Overflow as calculated by the modm Timer8 object in its getPeriod function.
+     * This is what the Auto Reload Register is set to and the pwm duty is scaled to
+     * a value between 0 and this value.
+     */
+    uint16_t timer8CalculatedOverflow;
     /**
      * Overflow as calculated by the modm Timer4 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
