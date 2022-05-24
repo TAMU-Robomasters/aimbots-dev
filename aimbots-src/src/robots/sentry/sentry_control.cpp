@@ -55,7 +55,7 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 LimitSwitch limitSwitchOne(drivers(), tap::gpio::Digital::InputPin::C6, EdgeType::RISING);
-LimitSwitch limitSwitchTwo(drivers(), tap::gpio::Digital::InputPin::C7, EdgeType::RISING);
+//LimitSwitch limitSwitchTwo(drivers(), tap::gpio::Digital::InputPin::C7, EdgeType::RISING);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);

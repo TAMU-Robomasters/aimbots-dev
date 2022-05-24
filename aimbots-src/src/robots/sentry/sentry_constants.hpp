@@ -83,16 +83,18 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
 static constexpr float YAW_MOTOR_DIRECTION = -1;
 
-//
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
-
 // CAN Bus 1
 static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
+
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
+
+static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
 // CAN Bus 2
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
