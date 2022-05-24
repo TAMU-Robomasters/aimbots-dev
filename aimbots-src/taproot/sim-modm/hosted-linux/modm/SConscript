@@ -1,0 +1,198 @@
+# Copyright (c) 2017-2019, Niklas Hauser
+#
+# This file is part of the modm project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#!/usr/bin/env python3
+
+from os.path import join, abspath, realpath, dirname
+import shutil
+Import("env")
+
+profile = ARGUMENTS.get("profile", "release")
+env["CONFIG_PROFILE"] = profile
+env["BUILDPATH"] = join(env["CONFIG_BUILD_BASE"], "scons-" + profile)
+env["BASEPATH"] = abspath("..")
+# SCons tools
+env.Append(toolpath=[
+    abspath(r"scons/site_tools"),
+])
+env.Tool("build_target")
+env.Tool("comstr")
+env.Tool("find_files")
+env.Tool("gcc_retarget")
+env.Tool("qtcreator")
+env.Tool("template")
+env.Tool("utils")
+env.Tool("utils_buildpath")
+c_compiler_name = env["CC"]
+c_compiler_path = shutil.which(c_compiler_name)
+
+if c_compiler_path is None:
+    print(f'Selected compiler "{c_compiler_name}" not found on PATH. Please add its installation directory to the PATH environment variable.')
+    exit(1)
+
+env["GCC_PATH"] = dirname(dirname(realpath(c_compiler_path)))
+
+# Toolchain configuration
+if profile == "debug":
+    env.Append(CPPDEFINES = [
+        "MODM_DEBUG_BUILD",
+    ])
+
+env["CCFLAGS"] = [
+    "-fdata-sections",
+    "-ffile-prefix-map={gccpath}=.".format(gccpath=env["GCC_PATH"]),
+    "-ffile-prefix-map={project_source_dir}=.".format(project_source_dir=env["BASEPATH"]),
+    "-ffunction-sections",
+    "-finline-limit=10000",
+    "-funsigned-bitfields",
+    "-funsigned-char",
+    "-fwrapv",
+    "-g3",
+    "-gdwarf-3",
+    "-W",
+    "-Wall",
+    "-Wduplicated-cond",
+    "-Werror=format",
+    "-Werror=maybe-uninitialized",
+    "-Werror=overflow",
+    "-Werror=sign-compare",
+    "-Wextra",
+    "-Wlogical-op",
+    "-Wno-redundant-decls",
+    "-Wpointer-arith",
+    "-Wundef",
+]
+if profile == "release":
+    env.Append(CCFLAGS = [
+        "-Os",
+    ])
+if profile == "debug":
+    env.Append(CCFLAGS = [
+        "-fno-move-loop-invariants",
+        "-fno-split-wide-types",
+        "-fno-tree-loop-optimize",
+        "-Og",
+    ])
+
+env["CFLAGS"] = [
+    "-std=gnu11",
+    "-Wbad-function-cast",
+    "-Wimplicit",
+    "-Wredundant-decls",
+    "-Wstrict-prototypes",
+]
+
+env["CXXFLAGS"] = [
+    "-fstrict-enums",
+    "-std=c++20",
+    "-Wno-volatile",
+    "-Woverloaded-virtual",
+]
+
+env["ASFLAGS"] = [
+    "-g3",
+    "-gdwarf-3",
+]
+
+env["LINKFLAGS"] = [
+    "-Wl,--fatal-warnings",
+    "-Wl,--gc-sections",
+    "-Wl,--relax",
+    "-Wl,-Map,{target_base}.map,--cref".format(target_base="${TARGET.base}"),
+]
+
+env["ARCHFLAGS"] = [
+]
+
+
+# ARCHFLAGS must be known for compiling *and* linking
+env.Append(CCFLAGS="$ARCHFLAGS")
+env.Append(ASFLAGS="$ARCHFLAGS")
+env.Append(LINKFLAGS="$ARCHFLAGS")
+
+# Search all linked static libraries multiple times
+env["_LIBFLAGS"] = "-Wl,--start-group " + env["_LIBFLAGS"] + " -Wl,--end-group"
+# Device configuration
+env["CONFIG_DEVICE_NAME"] = "hosted-linux"
+# Programming configuration
+# XPCC generator tool path
+env["XPCC_SYSTEM_DESIGN"] = "$BASEPATH/modm/tools/xpcc_generator"
+env.AppendUnique(CPPPATH=[
+    abspath(r"ext"),
+    abspath(r"src"),
+])
+
+files = [
+    env.File(r"src/modm/architecture/driver/atomic/flag.cpp"),
+    env.File(r"src/modm/architecture/interface/can.cpp"),
+    env.File(r"src/modm/communication/xpcc/backend/can/connector.cpp"),
+    env.File(r"src/modm/communication/xpcc/backend/header.cpp"),
+    env.File(r"src/modm/communication/xpcc/communicator.cpp"),
+    env.File(r"src/modm/communication/xpcc/dispatcher.cpp"),
+    env.File(r"src/modm/communication/xpcc/postman/dynamic_postman/dynamic_postman.cpp"),
+    env.File(r"src/modm/communication/xpcc/postman/postman.cpp"),
+    env.File(r"src/modm/container/smart_pointer.cpp"),
+    env.File(r"src/modm/debug/logger/hosted/default_style.cpp"),
+    env.File(r"src/modm/driver/io/terminal.cpp"),
+    env.File(r"src/modm/io/iostream.cpp"),
+    env.File(r"src/modm/io/iostream_printf.cpp"),
+    env.File(r"src/modm/math/geometry/angle.cpp"),
+    env.File(r"src/modm/math/geometry/vector2.cpp"),
+    env.File(r"src/modm/math/utils/bit_operation.cpp"),
+    env.File(r"src/modm/math/utils/pc/operator.cpp"),
+    env.File(r"src/modm/platform/core/assert.cpp"),
+    env.File(r"src/modm/platform/core/clock.cpp"),
+    env.File(r"src/modm/platform/core/memory.cpp"),
+    env.File(r"src/modm/ui/display/character_display.cpp"),
+    env.File(r"src/modm/ui/display/font/all_caps_3x5.cpp"),
+    env.File(r"src/modm/ui/display/font/arcade_classic.cpp"),
+    env.File(r"src/modm/ui/display/font/assertion.cpp"),
+    env.File(r"src/modm/ui/display/font/fixed_width_5x8.cpp"),
+    env.File(r"src/modm/ui/display/font/matrix_8x8.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_14x32.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_40x56.cpp"),
+    env.File(r"src/modm/ui/display/font/numbers_46x64.cpp"),
+    env.File(r"src/modm/ui/display/font/scripto_narrow.cpp"),
+    env.File(r"src/modm/ui/display/font/ubuntu_36.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display_fill.cpp"),
+    env.File(r"src/modm/ui/display/graphic_display_text.cpp"),
+    env.File(r"src/modm/ui/display/image/home_16x16.cpp"),
+    env.File(r"src/modm/ui/display/image/logo_eurobot_90x64.cpp"),
+    env.File(r"src/modm/ui/display/image/logo_rca_90x64.cpp"),
+    env.File(r"src/modm/ui/display/image/skull_64x64.cpp"),
+    env.File(r"src/modm/ui/display/virtual_graphic_display.cpp"),
+    env.File(r"src/modm/ui/menu/choice_menu_entry.cpp"),
+    env.File(r"src/modm/ui/menu/scrollable_text.cpp"),
+    env.File(r"src/modm/utils/dummy.cpp"),
+]
+library = env.StaticLibrary(target="modm", source=files)
+
+env.AppendUnique(LIBS=[
+    library,
+])
+env.AppendUnique(LIBPATH=[
+    abspath(str(library[0].get_dir())),
+])
+for flags in ["CCFLAGS", "CFLAGS", "CXXFLAGS", "ASFLAGS", "ARCHFLAGS", "LINKFLAGS"]:
+	flags_str = ARGUMENTS.get(flags)
+	if flags_str is not None:
+		flags_list = flags_str.split(",")
+		for flag in flags_list:
+			if len(flag) > 1 and flag[0] == "~":
+				try:
+					env[flags].remove(flag[1:])
+				except ValueError:
+					print("'" + flag[1:] + "' does not exist in " + flags +
+						" and therefore can not be removed.")
+					print("Info: " + flags + ": " + ", ".join(env[flags]))
+					exit(1)
+			else:
+				env[flags].append(flag)
+
+Return("library")
