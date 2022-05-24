@@ -21,15 +21,13 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     mockable float setTargetRPM(float rpm);
 
-    tap::algorithms::SmoothPid feederVelPID;
+    SmoothPID feederVelPID;
 
 #ifndef ENV_UNIT_TESTS
    private:
 #else
    public:
 #endif
-    static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-
     float targetRPM;
     float desiredOutput;
     DJIMotor feederMotor;

@@ -11,7 +11,10 @@ void RunFeederCommand::initialize() {
     feeder->setTargetRPM(speed);
 }
 
+int runFeeder = 0;
+
 void RunFeederCommand::execute() {
+    runFeeder = 1;
     // drivers->leds.set(tap::gpio::Leds::A, true);
     // drivers->leds.set(tap::gpio::Leds::B, false);
     // drivers->leds.set(tap::gpio::Leds::C, true);
@@ -20,7 +23,7 @@ void RunFeederCommand::execute() {
     // drivers->leds.set(tap::gpio::Leds::F, false);
     // drivers->leds.set(tap::gpio::Leds::G, true);
     // drivers->leds.set(tap::gpio::Leds::H, false);
-    speed = 3000.0f * FEEDER_MOTOR_DIRECTION;
+    speed = FEEDER_DEFAULT_SPEED;
     feeder->setTargetRPM(speed);
 }
 

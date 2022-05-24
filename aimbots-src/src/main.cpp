@@ -86,7 +86,7 @@ int main() {
             // PROFILE(drivers->profiler, drivers->mpu6500.periodicIMUUpdate, ());
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
         modm::delay_us(10);
     }
@@ -103,9 +103,12 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->remote.initialize();
     // drivers->mpu6500.init();
     drivers->refSerial.initialize();
-    drivers->terminalSerial.initialize();
+    // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
+#ifdef TARGET_SENTRY
+    // drivers->cvCommunicator.initialize();
+#endif
 }
 
 static void updateIo(src::Drivers *drivers) {
@@ -116,5 +119,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    // drivers->mpu6500.read();
+// drivers->mpu6500.read();
+#ifdef TARGET_SENTRY
+    // drivers->cvCommunicator.updateSerial();
+#endif
 }

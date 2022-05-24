@@ -21,9 +21,9 @@ static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 2.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -35,11 +35,11 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 29.0f,
-    .ki = 0.0f,
+    .kp = 20.0f,
+    .ki = 0.01f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -80,7 +80,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 // Used to reverse Feeder Motor direction, should only be 1 or -1
-static constexpr float FEEDER_MOTOR_DIRECTION = -1;
+static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
 static constexpr float YAW_MOTOR_DIRECTION = -1;
 
 //
@@ -104,6 +104,8 @@ static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = false;
+
+static constexpr bool FEEDER_DIRECTION = true;
 
 // Mechanical chassis constants, all in m
 /**
