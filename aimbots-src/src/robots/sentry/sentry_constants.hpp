@@ -79,6 +79,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr float FLYWHEEL_DEFAULT_RPM = 7500.0f;
+
 // Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
 static constexpr float YAW_MOTOR_DIRECTION = -1;
@@ -146,7 +148,7 @@ static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 50.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 35.0f,
     .maxICumulative = 10.0f,
     .maxOutput = 30000.0f,
     .tQDerivativeKalman = 1.0f,
