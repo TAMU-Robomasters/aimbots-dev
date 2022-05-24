@@ -41,6 +41,8 @@ namespace src::vision {
      * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a JetsonMessage from our received bytes.
      */
     void JetsonCommunicator::updateSerial() {
+        uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+
         switch (currentSerialState) {
             case JetsonCommunicatorSerialState::SearchingForMagic: {
                 size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
@@ -78,8 +80,8 @@ namespace src::vision {
 
                     memcpy(displayBuffer, rawSerialBuffer, sizeof(displayBuffer));
 
-                    msBetweenLastMessage = tap::arch::clock::getTimeMilliseconds() - lastMsgTime;
-                    lastMsgTime = tap::arch::clock::getTimeMilliseconds();
+                    msBetweenLastMessage = currTime - lastMsgTime;
+                    lastMsgTime = currTime;
 
                     yawOffsetDisplay = lastMessage.targetYawOffset;
                     pitchOffsetDisplay = lastMessage.targetPitchOffset;
@@ -89,9 +91,21 @@ namespace src::vision {
                     // WRITE(buffer, sizeof(decltype(JETSON_MESSAGE_MAGIC)));
                     currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
                     nextByteIndex = 0;
+
+                    yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
+                    pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
                 }
                 break;
             }
         }
+    }
+
+    Matrix<float, 2, 1> const& JetsonCommunicator::getVisionOffsetAngles() {
+        uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+        float yawOffsetPredicted = yawOffsetPredictor.getInterpolatedValue(currTime);
+        float pitchOffsetPredicted = pitchOffsetPredictor.getInterpolatedValue(currTime);
+        visionOffsetAngles[0][0] = yawOffsetPredicted;
+        visionOffsetAngles[1][0] = pitchOffsetPredicted;
+        return visionOffsetAngles;
     }
 }

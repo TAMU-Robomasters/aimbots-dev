@@ -7,47 +7,42 @@
 
 namespace src::Gimbal {
 
+    enum gimbalCommandMode {
+        PATROL,
+        CHASE,
+        MANUAL
+    };
 
-enum movementType{
-    PATROL,
-    CHASE,
-    MANUAL
-};
+    class GimbalControlCommand : public tap::control::Command {
+       public:
+        GimbalControlCommand(src::Drivers*,
+                             GimbalSubsystem*,
+                             GimbalChassisRelativeController*,
+                             float inputYawSensitivity,
+                             float inputPitchSensitiity);
 
+        char const* getName() const override { return "Gimbal Control Command"; }
 
-class GimbalControlCommand : public tap::control::Command {
-   public:
-    GimbalControlCommand(src::Drivers*,
-                         GimbalSubsystem*,
-                         GimbalChassisRelativeController*,
-                         float inputYawSensitivity,
-                         float inputPitchSensitiity);
+        void initialize() override;
+        void execute() override;
 
-    char const* getName() const override { return "Gimbal Control Command"; }
+        bool isReady() override;
+        bool isFinished() const override;
+        void end(bool interrupted) override;
 
-    void initialize() override;
-    void execute() override;
+       private:
+        src::Drivers* drivers;
 
-    bool isReady() override;
-    bool isFinished() const override;
-    void end(bool interrupted) override;
+        GimbalSubsystem* gimbal;
+        GimbalChassisRelativeController* controller;
 
-   private:
-    src::Drivers* drivers;
+        float userInputYawSensitivityFactor;
+        float userInputPitchSensitivityFactor;
 
-    GimbalSubsystem* gimbal;
-    GimbalChassisRelativeController* controller;
+        gimbalCommandMode currMode;
 
-    float userInputYawSensitivityFactor;
-    float userInputPitchSensitivityFactor;
-
-    movementType movementType;
-
-#ifdef TARGET_SENTRY
-    Matrix<float, 8, 2> gimbalPatrolLocations;
-    int patrolLocationIndex = 0;
-#endif
-
-};
+        Matrix<float, 8, 2> gimbalPatrolLocations;
+        int patrolLocationIndex = 0;
+    };
 
 }  // namespace src::Gimbal

@@ -79,7 +79,6 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// Used to reverse Feeder Motor direction, should only be 1 or -1
 static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
 static constexpr float YAW_MOTOR_DIRECTION = -1;
 

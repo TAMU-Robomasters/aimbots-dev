@@ -7,6 +7,8 @@
 #include <vision/jetson_protocol.hpp>
 #include <vision/vision_buffer.hpp>
 
+#include "tap/algorithms/linear_interpolation_predictor.hpp"
+
 namespace src {
 class Drivers;
 }
@@ -31,6 +33,8 @@ namespace src::vision {
 
         inline JetsonMessage const& lastValidMessage() const { return lastMessage; }
 
+        Matrix<float, 2, 1> const& getVisionOffsetAngles();
+
        private:
         src::Drivers* drivers;
 
@@ -42,6 +46,11 @@ namespace src::vision {
         size_t nextByteIndex;
 
         tap::arch::MilliTimeout jetsonOfflineTimeout;
+
+        tap::algorithms::LinearInterpolationPredictor yawOffsetPredictor;
+        tap::algorithms::LinearInterpolationPredictor pitchOffsetPredictor;
+
+        Matrix<float, 2, 1> visionOffsetAngles;
 
         static constexpr uint32_t JETSON_BAUD_RATE = 115200;
         static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 5000;
