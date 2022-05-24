@@ -80,7 +80,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
-static constexpr float YAW_MOTOR_DIRECTION = -1;
+static constexpr float YAW_INPUT_DIRECTION = -1;
 
 // CAN Bus 1
 static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR3;

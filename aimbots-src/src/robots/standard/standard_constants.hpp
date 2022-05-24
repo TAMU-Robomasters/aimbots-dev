@@ -21,7 +21,7 @@ static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr float FEEDER_MOTOR_DIRECTION = 1;
-static constexpr float YAW_MOTOR_DIRECTION = 1;
+static constexpr float YAW_INPUT_DIRECTION = 1;
 
 /**
  * @brief Chassis Velocity PID constants
