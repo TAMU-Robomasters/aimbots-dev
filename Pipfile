@@ -12,4 +12,4 @@ pywin32 = { version = "*", markers = "sys_platform == 'win32'" }
 [dev-packages]
 
 [requires]
-python_version = "3"
+python_version = "3.9"
