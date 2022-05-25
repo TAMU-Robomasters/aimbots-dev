@@ -19,7 +19,8 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       userInputYawSensitivityFactor(inputYawSensitivity),
-      userInputPitchSensitivityFactor(inputPitchSensitivity) {
+      userInputPitchSensitivityFactor(inputPitchSensitivity),
+      currMode(MANUAL) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
@@ -32,7 +33,7 @@ void GimbalControlCommand::execute() {
     float targetYawAngle = 0.0f;
     float targetPitchAngle = 0.0f;
 
-    Matrix<float, 2, 1> visionOffsetAngles;
+    Matrix<float, 2, 1> visionOffsetAngles = Matrix<float, 2, 1>::zeroMatrix();
     src::vision::CVState cvState;
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
@@ -44,26 +45,28 @@ void GimbalControlCommand::execute() {
         if (cvState == src::vision::CV_STATE_FOUND) {
             currMode = CHASE;
         } else {
-            currMode = PATROL;
+            currMode = MANUAL;
         }
+    } else {
+        currMode = MANUAL;
     }
 
 #ifdef TARGET_SENTRY
     switch (currMode) {
         case PATROL:
             // TODO: need to update it so that it runs of a matrix of target positions for sentry so that it can go around and patrol it.
-            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) - gimbalPatrolLocations[patrolLocationIndex][0];
-            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) - gimbalPatrolLocations[patrolLocationIndex][1];
+            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Radians) - gimbalPatrolLocations[patrolLocationIndex][0];
+            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Radians) - gimbalPatrolLocations[patrolLocationIndex][1];
             break;
         case CHASE:
             // TODO: needs to be updated so that it is getting from the CV.
-            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) + visionOffsetAngles[0][0];
-            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) + visionOffsetAngles[1][0];
+            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Radians) + visionOffsetAngles[0][0];
+            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Radians) + visionOffsetAngles[1][0];
             break;
         case MANUAL:
-            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
+            targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Radians) -
                              (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL)) * YAW_INPUT_DIRECTION;
-            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
+            targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Radians) -
                                (userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL)) * getPitchMotorDirection();
             break;
     }
@@ -81,8 +84,8 @@ void GimbalControlCommand::execute() {
     }
 #endif
 
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-    controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+    // controller->runYawController(AngleUnit::Radians, targetYawAngle);
+    // controller->runPitchController(AngleUnit::Radians, targetPitchAngle);
 
     // insert code that updates if between CHASE and PATROL/MANUAL based of cv input.
 }

@@ -20,12 +20,12 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
-static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 50.0f,
     .ki = 0.0f,
-    .kd = 2.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
+    .maxOutput = 30000.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -130,6 +130,25 @@ static constexpr float PITCH_START_ANGLE = 220.0f;
 static constexpr float PITCH_HARDSTOP_LOW = 270.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 155.0f;
 
+static constexpr float YAW_FRONT_ANGLE = 61.0f;
+static constexpr float PITCH_HORIZON_ANGLE = 155.0f;
+
+// YAW RELATIVE TO FRONT OF ROBOT, PITCH WILL
+// clang-format off
+static constexpr float gimbal_patrol_location_array[24] = {
+    0.0f, 1000.0f, // yaw angle, time spent at this angle
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+    0.0f, 1000.0f,
+};
+// clang-format on
+
+static Matrix<float, 8, 3> YAW_PATROL_LOCATIONS(gimbal_patrol_location_array);
+
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
  */
@@ -141,20 +160,6 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
-
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 50.0f,
-    .ki = 0.0f,
-    .kd = 0.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
 
 /**
  * @brief Power constants for chassis
