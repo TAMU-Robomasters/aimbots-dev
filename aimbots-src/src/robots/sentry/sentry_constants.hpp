@@ -20,6 +20,20 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 18.0f,
+    .ki = 0.0f,
+    .kd = 2.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 50.0f,
     .ki = 0.0f,
@@ -133,9 +147,9 @@ static constexpr float PITCH_HARDSTOP_HIGH = 155.0f;
 static constexpr float YAW_FRONT_ANGLE = 61.0f;
 static constexpr float PITCH_HORIZON_ANGLE = 155.0f;
 
-// YAW RELATIVE TO FRONT OF ROBOT, PITCH WILL
+// YAW RELATIVE TO FRONT OF ROBOT, PITCH FOLLOWS SIN WAVE
 // clang-format off
-static constexpr float gimbal_patrol_location_array[24] = {
+static constexpr float yaw_patrol_location_array[16] = {
     0.0f, 1000.0f, // yaw angle, time spent at this angle
     0.0f, 1000.0f,
     0.0f, 1000.0f,
@@ -147,7 +161,12 @@ static constexpr float gimbal_patrol_location_array[24] = {
 };
 // clang-format on
 
-static Matrix<float, 8, 3> YAW_PATROL_LOCATIONS(gimbal_patrol_location_array);
+static Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array);
+
+// PITCH PATROL FUNCTION CONSTANTS
+static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
+static constexpr float PITCH_PATROL_FREQUENCY = 2.0f * M_PI;
+static constexpr float PITCH_PATROL_OFFSET = -20.0f;  // degrees offset from horizon
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
