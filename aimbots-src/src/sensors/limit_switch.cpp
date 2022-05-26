@@ -1,18 +1,18 @@
-#include "subsystems/sensors/limit_switch.hpp"
+#include "sensors/limit_switch.hpp"
 
-LimitSwitch::LimitSwitch(src::Drivers* drivers, InputPins rxPin, EdgeType edge)
-    : Subsystem(drivers),
-    rxPin(rxPin),
+LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge)
+    : rxPin(rxPin),
     counter(0),
     edge(edge) {};
 
 void LimitSwitch::initialize() { //awesome
-    drivers->digital.configureInputPullMode(rxPin, modm::platform::Gpio::InputType::PullDown);
+    C6::configure(modm::platform::Gpio::InputType::PullDown);
+    C7::configure(modm::platform::Gpio::InputType::PullDown);
 }
 
 int counter_debug = 0;
-bool debug_million = false;
-LimitSwitchState switch_debug = static_cast<LimitSwitchState>(1);
+bool debug_C7_direct = false;
+LimitSwitchState debug_C6_direct = static_cast<LimitSwitchState>(1);
 void LimitSwitch::refresh() {
     updateSwitch();
     if (edge == RISING) { // == EdgeType::RISING == 1
@@ -24,21 +24,17 @@ void LimitSwitch::refresh() {
     }
     //debug
     counter_debug = counter;
-    switch_debug = static_cast<LimitSwitchState>(readSwitch());
-    debug_million = readSwitch();
+    // switch_debug = static_cast<LimitSwitchState>(readSwitch());
+    debug_C7_direct = readSwitch();
 //   counter += (edge ? limitSwitch.isRising() ? 1 : 0 : limitSwitch.isFalling() ? 1 : 0);
 //uncomment this line ^^ to run the code faster
-    /*
-    if (counter==mod) {
-        //DO event
-        counter =0;
-    }
-    */
 }
 
 bool LimitSwitch::readSwitch() {
     // return drivers->digital.read(rxPin);
-    return Board::DigitalInPinC5::read();
+    debug_C6_direct = static_cast<LimitSwitchState>(Board::DigitalInPinC6::read());
+    if (rxPin=="C6") return C6::read();
+    else if(rxPin=="C7") return C7::read();
 }
 
 int state = 0;
@@ -58,4 +54,8 @@ bool LimitSwitch::isFalling() const {
 
 bool LimitSwitch::isStateChanged() const {
     return (currSwitchState != prevSwitchState);
+}
+
+int LimitSwitch::getCurrentCount() const {
+    return counter;
 }

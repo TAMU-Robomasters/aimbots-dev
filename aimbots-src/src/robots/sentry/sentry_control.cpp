@@ -17,6 +17,7 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/burst_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -29,7 +30,6 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
-#include "subsystems/sensors/limit_switch.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -54,8 +54,6 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
-LimitSwitch limitSwitchLeft(drivers(), tap::gpio::Digital::InputPin::C6, EdgeType::RISING);
-LimitSwitch limitSwitchRight(drivers(), tap::gpio::Digital::InputPin::C5, EdgeType::RISING);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -65,6 +63,7 @@ ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, 0.3f, 0.3f);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
+BurstFeederCommand burstFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 // BrakeShooterCommand brakeStopShooterCommand(drivers(), &shooter);
@@ -86,7 +85,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand}, //probably best place to test burst feeder
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -95,8 +94,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&limitSwitchLeft);
-    drivers->commandScheduler.registerSubsystem(&limitSwitchRight);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -105,8 +102,6 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
-    limitSwitchLeft.initialize();
-    limitSwitchRight.initialize();
 }
 
 // Set default command here -----------------------------------------------
