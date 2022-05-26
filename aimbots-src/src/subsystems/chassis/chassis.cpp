@@ -7,77 +7,78 @@
 
 using namespace tap::algorithms;
 
-namespace src::Chassis {
+namespace src::Chassis{
 
-ChassisSubsystem::ChassisSubsystem(
-    tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
+    ChassisSubsystem::ChassisSubsystem(
+        tap::Drivers * drivers) : ChassisSubsystemInterface(drivers),
 #ifdef TARGET_SENTRY
-                             railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
-                             railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+    railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
+    railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 #else
-                             leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
-                             leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
-                             rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
-                             rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
+    leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
+    leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
+    rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
+    rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
 
-                             leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+    leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+    leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+    rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+    rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 
 #ifdef SWERVE
-                             leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
-                             leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
-                             rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
-                             rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
+    leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
+    leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
+    rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
+    rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
 #endif
 #endif
-                             targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
-//
-{
+    targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+    desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+    motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+    velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+    wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix()),
+    robotPositionFieldRelative(ROBOT_STARTING_LOCATION)
+    //
+    {
 #ifdef TARGET_SENTRY
-    motors[RAIL][0] = &railWheel;
-    velocityPIDs[RAIL][0] = &railWheelVelPID;
+        motors[RAIL][0] = &railWheel;
+velocityPIDs[RAIL][0] = &railWheelVelPID;
 #else
-    motors[LB][0] = &leftBackWheel;
-    motors[LF][0] = &leftFrontWheel;
-    motors[RF][0] = &rightFrontWheel;
-    motors[RB][0] = &rightBackWheel;
+        motors[LB][0] = &leftBackWheel;
+motors[LF][0] = &leftFrontWheel;
+motors[RF][0] = &rightFrontWheel;
+motors[RB][0] = &rightBackWheel;
 
-    velocityPIDs[LB][0] = &leftBackWheelVelPID;
-    velocityPIDs[LF][0] = &leftFrontWheelVelPID;
-    velocityPIDs[RF][0] = &rightFrontWheelVelPID;
-    velocityPIDs[RB][0] = &rightBackWheelVelPID;
+velocityPIDs[LB][0] = &leftBackWheelVelPID;
+velocityPIDs[LF][0] = &leftFrontWheelVelPID;
+velocityPIDs[RF][0] = &rightFrontWheelVelPID;
+velocityPIDs[RB][0] = &rightBackWheelVelPID;
 
-    wheelLocationMatrix[0][0] = -1.0f;
-    wheelLocationMatrix[0][1] = 1.0f;
-    wheelLocationMatrix[0][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
-    wheelLocationMatrix[1][0] = 1.0f;
-    wheelLocationMatrix[1][1] = 1.0f;
-    wheelLocationMatrix[1][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
-    wheelLocationMatrix[2][0] = -1.0f;
-    wheelLocationMatrix[2][1] = 1.0f;
-    wheelLocationMatrix[2][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
-    wheelLocationMatrix[3][0] = 1.0f;
-    wheelLocationMatrix[3][1] = 1.0f;
-    wheelLocationMatrix[3][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
+wheelLocationMatrix[0][0] = -1.0f;
+wheelLocationMatrix[0][1] = 1.0f;
+wheelLocationMatrix[0][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
+wheelLocationMatrix[1][0] = 1.0f;
+wheelLocationMatrix[1][1] = 1.0f;
+wheelLocationMatrix[1][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
+wheelLocationMatrix[2][0] = -1.0f;
+wheelLocationMatrix[2][1] = 1.0f;
+wheelLocationMatrix[2][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
+wheelLocationMatrix[3][0] = 1.0f;
+wheelLocationMatrix[3][1] = 1.0f;
+wheelLocationMatrix[3][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
 
 // NON SWERVE ROBOTS
 #ifdef SWERVE
-    // SWERVE ROBOTS
-    motors[LB][1] = &leftBackYaw;
-    motors[LF][1] = &leftFrontYaw;
-    motors[RF][1] = &rightFrontYaw;
-    motors[RB][1] = &rightBackYaw;
+// SWERVE ROBOTS
+motors[LB][1] = &leftBackYaw;
+motors[LF][1] = &leftFrontYaw;
+motors[RF][1] = &rightFrontYaw;
+motors[RB][1] = &rightBackYaw;
 
-    velocityPIDs[LB][1] = &leftBackYawPosPID;
-    velocityPIDs[LF][1] = &leftFrontYawPosPID;
-    velocityPIDs[RF][1] = &rightFrontYawPosPID;
-    velocityPIDs[RB][1] = &rightBackYawPosPID;
+velocityPIDs[LB][1] = &leftBackYawPosPID;
+velocityPIDs[LF][1] = &leftFrontYawPosPID;
+velocityPIDs[RF][1] = &rightFrontYawPosPID;
+velocityPIDs[RB][1] = &rightBackYawPosPID;
 #endif
 #endif
 }
@@ -178,4 +179,16 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
     return rTranslationalGain;
 }
 
-};  // namespace src::Chassis
+void ChassisSubsystem::updateFieldRelativePosition() {
+// need to create transformation vector based on sensor inputs to apply to the position matrix
+#ifdef TARGET_SENTRY
+// first, get rail relative position
+
+#endif
+}
+
+Matrix<float, 3, 1> ChassisSubsystem::getFieldRelativePosition() {
+    return robotPositionFieldRelative;
+}
+}
+;  // namespace src::Chassis

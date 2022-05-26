@@ -126,7 +126,13 @@ static constexpr bool FEEDER_DIRECTION = true;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.076;
+static constexpr float WHEEL_RADIUS = 0.0206375f;
+
+static constexpr float robot_starting_location_array[3] = {0.0f, 0.0f, 0.0f};
+// x, y, z in meters
+// x is along length of field, y is along width of field, z is vertical
+
+static const Matrix<float, 3, 1> ROBOT_STARTING_LOCATION(robot_starting_location_array);
 
 static constexpr float WHEELBASE_WIDTH = 0.366f;
 
@@ -135,7 +141,7 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
+static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
 // Values specific for Sentry hardware setup
 static constexpr float YAW_START_ANGLE = 61.0f;
@@ -161,7 +167,7 @@ static constexpr float yaw_patrol_location_array[16] = {
 };
 // clang-format on
 
-static Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array);
+static const Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array);
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
