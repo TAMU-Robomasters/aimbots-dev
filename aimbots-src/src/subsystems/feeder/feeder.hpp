@@ -23,8 +23,10 @@ class FeederSubsystem : public tap::control::Subsystem {
     mockable float setTargetRPM(float rpm);
 
     int getTotalLimitCount() const;
-    int getLeftLimitCount() const;
-    int getRightLimitCount() const;
+
+    //I love setters and getters
+    void setBurstLength(int newBurstLength);
+    int getBurstLength() const;
 
     SmoothPID feederVelPID;
 
@@ -36,8 +38,12 @@ class FeederSubsystem : public tap::control::Subsystem {
     float targetRPM;
     float desiredOutput;
     DJIMotor feederMotor;
-    
-    LimitSwitch limitSwitchLeft, limitSwitchRight;
+
+    int burstLength;
+    LimitSwitch limitSwitchLeft; //for single-barreled robots
+    #ifdef TARGET_SENTRY
+    LimitSwitch limitSwitchRight; //for double-barreled robots
+    #endif
 
     // commands
 };

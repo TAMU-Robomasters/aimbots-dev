@@ -27,9 +27,7 @@ class BurstFeederCommand : public TapCommand {
     FeederSubsystem* feeder;
     float speed;
 
-    int leftLimitCount;
-    int rightLimitCount;
-    int totalLimitCount;
+    int initialTotalBallCount;
 };
 
 }  // namespace src::Feeder

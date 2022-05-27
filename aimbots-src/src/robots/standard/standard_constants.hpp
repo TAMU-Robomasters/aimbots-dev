@@ -84,6 +84,8 @@ static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 
+static constexpr int DEFAULT_BURST_LENGTH = 5; //balls
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
