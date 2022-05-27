@@ -16,7 +16,7 @@ struct JetsonMessage {
     CVState cvState;
 } __attribute__((packed));
 
-static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
+static_assert(sizeof(JetsonMessage) == 17, "JetsonMessage is not the correct size");
 
-static_assert(JETSON_MESSAGE_SIZE == 17, "JetsonMessage is not the correct size");
+static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::vision

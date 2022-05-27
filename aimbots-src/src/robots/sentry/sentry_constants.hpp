@@ -151,7 +151,7 @@ static constexpr float PITCH_HARDSTOP_LOW = 270.0f;
 static constexpr float PITCH_HARDSTOP_HIGH = 155.0f;
 
 static constexpr float YAW_FRONT_ANGLE = 61.0f;
-static constexpr float PITCH_HORIZON_ANGLE = 155.0f;
+static constexpr float PITCH_HORIZON_ANGLE = 220.0f;
 
 // YAW RELATIVE TO FRONT OF ROBOT, PITCH FOLLOWS SIN WAVE
 // clang-format off
@@ -171,8 +171,8 @@ static const Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array)
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
-static constexpr float PITCH_PATROL_FREQUENCY = 2.0f * M_PI;
-static constexpr float PITCH_PATROL_OFFSET = -20.0f;  // degrees offset from horizon
+static constexpr float PITCH_PATROL_FREQUENCY = 4.0f * M_PI;
+static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

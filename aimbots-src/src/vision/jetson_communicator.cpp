@@ -54,8 +54,11 @@ void JetsonCommunicator::updateSerial() {
             // little endian moment
             // The the first byte in the message will be the LSB of the magic number,
             // so we only have to and it with 0xff, rather than shifting it right first.
-            if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff))
+            if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
                 nextByteIndex++;
+            } else {
+                nextByteIndex = 0;
+            }
 
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
                 // We know that the magic is right, so we can just change the state. If the
