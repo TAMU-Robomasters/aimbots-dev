@@ -10,6 +10,9 @@
 #include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/serial/remote.hpp"
 
+#include "modm/math/matrix.hpp"
+#include "tap/control/chassis/power_limiter.hpp"
+
 // #include <bit_cast>
 
 #include "tap/algorithms/math_user_utils.hpp"
@@ -21,9 +24,6 @@ using DJIMotor = tap::mock::DjiMotorMock;
 #include "tap/motor/dji_motor.hpp"
 using DJIMotor = tap::motor::DjiMotor;
 #endif
-
-#include "modm/math/matrix.hpp"
-#include "tap/control/chassis/power_limiter.hpp"
 
 static constexpr float M3508_MAX_OUTPUT = 30000.0f;
 static constexpr float M2006_MAX_OUTPUT = 10000.0f;
@@ -49,6 +49,9 @@ using Remote = tap::communication::serial::Remote;
 // using clock = tap::arch::clock;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
+
+// takes radians, rotates clockwise
+Matrix<float, 3, 3> xy_rotation_matrix(float angle);
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
