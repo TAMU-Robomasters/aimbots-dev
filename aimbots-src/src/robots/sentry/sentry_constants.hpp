@@ -128,11 +128,10 @@ static constexpr bool FEEDER_DIRECTION = true;
  */
 static constexpr float WHEEL_RADIUS = 0.0206375f;
 
-static constexpr float robot_starting_location_array[3] = {0.0f, 0.0f, 0.0f};
+static constexpr float robot_starting_location_array[3] = {-4.375f, -0.960f, 0.0f};
 // x, y, z in meters
 // x is along length of field, y is along width of field, z is vertical
-
-static const Matrix<float, 3, 1> ROBOT_STARTING_LOCATION(robot_starting_location_array);
+static const Matrix<float, 1, 3> ROBOT_STARTING_LOCATION(robot_starting_location_array);
 
 static constexpr float WHEELBASE_WIDTH = 0.366f;
 
@@ -166,12 +165,11 @@ static constexpr float yaw_patrol_location_array[16] = {
     0.0f, 1000.0f,
 };
 // clang-format on
-
 static const Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array);
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
-static constexpr float PITCH_PATROL_FREQUENCY = 4.0f * M_PI;
+static constexpr float PITCH_PATROL_FREQUENCY = 1.0f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 
 /**
