@@ -11,17 +11,19 @@ FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
       burstLength(DEFAULT_BURST_LENGTH),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitchLeft(static_cast<std::string>("C6"), EdgeType::RISING)
-      #ifdef TARGET_SENTRY
-      ,limitSwitchRight(static_cast<std::string>("C7"), EdgeType::RISING) 
-      #endif
-      {}
+#ifdef TARGET_SENTRY
+      ,
+      limitSwitchRight(static_cast<std::string>("C7"), EdgeType::RISING)
+#endif
+{
+}
 
 void FeederSubsystem::initialize() {
     feederMotor.initialize();
     limitSwitchLeft.initialize();
-    #ifdef TARGET_SENTRY
+#ifdef TARGET_SENTRY
     limitSwitchRight.initialize();
-    #endif
+#endif
 }
 
 // refreshes the velocity PID given the target RPM and the current RPM
@@ -29,9 +31,9 @@ void FeederSubsystem::refresh() {
     updateMotorVelocityPID();
     setDesiredOutput();
     limitSwitchLeft.refresh();
-    #ifdef TARGET_SENTRY
+#ifdef TARGET_SENTRY
     limitSwitchRight.refresh();
-    #endif
+#endif
 }
 
 float feederPidDisplay = 0;
@@ -56,11 +58,11 @@ void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity
     feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
 }
 
-int FeederSubsystem::getTotalLimitCount() const{
+int FeederSubsystem::getTotalLimitCount() const {
     return limitSwitchLeft.getCurrentCount();
-    #ifdef TARGET_SENTRY 
+#ifdef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
-    #endif
+#endif
 }
 
 void FeederSubsystem::setBurstLength(int newBurstLength) {

@@ -1,10 +1,10 @@
 #pragma once
 
+#include "sensors/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "sensors/limit_switch.hpp"
 
 namespace src::Feeder {
 
@@ -24,7 +24,7 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     int getTotalLimitCount() const;
 
-    //I love setters and getters
+    // I love setters and getters
     void setBurstLength(int newBurstLength);
     int getBurstLength() const;
 
@@ -37,13 +37,14 @@ class FeederSubsystem : public tap::control::Subsystem {
 #endif
     float targetRPM;
     float desiredOutput;
+    int burstLength;
+
     DJIMotor feederMotor;
 
-    int burstLength;
-    LimitSwitch limitSwitchLeft; //for single-barreled robots
-    #ifdef TARGET_SENTRY
-    LimitSwitch limitSwitchRight; //for double-barreled robots
-    #endif
+    LimitSwitch limitSwitchLeft;  // for single-barreled robots
+#ifdef TARGET_SENTRY
+    LimitSwitch limitSwitchRight;  // for double-barreled robots
+#endif
 
     // commands
 };

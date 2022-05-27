@@ -14,10 +14,10 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_drive_command.hpp"
 //
+#include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-#include "subsystems/feeder/burst_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -85,7 +85,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand}, //probably best place to test burst feeder
+    {&burstFeederCommand, &runShooterWithFeederCommand},  // probably best place to test burst feeder
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

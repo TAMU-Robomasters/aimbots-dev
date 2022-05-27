@@ -7,6 +7,8 @@ BurstFeederCommand::BurstFeederCommand(src::Drivers* drivers, FeederSubsystem* f
 }
 
 void BurstFeederCommand::initialize() {
+    feeder->setBurstLength(4);
+
     speed = FEEDER_DEFAULT_SPEED;
     feeder->setTargetRPM(speed);
 
@@ -14,7 +16,7 @@ void BurstFeederCommand::initialize() {
 }
 
 void BurstFeederCommand::execute() {
-    speed=FEEDER_DEFAULT_SPEED;
+    speed = FEEDER_DEFAULT_SPEED;
     feeder->setTargetRPM(speed);
 }
 
@@ -28,7 +30,7 @@ bool BurstFeederCommand::isReady() {
 
 bool BurstFeederCommand::isFinished() const {
     int elapsedTotal = feeder->getTotalLimitCount() - initialTotalBallCount;
-    
+
     return elapsedTotal >= feeder->getBurstLength();
 }
 }  // namespace src::Feeder
