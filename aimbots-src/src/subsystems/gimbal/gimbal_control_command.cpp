@@ -20,13 +20,10 @@ namespace src::Gimbal {
           controller(gimbalController),
           userInputYawSensitivityFactor(inputYawSensitivity),
           userInputPitchSensitivityFactor(inputPitchSensitivity),
-          currMode(MANUAL)
-#ifdef TARGET_SENTRY
-          ,
+          currMode(MANUAL),
           patrolCoordinates(XY_FIELD_RELATIVE_PATROL_LOCATIONS),
-          currPatrolCoordinate(Matrix<float, 1, 3>::zeroMatrix()),
-          patrolCoordinateIndex(0)
-#endif
+          patrolCoordinateIndex(0),
+          currPatrolCoordinate(patrolCoordinates.getRow(patrolCoordinateIndex))  //
     {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
     }
@@ -69,8 +66,7 @@ namespace src::Gimbal {
 
         switch (currMode) {
             case PATROL:
-                // TODO: need to update it so that it runs of a matrix of target positions for sentry so that it can go around and patrol it.
-                // targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Radians) - yawPatrolLocations[yawPatrolLocationIndex][0];
+                targetYawAngleDisplay = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
                 targetPitchAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Degrees);
                 targetPitchAngleDisplay = targetPitchAngle;
                 break;

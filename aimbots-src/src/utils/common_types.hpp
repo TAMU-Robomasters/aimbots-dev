@@ -6,6 +6,8 @@
 #include <tap/communication/serial/uart.hpp>
 #include <tap/control/command.hpp>
 #include <tap/control/comprised_command.hpp>
+#include <tap/architecture/periodic_timer.hpp>
+#include <tap/architecture/timeout.hpp>
 
 #include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/serial/remote.hpp"
@@ -38,18 +40,23 @@ using StockPID = modm::Pid<float>;
 using SmoothPID = src::utils::SmoothPIDWrapper;
 using SmoothPIDConfig = tap::algorithms::SmoothPidConfig;
 
-using CANBus = tap::can::CanBus;
-
 using TapCommand = tap::control::Command;
 using TapComprisedCommand = tap::control::ComprisedCommand;
+
 using ChassisPowerLimiter = tap::control::chassis::PowerLimiter;
 
 using MotorID = tap::motor::MotorId;
+
+using CANBus = tap::can::CanBus;
+
 using UartPort = tap::communication::serial::Uart::UartPort;
 
-using TapCommand = tap::control::Command;
-
 using Remote = tap::communication::serial::Remote;
+
+using PeriodicMilliTimer = tap::arch::PeriodicMilliTimer;
+using PeriodicMicroTimer = tap::arch::PeriodicMicroTimer;
+using MilliTimeout = tap::arch::MilliTimeout;
+using MicroTimeout = tap::arch::MicroTimeout;
 
 // using clock = tap::arch::clock;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
