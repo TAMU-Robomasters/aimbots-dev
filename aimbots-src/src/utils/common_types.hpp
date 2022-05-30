@@ -25,6 +25,11 @@ using DJIMotor = tap::mock::DjiMotorMock;
 using DJIMotor = tap::motor::DjiMotor;
 #endif
 
+enum class AngleUnit : uint8_t {
+    Degrees,
+    Radians,
+};
+
 static constexpr float M3508_MAX_OUTPUT = 30000.0f;
 static constexpr float M2006_MAX_OUTPUT = 10000.0f;
 static constexpr float GM6020_MAX_OUTPUT = 16000.0f;
@@ -49,9 +54,6 @@ using Remote = tap::communication::serial::Remote;
 // using clock = tap::arch::clock;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
-
-// takes radians, rotates clockwise
-Matrix<float, 3, 3> xy_rotation_matrix(float angle);
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);

@@ -1,5 +1,6 @@
 #pragma once
 #include "utils/common_types.hpp"
+#include "utils/math/matrix_helpers.hpp"
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -142,7 +143,7 @@ static const Matrix<float, 1, 3> left_sentry_rail_pole_location_matrix(left_sent
 static constexpr float robot_starting_offset[3] = {WHEELBASE_WIDTH / 2, 0.0f, 0.0f};
 static const Matrix<float, 1, 3> robot_offset_location(robot_starting_offset);
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_LOCATION = left_sentry_rail_pole_location_matrix + robot_offset_location * xy_rotation_matrix(modm::toRadian(45.0f));
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_offset_location * xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
@@ -150,26 +151,26 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 static constexpr float YAW_START_ANGLE = 61.0f;
 static constexpr float PITCH_START_ANGLE = 220.0f;
 
-static constexpr float PITCH_HARDSTOP_LOW = 270.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 155.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 270.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 155.0f;
 
 static constexpr float YAW_FRONT_ANGLE = 61.0f;
 static constexpr float PITCH_HORIZON_ANGLE = 220.0f;
 
 // YAW RELATIVE TO FRONT OF ROBOT, PITCH FOLLOWS SIN WAVE
 // clang-format off
-static constexpr float yaw_patrol_location_array[16] = {
-    0.0f, 1000.0f, // yaw angle, time spent at this angle
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
-    0.0f, 1000.0f,
+static constexpr float xy_field_relative_patrol_location_array[24] = {
+    0.0f, 0.0f, 1000.0f, // field coordinate x, y, time spent at this angle
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
+    0.0f, 0.0f, 1000.0f,
 };
 // clang-format on
-static const Matrix<float, 8, 2> YAW_PATROL_LOCATIONS(yaw_patrol_location_array);
+static const Matrix<float, 8, 3> XY_FIELD_RELATIVE_PATROL_LOCATIONS(xy_field_relative_patrol_location_array);
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees

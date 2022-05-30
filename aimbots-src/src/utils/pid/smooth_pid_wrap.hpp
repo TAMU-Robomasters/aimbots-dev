@@ -4,29 +4,40 @@
 
 namespace src::utils {
 
-struct SmoothPIDWrapper {
-    float lastTime;
-    tap::algorithms::SmoothPid pid;
+    struct SmoothPIDWrapper {
+        float lastTime;
+        float error;
+        tap::algorithms::SmoothPid pid;
 
-    SmoothPIDWrapper(const tap::algorithms::SmoothPidConfig &config) : pid(config) {}
+        SmoothPIDWrapper(const tap::algorithms::SmoothPidConfig &config) : pid(config) {}
 
-    float runController(float error, float derivativeInput) {
-        float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-        float dt = currTime - lastTime;
-        lastTime = currTime;
-        return pid.runController(error, derivativeInput, dt);
-    }
+        float runController(float error, float derivativeInput) {
+            this->error = error;
+            float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
+            float dt = currTime - lastTime;
+            lastTime = currTime;
+            return pid.runController(error, derivativeInput, dt);
+        }
 
-    float runControllerDerivateError(float error) {
-        float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
-        float dt = currTime - lastTime;
-        lastTime = currTime;
-        return pid.runControllerDerivateError(error, dt);
-    }
+        float runControllerDerivateError(float error) {
+            this->error = error;
+            float currTime = static_cast<float>(tap::arch::clock::getTimeMilliseconds());
+            float dt = currTime - lastTime;
+            lastTime = currTime;
+            return pid.runControllerDerivateError(error, dt);
+        }
 
-    float getOutput() {
-        return pid.getOutput();
-    }
-};
+        float isSettled(float errTolerance) {
+            return static_cast<float>(fabs(error)) < errTolerance;
+        }
+
+        float isSettled(float errTolerance, float /*derivTolerance*/, float /*derivToleranceTime*/) {
+            return static_cast<float>(fabs(error)) < errTolerance;
+        }
+
+        float getOutput() {
+            return pid.getOutput();
+        }
+    };
 
 }  // namespace src::utils

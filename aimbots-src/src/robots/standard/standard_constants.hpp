@@ -112,8 +112,8 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 //        adjusted once we have real standard robots
 static constexpr float YAW_START_ANGLE = 0.0f;
 static constexpr float PITCH_START_ANGLE = 66.66f;
-static constexpr float PITCH_HARDSTOP_LOW = 90.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 20.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 90.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 20.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

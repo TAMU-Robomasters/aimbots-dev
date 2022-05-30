@@ -17,21 +17,21 @@ static constexpr float VELOCITY_PID_MAX_ERROR_SUM = 5000.0f;
 /**
  * @brief Position PID constants
  */
-static constexpr float YAW_POSITION_PID_KP                    = 600.0f;
-static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
-static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
-static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_KP = 600.0f;
+static constexpr float YAW_POSITION_PID_KI = 0.0f;
+static constexpr float YAW_POSITION_PID_KD = 0.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
 static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
 static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
-static constexpr float PITCH_POSITION_PID_KP                    = 600.0f;
-static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 5000.0f;
-static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_KP = 600.0f;
+static constexpr float PITCH_POSITION_PID_KI = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD = 0.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 5000.0f;
+static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
 static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
 static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
@@ -71,8 +71,8 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 static constexpr float YAW_START_ANGLE = M_PI_2;
 static constexpr float PITCH_START_ANGLE = M_PI_2;
 #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
-static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 0.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
