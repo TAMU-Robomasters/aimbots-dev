@@ -32,6 +32,13 @@ enum class AngleUnit : uint8_t {
     Radians,
 };
 
+enum Dimensions {
+    X = 0,
+    Y = 1,
+    Z = 2,
+    TIME = 2
+};
+
 static constexpr float M3508_MAX_OUTPUT = 30000.0f;
 static constexpr float M2006_MAX_OUTPUT = 10000.0f;
 static constexpr float GM6020_MAX_OUTPUT = 16000.0f;

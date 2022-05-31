@@ -159,15 +159,15 @@ static constexpr float PITCH_HORIZON_ANGLE = 220.0f;
 
 // YAW RELATIVE TO FRONT OF ROBOT, PITCH FOLLOWS SIN WAVE
 // clang-format off
-static constexpr float xy_field_relative_patrol_location_array[15] = {
-    -4.0f, 0.0f, 1000.0f, // field coordinate x, y, time spent at this angle
-    -2.0f, 0.0f, 1000.0f,
-    0.0f, 0.0f, 1000.0f,
-    2.0f, 0.0f, 1000.0f,
-    4.0f, 0.0f, 1000.0f,
-};
+// static constexpr float xy_field_relative_patrol_location_array[15] = {
+//     -4.0f, 0.0f, 1000.0f, // field coordinate x, y, time spent at this angle
+//     -2.0f, 0.0f, 1000.0f,
+//     0.0f, 0.0f, 1000.0f,
+//     2.0f, 0.0f, 1000.0f,
+//     4.0f, 0.0f, 1000.0f,
+// };
 // clang-format on
-static const Matrix<float, 5, 3> XY_FIELD_RELATIVE_PATROL_LOCATIONS(xy_field_relative_patrol_location_array);
+// static const Matrix<float, 5, 3> XY_FIELD_RELATIVE_PATROL_LOCATIONS(xy_field_relative_patrol_location_array);
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees

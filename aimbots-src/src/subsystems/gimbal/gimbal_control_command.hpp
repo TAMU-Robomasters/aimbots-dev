@@ -59,7 +59,6 @@ namespace src::Gimbal {
         MilliTimeout patrolTimer;
         Matrix<float, 5, 3> patrolCoordinates;
         int patrolCoordinateIndex = 0;
-        Matrix<float, 1, 3> currPatrolCoordinate;
     };
 
 }  // namespace src::Gimbal
