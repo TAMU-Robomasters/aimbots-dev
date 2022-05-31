@@ -59,7 +59,9 @@ void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity
 }
 
 int FeederSubsystem::getTotalLimitCount() const {
+#ifndef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount();
+#endif
 #ifdef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
 #endif
