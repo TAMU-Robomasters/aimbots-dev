@@ -38,6 +38,9 @@ enum Dimensions {
     Z = 2,
     TIME = 2
 };
+// if this looks cursed, that's because it is.
+// currently, we're using a 1x3 matrix for X, Y, TIME patrol coordinates and also X, Y, Z location coordinates.
+// ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol becomes field-relative
 
 static constexpr float M3508_MAX_OUTPUT = 30000.0f;
 static constexpr float M2006_MAX_OUTPUT = 10000.0f;

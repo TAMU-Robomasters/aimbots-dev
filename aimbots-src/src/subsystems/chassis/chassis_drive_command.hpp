@@ -8,22 +8,31 @@
 
 namespace src::Chassis {
 
-class ChassisDriveCommand : public TapCommand {
-   public:
-    ChassisDriveCommand(src::Drivers*, ChassisSubsystem*);
-    void initialize() override;
+    enum chassisControlMode {
+        MANUAL,
+        PATROL,
+        EVADE_SLOW,
+        EVADE_FAST,
+    };
 
-    void execute() override;
-    void end(bool interrupted) override;
-    bool isReady() override;
+    class ChassisDriveCommand : public TapCommand {
+       public:
+        ChassisDriveCommand(src::Drivers*, ChassisSubsystem*);
+        void initialize() override;
 
-    bool isFinished() const override;
+        void execute() override;
+        void end(bool interrupted) override;
+        bool isReady() override;
 
-    const char* getName() const override { return "chassis drive"; }
+        bool isFinished() const override;
 
-   private:
-    src::Drivers* drivers;
-    ChassisSubsystem* chassis;
-};
+        const char* getName() const override { return "chassis drive"; }
+
+       private:
+        src::Drivers* drivers;
+        ChassisSubsystem* chassis;
+
+        chassisControlMode currMode;
+    };
 
 }  // namespace src::Chassis

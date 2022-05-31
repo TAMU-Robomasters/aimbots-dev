@@ -7,7 +7,7 @@
 
 namespace src::Gimbal {
 
-    enum gimbalCommandMode {
+    enum gimbalControlMode {
         PATROL,
         CHASE,
         MANUAL
@@ -54,7 +54,7 @@ namespace src::Gimbal {
         float userInputYawSensitivityFactor;
         float userInputPitchSensitivityFactor;
 
-        gimbalCommandMode currMode;
+        gimbalControlMode currMode;
 
         MilliTimeout patrolTimer;
         Matrix<float, 5, 3> patrolCoordinates;
