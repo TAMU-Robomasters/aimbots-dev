@@ -27,7 +27,9 @@ float OperatorInterface::getChassisXInput() {
         prevUpdateCounterX = updateCounter;
     }
 
-    float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    float keyInput = drivers->remote.keyPressed(Remote::Key::A) - drivers->remote.keyPressed(Remote::Key::D);
+
+    float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + keyInput, -1.0f, 1.0f);
 
     float finalX = analogX;  // TODO: Add digital values from keyboard as well
 
@@ -55,7 +57,9 @@ float OperatorInterface::getChassisYInput() {
         prevUpdateCounterY = updateCounter;
     }
 
-    float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    float keyInput = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
+
+    float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + keyInput, -1.0f, 1.0f);
 
     float finalY = analogY;  // TODO: Add digital values from keyboard as well
 
@@ -81,7 +85,9 @@ float OperatorInterface::getChassisRotationInput() {
         prevUpdateCounterRotation = updateCounter;
     }
 
-    float analogRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    float keyInput = drivers->remote.keyPressed(Remote::Key::Q) - drivers->remote.keyPressed(Remote::Key::E);
+
+    float analogRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + keyInput, -1.0f, 1.0f);
 
     float finalRotation = analogRotation;  // TODO: Add digital values from keyboard as well
 
@@ -93,11 +99,21 @@ float OperatorInterface::getChassisRotationInput() {
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) + 
+            static_cast<float>(limitVal<int16_t>(
+                drivers->remote.getMouseX(),
+                -USER_MOUSE_YAW_MAX,
+                USER_MOUSE_YAW_MAX)) * 
+                USER_MOUSE_YAW_SCALAR;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) + 
+            static_cast<float>(limitVal<int16_t>(
+                drivers->remote.getMouseY(),
+                -USER_MOUSE_PITCH_MAX,
+                USER_MOUSE_PITCH_MAX)) * 
+                USER_MOUSE_PITCH_SCALAR;
 }
 
 }  // namespace src::Control
