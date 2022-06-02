@@ -21,6 +21,12 @@ namespace src::Informants {
             return fieldRelativeRobotPosition;
         }
 
+#ifdef TARGET_SENTRY
+        Matrix<float, 1, 3> getRailRelativeRobotPosition() {
+            return railRelativePosition;
+        }
+#endif
+
         float getXYAngleToFieldCoordinate(AngleUnit unit, Matrix<float, 1, 3> fieldCoordinate);
 
        private:

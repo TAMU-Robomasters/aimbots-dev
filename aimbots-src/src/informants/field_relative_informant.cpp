@@ -25,11 +25,17 @@ namespace src::Informants {
     void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor * cMotor) {
 #ifdef TARGET_SENTRY  // This will need to be replaced with code that uses the ultrasonics once that works
         // first, get unwrapped motor position
-        float motorRevolutionsUnwrapped = static_cast<float>(cMotor->getEncoderUnwrapped()) / static_cast<float>(cMotor->ENC_RESOLUTION);  // current position in motor revolutions
+        float motorRevolutionsUnwrapped;
+        if (cMotor->isMotorOnline()) {
+            motorRevolutionsUnwrapped = static_cast<float>(cMotor->getEncoderUnwrapped()) / static_cast<float>(cMotor->ENC_RESOLUTION);  // current position in motor revolutions
+        } else {
+            motorRevolutionsUnwrapped = 0.0f;
+        }
+
         // now, convert to unwrapped wheel revolutions
         float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
         // now, convert to unwrapped wheel rotations to get the rail position
-        float currRailPosition = -wheelRevolutionsUnwrapped * (2 * M_PI * WHEEL_RADIUS);  // current position in meters
+        float currRailPosition = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
 
         // set the current rail position to a position matrix relative to the rail
         // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
