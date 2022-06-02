@@ -140,10 +140,16 @@ static constexpr float left_sentry_rail_pole_location[3] = {-4.375f, -0.960f, 0.
 static const Matrix<float, 1, 3> left_sentry_rail_pole_location_matrix(left_sentry_rail_pole_location);
 // x, y, z in meters
 // x is along length of field, y is along width of field, z is vertical
-static constexpr float robot_starting_offset[3] = {WHEELBASE_WIDTH / 2, 0.0f, 0.0f};
-static const Matrix<float, 1, 3> robot_offset_location(robot_starting_offset);
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_offset_location * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
+static constexpr float RAIL_POLE_DIAMETER = 0.061f;
+
+static constexpr float robot_starting_rail_location_array[3] = {(WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2), 0.0f, 0.0f};
+static const Matrix<float, 1, 3> robot_starting_rail_location(robot_starting_rail_location_array);
+
+static constexpr float FULL_RAIL_LENGTH = 2.130f;                                                       // meters
+static constexpr float USABLE_RAIL_LENGTH = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER);  // in meters
+
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_starting_rail_location * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
@@ -156,18 +162,6 @@ static constexpr float PITCH_SOFTSTOP_HIGH = 155.0f;
 
 static constexpr float YAW_FRONT_ANGLE = 61.0f;
 static constexpr float PITCH_HORIZON_ANGLE = 220.0f;
-
-// YAW RELATIVE TO FRONT OF ROBOT, PITCH FOLLOWS SIN WAVE
-// clang-format off
-// static constexpr float xy_field_relative_patrol_location_array[15] = {
-//     -4.0f, 0.0f, 1000.0f, // field coordinate x, y, time spent at this angle
-//     -2.0f, 0.0f, 1000.0f,
-//     0.0f, 0.0f, 1000.0f,
-//     2.0f, 0.0f, 1000.0f,
-//     4.0f, 0.0f, 1000.0f,
-// };
-// clang-format on
-// static const Matrix<float, 5, 3> XY_FIELD_RELATIVE_PATROL_LOCATIONS(xy_field_relative_patrol_location_array);
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
