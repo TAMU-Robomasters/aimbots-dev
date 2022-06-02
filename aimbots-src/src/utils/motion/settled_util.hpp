@@ -2,7 +2,7 @@
 
 #include "tap/architecture/timeout.hpp"
 
-namespace src::utils {
+namespace src::utils::motion {
 
     class SettledUtil {
        private:
@@ -10,6 +10,8 @@ namespace src::utils {
         tap::arch::MilliTimeout derivativeTimeout;
 
        public:
+        SettledUtil() {}
+
         static bool isSettled(float error, float errorTolerance) {
             return static_cast<float>(fabs(error)) < errorTolerance;
         }
@@ -32,4 +34,5 @@ namespace src::utils {
             return false;
         }
     };
-}
+
+}  // namespace src::utils::motion

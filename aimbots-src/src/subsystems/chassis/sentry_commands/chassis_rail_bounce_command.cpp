@@ -11,44 +11,51 @@ namespace src::Chassis {
               {0.5f,     // max velocity
                1.0f,     // max acceleration
                10.0f}),  // max jerk
-          leftRailBound(leftRailBoundArray),
-          rightRailBound(rightRailBoundArray),
-          currTraverseTarget(0.0f),
+          railTargetIndex(0),
           railTraverseProfile(nullptr)
 #endif
     {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
+
+        static constexpr float railTargetsArray[2] = {leftRailBound, rightRailBound};
+        railTargets = Matrix<float, 2, 1>(railTargetsArray);
     }
 
     void ChassisRailBounceCommand::initialize() {
         movementStartTime = tap::arch::clock::getTimeMilliseconds();
 
-        currTraverseTarget = rightRailBound[0][0];
+        float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
 
-        float currPosition = /*drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];*/ 0.0f;
-        float displacement = currTraverseTarget - currPosition;
+        float displacementTarget = railTargets[railTargetIndex][X] - currRailPosition;
 
         if (railTraverseProfile != nullptr) {
             delete railTraverseProfile;
         }
-        railTraverseProfile = new SCurveMotionProfile(profileConstraints, displacement);
+        railTraverseProfile = new SCurveMotionProfile(profileConstraints, displacementTarget);
     }
 
     float currRailPositionDisplay = 0.0f;
     float stepVelocityDisplay = 0.0f;
-    float movementTimeDisplay = 0.0f;
-    float movementTotalTimeReportedDisplay = 0.0f;
-    float currTraverseTargetDisplay = 0.0f;
+    float expectedMovementTimeDisplay = 0.0f;
     float motorTargetRPMDisplay = 0.0f;
 
     void ChassisRailBounceCommand::execute() {
         float currTime = tap::arch::clock::getTimeMilliseconds();
-        float currPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
-        currRailPositionDisplay = currPosition;
+        float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
+        currRailPositionDisplay = currRailPosition;
 
-        float movementTime = currTime - movementStartTime;
-        auto step = railTraverseProfile->stepAtTime(movementTime / 1000.0f);
+        // if (chassisProfile.isSettled(railTargets[railTargetIndex][X] - currRailPosition, 0.03f)) {
+        //     railTargetIndex = (railTargetIndex + 1) % railTargets.getNumberOfRows();
 
+        //     if (railTraverseProfile != nullptr) {
+        //         delete railTraverseProfile;
+        //     }
+        //     railTraverseProfile = new SCurveMotionProfile(profileConstraints, railTargets[railTargetIndex][X] - currRailPosition);
+        //     movementStartTime = tap::arch::clock::getTimeMilliseconds();
+        // }
+        expectedMovementTimeDisplay = railTraverseProfile->totalTime();
+
+        auto step = railTraverseProfile->stepAtTime((currTime - movementStartTime) / 1000.0f);
         stepVelocityDisplay = step.velocity;
 
         float wheelTargetRPM = (step.velocity / (2.0f * M_PI * WHEEL_RADIUS)) * 60.0f;
@@ -59,6 +66,9 @@ namespace src::Chassis {
     }
 
     void ChassisRailBounceCommand::end(bool) {
+        if (railTraverseProfile != nullptr) {
+            delete railTraverseProfile;
+        }
         chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
     }
 

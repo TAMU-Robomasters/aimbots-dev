@@ -4,9 +4,12 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "tap/control/command.hpp"
 #include "utils/common_types.hpp"
-#include "utils/motion/SCurveAcceleration.hpp"
-#include "utils/motion/SCurveMotionProfile.hpp"
+#include "utils/motion/s_curve_acceleration.hpp"
+#include "utils/motion/s_curve_motion_profile.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/motion/settled_util.hpp"
+
+using namespace src::utils::motion;
 
 namespace src::Chassis {
 
@@ -32,25 +35,19 @@ namespace src::Chassis {
 
         static constexpr float RAIL_SAFETY_BUFFER = 0.05f;  // meters
 
-        Matrix<float, 1, 3> leftRailBound;
-        Matrix<float, 1, 3> rightRailBound;
+        static constexpr float leftRailBound =
+            (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) + RAIL_SAFETY_BUFFER;
 
-        static constexpr float leftRailBoundArray[3] = {
-            (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) + RAIL_SAFETY_BUFFER,
-            0.0f,
-            0.0f,
-        };
+        static constexpr float rightRailBound =
+            FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) - RAIL_SAFETY_BUFFER;
 
-        static constexpr float rightRailBoundArray[3] = {
-            FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) - RAIL_SAFETY_BUFFER,
-            0.0f,
-            0.0f,
-        };
+        Matrix<float, 2, 1> railTargets;
+        int railTargetIndex;
 
-        float currTraverseTarget;
         float movementStartTime;
 
         SCurveMotionProfile* railTraverseProfile;
+        SettledUtil chassisProfile;
 #endif
     };
 

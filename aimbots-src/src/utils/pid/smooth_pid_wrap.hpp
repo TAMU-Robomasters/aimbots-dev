@@ -11,7 +11,7 @@ namespace src::utils {
         float prevError;
         float errorDerivative;
 
-        SettledUtil settledUtil;
+        src::utils::motion::SettledUtil settledUtil;
         tap::algorithms::SmoothPid pid;
 
         SmoothPIDWrapper(const tap::algorithms::SmoothPidConfig &config) : pid(config) {}

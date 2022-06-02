@@ -4,8 +4,6 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "tap/control/command.hpp"
 #include "utils/common_types.hpp"
-#include "utils/motion/SCurveAcceleration.hpp"
-#include "utils/motion/SCurveMotionProfile.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 namespace src::Chassis {
