@@ -26,8 +26,13 @@ namespace src::Informants {
        private:
         src::Drivers* drivers;
 
-        Matrix<float, 1, 3> fieldRelativeRobotPosition;
         Matrix<float, 1, 3> robotStartingPosition;
+
+#ifdef TARGET_SENTRY
+        Matrix<float, 1, 3> railRelativePosition;
+#endif
+
+        Matrix<float, 1, 3> fieldRelativeRobotPosition;
     };
 
 }  // namespace src::Informants

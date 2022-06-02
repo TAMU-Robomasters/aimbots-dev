@@ -7,9 +7,16 @@ namespace src::Informants {
 
     FieldRelativeInformant::FieldRelativeInformant(src::Drivers * drivers)
         : drivers(drivers),
-          robotStartingPosition(ROBOT_STARTING_POSITION) {}
+          robotStartingPosition(ROBOT_STARTING_POSITION),
+#ifdef TARGET_SENTRY
+          railRelativePosition(Matrix<float, 1, 3>::zeroMatrix()),
+#endif
+          fieldRelativeRobotPosition(Matrix<float, 1, 3>::zeroMatrix()) {
+    }
 
-    void FieldRelativeInformant::initialize() {}
+    void
+    FieldRelativeInformant::initialize() {
+    }
 
     float robotPositionXDisplay = 0.0f;
     float robotPositionYDisplay = 0.0f;
@@ -25,7 +32,7 @@ namespace src::Informants {
         float currRailPosition = -wheelRevolutionsUnwrapped * (2 * M_PI * WHEEL_RADIUS);  // current position in meters
 
         // set the current rail position to a position matrix relative to the rail
-        Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
+        // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
         railRelativePosition[0][0] = currRailPosition;
 
         // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position

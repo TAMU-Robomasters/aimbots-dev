@@ -2,6 +2,9 @@
 
 #include <subsystems/chassis/chassis_rel_drive.hpp>
 
+#include "utils/motion/SCurveMotionProfile.hpp"
+#include "utils/motion/SCurveAcceleration.hpp"
+
 namespace src::Chassis {
 
     ChassisDriveCommand::ChassisDriveCommand(src::Drivers * drivers, ChassisSubsystem * chassis)
@@ -19,6 +22,7 @@ namespace src::Chassis {
                 Movement::Relative::onExecute(drivers, chassis);
                 break;
             case PATROL:
+
                 break;
             case EVADE_SLOW:
                 break;
