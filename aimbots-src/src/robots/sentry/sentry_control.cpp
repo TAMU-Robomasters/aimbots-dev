@@ -104,7 +104,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    gimbal.setDefaultCommand(&gimbalControlCommand);
+    // gimbal.setDefaultCommand(&gimbalControlCommand);
 }
 
 // Set commands scheduled on startup
@@ -126,14 +126,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace SentryControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        SentryControl::initializeSubsystems();
-        SentryControl::registerSubsystems(drivers);
-        SentryControl::setDefaultCommands(drivers);
-        SentryControl::startupCommands(drivers);
-        SentryControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    SentryControl::initializeSubsystems();
+    SentryControl::registerSubsystems(drivers);
+    SentryControl::setDefaultCommands(drivers);
+    SentryControl::startupCommands(drivers);
+    SentryControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif  // TARGET_SENTRY

@@ -143,7 +143,7 @@ static const Matrix<float, 1, 3> left_sentry_rail_pole_location_matrix(left_sent
 static constexpr float robot_starting_offset[3] = {WHEELBASE_WIDTH / 2, 0.0f, 0.0f};
 static const Matrix<float, 1, 3> robot_offset_location(robot_starting_offset);
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_offset_location * xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_offset_location * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 

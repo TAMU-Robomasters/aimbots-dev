@@ -36,7 +36,7 @@ namespace src::Informants {
         railRelativePosition[0][0] = currRailPosition;
 
         // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position
-        fieldRelativeRobotPosition = railRelativePosition * xy_rotation_matrix(AngleUnit::Degrees, 45.0f) + ROBOT_STARTING_POSITION;
+        fieldRelativeRobotPosition = railRelativePosition * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f) + ROBOT_STARTING_POSITION;
 
         robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
         robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
@@ -46,10 +46,10 @@ namespace src::Informants {
 
     // gets the angle between the robot's current position and the field coordinate
     float FieldRelativeInformant::getXYAngleToFieldCoordinate(AngleUnit unit, Matrix<float, 1, 3> fieldCoordinate) {
-        float xy_angle = xy_angle_between_locations(AngleUnit::Radians, fieldRelativeRobotPosition, fieldCoordinate);
+        float xy_angle = src::utils::MatrixHelper::xy_angle_between_locations(AngleUnit::Radians, fieldRelativeRobotPosition, fieldCoordinate);
         if (unit == AngleUnit::Degrees) {
             xy_angle = modm::toDegree(xy_angle);
         }
         return xy_angle;
     }
-}
+}  // namespace src::Informants
