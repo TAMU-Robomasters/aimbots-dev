@@ -11,6 +11,8 @@
 
 #include "utils/custom_imu/nxp_fusion.hpp"
 
+#include "tap/algorithms/MahonyAHRS.h"
+
 namespace src { class Drivers; }
 
 namespace utils {

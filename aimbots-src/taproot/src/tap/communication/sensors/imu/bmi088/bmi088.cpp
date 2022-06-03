@@ -171,6 +171,7 @@ void Bmi088::initializeGyro()
 
 void Bmi088::periodicIMUUpdate()
 {
+
     if (imuState == ImuState::IMU_NOT_CONNECTED)
     {
         RAISE_ERROR(drivers, "periodicIMUUpdate called w/ imu not connected");
