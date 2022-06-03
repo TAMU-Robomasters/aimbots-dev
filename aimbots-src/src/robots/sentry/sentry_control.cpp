@@ -71,7 +71,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables both chassis and gimbal control
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalControlCommand},
+    {&chassisRailBounceCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only
@@ -107,7 +107,7 @@ void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     // gimbal.setDefaultCommand(&gimbalControlCommand);
-    chassis.setDefaultCommand(&chassisRailBounceCommand);
+    // chassis.setDefaultCommand(&chassisRailBounceCommand);
 }
 
 // Set commands scheduled on startup
@@ -129,14 +129,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace SentryControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        SentryControl::initializeSubsystems();
-        SentryControl::registerSubsystems(drivers);
-        SentryControl::setDefaultCommands(drivers);
-        SentryControl::startupCommands(drivers);
-        SentryControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    SentryControl::initializeSubsystems();
+    SentryControl::registerSubsystems(drivers);
+    SentryControl::setDefaultCommands(drivers);
+    SentryControl::startupCommands(drivers);
+    SentryControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif  // TARGET_SENTRY

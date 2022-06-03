@@ -143,7 +143,7 @@ static const Matrix<float, 1, 3> left_sentry_rail_pole_location_matrix(left_sent
 
 static constexpr float RAIL_POLE_DIAMETER = 0.061f;
 
-static constexpr float robot_starting_rail_location_array[3] = {(WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2), 0.0f, 0.0f};
+static constexpr float robot_starting_rail_location_array[3] = {((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2.0f), 0.0f, 0.0f};
 static const Matrix<float, 1, 3> robot_starting_rail_location(robot_starting_rail_location_array);
 
 static constexpr float FULL_RAIL_LENGTH = 2.130f;                                                       // meters
