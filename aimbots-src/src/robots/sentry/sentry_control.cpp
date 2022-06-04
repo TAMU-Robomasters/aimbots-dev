@@ -129,14 +129,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace SentryControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    SentryControl::initializeSubsystems();
-    SentryControl::registerSubsystems(drivers);
-    SentryControl::setDefaultCommands(drivers);
-    SentryControl::startupCommands(drivers);
-    SentryControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        SentryControl::initializeSubsystems();
+        SentryControl::registerSubsystems(drivers);
+        SentryControl::setDefaultCommands(drivers);
+        SentryControl::startupCommands(drivers);
+        SentryControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif  // TARGET_SENTRY

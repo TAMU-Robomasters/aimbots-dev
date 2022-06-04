@@ -30,16 +30,15 @@ namespace src::Chassis {
         src::Drivers* drivers;
         ChassisSubsystem* chassis;
 
-#ifdef TARGET_SENTRY
         SCurveMotionProfile::Constraints profileConstraints;  // m/s, m/s/s, m/s/s/s
 
         static constexpr float RAIL_SAFETY_BUFFER = 0.05f;  // meters
 
         static constexpr float leftRailBound =
-            (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) + RAIL_SAFETY_BUFFER;
+            (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 + RAIL_SAFETY_BUFFER;
 
         static constexpr float rightRailBound =
-            FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER / 2) - RAIL_SAFETY_BUFFER;
+            FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 - RAIL_SAFETY_BUFFER;
 
         Matrix<float, 2, 1> railTargets;
         int railTargetIndex;
@@ -48,7 +47,8 @@ namespace src::Chassis {
 
         SCurveMotionProfile* railTraverseProfile;
         SettledUtil chassisProfile;
-#endif
+
+        int profilerDirection = 1;
     };
 
 }  // namespace src::Chassis
