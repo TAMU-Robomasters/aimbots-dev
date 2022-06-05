@@ -88,11 +88,11 @@ void ChassisSubsystem::initialize() {
 }
 
 int refSerialWorkingDisplay = 0;
-uint16_t chassisPowerLimit = 0;
+uint16_t chassisPowerLimitDisplay = 0;
 
 void ChassisSubsystem::refresh() {
     if (drivers->refSerial.getRefSerialReceivingData()) {
-        chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+        chassisPowerLimitDisplay = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
         refSerialWorkingDisplay = 69;
     } else {
         refSerialWorkingDisplay = 0;

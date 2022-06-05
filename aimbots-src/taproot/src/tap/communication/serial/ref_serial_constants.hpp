@@ -22,7 +22,7 @@
 
 namespace tap::communication::serial::bound_ports
 {
-    static constexpr Uart::UartPort REF_SERIAL_UART_PORT = Uart::UartPort::Uart1;
+    static constexpr Uart::UartPort REF_SERIAL_UART_PORT = Uart::UartPort::Uart6;
 }  // namespace tap::communication::serial::bound_ports
 
 #endif  // TAPROOT_REF_SERIAL_CONSTANTS_HPP_

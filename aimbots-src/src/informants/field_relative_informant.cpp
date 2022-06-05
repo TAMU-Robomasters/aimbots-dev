@@ -21,27 +21,30 @@ float robotPositionXDisplay = 0.0f;
 float robotPositionYDisplay = 0.0f;
 float robotPositionZDisplay = 0.0f;
 
+float robotRailPositionXDisplay = 0.0f;
+
 void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) {
 #ifdef TARGET_SENTRY  // This will need to be replaced with code that uses the ultrasonics once that works
     // first, get unwrapped motor position
     float motorRevolutionsUnwrapped;
-    if (cMotor->isMotorOnline()) {
-        motorRevolutionsUnwrapped = static_cast<float>(cMotor->getEncoderUnwrapped()) / static_cast<float>(cMotor->ENC_RESOLUTION);  // current position in motor revolutions
-    } else {
-        motorRevolutionsUnwrapped = 0.0f;
-    }
+    // if (cMotor->isMotorOnline()) {
+    motorRevolutionsUnwrapped = static_cast<float>(cMotor->getEncoderUnwrapped()) / static_cast<float>(cMotor->ENC_RESOLUTION);  // current position in motor revolutions
+    // } else {
+    //     motorRevolutionsUnwrapped = 0.0f;
+    // }
 
     // now, convert to unwrapped wheel revolutions
     float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
     // now, convert to unwrapped wheel rotations to get the rail position
-    float currRailPosition = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
+    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
 
     // set the current rail position to a position matrix relative to the rail
     // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
-    railRelativePosition[0][0] = currRailPosition;
+    railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
+    robotRailPositionXDisplay = railRelativePosition[0][0];
 
     // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position
-    fieldRelativeRobotPosition = railRelativePosition * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f) + ROBOT_STARTING_POSITION;
+    fieldRelativeRobotPosition = railRelativePosition * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f) + left_sentry_rail_pole_location_matrix;
 
     robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];

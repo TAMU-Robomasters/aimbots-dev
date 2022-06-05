@@ -74,6 +74,11 @@ HoldCommandMapping leftSwitchUp(
     {&chassisRailBounceCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&chassisManualDriveCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
@@ -122,6 +127,7 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
 }
@@ -129,14 +135,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace SentryControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        SentryControl::initializeSubsystems();
-        SentryControl::registerSubsystems(drivers);
-        SentryControl::setDefaultCommands(drivers);
-        SentryControl::startupCommands(drivers);
-        SentryControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    SentryControl::initializeSubsystems();
+    SentryControl::registerSubsystems(drivers);
+    SentryControl::setDefaultCommands(drivers);
+    SentryControl::startupCommands(drivers);
+    SentryControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif  // TARGET_SENTRY
