@@ -1,6 +1,6 @@
 #pragma once
 
-#include "sensors/limit_switch.hpp"
+#include "informants/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
