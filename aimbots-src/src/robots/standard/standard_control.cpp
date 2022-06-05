@@ -12,7 +12,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
@@ -53,7 +53,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -64,7 +64,7 @@ SlowToStopCommand shooterDefaultCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisManualDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchUp(
@@ -107,14 +107,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif  // TARGET_STANDARD

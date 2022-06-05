@@ -106,8 +106,9 @@ static void initializeIo(src::Drivers *drivers) {
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
+    drivers->fieldRelativeInformant.initialize();
 #ifdef TARGET_SENTRY
-    // drivers->cvCommunicator.initialize();
+    drivers->cvCommunicator.initialize();
 #endif
 }
 
@@ -123,6 +124,6 @@ static void updateIo(src::Drivers *drivers) {
     
 // drivers->mpu6500.read();
 #ifdef TARGET_SENTRY
-    // drivers->cvCommunicator.updateSerial();
+    drivers->cvCommunicator.updateSerial();
 #endif
 }

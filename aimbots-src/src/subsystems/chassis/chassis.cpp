@@ -1,7 +1,6 @@
 #include "subsystems/chassis/chassis.hpp"
 
-#include <drivers.hpp>
-
+#include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "utils/common_types.hpp"
 
@@ -10,7 +9,8 @@ using namespace tap::algorithms;
 namespace src::Chassis {
 
 ChassisSubsystem::ChassisSubsystem(
-    tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
+    src::Drivers* drivers) : ChassisSubsystemInterface(drivers),
+                             drivers(drivers),
 #ifdef TARGET_SENTRY
                              railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
                              railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
@@ -87,7 +87,18 @@ void ChassisSubsystem::initialize() {
     setTargetRPMs(0, 0, 0);
 }
 
+int refSerialWorkingDisplay = 0;
+uint16_t chassisPowerLimitDisplay = 0;
+
 void ChassisSubsystem::refresh() {
+    if (drivers->refSerial.getRefSerialReceivingData()) {
+        chassisPowerLimitDisplay = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+        refSerialWorkingDisplay = 69;
+    } else {
+        refSerialWorkingDisplay = 0;
+    }
+
+    drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition(motors[RAIL][0]);
     // update motor rpm based on the robot type?
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
@@ -177,5 +188,4 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
     }
     return rTranslationalGain;
 }
-
 };  // namespace src::Chassis
