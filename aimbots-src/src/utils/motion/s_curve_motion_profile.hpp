@@ -20,9 +20,25 @@ namespace src::utils::motion {
         float accelerationDisplacement;
 
        public:
+        float constrainVelocity() {
+            float maxAccel = constraints.acceleration;
+            float maxAccelSquared = maxAccel * maxAccel;
+            float maxJerk = constraints.jerk;
+            float maxJerkSquared = maxJerk * maxJerk;
+
+            return (sqrt(fabs(pow(maxAccel, 4.0) + 4.0 * displacement * maxAccel * maxJerkSquared)) - maxAccelSquared) / (maxJerk * 2.0);
+        }
+
         SCurveMotionProfile(Constraints constraints, float displacement) : constraints(constraints), accelerationProfile(constraints), displacement(displacement) {
+            accelerationDisplacement = accelerationProfile.totalDisplacement();
+            if (accelerationDisplacement * 2.0f > displacement) {
+                constraints.velocity = constrainVelocity();
+                accelerationProfile = SCurveAcceleration(constraints);
+            }
+
             accelerationTime = accelerationProfile.totalTime();
             accelerationDisplacement = accelerationProfile.totalDisplacement();
+
             cruiseDisplacement = displacement - accelerationDisplacement * 2.0f;
             cruiseTime = cruiseDisplacement / constraints.velocity;
         }
