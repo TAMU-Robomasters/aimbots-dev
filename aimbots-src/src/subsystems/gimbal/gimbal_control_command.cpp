@@ -3,6 +3,10 @@
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
+#include "drivers.hpp"
+#include "vision/jetson_communicator.hpp"
+#include "vision/jetson_protocol.hpp"
+
 namespace src::Gimbal {
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
@@ -15,19 +19,23 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       userInputYawSensitivityFactor(inputYawSensitivity),
-      userInputPitchSensitivityFactor(inputPitchSensitivity) {
+      userInputPitchSensitivityFactor(inputPitchSensitivity)  //
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
 void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
-    float targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
-                           (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL)) * YAW_MOTOR_DIRECTION;
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+    float targetYawAngle = 0.0f;
+    float targetPitchAngle = 0.0f;
 
-    float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
-                             (userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL)) * getPitchMotorDirection();
+    targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
+                     userInputYawSensitivityFactor * drivers->controlOperatorInterface.getGimbalYawInput();
+    targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
+                       userInputPitchSensitivityFactor * drivers->controlOperatorInterface.getGimbalPitchInput();
+
+    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

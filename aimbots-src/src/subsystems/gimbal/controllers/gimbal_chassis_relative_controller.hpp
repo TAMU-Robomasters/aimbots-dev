@@ -7,22 +7,30 @@
 
 namespace src::Gimbal {
 
-class GimbalChassisRelativeController {
-   public:
-    GimbalChassisRelativeController(GimbalSubsystem*);
+    class GimbalChassisRelativeController {
+       public:
+        GimbalChassisRelativeController(GimbalSubsystem*);
 
-    void initialize();
+        void initialize();
 
-    void runYawController(AngleUnit unit, float targetYawAngle);
-    void runPitchController(AngleUnit unit, float targetPitchAngle);
+        void runYawController(AngleUnit unit, float targetYawAngle);
+        void runPitchController(AngleUnit unit, float targetPitchAngle);
 
-    bool isOnline() const;
+        SmoothPID* getYawPositionPID() {
+            return &yawPositionPID;
+        }
 
-   private:
-    GimbalSubsystem* gimbal;
+        SmoothPID* getPitchPositionPID() {
+            return &pitchPositionPID;
+        }
 
-    SmoothPID yawPositionPID;
-    SmoothPID pitchPositionPID;
-};
+        bool isOnline() const;
+
+       private:
+        GimbalSubsystem* gimbal;
+
+        SmoothPID yawPositionPID;
+        SmoothPID pitchPositionPID;
+    };
 
 }  // namespace src::Gimbal

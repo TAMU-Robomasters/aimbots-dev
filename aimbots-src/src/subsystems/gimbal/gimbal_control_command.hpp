@@ -7,13 +7,11 @@
 
 namespace src::Gimbal {
 
-
-enum movemnt{
+enum gimbalControlMode {
     PATROL,
     CHASE,
     MANUAL
 };
-
 
 class GimbalControlCommand : public tap::control::Command {
    public:
@@ -41,12 +39,7 @@ class GimbalControlCommand : public tap::control::Command {
     float userInputYawSensitivityFactor;
     float userInputPitchSensitivityFactor;
 
-
-#ifdef TARGET_SENTRY
-    Matrix<float, 8, 2> gimbalPatrolLocations;
-    int patrolLocationIndex = 0;
-#endif
-
+    gimbalControlMode currMode;
 };
 
 }  // namespace src::Gimbal

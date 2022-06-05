@@ -14,10 +14,8 @@
                 "aimbots-src/taproot/test",
                 "aimbots-src/test"
             ],
-            "intelliSenseMode": "gcc-x64",
-            "browse": {
-                "limitSymbolsToIncludedHeaders": true
-            }
+            "compilerPath": "g++",
+            "intelliSenseMode": "gcc-x64"
         },
         {
             "name": "Sim",
@@ -30,13 +28,11 @@
                 "${default}",
                 "aimbots-src/taproot/sim-modm/hosted-linux/modm/src"
             ],
-            "intelliSenseMode": "gcc-x64",
-            "browse": {
-                "limitSymbolsToIncludedHeaders": true
-            }
+            "compilerPath": "g++",
+            "intelliSenseMode": "gcc-x64"
         },
         {
-            "name": "Hardware",
+            "name": "MCB",
             "includePath": [
                 "${default}",
                 "aimbots-src/taproot/modm/src",
@@ -44,11 +40,8 @@
                 "aimbots-src/taproot/modm/ext/cmsis/device",
                 "aimbots-src/taproot/modm/ext/cmsis/dsp"
             ],
-            "intelliSenseMode": "gcc-arm64",
-            "browse": {
-                "limitSymbolsToIncludedHeaders": true
-            },
-            "configurationProvider": "ms-vscode.makefile-tools"
+            // "compilerPath": "arm-none-eabi-g++",
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4
