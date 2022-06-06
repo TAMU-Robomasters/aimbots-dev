@@ -6,8 +6,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
+ 
+make: *** No rule to make target `all'.  Stop.
 
-# Make data base, printed on Mon Apr 18 13:36:02 2022
+
+# Make data base, printed on Mon Jun  6 16:07:24 2022
 
 # Variables
 
@@ -42,11 +45,11 @@ INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-d5089e3a-3262-4bc4-9d00-c69d6a55c7c1.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-73d17489-d3ae-46e1-8901-6ee9ed11249c.sock
 # environment
 VSCODE_CWD = /
 # environment
-PATH = /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+PATH = /opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
@@ -56,7 +59,7 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.elEQqS5m4b/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.FKXH8t5WLf/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -67,19 +70,16 @@ PWD = /Users/sidp/Personal/RobomasterProg/aimbots-dev
 HOMEBREW_CELLAR = /opt/homebrew/Cellar
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
- 
-make: *** No rule to make target `all'.  Stop.
-
 # environment
-MANPATH = /opt/homebrew/share/man::
+MANPATH = /opt/local/share/man:/opt/homebrew/share/man::
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /Users/sidp
 # default
-MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/dfd34e8260c270da74b5c2d86d61aee4b6d56977
+VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # environment
 LOGNAME = sidp
 # environment
@@ -109,7 +109,7 @@ LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # default
-MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
 # default
 .VARIABLES := 
 # environment
@@ -117,7 +117,7 @@ TMPDIR = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.66.2-main.sock
+VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.67.2-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -125,7 +125,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.5100559.5100565
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.11170520.11170526
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -157,7 +157,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 42990
+VSCODE_PID = 1779
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=1/93=1%
 
@@ -167,7 +167,7 @@ VSCODE_PID = 42990
 
 # Directories
 
-# . (device 16777235, inode 788717): 19 files, no impossibilities.
+# . (device 16777232, inode 788717): 19 files, no impossibilities.
 
 # 19 files, no impossibilities in 1 directories.
 
@@ -241,6 +241,6 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Mon Apr 18 13:36:02 2022
+# Finished Make data base on Mon Jun  6 16:07:24 2022
 
  
