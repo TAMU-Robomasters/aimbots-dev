@@ -69,6 +69,7 @@ GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 BurstFeederCommand burstFeederCommand(drivers(), &feeder);
+
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
@@ -94,7 +95,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&burstFeederCommand, &runShooterWithFeederCommand},  // probably best place to test burst feeder
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -141,14 +142,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace SentryControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        SentryControl::initializeSubsystems();
-        SentryControl::registerSubsystems(drivers);
-        SentryControl::setDefaultCommands(drivers);
-        SentryControl::startupCommands(drivers);
-        SentryControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    SentryControl::initializeSubsystems();
+    SentryControl::registerSubsystems(drivers);
+    SentryControl::setDefaultCommands(drivers);
+    SentryControl::startupCommands(drivers);
+    SentryControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
 #endif  // TARGET_SENTRY
