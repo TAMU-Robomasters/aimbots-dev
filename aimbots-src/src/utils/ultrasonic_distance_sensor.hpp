@@ -17,8 +17,8 @@ class UltrasonicDistanceSensor {
     using LeftEchoPin = modm::platform::GpioC6;    // using port C5, echo for C5 is gpio_C6
     using RightEchoPin = modm::platform::GpioE13;  // using port C3, echo for C3 is gpio_E13
 
-    static void handleLeftEchoEnd();
-    static void handleRightEchoEnd();
+    static void handleLeftEchoEnd(bool isRising);
+    static void handleRightEchoEnd(bool isRising);
 
     UltrasonicDistanceSensor(src::Drivers* drivers);
 
@@ -30,9 +30,11 @@ class UltrasonicDistanceSensor {
 
     static float distanceLeft;
     static float distanceRight;
-    static float echoStartTimeMS;
+    static float echoStartLeftMS;
+    static float echoStartRightMS;
+
     static tap::arch::PeriodicMilliTimer echoTimer;
-    static tap::arch::MilliTimeout pulseTimer;
+    static tap::arch::MicroTimeout pulseTimer;
 
     static constexpr tap::gpio::Digital::OutputPin LEFT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C2;
     static constexpr tap::gpio::Digital::OutputPin RIGHT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C4;
