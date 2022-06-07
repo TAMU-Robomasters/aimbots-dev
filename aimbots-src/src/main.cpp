@@ -94,7 +94,8 @@ int main() {
         //every 1ms...
         if (mainLoopTimeout.execute())
         {
-            drivers->bmi088.periodicIMUUpdate();
+            // drivers->bmi088.periodicIMUUpdate();
+            drivers->imu.periodicIMUUpdate();
         }
         if (sendMotorTimeout.execute()) {
             // PROFILE(drivers->profiler, drivers->mpu6500.periodicIMUUpdate, ());
@@ -116,10 +117,10 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
     // drivers->mpu6500.init();
-    //drivers->imu.initialize(100.0f);
-    drivers->bmi088.initialize(SAMPLE_FREQUENCY,0.1f,0.0f);
-    //drivers->imu.requestRecalibration();
-    drivers->bmi088.requestRecalibration();
+    drivers->imu.initialize(SAMPLE_FREQUENCY);
+    // drivers->bmi088.initialize(SAMPLE_FREQUENCY,0.1f,0.0f);
+    drivers->imu.requestRecalibration();
+    // drivers->bmi088.requestRecalibration();
 
     drivers->refSerial.initialize();
     drivers->terminalSerial.initialize();
@@ -146,14 +147,15 @@ static void updateIo(src::Drivers *drivers) {
     //drivers->bmi088.periodicIMUUpdate();
 
     //imu data with nxp alg
-    // yaw = drivers->imu.getYaw();
-    // pitch = drivers->imu.getPitch();
-    // roll = drivers->imu.getRoll();
+    yaw = drivers->imu.getYaw();
+    pitch = drivers->imu.getPitch();
+    roll = drivers->imu.getRoll();
+    imuStatus = drivers->imu.getImuState();
 
-    yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
-    imuStatus = drivers->bmi088.getImuState();
+    // yaw = drivers->bmi088.getYaw();
+    // pitch = drivers->bmi088.getRoll();
+    // roll = drivers->bmi088.getPitch();
+    // imuStatus = drivers->bmi088.getImuState();
 
     magX = drivers->magnetometer.getX();
     magY = drivers->magnetometer.getY();

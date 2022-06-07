@@ -84,6 +84,79 @@ static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 29.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 20.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 50.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 30000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+/**
+ * @brief Position PID constants
+ */
+static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
+    .kp = 600.0f,
+    .ki = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 /**
  * This max output is measured in the c620 robomaster translated current.
  * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.

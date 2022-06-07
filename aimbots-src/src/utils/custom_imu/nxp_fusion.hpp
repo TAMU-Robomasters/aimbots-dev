@@ -11,7 +11,7 @@ namespace utils {
 
 class NXPSensorFusion {
 public:
-	void begin(float sampleRate = 100.0f);
+	void begin(float sampleRate = 1000.0f);
 	void update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
 	// TODO: these aren't the same ranges as Madgwick & Mahony... or are they??
 	float getRoll() { return PhiPl; }
