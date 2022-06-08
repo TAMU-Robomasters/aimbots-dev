@@ -137,8 +137,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 
-    // yaw = drivers->bmi088.getYaw();
-    // pitch = drivers->bmi088.getRoll();
-    // roll = drivers->bmi088.getPitch();
-    // imuStatus = drivers->bmi088.getImuState();
+    yaw = drivers->bmi088.getYaw();
+    pitch = drivers->bmi088.getRoll();
+    roll = drivers->bmi088.getPitch();
+    imuStatus = drivers->bmi088.getImuState();
 }
