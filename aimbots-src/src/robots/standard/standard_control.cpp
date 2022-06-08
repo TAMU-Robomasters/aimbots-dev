@@ -65,20 +65,20 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 
 // Define commands here ---------------------------------------------------
 ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface *>(&gimbalController), USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
+
 RunShooterCommand runShooterCommand(drivers(), &shooter);
-<<<<<<< HEAD
-StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-=======
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
->>>>>>> robots/standard
 
 // Define command mappings here -------------------------------------------
 // Enables both chassis and gimbal control and closes hopper
@@ -126,11 +126,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-<<<<<<< HEAD
-    // no default commands should be set
-=======
     // hopper.setDefaultCommand(&openHopperCommand);
->>>>>>> robots/standard
 }
 
 // Set commands scheduled on startup
