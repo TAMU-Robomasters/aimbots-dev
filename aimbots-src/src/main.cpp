@@ -94,7 +94,6 @@ int main() {
         // every 1ms...
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
-            // drivers->imu.periodicIMUUpdate();
         }
         if (sendMotorTimeout.execute()) {
             // PROFILE(drivers->profiler, drivers->mpu6500.periodicIMUUpdate, ());
@@ -141,23 +140,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 
-    // if (drivers->imu.getImuState() == tap::communication::sensors::imu::ImuInterface::ImuState::IMU_CALIBRATED) {
-    // drivers->imu.periodicIMUUpdate();
-    // drivers->bmi088.periodicIMUUpdate();
-
-    // imu data with nxp alg
-    // yaw = drivers->imu.getYaw();
-    // pitch = drivers->imu.getPitch();
-    // roll = drivers->imu.getRoll();
-    // imuStatus = drivers->imu.getImuState();
-
-    yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
-    imuStatus = drivers->bmi088.getImuState();
-
-    magX = drivers->magnetometer.getX();
-    magY = drivers->magnetometer.getY();
-    magZ = drivers->magnetometer.getZ();
-    // }
+    // yaw = drivers->bmi088.getYaw();
+    // pitch = drivers->bmi088.getRoll();
+    // roll = drivers->bmi088.getPitch();
+    // imuStatus = drivers->bmi088.getImuState();
 }
