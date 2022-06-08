@@ -43,7 +43,7 @@
 #include "tap/architecture/clock.hpp"
 //
 #include "robots/robot_control.hpp"
-#include "utils/custom_imu/magnetometer/ist8310_data.hpp"
+#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -57,7 +57,7 @@ static void initializeIo(src::Drivers *drivers);
 // called as frequently.
 static void updateIo(src::Drivers *drivers);
 
-//bmi088 is at 1000Hz.. coincidence? I think not!!11!
+// bmi088 is at 1000Hz.. coincidence? I think not!!11!
 static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 int main() {
@@ -74,8 +74,8 @@ int main() {
 
     Board::initialize();
 
-    //desperate test code
-    //with magic numbers included
+    // desperate test code
+    // with magic numbers included
     tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
 
     initializeIo(drivers);
@@ -91,11 +91,10 @@ int main() {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
-        //every 1ms...
-        if (mainLoopTimeout.execute())
-        {
-            // drivers->bmi088.periodicIMUUpdate();
-            drivers->imu.periodicIMUUpdate();
+        // every 1ms...
+        if (mainLoopTimeout.execute()) {
+            drivers->bmi088.periodicIMUUpdate();
+            // drivers->imu.periodicIMUUpdate();
         }
         if (sendMotorTimeout.execute()) {
             // PROFILE(drivers->profiler, drivers->mpu6500.periodicIMUUpdate, ());
@@ -117,10 +116,10 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
     // drivers->mpu6500.init();
-    drivers->imu.initialize(SAMPLE_FREQUENCY);
-    // drivers->bmi088.initialize(SAMPLE_FREQUENCY,0.1f,0.0f);
-    drivers->imu.requestRecalibration();
-    // drivers->bmi088.requestRecalibration();
+    // drivers->imu.initialize(SAMPLE_FREQUENCY);
+    drivers->bmi088.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    // drivers->imu.requestRecalibration();
+    drivers->bmi088.requestRecalibration();
 
     drivers->refSerial.initialize();
     drivers->terminalSerial.initialize();
@@ -143,19 +142,19 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
 
     // if (drivers->imu.getImuState() == tap::communication::sensors::imu::ImuInterface::ImuState::IMU_CALIBRATED) {
-    //drivers->imu.periodicIMUUpdate();
-    //drivers->bmi088.periodicIMUUpdate();
+    // drivers->imu.periodicIMUUpdate();
+    // drivers->bmi088.periodicIMUUpdate();
 
-    //imu data with nxp alg
-    yaw = drivers->imu.getYaw();
-    pitch = drivers->imu.getPitch();
-    roll = drivers->imu.getRoll();
-    imuStatus = drivers->imu.getImuState();
+    // imu data with nxp alg
+    // yaw = drivers->imu.getYaw();
+    // pitch = drivers->imu.getPitch();
+    // roll = drivers->imu.getRoll();
+    // imuStatus = drivers->imu.getImuState();
 
-    // yaw = drivers->bmi088.getYaw();
-    // pitch = drivers->bmi088.getRoll();
-    // roll = drivers->bmi088.getPitch();
-    // imuStatus = drivers->bmi088.getImuState();
+    yaw = drivers->bmi088.getYaw();
+    pitch = drivers->bmi088.getRoll();
+    roll = drivers->bmi088.getPitch();
+    imuStatus = drivers->bmi088.getImuState();
 
     magX = drivers->magnetometer.getX();
     magY = drivers->magnetometer.getY();

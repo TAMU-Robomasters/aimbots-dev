@@ -21,9 +21,9 @@
 #define DRIVERS_HPP_
 
 #include "tap/drivers.hpp"
+#include "utils/nxp_imu/magnetometer/ist8310.hpp"
+#include "utils/nxp_imu/nxp_bmi088.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "utils/custom_imu/nxp_bmi088.hpp"
-#include "utils/custom_imu/magnetometer/ist8310.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
