@@ -22,6 +22,7 @@
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
 //
@@ -65,6 +66,7 @@ ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);

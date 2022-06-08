@@ -34,9 +34,6 @@ void GimbalPatrolCommand::initialize() {
 #endif
 }
 
-float yawOffsetAngleDisplay = 0.0f;
-float pitchOffsetAngleDisplay = 0.0f;
-
 float targetYawAngleDisplay = 0.0f;
 float targetPitchAngleDisplay = 0.0f;
 
