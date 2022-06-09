@@ -20,6 +20,8 @@
 #ifndef DRIVERS_HPP_
 #define DRIVERS_HPP_
 
+#include "informants/field_relative_informant.hpp"
+#include "informants/vision/jetson_communicator.hpp"
 #include "tap/drivers.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/nxp_imu/nxp_bmi088.hpp"
@@ -35,12 +37,17 @@ class Drivers : public tap::Drivers {
     Drivers() : tap::Drivers(),
                 controlOperatorInterface(this),
                 imu(this),
-                magnetometer() {}
+                magnetometer(),
+                cvCommunicator(this),
+                fieldRelativeInformant(this) {
+    }
 
    public:
     Control::OperatorInterface controlOperatorInterface;
     ::utils::NXPBMI088 imu;
     ::utils::Ist8310 magnetometer;
+    vision::JetsonCommunicator cvCommunicator;
+    Informants::FieldRelativeInformant fieldRelativeInformant;
 };  // class Drivers
 
 }  // namespace src

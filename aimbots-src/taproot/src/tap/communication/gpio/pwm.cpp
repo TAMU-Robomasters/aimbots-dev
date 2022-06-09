@@ -41,7 +41,7 @@ void Pwm::init()
     Timer1::start();
     Timer1::enableOutput();
 
-    Timer8::connect<PWMOutPinC5::Ch1, PWMOutPinC6::Ch2, PWMOutPinC7::Ch3>();
+    Timer8::connect<PWMOutPinC5::Ch1>();
     Timer8::enable();
     Timer8::setMode(Timer8::Mode::UpCounter);
     timer8CalculatedOverflow = Timer8::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER8_FREQUENCY);
@@ -75,8 +75,6 @@ void Pwm::writeAllZeros()
     write(0.0f, Pin::C3);
     write(0.0f, Pin::C4);
     write(0.0f, Pin::C5);
-    write(0.0f, Pin::C6);
-    write(0.0f, Pin::C7);
     write(0.0f, Pin::Buzzer);
     write(0.0f, Pin::ImuHeater);
 #endif
@@ -118,18 +116,6 @@ void Pwm::write(float duty, Pin pin)
         case Pin::C5:
             Timer8::configureOutputChannel(
                 Ch1,
-                Timer8::OutputCompareMode::Pwm,
-                duty * timer8CalculatedOverflow);
-            break;
-        case Pin::C6:
-            Timer8::configureOutputChannel(
-                Ch2,
-                Timer8::OutputCompareMode::Pwm,
-                duty * timer8CalculatedOverflow);
-            break;
-        case Pin::C7:
-            Timer8::configureOutputChannel(
-                Ch3,
                 Timer8::OutputCompareMode::Pwm,
                 duty * timer8CalculatedOverflow);
             break;
