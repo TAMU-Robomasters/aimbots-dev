@@ -22,7 +22,7 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
-static constexpr float CTRL_SCALAR = (1.0f / 4); 
+static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
@@ -147,8 +147,6 @@ static constexpr float HOPPER_OPEN_ANGLE = 60.0f;
 static constexpr float HOPPER_CLOSED_ANGLE = 155.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
-
-static constexpr int DEFAULT_BURST_LENGTH = 5; //balls
 
 /**
  * This max output is measured in the c620 robomaster translated current.

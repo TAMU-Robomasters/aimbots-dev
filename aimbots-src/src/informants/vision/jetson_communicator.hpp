@@ -12,7 +12,7 @@ namespace src {
 class Drivers;
 }
 
-namespace src::vision {
+namespace src::Informants::vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
@@ -38,7 +38,7 @@ class JetsonCommunicator {
     src::Drivers* drivers;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
-    // visionBuffer<512> messageBuffer;
+
     JetsonMessage lastMessage;
 
     JetsonCommunicatorSerialState currentSerialState;
@@ -55,4 +55,4 @@ class JetsonCommunicator {
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 };
-}  // namespace src::vision
+}  // namespace src::Informants::vision
