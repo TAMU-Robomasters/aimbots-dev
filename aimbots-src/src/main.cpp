@@ -98,7 +98,7 @@ int main() {
         if (sendMotorTimeout.execute()) {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
         modm::delay_us(10);
     }
@@ -118,10 +118,12 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->bmi088.requestRecalibration();
 
     drivers->refSerial.initialize();
-    drivers->terminalSerial.initialize();
+    // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
     drivers->magnetometer.init();
+    drivers->fieldRelativeInformant.initialize();
+    drivers->cvCommunicator.initialize();
 }
 
 float yaw, pitch, roll;
@@ -136,9 +138,10 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
+    drivers->cvCommunicator.updateSerial();
 
-    // yaw = drivers->bmi088.getYaw();
-    // pitch = drivers->bmi088.getRoll();
-    // roll = drivers->bmi088.getPitch();
-    // imuStatus = drivers->bmi088.getImuState();
+    yaw = drivers->bmi088.getYaw();
+    pitch = drivers->bmi088.getRoll();
+    roll = drivers->bmi088.getPitch();
+    imuStatus = drivers->bmi088.getImuState();
 }

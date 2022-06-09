@@ -12,7 +12,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
@@ -37,13 +37,13 @@ ChassisSubsystem chassis(drivers());
 src::Shooter::ShooterSubsystem shooter(drivers());
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 src::Shooter::RunRunShooterCommand runShooterCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &runShooterCommand},
+    {&chassisManualDriveCommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -80,14 +80,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace HeroControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    HeroControl::initializeSubsystems();
-    HeroControl::registerSubsystems(drivers);
-    HeroControl::setDefaultCommands(drivers);
-    HeroControl::startupCommands(drivers);
-    HeroControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        HeroControl::initializeSubsystems();
+        HeroControl::registerSubsystems(drivers);
+        HeroControl::setDefaultCommands(drivers);
+        HeroControl::startupCommands(drivers);
+        HeroControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif  // TARGET_HERO
