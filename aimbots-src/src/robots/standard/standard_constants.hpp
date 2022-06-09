@@ -1,5 +1,6 @@
 #pragma once
 #include "utils/common_types.hpp"
+#include "utils/math/matrix_helpers.hpp"
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -21,7 +22,7 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
-static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float CTRL_SCALAR = (1.0f / 4); 
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
@@ -97,14 +98,27 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// Used to reverse Feeder Motor direction, should only be 1 or -1
-static constexpr float FEEDER_MOTOR_DIRECTION = -1;
-static constexpr float YAW_MOTOR_DIRECTION = -1;
+static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+
+static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
+
+static constexpr float YAW_INPUT_DIRECTION = -1;
+
+static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
+
+// CAN Bus 2
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+
+// CAN Bus 1
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+
 static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 //
@@ -113,13 +127,10 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
-
-static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
+
+static constexpr bool FEEDER_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -159,14 +170,16 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
+
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // FIXME: These work for thee testbed standard, so they need to
 //        adjusted once we have real standard robots
 static constexpr float YAW_START_ANGLE = 163.0f;
 static constexpr float PITCH_START_ANGLE = 117.0f;
-static constexpr float PITCH_HARDSTOP_LOW = 134.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 74.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

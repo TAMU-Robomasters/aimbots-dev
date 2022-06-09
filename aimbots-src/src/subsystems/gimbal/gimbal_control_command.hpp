@@ -7,6 +7,12 @@
 
 namespace src::Gimbal {
 
+enum gimbalControlMode {
+    PATROL,
+    CHASE,
+    MANUAL
+};
+
 class GimbalControlCommand : public tap::control::Command {
    public:
     GimbalControlCommand(src::Drivers*,
@@ -32,6 +38,8 @@ class GimbalControlCommand : public tap::control::Command {
 
     float userInputYawSensitivityFactor;
     float userInputPitchSensitivityFactor;
+
+    gimbalControlMode currMode;
 };
 
 }  // namespace src::Gimbal

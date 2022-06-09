@@ -10,7 +10,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
 
 
-# Make data base, printed on Fri May 13 17:18:36 2022
+# Make data base, printed on Mon Jun  6 16:07:24 2022
 
 # Variables
 
@@ -40,13 +40,20 @@ MAKEFILE_LIST :=
 VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
+<<<<<<< HEAD
  
+=======
+>>>>>>> robots/sentry
 # environment
 INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
+<<<<<<< HEAD
 VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-d578d819-1a53-496a-b389-e501de33d2d8.sock
+=======
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-73d17489-d3ae-46e1-8901-6ee9ed11249c.sock
+>>>>>>> robots/sentry
 # environment
 VSCODE_CWD = /
 # environment
@@ -54,15 +61,22 @@ PATH = /opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
+<<<<<<< HEAD
 LaunchInstanceID = 744A89AF-BA49-455D-BD8B-D85D66C1D7F2
 # environment
+=======
+>>>>>>> robots/sentry
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
+<<<<<<< HEAD
 SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.zWumsvj45n/Listeners
+=======
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.FKXH8t5WLf/Listeners
+>>>>>>> robots/sentry
 # automatic
 %F = $(notdir $%)
 # environment
@@ -82,11 +96,19 @@ HOME = /Users/sidp
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
+<<<<<<< HEAD
 VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/57fd6d0195bb9b9d1b49f6da5db789060795de47
 # environment
 LOGNAME = sidp
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+=======
+VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+# environment
+LOGNAME = sidp
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+>>>>>>> robots/sentry
 # environment
 ZSH = /Users/sidp/.oh-my-zsh
 # environment
@@ -120,7 +142,11 @@ TMPDIR = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
+<<<<<<< HEAD
 VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.67.0-main.sock
+=======
+VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.67.2-main.sock
+>>>>>>> robots/sentry
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -128,7 +154,11 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
+<<<<<<< HEAD
 XPC_SERVICE_NAME = application.com.microsoft.VSCode.8597468.8597474
+=======
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.11170520.11170526
+>>>>>>> robots/sentry
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -149,8 +179,11 @@ MAKEFILES :=
 PAGER = less
 # environment
 LC_ALL = C
+<<<<<<< HEAD
 # environment
 SECURITYSESSIONID = 186b3
+=======
+>>>>>>> robots/sentry
 # automatic
 ^F = $(notdir $^)
 # default
@@ -162,9 +195,15 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
+<<<<<<< HEAD
 VSCODE_PID = 582
 # variable set hash-table stats:
 # Load=74/1024=7%, Rehash=0, Collisions=1/95=1%
+=======
+VSCODE_PID = 1779
+# variable set hash-table stats:
+# Load=72/1024=7%, Rehash=0, Collisions=1/93=1%
+>>>>>>> robots/sentry
 
 # Pattern-specific Variable Values
 
@@ -246,6 +285,10 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
+<<<<<<< HEAD
 # Finished Make data base on Fri May 13 17:18:36 2022
+=======
+# Finished Make data base on Mon Jun  6 16:07:24 2022
+>>>>>>> robots/sentry
 
  

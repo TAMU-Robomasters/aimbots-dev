@@ -1,29 +1,32 @@
+#ifdef TARGET_STANDARD
+
 #include "subsystems/hopper/open_hopper_command.hpp"
 
 namespace src::Hopper {
-    OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
-        this->drivers = drivers;
-        this->hopper = hopper;
-        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
-    }
-    
-    void OpenHopperCommand::initialize() {
-        hopper->setHopperAngle(HOPPER_OPEN_ANGLE);
-    }
+OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
+    this->drivers = drivers;
+    this->hopper = hopper;
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
+}
 
-    void OpenHopperCommand::execute() {
-    }
-    
-    void OpenHopperCommand::end(bool) {
+void OpenHopperCommand::initialize() {
+    hopper->setHopperAngle(HOPPER_OPEN_ANGLE);
+}
 
-    }
+void OpenHopperCommand::execute() {
+}
 
-    bool OpenHopperCommand::isReady() {
-        return true;
-    }
+void OpenHopperCommand::end(bool) {
+}
 
-    bool OpenHopperCommand::isFinished() const{
-        return hopper->isHopperReady();
-    }
+bool OpenHopperCommand::isReady() {
+    return true;
+}
 
-}; //namespace src::Hopper
+bool OpenHopperCommand::isFinished() const {
+    return hopper->isHopperReady();
+}
+
+};  // namespace src::Hopper
+
+#endif
