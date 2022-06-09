@@ -38,9 +38,9 @@
                 "aimbots-src/taproot/modm/src",
                 "aimbots-src/taproot/modm/ext/cmsis/core",
                 "aimbots-src/taproot/modm/ext/cmsis/device",
-                "aimbots-src/taproot/modm/ext/cmsis/dsp"
+                "aimbots-src/taproot/modm/ext/cmsis/dsp",
+                "${workspaceFolder}/aimbots-src"
             ],
-            // "compilerPath": "arm-none-eabi-g++",
             "intelliSenseMode": "gcc-arm"
         }
     ],

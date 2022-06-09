@@ -99,9 +99,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
 
-// Used to reverse Feeder Motor direction, should only be 1 or -1
-static constexpr float FEEDER_DEFAULT_SPEED = 500.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
+
 static constexpr float YAW_INPUT_DIRECTION = -1;
+
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
 
 // CAN Bus 1

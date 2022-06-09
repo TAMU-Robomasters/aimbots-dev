@@ -4,14 +4,14 @@
 #include <tap/communication/gpio/leds.hpp>
 
 #include "drivers.hpp"
-#include "vision/jetson_communicator.hpp"
-#include "vision/jetson_protocol.hpp"
+#include "informants/vision/jetson_communicator.hpp"
+#include "informants/vision/jetson_protocol.hpp"
 
 namespace src::Gimbal {
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
-                                           GimbalChassisRelativeController* gimbalController,
+                                           GimbalControllerInterface* gimbalController,
                                            float inputYawSensitivity,
                                            float inputPitchSensitivity)
     : tap::control::Command(),
@@ -27,15 +27,19 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
 void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
+#ifdef TARGET_SENTRY
     float targetYawAngle = 0.0f;
-    float targetPitchAngle = 0.0f;
-
     targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
                      userInputYawSensitivityFactor * drivers->controlOperatorInterface.getGimbalYawInput();
+    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+#else
+    // This just locks it to the the forward direction, specified by YAW_START_ANGLE
+    controller->runYawController(AngleUnit::None, 0.0f);
+#endif
+
+    float targetPitchAngle = 0.0f;
     targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
                        userInputPitchSensitivityFactor * drivers->controlOperatorInterface.getGimbalPitchInput();
-
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

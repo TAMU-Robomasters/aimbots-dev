@@ -77,12 +77,12 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-// Enables both chassis and gimbal control
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisRailBounceCommand, &gimbalPatrolCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
     {&chassisManualDriveCommand, &gimbalControlCommand},

@@ -98,7 +98,9 @@ void ChassisSubsystem::refresh() {
         refSerialWorkingDisplay = 0;
     }
 
+#ifdef TARGET_SENTRY
     drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition(motors[RAIL][0]);
+#endif
     // update motor rpm based on the robot type?
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 

@@ -9,14 +9,14 @@ BurstFeederCommand::BurstFeederCommand(src::Drivers* drivers, FeederSubsystem* f
 void BurstFeederCommand::initialize() {
     feeder->setBurstLength(4);
 
-    speed = FEEDER_DEFAULT_SPEED;
+    speed = FEEDER_DEFAULT_RPM;
     feeder->setTargetRPM(speed);
 
     initialTotalBallCount = feeder->getTotalLimitCount();
 }
 
 void BurstFeederCommand::execute() {
-    speed = FEEDER_DEFAULT_SPEED;
+    speed = FEEDER_DEFAULT_RPM;
     feeder->setTargetRPM(speed);
 }
 

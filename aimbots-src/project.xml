@@ -46,6 +46,6 @@
     <module>taproot:display</module> -->
 
     <!-- Only supported on RoboMaster Development Board Type C -->
-    <!-- <module>taproot:communication:sensors:imu:bmi088</module> -->
+    <module>taproot:communication:sensors:imu:bmi088</module>
   </modules>
 </library>

@@ -23,8 +23,8 @@ float robotPositionZDisplay = 0.0f;
 
 float robotRailPositionXDisplay = 0.0f;
 
-void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) {
 #ifdef TARGET_SENTRY  // This will need to be replaced with code that uses the ultrasonics once that works
+void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) {
     // first, get unwrapped motor position
     float motorRevolutionsUnwrapped;
     // if (cMotor->isMotorOnline()) {
@@ -49,6 +49,8 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
     robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
     robotPositionZDisplay = fieldRelativeRobotPosition[0][2];
+#else
+void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
 #endif
 }
 

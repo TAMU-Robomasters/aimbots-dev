@@ -1,3 +1,5 @@
+#ifdef TARGET_SENTRY
+
 #include "gimbal_patrol_command.hpp"
 
 namespace src::Gimbal {
@@ -119,3 +121,5 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 }
 
 };  // namespace src::Gimbal
+
+#endif
