@@ -21,23 +21,40 @@
 #define TAPROOT_DRIVERS_HPP_
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
-#include "tap/architecture/profiler.hpp"
-#include "tap/mock/analog_mock.hpp"
-#include "tap/mock/bmi088_mock.hpp"
-#include "tap/mock/can_mock.hpp"
-#include "tap/mock/can_rx_handler_mock.hpp"
-#include "tap/mock/command_mapper_mock.hpp"
-#include "tap/mock/digital_mock.hpp"
-#include "tap/mock/dji_motor_terminal_serial_handler_mock.hpp"
-#include "tap/mock/dji_motor_tx_handler_mock.hpp"
-#include "tap/mock/error_controller_mock.hpp"
-#include "tap/mock/leds_mock.hpp"
-#include "tap/mock/pwm_mock.hpp"
-#include "tap/mock/ref_serial_mock.hpp"
-#include "tap/mock/remote_mock.hpp"
-#include "tap/mock/scheduler_terminal_handler_mock.hpp"
-#include "tap/mock/terminal_serial_mock.hpp"
-#include "tap/mock/uart_mock.hpp"
+#include 
+"tap/architecture/profiler.hpp"
+#include 
+"tap/mock/analog_mock.hpp"
+#include 
+"tap/mock/bmi088_mock.hpp"
+#include 
+"tap/mock/can_mock.hpp"
+#include 
+"tap/mock/can_rx_handler_mock.hpp"
+#include 
+"tap/mock/command_mapper_mock.hpp"
+#include 
+"tap/mock/digital_mock.hpp"
+#include 
+"tap/mock/dji_motor_terminal_serial_handler_mock.hpp"
+#include 
+"tap/mock/dji_motor_tx_handler_mock.hpp"
+#include 
+"tap/mock/error_controller_mock.hpp"
+#include 
+"tap/mock/leds_mock.hpp"
+#include 
+"tap/mock/pwm_mock.hpp"
+#include 
+"tap/mock/ref_serial_mock.hpp"
+#include 
+"tap/mock/remote_mock.hpp"
+#include 
+"tap/mock/scheduler_terminal_handler_mock.hpp"
+#include 
+"tap/mock/terminal_serial_mock.hpp"
+#include 
+"tap/mock/uart_mock.hpp"
 #include "tap/mock/command_scheduler_mock.hpp"
 #else
 #include "tap/architecture/profiler.hpp"

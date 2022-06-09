@@ -4,21 +4,21 @@
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
-static constexpr float YAW_POSITION_PID_KP                    = 0.0f;
-static constexpr float YAW_POSITION_PID_KI                    = 0.0f;
-static constexpr float YAW_POSITION_PID_KD                    = 0.0f;
-static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM         = 0.0f;
-static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float YAW_POSITION_PID_KP = 0.0f;
+static constexpr float YAW_POSITION_PID_KI = 0.0f;
+static constexpr float YAW_POSITION_PID_KD = 0.0f;
+static constexpr float YAW_POSITION_PID_MAX_ERROR_SUM = 0.0f;
+static constexpr float YAW_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
+static constexpr float YAW_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
 static constexpr float YAW_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
 static constexpr float YAW_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
-static constexpr float PITCH_POSITION_PID_KP                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_KI                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_KD                    = 0.0f;
-static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM         = 0.0f;
-static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN   = 0.0f;
-static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN   = 0.0f;
+static constexpr float PITCH_POSITION_PID_KP = 0.0f;
+static constexpr float PITCH_POSITION_PID_KI = 0.0f;
+static constexpr float PITCH_POSITION_PID_KD = 0.0f;
+static constexpr float PITCH_POSITION_PID_MAX_ERROR_SUM = 0.0f;
+static constexpr float PITCH_POSITION_PID_Q_DERIVATIVE_KALMAN = 0.0f;
+static constexpr float PITCH_POSITION_PID_R_DERIVATIVE_KALMAN = 0.0f;
 static constexpr float PITCH_POSITION_PID_Q_PROPORTIONAL_KALMAN = 0.0f;
 static constexpr float PITCH_POSITION_PID_R_PROPORTIONAL_KALMAN = 0.0f;
 
@@ -49,19 +49,19 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 static constexpr float YAW_START_ANGLE = M_PI_2;
 static constexpr float PITCH_START_ANGLE = M_PI_2;
 #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
-static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 0.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 0.0f;
 
-static constexpr MotorID LEFT_BACK_WHEEL_ID   = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_WHEEL_ID  = MotorID::MOTOR2;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 //
 static constexpr MotorID TOP_SHOOTER_ID = MotorID::MOTOR1;
 static constexpr MotorID BOT_SHOOTER_ID = MotorID::MOTOR2;
 
-static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
-static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
+static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
+static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,

@@ -12,7 +12,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
@@ -64,9 +64,9 @@ HopperSubsystem hopper(drivers());
 GimbalChassisRelativeController gimbalController(&gimbal);
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface *>(&gimbalController), USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder);
@@ -85,7 +85,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisManualDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
@@ -157,14 +157,14 @@ void registerIOMappings(src::Drivers *drivers) {
 }  // namespace StandardControl
 
 namespace src::Control {
-// Initialize subsystems ---------------------------------------------------
-void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
-}
+    // Initialize subsystems ---------------------------------------------------
+    void initializeSubsystemCommands(src::Drivers * drivers) {
+        StandardControl::initializeSubsystems();
+        StandardControl::registerSubsystems(drivers);
+        StandardControl::setDefaultCommands(drivers);
+        StandardControl::startupCommands(drivers);
+        StandardControl::registerIOMappings(drivers);
+    }
 }  // namespace src::Control
 
 #endif  // TARGET_STANDARD

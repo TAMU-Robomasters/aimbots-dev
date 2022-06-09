@@ -10,7 +10,10 @@ void StopFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
 }
 
+int stopFeeder = 0;
+
 void StopFeederCommand::execute() {
+    stopFeeder = 1;
     // drivers->leds.set(tap::gpio::Leds::A, false);
     // drivers->leds.set(tap::gpio::Leds::B, false);
     // drivers->leds.set(tap::gpio::Leds::C, false);

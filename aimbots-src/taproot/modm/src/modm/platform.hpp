@@ -175,6 +175,7 @@
 #include "platform/gpio/set.hpp"
 #include "platform/gpio/software_port.hpp"
 #include "platform/gpio/unused.hpp"
+#include "platform/i2c/i2c_master_3.hpp"
 #include "platform/random/random_number_generator.hpp"
 #include "platform/spi/spi_base.hpp"
 #include "platform/spi/spi_hal_1.hpp"
