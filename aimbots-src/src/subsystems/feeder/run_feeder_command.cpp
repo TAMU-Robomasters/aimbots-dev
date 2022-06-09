@@ -11,7 +11,10 @@ void RunFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
 }
 
+int runFeeder = 0;
+
 void RunFeederCommand::execute() {
+    runFeeder = 1;
     // drivers->leds.set(tap::gpio::Leds::A, true);
     // drivers->leds.set(tap::gpio::Leds::B, false);
     // drivers->leds.set(tap::gpio::Leds::C, true);
