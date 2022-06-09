@@ -1,13 +1,14 @@
 #pragma once
 
 #include <modm/processing/resumable.hpp>
+#include <modm/processing/protothread.hpp>
 #include <modm/architecture/interface/i2c_device.hpp>
 
 #include "ist8310_data.hpp"
 
 namespace utils {
 
-class Ist8310 : modm::I2cDevice<Ist8310Data::IST_I2C_MASTER> {
+class Ist8310 : modm::I2cDevice<Ist8310Data::IST_I2C_MASTER>, modm::pt::Protothread {
    public:
     Ist8310();
 
@@ -19,70 +20,55 @@ class Ist8310 : modm::I2cDevice<Ist8310Data::IST_I2C_MASTER> {
     inline float getZ() { return z; };
 
    private:
-    inline modm::ResumableResult<bool> readRegister(Ist8310Data::Register reg) {
+    inline modm::ResumableResult<bool> readRegister(Ist8310Data::Register reg, size_t length = 1) {
         RF_BEGIN();
 
+        // Getting a segfault would be really annoying, so let's not do that...
+        if(length > 6) length = 6;
+
         raw_data_buffer[0] = uint8_t(reg);
-        transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, 1);
+        while(!transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, length));
 
         RF_END_RETURN_CALL(runTransaction());
     }
 
-    inline modm::ResumableResult<bool> writeToRegister(Ist8310Data::Register reg, uint8_t data) {
+    inline modm::ResumableResult<bool> writeToRegister(Ist8310Data::Register reg, Ist8310Data::RegisterData data) {
         RF_BEGIN();
 
         raw_data_buffer[0] = uint8_t(reg);
-        raw_data_buffer[1] = data;
+        raw_data_buffer[1] = uint8_t(data);
 
-        transaction.configureWrite(raw_data_buffer, 2);
+        while(!transaction.configureWrite(raw_data_buffer, 2));
 
         RF_END_RETURN_CALL(runTransaction());
     }
 
-    inline uint8_t readDeviceID() {
-        readRegister(Ist8310Data::Register::WHO_AM_I);
-        modm::delay_us(250);
-        return raw_data_buffer[0];
+    void initializeHardware() {
+        while(!readRegister(Ist8310Data::Register::WHO_AM_I).getResult());
+        modm::delay_ms(1);
+
+        if(raw_data_buffer[0] == uint8_t(Ist8310Data::RegisterData::DEVICE_ID))
+            isDeviceVerified = true;
+        else
+            isDeviceVerified = false;
+
+        while(!writeToRegister(Ist8310Data::Register::CONTROL_2, Ist8310Data::RegisterData::DATA_READY_FIELDS).getResult());
+        modm::delay_ms(1);
+        while(!writeToRegister(Ist8310Data::Register::DATA_AVERAGE_CONTROL, Ist8310Data::RegisterData::AVERAGE_MODE).getResult());
+        modm::delay_ms(1);
+        while(!writeToRegister(Ist8310Data::Register::PULSE_DURATION_CONTROL, Ist8310Data::RegisterData::NORMAL_PULSE_DURATION).getResult());
+        modm::delay_ms(1);
+        while(!writeToRegister(Ist8310Data::Register::CONTROL_1, Ist8310Data::RegisterData::OPERATING_MODE_SINGLE_MEASURE).getResult());
+        modm::delay_ms(1);
     }
 
-    inline uint8_t readStatus1() {
-        readRegister(Ist8310Data::Register::TEMP_DATA_LOW);
-        modm::delay_us(250);
-        return raw_data_buffer[0];
-    }
+    bool PT_readingRawAxisData() {
+        PT_BEGIN();
 
-    inline bool canReadAxisData() {
-        readRegister(Ist8310Data::Register::STATUS_1);
+        PT_CALL(readRegister(Ist8310Data::Register::X_DATA_LOW, 6));
+        modm::delay_ms(5);
 
-        // Don't continue if the data-ready bit isn't set
-        if (!(raw_data_buffer[0] & uint8_t(Ist8310Data::RegisterData::STAT1_DATA_READY_MASK)))
-            return false;
-
-        return true;
-    }
-
-    inline void setOperatingMode() {
-        uint8_t output = uint8_t(Ist8310Data::RegisterData::OPERATING_MODE_SINGLE_MEASURE);
-        writeToRegister(Ist8310Data::Register::CONTROL_1, output);
-        modm::delay_us(250);
-    }
-
-    inline void enableDataReadyParameters() {
-        uint8_t output = uint8_t(Ist8310Data::RegisterData::DATA_READY_FIELDS);
-        writeToRegister(Ist8310Data::Register::CONTROL_2, output);
-        modm::delay_us(250);
-    }
-
-    inline void setDataAverageParameters() {
-        uint8_t output = uint8_t(Ist8310Data::RegisterData::AVERAGE_MODE);
-        writeToRegister(Ist8310Data::Register::DATA_AVERAGE_CONTROL, output);
-        modm::delay_us(250);
-    }
-
-    inline void setDefaultPulseDuration() {
-        uint8_t output = uint8_t(Ist8310Data::RegisterData::NORMAL_PULSE_DURATION);
-        writeToRegister(Ist8310Data::Register::PULSE_DURATION_CONTROL, output);
-        modm::delay_us(250);
+        PT_END();
     }
 
     float x;
