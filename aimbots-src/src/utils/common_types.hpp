@@ -78,7 +78,6 @@ using MicroTimeout = tap::arch::MicroTimeout;
 using Servo = tap::motor::Servo;
 using InputPins = tap::gpio::Digital::InputPin;
 
-// using clock = tap::arch::clock;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
