@@ -2,18 +2,17 @@
 
 #include <modm/math/filter/pid.hpp>
 #include <tap/architecture/clock.hpp>
+#include <tap/architecture/periodic_timer.hpp>
+#include <tap/architecture/timeout.hpp>
 #include <tap/communication/can/can_bus.hpp>
 #include <tap/communication/serial/uart.hpp>
 #include <tap/control/command.hpp>
 #include <tap/control/comprised_command.hpp>
-#include <tap/architecture/periodic_timer.hpp>
-#include <tap/architecture/timeout.hpp>
 
+#include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "tap/communication/serial/remote.hpp"
-
-#include "modm/math/matrix.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 
 // #include <bit_cast>
@@ -69,7 +68,9 @@ using PeriodicMicroTimer = tap::arch::PeriodicMicroTimer;
 using MilliTimeout = tap::arch::MilliTimeout;
 using MicroTimeout = tap::arch::MicroTimeout;
 
-// using clock = tap::arch::clock;
+using Servo = tap::motor::Servo;
+using InputPins = tap::gpio::Digital::InputPin;
+
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
@@ -77,6 +78,3 @@ template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
 
 using InputPins = tap::gpio::Digital::InputPin;
-
-// template <uint32_t f>
-// using bitToFloat = std::bit_cast<float>(f);
