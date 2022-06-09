@@ -14,6 +14,7 @@
 #include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "tap/communication/serial/remote.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
+#include "tap/motor/servo.hpp"
 
 // #include <bit_cast>
 
