@@ -10,30 +10,23 @@
 
 namespace src::Gimbal {
 
-constexpr inline float constAbs(float value)
-{
+constexpr inline float constAbs(float value) {
     return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
 // NOTE: This function assumes the hardstops are in degrees
-constexpr float getPitchMotorDirection()
-{
-    constexpr float intialDirection = (PITCH_HARDSTOP_HIGH < PITCH_HARDSTOP_LOW) ? 1.0f : -1.0f;
+constexpr float getPitchMotorDirection() {
+    constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
 
     // If 0 is somewhere in our available arc of pitch, then we need
     // to flip the direction, because the previous condition would be
     // incorrect.
-    if constexpr (constAbs(PITCH_HARDSTOP_HIGH - PITCH_HARDSTOP_LOW) > 180.0f) {
+    if constexpr (constAbs(PITCH_SOFTSTOP_HIGH - PITCH_SOFTSTOP_LOW) > 180.0f) {
         return intialDirection * -1.0f;
     }
 
     return intialDirection;
 }
-
-enum class AngleUnit : uint8_t {
-    Degrees,
-    Radians,
-};
 
 class GimbalSubsystem : public tap::control::Subsystem {
    public:
@@ -56,9 +49,8 @@ class GimbalSubsystem : public tap::control::Subsystem {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
         targetPitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_HARDSTOP_HIGH : PITCH_HARDSTOP_LOW),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_HARDSTOP_LOW : PITCH_HARDSTOP_HIGH)
-        );
+            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
+            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH));
     }
 
     inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }

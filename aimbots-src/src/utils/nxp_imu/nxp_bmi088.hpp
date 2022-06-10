@@ -1,17 +1,17 @@
 #pragma once
 
+#include "modm/processing/protothread.hpp"
+#include "tap/algorithms/MahonyAHRS.h"
 #include "tap/algorithms/math_user_utils.hpp"
+#include "tap/communication/sensors/imu/bmi088/bmi088_data.hpp"
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 #include "tap/communication/sensors/imu_heater/imu_heater.hpp"
 #include "tap/util_macros.hpp"
+#include "utils/nxp_imu/nxp_fusion.hpp"
 
-#include "modm/processing/protothread.hpp"
-
-#include "tap/communication/sensors/imu/bmi088/bmi088_data.hpp"
-
-#include "utils/custom_imu/nxp_fusion.hpp"
-
-namespace src { class Drivers; }
+namespace src {
+class Drivers;
+}
 
 namespace utils {
 
@@ -88,15 +88,15 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
 
     inline const char *getName() const final_mockable { return "bmi088"; }
 
-    mockable inline float getYaw() final_mockable { return nxpAlgorithm.getYaw(); } 
+    mockable inline float getYaw() final_mockable { return nxpAlgorithm.getYaw(); }
     mockable inline float getPitch() final_mockable { return nxpAlgorithm.getPitch(); }
     mockable inline float getRoll() final_mockable { return nxpAlgorithm.getRoll(); }
 
-    mockable inline float getGx() final_mockable { return data.gyroDegPerSec[ImuData::X]; } //gyro
+    mockable inline float getGx() final_mockable { return data.gyroDegPerSec[ImuData::X]; }  // gyro
     mockable inline float getGy() final_mockable { return data.gyroDegPerSec[ImuData::Y]; }
     mockable inline float getGz() final_mockable { return data.gyroDegPerSec[ImuData::Z]; }
 
-    mockable inline float getAx() final_mockable { return data.accG[ImuData::X]; } //aceleramoter 
+    mockable inline float getAx() final_mockable { return data.accG[ImuData::X]; }  // aceleramoter
     mockable inline float getAy() final_mockable { return data.accG[ImuData::Y]; }
     mockable inline float getAz() final_mockable { return data.accG[ImuData::Z]; }
 
@@ -109,10 +109,8 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
     /// Offset parsed temperature reading by this amount if > RAW_TEMPERATURE_TO_APPLY_OFFSET.
     static constexpr int16_t RAW_TEMPERATURE_OFFSET = -2048;
 
-    struct ImuData
-    {
-        enum Axis
-        {
+    struct ImuData {
+        enum Axis {
             X = 0,
             Y = 1,
             Z = 2,
@@ -157,15 +155,13 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
      * stored in an 11-bit value in 2's complement format. The resolution is 0.125 deg C / LSB. The
      * temperature returned is as a float in degrees C.
      */
-    static inline float parseTemp(uint8_t tempMsb, uint8_t tempLsb)
-    {
+    static inline float parseTemp(uint8_t tempMsb, uint8_t tempLsb) {
         uint16_t temp =
             (static_cast<uint16_t>(tempMsb) * 8) + (static_cast<uint16_t>(tempLsb) / 32);
 
         int16_t shiftedTemp = static_cast<int16_t>(temp);
 
-        if (temp > RAW_TEMPERATURE_TO_APPLY_OFFSET)
-        {
+        if (temp > RAW_TEMPERATURE_TO_APPLY_OFFSET) {
             shiftedTemp += RAW_TEMPERATURE_OFFSET;
         }
 
@@ -173,4 +169,4 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
     }
 };
 
-}
+}  // namespace utils

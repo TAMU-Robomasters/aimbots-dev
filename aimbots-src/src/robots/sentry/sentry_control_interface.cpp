@@ -1,6 +1,7 @@
 #ifdef TARGET_SENTRY
 #include "sentry_control_interface.hpp"
 
+#include "subsystems/gimbal/gimbal.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
@@ -93,11 +94,13 @@ float OperatorInterface::getChassisRotationInput() {
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+    // YAW_INPUT_DIRECTION pulled from constants file
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_INPUT_DIRECTION;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
+    // Calculates intended pitch motor direction from soft stops
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * src::Gimbal::getPitchMotorDirection();
 }
 
 }  // namespace src::Control

@@ -1,19 +1,25 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp>
+#include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
 
 namespace src::Gimbal {
 
+enum gimbalControlMode {
+    PATROL,
+    CHASE,
+    MANUAL
+};
+
 class GimbalControlCommand : public tap::control::Command {
    public:
     GimbalControlCommand(src::Drivers*,
                          GimbalSubsystem*,
-                         GimbalChassisRelativeController*,
+                         GimbalControllerInterface*,
                          float inputYawSensitivity,
-                         float inputPitchSensitiity);
+                         float inputPitchSensitivity);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -28,10 +34,12 @@ class GimbalControlCommand : public tap::control::Command {
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
-    GimbalChassisRelativeController* controller;
+    GimbalControllerInterface* controller;
 
     float userInputYawSensitivityFactor;
     float userInputPitchSensitivityFactor;
+
+    gimbalControlMode currMode;
 };
 
 }  // namespace src::Gimbal

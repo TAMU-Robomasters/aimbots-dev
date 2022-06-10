@@ -47,15 +47,15 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 static constexpr float YAW_START_ANGLE = M_PI_2;
 static constexpr float PITCH_START_ANGLE = M_PI_2;
 #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
-static constexpr float PITCH_HARDSTOP_LOW  = 0.0f;
-static constexpr float PITCH_HARDSTOP_HIGH = 0.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 0.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 0.0f;
 
-static constexpr MotorID LEFT_BACK_WHEEL_ID   = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_WHEEL_ID  = MotorID::MOTOR2;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
-static constexpr MotorID RIGHT_BACK_WHEEL_ID  = MotorID::MOTOR4;
-static constexpr MotorID YAW_MOTOR_ID         = MotorID::MOTOR5;
-static constexpr MotorID PITCH_MOTOR_ID       = MotorID::MOTOR6;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
+static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,
@@ -75,4 +75,3 @@ static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
 static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
 static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
-

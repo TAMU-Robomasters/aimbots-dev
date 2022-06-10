@@ -171,8 +171,11 @@ void NXPBMI088::initializeGyro()
     setAndCheckGyroRegister(Gyro::GYRO_LPM1, Gyro::GyroLpm1::PWRMODE_NORMAL);
 }
 
+
+
 void NXPBMI088::periodicIMUUpdate()
 {
+
     if (imuState == ImuState::IMU_NOT_CONNECTED)
     {
         RAISE_ERROR(drivers, "periodicIMUUpdate called w/ imu not connected");
