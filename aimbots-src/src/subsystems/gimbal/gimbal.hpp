@@ -53,6 +53,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
             modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH));
     }
 
+    inline float getUnwrappedYawAngleMeasurement() const { return unwrappedYawAngleMeasurement; }
     inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }
     inline float getCurrentPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue()) : currentPitchAngle.getValue(); }
 
@@ -69,6 +70,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
 
+    int16_t startEncoderOffset = INT16_MIN;
+    int64_t lastUpdatedYawEncoderValue = 0;
+    float unwrappedYawAngleMeasurement = 0.0f;
     tap::algorithms::ContiguousFloat currentYawAngle;    // in Radians
     tap::algorithms::ContiguousFloat currentPitchAngle;  // in Radians
 

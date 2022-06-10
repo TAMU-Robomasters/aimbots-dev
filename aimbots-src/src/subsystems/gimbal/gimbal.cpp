@@ -4,6 +4,10 @@ static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
 
+static inline int64_t radiansToEncoder(float angle) {
+    return static_cast<int64_t>(angle * (DJIMotor::ENC_RESOLUTION / M_TWOPI));
+}
+
 namespace src::Gimbal {
 
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
@@ -32,7 +36,11 @@ void GimbalSubsystem::initialize() {
 }
 
 void GimbalSubsystem::refresh() {
+    int64_t unwrappedYawEncoder = INT64_MIN;
+
     if (yawMotor.isMotorOnline()) {
+        unwrappedYawEncoder = yawMotor.getEncoderUnwrapped();
+
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
@@ -49,6 +57,29 @@ void GimbalSubsystem::refresh() {
         // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
     }
+
+    if (startEncoderOffset == INT16_MIN) {
+        int encDiff = static_cast<int>(radiansToEncoder(modm::toRadian(YAW_START_ANGLE))) - static_cast<int>(unwrappedYawEncoder);
+
+        if (encDiff < -static_cast<int>(DJIMotor::ENC_RESOLUTION / 2)) {
+            startEncoderOffset = -DJIMotor::ENC_RESOLUTION;
+        } else if (encDiff > DJIMotor::ENC_RESOLUTION / 2) {
+            startEncoderOffset = DJIMotor::ENC_RESOLUTION;
+        } else {
+            startEncoderOffset = 0;
+        }
+    }
+
+    if (lastUpdatedYawEncoderValue == unwrappedYawEncoder)
+        return;
+
+    lastUpdatedYawEncoderValue = unwrappedYawEncoder;
+    unwrappedYawAngleMeasurement =
+        static_cast<float>(unwrappedYawEncoder
+                         - radiansToEncoder(modm::toRadian(YAW_START_ANGLE))
+                         + startEncoderOffset) *
+        M_TWOPI / static_cast<float>(DJIMotor::ENC_RESOLUTION) +
+        modm::toRadian(YAW_START_ANGLE);
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {
