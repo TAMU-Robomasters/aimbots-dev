@@ -28,11 +28,9 @@ tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
 tap::arch::MicroTimeout UltrasonicDistanceSensor::pulseTimer;
 
 void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
-    if(isRising)
-    {
+    if (isRising) {
         echoStartLeftMS = tap::arch::clock::getTimeMilliseconds();
-    } else
-    {
+    } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
         float echoFinishTime = tap::arch::clock::getTimeMilliseconds();
         distanceLeft = ((echoFinishTime - echoStartLeftMS) * 1000) * CM_PER_uS;
@@ -40,11 +38,9 @@ void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
 }
 
 void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
-    if(isRising)
-    {
+    if (isRising) {
         echoStartRightMS = tap::arch::clock::getTimeMilliseconds();
-    } else
-    {
+    } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
         float echoFinishTime = tap::arch::clock::getTimeMilliseconds();
         distanceRight = ((echoFinishTime - echoStartRightMS) * 1000) * CM_PER_uS;
@@ -58,7 +54,7 @@ void UltrasonicDistanceSensor::initialize() {
     LeftEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
     LeftEchoPin::enableExternalInterruptVector(0);
     LeftEchoPin::enableExternalInterrupt();
-    LeftEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges); //I think both edge trigger should be more accurate
+    LeftEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges);  // I think both edge trigger should be more accurate
 
     RightEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
     RightEchoPin::enableExternalInterruptVector(0);
@@ -73,7 +69,7 @@ void UltrasonicDistanceSensor::update() {
     if (echoTimer.execute()) {
         drivers->digital.set(LEFT_TRIGGER_PIN, true);
         drivers->digital.set(RIGHT_TRIGGER_PIN, true);
-        pulseTimer.restart(10); //10 microsecond pulse
+        pulseTimer.restart(10);  // 10 microsecond pulse
     }
 
     if (pulseTimer.execute()) {
