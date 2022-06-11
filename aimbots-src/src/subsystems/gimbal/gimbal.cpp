@@ -76,7 +76,7 @@ void GimbalSubsystem::refresh() {
     lastUpdatedYawEncoderValue = unwrappedYawEncoder;
     unwrappedYawAngleMeasurement =
         static_cast<float>(unwrappedYawEncoder
-                         - radiansToEncoder(modm::toRadian(YAW_START_ANGLE))
+                         - YAW_START_ENCODER
                          + startEncoderOffset) *
         M_TWOPI / static_cast<float>(DJIMotor::ENC_RESOLUTION) +
         modm::toRadian(YAW_START_ANGLE);

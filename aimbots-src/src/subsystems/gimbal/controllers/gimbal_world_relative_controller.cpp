@@ -44,7 +44,7 @@ void GimbalWorldRelativeController::initialize() {
     previousYaw = getBMIYawUnwrapped();
 
     chassisRelativeInitialIMUAngle = previousYaw;
-    worldRelativeYaw = gimbal->getTargetYawAngle(AngleUnit::Radians);
+    worldRelativeYawTarget = gimbal->getTargetYawAngle(AngleUnit::Radians);
 }
 
 void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targetYawAngle) {
@@ -56,7 +56,7 @@ void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targe
         (unit == AngleUnit::Degrees) ? modm::toRadian(targetYawAngle) : targetYawAngle,
         chassisRelativeInitialIMUAngle,
         chassisRelativeIMUYaw,
-        worldRelativeYaw,
+        worldRelativeYawTarget,
         gimbal);
 
     float worldSpaceYaw = transChassisToWorldSpace(
@@ -64,7 +64,7 @@ void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targe
         chassisRelativeIMUYaw,
         gimbal->getUnwrappedYawAngleMeasurement());
 
-    float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldRelativeYaw);
+    float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldRelativeYawTarget);
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() + modm::toRadian(drivers->bmi088.getGz()));
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);

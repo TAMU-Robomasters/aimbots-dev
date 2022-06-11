@@ -26,7 +26,7 @@ class GimbalWorldRelativeController : public GimbalControllerInterface {
     int revoluions = 0;
 
     float previousYaw = 0.0f;
-    float worldRelativeYaw = 0.0f;
+    float worldRelativeYawTarget = 0.0f;
     float chassisRelativeInitialIMUAngle = 0.0f;
 
     inline float getBMIYawUnwrapped() const {
