@@ -3,11 +3,15 @@
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
+#include "drivers.hpp"
+#include "informants/vision/jetson_communicator.hpp"
+#include "informants/vision/jetson_protocol.hpp"
+
 namespace src::Gimbal {
 
 GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
                                            GimbalSubsystem* gimbalSubsystem,
-                                           GimbalChassisRelativeController* gimbalController,
+                                           GimbalControllerInterface* gimbalController,
                                            float inputYawSensitivity,
                                            float inputPitchSensitivity)
     : tap::control::Command(),
@@ -15,19 +19,27 @@ GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers,
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       userInputYawSensitivityFactor(inputYawSensitivity),
-      userInputPitchSensitivityFactor(inputPitchSensitivity) {
+      userInputPitchSensitivityFactor(inputPitchSensitivity)  //
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
 void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
-    float targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
-                           (userInputYawSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_HORIZONTAL)) * YAW_MOTOR_DIRECTION;
+#ifdef TARGET_SENTRY
+    float targetYawAngle = 0.0f;
+    targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
+                     userInputYawSensitivityFactor * drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+#else
+    // This just locks it to the the forward direction, specified by YAW_START_ANGLE
+    controller->runYawController(AngleUnit::None, 0.0f);
+#endif
 
-    float targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
-                             (userInputPitchSensitivityFactor * drivers->remote.getChannel(tap::communication::serial::Remote::Channel::RIGHT_VERTICAL)) * getPitchMotorDirection();
+    float targetPitchAngle = 0.0f;
+    targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
+                       userInputPitchSensitivityFactor * drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

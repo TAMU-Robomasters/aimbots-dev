@@ -32,7 +32,7 @@ TAPROOT_SCRIPTS_TOOLPATH = abspath("../taproot-scripts/scons-tools")
 
 # Don't compile this stuff
 ignored_dirs         = [".lbuild_cache", BUILD_PATH, TAPROOT_PATH]
-ignored_files        = []
+ignored_files        = ["robot-type/robot-type.hpp"]
 # Don't compile this stuff when testing
 IGNORED_FILES_WHILE_TESTING = ["src/main.cpp", "src/robots/*/*_control.cpp"]
 

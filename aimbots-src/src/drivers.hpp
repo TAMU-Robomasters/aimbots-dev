@@ -20,9 +20,13 @@
 #ifndef DRIVERS_HPP_
 #define DRIVERS_HPP_
 
+#include "informants/field_relative_informant.hpp"
+#include "informants/vision/jetson_communicator.hpp"
 #include "tap/drivers.hpp"
+#include "utils/nxp_imu/magnetometer/ist8310.hpp"
+#include "utils/nxp_imu/nxp_bmi088.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "utils/ultrasonic_distance_sensor.hpp"
+#include "informants/ultrasonic_distance_sensor.hpp"
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -35,13 +39,22 @@ class Drivers : public tap::Drivers {
 #ifdef TARGET_SENTRY
                 distanceSensor(this),
 #endif
-                controlOperatorInterface(this) {}
+                controlOperatorInterface(this),
+                imu(this),
+                magnetometer(),
+                cvCommunicator(this),
+                fieldRelativeInformant(this) {
+    }
 
    public:
 #ifdef TARGET_SENTRY
     ::utils::UltrasonicDistanceSensor distanceSensor;
 #endif
     Control::OperatorInterface controlOperatorInterface;
+    ::utils::NXPBMI088 imu;
+    ::utils::Ist8310 magnetometer;
+    Informants::vision::JetsonCommunicator cvCommunicator;
+    Informants::FieldRelativeInformant fieldRelativeInformant;
 };  // class Drivers
 
 }  // namespace src

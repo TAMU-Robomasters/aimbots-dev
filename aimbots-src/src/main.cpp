@@ -43,6 +43,7 @@
 #include "tap/architecture/clock.hpp"
 //
 #include "robots/robot_control.hpp"
+#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -55,6 +56,9 @@ static void initializeIo(src::Drivers *drivers);
 // very frequently. Use PeriodicMilliTimers if you don't want something to be
 // called as frequently.
 static void updateIo(src::Drivers *drivers);
+
+// bmi088 is at 1000Hz.. coincidence? I think not!!11!
+static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 int main() {
 #ifdef PLATFORM_HOSTED
@@ -69,6 +73,11 @@ int main() {
     src::Drivers *drivers = src::DoNotUse_getDrivers();
 
     Board::initialize();
+
+    // desperate test code
+    // with magic numbers included
+    tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
+
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);
 
@@ -82,11 +91,14 @@ int main() {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
+        // every 1ms...
+        if (mainLoopTimeout.execute()) {
+            drivers->bmi088.periodicIMUUpdate();
+        }
         if (sendMotorTimeout.execute()) {
-            // PROFILE(drivers->profiler, drivers->mpu6500.periodicIMUUpdate, ());
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
         modm::delay_us(10);
     }
@@ -101,15 +113,25 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->can.initialize();
     drivers->errorController.init();
     drivers->remote.initialize();
-    // drivers->mpu6500.init();
+
+    drivers->bmi088.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    drivers->bmi088.requestRecalibration();
+
     drivers->refSerial.initialize();
-    drivers->terminalSerial.initialize();
+    // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
 #ifdef TARGET_SENTRY
     drivers->distanceSensor.initialize();
 #endif
+    // drivers->magnetometer.init();
+    drivers->fieldRelativeInformant.initialize();
+    drivers->cvCommunicator.initialize();
 }
+
+float yaw, pitch, roll;
+float magX, magY, magZ;
+tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
 #ifdef PLATFORM_HOSTED
@@ -119,8 +141,13 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    // drivers->mpu6500.read();
 #ifdef TARGET_SENTRY
     drivers->distanceSensor.update();
 #endif
+    drivers->cvCommunicator.updateSerial();
+
+    yaw = drivers->bmi088.getYaw();
+    pitch = drivers->bmi088.getRoll();
+    roll = drivers->bmi088.getPitch();
+    imuStatus = drivers->bmi088.getImuState();
 }

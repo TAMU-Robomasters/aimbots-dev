@@ -134,20 +134,20 @@ using LedsPort = SoftwareGpioPort<GpioOutputH12, GpioOutputH11, GpioOutputH10>;
 // Initialize PWM pins
         
 using PWMOutPinC1 = GpioE9;
-using PWMOutPinC6 = GpioI6;
-using PWMOutPinC7 = GpioI7;
 using PWMOutPinBuzzer = GpioD14;
 using PWMOutPinImuHeater = GpioF6;
         
-using PWMOutPins = SoftwareGpioPort<PWMOutPinC1, PWMOutPinC6, PWMOutPinC7, PWMOutPinBuzzer, PWMOutPinImuHeater>;
+using PWMOutPins = SoftwareGpioPort<PWMOutPinC1, PWMOutPinBuzzer, PWMOutPinImuHeater>;
 
 // Initialize digital input pins
         
 using DigitalInPinPF1 = GpioF1;
 using DigitalInPinPF0 = GpioF0;
 using DigitalInPinB12 = GpioB12;
+using DigitalInPinC6 = GpioI6;
+using DigitalInPinC7 = GpioI7;
         
-using DigitalInPins = SoftwareGpioPort<DigitalInPinPF1, DigitalInPinPF0, DigitalInPinB12>;
+using DigitalInPins = SoftwareGpioPort<DigitalInPinPF1, DigitalInPinPF0, DigitalInPinB12, DigitalInPinC6, DigitalInPinC7>;
 
 // Initialize digital output pins
         
