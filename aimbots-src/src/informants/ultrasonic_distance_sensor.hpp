@@ -2,15 +2,15 @@
 
 #include "tap/architecture/periodic_timer.hpp"
 #include "tap/architecture/timeout.hpp"
-#include "tap/communication/gpio/pwm.hpp"
 #include "tap/communication/gpio/digital.hpp"
+#include "tap/communication/gpio/pwm.hpp"
 #include "utils/common_types.hpp"
 
 namespace src {
 class Drivers;
 }
 
-namespace utils {
+namespace src::Informants {
 
 class UltrasonicDistanceSensor {
    public:
@@ -41,4 +41,4 @@ class UltrasonicDistanceSensor {
     static constexpr uint16_t CM_PER_uS = 1 / 58.0f;
 };
 
-}  // namespace utils
+}  // namespace src::Informants

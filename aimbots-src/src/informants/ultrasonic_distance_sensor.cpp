@@ -6,18 +6,18 @@
 //        no idea if these interrupts are used by something else
 
 MODM_ISR(EXTI9_5) {  // using GPIO_C6, EXTI9_5_IRQn referenced as the "ExternalInterruptIRQ" in gpio_C6.hpp
-    utils::UltrasonicDistanceSensor::LeftEchoPin::acknowledgeExternalInterruptFlag();
-    bool isRising = utils::UltrasonicDistanceSensor::LeftEchoPin::read();
-    utils::UltrasonicDistanceSensor::handleLeftEchoEnd(isRising);
+    src::Informants::UltrasonicDistanceSensor::LeftEchoPin::acknowledgeExternalInterruptFlag();
+    bool isRising = src::Informants::UltrasonicDistanceSensor::LeftEchoPin::read();
+    src::Informants::UltrasonicDistanceSensor::handleLeftEchoEnd(isRising);
 }
 
 MODM_ISR(EXTI15_10) {
-    utils::UltrasonicDistanceSensor::RightEchoPin::acknowledgeExternalInterruptFlag();
-    bool isRising = utils::UltrasonicDistanceSensor::RightEchoPin::read();
-    utils::UltrasonicDistanceSensor::handleRightEchoEnd(isRising);
+    src::Informants::UltrasonicDistanceSensor::RightEchoPin::acknowledgeExternalInterruptFlag();
+    bool isRising = src::Informants::UltrasonicDistanceSensor::RightEchoPin::read();
+    src::Informants::UltrasonicDistanceSensor::handleRightEchoEnd(isRising);
 }
 
-namespace utils {
+namespace src::Informants {
 
 float UltrasonicDistanceSensor::distanceLeft = 0.0f;
 float UltrasonicDistanceSensor::distanceRight = 0.0f;
@@ -78,4 +78,4 @@ void UltrasonicDistanceSensor::update() {
     }
 }
 
-}  // namespace utils
+}  // namespace src::Informants

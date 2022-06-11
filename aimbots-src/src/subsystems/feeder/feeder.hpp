@@ -41,9 +41,9 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     DJIMotor feederMotor;
 
-    LimitSwitch limitSwitchLeft;  // for single-barreled robots
+    src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
 #ifdef TARGET_SENTRY
-    LimitSwitch limitSwitchRight;  // for double-barreled robots
+    src::Informants::LimitSwitch limitSwitchRight;  // for double-barreled robots
 #endif
 
     // commands

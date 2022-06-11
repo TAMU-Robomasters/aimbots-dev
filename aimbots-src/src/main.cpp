@@ -122,7 +122,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
 #ifdef TARGET_SENTRY
-    drivers->distanceSensor.initialize();
+    drivers->railDistanceSensor.initialize();
 #endif
     // drivers->magnetometer.init();
     drivers->fieldRelativeInformant.initialize();
@@ -142,7 +142,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 #ifdef TARGET_SENTRY
-    drivers->distanceSensor.update();
+    drivers->railDistanceSensor.update();
 #endif
     drivers->cvCommunicator.updateSerial();
 
