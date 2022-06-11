@@ -2,15 +2,16 @@
 
 #include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
 #include "tap/control/command.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 namespace src::Chassis {
 
-class ChassisManualDriveCommand : public TapCommand {
+class ChassisFollowGimbalCommand : public TapCommand {
    public:
-    ChassisManualDriveCommand(src::Drivers*, ChassisSubsystem*);
+    ChassisFollowGimbalCommand(src::Drivers*, ChassisSubsystem*, src::Gimbal::GimbalSubsystem*);
     void initialize() override;
 
     void execute() override;
@@ -19,11 +20,14 @@ class ChassisManualDriveCommand : public TapCommand {
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "Chassis Manual Drive"; }
+    const char* getName() const override { return "Chassis Follow Gimbal"; }
 
    private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
+    src::Gimbal::GimbalSubsystem* gimbal;
+
+    // SmoothPID followGimbalController;
 };
 
 }  // namespace src::Chassis

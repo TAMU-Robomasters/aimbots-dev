@@ -121,7 +121,7 @@ static void initializeIo(src::Drivers *drivers) {
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
-    drivers->magnetometer.init();
+    // drivers->magnetometer.init();
     drivers->fieldRelativeInformant.initialize();
     drivers->cvCommunicator.initialize();
 }
@@ -144,4 +144,8 @@ static void updateIo(src::Drivers *drivers) {
     pitch = drivers->bmi088.getRoll();
     roll = drivers->bmi088.getPitch();
     imuStatus = drivers->bmi088.getImuState();
+
+    magX = drivers->magnetometer.getX();
+    magY = drivers->magnetometer.getY();
+    magZ = drivers->magnetometer.getZ();
 }

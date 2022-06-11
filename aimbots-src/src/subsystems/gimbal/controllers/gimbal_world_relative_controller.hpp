@@ -1,8 +1,8 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <subsystems/gimbal/gimbal.hpp>
 #include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
+#include <subsystems/gimbal/gimbal.hpp>
 #include <utils/common_types.hpp>
 #include <utils/pid/smooth_pid_wrap.hpp>
 
@@ -23,14 +23,14 @@ class GimbalWorldRelativeController : public GimbalControllerInterface {
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    int revoluions = 0;
+    int revolutions = 0;
 
     float previousYaw = 0.0f;
     float worldRelativeYawTarget = 0.0f;
     float chassisRelativeInitialIMUAngle = 0.0f;
 
     inline float getBMIYawUnwrapped() const {
-        return modm::toRadian(drivers->bmi088.getYaw()) + (M_TWOPI * revoluions);
+        return modm::toRadian(drivers->bmi088.getYaw()) + (M_TWOPI * revolutions);
     }
 
     void updateRevolutionCounter() {
@@ -39,9 +39,9 @@ class GimbalWorldRelativeController : public GimbalControllerInterface {
         previousYaw = newYaw;
 
         if (diff < -M_PI) {
-            revoluions++;
+            revolutions++;
         } else if (diff > M_PI) {
-            revoluions--;
+            revolutions--;
         }
     }
 
