@@ -3,7 +3,7 @@
 #include <drivers.hpp>
 #include <subsystems/chassis/chassis.hpp>
 
-namespace src::Chassis::Movement::Relative {
+namespace src::Chassis::Movement::Direct {
 
 void calculateUserDesiredMovement(
     src::Drivers* drivers,
@@ -13,4 +13,4 @@ void calculateUserDesiredMovement(
     float desiredChassisRotation);
 
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis);
-}  // namespace src::Chassis::Movement::Relative
+}  // namespace src::Chassis::Movement::Direct
