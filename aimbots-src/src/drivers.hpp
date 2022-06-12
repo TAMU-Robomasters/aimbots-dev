@@ -46,7 +46,7 @@ class Drivers : public tap::Drivers {
     Control::OperatorInterface controlOperatorInterface;
     ::utils::NXPBMI088 imu;
     ::utils::Ist8310 magnetometer;
-    vision::JetsonCommunicator cvCommunicator;
+    Informants::vision::JetsonCommunicator cvCommunicator;
     Informants::FieldRelativeInformant fieldRelativeInformant;
 };  // class Drivers
 

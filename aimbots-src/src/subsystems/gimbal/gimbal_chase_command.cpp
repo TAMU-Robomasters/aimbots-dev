@@ -17,14 +17,14 @@ void GimbalChaseCommand::initialize() {}
 
 float yawOffsetAngleDisplay = 0.0f;
 float pitchOffsetAngleDisplay = 0.0f;
-src::vision::CVState cvStateDisplay = src::vision::CVState::CV_STATE_UNSURE;
+src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::CV_STATE_UNSURE;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
     float targetPitchAngle = 0.0f;
 
     Matrix<float, 1, 2> visionOffsetAngles = Matrix<float, 1, 2>::zeroMatrix();
-    src::vision::CVState cvState;
+    src::Informants::vision::CVState cvState;
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;

@@ -7,7 +7,7 @@
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
 
-namespace src::vision {
+namespace src::Informants::vision {
 
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
@@ -117,4 +117,4 @@ Matrix<float, 1, 2> const& JetsonCommunicator::getVisionOffsetAngles() {
     visionOffsetAngles[0][1] = pitchOffsetPredicted;
     return visionOffsetAngles;
 }
-}  // namespace src::vision
+}  // namespace src::Informants::vision

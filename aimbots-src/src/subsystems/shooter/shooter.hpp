@@ -9,14 +9,14 @@
 namespace src::Shooter {
 
 enum MotorIndex {
-    TOP = 0,
-    BOT = 1,
     RIGHT = 0,
     LEFT = 1,
+#ifdef TARGET_SENTRY
     TOP_RIGHT = 0,
     BOT_RIGHT = 1,
     TOP_LEFT = 2,
     BOT_LEFT = 3,
+#endif
 };
 
 class ShooterSubsystem : public tap::control::Subsystem {

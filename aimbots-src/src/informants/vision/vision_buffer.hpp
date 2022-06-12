@@ -2,7 +2,7 @@
 
 #include "utils/common_types.hpp"
 
-namespace src::vision {
+namespace src::Informants::vision {
 
 template <int maxSize>
 class visionBuffer {
@@ -76,4 +76,4 @@ class visionBuffer {
         }
     }
 };
-}  // namespace src::vision
+}  // namespace src::Informants::vision

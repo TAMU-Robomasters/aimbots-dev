@@ -22,7 +22,7 @@ static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
 static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
-static constexpr float CTRL_SCALAR = (1.0f / 4); 
+static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = (1.0f / 2);
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
