@@ -26,10 +26,10 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
 {
-    motors[TOP][0] = &flywheel1;  // TOP == RIGHT
-    motors[BOT][0] = &flywheel2;  // BOT == LEFT
-    velocityPIDs[TOP][0] = &flywheel1PID;
-    velocityPIDs[BOT][0] = &flywheel2PID;
+    motors[RIGHT][0] = &flywheel1;  // TOP_RIGHT == RIGHT
+    motors[LEFT][0] = &flywheel2;   // BOT_RIGHT == LEFT
+    velocityPIDs[RIGHT][0] = &flywheel1PID;
+    velocityPIDs[LEFT][0] = &flywheel2PID;
 #ifdef TARGET_SENTRY
     motors[TOP_LEFT][0] = &flywheel3;
     motors[BOT_LEFT][0] = &flywheel4;
@@ -47,23 +47,33 @@ void ShooterSubsystem::initialize() {
 float PIDoutDisplay = 0.0f;
 float shaftSpeedDisplay = 0.0f;
 
-float FWLeft1 = 0.0f;
-float FWLeft2 = 0.0f;
-float FWRight1 = 0.0f;
-float FWRight2 = 0.0f;
+float FWRight1 = 0.0f;  // RIGHT / TOP_RIGHT
+float FWLeft1 = 0.0f;   // LEFT / BOT_LEFT
+#ifdef TARGET_SENTRY
+float FWTopLeft = 0.0f;  // TOP_LEFT
+float FWBotLeft = 0.0f;  // BOT_LEFT
+#endif
 
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     // Debug info
-    if (motors[TOP][0]->isMotorOnline()) {
-        shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
-        PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
+    if (motors[RIGHT][0]->isMotorOnline()) {
+        shaftSpeedDisplay = motors[RIGHT][0]->getShaftRPM();
+        PIDoutDisplay = velocityPIDs[RIGHT][0]->getOutput();
 
-        FWLeft1 = motors[TOP][0]->getShaftRPM();
-        FWLeft2 = motors[BOT][0]->getShaftRPM();
-        FWRight1 = motors[TOP][1]->getShaftRPM();
-        FWRight2 = motors[BOT][1]->getShaftRPM();
+        FWRight1 = motors[RIGHT][0]->getShaftRPM();
     }
+    if (motors[LEFT][0]->isMotorOnline()) {
+        FWLeft1 = motors[LEFT][0]->getShaftRPM();
+    }
+#ifdef TARGET_SENTRY
+    if (motors[TOP_LEFT][0]->isMotorOnline()) {
+        FWTopLeft = motors[TOP_LEFT][0]->getShaftRPM();
+    }
+    if (motors[BOT_LEFT][0]->isMotorOnline()) {
+        FWBotLeft = motors[BOT_LEFT][0]->getShaftRPM();
+    }
+#endif
 
     ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
 }
