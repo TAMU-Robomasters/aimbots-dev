@@ -19,6 +19,7 @@
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/controllers/gimbal_world_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 //
@@ -61,12 +62,13 @@ ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalController(&gimbal);
+GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
+GimbalWorldRelativeController gimbalWorldRelativeController(drivers(), &gimbal);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 
 RunFeederCommand runFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
