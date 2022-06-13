@@ -114,7 +114,8 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
 
-    drivers->bmi088.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    drivers->fieldRelativeInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+
     drivers->bmi088.requestRecalibration();
 
     drivers->refSerial.initialize();
@@ -122,12 +123,10 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
     // drivers->magnetometer.init();
-    drivers->fieldRelativeInformant.initialize();
     drivers->cvCommunicator.initialize();
 }
 
-float yaw, pitch, roll;
-float magX, magY, magZ;
+float yawDisplay, pitchDisplay, rollDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -138,14 +137,16 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
+    drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
 
-    yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
-    imuStatus = drivers->bmi088.getImuState();
+    imuStatus = drivers->fieldRelativeInformant.getImuState();
 
-    magX = drivers->magnetometer.getX();
-    magY = drivers->magnetometer.getY();
-    magZ = drivers->magnetometer.getZ();
+    float yaw = drivers->fieldRelativeInformant.getYaw();
+    float pitch = drivers->fieldRelativeInformant.getPitch();
+    float roll = drivers->fieldRelativeInformant.getRoll();
+
+    yawDisplay = modm::toDegree(yaw);
+    pitchDisplay = modm::toDegree(pitch);
+    rollDisplay = modm::toDegree(roll);
 }

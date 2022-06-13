@@ -1,5 +1,6 @@
 #include "field_relative_informant.hpp"
 
+#include "drivers.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -8,30 +9,76 @@ namespace src::Informants {
 FieldRelativeInformant::FieldRelativeInformant(src::Drivers* drivers)
     : drivers(drivers),
       robotStartingPosition(ROBOT_STARTING_POSITION),
+      fieldRelativeRobotPosition(Matrix<float, 1, 3>::zeroMatrix())
 #ifdef TARGET_SENTRY
-      railRelativePosition(Matrix<float, 1, 3>::zeroMatrix()),
+      ,
+      railRelativePosition(Matrix<float, 1, 3>::zeroMatrix())
 #endif
-      fieldRelativeRobotPosition(Matrix<float, 1, 3>::zeroMatrix()) {
+{
 }
 
-void FieldRelativeInformant::initialize() {
+void FieldRelativeInformant::initialize(float imuSampleFrequency, float imukP, float imukI) {
+    drivers->bmi088.initialize(imuSampleFrequency, imukP, imukI);
+}
+
+// Dev Board must be level during recalibration
+void FieldRelativeInformant::recalibrateIMU() {
+    drivers->bmi088.requestRecalibration();
+}
+// positive yaw is clockwise viewed top-down
+float FieldRelativeInformant::getYaw() {
+    // rotates by 180 degrees and negates the result, to force a 0 starting angle and postitive clockwise
+    return -modm::toRadian(drivers->bmi088.getYaw() - 180.0f);
+}
+// positive pitch is clockwise viewed from left side of dev board
+float FieldRelativeInformant::getPitch() {
+    // rotates pitch/roll vectors to account for yaw offset in dev board mounting
+    float pitch = modm::toRadian(drivers->bmi088.getPitch());
+    float roll = modm::toRadian(drivers->bmi088.getRoll());
+    tap::algorithms::rotateVector(&pitch, &roll, getYaw() + DEV_BOARD_YAW_OFFSET);
+    return -pitch;
+}
+// positive roll is clockwise viewed from front side of dev board
+float FieldRelativeInformant::getRoll() {
+    // rotates pitch/roll vectors to account for yaw offset in dev board mounting
+    float pitch = modm::toRadian(drivers->bmi088.getPitch());
+    float roll = modm::toRadian(drivers->bmi088.getRoll());
+    tap::algorithms::rotateVector(&pitch, &roll, getYaw() + DEV_BOARD_YAW_OFFSET);
+    return roll;
+}
+tap::communication::sensors::imu::ImuInterface::ImuState FieldRelativeInformant::getImuState() {
+    return drivers->bmi088.getImuState();
+}
+float FieldRelativeInformant::getGx() {
+    return drivers->bmi088.getGx();
+}
+float FieldRelativeInformant::getGy() {
+    return drivers->bmi088.getGy();
+}
+float FieldRelativeInformant::getGz() {
+    return drivers->bmi088.getGz();
+}
+float FieldRelativeInformant::getAx() {
+    return drivers->bmi088.getAx();
+}
+float FieldRelativeInformant::getAy() {
+    return drivers->bmi088.getAy();
+}
+float FieldRelativeInformant::getAz() {
+    return drivers->bmi088.getAz();
 }
 
 float robotPositionXDisplay = 0.0f;
 float robotPositionYDisplay = 0.0f;
 float robotPositionZDisplay = 0.0f;
-
 float robotRailPositionXDisplay = 0.0f;
 
-#ifdef TARGET_SENTRY  // This will need to be replaced with code that uses the ultrasonics once that works
-void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) {
+void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
+#ifdef TARGET_SENTRY
     // first, get unwrapped motor position
     float motorRevolutionsUnwrapped;
-    // if (cMotor->isMotorOnline()) {
-    motorRevolutionsUnwrapped = static_cast<float>(cMotor->getEncoderUnwrapped()) / static_cast<float>(cMotor->ENC_RESOLUTION);  // current position in motor revolutions
-    // } else {
-    //     motorRevolutionsUnwrapped = 0.0f;
-    // }
+
+    motorRevolutionsUnwrapped = static_cast<float>(odomRailMotor->getEncoderUnwrapped()) / static_cast<float>(odomRailMotor->ENC_RESOLUTION);  // current position in motor revolutions
 
     // now, convert to unwrapped wheel revolutions
     float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
@@ -39,7 +86,6 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
     float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
 
     // set the current rail position to a position matrix relative to the rail
-    // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
     railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
     robotRailPositionXDisplay = railRelativePosition[0][0];
 
@@ -49,8 +95,6 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
     robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
     robotPositionZDisplay = fieldRelativeRobotPosition[0][2];
-#else
-void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
 #endif
 }
 

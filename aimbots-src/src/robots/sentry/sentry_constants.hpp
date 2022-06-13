@@ -9,6 +9,10 @@ static constexpr uint8_t DRIVEN_WHEEL_COUNT = 1;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
+
+// in radians
+static constexpr float DEV_BOARD_YAW_OFFSET = 0.0f;
+
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
  *
@@ -162,9 +166,9 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
 // Values specific for Sentry hardware setup
-static constexpr float    YAW_START_ANGLE = 61.0f;
+static constexpr float YAW_START_ANGLE = 61.0f;
 static constexpr uint16_t YAW_START_ENCODER = 1388;
-static constexpr float    PITCH_START_ANGLE = 220.0f;
+static constexpr float PITCH_START_ANGLE = 220.0f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 270.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 155.0f;

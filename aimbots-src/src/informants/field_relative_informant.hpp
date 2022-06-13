@@ -1,4 +1,5 @@
 #pragma once
+#include "tap/communication/sensors/imu/imu_interface.hpp"
 #include "utils/common_types.hpp"
 
 namespace src {
@@ -10,39 +11,47 @@ namespace src::Informants {
 class FieldRelativeInformant {
    public:
     FieldRelativeInformant(src::Drivers* drivers);
-    // DISALLOW_COPY_AND_ASSIGN(FieldRelativeInformant);
     ~FieldRelativeInformant() = default;
 
-    void initialize();
+    void initialize(float imuFrequency, float imukP, float imukI);
 
-#ifdef TARGET_SENTRY
-    void updateFieldRelativeRobotPosition(DJIMotor* cMotor);
-#else
+    void recalibrateIMU();
+
+    float getYaw();
+    float getPitch();
+    float getRoll();
+    tap::communication::sensors::imu::ImuInterface::ImuState getImuState();
+    // get gx, gy, gz, ax, ay, az haven't been converted to robot-relative yet
+    float getGx();
+    float getGy();
+    float getGz();
+    float getAx();
+    float getAy();
+    float getAz();
+
     void updateFieldRelativeRobotPosition();
-#endif
 
-    Matrix<float, 1, 3> getFieldRelativeRobotPosition() {
-        return fieldRelativeRobotPosition;
-    }
-
-#ifdef TARGET_SENTRY
-    Matrix<float, 1, 3> getRailRelativeRobotPosition() {
-        return railRelativePosition;
-    }
-#endif
+    Matrix<float, 1, 3> getFieldRelativeRobotPosition() { return fieldRelativeRobotPosition; }
 
     float getXYAngleToFieldCoordinate(AngleUnit unit, Matrix<float, 1, 3> fieldCoordinate);
+
+#ifdef TARGET_SENTRY
+    void assignOdomRailMotor(DJIMotor* motor) { odomRailMotor = motor; }
+
+    Matrix<float, 1, 3> getRailRelativeRobotPosition() { return railRelativePosition; }
+#endif
 
    private:
     src::Drivers* drivers;
 
     Matrix<float, 1, 3> robotStartingPosition;
 
+    Matrix<float, 1, 3> fieldRelativeRobotPosition;
+
 #ifdef TARGET_SENTRY
+    DJIMotor* odomRailMotor;
     Matrix<float, 1, 3> railRelativePosition;
 #endif
-
-    Matrix<float, 1, 3> fieldRelativeRobotPosition;
 };
 
 }  // namespace src::Informants
