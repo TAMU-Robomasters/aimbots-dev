@@ -49,14 +49,20 @@ float FieldRelativeInformant::getRoll() {
 tap::communication::sensors::imu::ImuInterface::ImuState FieldRelativeInformant::getImuState() {
     return drivers->bmi088.getImuState();
 }
-float FieldRelativeInformant::getGx() {
-    return drivers->bmi088.getGx();
+float FieldRelativeInformant::getGz() {  // yaw
+    return -modm::toRadian(drivers->bmi088.getGz());
 }
-float FieldRelativeInformant::getGy() {
-    return drivers->bmi088.getGy();
+float FieldRelativeInformant::getGy() {  // pitch
+    float gY = modm::toRadian(drivers->bmi088.getGy());
+    float gX = modm::toRadian(drivers->bmi088.getGx());
+    tap::algorithms::rotateVector(&gY, &gX, getYaw() + DEV_BOARD_YAW_OFFSET);
+    return -gY;
 }
-float FieldRelativeInformant::getGz() {
-    return drivers->bmi088.getGz();
+float FieldRelativeInformant::getGx() {  // roll
+    float gY = modm::toRadian(drivers->bmi088.getGy());
+    float gX = modm::toRadian(drivers->bmi088.getGx());
+    tap::algorithms::rotateVector(&gY, &gX, getYaw() + DEV_BOARD_YAW_OFFSET);
+    return gX;
 }
 float FieldRelativeInformant::getAx() {
     return drivers->bmi088.getAx();

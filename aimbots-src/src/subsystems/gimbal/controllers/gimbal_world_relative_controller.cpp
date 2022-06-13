@@ -59,7 +59,7 @@ void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targe
         gimbal->getUnwrappedYawAngleMeasurement());
 
     float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldRelativeYawTarget);
-    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() + modm::toRadian(drivers->bmi088.getGz()));
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() + drivers->fieldRelativeInformant.getGz());
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }

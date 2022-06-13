@@ -116,7 +116,7 @@ static void initializeIo(src::Drivers *drivers) {
 
     drivers->fieldRelativeInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
 
-    drivers->bmi088.requestRecalibration();
+    drivers->fieldRelativeInformant.recalibrateIMU();
 
     drivers->refSerial.initialize();
     // drivers->terminalSerial.initialize();
@@ -127,6 +127,7 @@ static void initializeIo(src::Drivers *drivers) {
 }
 
 float yawDisplay, pitchDisplay, rollDisplay;
+float gXDisplay, gYDisplay, gZDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -145,6 +146,10 @@ static void updateIo(src::Drivers *drivers) {
     float yaw = drivers->fieldRelativeInformant.getYaw();
     float pitch = drivers->fieldRelativeInformant.getPitch();
     float roll = drivers->fieldRelativeInformant.getRoll();
+
+    gXDisplay = drivers->fieldRelativeInformant.getGx();
+    gYDisplay = drivers->fieldRelativeInformant.getGy();
+    gZDisplay = drivers->fieldRelativeInformant.getGz();
 
     yawDisplay = modm::toDegree(yaw);
     pitchDisplay = modm::toDegree(pitch);

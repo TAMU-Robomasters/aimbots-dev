@@ -21,10 +21,10 @@ class FieldRelativeInformant {
     float getPitch();
     float getRoll();
     tap::communication::sensors::imu::ImuInterface::ImuState getImuState();
-    // get gx, gy, gz, ax, ay, az haven't been converted to robot-relative yet
-    float getGx();
-    float getGy();
-    float getGz();
+    float getGz();  // yaw axis
+    float getGy();  // pitch axis
+    float getGx();  // roll axis
+    // get ax, ay, az haven't been converted to robot-relative yet
     float getAx();
     float getAy();
     float getAz();

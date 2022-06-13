@@ -30,11 +30,11 @@ class GimbalWorldRelativeController : public GimbalControllerInterface {
     float chassisRelativeInitialIMUAngle = 0.0f;
 
     inline float getBMIYawUnwrapped() const {
-        return modm::toRadian(drivers->bmi088.getYaw()) + (M_TWOPI * revolutions);
+        return drivers->fieldRelativeInformant.getYaw() + (M_TWOPI * revolutions);
     }
 
     void updateRevolutionCounter() {
-        float newYaw = modm::toRadian(drivers->bmi088.getYaw());
+        float newYaw = drivers->fieldRelativeInformant.getYaw();
         float diff = newYaw - previousYaw;
         previousYaw = newYaw;
 
