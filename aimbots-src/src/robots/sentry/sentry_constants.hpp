@@ -169,6 +169,7 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 static constexpr float YAW_START_ANGLE = 61.0f;
 static constexpr uint16_t YAW_START_ENCODER = 1388;
 static constexpr float PITCH_START_ANGLE = 220.0f;
+static constexpr uint16_t PITCH_START_ENCODER = 5006;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 270.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 155.0f;

@@ -8,6 +8,37 @@ static inline int64_t radiansToEncoder(float angle) {
     return static_cast<int64_t>(angle * (DJIMotor::ENC_RESOLUTION / M_TWOPI));
 }
 
+static inline void updateUnwrappedAngleMeasure(
+    int16_t startEncoderValue,
+    float startAngle,
+    int64_t unwrappedEncoder,
+    int16_t& startEncoderOffset,
+    int64_t& lastEncoder,
+    float& unwrappedAngleMeasure)
+{
+    if (startEncoderOffset == INT16_MIN) {
+        int encDiff = static_cast<int>(radiansToEncoder(modm::toRadian(YAW_START_ANGLE))) - static_cast<int>(unwrappedEncoder);
+
+        if (encDiff < -static_cast<int>(DJIMotor::ENC_RESOLUTION / 2)) {
+            startEncoderOffset = -DJIMotor::ENC_RESOLUTION;
+        } else if (encDiff > DJIMotor::ENC_RESOLUTION / 2) {
+            startEncoderOffset = DJIMotor::ENC_RESOLUTION;
+        } else {
+            startEncoderOffset = 0;
+        }
+    }
+
+    if (lastEncoder == unwrappedEncoder) return;
+
+    lastEncoder = unwrappedEncoder;
+    unwrappedAngleMeasure = 
+        static_cast<float>(unwrappedEncoder
+                         - startEncoderValue
+                         + startEncoderOffset) *
+        M_TWOPI / static_cast<float>(DJIMotor::ENC_RESOLUTION) +
+        modm::toRadian(startAngle);
+}
+
 namespace src::Gimbal {
 
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
@@ -37,6 +68,7 @@ void GimbalSubsystem::initialize() {
 
 void GimbalSubsystem::refresh() {
     int64_t unwrappedYawEncoder = INT64_MIN;
+    int64_t unwrappedPitchEncoder = INT64_MIN;
 
     if (yawMotor.isMotorOnline()) {
         unwrappedYawEncoder = yawMotor.getEncoderUnwrapped();
@@ -50,6 +82,8 @@ void GimbalSubsystem::refresh() {
     }
 
     if (pitchMotor.isMotorOnline()) {
+        unwrappedPitchEncoder = pitchMotor.getEncoderUnwrapped();
+
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
         currentPitchAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
@@ -58,28 +92,21 @@ void GimbalSubsystem::refresh() {
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
     }
 
-    if (startEncoderOffset == INT16_MIN) {
-        int encDiff = static_cast<int>(radiansToEncoder(modm::toRadian(YAW_START_ANGLE))) - static_cast<int>(unwrappedYawEncoder);
+    updateUnwrappedAngleMeasure(
+        YAW_START_ENCODER,
+        modm::toRadian(YAW_START_ANGLE),
+        unwrappedYawEncoder,
+        startYawEncoderOffset,
+        lastUpdatedYawEncoderValue,
+        unwrappedYawAngleMeasurement);
 
-        if (encDiff < -static_cast<int>(DJIMotor::ENC_RESOLUTION / 2)) {
-            startEncoderOffset = -DJIMotor::ENC_RESOLUTION;
-        } else if (encDiff > DJIMotor::ENC_RESOLUTION / 2) {
-            startEncoderOffset = DJIMotor::ENC_RESOLUTION;
-        } else {
-            startEncoderOffset = 0;
-        }
-    }
-
-    if (lastUpdatedYawEncoderValue == unwrappedYawEncoder)
-        return;
-
-    lastUpdatedYawEncoderValue = unwrappedYawEncoder;
-    unwrappedYawAngleMeasurement =
-        static_cast<float>(unwrappedYawEncoder
-                         - YAW_START_ENCODER
-                         + startEncoderOffset) *
-        M_TWOPI / static_cast<float>(DJIMotor::ENC_RESOLUTION) +
-        modm::toRadian(YAW_START_ANGLE);
+    updateUnwrappedAngleMeasure(
+        PITCH_START_ENCODER,
+        modm::toRadian(PITCH_START_ANGLE),
+        unwrappedPitchEncoder,
+        startPitchEncoderOffset,
+        lastUpdatedPitchEncoderValue,
+        unwrappedPitchAngleMeasurement);
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {

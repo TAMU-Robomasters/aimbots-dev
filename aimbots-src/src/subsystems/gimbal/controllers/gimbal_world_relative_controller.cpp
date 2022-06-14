@@ -22,44 +22,62 @@ static void updateWorldRelativeYawTarget(float targetYaw,
     // TODO: We might want to limit the yaw angle here. We dont need to
     //       rn, so I'll ignore it, but it's something to consider.
     gimbal->setTargetYawAngle(AngleUnit::Radians, transWorldToChassisSpace(
-                                                      chassisRelativeInitialIMUAngle,
-                                                      chassisRelativeIMUAngle,
-                                                      worldRelativeYaw));
+        chassisRelativeInitialIMUAngle,
+        chassisRelativeIMUAngle,
+        worldRelativeYaw));
+}
+
+static void updateWorldRelativePitchTarget(float targetPitch,
+                                           float chassisRelativeInitialIMUAngle,
+                                           float chassisRelativeIMUAngle,
+                                           float& worldRelativePitch,
+                                           src::Gimbal::GimbalSubsystem* gimbal) {
+    worldRelativePitch = targetPitch;
+
+    // TODO: We might want to limit the yaw angle here. We dont need to
+    //       rn, so I'll ignore it, but it's something to consider.
+    gimbal->setTargetPitchAngle(AngleUnit::Radians, transWorldToChassisSpace(
+        chassisRelativeInitialIMUAngle,
+        chassisRelativeIMUAngle,
+        worldRelativePitch));
 }
 
 namespace src::Gimbal {
 
 GimbalWorldRelativeController::GimbalWorldRelativeController(src::Drivers* drivers,
                                                              GimbalSubsystem* gimbal)
-    : drivers(drivers), gimbal(gimbal), yawPositionPID(YAW_POSITION_PID_CONFIG), pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
+    : drivers(drivers),
+      gimbal(gimbal),
+      yawPositionPID(YAW_POSITION_PID_CONFIG),
+      pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
 
 void GimbalWorldRelativeController::initialize() {
-    revolutions = 0;
+    yawRevolutions = 0;
     previousYaw = getBMIYawUnwrapped();
 
-    chassisRelativeInitialIMUAngle = previousYaw;
-    worldRelativeYawTarget = gimbal->getTargetYawAngle(AngleUnit::Radians);
+    chassisRelativeInitialIMUYaw = previousYaw;
+    worldSpaceYawTarget = gimbal->getTargetYawAngle(AngleUnit::Radians);
 }
 
 void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targetYawAngle) {
-    updateRevolutionCounter();
+    updateYawRevolutionCounter();
 
     float chassisRelativeIMUYaw = getBMIYawUnwrapped();
 
     updateWorldRelativeYawTarget(
         (unit == AngleUnit::Degrees) ? modm::toRadian(targetYawAngle) : targetYawAngle,
-        chassisRelativeInitialIMUAngle,
+        chassisRelativeInitialIMUYaw,
         chassisRelativeIMUYaw,
-        worldRelativeYawTarget,
+        worldSpaceYawTarget,
         gimbal);
 
     float worldSpaceYaw = transChassisToWorldSpace(
-        chassisRelativeInitialIMUAngle,
+        chassisRelativeInitialIMUYaw,
         chassisRelativeIMUYaw,
         gimbal->getUnwrappedYawAngleMeasurement());
 
-    float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldRelativeYawTarget);
-    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() + drivers->fieldRelativeInformant.getGz());
+    float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldSpaceYawTarget);
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() - modm::toDegree(drivers->fieldRelativeInformant.getGz()));
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
@@ -67,17 +85,22 @@ void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targe
 void GimbalWorldRelativeController::runPitchController(AngleUnit unit, float targetPitchAngle) {
     gimbal->setTargetPitchAngle(unit, targetPitchAngle);
 
-    // This gets converted to degrees so that we get a higher error. ig
-    // we could also just boost our constants, but this takes minimal
-    // calculation and seems simpler. subject to change I suppose...
-    float positionControllerError =
-        modm::toDegree(
-            gimbal->getCurrentPitchAngleAsContiguousFloat()
-                .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
+    float gimbalForwardRelativeIMUPitch = getGimbalForwardRelativeIMUPitch();
 
+    updateWorldRelativePitchTarget(
+        (unit == AngleUnit::Degrees) ? modm::toRadian(targetPitchAngle) : targetPitchAngle,
+        chassisRelativeInitialIMUPitch,
+        gimbalForwardRelativeIMUPitch,
+        worldSpacePitchTarget,
+        gimbal);
+
+    float worldSpacePitch = transChassisToWorldSpace(
+        chassisRelativeInitialIMUPitch,
+        gimbalForwardRelativeIMUPitch,
+        gimbal->getUnwrappedPitchAngleMeasurement());
+
+    float positionControllerError = ContiguousFloat(worldSpacePitch, 0, M_TWOPI).difference(worldSpacePitchTarget);
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
-
-    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
 }
 
 bool GimbalWorldRelativeController::isOnline() const { return gimbal->isOnline(); }
