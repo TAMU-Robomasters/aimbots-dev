@@ -54,7 +54,6 @@ class GimbalSubsystem : public tap::control::Subsystem {
     }
 
     inline float getUnwrappedYawAngleMeasurement() const { return unwrappedYawAngleMeasurement; }
-    inline float getUnwrappedPitchAngleMeasurement() const { return unwrappedPitchAngleMeasurement; }
     inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }
     inline float getCurrentPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue()) : currentPitchAngle.getValue(); }
 
@@ -74,10 +73,6 @@ class GimbalSubsystem : public tap::control::Subsystem {
     int16_t startYawEncoderOffset = INT16_MIN;
     int64_t lastUpdatedYawEncoderValue = 0;
     float unwrappedYawAngleMeasurement = 0.0f;
-
-    int16_t startPitchEncoderOffset = INT16_MIN;
-    int64_t lastUpdatedPitchEncoderValue = 0;
-    float unwrappedPitchAngleMeasurement = 0.0f;
 
     tap::algorithms::ContiguousFloat currentYawAngle;    // in Radians
     tap::algorithms::ContiguousFloat currentPitchAngle;  // in Radians

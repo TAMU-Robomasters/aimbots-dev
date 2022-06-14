@@ -99,14 +99,6 @@ void GimbalSubsystem::refresh() {
         startYawEncoderOffset,
         lastUpdatedYawEncoderValue,
         unwrappedYawAngleMeasurement);
-
-    updateUnwrappedAngleMeasure(
-        PITCH_START_ENCODER,
-        modm::toRadian(PITCH_START_ANGLE),
-        unwrappedPitchEncoder,
-        startPitchEncoderOffset,
-        lastUpdatedPitchEncoderValue,
-        unwrappedPitchAngleMeasurement);
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {

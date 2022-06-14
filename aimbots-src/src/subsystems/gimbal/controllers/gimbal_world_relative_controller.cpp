@@ -85,22 +85,15 @@ void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targe
 void GimbalWorldRelativeController::runPitchController(AngleUnit unit, float targetPitchAngle) {
     gimbal->setTargetPitchAngle(unit, targetPitchAngle);
 
-    float gimbalForwardRelativeIMUPitch = getGimbalForwardRelativeIMUPitch();
+    // This gets converted to degrees so that we get a higher error. ig
+    // we could also just boost our constants, but this takes minimal
+    // calculation and seems simpler. subject to change I suppose...
+    float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat()
+                                                          .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
-    updateWorldRelativePitchTarget(
-        (unit == AngleUnit::Degrees) ? modm::toRadian(targetPitchAngle) : targetPitchAngle,
-        chassisRelativeInitialIMUPitch,
-        gimbalForwardRelativeIMUPitch,
-        worldSpacePitchTarget,
-        gimbal);
-
-    float worldSpacePitch = transChassisToWorldSpace(
-        chassisRelativeInitialIMUPitch,
-        gimbalForwardRelativeIMUPitch,
-        gimbal->getUnwrappedPitchAngleMeasurement());
-
-    float positionControllerError = ContiguousFloat(worldSpacePitch, 0, M_TWOPI).difference(worldSpacePitchTarget);
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
+
+    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
 }
 
 bool GimbalWorldRelativeController::isOnline() const { return gimbal->isOnline(); }
