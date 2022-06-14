@@ -14,7 +14,7 @@ constexpr inline float constAbs(float value) {
     return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
-// NOTE: This function assumes the hardstops are in degrees
+// ! This function assumes the softstops are in degrees
 constexpr float getPitchMotorDirection() {
     constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
 
