@@ -122,6 +122,7 @@ void setDefaultCommands(src::Drivers *) {
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     // gimbal.setDefaultCommand(&gimbalControlCommand);
     // chassis.setDefaultCommand(&chassisRailBounceCommand);
+    gimbal.setDefaultCommand(&gimbalChaseCommand);
 }
 
 // Set commands scheduled on startup
