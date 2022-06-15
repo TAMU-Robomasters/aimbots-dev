@@ -1,17 +1,5 @@
 #include "gimbal_world_relative_controller.hpp"
 
-inline static float transChassisToWorldSpace(float chassisRelInitAngle,
-                                             float currChassisRelAngle,
-                                             float chassisAngle) {
-    return chassisAngle + currChassisRelAngle - chassisRelInitAngle;
-}
-
-inline static float transWorldToChassisSpace(float chassisRelInitAngle,
-                                             float currChassisRelAngle,
-                                             float worldAngle) {
-    return worldAngle - currChassisRelAngle + chassisRelInitAngle;
-}
-
 static void updateWorldRelativeYawTarget(float targetYaw,
                                          float chassisRelativeInitialIMUAngle,
                                          float chassisRelativeIMUAngle,
@@ -22,9 +10,21 @@ static void updateWorldRelativeYawTarget(float targetYaw,
     // TODO: We might want to limit the yaw angle here. We dont need to
     //       rn, so I'll ignore it, but it's something to consider.
     gimbal->setTargetYawAngle(AngleUnit::Radians, transWorldToChassisSpace(
-        chassisRelativeInitialIMUAngle,
-        chassisRelativeIMUAngle,
-        worldRelativeYaw));
+                                                      chassisRelativeInitialIMUAngle,
+                                                      chassisRelativeIMUAngle,
+                                                      worldRelativeYaw));
+}
+
+inline static float transWorldToChassisSpace(float chassisRelInitAngle,
+                                             float currChassisRelAngle,
+                                             float worldAngle) {
+    return worldAngle - currChassisRelAngle + chassisRelInitAngle;
+}
+
+inline static float transChassisToWorldSpace(float chassisRelInitAngle,
+                                             float currChassisRelAngle,
+                                             float chassisAngle) {
+    return chassisAngle + currChassisRelAngle - chassisRelInitAngle;
 }
 
 static void updateWorldRelativePitchTarget(float targetPitch,
@@ -37,9 +37,9 @@ static void updateWorldRelativePitchTarget(float targetPitch,
     // TODO: We might want to limit the yaw angle here. We dont need to
     //       rn, so I'll ignore it, but it's something to consider.
     gimbal->setTargetPitchAngle(AngleUnit::Radians, transWorldToChassisSpace(
-        chassisRelativeInitialIMUAngle,
-        chassisRelativeIMUAngle,
-        worldRelativePitch));
+                                                        chassisRelativeInitialIMUAngle,
+                                                        chassisRelativeIMUAngle,
+                                                        worldRelativePitch));
 }
 
 namespace src::Gimbal {
@@ -52,28 +52,31 @@ GimbalWorldRelativeController::GimbalWorldRelativeController(src::Drivers* drive
       pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
 
 void GimbalWorldRelativeController::initialize() {
-    yawRevolutions = 0;
-    previousYaw = getBMIYawUnwrapped();
+    chassisRevolutions = 0;
+    prevWrappedChassisAngle = getUnwrappedChassisAngle();
 
-    chassisRelativeInitialIMUYaw = previousYaw;
+    prevUnwrappedChassisAngle = prevWrappedChassisAngle;
     worldSpaceYawTarget = gimbal->getTargetYawAngle(AngleUnit::Radians);
 }
 
 void GimbalWorldRelativeController::runYawController(AngleUnit unit, float targetYawAngle) {
-    updateYawRevolutionCounter();
+    if (unit == AngleUnit::Degrees) {
+        targetYawAngle = modm::toRadian(targetYawAngle);
+    }
+    updateChassisRevolutionCounter();
 
-    float chassisRelativeIMUYaw = getBMIYawUnwrapped();
+    float unwrappedChassisAngle = getUnwrappedChassisAngle();
 
     updateWorldRelativeYawTarget(
-        (unit == AngleUnit::Degrees) ? modm::toRadian(targetYawAngle) : targetYawAngle,
-        chassisRelativeInitialIMUYaw,
-        chassisRelativeIMUYaw,
+        targetYawAngle,
+        prevUnwrappedChassisAngle,
+        unwrappedChassisAngle,
         worldSpaceYawTarget,
         gimbal);
 
     float worldSpaceYaw = transChassisToWorldSpace(
-        chassisRelativeInitialIMUYaw,
-        chassisRelativeIMUYaw,
+        prevUnwrappedChassisAngle,
+        unwrappedChassisAngle,
         gimbal->getUnwrappedYawAngleMeasurement());
 
     float positionControllerError = ContiguousFloat(worldSpaceYaw, 0, M_TWOPI).difference(worldSpaceYawTarget);
@@ -89,7 +92,7 @@ void GimbalWorldRelativeController::runPitchController(AngleUnit unit, float tar
     // we could also just boost our constants, but this takes minimal
     // calculation and seems simpler. subject to change I suppose...
     float positionControllerError = modm::toDegree(gimbal->getCurrentPitchAngleAsContiguousFloat()
-                                                          .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
+                                                       .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 

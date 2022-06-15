@@ -23,28 +23,29 @@ class GimbalWorldRelativeController : public GimbalControllerInterface {
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    int yawRevolutions = 0;
+    int chassisRevolutions = 0;
 
-    float previousYaw = 0.0f;
+    float prevWrappedChassisAngle = 0.0f;
     float worldSpaceYawTarget = 0.0f;
-    float chassisRelativeInitialIMUYaw = 0.0f;
+    float prevUnwrappedChassisAngle = 0.0f;
 
-    inline float getBMIYawUnwrapped() const {
-        return drivers->fieldRelativeInformant.getYaw() + (M_TWOPI * yawRevolutions);
+    // uses IMU to get total chassis rotation since initialization
+    inline float getUnwrappedChassisAngle() const {
+        return drivers->fieldRelativeInformant.getYaw() + (M_TWOPI * chassisRevolutions);
     }
 
-    void updateYawRevolutionCounter() {
-        float newYaw = drivers->fieldRelativeInformant.getYaw();
-        float diff = newYaw - previousYaw;
-        previousYaw = newYaw;
+    void updateChassisRevolutionCounter() {
+        float newWrappedChassisAngle = drivers->fieldRelativeInformant.getYaw();
+        float diff = newWrappedChassisAngle - prevWrappedChassisAngle;
 
         if (diff < -M_PI) {
-            yawRevolutions++;
+            chassisRevolutions++;
         } else if (diff > M_PI) {
-            yawRevolutions--;
+            chassisRevolutions--;
         }
+        prevWrappedChassisAngle = newWrappedChassisAngle;
     }
-    
+
     SmoothPID yawPositionPID;
     SmoothPID pitchPositionPID;
 };
