@@ -27,24 +27,31 @@ float UltrasonicDistanceSensor::echoStartRightMS = 0.0f;
 tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
 tap::arch::MicroTimeout UltrasonicDistanceSensor::pulseTimer;
 
+float leftDistanceDebug, rightDistanceDebug;
+float generalDebug;
+
 void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
     if (isRising) {
-        echoStartLeftMS = tap::arch::clock::getTimeMilliseconds();
+        echoStartLeftMS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
-        float echoFinishTime = tap::arch::clock::getTimeMilliseconds();
-        distanceLeft = ((echoFinishTime - echoStartLeftMS) * 1000) * CM_PER_uS;
+        float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
+        distanceLeft = ((echoFinishTime - echoStartLeftMS)) * CM_PER_uS;
+        leftDistanceDebug = distanceLeft;
     }
+    generalDebug++;
 }
 
 void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
     if (isRising) {
-        echoStartRightMS = tap::arch::clock::getTimeMilliseconds();
+        echoStartRightMS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
-        float echoFinishTime = tap::arch::clock::getTimeMilliseconds();
-        distanceRight = ((echoFinishTime - echoStartRightMS) * 1000) * CM_PER_uS;
+        float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
+        distanceRight = ((echoFinishTime - echoStartRightMS)) * CM_PER_uS;
+        rightDistanceDebug = distanceRight;
     }
+    generalDebug++;
 }
 
 UltrasonicDistanceSensor::UltrasonicDistanceSensor(src::Drivers* drivers)
@@ -62,6 +69,8 @@ void UltrasonicDistanceSensor::initialize() {
     RightEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges);
 }
 
+bool readDebug;
+
 void UltrasonicDistanceSensor::update() {
     // Send pulse, start timer, and turn of pulse to see how long it takes
     // until we get the end of the pulse signal.
@@ -76,6 +85,7 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
+    readDebug = src::Informants::UltrasonicDistanceSensor::RightEchoPin::read();
 }
 
 }  // namespace src::Informants

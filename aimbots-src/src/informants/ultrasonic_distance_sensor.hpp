@@ -38,7 +38,7 @@ class UltrasonicDistanceSensor {
 
     static constexpr tap::gpio::Digital::OutputPin LEFT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C2;
     static constexpr tap::gpio::Digital::OutputPin RIGHT_TRIGGER_PIN = tap::gpio::Digital::OutputPin::C4;
-    static constexpr uint16_t CM_PER_uS = 1 / 58.0f;
+    static constexpr float CM_PER_uS = 1 / 58.0f;
 };
 
 }  // namespace src::Informants
