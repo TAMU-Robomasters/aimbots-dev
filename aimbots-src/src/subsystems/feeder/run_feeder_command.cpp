@@ -1,8 +1,15 @@
 #include "run_feeder_command.hpp"
 
 namespace src::Feeder {
+
+static constexpr float BARREL_HEAT_MAX_PERCENTAGE = 0.90f;
+
 RunFeederCommand::RunFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder)
-    : drivers(drivers), feeder(feeder), speed(0) {
+    : drivers(drivers),
+      feeder(feeder),
+      canShoot(true),
+      speed(0)
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
@@ -12,6 +19,8 @@ void RunFeederCommand::initialize() {
 }
 
 void RunFeederCommand::execute() {
+    canShoot = isOverMaxHeatPercentage(drivers, BARREL_HEAT_MAX_PERCENTAGE);
+
     speed = FEEDER_DEFAULT_RPM;
     feeder->setTargetRPM(speed);
 }
@@ -23,6 +32,7 @@ bool RunFeederCommand::isReady() {
 }
 
 bool RunFeederCommand::isFinished() const {
-    return false;  // finished condition (button released) or their api is nice and we don't have to
+    return !canShoot;
 }
+
 }  // namespace src::Feeder

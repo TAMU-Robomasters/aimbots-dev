@@ -26,6 +26,7 @@ class RunFeederCommand : public TapCommand {
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     float speed;
+    bool canShoot;
 };
 
 }  // namespace src::Feeder
