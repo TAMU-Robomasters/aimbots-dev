@@ -1,6 +1,7 @@
 #include "field_relative_informant.hpp"
 
 #include "drivers.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -26,6 +27,9 @@ void FieldRelativeInformant::initialize(float imuSampleFrequency, float imukP, f
 void FieldRelativeInformant::recalibrateIMU() {
     drivers->bmi088.requestRecalibration();
 }
+
+inline float FieldRelativeInformant::getCurrentFieldSpaceGimbalYaw(AngleUnit unit) const { return (gimbal) ? gimbal->getCurrentFieldSpaceYawAngle(unit) : 0.0f; }
+
 // positive yaw is clockwise viewed top-down
 float FieldRelativeInformant::getYaw() {
     // rotates by 180 degrees and negates the result, to force a 0 starting angle and postitive clockwise
