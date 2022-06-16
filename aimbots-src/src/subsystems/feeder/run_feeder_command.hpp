@@ -28,7 +28,6 @@ class RunFeederCommand : public TapCommand {
 
     float speed;
     float acceptableHeatThreshold;
-    bool canShoot;
 };
 
 }  // namespace src::Feeder

@@ -85,9 +85,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 50.0f,
-    .ki = 0.0f,
-    .kd = 0.0f,
+    .kp = 30.0f,
+    .ki = 0.10f,
+    .kd = 0.00f,
     .maxICumulative = 10.0f,
     .maxOutput = 30000.0f,
     .tQDerivativeKalman = 1.0f,

@@ -6,7 +6,6 @@ BurstFeederCommand::BurstFeederCommand(src::Drivers* drivers, FeederSubsystem* f
       feeder(feeder),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
-      canShoot(true),
       startingTotalBallCount(0),
       burstLength(burstLength) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
@@ -25,12 +24,12 @@ void BurstFeederCommand::end(bool) {
 }
 
 bool BurstFeederCommand::isReady() {
-    return true;
+    return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
 }
 
 bool BurstFeederCommand::isFinished() const {
     int elapsedTotal = feeder->getTotalLimitCount() - startingTotalBallCount;
 
-    return elapsedTotal >= burstLength;
+    return (elapsedTotal >= burstLength) || !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
 }
 }  // namespace src::Feeder
