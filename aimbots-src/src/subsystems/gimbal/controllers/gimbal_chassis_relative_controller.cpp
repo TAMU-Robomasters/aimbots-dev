@@ -14,9 +14,9 @@ void GimbalChassisRelativeController::initialize() {
     pitchPositionPID.pid.reset();
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredYawAngle) {
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisSpaceYawAngle) {
     UNUSED(unit);
-    UNUSED(desiredYawAngle);
+    UNUSED(targetChassisSpaceYawAngle);
 
     // NOTE: If you are finding that the gimbal is lagging behind the
     //       chassis a fair bit and you came here to find out why,
@@ -28,31 +28,31 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
     // The easiest way to do that would probably be to use a watch
     // in the debugger and find what angle, IN DEGREES, describes the
     // forward direction.
-    gimbal->setTargetYawAngle(AngleUnit::Degrees, YAW_START_ANGLE);
+    gimbal->setTargetChassisSpaceYawAngle(AngleUnit::Degrees, YAW_START_ANGLE);
 
     // This gets converted to degrees so that we get a higher error. ig
     // we could also just boost our constants, but this takes minimal
     // calculation and seems simpler. subject to change I suppose...
     float positionControllerError =
         modm::toDegree(
-            gimbal->getCurrentYawAngleAsContiguousFloat()
-                .difference(gimbal->getTargetYawAngle(AngleUnit::Radians)));
+            gimbal->getCurrentChassisSpaceYawAngleAsContiguousFloat()
+                .difference(gimbal->getTargetChassisSpaceYawAngle(AngleUnit::Radians)));
 
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
 
-void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float desiredPitchAngle) {
-    gimbal->setTargetPitchAngle(unit, desiredPitchAngle);
+void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisSpacePitchAngle) {
+    gimbal->setTargetChassisSpacePitchAngle(unit, targetChassisSpacePitchAngle);
 
     // This gets converted to degrees so that we get a higher error. ig
     // we could also just boost our constants, but this takes minimal
     // calculation and seems simpler. subject to change I suppose...
     float positionControllerError =
         modm::toDegree(
-            gimbal->getCurrentPitchAngleAsContiguousFloat()
-                .difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
+            gimbal->getCurrentChassisSpacePitchAngleAsContiguousFloat()
+                .difference(gimbal->getTargetChassisSpacePitchAngle(AngleUnit::Radians)));
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 

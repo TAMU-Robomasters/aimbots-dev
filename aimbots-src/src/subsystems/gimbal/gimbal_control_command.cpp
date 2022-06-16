@@ -29,7 +29,7 @@ void GimbalControlCommand::initialize() {}
 void GimbalControlCommand::execute() {
 #ifdef TARGET_SENTRY
     float targetYawAngle = 0.0f;
-    targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) -
+    targetYawAngle = gimbal->getTargetChassisSpaceYawAngle(AngleUnit::Degrees) -
                      userInputYawSensitivityFactor * drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 #else
@@ -38,7 +38,7 @@ void GimbalControlCommand::execute() {
 #endif
 
     float targetPitchAngle = 0.0f;
-    targetPitchAngle = gimbal->getTargetPitchAngle(AngleUnit::Degrees) -
+    targetPitchAngle = gimbal->getTargetChassisSpacePitchAngle(AngleUnit::Degrees) -
                        userInputPitchSensitivityFactor * drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
