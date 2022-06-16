@@ -40,12 +40,7 @@ void calculateUserDesiredMovement(src::Drivers* drivers,
 }
 
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
-    const float MAX_WHEEL_SPEED = ChassisSubsystem::getMaxUserWheelSpeed(
-        drivers->refSerial.getRefSerialReceivingData(),
-        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
-
-    float chassisRotationDesiredWheelspeed =
-        drivers->controlOperatorInterface.getChassisRotationInput() * MAX_WHEEL_SPEED;
+    float chassisRotationDesiredWheelspeed = drivers->controlOperatorInterface.getChassisRotationInput();
 
     float chassisXDesiredWheelspeed = 0.0f;
     float chassisYDesiredWheelspeed = 0.0f;

@@ -98,13 +98,24 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+// hero stuff, just saving here until we regenerate hero code from standards lol
+// static constexpr uint16_t shooter_speed_array[4] =
+//     {10, 3000,
+//      16, 5000};
+
+// static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+
+static constexpr uint16_t shooter_speed_array[6] =
+    {15, 4000,  // {ball m/s, flywheel rpm}
+     18, 4600,
+     30, 8500};
+
+static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
+static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 static constexpr float YAW_INPUT_DIRECTION = -1;
-
-static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

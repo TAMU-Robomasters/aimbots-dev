@@ -65,7 +65,6 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
     uint16_t heatLimit = 0;
 
     auto launcherID = turretData.launchMechanismID;
-
     switch (launcherID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
@@ -73,7 +72,7 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID1; // changing to 1 temporarily, change this back once ref serial is less cringe
+            lastHeat = turretData.heat17ID1;  // changing to 1 temporarily, change this back once newer taproot build has been pulled
             heatLimit = turretData.heatLimit17ID1;
             break;
         }
