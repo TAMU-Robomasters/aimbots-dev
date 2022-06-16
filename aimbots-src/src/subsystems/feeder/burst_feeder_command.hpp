@@ -30,7 +30,7 @@ class BurstFeederCommand : public TapCommand {
     float acceptableHeatThreshold;
     bool canShoot;
 
-    int initialTotalBallCount;
+    int startingTotalBallCount;
     int burstLength;
 };
 
