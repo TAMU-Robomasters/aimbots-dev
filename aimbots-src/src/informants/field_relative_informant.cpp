@@ -8,6 +8,7 @@ namespace src::Informants {
 
 FieldRelativeInformant::FieldRelativeInformant(src::Drivers* drivers)
     : drivers(drivers),
+      gimbal(nullptr),
       robotStartingPosition(ROBOT_STARTING_POSITION),
       fieldRelativeRobotPosition(Matrix<float, 1, 3>::zeroMatrix())
 #ifdef TARGET_SENTRY

@@ -1,5 +1,7 @@
 #pragma once
 #include "tap/communication/sensors/imu/imu_interface.hpp"
+
+#include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 
 namespace src {
@@ -14,8 +16,11 @@ class FieldRelativeInformant {
     ~FieldRelativeInformant() = default;
 
     void initialize(float imuFrequency, float imukP, float imukI);
+    inline void attachGimbalSubsystem(src::Gimbal::GimbalSubsystem const* gimbal) { this->gimbal = gimbal; }
 
     void recalibrateIMU();
+
+    inline float getCurrentFieldSpaceGimbalYaw(AngleUnit unit) const { return (gimbal) ? gimbal->getCurrentFieldSpaceYawAngle(unit) : 0.0f; }
 
     float getYaw();
     float getPitch();
@@ -43,6 +48,7 @@ class FieldRelativeInformant {
 
    private:
     src::Drivers* drivers;
+    src::Gimbal::GimbalSubsystem const* gimbal;
 
     Matrix<float, 1, 3> robotStartingPosition;
 
