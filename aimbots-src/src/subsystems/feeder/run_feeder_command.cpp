@@ -2,26 +2,22 @@
 
 namespace src::Feeder {
 
-static constexpr float BARREL_HEAT_MAX_PERCENTAGE = 0.90f;
-
-RunFeederCommand::RunFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder)
+RunFeederCommand::RunFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold)
     : drivers(drivers),
       feeder(feeder),
-      canShoot(true),
-      speed(0)
-{
+      speed(speed),
+      acceptableHeatThreshold(acceptableHeatThreshold),
+      canShoot(true) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void RunFeederCommand::initialize() {
-    speed = 0.0f;
     feeder->setTargetRPM(0.0f);
 }
 
 void RunFeederCommand::execute() {
-    canShoot = isOverMaxHeatPercentage(drivers, BARREL_HEAT_MAX_PERCENTAGE);
+    canShoot = feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
 
-    speed = FEEDER_DEFAULT_RPM;
     feeder->setTargetRPM(speed);
 }
 

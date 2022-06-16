@@ -8,34 +8,10 @@
 
 namespace src::Feeder {
 
-bool isOverMaxHeatPercentage(src::Drivers* drivers, float maxPercentage) {
-    using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
-    auto turretData = drivers->refSerial.getRobotData().turret;
-
-    uint16_t lastHeat  = 0;
-    uint16_t heatLimit = 0;
-
-    if (turretData.bulletType == RefSerialRxData::BulletType::AMMO_17) {
-        auto mechID = turretData.launchMechanismID;
-        if (mechID == RefSerialRxData::MechanismID::TURRET_17MM_1) {
-            lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
-        } else if (mechID == RefSerialRxData::MechanismID::TURRET_17MM_2) {
-            lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
-        }
-    } else if (turretData.bulletType == RefSerialRxData::BulletType::AMMO_42) {
-        lastHeat = turretData.heat42;
-        heatLimit = turretData.heatLimit42;
-    }
-
-    return lastHeat <= ((float)heatLimit * BARREL_HEAT_MAX_PERCENTAGE);
-}
-
 class FeederSubsystem : public tap::control::Subsystem {
    public:
     FeederSubsystem(
-        tap::Drivers* drivers);
+        src::Drivers* drivers);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -48,9 +24,29 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     int getTotalLimitCount() const;
 
-    // I love setters and getters
-    void setBurstLength(int newBurstLength);
-    int getBurstLength() const;
+    bool isBarrelHeatAcceptable(float maxPercentage) {
+        using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
+        auto turretData = drivers->refSerial.getRobotData().turret;
+
+        uint16_t lastHeat = 0;
+        uint16_t heatLimit = 0;
+
+        if (turretData.bulletType == RefSerialRxData::BulletType::AMMO_17) {
+            auto mechID = turretData.launchMechanismID;
+            if (mechID == RefSerialRxData::MechanismID::TURRET_17MM_1) {
+                lastHeat = turretData.heat17ID1;
+                heatLimit = turretData.heatLimit17ID1;
+            } else if (mechID == RefSerialRxData::MechanismID::TURRET_17MM_2) {
+                lastHeat = turretData.heat17ID2;
+                heatLimit = turretData.heatLimit17ID2;
+            }
+        } else if (turretData.bulletType == RefSerialRxData::BulletType::AMMO_42) {
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
+        }
+
+        return lastHeat <= (static_cast<float>(heatLimit) * maxPercentage);
+    }
 
     SmoothPID feederVelPID;
 
@@ -61,7 +57,6 @@ class FeederSubsystem : public tap::control::Subsystem {
 #endif
     float targetRPM;
     float desiredOutput;
-    int burstLength;
 
     DJIMotor feederMotor;
 

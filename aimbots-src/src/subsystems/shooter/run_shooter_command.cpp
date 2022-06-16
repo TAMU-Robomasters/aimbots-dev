@@ -48,9 +48,9 @@ void RunShooterCommand::execute() {
 
     auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
 
-    float speedLimit17mmID1 = refSysRobotTurretData.barrelSpeedLimit17ID1;
-    float speedLimit17mmID2 = refSysRobotTurretData.barrelSpeedLimit17ID2;
-    float speedLimit42mm = refSysRobotTurretData.barrelSpeedLimit42;
+    uint16_t speedLimit17mmID1 = refSysRobotTurretData.barrelSpeedLimit17ID1;
+    uint16_t speedLimit17mmID2 = refSysRobotTurretData.barrelSpeedLimit17ID2;
+    uint16_t speedLimit42mm = refSysRobotTurretData.barrelSpeedLimit42;
 
     using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 

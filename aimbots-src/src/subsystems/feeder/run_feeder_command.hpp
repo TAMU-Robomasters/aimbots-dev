@@ -11,7 +11,7 @@ namespace src::Feeder {
 
 class RunFeederCommand : public TapCommand {
    public:
-    RunFeederCommand(src::Drivers*, FeederSubsystem*);
+    RunFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -25,7 +25,9 @@ class RunFeederCommand : public TapCommand {
    private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+
     float speed;
+    float acceptableHeatThreshold;
     bool canShoot;
 };
 

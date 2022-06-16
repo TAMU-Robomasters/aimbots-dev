@@ -11,7 +11,7 @@ namespace src::Feeder {
 
 class BurstFeederCommand : public TapCommand {
    public:
-    BurstFeederCommand(src::Drivers*, FeederSubsystem*);
+    BurstFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f, int burstLength = DEFAULT_BURST_LENGTH);
     void initialize() override;
 
     void execute() override;
@@ -25,9 +25,13 @@ class BurstFeederCommand : public TapCommand {
    private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+
     float speed;
+    float acceptableHeatThreshold;
+    bool canShoot;
 
     int initialTotalBallCount;
+    int burstLength;
 };
 
 }  // namespace src::Feeder
