@@ -1,5 +1,7 @@
 #include "gimbal_field_relative_controller.hpp"
 
+#define RADPS_TO_RPM 9.549297f
+
 namespace src::Gimbal {
 
 GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbal)
@@ -23,7 +25,7 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
     // don't even have to convert back to field space to run the PID
     // controller. We just run it the same way we would before.
 
-    // FIXME: Verify that these plus and minus signs work out...
+    // !FIXME: Verify that these plus and minus signs work out...
     gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, fieldRelativeYawTarget - drivers->fieldRelativeInformant.getYaw() + YAW_START_ANGLE);
 
     float positionControllerError =
@@ -33,7 +35,7 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
     float yawPositionPIDOutput =
         yawPositionPID.runController(
             positionControllerError,
-            gimbal->getYawMotorRPM() - modm::toDegree(drivers->fieldRelativeInformant.getGz()));
+            gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));  // kD tuned for RPM, so we'll convert to RPM
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
