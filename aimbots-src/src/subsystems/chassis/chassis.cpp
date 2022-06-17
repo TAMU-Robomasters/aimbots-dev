@@ -118,15 +118,15 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
 #if defined(TARGET_SENTRY)
 void ChassisSubsystem::setTargetRPMs(float x, float, float) {
     calculateRail(x,
-                  ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                  ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(SWERVE)
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateSwerve(x, y, r,
-                    ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                    ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateMecanum(x, y, r,
-                     ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                     ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
 }
 

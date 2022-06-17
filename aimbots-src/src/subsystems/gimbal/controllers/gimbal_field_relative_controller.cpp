@@ -28,14 +28,10 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
     // !FIXME: Verify that these plus and minus signs work out...
     gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, fieldRelativeYawTarget - drivers->fieldRelativeInformant.getYaw() + YAW_START_ANGLE);
 
-    float positionControllerError =
-        modm::toDegree(gimbal->getCurrentChassisRelativeYawAngleAsContiguousFloat()
-                           .difference(gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(gimbal->getCurrentChassisRelativeYawAngleAsContiguousFloat().difference(gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Radians)));
 
-    float yawPositionPIDOutput =
-        yawPositionPID.runController(
-            positionControllerError,
-            gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));  // kD tuned for RPM, so we'll convert to RPM
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
+    // kD tuned for RPM, so we'll convert to RPM
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }

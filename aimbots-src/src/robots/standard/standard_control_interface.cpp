@@ -27,6 +27,8 @@ float OperatorInterface::getChassisXInput() {
         prevUpdateCounterX = updateCounter;
     }
 
+    float digitalX = drivers->remote.keyPressed(Remote::Key::A) - drivers->remote.keyPressed(Remote::Key::D);
+
     float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
     float finalX = analogX;  // TODO: Add digital values from keyboard as well
