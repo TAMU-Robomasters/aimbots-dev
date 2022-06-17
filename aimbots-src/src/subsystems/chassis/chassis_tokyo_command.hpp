@@ -3,7 +3,8 @@
 #include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
-#include "tap/control/command.hpp"
+//
+#include "tap/algorithms/ramp.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -27,7 +28,9 @@ class ChassisTokyoCommand : public TapCommand {
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;
 
-    // SmoothPID followGimbalController;
+    float rotationDirection;
+
+    tap::algorithms::Ramp rotationSpeedRamp;
 };
 
 }  // namespace src::Chassis
