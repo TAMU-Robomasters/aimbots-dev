@@ -7,7 +7,7 @@
   <options>
     <option name="taproot:project_name">aimbots-src</option>
 
-    <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option>
+    <!-- <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option> -->
     <option name="taproot:docs:source_paths">src</option>
     <option name="taproot:rebuild_modm">True</option>
     
