@@ -37,6 +37,7 @@ void FeederSubsystem::refresh() {
 void FeederSubsystem::updateMotorVelocityPID() {
     float err = targetRPM - feederMotor.getShaftRPM();
     feederVelPID.runControllerDerivateError(err);
+    desiredOutput = feederVelPID.getOutput();
 }
 
 float FeederSubsystem::setTargetRPM(float rpm) {
