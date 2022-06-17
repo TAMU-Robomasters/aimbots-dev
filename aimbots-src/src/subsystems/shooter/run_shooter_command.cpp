@@ -39,7 +39,7 @@ void RunShooterCommand::execute() {
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;  // handles both as #1 for now because ref system protocol changed recently
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {

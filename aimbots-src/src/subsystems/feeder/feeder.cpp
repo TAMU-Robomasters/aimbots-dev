@@ -73,8 +73,8 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID1;  // changing to 1 temporarily, change this back once newer taproot build has been pulled
-            heatLimit = turretData.heatLimit17ID1;
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
