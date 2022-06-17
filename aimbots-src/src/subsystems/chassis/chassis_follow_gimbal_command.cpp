@@ -16,7 +16,7 @@ void ChassisFollowGimbalCommand::initialize() {
 }
 
 void ChassisFollowGimbalCommand::execute() {
-    Movement::Direct::onExecute(drivers, chassis);
+    Movement::Independent::onExecute(drivers, chassis);
 }
 
 void ChassisFollowGimbalCommand::end(bool) {

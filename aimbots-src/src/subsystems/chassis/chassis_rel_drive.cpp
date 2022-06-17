@@ -7,7 +7,7 @@ float xFromRemote = 0.0f;
 int8_t chassisXDesiredWheelspeedWatch = 0;
 int8_t chassisYDesiredWheelspeedWatch = 0;
 
-namespace src::Chassis::Movement::Direct {
+namespace src::Chassis::Movement::Independent {
 
 void calculateUserDesiredMovement(src::Drivers* drivers,
                                   ChassisSubsystem* chassis,
@@ -63,4 +63,4 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);
 }
-}  // namespace src::Chassis::Movement::Direct
+}  // namespace src::Chassis::Movement::Independent

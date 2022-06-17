@@ -15,7 +15,7 @@ void ChassisManualDriveCommand::initialize() {
 }
 
 void ChassisManualDriveCommand::execute() {
-    Movement::Direct::onExecute(drivers, chassis);
+    Movement::Independent::onExecute(drivers, chassis);
 }
 
 void ChassisManualDriveCommand::end(bool) {
