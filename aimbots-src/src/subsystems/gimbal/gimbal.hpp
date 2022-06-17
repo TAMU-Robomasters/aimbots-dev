@@ -14,20 +14,6 @@ constexpr inline float constAbs(float value) {
     return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
-// NOTE: This function assumes the hardstops are in degrees
-constexpr float getPitchMotorDirection() {
-    constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
-
-    // If 0 is somewhere in our available arc of pitch, then we need
-    // to flip the direction, because the previous condition would be
-    // incorrect.
-    if constexpr (constAbs(PITCH_SOFTSTOP_HIGH - PITCH_SOFTSTOP_LOW) > 180.0f) {
-        return intialDirection * -1.0f;
-    }
-
-    return intialDirection;
-}
-
 class GimbalSubsystem : public tap::control::Subsystem {
    public:
     GimbalSubsystem(src::Drivers*);
@@ -54,8 +40,8 @@ class GimbalSubsystem : public tap::control::Subsystem {
         int status = 0;
         targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
+            modm::toRadian((IS_PITCH_MOTOR_INVERTED) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
+            modm::toRadian((IS_PITCH_MOTOR_INVERTED) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
             &status);
     }
 
