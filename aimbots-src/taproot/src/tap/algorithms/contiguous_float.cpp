@@ -102,7 +102,7 @@ float ContiguousFloat::limitValue(
     const float min,
     const float max,
     int* status)
-{ 
+{
     ContiguousFloat minContig(min, valueToLimit.lowerBound, valueToLimit.upperBound);
     ContiguousFloat maxContig(max, valueToLimit.lowerBound, valueToLimit.upperBound);
     return limitValue(valueToLimit, minContig, maxContig, status);
