@@ -14,8 +14,8 @@ class GimbalChassisRelativeController : public GimbalControllerInterface {
 
     void initialize() override;
 
-    void runYawController(AngleUnit unit, float targetChassisSpaceYawAngle) override;
-    void runPitchController(AngleUnit unit, float targetChassisSpacePitchAngle) override;
+    void runYawController(AngleUnit unit, float targetChassisRelativeYawAngle) override;
+    void runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle) override;
 
     inline SmoothPID* getYawPositionPID() { return &yawPositionPID; }
     inline SmoothPID* getPitchPositionPID() { return &pitchPositionPID; }

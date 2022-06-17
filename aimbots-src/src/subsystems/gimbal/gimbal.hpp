@@ -42,30 +42,30 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
 
-    inline float getTargetChassisSpaceYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisSpaceYawAngle) : targetChassisSpaceYawAngle; }
-    inline void setTargetChassisSpaceYawAngle(AngleUnit unit, float angle) {
+    inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
+    inline void setTargetChassisRelativeYawAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
-        targetChassisSpaceYawAngle = ContiguousFloat(angle, 0, M_TWOPI).getValue();
+        targetChassisRelativeYawAngle = ContiguousFloat(angle, 0, M_TWOPI).getValue();
     }
 
-    inline float getTargetChassisSpacePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisSpacePitchAngle) : targetChassisSpacePitchAngle; }
-    inline void setTargetChassisSpacePitchAngle(AngleUnit unit, float angle) {
+    inline float getTargetChassisRelativePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativePitchAngle) : targetChassisRelativePitchAngle; }
+    inline void setTargetChassisRelativePitchAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
-        targetChassisSpacePitchAngle = ContiguousFloat::limitValue(
+        targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
             modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
             modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH));
     }
 
-    inline float getCurrentFieldSpaceYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentFieldSpaceYawAngle.getValue()) : currentFieldSpaceYawAngle.getValue(); }
-    inline float getCurrentChassisSpaceYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisSpaceYawAngle.getValue()) : currentChassisSpaceYawAngle.getValue(); }
-    inline float getCurrentChassisSpacePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisSpacePitchAngle.getValue()) : currentChassisSpacePitchAngle.getValue(); }
+    inline float getCurrentFieldRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentFieldRelativeYawAngle.getValue()) : currentFieldRelativeYawAngle.getValue(); }
+    inline float getCurrentChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativeYawAngle.getValue()) : currentChassisRelativeYawAngle.getValue(); }
+    inline float getCurrentChassisRelativePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativePitchAngle.getValue()) : currentChassisRelativePitchAngle.getValue(); }
 
     float getCurrentYawAngleFromChassisCenter(AngleUnit) const;
     float getCurrentPitchAngleFromChassisCenter(AngleUnit) const;
 
-    inline tap::algorithms::ContiguousFloat const& getCurrentChassisSpaceYawAngleAsContiguousFloat() const { return currentChassisSpaceYawAngle; }
-    inline tap::algorithms::ContiguousFloat const& getCurrentChassisSpacePitchAngleAsContiguousFloat() const { return currentChassisSpacePitchAngle; }
+    inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativeYawAngleAsContiguousFloat() const { return currentChassisRelativeYawAngle; }
+    inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativePitchAngleAsContiguousFloat() const { return currentChassisRelativePitchAngle; }
 
     inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
     inline float getPitchMotorRPM() const { return (pitchMotor.isMotorOnline()) ? pitchMotor.getShaftRPM() : 0.0f; }
@@ -76,12 +76,12 @@ class GimbalSubsystem : public tap::control::Subsystem {
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
 
-    tap::algorithms::ContiguousFloat currentFieldSpaceYawAngle;      // In radians
-    tap::algorithms::ContiguousFloat currentChassisSpaceYawAngle;    // In radians
-    tap::algorithms::ContiguousFloat currentChassisSpacePitchAngle;  // In radians
+    tap::algorithms::ContiguousFloat currentFieldRelativeYawAngle;      // In radians
+    tap::algorithms::ContiguousFloat currentChassisRelativeYawAngle;    // In radians
+    tap::algorithms::ContiguousFloat currentChassisRelativePitchAngle;  // In radians
 
-    float targetChassisSpaceYawAngle;    // in Radians
-    float targetChassisSpacePitchAngle;  // in Radians
+    float targetChassisRelativeYawAngle;    // in Radians
+    float targetChassisRelativePitchAngle;  // in Radians
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;

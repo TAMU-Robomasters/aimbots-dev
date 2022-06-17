@@ -1,15 +1,16 @@
 #pragma once
 #include "tap/communication/sensors/imu/imu_interface.hpp"
-
 #include "utils/common_types.hpp"
 
 namespace src {
 
 class Drivers;
 
-namespace Gimbal { class GimbalSubsystem; }
-
+namespace Gimbal {
+class GimbalSubsystem;
 }
+
+}  // namespace src
 
 namespace src::Informants {
 
@@ -23,7 +24,7 @@ class FieldRelativeInformant {
 
     void recalibrateIMU();
 
-    inline float getCurrentFieldSpaceGimbalYaw(AngleUnit unit) const;
+    inline float getCurrentFieldRelativeGimbalYaw(AngleUnit unit) const;
 
     float getYaw();
     float getPitch();

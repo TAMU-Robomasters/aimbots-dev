@@ -14,18 +14,18 @@ class GimbalFieldRelativeController : public GimbalControllerInterface {
 
     void initialize() override;
 
-    void runYawController(AngleUnit unit, float desiredFieldSpaceYawAngle) override;
-    void runPitchController(AngleUnit unit, float desiredChassisSpacePitchAngle) override;
+    void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) override;
+    void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle) override;
 
     bool isOnline() const;
 
-    inline float getFieldSpaceTargetYaw(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? fieldSpaceYawTarget : modm::toDegree(fieldSpaceYawTarget); }
+    inline float getFieldRelativeTargetYaw(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
 
    private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    float fieldSpaceYawTarget = 0.0f;
+    float fieldRelativeYawTarget = 0.0f;
 
     SmoothPID yawPositionPID;
     SmoothPID pitchPositionPID;

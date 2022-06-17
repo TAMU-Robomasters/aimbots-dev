@@ -28,7 +28,7 @@ void FieldRelativeInformant::recalibrateIMU() {
     drivers->bmi088.requestRecalibration();
 }
 
-inline float FieldRelativeInformant::getCurrentFieldSpaceGimbalYaw(AngleUnit unit) const { return (gimbal) ? gimbal->getCurrentFieldSpaceYawAngle(unit) : 0.0f; }
+inline float FieldRelativeInformant::getCurrentFieldRelativeGimbalYaw(AngleUnit unit) const { return (gimbal) ? gimbal->getCurrentFieldRelativeYawAngle(unit) : 0.0f; }
 
 // positive yaw is clockwise viewed top-down
 float FieldRelativeInformant::getYaw() {
