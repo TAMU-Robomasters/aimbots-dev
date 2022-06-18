@@ -2,6 +2,8 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define TOKYO_COMPATIBLE
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */
@@ -10,8 +12,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-// in radians
-static constexpr float DEV_BOARD_YAW_OFFSET = 0.0f;
+static constexpr float DEV_BOARD_YAW_OFFSET = 0.0f;  // in radians
 
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
@@ -105,9 +106,6 @@ static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
 
 static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
 
-static constexpr bool IS_YAW_MOTOR_INVERTED = false;
-static constexpr bool IS_PITCH_MOTOR_INVERTED = false;
-
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
@@ -135,6 +133,9 @@ static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = true;
+
+static constexpr bool YAW_DIRECTION = false;
+static constexpr bool PITCH_DIRECTION = false;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -181,25 +182,11 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 // FIXME: These work for the testbed standard, so they need to
 //        adjusted once we have real standard robots
 static constexpr float YAW_START_ANGLE = 163.0f;
-static constexpr uint16_t YAW_START_ENCODER = 3709;
+
 static constexpr float PITCH_START_ANGLE = 117.0f;
-static constexpr uint16_t PITCH_START_ENCODER = 2662;
+
 static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
-
-/**
- * @brief TOKYO CONSTANTS
- */
-// Fraction that user input is multiplied by when "drifting"
-static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
-// Fraction of the maximum translation speed for when rotation speed should be reduced
-static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
-// Fraction of max chassis speed applied to rotation speed
-static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
-// Fraction to cut rotation speed by when the robot is "drifting"
-static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
-// Rotational speed increment per iteration to apply until rotation setpoint is reached
-static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
@@ -234,3 +221,17 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  * we start slowing down translational speed.
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
+
+/**
+ * @brief TOKYO CONSTANTS
+ */
+// Fraction that user input is multiplied by when "drifting"
+static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
+// Fraction of the maximum translation speed for when rotation speed should be reduced
+static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
+// Fraction of max chassis speed applied to rotation speed
+static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
+// Fraction to cut rotation speed by when the robot is "drifting"
+static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
+// Rotational speed increment per iteration to apply until rotation setpoint is reached
+static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm

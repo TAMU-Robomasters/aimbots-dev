@@ -40,8 +40,8 @@ class GimbalSubsystem : public tap::control::Subsystem {
         int status = 0;
         targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((IS_PITCH_MOTOR_INVERTED) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
-            modm::toRadian((IS_PITCH_MOTOR_INVERTED) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
+            modm::toRadian((PITCH_DIRECTION) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
+            modm::toRadian((PITCH_DIRECTION) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
             &status);
     }
 

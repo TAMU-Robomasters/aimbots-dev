@@ -1,6 +1,10 @@
-#include "chassis_tokyo_command.hpp"
+#include "utils/robot_specific_inc.hpp"
+#ifdef TOKYO_COMPATIBLE
 
 #include <subsystems/chassis/chassis_rel_drive.hpp>
+
+#include "chassis_tokyo_command.hpp"
+#warning "tokyo compatible"
 
 namespace src::Chassis {
 
@@ -64,3 +68,5 @@ bool ChassisTokyoCommand::isFinished() const {
 }
 
 }  // namespace src::Chassis
+
+#endif

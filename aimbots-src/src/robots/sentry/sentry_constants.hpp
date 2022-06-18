@@ -105,8 +105,8 @@ static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
-static constexpr bool IS_YAW_MOTOR_INVERTED = false;
-static constexpr bool IS_PITCH_MOTOR_INVERTED = false;
+static constexpr bool YAW_DIRECTION = false;
+static constexpr bool PITCH_DIRECTION = false;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
 

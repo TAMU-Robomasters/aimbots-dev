@@ -12,12 +12,12 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       yawMotor(drivers,
                YAW_MOTOR_ID,
                GIMBAL_BUS,
-               IS_YAW_MOTOR_INVERTED,
+               YAW_DIRECTION,
                "Yaw Motor"),
       pitchMotor(drivers,
                  PITCH_MOTOR_ID,
                  GIMBAL_BUS,
-                 IS_PITCH_MOTOR_INVERTED,
+                 PITCH_DIRECTION,
                  "Pitch Motor"),
       currentFieldRelativeYawAngle(0.0f, 0.0f, M_TWOPI),
       currentChassisRelativeYawAngle(0.0f, 0.0f, M_TWOPI),
@@ -33,11 +33,16 @@ void GimbalSubsystem::initialize() {
     pitchMotor.setDesiredOutput(0);
 }
 
+float yawChassisRelativeDisplay = 0.0f;
+float pitchChassisRelativeDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentChassisRelativeYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
+
+        yawChassisRelativeDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());
 
         // FIXME: Verify that these plus and minus signs work out...
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getYaw() - modm::toRadian(YAW_START_ANGLE));
@@ -50,6 +55,8 @@ void GimbalSubsystem::refresh() {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
         currentChassisRelativePitchAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
+
+        pitchChassisRelativeDisplay = modm::toDegree(currentChassisRelativePitchAngle.getValue());
 
         // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
