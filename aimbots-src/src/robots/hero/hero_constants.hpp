@@ -63,7 +63,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 600.0f,
     .ki = 0.0f,
-    .kd = 500.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -135,23 +135,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool FEEDER_DIRECTION = true;
 
 static constexpr bool YAW_DIRECTION = false;
-static constexpr bool PITCH_DIRECTION = false;
-
-// // Hopper constants
-// static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
-
-// static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
-
-// static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
-// static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
-
-// static constexpr float HOPPER_MIN_ANGLE = 0.0f;
-// static constexpr float HOPPER_MAX_ANGLE = 270.0f;
-
-// static constexpr float HOPPER_OPEN_ANGLE = 60.0f;
-// static constexpr float HOPPER_CLOSED_ANGLE = 155.0f;
-//
-// static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
+static constexpr bool PITCH_DIRECTION = true;
 
 /**
  * This max output is measured in the c620 robomaster translated current.
@@ -179,10 +163,11 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 163.0f;
-static constexpr float PITCH_START_ANGLE = 117.0f;
-static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
+static constexpr float YAW_START_ANGLE = 67.5f;
+static constexpr float PITCH_START_ANGLE = 270.45f;
+
+static constexpr float PITCH_SOFTSTOP_LOW = 249.5f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 325.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

@@ -14,21 +14,15 @@ void GimbalFieldRelativeController::initialize() {
     fieldRelativeYawTarget = 0.0f;
 }
 
+float fieldRelativeYawTargetDisplay = 0.0f;
+float targetChassisRelativeYawAngleDisplay = 0.0f;
+
 void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) {
     fieldRelativeYawTarget = (unit == AngleUnit::Degrees) ? desiredFieldRelativeYawAngle : modm::toDegree(desiredFieldRelativeYawAngle);
 
-    // TODO: We might want to limit the yaw angle here. We dont need to
-    //       rn, so I'll ignore it, but it's something to consider.
+    fieldRelativeYawTargetDisplay = fieldRelativeYawTarget;
 
-    // Our `desiredFieldRelativeYawAngle` is converted into chassis space
-    // and is then set as our gimbal's `targetYawAngle`. This way, we
-    // don't even have to convert back to field space to run the PID
-    // controller. We just run it the same way we would before.
-
-    // !FIXME: Verify that these plus and minus signs work out...
-    gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, fieldRelativeYawTarget - drivers->fieldRelativeInformant.getYaw() + YAW_START_ANGLE);
-
-    float positionControllerError = modm::toDegree(gimbal->getCurrentChassisRelativeYawAngleAsContiguousFloat().difference(gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(modm::toRadian(fieldRelativeYawTarget)));
 
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
     // kD tuned for RPM, so we'll convert to RPM

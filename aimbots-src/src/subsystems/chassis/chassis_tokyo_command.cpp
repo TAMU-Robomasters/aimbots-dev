@@ -17,6 +17,7 @@ ChassisTokyoCommand::ChassisTokyoCommand(src::Drivers* drivers, ChassisSubsystem
 }
 
 void ChassisTokyoCommand::initialize() {
+    rotationDirection = 1.0f;
 }
 
 void ChassisTokyoCommand::execute() {
@@ -49,9 +50,9 @@ void ChassisTokyoCommand::execute() {
 
         float r = rotationSpeedRamp.getValue();
 
-        rotateVector(&x, &y, gimbalYawAngle);
+        rotateVector(&x, &y, -gimbalYawAngle);
 
-        chassis->setTargetRPMs(x, y, r);
+        chassis->setTargetRPMs(-x, -y, r);
     }
 }
 

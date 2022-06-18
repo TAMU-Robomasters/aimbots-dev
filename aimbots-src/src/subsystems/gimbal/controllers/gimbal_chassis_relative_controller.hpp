@@ -22,6 +22,8 @@ class GimbalChassisRelativeController : public GimbalControllerInterface {
 
     bool isOnline() const;
 
+    float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetChassisRelativeYawAngle(unit); }
+
    private:
     GimbalSubsystem* gimbal;
 

@@ -19,7 +19,7 @@ class GimbalFieldRelativeController : public GimbalControllerInterface {
 
     bool isOnline() const;
 
-    inline float getFieldRelativeTargetYaw(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
+    float getTargetYaw(AngleUnit unit) const override { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
 
    private:
     src::Drivers* drivers;

@@ -7,9 +7,9 @@
 
 namespace src::Gimbal {
 
-class GimbalControlCommand : public tap::control::Command {
+class GimbalFieldRelativeControlCommand : public tap::control::Command {
    public:
-    GimbalControlCommand(src::Drivers*,
+    GimbalFieldRelativeControlCommand(src::Drivers*,
                          GimbalSubsystem*,
                          GimbalControllerInterface*,
                          float inputYawSensitivity,

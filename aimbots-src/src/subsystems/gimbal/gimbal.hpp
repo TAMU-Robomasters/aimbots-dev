@@ -38,10 +38,20 @@ class GimbalSubsystem : public tap::control::Subsystem {
     inline void setTargetChassisRelativePitchAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
         int status = 0;
+
+        float high, low = 0.0f;
+        if (PITCH_SOFTSTOP_HIGH > PITCH_SOFTSTOP_LOW) {
+            high = PITCH_SOFTSTOP_HIGH;
+            low = PITCH_SOFTSTOP_LOW;
+        } else{
+            low = PITCH_SOFTSTOP_HIGH;
+            high = PITCH_SOFTSTOP_LOW;
+        }
+
         targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((PITCH_DIRECTION) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
-            modm::toRadian((PITCH_DIRECTION) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
+            low,
+            high,
             &status);
     }
 
@@ -53,6 +63,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     float getCurrentPitchAngleFromChassisCenter(AngleUnit) const;
 
     inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativeYawAngleAsContiguousFloat() const { return currentChassisRelativeYawAngle; }
+    inline tap::algorithms::ContiguousFloat const& getCurrentFieldRelativeYawAngleAsContiguousFloat() const { return currentFieldRelativeYawAngle; }
     inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativePitchAngleAsContiguousFloat() const { return currentChassisRelativePitchAngle; }
 
     inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
