@@ -19,26 +19,18 @@ float targetChassisRelativeYawAngleDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) {
     fieldRelativeYawTarget = (unit == AngleUnit::Degrees) ? desiredFieldRelativeYawAngle : modm::toDegree(desiredFieldRelativeYawAngle);
-
     fieldRelativeYawTargetDisplay = fieldRelativeYawTarget;
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(modm::toRadian(fieldRelativeYawTarget)));
-
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
     // kD tuned for RPM, so we'll convert to RPM
-
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
 
 void GimbalFieldRelativeController::runPitchController(AngleUnit unit, float desiredFieldRelativePitchAngle) {
     gimbal->setTargetChassisRelativePitchAngle(unit, desiredFieldRelativePitchAngle);
 
-    // This gets converted to degrees so that we get a higher error. ig
-    // we could also just boost our constants, but this takes minimal
-    // calculation and seems simpler. subject to change I suppose...
-    float positionControllerError =
-        modm::toDegree(gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                           .difference(gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat().difference(gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Radians)));
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
