@@ -221,6 +221,22 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 
+static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
+
+static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
+    .kp = 0.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 30000.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 /**
  * @brief TOKYO CONSTANTS
  */

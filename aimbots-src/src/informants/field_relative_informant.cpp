@@ -31,24 +31,24 @@ void FieldRelativeInformant::recalibrateIMU() {
 inline float FieldRelativeInformant::getCurrentFieldRelativeGimbalYaw(AngleUnit unit) const { return (gimbal) ? gimbal->getCurrentFieldRelativeYawAngle(unit) : 0.0f; }
 
 // positive yaw is clockwise viewed top-down
-float FieldRelativeInformant::getYaw() {
+float FieldRelativeInformant::getChassisYaw() {
     // rotates by 180 degrees and negates the result, to force a 0 starting angle and postitive clockwise
     return -modm::toRadian(drivers->bmi088.getYaw() - 180.0f);
 }
 // positive pitch is clockwise viewed from left side of dev board
-float FieldRelativeInformant::getPitch() {
+float FieldRelativeInformant::getChassisPitch() {
     // rotates pitch/roll vectors to account for yaw offset in dev board mounting
     float pitch = modm::toRadian(drivers->bmi088.getPitch());
     float roll = modm::toRadian(drivers->bmi088.getRoll());
-    tap::algorithms::rotateVector(&pitch, &roll, getYaw() + DEV_BOARD_YAW_OFFSET);
+    tap::algorithms::rotateVector(&pitch, &roll, getChassisYaw() + DEV_BOARD_YAW_OFFSET);
     return -pitch;
 }
 // positive roll is clockwise viewed from front side of dev board
-float FieldRelativeInformant::getRoll() {
+float FieldRelativeInformant::getChassisRoll() {
     // rotates pitch/roll vectors to account for yaw offset in dev board mounting
     float pitch = modm::toRadian(drivers->bmi088.getPitch());
     float roll = modm::toRadian(drivers->bmi088.getRoll());
-    tap::algorithms::rotateVector(&pitch, &roll, getYaw() + DEV_BOARD_YAW_OFFSET);
+    tap::algorithms::rotateVector(&pitch, &roll, getChassisYaw() + DEV_BOARD_YAW_OFFSET);
     return roll;
 }
 tap::communication::sensors::imu::ImuInterface::ImuState FieldRelativeInformant::getImuState() {
@@ -60,23 +60,23 @@ float FieldRelativeInformant::getGz() {  // yaw
 float FieldRelativeInformant::getGy() {  // pitch
     float gY = modm::toRadian(drivers->bmi088.getGy());
     float gX = modm::toRadian(drivers->bmi088.getGx());
-    tap::algorithms::rotateVector(&gY, &gX, getYaw() + DEV_BOARD_YAW_OFFSET);
+    tap::algorithms::rotateVector(&gY, &gX, getChassisYaw() + DEV_BOARD_YAW_OFFSET);
     return -gY;
 }
 float FieldRelativeInformant::getGx() {  // roll
     float gY = modm::toRadian(drivers->bmi088.getGy());
     float gX = modm::toRadian(drivers->bmi088.getGx());
-    tap::algorithms::rotateVector(&gY, &gX, getYaw() + DEV_BOARD_YAW_OFFSET);
+    tap::algorithms::rotateVector(&gY, &gX, getChassisYaw() + DEV_BOARD_YAW_OFFSET);
     return gX;
 }
-float FieldRelativeInformant::getAx() {
-    return drivers->bmi088.getAx();
+float FieldRelativeInformant::getAz() {
+    return drivers->bmi088.getAz();
 }
 float FieldRelativeInformant::getAy() {
     return drivers->bmi088.getAy();
 }
-float FieldRelativeInformant::getAz() {
-    return drivers->bmi088.getAz();
+float FieldRelativeInformant::getAx() {
+    return drivers->bmi088.getAx();
 }
 
 float robotPositionXDisplay = 0.0f;

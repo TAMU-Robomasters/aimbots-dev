@@ -43,8 +43,8 @@
 #include "tap/architecture/clock.hpp"
 //
 #include "robots/robot_control.hpp"
-#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 #include "utils/music/player.hpp"
+#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -143,17 +143,17 @@ static void updateIo(src::Drivers *drivers) {
     drivers->cvCommunicator.updateSerial();
 
     utils::Music::continuePlayingXPStartupTune(drivers);
-    //utils::Music::continuePlayingTokyoDriftTune(drivers);
+    // utils::Music::continuePlayingTokyoDriftTune(drivers);
 
     imuStatus = drivers->fieldRelativeInformant.getImuState();
 
-    float yaw = drivers->fieldRelativeInformant.getYaw();
-    float pitch = drivers->fieldRelativeInformant.getPitch();
-    float roll = drivers->fieldRelativeInformant.getRoll();
+    float yaw = drivers->fieldRelativeInformant.getChassisYaw();
+    float pitch = drivers->fieldRelativeInformant.getChassisPitch();
+    float roll = drivers->fieldRelativeInformant.getChassisRoll();
 
-    gXDisplay = drivers->fieldRelativeInformant.getGx();
-    gYDisplay = drivers->fieldRelativeInformant.getGy();
     gZDisplay = drivers->fieldRelativeInformant.getGz();
+    gYDisplay = drivers->fieldRelativeInformant.getGy();
+    gXDisplay = drivers->fieldRelativeInformant.getGx();
 
     yawDisplay = modm::toDegree(yaw);
     pitchDisplay = modm::toDegree(pitch);

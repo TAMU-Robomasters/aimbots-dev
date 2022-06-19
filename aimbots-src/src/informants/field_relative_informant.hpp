@@ -26,9 +26,9 @@ class FieldRelativeInformant {
 
     inline float getCurrentFieldRelativeGimbalYaw(AngleUnit unit) const;
 
-    float getYaw();
-    float getPitch();
-    float getRoll();
+    float getChassisYaw();
+    float getChassisPitch();
+    float getChassisRoll();
     tap::communication::sensors::imu::ImuInterface::ImuState getImuState();
     float getGz();  // yaw axis
     float getGy();  // pitch axis

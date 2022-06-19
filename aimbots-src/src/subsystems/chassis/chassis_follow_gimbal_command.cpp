@@ -1,6 +1,9 @@
-#include "chassis_follow_gimbal_command.hpp"
+#include "utils/robot_specific_inc.hpp"
+#ifdef TOKYO_COMPATIBLE
 
 #include <subsystems/chassis/chassis_rel_drive.hpp>
+
+#include "chassis_follow_gimbal_command.hpp"
 
 #define RADPS_TO_RPM 9.549297f
 
@@ -9,7 +12,8 @@ namespace src::Chassis {
 ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, ChassisSubsystem* chassis, src::Gimbal::GimbalSubsystem* gimbal)
     : drivers(drivers),
       chassis(chassis),
-      gimbal(gimbal)  //
+      gimbal(gimbal),
+      rotationController(ROTATION_POSITION_PID_CONFIG)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
@@ -24,7 +28,7 @@ void ChassisFollowGimbalCommand::execute() {
         float x = 0.0f;
         float y = 0.0f;
 
-        float rotationControllerError = drivers->fieldRelativeInformant.getYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+        float rotationControllerError = drivers->fieldRelativeInformant.getChassisYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
 
         // if (fabsf(rotationControllerError) < FOLLOW_GIMBAL_ANGLE_THRESHOLD) {
         //     rotationControllerError = 0.0f;
@@ -76,3 +80,5 @@ bool ChassisFollowGimbalCommand::isFinished() const {
 }
 
 }  // namespace src::Chassis
+
+#endif
