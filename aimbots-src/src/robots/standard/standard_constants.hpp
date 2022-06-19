@@ -179,14 +179,13 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-// FIXME: These work for the testbed standard, so they need to
-//        adjusted once we have real standard robots
 static constexpr float YAW_START_ANGLE = 163.0f;
-
 static constexpr float PITCH_START_ANGLE = 117.0f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
+
+static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
