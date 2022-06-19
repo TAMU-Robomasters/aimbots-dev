@@ -21,47 +21,53 @@ namespace src::Informants {
 
 float UltrasonicDistanceSensor::distanceLeft = 0.0f;
 float UltrasonicDistanceSensor::distanceRight = 0.0f;
-float UltrasonicDistanceSensor::echoStartLeftMS = 0.0f;
-float UltrasonicDistanceSensor::echoStartRightMS = 0.0f;
+float UltrasonicDistanceSensor::echoStartLeftuS = 0.0f;
+float UltrasonicDistanceSensor::echoStartRightuS = 0.0f;
+
+bool UltrasonicDistanceSensor::leftTimeoutStatus = false;
+bool UltrasonicDistanceSensor::rightTimeoutStatus = false;
+float UltrasonicDistanceSensor::lastReturnedDistance = 0.0f;
 
 tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
 tap::arch::MicroTimeout UltrasonicDistanceSensor::pulseTimer;
 
 float leftDistanceDebug, rightDistanceDebug;
-float generalDebug;
 
 void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
     if (isRising) {
-        echoStartLeftMS = tap::arch::clock::getTimeMicroseconds();
+        echoStartLeftuS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
         float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
-        distanceLeft = ((echoFinishTime - echoStartLeftMS)) * CM_PER_uS;
+
+        leftTimeoutStatus = (echoFinishTime - echoStartLeftuS) > TIMEOUT_DURATION;
+        distanceLeft = ((echoFinishTime - echoStartLeftuS)) * CM_PER_uS;
         leftDistanceDebug = distanceLeft;
     }
-    generalDebug++;
 }
 
 void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
     if (isRising) {
-        echoStartRightMS = tap::arch::clock::getTimeMicroseconds();
+        echoStartRightuS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
         float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
-        distanceRight = ((echoFinishTime - echoStartRightMS)) * CM_PER_uS;
+
+        rightTimeoutStatus = (echoFinishTime - echoStartRightuS) > TIMEOUT_DURATION ;
+        distanceRight = ((echoFinishTime - echoStartRightuS)) * CM_PER_uS; //math will not blow up if sensor timed out, but will be erroneous
         rightDistanceDebug = distanceRight;
     }
-    generalDebug++;
 }
 
 UltrasonicDistanceSensor::UltrasonicDistanceSensor(src::Drivers* drivers)
     : drivers(drivers) {}
 
+//initialize
 void UltrasonicDistanceSensor::initialize() {
     LeftEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
     LeftEchoPin::enableExternalInterruptVector(0);
     LeftEchoPin::enableExternalInterrupt();
-    LeftEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges);  // I think both edge trigger should be more accurate
+    LeftEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges);
 
     RightEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
     RightEchoPin::enableExternalInterruptVector(0);
@@ -69,12 +75,8 @@ void UltrasonicDistanceSensor::initialize() {
     RightEchoPin::setInputTrigger(modm::platform::Gpio::InputTrigger::BothEdges);
 }
 
-bool readDebug;
-
 void UltrasonicDistanceSensor::update() {
-    // Send pulse, start timer, and turn of pulse to see how long it takes
-    // until we get the end of the pulse signal.
-
+    // Send 10 uS pulse every 50ms or so
     if (echoTimer.execute()) {
         drivers->digital.set(LEFT_TRIGGER_PIN, true);
         drivers->digital.set(RIGHT_TRIGGER_PIN, true);
@@ -85,7 +87,30 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
-    readDebug = src::Informants::UltrasonicDistanceSensor::RightEchoPin::read();
+}
+
+float UltrasonicDistanceSensor::getRailPosition() {
+    if(!leftTimeoutStatus && !rightTimeoutStatus) {
+        lastReturnedDistance = (getLeftDistance() + getRightDistance()) / 2.0;
+    } else if(!leftTimeoutStatus) {
+        lastReturnedDistance = getLeftDistance();
+    } else if(!rightTimeoutStatus) {
+        lastReturnedDistance = getRightDistance();
+    } //else ur done for
+
+    return lastReturnedDistance;
+}
+
+float UltrasonicDistanceSensor::getLeftDistance() {
+    if(ORIGIN_SIDE == LEFT) {
+        return distanceLeft + ULTRASONIC_LENGTH / 2.0;
+    } else return FULL_RAIL_LENGTH_CM - distanceLeft - ULTRASONIC_LENGTH / 2.0;
+}
+
+float UltrasonicDistanceSensor::getRightDistance() {
+    if(ORIGIN_SIDE == RIGHT) {
+        return distanceRight + ULTRASONIC_LENGTH / 2.0;
+    } else return FULL_RAIL_LENGTH_CM - distanceRight - ULTRASONIC_LENGTH / 2.0;
 }
 
 }  // namespace src::Informants
