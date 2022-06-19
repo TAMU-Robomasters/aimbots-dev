@@ -44,6 +44,7 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
+#include "utils/music/player.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -140,6 +141,9 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
     drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
+
+    utils::Music::continuePlayingXPStartupTune(drivers);
+    //utils::Music::continuePlayingTokyoDriftTune(drivers);
 
     imuStatus = drivers->fieldRelativeInformant.getImuState();
 
