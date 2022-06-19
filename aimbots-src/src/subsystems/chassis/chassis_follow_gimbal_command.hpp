@@ -27,7 +27,7 @@ class ChassisFollowGimbalCommand : public TapCommand {
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;
 
-    // SmoothPID followGimbalController;
+    SmoothPID rotationController;
 };
 
 }  // namespace src::Chassis

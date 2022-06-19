@@ -102,7 +102,6 @@ void ChassisSubsystem::refresh() {
         refSerialWorkingDisplay = 0;
     }
 
-    // update motor rpm based on the robot type?
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
