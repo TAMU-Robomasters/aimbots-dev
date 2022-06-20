@@ -97,7 +97,11 @@
     ],
     "[markdown]": {
         "editor.wordWrap": "off",
-        "editor.quickSuggestions": false,
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
         "editor.rulers": [
             100
         ]
