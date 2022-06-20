@@ -1,5 +1,6 @@
 #pragma once
 #include "utils/common_types.hpp"
+#include "informants/ultrasonic_distance_sensor.hpp"
 
 namespace src {
 class Drivers;

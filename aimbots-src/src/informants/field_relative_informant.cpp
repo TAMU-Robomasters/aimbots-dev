@@ -40,7 +40,8 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
 
     // set the current rail position to a position matrix relative to the rail
     // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
-    railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
+    // railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
+    railRelativePosition[0][0] = UltrasonicDistanceSensor::getRailPosition() + robot_starting_rail_location_array[0];
     robotRailPositionXDisplay = railRelativePosition[0][0];
 
     // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position
