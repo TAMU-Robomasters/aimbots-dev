@@ -21,6 +21,10 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, Ch
 void ChassisFollowGimbalCommand::initialize() {
 }
 
+float gimbalYawfieldRelativeDisplay = 0.0f;
+float chassisYawDisplay = 0.0f;
+float rotationControllerErrorDisplay = 0.0f;
+
 void ChassisFollowGimbalCommand::execute() {
     if (gimbal->isOnline()) {
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
@@ -28,7 +32,14 @@ void ChassisFollowGimbalCommand::execute() {
         float x = 0.0f;
         float y = 0.0f;
 
-        float rotationControllerError = drivers->fieldRelativeInformant.getChassisYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+        // float rotationControllerError = drivers->fieldRelativeInformant.getChassisYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+
+        float rotationControllerError = -modm::toDegree(gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(drivers->fieldRelativeInformant.getChassisYaw()));
+
+        chassisYawDisplay = modm::toDegree(drivers->fieldRelativeInformant.getChassisYaw());
+        gimbalYawfieldRelativeDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
+
+        rotationControllerErrorDisplay = rotationControllerError;
 
         // if (fabsf(rotationControllerError) < FOLLOW_GIMBAL_ANGLE_THRESHOLD) {
         //     rotationControllerError = 0.0f;

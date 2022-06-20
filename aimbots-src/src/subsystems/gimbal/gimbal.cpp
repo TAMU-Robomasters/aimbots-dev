@@ -37,6 +37,8 @@ float yawChassisRelativeDisplay = 0.0f;
 float yawFieldRelativeDisplay = 0.0f;
 float pitchChassisRelativeDisplay = 0.0f;
 
+float yawOutputDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
@@ -48,6 +50,8 @@ void GimbalSubsystem::refresh() {
         // FIXME: Verify that these plus and minus signs work out...
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
         yawFieldRelativeDisplay = modm::toDegree(currentFieldRelativeYawAngle.getValue());
+
+        yawOutputDisplay = desiredYawMotorOutput;
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);

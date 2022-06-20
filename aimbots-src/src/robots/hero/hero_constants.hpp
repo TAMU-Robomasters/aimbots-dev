@@ -61,10 +61,10 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 600.0f,
+    .kp = 800.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
-    .maxICumulative = 10.0f,
+    .kd = 150.0f,
+    .maxICumulative = 5000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -129,8 +129,8 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = true;
+static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_2_DIRECTION = false;
 
 static constexpr bool FEEDER_DIRECTION = true;
 
@@ -188,8 +188,8 @@ static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
  */
 static constexpr int MIN_WHEEL_SPEED_SINGLE_MOTOR = 4000;
 static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
-static constexpr int MIN_CHASSIS_POWER = 40;
-static constexpr int MAX_CHASSIS_POWER = 120;
+static constexpr int MIN_CHASSIS_POWER = 50;
+static constexpr int MAX_CHASSIS_POWER = 80;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
     (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
     (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
@@ -208,7 +208,7 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 50.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
