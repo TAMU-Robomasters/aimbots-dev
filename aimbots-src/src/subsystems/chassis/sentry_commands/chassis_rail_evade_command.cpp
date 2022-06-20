@@ -5,8 +5,8 @@
 namespace src::Chassis {
 
 #warning "I, Richard, recommend you turn these RPMs WAAAAAY down at first so that, just in case I made a mistake, we don't break the robot. :^)"
-static constexpr int32_t MIN_RPM = 70;
-static constexpr int32_t MAX_RPM = 80;
+static constexpr int32_t MIN_RPM = 1000;
+static constexpr int32_t MAX_RPM = 2000;
 
 static constexpr float MIN_TRAVERSE_DISTANCE_MM = 200.0f;
 static constexpr float MAX_TRAVERSE_DISTANCE_MM = MIN_TRAVERSE_DISTANCE_MM + 300.0f;
@@ -48,6 +48,8 @@ void ChassisRailEvadeCommand::end(bool interrupted) {
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
+float distanceToDriveDisplay = 0.0f;
+
 void ChassisRailEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDistanceMillimeters, int32_t maximumDistanceMillimeters) {
     lastPositionWhenDirectionChanged = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
 
@@ -55,28 +57,37 @@ void ChassisRailEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDi
     chassis->setTargetRPMs(currentDesiredRPM, 0, 0);
 
     distanceToDrive = getRandomIntegerInBounds(minimumDistanceMillimeters, maximumDistanceMillimeters);
+    distanceToDriveDisplay = distanceToDrive;
 }
 
+float currentRailPositionMillimetersDisplay = 0.0f;
+
 void ChassisRailEvadeCommand::changeDirectionIfCloseToEnd(float currentRailPositionMillimeters) {
-    if ((currentRailPositionMillimeters <= TURNAROUND_BUFFER) || ((FULL_RAIL_LENGTH_MM - currentRailPositionMillimeters) <= TURNAROUND_BUFFER)) {
-        float distanceFromCenter = abs((FULL_RAIL_LENGTH_MM / 2.0f) - currentRailPositionMillimeters);
+    currentRailPositionMillimetersDisplay = currentRailPositionMillimeters;
+    if ((currentRailPositionMillimeters <= TURNAROUND_BUFFER) || (currentRailPositionMillimeters >= (FULL_RAIL_LENGTH_MM - TURNAROUND_BUFFER))) {
+        float distanceFromCenter = fabs((FULL_RAIL_LENGTH_MM / 2.0f) - currentRailPositionMillimeters);
         float distanceFromOppositeEnd = std::max(FULL_RAIL_LENGTH_MM - currentRailPositionMillimeters, currentRailPositionMillimeters) - TURNAROUND_BUFFER;
 
         changeDirectionForRandomDistance(distanceFromCenter, distanceFromOppositeEnd);
     }
 }
 
-int32_t ChassisRailEvadeCommand::getRandomInteger() {
+uint32_t ChassisRailEvadeCommand::getRandomInteger() {
     if (modm::platform::RandomNumberGenerator::isReady())
         return modm::platform::RandomNumberGenerator::getValue();
 
     return 0;
 }
 
+float randomDisplay = 0.0f;
+float baseDisplay = 0.0f;
+
 int32_t ChassisRailEvadeCommand::getRandomIntegerInBounds(int32_t min, int32_t max) {
-    uint32_t range = min - max;
+    uint32_t range = max - min;
     uint32_t random = getRandomInteger();
+    randomDisplay = random;
     uint32_t base = random % range;
+    baseDisplay = base;
 
     return static_cast<int32_t>(base) + min;
 }

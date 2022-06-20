@@ -6,7 +6,7 @@
 
 namespace src::Chassis {
 
-class ChassisRailEvadeCommand : tap::control::Command {
+class ChassisRailEvadeCommand : public TapCommand {
    public:
     ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*);
 
@@ -19,12 +19,12 @@ class ChassisRailEvadeCommand : tap::control::Command {
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-    inline bool hasTraveledDriveDistance(float currentPosition) const { return abs(lastPositionWhenDirectionChanged - currentPosition) >= distanceToDrive; }
+    inline bool hasTraveledDriveDistance(float currentPosition) const { return fabs(lastPositionWhenDirectionChanged - currentPosition) >= distanceToDrive; }
 
     void changeDirectionForRandomDistance(int32_t minimumDistance, int32_t maximumDistance);
     void changeDirectionIfCloseToEnd(float currentRailPosition);
 
-    int32_t getRandomInteger();
+    uint32_t getRandomInteger();
     int32_t getRandomIntegerInBounds(int32_t min, int32_t max);
 
     int32_t getNewRPM();
