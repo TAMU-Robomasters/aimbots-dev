@@ -31,7 +31,7 @@ float UltrasonicDistanceSensor::lastReturnedDistance = 0.0f;
 tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
 tap::arch::MicroTimeout UltrasonicDistanceSensor::pulseTimer;
 
-float leftDistanceDebug, rightDistanceDebug;
+float leftDistanceDebug, rightDistanceDebug, midDistanceDebug;
 
 void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
     if (isRising) {
@@ -53,7 +53,7 @@ void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
         float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
 
-        rightTimeoutStatus = (echoFinishTime - echoStartRightuS) > TIMEOUT_DURATION ;
+        rightTimeoutStatus = (echoFinishTime - echoStartRightuS) > TIMEOUT_DURATION;
         distanceRight = ((echoFinishTime - echoStartRightuS)) * CM_PER_uS; //math will not blow up if sensor timed out, but will be erroneous
         rightDistanceDebug = distanceRight;
     }
@@ -87,6 +87,8 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
+
+    midDistanceDebug = getRailPosition();
 }
 
 float UltrasonicDistanceSensor::getRailPosition() {

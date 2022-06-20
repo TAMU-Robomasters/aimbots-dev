@@ -163,10 +163,9 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
 // sentry ultrasonic settings
-static constexpr bool ORIGIN_SIDE = true;         // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
+static constexpr bool ORIGIN_SIDE = false;         // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
 static constexpr int TIMEOUT_DURATION = 30000;    // microseconds
-static constexpr float ULTRASONIC_LENGTH = 0.0f;  // cm, distance between the two ultrasonics (PCB to PCB)
-#warning "ULTRASONIC_LENGTH needs to be measured and set to get proper sentry positions"
+static constexpr float ULTRASONIC_LENGTH = 37.4f;  // cm, distance between the two ultrasonics (PCB to PCB)
 
 // Values specific for Sentry hardware setup
 static constexpr float YAW_START_ANGLE = 61.0f;
