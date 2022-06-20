@@ -1,14 +1,14 @@
 #pragma once
 
-#include "tap/control/command.hpp"
 #include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
+#include "tap/control/command.hpp"
 
 namespace src::Chassis {
 
-class SentryEvadeCommand : tap::control::Command {
+class ChassisRailEvadeCommand : tap::control::Command {
    public:
-    SentryEvadeCommand(src::Drivers*, ChassisSubsystem*);
+    ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*);
 
     char const* getName() const override { return "Sentry Evade Command"; }
 
@@ -38,4 +38,4 @@ class SentryEvadeCommand : tap::control::Command {
     float currentDesiredRPM = 0.0f;
 };
 
-}  // namespace src::Gimbal
+}  // namespace src::Chassis

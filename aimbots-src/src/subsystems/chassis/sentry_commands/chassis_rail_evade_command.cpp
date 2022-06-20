@@ -1,4 +1,4 @@
-#include "sentry_evade_command.hpp"
+#include "chassis_rail_evade_command.hpp"
 
 #include "modm/platform/random/random_number_generator.hpp"
 
@@ -15,37 +15,40 @@ static constexpr float FULL_RAIL_LENGTH_MM = FULL_RAIL_LENGTH * 1000.0f;
 static constexpr float SAFETY_BUFFER = 0.05f;
 static constexpr float TURNAROUND_BUFFER = (((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2.0f) + SAFETY_BUFFER) * 1000.0f;
 
-SentryEvadeCommand::SentryEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
+ChassisRailEvadeCommand::ChassisRailEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
     : drivers(drivers),
-      chassis(chassis)
-{
+      chassis(chassis) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void SentryEvadeCommand::initialize() {
+void ChassisRailEvadeCommand::initialize() {
     modm::platform::RandomNumberGenerator::enable();
     changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);
 }
 
-void SentryEvadeCommand::execute() {
-    float currentPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
+void ChassisRailEvadeCommand::execute() {
+    float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
 
-    if (hasTraveledDriveDistance(currentPosition))
+    if (hasTraveledDriveDistance(currRailPosition))
         changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);
 
-    changeDirectionIfCloseToEnd(currentPosition);
+    changeDirectionIfCloseToEnd(currRailPosition);
 }
 
-bool SentryEvadeCommand::isReady() { return true; }
+bool ChassisRailEvadeCommand::isReady() {
+    return true;
+}
 
-bool SentryEvadeCommand::isFinished() const { return false; }
+bool ChassisRailEvadeCommand::isFinished() const {
+    return false;
+}
 
-void SentryEvadeCommand::end(bool interrupted) {
+void ChassisRailEvadeCommand::end(bool interrupted) {
     UNUSED(interrupted);
-    chassis->setTargetRPMs(0, 0, 0);
+    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
-void SentryEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDistanceMillimeters, int32_t maximumDistanceMillimeters) {
+void ChassisRailEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDistanceMillimeters, int32_t maximumDistanceMillimeters) {
     lastPositionWhenDirectionChanged = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
 
     currentDesiredRPM = getNewRPM();
@@ -54,7 +57,7 @@ void SentryEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDistanc
     distanceToDrive = getRandomIntegerInBounds(minimumDistanceMillimeters, maximumDistanceMillimeters);
 }
 
-void SentryEvadeCommand::changeDirectionIfCloseToEnd(float currentRailPositionMillimeters) {
+void ChassisRailEvadeCommand::changeDirectionIfCloseToEnd(float currentRailPositionMillimeters) {
     if ((currentRailPositionMillimeters <= TURNAROUND_BUFFER) || ((FULL_RAIL_LENGTH_MM - currentRailPositionMillimeters) <= TURNAROUND_BUFFER)) {
         float distanceFromCenter = abs((FULL_RAIL_LENGTH_MM / 2.0f) - currentRailPositionMillimeters);
         float distanceFromOppositeEnd = std::max(FULL_RAIL_LENGTH_MM - currentRailPositionMillimeters, currentRailPositionMillimeters) - TURNAROUND_BUFFER;
@@ -63,24 +66,24 @@ void SentryEvadeCommand::changeDirectionIfCloseToEnd(float currentRailPositionMi
     }
 }
 
-int32_t SentryEvadeCommand::getRandomInteger() {
+int32_t ChassisRailEvadeCommand::getRandomInteger() {
     if (modm::platform::RandomNumberGenerator::isReady())
         return modm::platform::RandomNumberGenerator::getValue();
 
     return 0;
 }
 
-int32_t SentryEvadeCommand::getRandomIntegerInBounds(int32_t min, int32_t max) {
+int32_t ChassisRailEvadeCommand::getRandomIntegerInBounds(int32_t min, int32_t max) {
     uint32_t range = min - max;
     uint32_t random = getRandomInteger();
     uint32_t base = random % range;
-    
+
     return static_cast<int32_t>(base) + min;
 }
 
-int32_t SentryEvadeCommand::getNewRPM() {
+int32_t ChassisRailEvadeCommand::getNewRPM() {
     int32_t rand = getRandomIntegerInBounds(MIN_RPM, MAX_RPM);
     return copysign(rand, -currentDesiredRPM);
 }
 
-}  // namespace src::Gimbal
+}  // namespace src::Chassis

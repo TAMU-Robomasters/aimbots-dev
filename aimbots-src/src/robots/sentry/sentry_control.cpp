@@ -14,6 +14,7 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
+#include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
 //
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
@@ -63,6 +64,7 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
@@ -79,7 +81,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisRailBounceCommand, &gimbalPatrolCommand},
+    {&chassisRailEvadeCommand, &gimbalPatrolCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
