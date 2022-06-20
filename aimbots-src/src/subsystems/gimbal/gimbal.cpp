@@ -31,11 +31,17 @@ void GimbalSubsystem::initialize() {
     pitchMotor.setDesiredOutput(0);
 }
 
+float currentYawEncoderPositionDisplay = 0.0f;
+float desiredYawMotorOutputDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
+        currentYawEncoderPositionDisplay = yawMotor.getEncoderWrapped();
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
+
+        desiredYawMotorOutputDisplay = desiredYawMotorOutput;
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);

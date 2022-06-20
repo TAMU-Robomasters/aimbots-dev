@@ -64,7 +64,7 @@ float currentRailPositionMillimetersDisplay = 0.0f;
 
 void ChassisRailEvadeCommand::changeDirectionIfCloseToEnd(float currentRailPositionMillimeters) {
     currentRailPositionMillimetersDisplay = currentRailPositionMillimeters;
-    if ((currentRailPositionMillimeters <= TURNAROUND_BUFFER && currentDesiredRPM <= 0) || (currentRailPositionMillimeters >= (FULL_RAIL_LENGTH_MM - TURNAROUND_BUFFER) && currentDesiredRPM >= 0)) {
+    if ((currentRailPositionMillimeters <= TURNAROUND_BUFFER && currentDesiredRPM >= 0) || (currentRailPositionMillimeters >= (FULL_RAIL_LENGTH_MM - TURNAROUND_BUFFER) && currentDesiredRPM <= 0)) {
         float distanceFromCenter = fabs((FULL_RAIL_LENGTH_MM / 2.0f) - currentRailPositionMillimeters);
         float distanceFromOppositeEnd = std::max(FULL_RAIL_LENGTH_MM - currentRailPositionMillimeters, currentRailPositionMillimeters) - TURNAROUND_BUFFER;
 
