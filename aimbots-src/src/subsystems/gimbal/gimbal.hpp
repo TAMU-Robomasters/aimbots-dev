@@ -48,9 +48,6 @@ class GimbalSubsystem : public tap::control::Subsystem {
             high = PITCH_SOFTSTOP_LOW;
         }
 
-        low = modm::toRadian(low);
-        high = modm::toRadian(high);
-
         targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
             low,

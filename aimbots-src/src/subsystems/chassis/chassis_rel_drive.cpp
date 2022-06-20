@@ -39,6 +39,14 @@ void calculateUserDesiredMovement(src::Drivers* drivers,
                      maxWheelSpeed;
 }
 
+float chassisRotationInputDisplay = 0.0f;
+float chassisYInputDisplay = 0.0f;
+float chassisXInputDisplay = 0.0f;
+
+float chassisXDesiredWheelspeedDisplay = 0.0f;
+float chassisYDesiredWheelspeedDisplay = 0.0f;
+float chassisRotationDesiredWheelspeedDisplay = 0.0f;
+
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
     const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
         drivers->refSerial.getRefSerialReceivingData(),
@@ -46,6 +54,11 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
 
     float chassisRotationDesiredWheelspeed =
         drivers->controlOperatorInterface.getChassisRotationInput() * maxWheelSpeed;
+
+    chassisRotationInputDisplay = drivers->controlOperatorInterface.getChassisRotationInput();
+
+    chassisXInputDisplay = drivers->controlOperatorInterface.getChassisXInput();
+    chassisYInputDisplay = drivers->controlOperatorInterface.getChassisYInput();
 
     float chassisXDesiredWheelspeed = 0.0f;
     float chassisYDesiredWheelspeed = 0.0f;
@@ -56,6 +69,10 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         &chassisXDesiredWheelspeed,
         &chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);
+
+    chassisXDesiredWheelspeedDisplay = chassisXDesiredWheelspeed;
+    chassisYDesiredWheelspeedDisplay = chassisYDesiredWheelspeed;
+    chassisRotationDesiredWheelspeedDisplay = chassisRotationDesiredWheelspeed;
 
     // set chassis targets using setDesiredOutputs
     chassis->setTargetRPMs(

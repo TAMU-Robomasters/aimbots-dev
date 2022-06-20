@@ -12,7 +12,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-static constexpr float DEV_BOARD_YAW_OFFSET = 0.0f;  // in radians
+static constexpr float DEV_BOARD_YAW_OFFSET = 180.0f;  // in radians
 
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
@@ -132,10 +132,10 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = true;
+static constexpr bool FEEDER_DIRECTION = false;
 
-static constexpr bool YAW_DIRECTION = false;
-static constexpr bool PITCH_DIRECTION = false;
+static constexpr bool YAW_DIRECTION = true;
+static constexpr bool PITCH_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -179,11 +179,11 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 163.0f;
-static constexpr float PITCH_START_ANGLE = 117.0f;
+static constexpr float YAW_START_ANGLE = 135.0f;
+static constexpr float PITCH_START_ANGLE = 2.5f;
 
-static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
 
 static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 
