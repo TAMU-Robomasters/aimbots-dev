@@ -44,6 +44,8 @@ class FieldRelativeInformant {
 #endif
 
     Matrix<float, 1, 3> fieldRelativeRobotPosition;
+
+    float wheelOffset;
 };
 
 }  // namespace src::Informants

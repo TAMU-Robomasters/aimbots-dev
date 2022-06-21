@@ -23,6 +23,8 @@ float robotPositionZDisplay = 0.0f;
 
 float robotRailPositionXDisplay = 0.0f;
 
+float railPositionRawDebug, wheelOffsetDebug;
+
 #ifdef TARGET_SENTRY  // This will need to be replaced with code that uses the ultrasonics once that works
 void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) {
     // first, get unwrapped motor position
@@ -36,12 +38,20 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
     // now, convert to unwrapped wheel revolutions
     float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
     // now, convert to unwrapped wheel rotations to get the rail position
-    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
+    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS) + wheelOffset;  // current position in meters
+
+    //grab ultrasonic data, recalibrate wheels if ultrasonics valid
+    float currUltrasonicPosition = UltrasonicDistanceSensor::getRailPosition() / 100.0; //ultrasonic position in meters
+    if(UltrasonicDistanceSensor::isDataValid()) {
+        wheelOffset += currUltrasonicPosition - currWheelMovement;
+    }
+
+    railPositionRawDebug = ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0)/100.0;
+    wheelOffsetDebug = wheelOffset;
 
     // set the current rail position to a position matrix relative to the rail
     // Matrix<float, 1, 3> railRelativePosition = Matrix<float, 1, 3>::zeroMatrix();
-    // railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
-    railRelativePosition[0][0] = UltrasonicDistanceSensor::getRailPosition() + robot_starting_rail_location_array[0];
+    railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];
     robotRailPositionXDisplay = railRelativePosition[0][0];
 
     // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position

@@ -142,7 +142,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 #ifdef TARGET_SENTRY
-    // drivers->railDistanceSensor.update();
+    drivers->railDistanceSensor.update();
 #endif
     drivers->cvCommunicator.updateSerial();
 

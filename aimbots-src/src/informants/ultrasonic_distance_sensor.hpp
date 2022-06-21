@@ -51,18 +51,26 @@ class UltrasonicDistanceSensor {
     /**
      * @brief Returns bool to indicate if either ultrasonic is reading-- if not, any data provided by ultrasonic class is outdated
      */
-    static inline bool getReadStatus() { return leftTimeoutStatus && rightTimeoutStatus; };
+    static inline bool isDataValid() { return (leftValid || rightValid); };
 
    private:
     src::Drivers* drivers;
 
-    static float distanceLeft;
-    static float distanceRight;
     static float echoStartLeftuS;
     static float echoStartRightuS;
 
-    static bool leftTimeoutStatus;
-    static bool rightTimeoutStatus;
+    static float distanceLeft;
+    static float distanceRight;
+    static float prevDistanceLeft;
+    static float prevDistanceRight;
+
+    static float echoEndLeftuS;
+    static float echoEndRightuS;
+    static float prevEchoEndLeftuS;
+    static float prevEchoEndRightuS;
+
+    static bool leftValid;
+    static bool rightValid;
 
     static float lastReturnedDistance;
 
