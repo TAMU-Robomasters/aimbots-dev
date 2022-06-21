@@ -74,7 +74,7 @@ void GimbalSubsystem::setYawMotorOutput(float output) {
     // `DJIMotor::setDesiredOutput()` is an int16_t. So, to make sure that
     // it isn't overflowed, we limit it within +/- 30,000, which is just
     // the max and min of an int16_t (int16_t has a range of about +/- 32,000).
-    desiredYawMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
+    desiredYawMotorOutput = tap::algorithms::limitVal(output, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
 }
 
 void GimbalSubsystem::setPitchMotorOutput(float output) {
@@ -82,12 +82,12 @@ void GimbalSubsystem::setPitchMotorOutput(float output) {
     // `DJIMotor::setDesiredOutput()` is an int16_t. So, to make sure that
     // it isn't overflowed, we limit it within +/- 30,000, which is just
     // the max and min of an int16_t (int16_t has a range of about +/- 32,000).
-    desiredPitchMotorOutput = tap::algorithms::limitVal(output, -30000.0f, 30000.0f);
+    desiredPitchMotorOutput = tap::algorithms::limitVal(output, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
 }
 
 float GimbalSubsystem::getCurrentYawAngleFromChassisCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
-               (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativeYawAngle.getValue() - YAW_START_ANGLE) : (currentChassisRelativeYawAngle.getValue() - YAW_START_ANGLE),
+               (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativeYawAngle.getValue() - modm::toRadian(YAW_START_ANGLE)) : (currentChassisRelativeYawAngle.getValue() - modm::toRadian(YAW_START_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();
@@ -95,7 +95,7 @@ float GimbalSubsystem::getCurrentYawAngleFromChassisCenter(AngleUnit unit) const
 
 float GimbalSubsystem::getCurrentPitchAngleFromChassisCenter(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
-               (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativePitchAngle.getValue() - PITCH_START_ANGLE) : currentChassisRelativePitchAngle.getValue() - PITCH_START_ANGLE,
+               (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativePitchAngle.getValue() - modm::toRadian(PITCH_START_ANGLE)) : (currentChassisRelativePitchAngle.getValue() - modm::toRadian(PITCH_START_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();

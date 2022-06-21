@@ -93,7 +93,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalControlCommand},
+    {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -107,6 +107,7 @@ HoldCommandMapping rightSwitchDown(
     drivers(),
     {&openHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),

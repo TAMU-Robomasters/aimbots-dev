@@ -21,9 +21,10 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, Ch
 void ChassisFollowGimbalCommand::initialize() {
 }
 
-float gimbalYawfieldRelativeDisplay = 0.0f;
+float gimbalYawFieldRelativeDisplay = 0.0f;
+float gimbalYawAngleDisplay2 = 0.0f;
 float chassisYawDisplay = 0.0f;
-float rotationControllerErrorDisplay = 0.0f;
+float rotationControllerOutputDisplay = 0.0f;
 
 void ChassisFollowGimbalCommand::execute() {
     if (gimbal->isOnline()) {
@@ -33,19 +34,18 @@ void ChassisFollowGimbalCommand::execute() {
         float y = 0.0f;
 
         // float rotationControllerError = drivers->fieldRelativeInformant.getChassisYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+        float rotationControllerError = gimbalYawAngle;
 
-        float rotationControllerError = -modm::toDegree(gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(drivers->fieldRelativeInformant.getChassisYaw()));
-
-        chassisYawDisplay = modm::toDegree(drivers->fieldRelativeInformant.getChassisYaw());
-        gimbalYawfieldRelativeDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-
-        rotationControllerErrorDisplay = rotationControllerError;
+        // chassisYawDisplay = modm::toDegree(drivers->fieldRelativeInformant.getChassisYaw());
+        // gimbalYawFieldRelativeDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
 
         // if (fabsf(rotationControllerError) < FOLLOW_GIMBAL_ANGLE_THRESHOLD) {
         //     rotationControllerError = 0.0f;
         // }
 
         rotationController.runController(rotationControllerError, (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
+
+        rotationControllerOutputDisplay = rotationController.getOutput();
 
         Movement::Independent::calculateUserDesiredMovement(drivers, chassis, &x, &y, rotationController.getOutput());
 
@@ -70,7 +70,9 @@ void ChassisFollowGimbalCommand::execute() {
 
         // float r = rotationSpeedRamp.getValue();
 
-        rotateVector(&x, &y, -gimbalYawAngle + M_PI);
+        gimbalYawAngleDisplay2 = modm::toDegree(gimbalYawAngle);
+
+        rotateVector(&x, &y, -gimbalYawAngle);
 
         chassis->setTargetRPMs(x, y, rotationController.getOutput());
     } else {

@@ -8,27 +8,27 @@
 
 namespace src::Gimbal {
 
-    class GimbalFieldRelativeController : public GimbalControllerInterface {
-       public:
-        GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*);
+class GimbalFieldRelativeController : public GimbalControllerInterface {
+   public:
+    GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*);
 
-        void initialize() override;
+    void initialize() override;
 
-        void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) override;
-        void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle) override;
+    void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) override;
+    void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle) override;
 
-        bool isOnline() const;
+    bool isOnline() const;
 
-        float getTargetYaw(AngleUnit unit) const override { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
+    float getTargetYaw(AngleUnit unit) const override { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
 
-       private:
-        src::Drivers* drivers;
-        GimbalSubsystem* gimbal;
+   private:
+    src::Drivers* drivers;
+    GimbalSubsystem* gimbal;
 
-        float fieldRelativeYawTarget = 0.0f;
+    float fieldRelativeYawTarget = 0.0f;
 
-        SmoothPID yawPositionPID;
-        SmoothPID pitchPositionPID;
-    };
+    SmoothPID yawPositionPID;
+    SmoothPID pitchPositionPID;
+};
 
 }  // namespace src::Gimbal

@@ -224,11 +224,11 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 5000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 25.0f,
     .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
+    .maxOutput = ROTATION_POSITION_PID_CONFIG.kp * M_PI,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

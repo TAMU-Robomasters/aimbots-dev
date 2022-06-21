@@ -22,12 +22,13 @@ float targetChassisRelativeYawAngleDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) {
     fieldRelativeYawTarget = (unit == AngleUnit::Degrees) ? desiredFieldRelativeYawAngle : modm::toDegree(desiredFieldRelativeYawAngle);
+    // converts to degrees if necessary
     fieldRelativeYawTargetDisplay = fieldRelativeYawTarget;
 
     float chassisInducedYawMotionCompensation = CHASSIS_VELOCITY_YAW_FEEDFORWARD * drivers->fieldRelativeInformant.getGz();
 
     float positionControllerError = modm::toDegree(gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(modm::toRadian(fieldRelativeYawTarget)));
-    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() - (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM() + (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
     // kD tuned for RPM, so we'll convert to RPM
     gimbal->setYawMotorOutput(yawPositionPIDOutput + chassisInducedYawMotionCompensation);
 }
