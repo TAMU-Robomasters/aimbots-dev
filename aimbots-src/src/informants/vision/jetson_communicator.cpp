@@ -45,12 +45,6 @@ int displayBufIndex = 0;
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
-    // size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
-    // if (bytesRead == 0) {
-    //     return;
-    // }
-    // memcpy(displayBuffer, rawSerialBuffer, sizeof(displayBuffer));
-
     switch (currentSerialState) {
         case JetsonCommunicatorSerialState::SearchingForMagic: {
             size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
@@ -91,8 +85,6 @@ void JetsonCommunicator::updateSerial() {
 
             if (nextByteIndex == JETSON_MESSAGE_SIZE) {
                 lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
-
-                memcpy(displayBuffer, rawSerialBuffer, sizeof(displayBuffer));
 
                 msBetweenLastMessage = currTime - lastMsgTime;
                 lastMsgTime = currTime;
