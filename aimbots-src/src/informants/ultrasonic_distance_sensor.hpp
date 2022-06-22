@@ -33,12 +33,12 @@ class UltrasonicDistanceSensor {
     /**
      * @brief fancy getter that returns position of ultrasonic from origin (in cm)
      */
-    float getLeftDistance();
+    static float getLeftDistance();
 
     /**
      * @brief returns position of ultrasonic from origin (in cm)
      */
-    float getRightDistance();
+    static float getRightDistance();
 
     /**
      * @brief Returns rail position in cm. The origin can be on either side of the rail (see bool in sentry_constants.hpp).
@@ -46,18 +46,31 @@ class UltrasonicDistanceSensor {
      * 
      * @return float rail position in cm
      */
-    float getRailPosition();
+    static float getRailPosition();
+
+    /**
+     * @brief Returns bool to indicate if either ultrasonic is reading-- if not, any data provided by ultrasonic class is outdated
+     */
+    static inline bool isDataValid() { return (leftValid || rightValid); };
 
    private:
     src::Drivers* drivers;
 
-    static float distanceLeft;
-    static float distanceRight;
     static float echoStartLeftuS;
     static float echoStartRightuS;
 
-    static bool leftTimeoutStatus;
-    static bool rightTimeoutStatus;
+    static float distanceLeft;
+    static float distanceRight;
+    static float prevDistanceLeft;
+    static float prevDistanceRight;
+
+    static float echoEndLeftuS;
+    static float echoEndRightuS;
+    static float prevEchoEndLeftuS;
+    static float prevEchoEndRightuS;
+
+    static bool leftValid;
+    static bool rightValid;
 
     static float lastReturnedDistance;
 

@@ -23,26 +23,40 @@ float UltrasonicDistanceSensor::distanceLeft = 0.0f;
 float UltrasonicDistanceSensor::distanceRight = 0.0f;
 float UltrasonicDistanceSensor::echoStartLeftuS = 0.0f;
 float UltrasonicDistanceSensor::echoStartRightuS = 0.0f;
-
-bool UltrasonicDistanceSensor::leftTimeoutStatus = false;
-bool UltrasonicDistanceSensor::rightTimeoutStatus = false;
+float UltrasonicDistanceSensor::prevDistanceLeft = 0.0f;
+float UltrasonicDistanceSensor::prevDistanceRight = 0.0f;
+float UltrasonicDistanceSensor::echoEndLeftuS = 0.0f;
+float UltrasonicDistanceSensor::echoEndRightuS = 0.0f;
+float UltrasonicDistanceSensor::prevEchoEndLeftuS = 0.0f;
+float UltrasonicDistanceSensor::prevEchoEndRightuS = 0.0f;
+bool UltrasonicDistanceSensor::leftValid = false;
+bool UltrasonicDistanceSensor::rightValid = false;
 float UltrasonicDistanceSensor::lastReturnedDistance = 0.0f;
 
 tap::arch::PeriodicMilliTimer UltrasonicDistanceSensor::echoTimer(50);
 tap::arch::MicroTimeout UltrasonicDistanceSensor::pulseTimer;
 
 float leftDistanceDebug, rightDistanceDebug;
+bool leftValidDebug, rightValidDebug;
 
 void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
     if (isRising) {
         echoStartLeftuS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
-        float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
+        prevEchoEndLeftuS = echoEndLeftuS;
+        echoEndLeftuS = tap::arch::clock::getTimeMicroseconds();
 
-        leftTimeoutStatus = (echoFinishTime - echoStartLeftuS) > TIMEOUT_DURATION;
-        distanceLeft = ((echoFinishTime - echoStartLeftuS)) * CM_PER_uS;
-        leftDistanceDebug = distanceLeft;
+        prevDistanceLeft = distanceLeft;
+        distanceLeft = ((echoEndLeftuS - echoStartLeftuS)) * CM_PER_uS + ULTRASONIC_OFFSET;
+
+        bool timeValid = (echoEndLeftuS - echoStartLeftuS) < TIMEOUT_DURATION;
+        bool rangeValid = distanceLeft >= ULTRASONIC_MIN_VALID_RANGE && distanceLeft <= ULTRASONIC_MAX_VALID_RANGE;
+        bool velocityValid = abs((distanceLeft - prevDistanceLeft)/(echoEndLeftuS - prevEchoEndLeftuS)) * 1000000 < ULTRASONIC_MAX_VALID_SPEED;
+        leftValid = timeValid && rangeValid && velocityValid;
+
+        // leftDistanceDebug = distanceLeft;
+        leftValidDebug = leftValid;
     }
 }
 
@@ -51,11 +65,19 @@ void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
         echoStartRightuS = tap::arch::clock::getTimeMicroseconds();
     } else {
         // Check how long it's been since we sent the trigger pulse and find the distance from that
-        float echoFinishTime = tap::arch::clock::getTimeMicroseconds();
+        prevEchoEndRightuS = echoEndRightuS;
+        echoEndRightuS = tap::arch::clock::getTimeMicroseconds();
 
-        rightTimeoutStatus = (echoFinishTime - echoStartRightuS) > TIMEOUT_DURATION ;
-        distanceRight = ((echoFinishTime - echoStartRightuS)) * CM_PER_uS; //math will not blow up if sensor timed out, but will be erroneous
-        rightDistanceDebug = distanceRight;
+        prevDistanceRight = distanceRight;
+        distanceRight = ((echoEndRightuS - echoStartRightuS)) * CM_PER_uS + ULTRASONIC_OFFSET;
+
+        bool timeValid = (echoEndRightuS - echoStartRightuS) < TIMEOUT_DURATION;
+        bool rangeValid = distanceRight >= ULTRASONIC_MIN_VALID_RANGE && distanceRight <= ULTRASONIC_MAX_VALID_RANGE;
+        bool velocityValid = abs((distanceRight - prevDistanceRight)/(echoEndRightuS - prevEchoEndRightuS))*1000000 < ULTRASONIC_MAX_VALID_SPEED;
+        rightValid = timeValid && rangeValid && velocityValid;
+
+        // rightDistanceDebug = distanceRight;
+        rightValidDebug = rightValid;
     }
 }
 
@@ -87,14 +109,17 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
+
+    rightDistanceDebug = getRightDistance();
+    leftDistanceDebug = getLeftDistance();
 }
 
 float UltrasonicDistanceSensor::getRailPosition() {
-    if(!leftTimeoutStatus && !rightTimeoutStatus) {
+    if(leftValid && rightValid) {
         lastReturnedDistance = (getLeftDistance() + getRightDistance()) / 2.0;
-    } else if(!leftTimeoutStatus) {
+    } else if(leftValid) {
         lastReturnedDistance = getLeftDistance();
-    } else if(!rightTimeoutStatus) {
+    } else if(rightValid) {
         lastReturnedDistance = getRightDistance();
     } //else ur done for
 
@@ -104,13 +129,13 @@ float UltrasonicDistanceSensor::getRailPosition() {
 float UltrasonicDistanceSensor::getLeftDistance() {
     if(ORIGIN_SIDE == LEFT) {
         return distanceLeft + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceLeft - ULTRASONIC_LENGTH / 2.0;
+    } else return FULL_RAIL_LENGTH_CM - distanceLeft - (ULTRASONIC_LENGTH / 2.0);
 }
 
 float UltrasonicDistanceSensor::getRightDistance() {
     if(ORIGIN_SIDE == RIGHT) {
         return distanceRight + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceRight - ULTRASONIC_LENGTH / 2.0;
+    } else return FULL_RAIL_LENGTH_CM - distanceRight - (ULTRASONIC_LENGTH / 2.0);
 }
 
 }  // namespace src::Informants
