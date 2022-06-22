@@ -16,10 +16,8 @@
 #include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
 //
-#include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/run_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/sentry_commands/sentry_match_feeder_control_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -70,9 +68,7 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController,
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
-RunFeederCommand runFeederCommand(drivers(), &feeder);
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
-BurstFeederCommand burstFeederCommand(drivers(), &feeder);
+SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
@@ -99,7 +95,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&matchFeederControlCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -120,7 +116,6 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     // gimbal.setDefaultCommand(&gimbalControlCommand);
     // chassis.setDefaultCommand(&chassisRailBounceCommand);

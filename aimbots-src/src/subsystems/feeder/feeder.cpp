@@ -2,12 +2,11 @@
 
 namespace src::Feeder {
 
-FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
+FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
       desiredOutput(0),
-      burstLength(DEFAULT_BURST_LENGTH),
+      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 #ifdef TARGET_SENTRY
@@ -63,14 +62,6 @@ int FeederSubsystem::getTotalLimitCount() const {
 #ifdef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
 #endif
-}
-
-void FeederSubsystem::setBurstLength(int newBurstLength) {
-    burstLength = newBurstLength;
-}
-
-int FeederSubsystem::getBurstLength() const {
-    return burstLength;
 }
 
 }  // namespace src::Feeder

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "informants/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
+#include "drivers.hpp"
+#include "informants/limit_switch.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -10,8 +11,7 @@ namespace src::Feeder {
 
 class FeederSubsystem : public tap::control::Subsystem {
    public:
-    FeederSubsystem(
-        tap::Drivers* drivers);
+    FeederSubsystem(src::Drivers* drivers);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -24,21 +24,16 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     int getTotalLimitCount() const;
 
-    // I love setters and getters
-    void setBurstLength(int newBurstLength);
-    int getBurstLength() const;
-
-    SmoothPID feederVelPID;
-
 #ifndef ENV_UNIT_TESTS
    private:
 #else
    public:
 #endif
+
     float targetRPM;
     float desiredOutput;
-    int burstLength;
 
+    SmoothPID feederVelPID;
     DJIMotor feederMotor;
 
     src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
