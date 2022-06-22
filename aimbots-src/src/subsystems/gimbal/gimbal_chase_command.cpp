@@ -32,10 +32,13 @@ void GimbalChaseCommand::execute() {
         yawOffsetAngleDisplay = visionOffsetAngles[0][0];
         pitchOffsetAngleDisplay = visionOffsetAngles[0][1];
         cvStateDisplay = cvState;
+
+        targetYawAngle = gimbal->getCurrentYawAngle(AngleUnit::Degrees) + visionOffsetAngles[0][0];
+        targetPitchAngle = gimbal->getCurrentPitchAngle(AngleUnit::Degrees) + visionOffsetAngles[0][1];
     }
 
-    // controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-    // controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+    controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 
 bool GimbalChaseCommand::isReady() { return true; }

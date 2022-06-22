@@ -16,7 +16,7 @@ void GimbalChassisRelativeController::initialize() {
 
 void GimbalChassisRelativeController::runYawController(AngleUnit unit, float desiredYawAngle) {
     UNUSED(unit);
-    UNUSED(desiredYawAngle);
+    // UNUSED(desiredYawAngle);
 
     // NOTE: If you are finding that the gimbal is lagging behind the
     //       chassis a fair bit and you came here to find out why,
