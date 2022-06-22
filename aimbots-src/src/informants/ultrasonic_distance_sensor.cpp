@@ -55,7 +55,7 @@ void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
         bool velocityValid = abs((distanceLeft - prevDistanceLeft)/(echoEndLeftuS - prevEchoEndLeftuS)) * 1000000 < ULTRASONIC_MAX_VALID_SPEED;
         leftValid = timeValid && rangeValid && velocityValid;
 
-        // leftDistanceDebug = distanceLeft;
+        leftDistanceDebug = distanceLeft;
         leftValidDebug = leftValid;
     }
 }
@@ -76,7 +76,7 @@ void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
         bool velocityValid = abs((distanceRight - prevDistanceRight)/(echoEndRightuS - prevEchoEndRightuS))*1000000 < ULTRASONIC_MAX_VALID_SPEED;
         rightValid = timeValid && rangeValid && velocityValid;
 
-        // rightDistanceDebug = distanceRight;
+        rightDistanceDebug = distanceRight;
         rightValidDebug = rightValid;
     }
 }
@@ -109,9 +109,6 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
-
-    rightDistanceDebug = getRightDistance();
-    leftDistanceDebug = getLeftDistance();
 }
 
 float UltrasonicDistanceSensor::getRailPosition() {

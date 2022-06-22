@@ -43,10 +43,10 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition(DJIMotor* cMotor) 
     //grab ultrasonic data, recalibrate wheels if ultrasonics valid
     float currUltrasonicPosition = UltrasonicDistanceSensor::getRailPosition() / 100.0; //ultrasonic position in meters
     if(UltrasonicDistanceSensor::isDataValid()) {
-        wheelOffset += currUltrasonicPosition - currWheelMovement;
+        wheelOffset += (currUltrasonicPosition - currWheelMovement) * ULTRASONIC_TRUST_FACTOR;
     }
 
-    railPositionRawDebug = ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0)/100.0;
+    railPositionRawDebug = ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0) / 100.0; //meters
     wheelOffsetDebug = wheelOffset;
 
     // set the current rail position to a position matrix relative to the rail
