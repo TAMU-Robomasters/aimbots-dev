@@ -1,5 +1,7 @@
 #include "informants/limit_switch.hpp"
 
+namespace src::Informants {
+
 LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge)
     : rxPin(rxPin),
       counter(0),
@@ -61,3 +63,5 @@ bool LimitSwitch::isStateChanged() const {
 int LimitSwitch::getCurrentCount() const {
     return counter;
 }
+
+}  // namespace src::Informants

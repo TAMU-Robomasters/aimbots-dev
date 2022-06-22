@@ -34,7 +34,7 @@ void GimbalControlCommand::execute() {
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 #else
     // This just locks it to the the forward direction, specified by YAW_START_ANGLE
-    controller->runYawController(AngleUnit::None, 0.0f);
+    controller->runYawController(AngleUnit::None, YAW_START_ANGLE);
 #endif
 
     float targetPitchAngle = 0.0f;

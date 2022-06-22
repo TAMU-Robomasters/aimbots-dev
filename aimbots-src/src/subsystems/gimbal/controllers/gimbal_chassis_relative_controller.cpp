@@ -28,7 +28,7 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float des
     // The easiest way to do that would probably be to use a watch
     // in the debugger and find what angle, IN DEGREES, describes the
     // forward direction.
-    gimbal->setTargetYawAngle(AngleUnit::Degrees, YAW_START_ANGLE);
+    gimbal->setTargetYawAngle(AngleUnit::Degrees, desiredYawAngle);
 
     // This gets converted to degrees so that we get a higher error. ig
     // we could also just boost our constants, but this takes minimal

@@ -70,7 +70,7 @@ void GimbalPatrolCommand::updateYawPatrolTarget() {
     yawPositionPIDErrorDisplay = this->controller->getYawPositionPID()->getError();
     yawPositionPIDDerivativeDisplay = this->controller->getYawPositionPID()->getDerivative();
 
-    if (controller->getYawPositionPID()->isSettled(5.0f, 0.04f, 250.0f)) {
+    if (controller->getYawPositionPID()->isSettled(5.0f /*, 0.04f, 250.0f*/)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
             // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate index

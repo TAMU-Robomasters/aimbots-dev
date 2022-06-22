@@ -74,6 +74,12 @@ void Digital::set(Digital::OutputPin pin, bool isSet)
 #else
     switch (pin)
     {
+        case Digital::OutputPin::C2:
+            DigitalOutPinC2::set(isSet);
+            break;
+        case Digital::OutputPin::C4:
+            DigitalOutPinC4::set(isSet);
+            break;
         case Digital::OutputPin::B13:
             DigitalOutPinB13::set(isSet);
             break;
