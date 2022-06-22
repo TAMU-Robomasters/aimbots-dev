@@ -49,9 +49,10 @@ void JetsonCommunicator::updateSerial() {
         case JetsonCommunicatorSerialState::SearchingForMagic: {
             size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
             if (bytesRead != 1) return;
+            
 
             displayBuffer[displayBufIndex] = rawSerialBuffer[0];
-            displayBufIndex = (displayBufIndex + 1) % 17;
+            displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
 
             // We've gotten data from the Jetson, so we can restart this.
             jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
@@ -86,8 +87,12 @@ void JetsonCommunicator::updateSerial() {
             if (nextByteIndex == JETSON_MESSAGE_SIZE) {
                 lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 
-                msBetweenLastMessage = currTime - lastMsgTime;
-                lastMsgTime = currTime;
+                if (lastMsgTime == 0) {
+                    lastMsgTime = currTime;
+                } else {
+                    msBetweenLastMessage = currTime - lastMsgTime;
+                    lastMsgTime = currTime;
+                }
 
                 yawOffsetDisplay = lastMessage.targetYawOffset;
                 pitchOffsetDisplay = lastMessage.targetPitchOffset;

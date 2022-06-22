@@ -12,7 +12,10 @@ SentryMatchFeederControlCommand::SentryMatchFeederControlCommand(src::Drivers* d
       feeder(feeder),
       stopCommand(drivers, feeder),
       burstFireCommand(drivers, feeder, STARTING_BURST_LENGTH),
-      fullAutoFireCommand(drivers, feeder) { }
+      fullAutoFireCommand(drivers, feeder)  //
+{
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+}
 
 void SentryMatchFeederControlCommand::initialize() {
     feeder->setDefaultCommand(dynamic_cast<TapCommand*>(&stopCommand));
@@ -49,4 +52,4 @@ bool SentryMatchFeederControlCommand::isReady() { return true; }
 
 bool SentryMatchFeederControlCommand::isFinished() const { return false; }
 
-}
+}  // namespace src::Feeder

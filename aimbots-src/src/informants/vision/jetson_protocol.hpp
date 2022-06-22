@@ -7,16 +7,24 @@ enum CVState : uint8_t {
     CV_STATE_FOUND = 1,
 };
 
-static constexpr uint64_t JETSON_MESSAGE_MAGIC = 0xdeadbeefdeadbef;
+// static constexpr uint64_t JETSON_MESSAGE_MAGIC = 0xdeadbeefdeadbef;
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
 
+// struct JetsonMessage {
+//     uint64_t magic;
+//     float targetYawOffset;
+//     float targetPitchOffset;
+//     CVState cvState;
+// } __attribute__((packed));
 struct JetsonMessage {
-    uint64_t magic;
+    uint8_t magic;
     float targetYawOffset;
     float targetPitchOffset;
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 17, "JetsonMessage is not the correct size");
+// static_assert(sizeof(JetsonMessage) == 17, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 10, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::vision

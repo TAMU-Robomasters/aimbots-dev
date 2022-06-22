@@ -4,7 +4,7 @@
 
 namespace src::Chassis {
 
-#warning "I, Richard, recommend you turn these RPMs WAAAAAY down at first so that, just in case I made a mistake, we don't break the robot. :^)"
+// #warning "I, Richard, recommend you turn these RPMs WAAAAAY down at first so that, just in case I made a mistake, we don't break the robot. :^)"
 static constexpr int32_t MIN_RPM = 1000;
 static constexpr int32_t MAX_RPM = 2000;
 
