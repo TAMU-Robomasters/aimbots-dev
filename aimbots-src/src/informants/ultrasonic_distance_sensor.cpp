@@ -126,13 +126,13 @@ float UltrasonicDistanceSensor::getRailPosition() {
 float UltrasonicDistanceSensor::getLeftDistance() {
     if(ORIGIN_SIDE == LEFT) {
         return distanceLeft + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceLeft - (ULTRASONIC_LENGTH / 2.0);
+    } else return USABLE_RAIL_LENGTH*100 - distanceLeft - (ULTRASONIC_LENGTH / 2.0);
 }
 
 float UltrasonicDistanceSensor::getRightDistance() {
     if(ORIGIN_SIDE == RIGHT) {
         return distanceRight + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceRight - (ULTRASONIC_LENGTH / 2.0);
+    } else return USABLE_RAIL_LENGTH*100 - distanceRight - (ULTRASONIC_LENGTH / 2.0);
 }
 
 }  // namespace src::Informants
