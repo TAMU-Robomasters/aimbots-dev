@@ -39,22 +39,49 @@ float pitchChassisRelativeDisplay = 0.0f;
 
 float yawOutputDisplay = 0.0f;
 
+// This is ugly, but I'm just doing this for simplicity
+#ifdef TARGET_HERO
+static bool isStartYawSet = false;
+static int64_t heroStartYawUnwrappedEncoder = 0;
+#endif
+
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
         currentChassisRelativeYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
 
-        yawChassisRelativeDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());
+#ifdef TARGET_HERO
+        // This code just assumes that we're starting at our
+        // YAW_START_ANGLE when the robot gets turned on, and
+        // then we just apply the delta from the starting encoder
+        // to that after we apply the gear ratio transformation.
+
+        int64_t unwrappedEncoder = yawMotor.getEncoderUnwrapped();
+
+        if (!isStartYawSet) {
+            isStartYawSet = true;
+            heroStartYawUnwrappedEncoder = unwrappedEncoder;
+        }
+
+        float rawDelta = unwrappedEncoder - heroStartYawUnwrappedEncoder;
+        float transformedDelta = rawDelta * GIMBAL_YAW_GEAR_RATIO;
+        float angle = modm::toRadian(YAW_START_ANGLE) + (transformedDelta * (M_TWOPI / DJIMotor::ENC_RESOLUTION));
+        currentChassisRelativeYawAngle.setValue(angle);
+#endif
 
         // FIXME: Verify that these plus and minus signs work out...
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
-        yawFieldRelativeDisplay = modm::toDegree(currentFieldRelativeYawAngle.getValue());
-
-        yawOutputDisplay = desiredYawMotorOutput;
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
+        
+        ////////////////
+        // DEBUG VARS //
+        ////////////////
+        yawChassisRelativeDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());
+        yawFieldRelativeDisplay = modm::toDegree(currentFieldRelativeYawAngle.getValue());
+        yawOutputDisplay = desiredYawMotorOutput;
     }
 
     if (pitchMotor.isMotorOnline()) {
