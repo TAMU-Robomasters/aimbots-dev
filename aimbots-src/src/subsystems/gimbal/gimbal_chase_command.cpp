@@ -18,7 +18,7 @@ void GimbalChaseCommand::initialize() {}
 float targetPitchAngleDisplay2 = 0.0f;
 float targetYawAngleDisplay2 = 0.0f;
 
-src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::CV_STATE_UNSURE;
+src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::LOOK;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
@@ -29,7 +29,7 @@ void GimbalChaseCommand::execute() {
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;
-        // if (cvState == src::Informants::vision::CVState::CV_STATE_FOUND) {
+        // if (cvState == src::Informants::vision::CVState::SHOOT) {
         visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
         cvStateDisplay = cvState;
