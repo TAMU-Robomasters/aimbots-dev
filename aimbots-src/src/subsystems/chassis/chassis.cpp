@@ -83,6 +83,10 @@ ChassisSubsystem::ChassisSubsystem(
 }
 
 void ChassisSubsystem::initialize() {
+#ifdef TARGET_SENTRY
+    drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
+#endif
+
     ForAllChassisMotors(&DJIMotor::initialize);
     setTargetRPMs(0, 0, 0);
 }
@@ -98,10 +102,6 @@ void ChassisSubsystem::refresh() {
         refSerialWorkingDisplay = 0;
     }
 
-#ifdef TARGET_SENTRY
-    drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition(motors[RAIL][0]);
-#endif
-    // update motor rpm based on the robot type?
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
@@ -117,15 +117,15 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
 #if defined(TARGET_SENTRY)
 void ChassisSubsystem::setTargetRPMs(float x, float, float) {
     calculateRail(x,
-                  ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                  ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(SWERVE)
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateSwerve(x, y, r,
-                    ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                    ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateMecanum(x, y, r,
-                     ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                     ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
 }
 

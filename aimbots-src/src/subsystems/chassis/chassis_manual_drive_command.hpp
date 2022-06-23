@@ -8,22 +8,22 @@
 
 namespace src::Chassis {
 
-    class ChassisManualDriveCommand : public TapCommand {
-       public:
-        ChassisManualDriveCommand(src::Drivers*, ChassisSubsystem*);
-        void initialize() override;
+class ChassisManualDriveCommand : public TapCommand {
+   public:
+    ChassisManualDriveCommand(src::Drivers*, ChassisSubsystem*);
+    void initialize() override;
 
-        void execute() override;
-        void end(bool interrupted) override;
-        bool isReady() override;
+    void execute() override;
+    void end(bool interrupted) override;
+    bool isReady() override;
 
-        bool isFinished() const override;
+    bool isFinished() const override;
 
-        const char* getName() const override { return "chassis drive"; }
+    const char* getName() const override { return "Chassis Manual Drive"; }
 
-       private:
-        src::Drivers* drivers;
-        ChassisSubsystem* chassis;
-    };
+   private:
+    src::Drivers* drivers;
+    ChassisSubsystem* chassis;
+};
 
 }  // namespace src::Chassis

@@ -1,13 +1,10 @@
-make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-# GNU Make 3.81
-# Copyright (C) 2006  Free Software Foundation, Inc.
-# This is free software; see the source for copying conditions.
-# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-# PARTICULAR PURPOSE.
+make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
+'make.exe' is not recognized as an internal or external command,
+operable program or batch file.
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Tue Jun 21 22:31:41 2022
+# Make data base, printed on Thu Jun  9 23:54:53 2022
 
 # Variables
 
@@ -42,7 +39,11 @@ INFOPATH = /opt/homebrew/share/info:
 # environment
 P9K_SSH = 0
 # environment
+<<<<<<< HEAD
 VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-52a7a0c9-7274-45ef-be2e-28a3a2f5491c.sock
+=======
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/vscode-ipc-b6a32e1c-61ca-4a91-ac3e-049d57aba9a2.sock
+>>>>>>> feature/nxp-fusion-algorithm
 # environment
 VSCODE_CWD = /
 # environment
@@ -76,7 +77,11 @@ HOME = /Users/sidp
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
+<<<<<<< HEAD
 VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+=======
+VSCODE_CODE_CACHE_PATH = /Users/sidp/Library/Application Support/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+>>>>>>> feature/nxp-fusion-algorithm
 # environment
 LOGNAME = sidp
 # environment
@@ -114,7 +119,11 @@ TMPDIR = /var/folders/qq/7pk6wq_j6fv702zryd7k4n740000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
+<<<<<<< HEAD
 VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.68.1-main.sock
+=======
+VSCODE_IPC_HOOK = /Users/sidp/Library/Application Support/Code/1.67.2-main.sock
+>>>>>>> feature/nxp-fusion-algorithm
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -122,7 +131,11 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
+<<<<<<< HEAD
 XPC_SERVICE_NAME = application.com.microsoft.VSCode.16183639.16183645
+=======
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.11170520.11170526
+>>>>>>> feature/nxp-fusion-algorithm
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -154,7 +167,11 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
+<<<<<<< HEAD
 VSCODE_PID = 44622
+=======
+VSCODE_PID = 86622
+>>>>>>> feature/nxp-fusion-algorithm
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=1/93=1%
 
@@ -238,7 +255,11 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
+<<<<<<< HEAD
 # Finished Make data base on Tue Jun 21 22:31:41 2022
+=======
+# Finished Make data base on Thu Jun  9 23:54:53 2022
+>>>>>>> feature/nxp-fusion-algorithm
 
  
 make: *** No rule to make target `all'.  Stop.

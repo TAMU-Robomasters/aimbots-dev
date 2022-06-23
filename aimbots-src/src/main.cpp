@@ -43,6 +43,7 @@
 #include "tap/architecture/clock.hpp"
 //
 #include "robots/robot_control.hpp"
+#include "utils/music/player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
@@ -114,8 +115,9 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
 
-    drivers->bmi088.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
-    drivers->bmi088.requestRecalibration();
+    drivers->fieldRelativeInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+
+    drivers->fieldRelativeInformant.recalibrateIMU();
 
     drivers->refSerial.initialize();
     // drivers->terminalSerial.initialize();
@@ -125,12 +127,11 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->railDistanceSensor.initialize();
 #endif
     // drivers->magnetometer.init();
-    drivers->fieldRelativeInformant.initialize();
     drivers->cvCommunicator.initialize();
 }
 
-float yaw, pitch, roll;
-float magX, magY, magZ;
+float yawDisplay, pitchDisplay, rollDisplay;
+float gXDisplay, gYDisplay, gZDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -144,10 +145,23 @@ static void updateIo(src::Drivers *drivers) {
 #ifdef TARGET_SENTRY
     drivers->railDistanceSensor.update();
 #endif
+    drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
 
-    yaw = drivers->bmi088.getYaw();
-    pitch = drivers->bmi088.getRoll();
-    roll = drivers->bmi088.getPitch();
-    imuStatus = drivers->bmi088.getImuState();
+    utils::Music::continuePlayingXPStartupTune(drivers);
+    // utils::Music::continuePlayingTokyoDriftTune(drivers);
+
+    imuStatus = drivers->fieldRelativeInformant.getImuState();
+
+    float yaw = drivers->fieldRelativeInformant.getChassisYaw();
+    float pitch = drivers->fieldRelativeInformant.getChassisPitch();
+    float roll = drivers->fieldRelativeInformant.getChassisRoll();
+
+    gZDisplay = drivers->fieldRelativeInformant.getGz();
+    gYDisplay = drivers->fieldRelativeInformant.getGy();
+    gXDisplay = drivers->fieldRelativeInformant.getGx();
+
+    yawDisplay = modm::toDegree(yaw);
+    pitchDisplay = modm::toDegree(pitch);
+    rollDisplay = modm::toDegree(roll);
 }

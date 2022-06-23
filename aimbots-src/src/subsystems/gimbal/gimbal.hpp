@@ -14,20 +14,6 @@ constexpr inline float constAbs(float value) {
     return (value < 0.0f) ? (value * -1.0f) : value;
 }
 
-// NOTE: This function assumes the hardstops are in degrees
-constexpr float getPitchMotorDirection() {
-    constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
-
-    // If 0 is somewhere in our available arc of pitch, then we need
-    // to flip the direction, because the previous condition would be
-    // incorrect.
-    if constexpr (constAbs(PITCH_SOFTSTOP_HIGH - PITCH_SOFTSTOP_LOW) > 180.0f) {
-        return intialDirection * -1.0f;
-    }
-
-    return intialDirection;
-}
-
 class GimbalSubsystem : public tap::control::Subsystem {
    public:
     GimbalSubsystem(src::Drivers*);
@@ -42,38 +28,59 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
 
-    inline float getTargetYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetYawAngle) : targetYawAngle; }
-    inline void setTargetYawAngle(AngleUnit unit, float angle) { targetYawAngle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle; }
-    inline float getTargetPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetPitchAngle) : targetPitchAngle; }
-    inline void setTargetPitchAngle(AngleUnit unit, float angle) {
+    inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
+    inline void setTargetChassisRelativeYawAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
-        targetPitchAngle = ContiguousFloat::limitValue(
-            ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
-            modm::toRadian((getPitchMotorDirection() > 0) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH));
+        targetChassisRelativeYawAngle = ContiguousFloat(angle, 0, M_TWOPI).getValue();
     }
 
-    inline float getCurrentYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentYawAngle.getValue()) : currentYawAngle.getValue(); }
-    inline float getCurrentPitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentPitchAngle.getValue()) : currentPitchAngle.getValue(); }
+    inline float getTargetChassisRelativePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativePitchAngle) : targetChassisRelativePitchAngle; }
+    inline void setTargetChassisRelativePitchAngle(AngleUnit unit, float angle) {
+        angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
+        int status = 0;
 
-    float getCurrentYawAngleFromCenter(AngleUnit) const;
-    float getCurrentPitchAngleFromCenter(AngleUnit) const;
+        float high, low = 0.0f;
+        if (PITCH_SOFTSTOP_HIGH > PITCH_SOFTSTOP_LOW) {
+            high = PITCH_SOFTSTOP_HIGH;
+            low = PITCH_SOFTSTOP_LOW;
+        } else {
+            low = PITCH_SOFTSTOP_HIGH;
+            high = PITCH_SOFTSTOP_LOW;
+        }
 
-    inline tap::algorithms::ContiguousFloat const& getCurrentYawAngleAsContiguousFloat() const { return currentYawAngle; }
-    inline tap::algorithms::ContiguousFloat const& getCurrentPitchAngleAsContiguousFloat() const { return currentPitchAngle; }
+        targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
+            ContiguousFloat(angle, 0, M_TWOPI),
+            modm::toRadian(low),
+            modm::toRadian(high),
+            &status);
+    }
+
+    inline float getCurrentFieldRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentFieldRelativeYawAngle.getValue()) : currentFieldRelativeYawAngle.getValue(); }
+    inline float getCurrentChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativeYawAngle.getValue()) : currentChassisRelativeYawAngle.getValue(); }
+    inline float getCurrentChassisRelativePitchAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentChassisRelativePitchAngle.getValue()) : currentChassisRelativePitchAngle.getValue(); }
+
+    float getCurrentYawAngleFromChassisCenter(AngleUnit) const;
+    float getCurrentPitchAngleFromChassisCenter(AngleUnit) const;
+
+    inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativeYawAngleAsContiguousFloat() const { return currentChassisRelativeYawAngle; }
+    inline tap::algorithms::ContiguousFloat const& getCurrentFieldRelativeYawAngleAsContiguousFloat() const { return currentFieldRelativeYawAngle; }
+    inline tap::algorithms::ContiguousFloat const& getCurrentChassisRelativePitchAngleAsContiguousFloat() const { return currentChassisRelativePitchAngle; }
 
     inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
     inline float getPitchMotorRPM() const { return (pitchMotor.isMotorOnline()) ? pitchMotor.getShaftRPM() : 0.0f; }
 
    private:
+    src::Drivers* drivers;
+
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
 
-    tap::algorithms::ContiguousFloat currentYawAngle;    // in Radians
-    tap::algorithms::ContiguousFloat currentPitchAngle;  // in Radians
+    tap::algorithms::ContiguousFloat currentFieldRelativeYawAngle;      // In radians
+    tap::algorithms::ContiguousFloat currentChassisRelativeYawAngle;    // In radians
+    tap::algorithms::ContiguousFloat currentChassisRelativePitchAngle;  // In radians
 
-    float targetYawAngle;    // in Radians
-    float targetPitchAngle;  // in Radians
+    float targetChassisRelativeYawAngle;    // in Radians
+    float targetChassisRelativePitchAngle;  // in Radians
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;

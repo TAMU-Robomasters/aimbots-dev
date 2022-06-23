@@ -94,13 +94,11 @@ float OperatorInterface::getChassisRotationInput() {
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    // YAW_INPUT_DIRECTION pulled from constants file
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_INPUT_DIRECTION;
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    // Calculates intended pitch motor direction from soft stops
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * src::Gimbal::getPitchMotorDirection();
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
 }
 
 }  // namespace src::Control

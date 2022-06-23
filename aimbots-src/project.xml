@@ -7,7 +7,7 @@
   <options>
     <option name="taproot:project_name">aimbots-src</option>
 
-    <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option>
+    <!-- <option name="taproot:modm_repo_lb">../taproot/modm/repo.lb</option> -->
     <option name="taproot:docs:source_paths">src</option>
     <option name="taproot:rebuild_modm">True</option>
     
@@ -30,7 +30,7 @@
     <option name="taproot:board:analog_in_pins"></option>
     <option name="taproot:board:pwm_pins">C1,Buzzer,ImuHeater</option>  <!-- Removed C5 and C3, those are the ECHO pins of the ultrasonics -->
     <!--  -->
-
+  
   </options>
   <modules>
     <module>taproot:core</module>

@@ -9,6 +9,10 @@ static constexpr uint8_t DRIVEN_WHEEL_COUNT = 1;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
+
+// in radians
+static constexpr float DEV_BOARD_YAW_OFFSET = 0.0f;
+
 /**
  * @brief Definitions for operator interface constants (may change based on preference of drivers)
  *
@@ -101,8 +105,6 @@ static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
-static constexpr float YAW_INPUT_DIRECTION = -1;
-
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
 static constexpr int MAX_BURST_LENGTH = 20;
 static constexpr int MIN_BURST_LENGTH = 4;
@@ -133,6 +135,9 @@ static constexpr bool SHOOTER_4_DIRECTION = false;
 
 static constexpr bool FEEDER_DIRECTION = true;
 
+static constexpr bool YAW_DIRECTION = false;
+static constexpr bool PITCH_DIRECTION = true;
+
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
@@ -141,7 +146,7 @@ static constexpr float WHEEL_RADIUS = 0.0206375f;
 
 static constexpr float WHEELBASE_WIDTH = 0.403174f;
 
-static constexpr float WHEELBASE_LENGTH = 0.366f; //meters!!1!
+static constexpr float WHEELBASE_LENGTH = 0.366f;  // meters!!1!
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
@@ -157,7 +162,7 @@ static constexpr float robot_starting_rail_location_array[3] = {((WHEELBASE_WIDT
 static const Matrix<float, 1, 3> robot_starting_rail_location(robot_starting_rail_location_array);
 
 static constexpr float FULL_RAIL_LENGTH = 2.130f;                                                       // meters, pole center to pole center
-static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;                                                   // cm
+static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;                                                    // cm
 static constexpr float USABLE_RAIL_LENGTH = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER);  // in meters
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_starting_rail_location * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
@@ -165,22 +170,22 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
 // sentry ultrasonic settings
-static constexpr bool ORIGIN_SIDE = false;         // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
-static constexpr int TIMEOUT_DURATION = 30000;    // microseconds
-static constexpr float ULTRASONIC_MAX_VALID_SPEED = 45.0f; //cm/s, robot speed above which ultrasonic is ignored
-static constexpr float ULTRASONIC_LENGTH = 37.4f;  // cm, distance between the two ultrasonics (PCB to PCB)
-static constexpr float ULTRASONIC_OFFSET = 0.0f; // cm, "distance from PCB to outer plate"
-static constexpr float ULTRASONIC_MIN_VALID_RANGE = 10.0f; //cm
-static constexpr float ULTRASONIC_MAX_VALID_RANGE = 250.0f;//cm
+static constexpr bool ORIGIN_SIDE = false;                   // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
+static constexpr int TIMEOUT_DURATION = 30000;               // microseconds
+static constexpr float ULTRASONIC_MAX_VALID_SPEED = 45.0f;   // cm/s, robot speed above which ultrasonic is ignored
+static constexpr float ULTRASONIC_LENGTH = 37.4f;            // cm, distance between the two ultrasonics (PCB to PCB)
+static constexpr float ULTRASONIC_OFFSET = 0.0f;             // cm, "distance from PCB to outer plate"
+static constexpr float ULTRASONIC_MIN_VALID_RANGE = 10.0f;   // cm
+static constexpr float ULTRASONIC_MAX_VALID_RANGE = 250.0f;  // cm
 
-//field-relative math is based on 
+// field-relative math is based on
 
 // Values specific for Sentry hardware setup
 static constexpr float YAW_START_ANGLE = 61.0f;
-static constexpr float PITCH_START_ANGLE = 220.0f;
+static constexpr float PITCH_START_ANGLE = 152.0f;
 
-static constexpr float PITCH_SOFTSTOP_LOW = 270.0f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 155.0f;
+static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;
 
 static constexpr float YAW_FRONT_ANGLE = 61.0f;
 static constexpr float PITCH_HORIZON_ANGLE = 220.0f;

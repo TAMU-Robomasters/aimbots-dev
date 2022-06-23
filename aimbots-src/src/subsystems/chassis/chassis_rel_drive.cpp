@@ -7,7 +7,7 @@ float xFromRemote = 0.0f;
 int8_t chassisXDesiredWheelspeedWatch = 0;
 int8_t chassisYDesiredWheelspeedWatch = 0;
 
-namespace src::Chassis::Movement::Relative {
+namespace src::Chassis::Movement::Independent {
 
 void calculateUserDesiredMovement(src::Drivers* drivers,
                                   ChassisSubsystem* chassis,
@@ -18,34 +18,47 @@ void calculateUserDesiredMovement(src::Drivers* drivers,
         return;
     }
 
-    const float MAX_WHEEL_SPEED = ChassisSubsystem::getMaxUserWheelSpeed(
+    const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
         drivers->refSerial.getRefSerialReceivingData(),
         drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
     // what we will multiply x and y speed by to take into account rotation
     float rTranslationalGain =
-        chassis->calculateRotationTranslationalGain(desiredChassisRotation) * MAX_WHEEL_SPEED;
+        chassis->calculateRotationTranslationalGain(desiredChassisRotation) * maxWheelSpeed;
 
     *desiredXSpeed = limitVal<float>(
                          drivers->controlOperatorInterface.getChassisXInput(),
                          -rTranslationalGain,
                          rTranslationalGain) *
-                     MAX_WHEEL_SPEED;
+                     maxWheelSpeed;
 
     *desiredYSpeed = limitVal<float>(
                          drivers->controlOperatorInterface.getChassisYInput(),
                          -rTranslationalGain,
                          rTranslationalGain) *
-                     MAX_WHEEL_SPEED;
+                     maxWheelSpeed;
 }
 
+float chassisRotationInputDisplay = 0.0f;
+float chassisYInputDisplay = 0.0f;
+float chassisXInputDisplay = 0.0f;
+
+float chassisXDesiredWheelspeedDisplay = 0.0f;
+float chassisYDesiredWheelspeedDisplay = 0.0f;
+float chassisRotationDesiredWheelspeedDisplay = 0.0f;
+
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
-    const float MAX_WHEEL_SPEED = ChassisSubsystem::getMaxUserWheelSpeed(
+    const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
         drivers->refSerial.getRefSerialReceivingData(),
         drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
     float chassisRotationDesiredWheelspeed =
-        drivers->controlOperatorInterface.getChassisRotationInput() * MAX_WHEEL_SPEED;
+        drivers->controlOperatorInterface.getChassisRotationInput() * maxWheelSpeed;
+
+    chassisRotationInputDisplay = drivers->controlOperatorInterface.getChassisRotationInput();
+
+    chassisXInputDisplay = drivers->controlOperatorInterface.getChassisXInput();
+    chassisYInputDisplay = drivers->controlOperatorInterface.getChassisYInput();
 
     float chassisXDesiredWheelspeed = 0.0f;
     float chassisYDesiredWheelspeed = 0.0f;
@@ -57,14 +70,14 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         &chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);
 
+    chassisXDesiredWheelspeedDisplay = chassisXDesiredWheelspeed;
+    chassisYDesiredWheelspeedDisplay = chassisYDesiredWheelspeed;
+    chassisRotationDesiredWheelspeedDisplay = chassisRotationDesiredWheelspeed;
+
     // set chassis targets using setDesiredOutputs
     chassis->setTargetRPMs(
         chassisXDesiredWheelspeed,
         chassisYDesiredWheelspeed,
         chassisRotationDesiredWheelspeed);
-
-    chassisXDesiredWheelspeedWatch = (int8_t)(chassisXDesiredWheelspeed * 127);
-    chassisYDesiredWheelspeedWatch = (int8_t)(chassisYDesiredWheelspeed * 127);
-    // chassis->setDesiredOutputs(0, 0, 0);
 }
-}  // namespace src::Chassis::Movement::Relative
+}  // namespace src::Chassis::Movement::Independent

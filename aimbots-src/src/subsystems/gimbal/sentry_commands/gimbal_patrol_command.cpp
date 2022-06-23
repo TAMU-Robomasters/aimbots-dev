@@ -44,7 +44,7 @@ void GimbalPatrolCommand::execute() {
     float targetPitchAngle = 0.0f;
 
     targetYawAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
-    targetYawAngleDisplay = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
+    targetYawAngleDisplay = targetYawAngle;
     targetPitchAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Degrees);
     targetPitchAngleDisplay = targetPitchAngle;
 
@@ -97,13 +97,13 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     currPatrolCoordinateYDisplay = patrolCoordinates[patrolCoordinateIndex][Y];
     currPatrolCoordinateTimeDisplay = patrolCoordinates[patrolCoordinateIndex][TIME];
 
-    Matrix<float, 1, 3> demoPosition1 = Matrix<float, 1, 3>::zeroMatrix();
-    demoPosition1[0][0] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][X];
-    demoPosition1[0][1] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][Y];
+    // Matrix<float, 1, 3> demoPosition1 = Matrix<float, 1, 3>::zeroMatrix();
+    // demoPosition1[0][0] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][X];
+    // demoPosition1[0][1] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][Y];
 
-    Matrix<float, 1, 3> demoPosition2 = Matrix<float, 1, 3>::zeroMatrix();
-    demoPosition2[0][0] = -3.6675f + 1.0f;
-    demoPosition2[0][1] = -1.6675f + 1.0f;
+    // Matrix<float, 1, 3> demoPosition2 = Matrix<float, 1, 3>::zeroMatrix();
+    // demoPosition2[0][0] = -3.6675f + 1.0f;
+    // demoPosition2[0][1] = -1.6675f + 1.0f;
 
     float xy_angle = src::utils::MatrixHelper::xy_angle_between_locations(AngleUnit::Radians, drivers->fieldRelativeInformant.getFieldRelativeRobotPosition(), patrolCoordinates.getRow(patrolCoordinateIndex) /*demoPosition2*/);
     xy_angleDisplay = modm::toDegree(xy_angle);
@@ -112,7 +112,7 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     xy_angle -= modm::toRadian(45.0f);
 #endif
     // offset by the preset "front" angle of the robot
-    float robotRelativeAngle = modm::toRadian(YAW_FRONT_ANGLE) + (YAW_INPUT_DIRECTION * xy_angle);
+    float robotRelativeAngle = modm::toRadian(YAW_FRONT_ANGLE) + xy_angle;
 
     if (unit == AngleUnit::Degrees) {
         robotRelativeAngle = modm::toDegree(robotRelativeAngle);
