@@ -99,7 +99,7 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
     float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS) + wheelOffset;  // current position in meters
 
     // grab ultrasonic data, recalibrate wheels if ultrasonics valid
-    float currUltrasonicPosition = UltrasonicDistanceSensor::getRailPosition() / 100.0;  // ultrasonic position in meters
+    // float currUltrasonicPosition = UltrasonicDistanceSensor::getRailPosition() / 100.0;  // ultrasonic position in meters
     if (UltrasonicDistanceSensor::isDataValid()) {
         // wheelOffset += currUltrasonicPosition - currWheelMovement;
     }
