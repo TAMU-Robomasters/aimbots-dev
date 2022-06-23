@@ -3,9 +3,9 @@
 namespace src::Informants::vision {
 
 enum CVState : uint8_t {
-    TRACK = 0,
-    SHOOT = 1,
-    PATROL = 2,
+    LOOK_AT_COORDS = 0,
+    FIRE = 1,
+    LOOK_AROUND = 2,
 };
 
 static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';

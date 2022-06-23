@@ -37,7 +37,7 @@ uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 
 float yawOffsetDisplay = 0;
 float pitchOffsetDisplay = 0;
-CVState cvStateDisplay = CVState::TRACK;
+CVState cvStateDisplay = CVState::LOOK_AT_COORDS;
 int readUnequal = 0;
 
 int lastMsgTime = 0;
@@ -118,7 +118,7 @@ void JetsonCommunicator::updateSerial() {
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
 
-                if (lastMessage.cvState == CVState::SHOOT) {
+                if (lastMessage.cvState == CVState::FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
 
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
@@ -137,9 +137,9 @@ void JetsonCommunicator::updateSerial() {
 
 Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {
     // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    // float yawOffsetPredicted = /*lastMessage.cvState == SHOOT ? */ yawOffsetPredictor.getInterpolatedValue(currTime);
+    // float yawOffsetPredicted = /*lastMessage.cvState == FIRE ? */ yawOffsetPredictor.getInterpolatedValue(currTime);
     // float yawOffsetPredicted = lastMessage.targetYawOffset;
-    // float pitchOffsetPredicted = /*lastMessage.cvState == SHOOT ? */ pitchOffsetPredictor.getInterpolatedValue(currTime);
+    // float pitchOffsetPredicted = /*lastMessage.cvState == FIRE ? */ pitchOffsetPredictor.getInterpolatedValue(currTime);
     // float pitchOffsetPredicted = lastMessage.targetPitchOffset;
     // visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - yawOffsetPredicted;
     // visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - pitchOffsetPredicted;
