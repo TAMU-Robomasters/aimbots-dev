@@ -12,7 +12,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
 
 using namespace src::Chassis;
 
@@ -33,12 +33,12 @@ namespace EngineerControl {
 ChassisSubsystem chassis(drivers());
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand},
+    {&chassisManualDriveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -83,4 +83,4 @@ namespace src::Control {
     }
 }  // namespace src::Control
 
-#endif //TARGET_ENGINEER
+#endif  //TARGET_ENGINEER

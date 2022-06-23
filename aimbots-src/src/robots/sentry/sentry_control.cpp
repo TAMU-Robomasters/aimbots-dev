@@ -12,21 +12,25 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
+#include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/run_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/sentry_commands/sentry_match_feeder_control_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
+#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+//
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -56,21 +60,31 @@ ShooterSubsystem shooter(drivers());
 GimbalChassisRelativeController gimbalController(&gimbal);
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface*>(&gimbalController), 0.3f, 0.3f);
-RunFeederCommand runFeederCommand(drivers(), &feeder);
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis);
+
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
+
+SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder);
+
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
-// BrakeShooterCommand brakeStopShooterCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-// Enables both chassis and gimbal control
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisRailEvadeCommand, &gimbalPatrolCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+// Enables both chassis and gimbal manual control
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&chassisManualDriveCommand, &gimbalControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
@@ -81,7 +95,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&matchFeederControlCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -102,8 +116,10 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    // gimbal.setDefaultCommand(&gimbalControlCommand);
+    // chassis.setDefaultCommand(&chassisRailBounceCommand);
+    // gimbal.setDefaultCommand(&gimbalChaseCommand);
 }
 
 // Set commands scheduled on startup
@@ -118,6 +134,7 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
 }

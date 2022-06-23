@@ -1,6 +1,7 @@
 #ifdef TARGET_SENTRY
 #include "sentry_control_interface.hpp"
 
+#include "subsystems/gimbal/gimbal.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"

@@ -12,15 +12,19 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_drive_command.hpp"
+#include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
+#include "subsystems/chassis/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
+#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -61,26 +65,42 @@ ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalController(&gimbal);
+GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
+GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Define commands here ---------------------------------------------------
-ChassisDriveCommand chassisDriveCommand(drivers(), &chassis);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, dynamic_cast<GimbalControllerInterface *>(&gimbalController), USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+
 RunFeederCommand runFeederCommand(drivers(), &feeder);
+RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
+
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 // Define command mappings here -------------------------------------------
+
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisDriveCommand, &gimbalControlCommand},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
@@ -88,6 +108,7 @@ HoldCommandMapping rightSwitchDown(
     drivers(),
     {&openHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
@@ -99,6 +120,11 @@ HoldCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping leftClickMouse(
+    drivers(),
+    {&runFeederCommandFromMouse},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -137,10 +163,12 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace StandardControl

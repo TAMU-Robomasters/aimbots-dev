@@ -1,7 +1,6 @@
 #include "subsystems/chassis/chassis.hpp"
 
-#include <drivers.hpp>
-
+#include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "utils/common_types.hpp"
 
@@ -10,7 +9,8 @@ using namespace tap::algorithms;
 namespace src::Chassis {
 
 ChassisSubsystem::ChassisSubsystem(
-    tap::Drivers* drivers) : ChassisSubsystemInterface(drivers),
+    src::Drivers* drivers) : ChassisSubsystemInterface(drivers),
+                             drivers(drivers),
 #ifdef TARGET_SENTRY
                              railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
                              railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
@@ -83,12 +83,25 @@ ChassisSubsystem::ChassisSubsystem(
 }
 
 void ChassisSubsystem::initialize() {
+#ifdef TARGET_SENTRY
+    drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
+#endif
+
     ForAllChassisMotors(&DJIMotor::initialize);
     setTargetRPMs(0, 0, 0);
 }
 
+int refSerialWorkingDisplay = 0;
+uint16_t chassisPowerLimitDisplay = 0;
+
 void ChassisSubsystem::refresh() {
-    // update motor rpm based on the robot type?
+    if (drivers->refSerial.getRefSerialReceivingData()) {
+        chassisPowerLimitDisplay = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+        refSerialWorkingDisplay = 69;
+    } else {
+        refSerialWorkingDisplay = 0;
+    }
+
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
@@ -101,16 +114,18 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
-void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
 #if defined(TARGET_SENTRY)
+void ChassisSubsystem::setTargetRPMs(float x, float, float) {
     calculateRail(x,
-                  ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                  ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(SWERVE)
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateSwerve(x, y, r,
-                    ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                    ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateMecanum(x, y, r,
-                     ChassisSubsystem::getMaxUserWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+                     ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
 }
 
@@ -177,5 +192,4 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
     }
     return rTranslationalGain;
 }
-
 };  // namespace src::Chassis

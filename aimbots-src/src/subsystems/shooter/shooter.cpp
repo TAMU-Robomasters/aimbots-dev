@@ -26,10 +26,10 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
       velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
 //
 {
-    motors[TOP][0] = &flywheel1;  // TOP == RIGHT
-    motors[BOT][0] = &flywheel2;  // BOT == LEFT
-    velocityPIDs[TOP][0] = &flywheel1PID;
-    velocityPIDs[BOT][0] = &flywheel2PID;
+    motors[RIGHT][0] = &flywheel1;  // TOP_RIGHT == RIGHT
+    motors[LEFT][0] = &flywheel2;   // BOT_RIGHT == LEFT
+    velocityPIDs[RIGHT][0] = &flywheel1PID;
+    velocityPIDs[LEFT][0] = &flywheel2PID;
 #ifdef TARGET_SENTRY
     motors[TOP_LEFT][0] = &flywheel3;
     motors[BOT_LEFT][0] = &flywheel4;
@@ -47,13 +47,33 @@ void ShooterSubsystem::initialize() {
 float PIDoutDisplay = 0.0f;
 float shaftSpeedDisplay = 0.0f;
 
+float FWRight1 = 0.0f;  // RIGHT / TOP_RIGHT
+float FWLeft1 = 0.0f;   // LEFT / BOT_LEFT
+#ifdef TARGET_SENTRY
+float FWTopLeft = 0.0f;  // TOP_LEFT
+float FWBotLeft = 0.0f;  // BOT_LEFT
+#endif
+
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     // Debug info
-    if (motors[TOP][0]->isMotorOnline()) {
-        shaftSpeedDisplay = motors[TOP][0]->getShaftRPM();
-        PIDoutDisplay = velocityPIDs[TOP][0]->getOutput();
+    if (flywheel1.isMotorOnline()) {
+        shaftSpeedDisplay = flywheel1.getShaftRPM();
+        PIDoutDisplay = flywheel1PID.getOutput();
+
+        FWRight1 = flywheel1.getShaftRPM();
     }
+    if (flywheel2.isMotorOnline()) {
+        FWLeft1 = flywheel2.getShaftRPM();
+    }
+#ifdef TARGET_SENTRY
+    if (flywheel3.isMotorOnline()) {
+        FWTopLeft = flywheel3.getShaftRPM();
+    }
+    if (flywheel4.isMotorOnline()) {
+        FWBotLeft = flywheel4.getShaftRPM();
+    }
+#endif
 
     ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
 }

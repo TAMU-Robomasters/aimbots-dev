@@ -1,14 +1,16 @@
+#ifdef TARGET_STANDARD
+
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 
-namespace src::Hopper{
-    ToggleHopperCommand::ToggleHopperCommand(src::Drivers * drivers, HopperSubsystem* hopper){
-        this->drivers = drivers;
-this->hopper = hopper;
+namespace src::Hopper {
+ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
+    this->drivers = drivers;
+    this->hopper = hopper;
 }
 
 void ToggleHopperCommand::initialize() {
     uint8_t state = hopper->getHopperState();
-    if (state == UNKNOWN) {  //default 'unknown' action can be open/closed
+    if (state == UNKNOWN) {  // default 'unknown' action can be open/closed
         hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
         hopper->setHopperState(CLOSED);
     } else {
@@ -30,5 +32,6 @@ bool ToggleHopperCommand::isReady() {
 bool ToggleHopperCommand::isFinished() const {
     return hopper->isHopperReady();
 }
-}
-;  //namespace src::Hopper
+};  // namespace src::Hopper
+
+#endif
