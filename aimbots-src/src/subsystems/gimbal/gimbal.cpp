@@ -34,6 +34,9 @@ void GimbalSubsystem::initialize() {
 float currentYawEncoderPositionDisplay = 0.0f;
 float desiredYawMotorOutputDisplay = 0.0f;
 
+float currentPitchAngleDisplay = 0.0f;
+float currentYawAngleDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
@@ -42,6 +45,8 @@ void GimbalSubsystem::refresh() {
         currentYawAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
 
         desiredYawMotorOutputDisplay = desiredYawMotorOutput;
+        currentPitchAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
+        currentYawAngleDisplay = modm::toDegree(currentYawAngle.getValue());
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);

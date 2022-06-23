@@ -49,7 +49,6 @@ void JetsonCommunicator::updateSerial() {
         case JetsonCommunicatorSerialState::SearchingForMagic: {
             size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
             if (bytesRead != 1) return;
-            
 
             displayBuffer[displayBufIndex] = rawSerialBuffer[0];
             displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
@@ -81,6 +80,9 @@ void JetsonCommunicator::updateSerial() {
                 nextByteIndex++;
             }
 
+            displayBuffer[displayBufIndex] = rawSerialBuffer[0];
+            displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
+
             // We've gotten data from the Jetson, so we can restart this.
             jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
@@ -88,7 +90,7 @@ void JetsonCommunicator::updateSerial() {
                 lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 
                 if (lastMsgTime == 0) {
-                    lastMsgTime = currTime;
+                    lastMsgTime = tap::arch::clock::getTimeMilliseconds();
                 } else {
                     msBetweenLastMessage = currTime - lastMsgTime;
                     lastMsgTime = currTime;
@@ -111,7 +113,7 @@ void JetsonCommunicator::updateSerial() {
     }
 }
 
-Matrix<float, 1, 2> const& JetsonCommunicator::getVisionOffsetAngles() {
+Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     float yawOffsetPredicted = yawOffsetPredictor.getInterpolatedValue(currTime);
     float pitchOffsetPredicted = pitchOffsetPredictor.getInterpolatedValue(currTime);

@@ -28,11 +28,13 @@ class JetsonCommunicator {
     void initialize();
     void updateSerial();
 
+    void setTurretMotors(DJIMotor yaw, DJIMotor pitch);
+
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
     inline JetsonMessage const& lastValidMessage() const { return lastMessage; }
 
-    Matrix<float, 1, 2> const& getVisionOffsetAngles();
+    Matrix<float, 1, 2> const& getVisionTargetAngles();
 
    private:
     src::Drivers* drivers;
@@ -48,6 +50,9 @@ class JetsonCommunicator {
 
     tap::algorithms::LinearInterpolationPredictor yawOffsetPredictor;
     tap::algorithms::LinearInterpolationPredictor pitchOffsetPredictor;
+
+    DJIMotor* yawMotor;
+    DJIMotor* pitchMotor;
 
     Matrix<float, 1, 2> visionOffsetAngles;
 

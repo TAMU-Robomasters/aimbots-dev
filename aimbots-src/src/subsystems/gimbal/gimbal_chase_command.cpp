@@ -15,9 +15,11 @@ GimbalChaseCommand::GimbalChaseCommand(src::Drivers* drivers,
 
 void GimbalChaseCommand::initialize() {}
 
-float yawOffsetAngleDisplay = 0.0f;
-float pitchOffsetAngleDisplay = 0.0f;
+float targetPitchAngleDisplay2 = 0.0f;
+float targetYawAngleDisplay2 = 0.0f;
+
 src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::CV_STATE_UNSURE;
+bool updatedThisLoopDisplay = false;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
@@ -28,17 +30,21 @@ void GimbalChaseCommand::execute() {
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;
-        visionOffsetAngles = drivers->cvCommunicator.getVisionOffsetAngles();
-        yawOffsetAngleDisplay = visionOffsetAngles[0][0];
-        pitchOffsetAngleDisplay = visionOffsetAngles[0][1];
+        visionOffsetAngles = drivers->cvCommunicator.getVisionTargetAngles();
+
         cvStateDisplay = cvState;
 
-        targetYawAngle = gimbal->getCurrentYawAngle(AngleUnit::Degrees) + visionOffsetAngles[0][0];
-        targetPitchAngle = gimbal->getCurrentPitchAngle(AngleUnit::Degrees) + visionOffsetAngles[0][1];
-    }
+        if (cvState == src::Informants::vision::CVState::CV_STATE_FOUND) {
+            targetYawAngle = modm::toDegree(visionOffsetAngles[0][0]);
+            targetPitchAngle = modm::toDegree(visionOffsetAngles[0][1]);
 
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-    controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+            targetPitchAngleDisplay2 = targetPitchAngle;
+            targetYawAngleDisplay2 = targetYawAngle;
+
+            controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+            controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+        }
+    }
 }
 
 bool GimbalChaseCommand::isReady() { return true; }
@@ -49,5 +55,4 @@ void GimbalChaseCommand::end(bool) {
     gimbal->setYawMotorOutput(0);
     gimbal->setPitchMotorOutput(0);
 }
-
 };  // namespace src::Gimbal
