@@ -167,11 +167,12 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 // sentry ultrasonic settings
 static constexpr bool ORIGIN_SIDE = false;         // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
 static constexpr int TIMEOUT_DURATION = 30000;    // microseconds
-static constexpr float ULTRASONIC_MAX_VALID_SPEED = 45.0f; //cm/s, robot speed above which ultrasonic is ignored
-static constexpr float ULTRASONIC_LENGTH = 37.4f;  // cm, distance between the two ultrasonics (PCB to PCB)
-static constexpr float ULTRASONIC_OFFSET = 0.0f; // cm, "distance from PCB to outer plate"
+static constexpr float ULTRASONIC_MAX_VALID_SPEED = 20.0f; //cm/s, robot speed above which ultrasonic is ignored
+static constexpr float ULTRASONIC_LENGTH = 39.0f;  // cm, distance between the two ultrasonics (PCB to PCB)
+static constexpr float ULTRASONIC_OFFSET = 0.5f; // cm, "distance from PCB to outer plate"
 static constexpr float ULTRASONIC_MIN_VALID_RANGE = 10.0f; //cm
 static constexpr float ULTRASONIC_MAX_VALID_RANGE = 250.0f;//cm
+static constexpr float ULTRASONIC_TRUST_FACTOR = 0.5f; //range 0-1
 
 //field-relative math is based on 
 
