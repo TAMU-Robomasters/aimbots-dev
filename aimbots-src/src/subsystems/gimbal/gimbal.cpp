@@ -1,5 +1,7 @@
 #include "gimbal.hpp"
 
+#include <drivers.hpp>
+
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
@@ -74,8 +76,12 @@ void GimbalSubsystem::refresh() {
         currentChassisRelativeYawAngle.setValue(angle);
 #endif
 
-        // FIXME: Verify that these plus and minus signs work out...
+// FIXME: Verify that these plus and minus signs work out...
+#ifndef TARGET_SENTRY
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
+#else
+        currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue());
+#endif
 
         currentYawAngleDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());
         currentPitchAngleDisplay = modm::toDegree(currentChassisRelativePitchAngle.getValue());

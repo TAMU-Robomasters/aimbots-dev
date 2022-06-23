@@ -1,10 +1,12 @@
 #pragma once
 
+#include <tap/algorithms/contiguous_float.hpp>
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
 #include <utils/common_types.hpp>
 
 #include "jetson_protocol.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "vision_buffer.hpp"
 
@@ -17,6 +19,11 @@ namespace src::Informants::vision {
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
     AssemblingMessage,
+};
+
+enum GimbalAxis {
+    yaw = 0,
+    pitch = 1,
 };
 
 class JetsonCommunicator {
@@ -33,6 +40,10 @@ class JetsonCommunicator {
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
     inline JetsonMessage const& lastValidMessage() const { return lastMessage; }
+
+    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) {
+        this->gimbal = gimbal;
+    }
 
     Matrix<float, 1, 2> const& getVisionTargetAngles();
 
@@ -51,10 +62,12 @@ class JetsonCommunicator {
     tap::algorithms::LinearInterpolationPredictor yawOffsetPredictor;
     tap::algorithms::LinearInterpolationPredictor pitchOffsetPredictor;
 
-    DJIMotor* yawMotor;
-    DJIMotor* pitchMotor;
+    src::Gimbal::GimbalSubsystem* gimbal;
 
-    Matrix<float, 1, 2> visionOffsetAngles;
+    float fieldRelativeYawAngleAtVisionUpdate;
+    float chassisRelativePitchAngleAtVisionUpdate;
+
+    Matrix<float, 1, 2> visionTargetAngles;
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;

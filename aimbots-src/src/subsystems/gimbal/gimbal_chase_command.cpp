@@ -1,7 +1,7 @@
 #include "gimbal_chase_command.hpp"
 
 namespace src::Gimbal {
-
+// feed chassis relative controller for sentry, field relative for ground robots
 GimbalChaseCommand::GimbalChaseCommand(src::Drivers* drivers,
                                        GimbalSubsystem* gimbalSubsystem,
                                        GimbalChassisRelativeController* gimbalController)
@@ -19,24 +19,23 @@ float targetPitchAngleDisplay2 = 0.0f;
 float targetYawAngleDisplay2 = 0.0f;
 
 src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::CV_STATE_UNSURE;
-bool updatedThisLoopDisplay = false;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
     float targetPitchAngle = 0.0f;
 
-    Matrix<float, 1, 2> visionOffsetAngles = Matrix<float, 1, 2>::zeroMatrix();
+    Matrix<float, 1, 2> visionTargetAngles = Matrix<float, 1, 2>::zeroMatrix();
     src::Informants::vision::CVState cvState;
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;
-        visionOffsetAngles = drivers->cvCommunicator.getVisionTargetAngles();
+        visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
         cvStateDisplay = cvState;
 
         if (cvState == src::Informants::vision::CVState::CV_STATE_FOUND) {
-            targetYawAngle = modm::toDegree(visionOffsetAngles[0][0]);
-            targetPitchAngle = modm::toDegree(visionOffsetAngles[0][1]);
+            targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
+            targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
 
             targetPitchAngleDisplay2 = targetPitchAngle;
             targetYawAngleDisplay2 = targetYawAngle;

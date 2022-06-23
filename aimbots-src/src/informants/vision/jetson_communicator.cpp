@@ -16,7 +16,15 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       lastMessage(),
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
-      jetsonOfflineTimeout() {}
+      jetsonOfflineTimeout(),
+#ifdef TARGET_SENTRY
+      fieldRelativeYawAngleAtVisionUpdate(modm::toRadian(YAW_START_ANGLE)),
+#else
+      fieldRelativeYawAngleAtVisionUpdate(0.0f),
+#endif
+      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_START_ANGLE))  //
+{
+}
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
@@ -107,6 +115,9 @@ void JetsonCommunicator::updateSerial() {
 
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
+
+                fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+                chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
             }
             break;
         }
@@ -117,8 +128,8 @@ Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     float yawOffsetPredicted = yawOffsetPredictor.getInterpolatedValue(currTime);
     float pitchOffsetPredicted = pitchOffsetPredictor.getInterpolatedValue(currTime);
-    visionOffsetAngles[0][0] = yawOffsetPredicted;
-    visionOffsetAngles[0][1] = pitchOffsetPredicted;
-    return visionOffsetAngles;
+    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate + yawOffsetPredicted;
+    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + pitchOffsetPredicted;
+    return visionTargetAngles;
 }
 }  // namespace src::Informants::vision
