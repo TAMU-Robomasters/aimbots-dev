@@ -29,20 +29,19 @@ void GimbalChaseCommand::execute() {
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;
+        // if (cvState == src::Informants::vision::CVState::CV_STATE_FOUND) {
         visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
         cvStateDisplay = cvState;
 
-        if (cvState == src::Informants::vision::CVState::CV_STATE_FOUND) {
-            targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
-            targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
+        targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
+        targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
 
-            targetPitchAngleDisplay2 = targetPitchAngle;
-            targetYawAngleDisplay2 = targetYawAngle;
-
-            controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-            controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
-        }
+        targetYawAngleDisplay2 = targetYawAngle;
+        targetPitchAngleDisplay2 = targetPitchAngle;
+        // }
+        controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+        controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
     }
 }
 

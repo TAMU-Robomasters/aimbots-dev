@@ -187,9 +187,6 @@ static constexpr float PITCH_START_ANGLE = 152.0f;
 static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;
 
-static constexpr float YAW_FRONT_ANGLE = 61.0f;
-static constexpr float PITCH_HORIZON_ANGLE = 220.0f;
-
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
 static constexpr float PITCH_PATROL_FREQUENCY = 1.0f * M_PI;

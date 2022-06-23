@@ -4,6 +4,8 @@
 #include <drivers.hpp>
 #include <modm/platform/uart/uart_1.hpp>
 
+#include "tap/communication/sensors/buzzer/buzzer.hpp"
+
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
 
@@ -116,8 +118,17 @@ void JetsonCommunicator::updateSerial() {
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
 
-                fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
-                chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
+                if (lastMessage.cvState == CVState::CV_STATE_FOUND) {
+                    tap::buzzer::playNote(&drivers->pwm, 466);
+
+                    fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
+                    chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
+
+                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
+                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
+                } else {
+                    tap::buzzer::playNote(&drivers->pwm, 0);
+                }
             }
             break;
         }
@@ -125,11 +136,17 @@ void JetsonCommunicator::updateSerial() {
 }
 
 Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {
-    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    float yawOffsetPredicted = yawOffsetPredictor.getInterpolatedValue(currTime);
-    float pitchOffsetPredicted = pitchOffsetPredictor.getInterpolatedValue(currTime);
-    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate + yawOffsetPredicted;
-    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + pitchOffsetPredicted;
+    // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    // float yawOffsetPredicted = /*lastMessage.cvState == CV_STATE_FOUND ? */ yawOffsetPredictor.getInterpolatedValue(currTime);
+    // float yawOffsetPredicted = lastMessage.targetYawOffset;
+    // float pitchOffsetPredicted = /*lastMessage.cvState == CV_STATE_FOUND ? */ pitchOffsetPredictor.getInterpolatedValue(currTime);
+    // float pitchOffsetPredicted = lastMessage.targetPitchOffset;
+    // visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - yawOffsetPredicted;
+    // visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - pitchOffsetPredicted;
+    // return visionTargetAngles;
+
+    // visionTargetAngles[0][yaw] = modm::toRadian(38.0f);
+    // visionTargetAngles[0][pitch] = modm::toRadian(143.0f);
     return visionTargetAngles;
 }
 }  // namespace src::Informants::vision

@@ -66,6 +66,7 @@ ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
+// pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
 SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder);
@@ -83,7 +84,7 @@ HoldCommandMapping leftSwitchUp(
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalControlCommand},
+    {&chassisManualDriveCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter only
