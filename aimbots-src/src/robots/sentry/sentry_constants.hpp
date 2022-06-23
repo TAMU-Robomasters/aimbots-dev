@@ -76,7 +76,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 600.0f,
     .ki = 0.0f,
-    .kd = 500.0f,
+    .kd = 700.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -88,9 +88,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 300.0f,
     .ki = 0.0f,
-    .kd = 150.0f,
+    .kd = 200.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -100,6 +100,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+static constexpr float kGRAVITY = 6000.0f;
+static constexpr float HORIZON_OFFSET = -30.0f;
 
 static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
 

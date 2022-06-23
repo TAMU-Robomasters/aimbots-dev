@@ -22,7 +22,7 @@ void SentryMatchFeederControlCommand::initialize() {
 }
 
 void SentryMatchFeederControlCommand::execute() {
-    if (!isChassisAccelerating() && isBurstCommandFinished()) {
+    if (!isChassisTooFast() && isBurstCommandFinished()) {
         auto botData = drivers->refSerial.getRobotData();
         float health_pct = botData.currentHp / (float)botData.maxHp;
 

@@ -16,7 +16,9 @@
 #include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
 //
+#include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/sentry_commands/sentry_match_feeder_control_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -50,6 +52,12 @@ using namespace tap::control;
 
 namespace SentryControl {
 
+enum ChassisMatchStates {
+    NONE = 0,
+    PATROL = 1,
+    EVADE = 2,
+};
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
@@ -69,6 +77,7 @@ GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 // pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
+FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
 SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
@@ -78,7 +87,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisRailEvadeCommand, &gimbalPatrolCommand},
+    {&chassisManualDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
@@ -96,7 +105,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&matchFeederControlCommand, &runShooterWithFeederCommand},
+    {&fullAutoFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

@@ -37,7 +37,7 @@ uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 
 float yawOffsetDisplay = 0;
 float pitchOffsetDisplay = 0;
-CVState cvStateDisplay = CVState::LOOK_AT_COORDS;
+CVState cvStateDisplay = CVState::LOOK_AROUND;
 int readUnequal = 0;
 
 int lastMsgTime = 0;
@@ -118,14 +118,14 @@ void JetsonCommunicator::updateSerial() {
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
 
-                if (lastMessage.cvState == CVState::FIRE) {
+                if (lastMessage.cvState == CVState::LOOK_AT_COORDS || lastMessage.cvState == CVState::FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
 
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
                     chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
 
-                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
-                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
+                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate + lastMessage.targetYawOffset;
+                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + lastMessage.targetPitchOffset;
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
                 }
@@ -133,6 +133,9 @@ void JetsonCommunicator::updateSerial() {
             break;
         }
     }
+    // if (!isJetsonOnline()) {
+    //     tap::buzzer::playNote(&drivers->pwm, 0);
+    // }
 }
 
 Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {

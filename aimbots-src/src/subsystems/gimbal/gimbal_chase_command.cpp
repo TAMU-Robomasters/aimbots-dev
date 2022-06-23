@@ -18,6 +18,9 @@ void GimbalChaseCommand::initialize() {}
 float targetPitchAngleDisplay2 = 0.0f;
 float targetYawAngleDisplay2 = 0.0f;
 
+float yawOffsetDisplay = 0.0f;
+float pitchOffsetDisplay = 0.0f;
+
 src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::LOOK_AT_COORDS;
 
 void GimbalChaseCommand::execute() {
@@ -36,6 +39,9 @@ void GimbalChaseCommand::execute() {
 
         targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
         targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
+
+        yawOffsetDisplay = modm::toDegree(drivers->cvCommunicator.lastValidMessage().targetYawOffset);
+        pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.lastValidMessage().targetPitchOffset);
 
         targetYawAngleDisplay2 = targetYawAngle;
         targetPitchAngleDisplay2 = targetPitchAngle;

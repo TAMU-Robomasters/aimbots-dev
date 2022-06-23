@@ -1,11 +1,11 @@
 #pragma once
 
 #include "drivers.hpp"
-#include "utils/common_types.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
 #include "subsystems/feeder/burst_feeder_command.hpp"
+#include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "utils/common_types.hpp"
 
 namespace src::Feeder {
 
@@ -17,16 +17,16 @@ class SentryMatchFeederControlCommand : public TapComprisedCommand {
 
     void initialize() override;
     void execute() override;
-    
+
     void end(bool interrupted) override;
     bool isReady() override;
     bool isFinished() const override;
 
     const char* getName() const override { return "Sentry Match Feeder Control Command"; }
 
-    inline bool isChassisAccelerating() const {
-        return (abs(drivers->bmi088.getAx()) >= SENTRY_SHOOTER_MAX_ACCEL)
-            || (abs(drivers->bmi088.getAy()) >= SENTRY_SHOOTER_MAX_ACCEL);
+    inline bool isChassisTooFast() const {
+        // return fabs(drivers->fieldRelativeInformant.odomRailMotor->getShaftRPM()) > SENTRY_SHOOTER_MAX_ACCEL;
+        return false;
     }
 
     inline bool isBurstCommandFinished() const {
@@ -48,4 +48,4 @@ class SentryMatchFeederControlCommand : public TapComprisedCommand {
     FullAutoFeederCommand fullAutoFireCommand;
 };
 
-}
+}  // namespace src::Feeder
