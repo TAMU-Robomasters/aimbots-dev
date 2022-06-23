@@ -28,6 +28,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       targetChassisRelativePitchAngle(modm::toRadian(PITCH_START_ANGLE)) {}
 
 void GimbalSubsystem::initialize() {
+    drivers->cvCommunicator.setGimbalSubsystem(this);
+
     yawMotor.initialize();
     yawMotor.setDesiredOutput(0);
 
