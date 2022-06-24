@@ -8,7 +8,7 @@ namespace src::Chassis {
 
 class ChassisRailEvadeCommand : public TapCommand {
    public:
-    ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*);
+    ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*, float velocityRampValue = 25.0f);
 
     char const* getName() const override { return "Sentry Evade Command"; }
 
@@ -33,11 +33,12 @@ class ChassisRailEvadeCommand : public TapCommand {
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 
+    float velocityRampValue = 0.0f;
+    tap::algorithms::Ramp velocityRamp;
+
     float distanceToDrive = 0.0f;
     float lastPositionWhenDirectionChanged = 0.0f;
     float currentDesiredRPM = 0.0f;
-
-    tap::algorithms::Ramp velocityRamp;
 };
 
 }  // namespace src::Chassis

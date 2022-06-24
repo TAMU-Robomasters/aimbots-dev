@@ -15,9 +15,10 @@ static constexpr float FULL_RAIL_LENGTH_MM = FULL_RAIL_LENGTH * 1000.0f;
 static constexpr float SAFETY_BUFFER = 0.05f;
 static constexpr float TURNAROUND_BUFFER = (((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2.0f) + SAFETY_BUFFER) * 1000.0f;
 
-ChassisRailEvadeCommand::ChassisRailEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
+ChassisRailEvadeCommand::ChassisRailEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis, float velocityRampValue)
     : drivers(drivers),
-      chassis(chassis) {
+      chassis(chassis),
+      velocityRampValue(velocityRampValue) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 

@@ -73,7 +73,7 @@ SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis,
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
-ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis);
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
