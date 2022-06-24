@@ -57,8 +57,9 @@ static constexpr float POSITION_PID_MAX_OUTPUT = 10.0f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static constexpr float YAW_START_ANGLE = M_PI_2;
-static constexpr float PITCH_START_ANGLE = M_PI_2;
+static constexpr float    YAW_START_ANGLE = 90.0f;
+static constexpr uint16_t YAW_START_ENCODER = 2048;
+static constexpr float    PITCH_START_ANGLE = 30.0f;
 #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
 static constexpr float PITCH_SOFTSTOP_LOW = 0.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 0.0f;

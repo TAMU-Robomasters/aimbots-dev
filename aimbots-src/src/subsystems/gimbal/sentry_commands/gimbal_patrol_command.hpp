@@ -25,7 +25,7 @@ class GimbalPatrolCommand : public tap::control::Command {
     // implements sin function with current time (millis) as function input
     float getSinusoidalPitchPatrolAngle(AngleUnit unit) {
         constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
-        float angle = modm::toRadian(PITCH_PATROL_AMPLITUDE) * sin(PITCH_PATROL_FREQUENCY * tap::arch::clock::getTimeMilliseconds() / 1000.0f) + modm::toRadian((intialDirection * PITCH_PATROL_OFFSET) + PITCH_HORIZON_ANGLE);
+        float angle = modm::toRadian(PITCH_PATROL_AMPLITUDE) * sin(PITCH_PATROL_FREQUENCY * tap::arch::clock::getTimeMilliseconds() / 1000.0f) + modm::toRadian((intialDirection * PITCH_PATROL_OFFSET) + PITCH_START_ANGLE);
         if (unit == AngleUnit::Radians) {
             return angle;
         }

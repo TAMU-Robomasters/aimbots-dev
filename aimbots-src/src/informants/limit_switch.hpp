@@ -1,10 +1,13 @@
 #pragma once
 
-#include "drivers.hpp"
-#include "tap/control/subsystem.hpp"
-#include "tap/communication/gpio/pwm.hpp"  //maybe not
-#include "utils/common_types.hpp"
 #include <string>
+
+#include "drivers.hpp"
+#include "tap/communication/gpio/pwm.hpp"  //maybe not
+#include "tap/control/subsystem.hpp"
+#include "utils/common_types.hpp"
+
+namespace src::Informants {
 
 enum LimitSwitchState {
     PRESSED = 1,
@@ -20,18 +23,17 @@ enum EdgeType {
     // NONE = 2, //So we can return if it is neither at a rising/falling point
 };
 
-
 class LimitSwitch {
-private:
+   private:
     std::string rxPin;
     src::Drivers* drivers;
     LimitSwitchState currSwitchState;
     LimitSwitchState prevSwitchState;
 
-    //optional
+    // optional
     int counter;
-    const EdgeType edge; //which edge to count with in refresh
-public:
+    const EdgeType edge;  // which edge to count with in refresh
+   public:
     LimitSwitch(std::string rxPin, EdgeType edge);
 
     void initialize();
@@ -44,3 +46,5 @@ public:
     bool isStateChanged() const;
     int getCurrentCount() const;
 };
+
+}  // namespace src::Informants

@@ -9,9 +9,9 @@
 
 namespace src::Feeder {
 
-class RunFeederCommand : public TapCommand {
+class FullAutoFeederCommand : public TapCommand {
    public:
-    RunFeederCommand(src::Drivers*, FeederSubsystem*);
+    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*);
     void initialize() override;
 
     void execute() override;

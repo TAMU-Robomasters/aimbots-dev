@@ -1,0 +1,433 @@
+# 
+# how to add packages?
+# 
+    # you can search for them here: https://search.nixos.org/packages
+    #
+    # if you find a package like: nixpkg.python39Packages.setuptools
+    # then add a section like this:
+    #    [[packages]]
+    #    load = [ "python38Packages", "setuptools",]
+    # 
+    # if you need a specific version 
+    # search for the package (e.g. "setuptools") on here: https://lazamar.co.uk/nix-versions/
+    # each version will have a long hash like "3f50332bc4913a56ad216ca01f5d0bd24277a6b2" 
+    # (which is a commit on the nixpkg repo)
+    # once you copy the hash, you can add the package below like
+    # 
+    #    [[packages]]
+    #    load = [ "python38Packages", "setuptools",]
+    #    from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+# 
+# Complex packages
+# 
+    # things such as platform-specific packages,
+    # loading from a git repository,
+    # or if you find an online solution that involves native build inputs
+    # you can use the following advanced format
+    # 
+    #    [[packages]]
+    #    load = [ "nixGLNvidia",]
+    #    onlyIf = [ [ "stdenv", "isLinux",],] # for MacOS use: onlyIf = [ [ "stdenv", "isDarwin",],]
+    #    # see https://discourse.nixos.org/t/opencv-with-cuda-in-nix-shell/7358/5
+    #    from = { fetchGit = { url = "https://github.com/guibou/nixGL", rev = "7d6bc1b21316bab6cf4a6520c2639a11c25a220e" }, }
+    # 
+    # in general when looking at online forms, look at the shell.nix file
+    # specifically look at the `# create a shell` and `main.packages.mkShell` part
+    # and know that seeing `pkgs` online translates to `main.packages` inside the shell.nix file
+
+# 
+# 
+# AIMBOTS specific packages
+# 
+# 
+
+[[packages]]
+load = [ "stlink",]
+
+# [[packages]]
+# load = [ "segger-ozone",] # Arm and Mac not supported in nix. Ozone itself doesn't run on arm at all
+
+# essential compile dependency
+[[packages]]
+load = [ "boost",]
+
+# essential compile dependency
+[[packages]]
+load = [ "gcc-arm-embedded" ]
+
+# for formatting
+[[packages]]
+load = [ "clang-tools" ]
+
+# for testing
+[[packages]]
+load = [ "openocd",]
+
+# for testing
+[[packages]]
+load = [ "gtest",] # googletest
+
+# for testing
+[[packages]]
+load = [ "lcov",]
+
+# for testing
+[[packages]]
+load = [ "gcovr",]
+
+
+# 
+# For Python
+# 
+
+[[packages]]
+load = [ "python39",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "python39Packages", "setuptools",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "python39Packages", "pip",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "python39Packages", "virtualenv",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "python39Packages", "wheel",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "poetry",]
+from = "3f50332bc4913a56ad216ca01f5d0bd24277a6b2"
+
+[[packages]]
+load = [ "libxml2",] # needed for pip install lbuild
+
+[[packages]]
+load = [ "libxslt",] # needed for pip install lbuild
+
+
+# 
+# for .so errors on linux
+# 
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "glib",]
+asNativeBuildInput = true
+from = "528d35bec0cb976a06cc0e8487c6e5136400b16b"
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "libglvnd",]
+asNativeBuildInput = true
+from = "559cf76fa3642106d9f23c9e845baf4d354be682"
+
+# 
+# 
+# 
+# Need-to-build-from-source tools
+#
+# 
+# 
+# Note: most projects need these, 
+# and if you need them for one project nix has a shared-memory across projects
+# comment these out in a situation such as deploying a project to a minimal server
+
+
+# 
+# Linux
+# 
+[[packages]]
+load = [ "pkgconfig",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
+
+[[packages]]
+load = [ "libconfig",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
+
+[[packages]]
+load = [ "cmake",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
+
+[[packages]]
+load = [ "stdenv", "cc",]
+onlyIf = [ [ "stdenv", "isLinux",],]
+
+# 
+# Mac
+# 
+[[packages]]
+load = [ "xcbuild",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "xcodebuild",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "libobjc", ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "CoreServices" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "CoreFoundation" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "Foundation" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "AVKit" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "AVFoundation" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "AppKit" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "WebKit" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "Accounts" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "Security" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+# 
+# both often need
+# 
+[[packages]]
+load = [ "gcc",]
+
+[[packages]]
+load = [ "libkrb5",]
+
+# 
+# 
+# common dependencies
+# 
+# 
+
+[[packages]]
+load = [ "ncurses5",]
+
+[[packages]]
+load = [ "openssh",]
+
+# 
+# 
+# fancy command line tools
+# 
+# 
+[[packages]]
+load = [ "fd",]
+
+[[packages]]
+load = [ "sd",]
+
+[[packages]]
+load = [ "dua",]
+
+[[packages]]
+load = [ "tealdeer",]
+
+[[packages]]
+load = [ "bottom",]
+
+[[packages]]
+load = [ "exa",]
+
+[[packages]]
+load = [ "zsh",]
+
+[[packages]]
+load = [ "zsh-syntax-highlighting",]
+
+[[packages]]
+load = [ "oh-my-zsh",]
+
+[[packages]]
+load = [ "zsh-autosuggestions",]
+
+[[packages]]
+load = [ "spaceship-prompt",]
+
+[[packages]]
+load = [ "nnn",]
+
+[[packages]]
+load = [ "jq",]
+
+[[packages]]
+load = [ "git-subrepo",]
+
+#
+#
+# Basic Commandline tools
+#
+#
+
+[[packages]]
+load = [ "man",]
+
+[[packages]]
+load = [ "coreutils",]
+
+[[packages]]
+load = [ "ripgrep",]
+
+[[packages]]
+load = [ "which",]
+
+[[packages]]
+load = [ "git",]
+
+[[packages]]
+load = [ "colorls",]
+
+[[packages]]
+load = [ "tree",]
+
+[[packages]]
+load = [ "less",]
+
+[[packages]]
+load = [ "nano",]
+
+[[packages]]
+load = [ "unzip",]
+
+[[packages]]
+load = [ "zip",]
+
+[[packages]]
+load = [ "findutils",]
+
+[[packages]]
+load = [ "wget",]
+
+[[packages]]
+load = [ "curl",]
+
+[[packages]]
+load = [ "unixtools", "arp",]
+
+[[packages]]
+load = [ "unixtools", "ifconfig",]
+
+[[packages]]
+load = [ "unixtools", "netstat",]
+
+[[packages]]
+load = [ "unixtools", "ping",]
+
+[[packages]]
+load = [ "unixtools", "route",]
+
+[[packages]]
+load = [ "unixtools", "col",]
+
+[[packages]]
+load = [ "unixtools", "column",]
+
+[[packages]]
+load = [ "unixtools", "fdisk",]
+
+[[packages]]
+load = [ "unixtools", "fsck",]
+
+[[packages]]
+load = [ "unixtools", "getconf",]
+
+[[packages]]
+load = [ "unixtools", "getent",]
+
+[[packages]]
+load = [ "unixtools", "getopt",]
+
+[[packages]]
+load = [ "unixtools", "hexdump",]
+
+[[packages]]
+load = [ "unixtools", "hostname",]
+
+[[packages]]
+load = [ "unixtools", "killall",]
+
+[[packages]]
+load = [ "unixtools", "locale",]
+
+[[packages]]
+load = [ "unixtools", "more",]
+
+[[packages]]
+load = [ "unixtools", "mount",]
+
+[[packages]]
+load = [ "unixtools", "ps",]
+
+[[packages]]
+load = [ "unixtools", "quota",]
+
+[[packages]]
+load = [ "unixtools", "script",]
+
+[[packages]]
+load = [ "unixtools", "sysctl",]
+
+[[packages]]
+load = [ "unixtools", "top",]
+
+[[packages]]
+load = [ "unixtools", "umount",]
+
+[[packages]]
+load = [ "unixtools", "whereis",]
+
+[[packages]]
+load = [ "unixtools", "write",]
+
+[[packages]]
+load = [ "unixtools", "xxd",]
+
+# 
+# core
+# 
+[[packages]]
+load = [ "deno",]
+from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+
+[[packages]]
+load = [ "nix",]

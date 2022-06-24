@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "_"
+version = "0.0.1"
+description = ""
+authors = [""]
+
+[tool.poetry.dependencies]
+python = "3.9"
+pip = "20.1.1"
+lbuild = "1.20.0"
+pyelftools = "0.27"
+SCons = "3.1.2"
+pipenv = "2022.1.8"
+ez-yaml = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

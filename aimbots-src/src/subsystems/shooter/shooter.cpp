@@ -57,21 +57,21 @@ float FWBotLeft = 0.0f;  // BOT_LEFT
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     // Debug info
-    if (motors[RIGHT][0]->isMotorOnline()) {
-        shaftSpeedDisplay = motors[RIGHT][0]->getShaftRPM();
-        PIDoutDisplay = velocityPIDs[RIGHT][0]->getOutput();
+    if (flywheel1.isMotorOnline()) {
+        shaftSpeedDisplay = flywheel1.getShaftRPM();
+        PIDoutDisplay = flywheel1PID.getOutput();
 
-        FWRight1 = motors[RIGHT][0]->getShaftRPM();
+        FWRight1 = flywheel1.getShaftRPM();
     }
-    if (motors[LEFT][0]->isMotorOnline()) {
-        FWLeft1 = motors[LEFT][0]->getShaftRPM();
+    if (flywheel2.isMotorOnline()) {
+        FWLeft1 = flywheel2.getShaftRPM();
     }
 #ifdef TARGET_SENTRY
-    if (motors[TOP_LEFT][0]->isMotorOnline()) {
-        FWTopLeft = motors[TOP_LEFT][0]->getShaftRPM();
+    if (flywheel3.isMotorOnline()) {
+        FWTopLeft = flywheel3.getShaftRPM();
     }
-    if (motors[BOT_LEFT][0]->isMotorOnline()) {
-        FWBotLeft = motors[BOT_LEFT][0]->getShaftRPM();
+    if (flywheel4.isMotorOnline()) {
+        FWBotLeft = flywheel4.getShaftRPM();
     }
 #endif
 

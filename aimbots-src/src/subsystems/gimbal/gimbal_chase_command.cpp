@@ -1,7 +1,7 @@
 #include "gimbal_chase_command.hpp"
 
 namespace src::Gimbal {
-
+// feed chassis relative controller for sentry, field relative for ground robots
 GimbalChaseCommand::GimbalChaseCommand(src::Drivers* drivers,
                                        GimbalSubsystem* gimbalSubsystem,
                                        GimbalChassisRelativeController* gimbalController)
@@ -15,27 +15,34 @@ GimbalChaseCommand::GimbalChaseCommand(src::Drivers* drivers,
 
 void GimbalChaseCommand::initialize() {}
 
-float yawOffsetAngleDisplay = 0.0f;
-float pitchOffsetAngleDisplay = 0.0f;
-src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::CV_STATE_UNSURE;
+float targetPitchAngleDisplay2 = 0.0f;
+float targetYawAngleDisplay2 = 0.0f;
+
+src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::LOOK_AT_COORDS;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
     float targetPitchAngle = 0.0f;
 
-    Matrix<float, 1, 2> visionOffsetAngles = Matrix<float, 1, 2>::zeroMatrix();
+    Matrix<float, 1, 2> visionTargetAngles = Matrix<float, 1, 2>::zeroMatrix();
     src::Informants::vision::CVState cvState;
 
     if (drivers->cvCommunicator.isJetsonOnline()) {
         cvState = drivers->cvCommunicator.lastValidMessage().cvState;
-        visionOffsetAngles = drivers->cvCommunicator.getVisionOffsetAngles();
-        yawOffsetAngleDisplay = visionOffsetAngles[0][0];
-        pitchOffsetAngleDisplay = visionOffsetAngles[0][1];
-        cvStateDisplay = cvState;
-    }
+        // if (cvState == src::Informants::vision::CVState::FIRE) {
+        visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
-    // controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-    // controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+        cvStateDisplay = cvState;
+
+        targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
+        targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
+
+        targetYawAngleDisplay2 = targetYawAngle;
+        targetPitchAngleDisplay2 = targetPitchAngle;
+        // }
+        controller->runYawController(AngleUnit::Degrees, targetYawAngle);
+        controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+    }
 }
 
 bool GimbalChaseCommand::isReady() { return true; }
@@ -46,5 +53,4 @@ void GimbalChaseCommand::end(bool) {
     gimbal->setYawMotorOutput(0);
     gimbal->setPitchMotorOutput(0);
 }
-
 };  // namespace src::Gimbal

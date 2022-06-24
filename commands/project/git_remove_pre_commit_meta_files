@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+find | fgrep .orig | xargs rm && find | fgrep .rej | xargs rm

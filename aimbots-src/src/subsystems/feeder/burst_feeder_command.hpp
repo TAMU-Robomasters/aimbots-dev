@@ -11,7 +11,7 @@ namespace src::Feeder {
 
 class BurstFeederCommand : public TapCommand {
    public:
-    BurstFeederCommand(src::Drivers*, FeederSubsystem*);
+    BurstFeederCommand(src::Drivers*, FeederSubsystem*, int burstLength);
     void initialize() override;
 
     void execute() override;
@@ -20,13 +20,19 @@ class BurstFeederCommand : public TapCommand {
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "burst feeder"; }
+    const char* getName() const override { return "Burst Feeder Command"; }
+
+    inline void setBurstLength(int newBurstLength) {
+        initialTotalBallCount = feeder->getTotalLimitCount();
+        burstLength = newBurstLength;
+    }
 
    private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     float speed;
 
+    int burstLength;
     int initialTotalBallCount;
 };
 

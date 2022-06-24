@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# This script builds the hardware profile for each robot target.
+# Assumes you are in the build directory (where the SConstruct file is) 
+
+cd "$MAIN_FOLDER" 2>/dev/null
+
+echo TARGET_STANDARD
+echo TARGET_SWERVE_STANDARD
+echo TARGET_ENGINEER
+echo TARGET_SWERVE_ENGINEER
+echo TARGET_HERO
+echo TARGET_SENTRY
+echo TARGET_AERIAL

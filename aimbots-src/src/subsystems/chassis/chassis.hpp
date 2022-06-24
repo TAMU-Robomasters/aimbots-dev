@@ -88,13 +88,15 @@ namespace src::Chassis {
 
         inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
 
+        inline float getDesiredRotation() const { return desiredRotation; }
+
         /**
      * @return A number between 0 and 1 that is the ratio between the rotationRpm and
      *      the max rotation speed.
      */
         mockable float calculateRotationTranslationalGain(float chassisRotationDesiredWheelspeed);
 
-        static inline float getMaxUserWheelSpeed(bool refSerialOnline, int chassisPower) {
+        static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPower) {
             if (refSerialOnline) {
                 float desWheelSpeed = WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE *
                                           static_cast<float>(chassisPower - MIN_CHASSIS_POWER) +
