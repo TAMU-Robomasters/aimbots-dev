@@ -24,6 +24,7 @@ ChassisRailEvadeCommand::ChassisRailEvadeCommand(src::Drivers* drivers, ChassisS
 void ChassisRailEvadeCommand::initialize() {
     modm::platform::RandomNumberGenerator::enable();
     changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);
+    velocityRamp.setValue(chassis->getLeftFrontRpmActual());
 }
 
 float currPositionDisplay = 0.0f;
@@ -37,6 +38,10 @@ void ChassisRailEvadeCommand::execute() {
         changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);
 
     changeDirectionIfCloseToEnd(currRailPosition);
+
+    velocityRamp.update(50.0f);
+
+    chassis->setTargetRPMs(velocityRamp.getValue(), 0.0f, 0.0f);
 }
 
 bool ChassisRailEvadeCommand::isReady() {
@@ -58,7 +63,8 @@ void ChassisRailEvadeCommand::changeDirectionForRandomDistance(int32_t minimumDi
     lastPositionWhenDirectionChanged = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
 
     currentDesiredRPM = getNewRPM();
-    chassis->setTargetRPMs(currentDesiredRPM, 0, 0);
+    // chassis->setTargetRPMs(currentDesiredRPM, 0, 0);
+    velocityRamp.setTarget(currentDesiredRPM);
 
     distanceToDrive = getRandomIntegerInBounds(minimumDistanceMillimeters, maximumDistanceMillimeters);
     distanceToDriveDisplay = distanceToDrive;

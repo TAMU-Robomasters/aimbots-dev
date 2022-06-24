@@ -36,6 +36,8 @@ class ChassisRailEvadeCommand : public TapCommand {
     float distanceToDrive = 0.0f;
     float lastPositionWhenDirectionChanged = 0.0f;
     float currentDesiredRPM = 0.0f;
+
+    tap::algorithms::Ramp velocityRamp;
 };
 
 }  // namespace src::Chassis
