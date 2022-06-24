@@ -15,7 +15,7 @@ uint32_t timeCtr = 0;
 static constexpr float INPUT_X_MAX_ACCEL = 1000.0f;
 static constexpr float INPUT_X_MAX_DECEL = 20000.0f;
 
-static constexpr float INPUT_Y_MAX_ACCEL = 2000.0f;
+static constexpr float INPUT_Y_MAX_ACCEL = 500.0f;
 static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
 
 static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
@@ -27,16 +27,12 @@ static inline void applyAccelerationToRamp(
     tap::algorithms::Ramp &ramp,
     float maxAcceleration,
     float maxDeceleration,
-    float dt)
-{
+    float dt) {
     if (getSign(ramp.getTarget()) == getSign(ramp.getValue()) &&
-        abs(ramp.getTarget()) > abs(ramp.getValue()))
-    {
+        abs(ramp.getTarget()) > abs(ramp.getValue())) {
         // we are trying to speed up
         ramp.update(maxAcceleration * dt);
-    }
-    else
-    {
+    } else {
         // we are trying to slow down
         ramp.update(maxDeceleration * dt);
     }
@@ -59,7 +55,7 @@ float OperatorInterface::getChassisXInput() {
         prevUpdateCounterX = updateCounter;
     }
 
-    float digitalX = drivers->remote.keyPressed(Remote::Key::A) - drivers->remote.keyPressed(Remote::Key::D);
+    float digitalX = drivers->remote.keyPressed(Remote::Key::D) - drivers->remote.keyPressed(Remote::Key::A);
 
     float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + digitalX, -1.0f, 1.0f);
 
@@ -75,8 +71,7 @@ float OperatorInterface::getChassisXInput() {
         chassisXRamp,
         INPUT_X_MAX_ACCEL,
         INPUT_X_MAX_DECEL,
-        static_cast<float>(dt) / 1E3
-    );
+        static_cast<float>(dt) / 1E3);
     return chassisXRamp.getValue();
 }
 
@@ -97,7 +92,7 @@ float OperatorInterface::getChassisYInput() {
         prevUpdateCounterY = updateCounter;
     }
 
-    float digitalY = drivers->remote.keyPressed(Remote::Key::S) - drivers->remote.keyPressed(Remote::Key::W);
+    float digitalY = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
 
     float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + digitalY, -1.0f, 1.0f);
 
@@ -111,8 +106,7 @@ float OperatorInterface::getChassisYInput() {
         chassisYRamp,
         INPUT_Y_MAX_ACCEL,
         INPUT_Y_MAX_DECEL,
-        static_cast<float>(dt) / 1E3
-    );
+        static_cast<float>(dt) / 1E3);
     return chassisYRamp.getValue();
 }
 
@@ -144,27 +138,26 @@ float OperatorInterface::getChassisRotationInput() {
         chassisRotationRamp,
         INPUT_R_MAX_ACCEL,
         INPUT_R_MAX_DECEL,
-        static_cast<float>(dt) / 1E3
-    );
+        static_cast<float>(dt) / 1E3);
     return chassisRotationRamp.getValue();
 }
 
 float OperatorInterface::getGimbalYawInput() {
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) +
-                   static_cast<float>(limitVal<int16_t>(
-                       drivers->remote.getMouseX(),
-                       -USER_MOUSE_YAW_MAX,
-                       USER_MOUSE_YAW_MAX)) *
-                       USER_MOUSE_YAW_SCALAR;
+           static_cast<float>(limitVal<int16_t>(
+               drivers->remote.getMouseX(),
+               -USER_MOUSE_YAW_MAX,
+               USER_MOUSE_YAW_MAX)) *
+               USER_MOUSE_YAW_SCALAR;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) +
-                   static_cast<float>(limitVal<int16_t>(
-                       -drivers->remote.getMouseY(),
-                       -USER_MOUSE_PITCH_MAX,
-                       USER_MOUSE_PITCH_MAX)) *
-                       USER_MOUSE_PITCH_SCALAR;
+           static_cast<float>(limitVal<int16_t>(
+               -drivers->remote.getMouseY(),
+               -USER_MOUSE_PITCH_MAX,
+               USER_MOUSE_PITCH_MAX)) *
+               USER_MOUSE_PITCH_SCALAR;
 }
 
 }  // namespace src::Control

@@ -26,55 +26,41 @@ float gimbalYawAngleDisplay2 = 0.0f;
 float chassisYawDisplay = 0.0f;
 float rotationControllerOutputDisplay = 0.0f;
 
+float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
+
 void ChassisFollowGimbalCommand::execute() {
     if (gimbal->isOnline()) {
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
 
-        float x = 0.0f;
-        float y = 0.0f;
-
-        // float rotationControllerError = drivers->fieldRelativeInformant.getChassisYaw() - gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
         float rotationControllerError = gimbalYawAngle;
-
-        // chassisYawDisplay = modm::toDegree(drivers->fieldRelativeInformant.getChassisYaw());
-        // gimbalYawFieldRelativeDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-
-        // if (fabsf(rotationControllerError) < FOLLOW_GIMBAL_ANGLE_THRESHOLD) {
-        //     rotationControllerError = 0.0f;
-        // }
+        gimbalYawAngleDisplay2 = modm::toDegree(gimbalYawAngle);
 
         rotationController.runController(rotationControllerError, (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
 
         rotationControllerOutputDisplay = rotationController.getOutput();
 
-        Movement::Independent::calculateUserDesiredMovement(drivers, chassis, &x, &y, rotationController.getOutput());
-
-        // x *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER;
-        // y *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER;
-
         const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        // const float translationalSpeedThreshold = maxWheelSpeed * TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED;
+        float rotationLimitedMaxTranslationalSpeed =
+            maxWheelSpeed * chassis->calculateRotationTranslationalGain(rotationController.getOutput());
 
-        // float rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX;
+        rotationLimitedMaxTranslationalSpeedDisplay = rotationLimitedMaxTranslationalSpeed;
 
-        // reduces rotation speed when translation speed is high
-        // if (fabsf(x) > translationalSpeedThreshold || fabsf(y) > translationalSpeedThreshold) {
-        //     rampTarget *= TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING;
-        // }
+        float chassisXDesiredWheelspeed = limitVal(
+            maxWheelSpeed * drivers->controlOperatorInterface.getChassisXInput(),
+            -rotationLimitedMaxTranslationalSpeed,
+            rotationLimitedMaxTranslationalSpeed);
 
-        // rotationSpeedRamp.setTarget(rampTarget);
-        // rotationSpeedRamp.update(TOKYO_ROTATIONAL_SPEED_INCREMENT);
+        float chassisYDesiredWheelspeed = limitVal(
+            maxWheelSpeed * drivers->controlOperatorInterface.getChassisYInput(),
+            -rotationLimitedMaxTranslationalSpeed,
+            rotationLimitedMaxTranslationalSpeed);
 
-        // float r = rotationSpeedRamp.getValue();
+        rotateVector(&chassisXDesiredWheelspeed, &chassisYDesiredWheelspeed, -gimbalYawAngle);
 
-        gimbalYawAngleDisplay2 = modm::toDegree(gimbalYawAngle);
-
-        rotateVector(&x, &y, -gimbalYawAngle);
-
-        chassis->setTargetRPMs(x, y, rotationController.getOutput());
+        chassis->setTargetRPMs(chassisXDesiredWheelspeed, chassisYDesiredWheelspeed, rotationController.getOutput());
     } else {
         Movement::Independent::onExecute(drivers, chassis);
     }

@@ -143,7 +143,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl
