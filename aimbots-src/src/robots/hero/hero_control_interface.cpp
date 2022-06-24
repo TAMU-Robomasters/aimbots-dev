@@ -12,10 +12,10 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float INPUT_X_MAX_ACCEL = 7000.0f;
+static constexpr float INPUT_X_MAX_ACCEL = 1000.0f;
 static constexpr float INPUT_X_MAX_DECEL = 20000.0f;
 
-static constexpr float INPUT_Y_MAX_ACCEL = 7000.0f;
+static constexpr float INPUT_Y_MAX_ACCEL = 2000.0f;
 static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
 
 static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
@@ -97,7 +97,7 @@ float OperatorInterface::getChassisYInput() {
         prevUpdateCounterY = updateCounter;
     }
 
-    float digitalY = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
+    float digitalY = drivers->remote.keyPressed(Remote::Key::S) - drivers->remote.keyPressed(Remote::Key::W);
 
     float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + digitalY, -1.0f, 1.0f);
 
@@ -152,7 +152,7 @@ float OperatorInterface::getChassisRotationInput() {
 float OperatorInterface::getGimbalYawInput() {
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) +
                    static_cast<float>(limitVal<int16_t>(
-                       -drivers->remote.getMouseX(),
+                       drivers->remote.getMouseX(),
                        -USER_MOUSE_YAW_MAX,
                        USER_MOUSE_YAW_MAX)) *
                        USER_MOUSE_YAW_SCALAR;

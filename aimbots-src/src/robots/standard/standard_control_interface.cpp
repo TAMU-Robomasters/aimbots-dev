@@ -12,10 +12,10 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float INPUT_X_MAX_ACCEL = 7000.0f;
+static constexpr float INPUT_X_MAX_ACCEL = 4000.0f;
 static constexpr float INPUT_X_MAX_DECEL = 20000.0f;
 
-static constexpr float INPUT_Y_MAX_ACCEL = 7000.0f;
+static constexpr float INPUT_Y_MAX_ACCEL = 5000.0f;
 static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
 
 static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
@@ -59,7 +59,7 @@ float OperatorInterface::getChassisXInput() {
         prevUpdateCounterX = updateCounter;
     }
 
-    float digitalX = drivers->remote.keyPressed(Remote::Key::A) - drivers->remote.keyPressed(Remote::Key::D);
+    float digitalX = drivers->remote.keyPressed(Remote::Key::D) - drivers->remote.keyPressed(Remote::Key::A);
 
     float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + digitalX, -1.0f, 1.0f);
 

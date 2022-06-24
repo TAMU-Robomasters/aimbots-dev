@@ -102,9 +102,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+static constexpr float FLYWHEEL_DEFAULT_RPM = 7500.0f;
 
-static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
