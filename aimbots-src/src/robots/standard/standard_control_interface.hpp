@@ -28,9 +28,6 @@ class OperatorInterface {
     tap::algorithms::Ramp chassisYRamp;
     tap::algorithms::Ramp chassisRotationRamp;
 
-    // LinearInterpolationPredictor gimbalYawInput;
-    // LinearInterpolationPredictor gimbalPitchInput;
-
    public:
     OperatorInterface(tap::Drivers *drivers) : drivers(drivers) {}
     DISALLOW_COPY_AND_ASSIGN(OperatorInterface)

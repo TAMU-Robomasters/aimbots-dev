@@ -7,11 +7,10 @@
 #include "utils/robot_specific_inc.hpp"
 
 namespace src::Feeder {
-
 class FeederSubsystem : public tap::control::Subsystem {
    public:
     FeederSubsystem(
-        tap::Drivers* drivers);
+        src::Drivers* drivers);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -24,9 +23,7 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     int getTotalLimitCount() const;
 
-    // I love setters and getters
-    void setBurstLength(int newBurstLength);
-    int getBurstLength() const;
+    bool isBarrelHeatAcceptable(float maxPercentage);
 
     SmoothPID feederVelPID;
 
@@ -37,7 +34,6 @@ class FeederSubsystem : public tap::control::Subsystem {
 #endif
     float targetRPM;
     float desiredOutput;
-    int burstLength;
 
     DJIMotor feederMotor;
 

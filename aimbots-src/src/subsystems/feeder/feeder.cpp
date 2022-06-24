@@ -2,12 +2,11 @@
 
 namespace src::Feeder {
 
-FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
+FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
       feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
       desiredOutput(0),
-      burstLength(DEFAULT_BURST_LENGTH),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitchLeft(static_cast<std::string>("C6"), EdgeType::RISING)
 #ifdef TARGET_SENTRY
@@ -35,19 +34,13 @@ void FeederSubsystem::refresh() {
 #endif
 }
 
-float feederPidDisplay = 0;
-
 void FeederSubsystem::updateMotorVelocityPID() {
     float err = targetRPM - feederMotor.getShaftRPM();
     feederVelPID.runControllerDerivateError(err);
-    feederPidDisplay = feederVelPID.getOutput();
     desiredOutput = feederVelPID.getOutput();
 }
 
-float targetRPMDisplay = 0;
-
 float FeederSubsystem::setTargetRPM(float rpm) {
-    targetRPMDisplay = rpm;
     this->targetRPM = rpm;
     return targetRPM;
 }
@@ -65,12 +58,35 @@ int FeederSubsystem::getTotalLimitCount() const {
 #endif
 }
 
-void FeederSubsystem::setBurstLength(int newBurstLength) {
-    burstLength = newBurstLength;
-}
+bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
+    using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
+    auto turretData = drivers->refSerial.getRobotData().turret;
 
-int FeederSubsystem::getBurstLength() const {
-    return burstLength;
+    uint16_t lastHeat = 0;
+    uint16_t heatLimit = 0;
+
+    auto launcherID = turretData.launchMechanismID;
+    switch (launcherID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            lastHeat = turretData.heat17ID1;
+            heatLimit = turretData.heatLimit17ID1;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
+            break;
+        }
+        default:
+            break;
+    }
+
+    return (lastHeat <= (static_cast<float>(heatLimit) * maxPercentage));
 }
 
 }  // namespace src::Feeder

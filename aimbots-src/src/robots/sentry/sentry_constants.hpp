@@ -101,14 +101,17 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+// sentry only has one speed: death
+static constexpr uint16_t shooter_speed_array[2] =
+    {30, 8000};  // {m/s, rpm}
+
+static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
+static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
 
 static constexpr bool YAW_DIRECTION = false;
 static constexpr bool PITCH_DIRECTION = false;
-
-static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
 
 // CAN Bus 1
 static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR3;

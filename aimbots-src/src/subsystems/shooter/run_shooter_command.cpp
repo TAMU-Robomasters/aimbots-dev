@@ -20,10 +20,44 @@ void RunShooterCommand::initialize() {
     // No initialization needed
 }
 
-void RunShooterCommand::execute() {
-    // declare fixed 8500 RPM target until command is descheduled
-    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, FLYWHEEL_DEFAULT_RPM);
+tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataDisplay;
 
+void RunShooterCommand::execute() {
+    using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+
+    // defaults to slowest usable speed for robot
+    uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
+    uint16_t refSpeedLimit = 0;
+
+    auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
+    refSysRobotTurretDataDisplay = refSysRobotTurretData;
+
+    auto launcherID = refSysRobotTurretData.launchMechanismID;
+    switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit42;
+            break;
+        }
+        default:
+            break;
+    }
+
+    for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
+        if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
+            flywheelRPM = SHOOTER_SPEED_MATRIX[i][1];
+            break;
+        }
+    }
+
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(flywheelRPM));
     shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }
 
