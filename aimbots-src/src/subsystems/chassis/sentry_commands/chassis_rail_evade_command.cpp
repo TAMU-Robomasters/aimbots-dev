@@ -40,7 +40,7 @@ void ChassisRailEvadeCommand::execute() {
 
     changeDirectionIfCloseToEnd(currRailPosition);
 
-    velocityRamp.update(50.0f);
+    velocityRamp.update(velocityRampValue);
 
     chassis->setTargetRPMs(velocityRamp.getValue(), 0.0f, 0.0f);
 }
