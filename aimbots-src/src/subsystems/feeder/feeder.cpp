@@ -8,13 +8,8 @@ FeederSubsystem::FeederSubsystem(tap::Drivers* drivers)
       targetRPM(0),
       desiredOutput(0),
       burstLength(DEFAULT_BURST_LENGTH),
-      feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor")
-#ifndef TARGET_HERO
+      feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitchLeft(static_cast<std::string>("C6"), EdgeType::RISING)
-#else
-    ,
-      limitSwitchLeft(static_cast<std::string>("C7"), EdgeType::RISING)
-#endif
 #ifdef TARGET_SENTRY
       ,
       limitSwitchRight(static_cast<std::string>("C7"), EdgeType::RISING)
