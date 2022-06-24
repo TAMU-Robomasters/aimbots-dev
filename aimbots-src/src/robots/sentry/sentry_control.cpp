@@ -20,7 +20,7 @@
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/sentry_commands/sentry_match_feeder_control_command.hpp"
+#include "subsystems/feeder/sentry_commands/sentry_match_firing_control_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -40,6 +40,8 @@ using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+
+using namespace src::Control;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -67,7 +69,7 @@ ShooterSubsystem shooter(drivers());
 GimbalChassisRelativeController gimbalController(&gimbal);
 
 // Match Controllers ------------------------------------------------
-SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder, chassisMatchState);
+SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, chassisMatchState);
 SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
 
 // Define commands here ---------------------------------------------------
@@ -90,13 +92,13 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&matchChassisControlCommand, &matchFeederControlCommand, &gimbalControlCommand},
+    {&matchChassisControlCommand, &gimbalPatrolCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalChaseCommand},
+    {&chassisManualDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter only

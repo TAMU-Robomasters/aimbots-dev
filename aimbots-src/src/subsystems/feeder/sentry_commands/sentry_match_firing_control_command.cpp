@@ -1,36 +1,40 @@
-#include "sentry_match_feeder_control_command.hpp"
+#include "sentry_match_firing_control_command.hpp"
 
-namespace src::Feeder {
+namespace src::Control {
 
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
-SentryMatchFeederControlCommand::SentryMatchFeederControlCommand(src::Drivers* drivers,
+SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(src::Drivers* drivers,
                                                                  FeederSubsystem* feeder,
+                                                                 ShooterSubsystem* shooter,
                                                                  src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
+      shooter(shooter),
       chassisState(chassisState),
-      stopCommand(drivers, feeder),
+      stopFeederCommand(drivers, feeder),
       burstFireCommand(drivers, feeder, BASE_BURST_LENGTH),
       fullAutoFireCommand(drivers, feeder),
-      genericFireCommand(&burstFireCommand)  //
+      stopShooterCommand(drivers, shooter),
+      runShooterCommand(drivers, shooter)  //
 {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
+    this->comprisedCommandScheduler.registerSubsystem(shooter);
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void SentryMatchFeederControlCommand::initialize() {
-    burstFireCommand.setBurstLength(DEFAULT_BURST_LENGTH);
-    genericFireCommand = &burstFireCommand;
+void SentryMatchFiringControlCommand::initialize() {
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
 }
 
-void SentryMatchFeederControlCommand::execute() {
+void SentryMatchFiringControlCommand::execute() {
     descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, true);
 
     // if (1) {
-    if (chassisState != src::Chassis::ChassisMatchStates::EVADE /* && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE*/) {
+    if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
         auto botData = drivers->refSerial.getRobotData();
         float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
@@ -45,19 +49,19 @@ void SentryMatchFeederControlCommand::execute() {
         }
     } else {
         descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, true);
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }
 
     this->comprisedCommandScheduler.run();
 }
 
-void SentryMatchFeederControlCommand::end(bool interrupted) {
+void SentryMatchFiringControlCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, interrupted);
 }
 
-bool SentryMatchFeederControlCommand::isReady() { return true; }
+bool SentryMatchFiringControlCommand::isReady() { return true; }
 
-bool SentryMatchFeederControlCommand::isFinished() const { return false; }
+bool SentryMatchFiringControlCommand::isFinished() const { return false; }
 
-}  // namespace src::Feeder
+}  // namespace src::Control
