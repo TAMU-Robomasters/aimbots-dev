@@ -39,7 +39,7 @@ class JetsonCommunicator {
 
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
-    inline JetsonMessage const& lastValidMessage() const { return lastMessage; }
+    inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) {
         this->gimbal = gimbal;

@@ -51,7 +51,7 @@ class UltrasonicDistanceSensor {
     /**
      * @brief Returns bool to indicate if either ultrasonic is reading-- if not, any data provided by ultrasonic class is outdated
      */
-    static inline bool isDataValid() { return (leftValid || rightValid); };
+    static inline bool isDataValid() { return (leftValid && rightValid); };
 
    private:
     src::Drivers* drivers;

@@ -2,51 +2,59 @@
 
 namespace src::Feeder {
 
-static constexpr int STARTING_BURST_LENGTH = 3;
-static constexpr int DESPERATE_BURST_LENGTH = 5;
+static constexpr int BASE_BURST_LENGTH = 3;
+static constexpr int ANNOYED_BURST_LENGTH = 10;
 
 SentryMatchFeederControlCommand::SentryMatchFeederControlCommand(src::Drivers* drivers,
-                                                                 FeederSubsystem* feeder)
+                                                                 FeederSubsystem* feeder,
+                                                                 src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
+      chassisState(chassisState),
       stopCommand(drivers, feeder),
-      burstFireCommand(drivers, feeder, STARTING_BURST_LENGTH),
-      fullAutoFireCommand(drivers, feeder)  //
+      burstFireCommand(drivers, feeder, BASE_BURST_LENGTH),
+      fullAutoFireCommand(drivers, feeder),
+      genericFireCommand(&burstFireCommand)  //
 {
+    this->comprisedCommandScheduler.registerSubsystem(feeder);
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void SentryMatchFeederControlCommand::initialize() {
-    feeder->setDefaultCommand(dynamic_cast<TapCommand*>(&stopCommand));
+    burstFireCommand.setBurstLength(DEFAULT_BURST_LENGTH);
+    genericFireCommand = &burstFireCommand;
 }
 
 void SentryMatchFeederControlCommand::execute() {
-    if (!isChassisTooFast() && isBurstCommandFinished()) {
+    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, true);
+
+    // if (1) {
+    if (chassisState != src::Chassis::ChassisMatchStates::EVADE /* && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE*/) {
         auto botData = drivers->refSerial.getRobotData();
-        float health_pct = botData.currentHp / (float)botData.maxHp;
+        float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
-        if (health_pct >= 0.50f) {
-            descheduleFullAutoIfNeccecary();
-
-            burstFireCommand.setBurstLength(DEFAULT_BURST_LENGTH);
-            comprisedCommandScheduler.addCommand(dynamic_cast<TapCommand*>(&burstFireCommand));
-        } else if (health_pct >= 0.33f) {
-            descheduleFullAutoIfNeccecary();
-
-            burstFireCommand.setBurstLength(DESPERATE_BURST_LENGTH);
-            comprisedCommandScheduler.addCommand(dynamic_cast<TapCommand*>(&burstFireCommand));
+        if (healthPercentage >= 0.50f) {
+            burstFireCommand.setBurstLength(BASE_BURST_LENGTH);
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFireCommand);
+        } else if (healthPercentage >= 0.33f) {
+            burstFireCommand.setBurstLength(ANNOYED_BURST_LENGTH);
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFireCommand);
         } else {
-            if (!comprisedCommandScheduler.isCommandScheduled(dynamic_cast<TapCommand*>(&fullAutoFireCommand)))
-                comprisedCommandScheduler.addCommand(dynamic_cast<TapCommand*>(&fullAutoFireCommand));
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand);
         }
     } else {
-        // We don't want to run full auto while we're driving.
-        descheduleFullAutoIfNeccecary();
+        descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, true);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopCommand);
     }
+
+    this->comprisedCommandScheduler.run();
 }
 
-void SentryMatchFeederControlCommand::end(bool interrupted) { UNUSED(interrupted); }
+void SentryMatchFeederControlCommand::end(bool interrupted) {
+    descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, interrupted);
+}
 
 bool SentryMatchFeederControlCommand::isReady() { return true; }
 

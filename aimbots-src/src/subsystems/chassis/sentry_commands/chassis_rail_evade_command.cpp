@@ -26,8 +26,12 @@ void ChassisRailEvadeCommand::initialize() {
     changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);
 }
 
+float currPositionDisplay = 0.0f;
+
 void ChassisRailEvadeCommand::execute() {
     float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X] * 1000.0f;
+
+    currPositionDisplay = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
 
     if (hasTraveledDriveDistance(currRailPosition))
         changeDirectionForRandomDistance(MIN_TRAVERSE_DISTANCE_MM, MAX_TRAVERSE_DISTANCE_MM);

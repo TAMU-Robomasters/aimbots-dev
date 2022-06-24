@@ -37,7 +37,7 @@ uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 
 float yawOffsetDisplay = 0;
 float pitchOffsetDisplay = 0;
-CVState cvStateDisplay = CVState::LOOK_AROUND;
+CVState cvStateDisplay = CVState::NOT_FOUND;
 int readUnequal = 0;
 
 int lastMsgTime = 0;
@@ -118,7 +118,7 @@ void JetsonCommunicator::updateSerial() {
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
 
-                if (lastMessage.cvState == CVState::LOOK_AT_COORDS || lastMessage.cvState == CVState::FIRE) {
+                if (lastMessage.cvState == CVState::FOUND || lastMessage.cvState == CVState::FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
 
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);

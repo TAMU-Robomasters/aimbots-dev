@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drivers.hpp"
+#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
@@ -9,11 +10,17 @@
 
 namespace src::Feeder {
 
+enum FeederMatchStates {
+    ANNOYED = 0,
+    AGGRESSIVE = 1,
+    FURIOUS = 2,
+};
+
 static constexpr float SENTRY_SHOOTER_MAX_ACCEL = 2.5f;
 
 class SentryMatchFeederControlCommand : public TapComprisedCommand {
    public:
-    SentryMatchFeederControlCommand(src::Drivers*, FeederSubsystem*);
+    SentryMatchFeederControlCommand(src::Drivers*, FeederSubsystem*, src::Chassis::ChassisMatchStates& chassisState);
 
     void initialize() override;
     void execute() override;
@@ -24,28 +31,17 @@ class SentryMatchFeederControlCommand : public TapComprisedCommand {
 
     const char* getName() const override { return "Sentry Match Feeder Control Command"; }
 
-    inline bool isChassisTooFast() const {
-        // return fabs(drivers->fieldRelativeInformant.odomRailMotor->getShaftRPM()) > SENTRY_SHOOTER_MAX_ACCEL;
-        return false;
-    }
-
-    inline bool isBurstCommandFinished() const {
-        return burstFireCommand.isFinished();
-    }
-
-    inline void descheduleFullAutoIfNeccecary() {
-        if (comprisedCommandScheduler.isCommandScheduled(dynamic_cast<TapCommand*>(&fullAutoFireCommand))) {
-            comprisedCommandScheduler.removeCommand(dynamic_cast<TapCommand*>(&fullAutoFireCommand), true);
-        }
-    }
-
    private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
 
+    src::Chassis::ChassisMatchStates& chassisState;
+
     StopFeederCommand stopCommand;
     BurstFeederCommand burstFireCommand;
     FullAutoFeederCommand fullAutoFireCommand;
+
+    TapCommand* genericFireCommand;
 };
 
 }  // namespace src::Feeder

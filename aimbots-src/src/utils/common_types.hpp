@@ -83,3 +83,20 @@ using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
+
+static inline void scheduleIfNotScheduled(
+    tap::control::CommandScheduler &scheduler,
+    tap::control::Command *cmd) {
+    if (!scheduler.isCommandScheduled(cmd)) {
+        scheduler.addCommand(cmd);
+    }
+}
+
+static inline void descheduleIfScheduled(
+    tap::control::CommandScheduler &scheduler,
+    tap::control::Command *cmd,
+    bool interrupted) {
+    if (scheduler.isCommandScheduled(cmd)) {
+        scheduler.removeCommand(cmd, interrupted);
+    }
+}

@@ -15,6 +15,7 @@
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
+#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 //
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
@@ -52,11 +53,8 @@ using namespace tap::control;
 
 namespace SentryControl {
 
-enum ChassisMatchStates {
-    NONE = 0,
-    PATROL = 1,
-    EVADE = 2,
-};
+src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
+// src::Feeder::FeederMatchStates feederMatchState = src::Feeder::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
@@ -66,6 +64,10 @@ ShooterSubsystem shooter(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
+
+// Match Controllers ------------------------------------------------
+SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder, chassisMatchState);
+SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -78,7 +80,6 @@ GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
 FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
-SentryMatchFeederControlCommand matchFeederControlCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
@@ -87,7 +88,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalControlCommand},
+    {&matchChassisControlCommand, &matchFeederControlCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
