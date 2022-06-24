@@ -34,6 +34,7 @@ void RunShooterCommand::execute() {
 
     auto launcherID = refSysRobotTurretData.launchMechanismID;
     switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
+                           // #if defined(TARGET_STANDARD) || defined(TARGET_SENTRY)
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;
             break;
@@ -42,6 +43,7 @@ void RunShooterCommand::execute() {
             refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
             break;
         }
+            // #endif
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit42;
             break;

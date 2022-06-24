@@ -27,7 +27,7 @@ static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
 static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
 
 static constexpr float CTRL_SCALAR = (1.0f / 4);
-static constexpr float SHIFT_SCALAR = (1.0f / 2);
+static constexpr float SHIFT_SCALAR = 0.6f;
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
@@ -44,7 +44,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
     .kd = 0.8f,
     .maxICumulative = 10.0f,
@@ -89,7 +89,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 40.0f,
     .ki = 0.10f,
     .kd = 0.00f,
     .maxICumulative = 10.0f,
@@ -102,17 +102,10 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// hero stuff, just saving here until we regenerate hero code from standards lol
-// static constexpr uint16_t shooter_speed_array[4] =
-//     {10, 3000,
-//      16, 5000};
-
-// static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
-
 static constexpr uint16_t shooter_speed_array[6] =
-    {15, 4000,  // {ball m/s, flywheel rpm}
-     18, 4600,
-     30, 8500};
+    {15, 3900,  // {ball m/s, flywheel rpm}
+     18, 4500,
+     30, 9000};
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -204,11 +197,10 @@ static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
-static constexpr float MAX_ENERGY_BUFFER = 60.0f;
-static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
-static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
-static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
-static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
+static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
+static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
+static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
 
 /**
  * @brief Power constants for chassis

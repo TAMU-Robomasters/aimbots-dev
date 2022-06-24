@@ -14,7 +14,7 @@ static constexpr uint32_t NOTE_Ab2 = 880;
 static constexpr uint32_t NOTE_Bb2 = 932;
 static constexpr uint32_t NOTE_Eb2 = 1244;
 
-static constexpr uint32_t XP_BPM = 90;
+static constexpr uint32_t XP_BPM = 110;
 static constexpr uint32_t XP_MS_PER_16th = (uint32_t)(((1.0f / XP_BPM) * 60.0f * 1000.0f) / 4.0f);
 
 struct MusicNote {

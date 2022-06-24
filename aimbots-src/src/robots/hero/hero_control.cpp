@@ -70,7 +70,8 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 
-RunFeederCommand runFeederCommand(drivers(), &feeder);
+RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
+RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
@@ -83,16 +84,11 @@ HoldCommandMapping leftSwitchMid(
     {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
+// Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-// // opens hopper
-// HoldCommandMapping rightSwitchDown(
-//     drivers(),
-//     {&openHopperCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
@@ -100,11 +96,16 @@ HoldCommandMapping rightSwitchMid(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
-HoldCommandMapping rightSwitchUp(
+HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
     {&runFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    true);
 
+HoldCommandMapping leftClickMouse(
+    drivers(),
+    {&runFeederCommandFromMouse},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT));
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -142,7 +143,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl

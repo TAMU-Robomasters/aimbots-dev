@@ -36,6 +36,11 @@ ChassisSubsystem::ChassisSubsystem(
                              desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
                              velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+                             powerLimiter(drivers,
+                                          STARTING_ENERGY_BUFFER,
+                                          ENERGY_BUFFER_LIMIT_THRESHOLD,
+                                          ENERGY_BUFFER_CRIT_THRESHOLD,
+                                          POWER_LIMIT_SAFETY_FACTOR),
                              wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
 //
 {
@@ -95,16 +100,34 @@ int refSerialWorkingDisplay = 0;
 uint16_t chassisPowerLimitDisplay = 0;
 
 void ChassisSubsystem::refresh() {
-    if (drivers->refSerial.getRefSerialReceivingData()) {
-        chassisPowerLimitDisplay = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
-        refSerialWorkingDisplay = 69;
-    } else {
-        refSerialWorkingDisplay = 0;
-    }
-
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
+
+    limitChassisPower();
+}
+
+void ChassisSubsystem::limitChassisPower() {
+    float powerLimitFrac = powerLimiter.getPowerLimitRatio();
+
+    if (compareFloatClose(1.0f, powerLimitFrac, 0.001f)) {
+        return;
+    }
+
+    float totalError = 0.0f;
+    for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        totalError += abs(velocityPIDs[i][0]->getError());
+    }
+
+    bool totalErrorZero = compareFloatClose(totalError, 0.0f, 0.001f);
+
+    for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        float velocityErrorFrac = totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT) : (abs(velocityPIDs[i][0]->getError()) / totalError);
+
+        float modifiedPowerLimitFrac = limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * velocityErrorFrac, 0.0f, 1.0f);
+
+        motors[i][0]->setDesiredOutput(motors[i][0]->getOutputDesired() * modifiedPowerLimitFrac);
+    }
 }
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
@@ -183,11 +206,16 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
     // power consumption when the wheel rotation speed for chassis rotationis greater than the
     // MIN_ROTATION_THRESHOLD
     if (fabsf(chassisRotationDesiredWheelspeed) > MIN_ROTATION_THRESHOLD) {
+        const float maxWheelSpeed = getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
         // power(max revolve speed - specified revolve speed, 2)
         // / power(max revolve speed, 2)
-        rTranslationalGain = powf(MAX_WHEEL_SPEED_SINGLE_MOTOR + MIN_ROTATION_THRESHOLD -
-                                      fabsf(chassisRotationDesiredWheelspeed) / MAX_WHEEL_SPEED_SINGLE_MOTOR,
+        rTranslationalGain = powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD -
+                                      fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed,
                                   2.0f);
+
         rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
     }
     return rTranslationalGain;

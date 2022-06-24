@@ -77,8 +77,8 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 
-RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.85f);
-RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.85f);
+RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);

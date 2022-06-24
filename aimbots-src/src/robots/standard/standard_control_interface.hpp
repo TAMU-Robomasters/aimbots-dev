@@ -16,12 +16,17 @@ class OperatorInterface {
     uint32_t prevUpdateCounterY = 0;
     uint32_t prevUpdateCounterRotation = 0;
 
+    uint32_t lastXInputCallTime = 0;
+    uint32_t lastYInputCallTime = 0;
+    uint32_t lastRInputCallTime = 0;
+
     LinearInterpolationPredictor chassisXInput;
     LinearInterpolationPredictor chassisYInput;
     LinearInterpolationPredictor chassisRotationInput;
 
-    // LinearInterpolationPredictor gimbalYawInput;
-    // LinearInterpolationPredictor gimbalPitchInput;
+    tap::algorithms::Ramp chassisXRamp;
+    tap::algorithms::Ramp chassisYRamp;
+    tap::algorithms::Ramp chassisRotationRamp;
 
    public:
     OperatorInterface(tap::Drivers *drivers) : drivers(drivers) {}

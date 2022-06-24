@@ -1,7 +1,7 @@
 #ifdef TARGET_STANDARD
 #include "standard_control_interface.hpp"
 
-#include "subsystems/gimbal/gimbal.hpp"
+#include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
@@ -12,10 +12,32 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-float mouseRotation = 0.0f;
-float remoteX = 0.0f;
+static constexpr float INPUT_X_MAX_ACCEL = 4000.0f;
+static constexpr float INPUT_X_MAX_DECEL = 20000.0f;
+
+static constexpr float INPUT_Y_MAX_ACCEL = 5000.0f;
+static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
+
+static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
+static constexpr float INPUT_R_MAX_DECEL = 20000.0f;
 
 namespace src::Control {
+
+static inline void applyAccelerationToRamp(
+    tap::algorithms::Ramp &ramp,
+    float maxAcceleration,
+    float maxDeceleration,
+    float dt) {
+    if (getSign(ramp.getTarget()) == getSign(ramp.getValue()) &&
+        abs(ramp.getTarget()) > abs(ramp.getValue())) {
+        // we are trying to speed up
+        ramp.update(maxAcceleration * dt);
+    } else {
+        // we are trying to slow down
+        ramp.update(maxDeceleration * dt);
+    }
+}
+
 /**
  * @brief Gets the current X input from the operator.
  * As the remote only returns user input every 17ms, analog input is interpolated to get a smoother usable value.
@@ -25,6 +47,8 @@ namespace src::Control {
 float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t dt = lastXInputCallTime - currTime;
+    lastXInputCallTime = currTime;
 
     if (prevUpdateCounterX != updateCounter) {
         chassisXInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
@@ -33,17 +57,22 @@ float OperatorInterface::getChassisXInput() {
 
     float digitalX = drivers->remote.keyPressed(Remote::Key::D) - drivers->remote.keyPressed(Remote::Key::A);
 
-    float analogX = chassisXInput.getInterpolatedValue(currTime);
+    float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + digitalX, -1.0f, 1.0f);
 
-    float finalX = limitVal<float>(digitalX + analogX, -1.0f, 1.0f);
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
+    // Scales analog values by values defined in hero_constants.hpp to speedshift input
     finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
     finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
+    chassisXRamp.setTarget(finalX);
+
     finalXWatch = (int8_t)(finalX * 127.0f);
 
-    return finalX;
+    applyAccelerationToRamp(
+        chassisXRamp,
+        INPUT_X_MAX_ACCEL,
+        INPUT_X_MAX_DECEL,
+        static_cast<float>(dt) / 1E3);
+    return chassisXRamp.getValue();
 }
 
 /**
@@ -55,6 +84,8 @@ float OperatorInterface::getChassisXInput() {
 float OperatorInterface::getChassisYInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t dt = lastYInputCallTime - currTime;
+    lastYInputCallTime = currTime;
 
     if (prevUpdateCounterY != updateCounter) {
         chassisYInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
@@ -63,15 +94,20 @@ float OperatorInterface::getChassisYInput() {
 
     float digitalY = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
 
-    float analogY = chassisYInput.getInterpolatedValue(currTime);
+    float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + digitalY, -1.0f, 1.0f);
 
-    float finalY = limitVal<float>(digitalY + analogY, -1.0f, 1.0f);
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
+    // Scales analog values by values defined in hero_constants.hpp to speedshift input
     finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
     finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
-    return finalY;
+    chassisYRamp.setTarget(finalY);
+
+    applyAccelerationToRamp(
+        chassisYRamp,
+        INPUT_Y_MAX_ACCEL,
+        INPUT_Y_MAX_DECEL,
+        static_cast<float>(dt) / 1E3);
+    return chassisYRamp.getValue();
 }
 
 /**
@@ -83,45 +119,45 @@ float OperatorInterface::getChassisYInput() {
 float OperatorInterface::getChassisRotationInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t dt = lastRInputCallTime - currTime;
+    lastRInputCallTime = currTime;
 
     if (prevUpdateCounterRotation != updateCounter) {
         chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);
         prevUpdateCounterRotation = updateCounter;
     }
 
-    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Q) - drivers->remote.keyPressed(Remote::Key::E);
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    digitalRotation = static_cast<float>(limitVal<int16_t>(drivers->remote.getMouseX(), -USER_MOUSE_YAW_MAX, USER_MOUSE_YAW_MAX)) * USER_MOUSE_YAW_SCALAR;
-
-    float analogRotation = chassisRotationInput.getInterpolatedValue(currTime);
-
-    float finalRotation = limitVal(analogRotation + digitalRotation, -1.0f, 1.0f);  // TODO: Add digital values from keyboard as well
-
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
+    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    finalRotation *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
-    return finalRotation;
+    chassisRotationRamp.setTarget(finalRotation);
+
+    applyAccelerationToRamp(
+        chassisRotationRamp,
+        INPUT_R_MAX_ACCEL,
+        INPUT_R_MAX_DECEL,
+        static_cast<float>(dt) / 1E3);
+    return chassisRotationRamp.getValue();
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    float analogYaw = drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
-
-    float mouseYaw = static_cast<float>(limitVal<int16_t>(drivers->remote.getMouseX(), -USER_MOUSE_YAW_MAX, USER_MOUSE_YAW_MAX)) * USER_MOUSE_YAW_SCALAR;
-
-    float finalYaw = analogYaw + mouseYaw;
-
-    return finalYaw;
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) +
+           static_cast<float>(limitVal<int16_t>(
+               drivers->remote.getMouseX(),
+               -USER_MOUSE_YAW_MAX,
+               USER_MOUSE_YAW_MAX)) *
+               USER_MOUSE_YAW_SCALAR;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    float analogYaw = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
-
-    // float mouseYaw = static_cast<float>(limitVal<int16_t>(drivers->remote.getMouseY(), -USER_MOUSE_PITCH_MAX, USER_MOUSE_PITCH_MAX)) * USER_MOUSE_PITCH_SCALAR*;
-
-    // float finalYaw = analogYaw + mouseYaw;
-
-    return ((drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) + (static_cast<float>(limitVal<int16_t>(-drivers->remote.getMouseY(), -USER_MOUSE_PITCH_MAX, USER_MOUSE_PITCH_MAX)) * USER_MOUSE_PITCH_SCALAR)));
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) +
+           static_cast<float>(limitVal<int16_t>(
+               -drivers->remote.getMouseY(),
+               -USER_MOUSE_PITCH_MAX,
+               USER_MOUSE_PITCH_MAX)) *
+               USER_MOUSE_PITCH_SCALAR;
 }
 
 }  // namespace src::Control
