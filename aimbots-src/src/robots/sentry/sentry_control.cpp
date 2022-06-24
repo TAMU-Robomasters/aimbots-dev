@@ -21,6 +21,7 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/sentry_commands/sentry_match_feeder_control_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -80,6 +81,7 @@ GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
 
 FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
@@ -128,6 +130,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    feeder.setDefaultCommand(&stopFeederCommand);
     // gimbal.setDefaultCommand(&gimbalControlCommand);
     // chassis.setDefaultCommand(&chassisRailBounceCommand);
     // gimbal.setDefaultCommand(&gimbalChaseCommand);

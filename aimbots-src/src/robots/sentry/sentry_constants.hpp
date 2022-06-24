@@ -104,11 +104,16 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 static constexpr float kGRAVITY = 6000.0f;
 static constexpr float HORIZON_OFFSET = -30.0f;
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+// sentry only has one speed: death
+static constexpr uint16_t shooter_speed_array[2] =
+    {30, 8000};  // {m/s, rpm}
+
+static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
-static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
+static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
+
 static constexpr int MAX_BURST_LENGTH = 20;
 static constexpr int MIN_BURST_LENGTH = 4;
 
