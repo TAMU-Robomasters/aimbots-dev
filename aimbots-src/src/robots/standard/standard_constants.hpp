@@ -102,13 +102,6 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// hero stuff, just saving here until we regenerate hero code from standards lol
-// static constexpr uint16_t shooter_speed_array[4] =
-//     {10, 3000,
-//      16, 5000};
-
-// static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
-
 static constexpr uint16_t shooter_speed_array[6] =
     {15, 3900,  // {ball m/s, flywheel rpm}
      18, 4500,

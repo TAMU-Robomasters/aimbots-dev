@@ -102,9 +102,14 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 7500.0f;
+// hero stuff, just saving here until we regenerate hero code from standards lol
+static constexpr uint16_t shooter_speed_array[4] =
+    {10, 3900,
+     16, 6500};
 
-static constexpr float FEEDER_DEFAULT_RPM = 100.0f;
+static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+
+static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
