@@ -21,6 +21,8 @@ static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
 static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
 static constexpr float INPUT_R_MAX_DECEL = 20000.0f;
 
+// static constexpr float INPUT_MOUSE_FACTOR = 1.5f;
+
 namespace src::Control {
 
 static inline void applyAccelerationToRamp(
