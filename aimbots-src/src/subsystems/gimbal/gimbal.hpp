@@ -38,21 +38,12 @@ class GimbalSubsystem : public tap::control::Subsystem {
     inline void setTargetChassisRelativePitchAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
         int status = 0;
-
-        float high, low = 0.0f;
-        if (PITCH_SOFTSTOP_HIGH > PITCH_SOFTSTOP_LOW) {
-            high = PITCH_SOFTSTOP_HIGH;
-            low = PITCH_SOFTSTOP_LOW;
-        } else {
-            low = PITCH_SOFTSTOP_HIGH;
-            high = PITCH_SOFTSTOP_LOW;
-        }
-
         targetChassisRelativePitchAngle = ContiguousFloat::limitValue(
             ContiguousFloat(angle, 0, M_TWOPI),
-            low,
-            high,
-            &status);
+            modm::toRadian((!PITCH_DIRECTION) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
+            modm::toRadian((!PITCH_DIRECTION) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
+            &status
+        );
     }
 
     inline float getCurrentFieldRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(currentFieldRelativeYawAngle.getValue()) : currentFieldRelativeYawAngle.getValue(); }
