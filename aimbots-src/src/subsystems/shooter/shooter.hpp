@@ -91,6 +91,15 @@ class ShooterSubsystem : public tap::control::Subsystem {
      */
     void setDesiredOutputToMotor(MotorIndex motorIdx);
 
+    inline bool isOnline() {
+        for (auto i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
+            if (!motors[i][0]->isMotorOnline()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 #ifndef ENV_UNIT_TESTS
    private:
 #else
