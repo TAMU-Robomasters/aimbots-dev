@@ -12,8 +12,8 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float INPUT_X_MAX_ACCEL = 1000.0f;
-static constexpr float INPUT_X_MAX_DECEL = 20000.0f;
+static constexpr float INPUT_X_MAX_ACCEL = 400.0f;
+static constexpr float INPUT_X_MAX_DECEL = 8000.0f;
 
 static constexpr float INPUT_Y_MAX_ACCEL = 500.0f;
 static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
@@ -21,14 +21,23 @@ static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
 static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
 static constexpr float INPUT_R_MAX_DECEL = 20000.0f;
 
-// static constexpr float INPUT_MOUSE_FACTOR = 1.5f;
+static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.3f;
+static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.15f;
+
+static constexpr int16_t MOUSE_YAW_MAX = 1000;
+static constexpr int16_t MOUSE_PITCH_MAX = 1000;
+static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_YAW_MAX);
+static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_PITCH_MAX);
+
+static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float SHIFT_SCALAR = 0.6f;
 
 namespace src::Control {
 
 static float inputAccelerationTranslation(float value){
     float x = getSign(value);
     value = abs(value);
-    if(value > 0){
+    if (value > 0) {
         value = 2.0f * powf(value,2.0f);
     } else {
         value = -(2.0f)*(2.0f-(4.0f/3.0f)*((1.0f/18.0f)*powf((powf(value,-1.0f)-1.8),2.0f)))-3.1f;  
@@ -85,7 +94,7 @@ float OperatorInterface::getChassisXInput() {
         chassisXRamp,
         INPUT_X_MAX_ACCEL,
         INPUT_X_MAX_DECEL,
-        static_cast<float>(dt) / 1E3);
+        static_cast<float>(dt) / 1000.0f);
     return chassisXRamp.getValue();
 }
 
@@ -120,7 +129,7 @@ float OperatorInterface::getChassisYInput() {
         chassisYRamp,
         INPUT_Y_MAX_ACCEL,
         INPUT_Y_MAX_DECEL,
-        static_cast<float>(dt) / 1E3);
+        static_cast<float>(dt) / 1000.0f);
     return chassisYRamp.getValue();
 }
 
@@ -152,26 +161,26 @@ float OperatorInterface::getChassisRotationInput() {
         chassisRotationRamp,
         INPUT_R_MAX_ACCEL,
         INPUT_R_MAX_DECEL,
-        static_cast<float>(dt) / 1E3);
+        static_cast<float>(dt) / 1000.0f);
     return chassisRotationRamp.getValue();
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) +
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
            static_cast<float>(limitVal<int16_t>(
                drivers->remote.getMouseX(),
-               -USER_MOUSE_YAW_MAX,
-               USER_MOUSE_YAW_MAX)) *
-               USER_MOUSE_YAW_SCALAR;
+               -MOUSE_YAW_MAX,
+               MOUSE_YAW_MAX)) *
+               YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) +
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
            static_cast<float>(limitVal<int16_t>(
                -drivers->remote.getMouseY(),
-               -USER_MOUSE_PITCH_MAX,
-               USER_MOUSE_PITCH_MAX)) *
-               USER_MOUSE_PITCH_SCALAR;
+               -MOUSE_PITCH_MAX,
+               MOUSE_PITCH_MAX)) *
+               PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 
 }  // namespace src::Control
