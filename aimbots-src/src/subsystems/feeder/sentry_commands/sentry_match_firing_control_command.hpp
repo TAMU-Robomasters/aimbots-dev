@@ -47,8 +47,8 @@ class SentryMatchFiringControlCommand : public TapComprisedCommand {
     src::Chassis::ChassisMatchStates& chassisState;
 
     StopFeederCommand stopFeederCommand;
-    BurstFeederCommand burstFireCommand;
-    FullAutoFeederCommand fullAutoFireCommand;
+    BurstFeederCommand burstFeederCommand;
+    FullAutoFeederCommand fullAutoFeederCommand;
 
     StopShooterCommand stopShooterCommand;
     RunShooterCommand runShooterCommand;

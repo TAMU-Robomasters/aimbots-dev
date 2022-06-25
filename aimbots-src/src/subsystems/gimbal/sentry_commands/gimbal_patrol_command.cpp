@@ -26,11 +26,11 @@ void GimbalPatrolCommand::initialize() {
 #ifdef TARGET_SENTRY
     // clang-format off
     static constexpr float xy_field_relative_patrol_location_array[15] = {
-        5.0f, -3.0f, 2000.0f, // field coordinate x, y, time spent at this angle
-        -1.425f, -1.131f, 1000.0f,
-        1.425f, 0.494f, 500.0f,
-        -1.425f, 2.119f, 1000.0f,
-        -3.25f, 2.5f, 2000.0f,
+        5.0f, -3.0f, 1000.0f, // field coordinate x, y, time spent at this angle
+        -1.425f, -1.131f, 500.0f,
+        1.425f, 0.494f, 250.0f,
+        -1.425f, 2.119f, 500.0f,
+        -3.25f, 2.5f, 1000.0f,
     };  // clang-format on
     patrolCoordinates = Matrix<float, 5, 3>(xy_field_relative_patrol_location_array);
 #endif

@@ -15,8 +15,8 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(src::Drivers* d
       shooter(shooter),
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
-      burstFireCommand(drivers, feeder, BASE_BURST_LENGTH),
-      fullAutoFireCommand(drivers, feeder),
+      burstFeederCommand(drivers, feeder, BASE_BURST_LENGTH),
+      fullAutoFeederCommand(drivers, feeder),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter)  //
 {
@@ -28,27 +28,32 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(src::Drivers* d
 
 void SentryMatchFiringControlCommand::initialize() {
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, &runShooterCommand);
 }
 
 void SentryMatchFiringControlCommand::execute() {
-    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, true);
+    // descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, true);
 
     // if (1) {
-    if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
-        auto botData = drivers->refSerial.getRobotData();
-        float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
+    if (drivers->cvCommunicator.isJetsonOnline()) {
+        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
+            auto botData = drivers->refSerial.getRobotData();
+            float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
-        if (healthPercentage >= 0.50f) {
-            burstFireCommand.setBurstLength(BASE_BURST_LENGTH);
-            scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFireCommand);
-        } else if (healthPercentage >= 0.33f) {
-            burstFireCommand.setBurstLength(ANNOYED_BURST_LENGTH);
-            scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFireCommand);
+            // if (healthPercentage >= 0.50f) {
+            //     burstFeederCommand.setBurstLength(BASE_BURST_LENGTH);
+            //     scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFeederCommand);
+            // } else if (healthPercentage >= 0.33f) {
+            //     burstFeederCommand.setBurstLength(ANNOYED_BURST_LENGTH);
+            //     scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFeederCommand);
+            // } else {
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
+            // }
         } else {
-            scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand);
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
         }
     } else {
-        descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, true);
+        // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, true);
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }
 
@@ -56,8 +61,9 @@ void SentryMatchFiringControlCommand::execute() {
 }
 
 void SentryMatchFiringControlCommand::end(bool interrupted) {
-    descheduleIfScheduled(this->comprisedCommandScheduler, &burstFireCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFireCommand, interrupted);
+    // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &stopFeederCommand, interrupted);
 }
 
 bool SentryMatchFiringControlCommand::isReady() { return true; }

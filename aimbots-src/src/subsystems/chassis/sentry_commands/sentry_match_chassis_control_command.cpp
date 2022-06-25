@@ -11,7 +11,7 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(src::Drivers*
       chassis(chassis),
       chassisState(chassisState),
       patrolCommand(drivers, chassis),
-      evadeCommand(drivers, chassis),
+      evadeCommand(drivers, chassis, 25.0f),  // velocity ramp value
       evadeTimeout(EVADE_DURATION_MS) {
     addSubsystemRequirement(chassis);
     this->comprisedCommandScheduler.registerSubsystem(chassis);

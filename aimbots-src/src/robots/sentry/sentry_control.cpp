@@ -28,6 +28,7 @@
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/sentry_commands/sentry_match_gimbal_control_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -71,11 +72,12 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 // Match Controllers ------------------------------------------------
 SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, chassisMatchState);
 SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &gimbalController, 500.0f);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
-ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // velocity ramp value is 25.0f
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
@@ -92,7 +94,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&matchChassisControlCommand, &gimbalPatrolCommand},
+    {&matchChassisControlCommand, &matchFiringControlCommand, &matchGimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
