@@ -143,6 +143,11 @@ ToggleCommandMapping clickF(
     {&chassisTokyoCommand2, &gimbalFieldRelativeControlCommand3},
     RemoteMapState({Remote::Key::F}));
 
+ToggleCommandMapping clickH(
+    drivers(),
+    {&closeHopperCommand},
+    RemoteMapState({Remote::Key::H}));
+)
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -165,7 +170,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    // hopper.setDefaultCommand(&openHopperCommand);
+    hopper.setDefaultCommand(&openHopperCommand);
 }
 
 // Set commands scheduled on startup
