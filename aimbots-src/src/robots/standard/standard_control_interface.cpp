@@ -26,8 +26,8 @@ static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.15f;
 
 static constexpr int16_t MOUSE_YAW_MAX = 1000;
 static constexpr int16_t MOUSE_PITCH_MAX = 1000;
-static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_YAW_MAX);
-static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_PITCH_MAX);
+static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (10.0f / MOUSE_YAW_MAX);
+static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (2.5f / MOUSE_PITCH_MAX);
 
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = 0.6f;
@@ -59,6 +59,7 @@ float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t dt = lastXInputCallTime - currTime;
+
     lastXInputCallTime = currTime;
 
     if (prevUpdateCounterX != updateCounter) {

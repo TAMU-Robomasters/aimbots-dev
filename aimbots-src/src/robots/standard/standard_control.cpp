@@ -146,8 +146,8 @@ ToggleCommandMapping clickF(
 ToggleCommandMapping clickH(
     drivers(),
     {&closeHopperCommand},
-    RemoteMapState({Remote::Key::H}));
-)
+    RemoteMapState({Remote::Key::Q}));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
