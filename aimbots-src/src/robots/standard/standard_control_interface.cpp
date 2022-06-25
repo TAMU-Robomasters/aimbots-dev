@@ -160,6 +160,17 @@ float OperatorInterface::getGimbalPitchInput() {
                USER_MOUSE_PITCH_SCALAR;
 }
 
+
+
+// float OperatorInterface::rotateRotationLeft(){
+//     return drivers->remote.keyPressed(Remote::Key::Q) ? 1.0f : 0.0f;
+// }
+
+// float OperatorInterface::rotateFastRight(){
+//     //get 
+//         return drivers->remote.keyPressed(Remote::Key::E) ? 1.0f : 0.0f;
+
+// }
 }  // namespace src::Control
 
 #endif

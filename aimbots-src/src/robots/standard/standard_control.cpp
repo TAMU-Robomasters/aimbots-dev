@@ -15,6 +15,7 @@
 #include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/chassis_snap_right_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
@@ -72,10 +73,16 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand2(drivers(), &chassis, &gimbal);
+ChassisSnapRightCommand chassisSnapRightCommand(drivers(), &chassis, &gimbal);
+
+
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand3(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+
 
 RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
 RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
@@ -94,14 +101,18 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+    {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand, },
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID)
+    // RemoteMapState({Remote::Key::Q})
+    );
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP)
+    // RemoteMapState({Remote::Key::E})
+    );
 
 // opens hopper
 HoldCommandMapping rightSwitchDown(
@@ -126,6 +137,11 @@ HoldCommandMapping leftClickMouse(
     drivers(),
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
+
+ToggleCommandMapping clickF(
+    drivers(),
+    {&chassisTokyoCommand2, &gimbalFieldRelativeControlCommand3},
+    RemoteMapState({Remote::Key::F}));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -170,6 +186,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&clickF);
 }
 
 }  // namespace StandardControl

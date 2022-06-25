@@ -25,6 +25,17 @@ static constexpr float INPUT_R_MAX_DECEL = 20000.0f;
 
 namespace src::Control {
 
+static float inputAccelerationTranslation(float value){
+    float x = getSign(value);
+    value = abs(value);
+    if(value > 0){
+        value = 2.0f * powf(value,2.0f);
+    } else {
+        value = -(2.0f)*(2.0f-(4.0f/3.0f)*((1.0f/18.0f)*powf((powf(value,-1.0f)-1.8),2.0f)))-3.1f;  
+    }
+    return value*x;
+}
+
 static inline void applyAccelerationToRamp(
     tap::algorithms::Ramp &ramp,
     float maxAcceleration,
@@ -65,6 +76,7 @@ float OperatorInterface::getChassisXInput() {
     finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
     finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
+    // float xValue = inputAcce(finalX);
     chassisXRamp.setTarget(finalX);
 
     finalXWatch = (int8_t)(finalX * 127.0f);
@@ -131,7 +143,7 @@ float OperatorInterface::getChassisRotationInput() {
 
     float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f)*10.0f;
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
 
     chassisRotationRamp.setTarget(finalRotation);
