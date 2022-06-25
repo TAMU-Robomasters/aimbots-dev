@@ -12,14 +12,10 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float INPUT_X_MAX_ACCEL = 400.0f;
-static constexpr float INPUT_X_MAX_DECEL = 8000.0f;
-
-static constexpr float INPUT_Y_MAX_ACCEL = 500.0f;
-static constexpr float INPUT_Y_MAX_DECEL = 20000.0f;
-
-static constexpr float INPUT_R_MAX_ACCEL = 7000.0f;
-static constexpr float INPUT_R_MAX_DECEL = 20000.0f;
+static constexpr float INPUT_X_INC = 0.003f;
+static constexpr float INPUT_Y_INC = 0.003f;
+static constexpr float INPUT_XY_STOP_INC = 0.03f;
+static constexpr float INPUT_R_INC = 0.003f;
 
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.3f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.15f;
@@ -33,32 +29,6 @@ static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = 0.6f;
 
 namespace src::Control {
-
-static float inputAccelerationTranslation(float value){
-    float x = getSign(value);
-    value = abs(value);
-    if (value > 0) {
-        value = 2.0f * powf(value,2.0f);
-    } else {
-        value = -(2.0f)*(2.0f-(4.0f/3.0f)*((1.0f/18.0f)*powf((powf(value,-1.0f)-1.8),2.0f)))-3.1f;  
-    }
-    return value*x;
-}
-
-static inline void applyAccelerationToRamp(
-    tap::algorithms::Ramp &ramp,
-    float maxAcceleration,
-    float maxDeceleration,
-    float dt) {
-    if (getSign(ramp.getTarget()) == getSign(ramp.getValue()) &&
-        abs(ramp.getTarget()) > abs(ramp.getValue())) {
-        // we are trying to speed up
-        ramp.update(maxAcceleration * dt);
-    } else {
-        // we are trying to slow down
-        ramp.update(maxDeceleration * dt);
-    }
-}
 
 /**
  * @brief Gets the current X input from the operator.
@@ -90,11 +60,10 @@ float OperatorInterface::getChassisXInput() {
 
     finalXWatch = (int8_t)(finalX * 127.0f);
 
-    applyAccelerationToRamp(
-        chassisXRamp,
-        INPUT_X_MAX_ACCEL,
-        INPUT_X_MAX_DECEL,
-        static_cast<float>(dt) / 1000.0f);
+    if (chassisXRamp.getTarget() == 0.0f)
+        chassisXRamp.update(INPUT_XY_STOP_INC);
+    else
+        chassisXRamp.update(INPUT_X_INC);
     return chassisXRamp.getValue();
 }
 
@@ -125,11 +94,10 @@ float OperatorInterface::getChassisYInput() {
 
     chassisYRamp.setTarget(finalY);
 
-    applyAccelerationToRamp(
-        chassisYRamp,
-        INPUT_Y_MAX_ACCEL,
-        INPUT_Y_MAX_DECEL,
-        static_cast<float>(dt) / 1000.0f);
+    if (chassisYRamp.getTarget() == 0.0f)
+        chassisYRamp.update(INPUT_XY_STOP_INC);
+    else
+        chassisYRamp.update(INPUT_Y_INC);
     return chassisYRamp.getValue();
 }
 
@@ -157,11 +125,7 @@ float OperatorInterface::getChassisRotationInput() {
 
     chassisRotationRamp.setTarget(finalRotation);
 
-    applyAccelerationToRamp(
-        chassisRotationRamp,
-        INPUT_R_MAX_ACCEL,
-        INPUT_R_MAX_DECEL,
-        static_cast<float>(dt) / 1000.0f);
+    chassisRotationRamp.update(INPUT_R_INC);
     return chassisRotationRamp.getValue();
 }
 

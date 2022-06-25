@@ -111,11 +111,6 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-ToggleCommandMapping clickF(
-    drivers(),
-    {&chassisTokyoCommand2, &gimbalFieldRelativeControlCommand3},
-    RemoteMapState({Remote::Key::F}));
-
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -155,7 +150,6 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&clickF);
 }
 
 }  // namespace HeroControl
