@@ -132,11 +132,11 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + lastMessage.targetPitchOffset;
                 }
                 if (lastMessage.cvState == CVState::FOUND) {
-                    // tap::buzzer::playNote(&drivers->pwm, 466);
+                    tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
-                    // tap::buzzer::playNote(&drivers->pwm, 932);
+                    tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
-                    // tap::buzzer::playNote(&drivers->pwm, 0);
+                    tap::buzzer::playNote(&drivers->pwm, 0);
                 }
             }
             break;

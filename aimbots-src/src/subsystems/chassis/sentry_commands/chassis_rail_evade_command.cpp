@@ -5,14 +5,14 @@
 namespace src::Chassis {
 
 // #warning "I, Richard, recommend you turn these RPMs WAAAAAY down at first so that, just in case I made a mistake, we don't break the robot. :^)"
-static constexpr int32_t MIN_RPM = 1000;
-static constexpr int32_t MAX_RPM = 2000;
+static constexpr int32_t MIN_RPM = 2000;
+static constexpr int32_t MAX_RPM = 4000;
 
-static constexpr float MIN_TRAVERSE_DISTANCE_MM = 200.0f;
-static constexpr float MAX_TRAVERSE_DISTANCE_MM = MIN_TRAVERSE_DISTANCE_MM + 300.0f;
+static constexpr float MIN_TRAVERSE_DISTANCE_MM = 250.0f;
+static constexpr float MAX_TRAVERSE_DISTANCE_MM = MIN_TRAVERSE_DISTANCE_MM + 600.0f;
 
 static constexpr float FULL_RAIL_LENGTH_MM = FULL_RAIL_LENGTH * 1000.0f;
-static constexpr float SAFETY_BUFFER = 0.05f;
+static constexpr float SAFETY_BUFFER = 0.15f;
 static constexpr float TURNAROUND_BUFFER = (((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2.0f) + SAFETY_BUFFER) * 1000.0f;
 
 ChassisRailEvadeCommand::ChassisRailEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis, float velocityRampValue)
