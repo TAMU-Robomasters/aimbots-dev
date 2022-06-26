@@ -37,6 +37,6 @@ def get_robot_type():
                     robot_type = word.split()[-1]
                     break
     if robot_type not in VALID_ROBOT_TYPES:
-        raise Exception(USAGE)
+        raise Exception(f"\n\n{robot_type} is not one of the valid robot types: {VALID_ROBOT_TYPES}\n\n")
 
     return robot_type

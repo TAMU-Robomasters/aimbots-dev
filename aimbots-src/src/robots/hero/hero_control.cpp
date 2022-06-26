@@ -17,7 +17,7 @@
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/run_feeder_command.hpp"
+#include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -70,8 +70,8 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 
-RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
-RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);

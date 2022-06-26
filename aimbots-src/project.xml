@@ -26,9 +26,9 @@
     <option name="taproot:communication:serial:terminal_serial:uart_port">Uart1</option>
     <option name="taproot:communication:serial:ref_serial:uart_port">Uart6</option>
     <option name="taproot:board:digital_in_pins">PF1,PF0,B12,C6,C7</option>
-    <option name="taproot:board:digital_out_pins">B13,B14,B15,Laser</option>
+    <option name="taproot:board:digital_out_pins">C2,C4,B13,B14,B15,Laser</option>
     <option name="taproot:board:analog_in_pins"></option>
-    <option name="taproot:board:pwm_pins">C1,C2,C3,C4,C5,Buzzer,ImuHeater</option>
+    <option name="taproot:board:pwm_pins">C1,Buzzer,ImuHeater</option>  <!-- Removed C5 and C3, those are the ECHO pins of the ultrasonics -->
     <!--  -->
   
   </options>

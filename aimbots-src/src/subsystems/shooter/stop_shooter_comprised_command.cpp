@@ -9,8 +9,8 @@
 namespace src::Shooter {
 
 StopShooterComprisedCommand::StopShooterComprisedCommand(src::Drivers* drivers, ShooterSubsystem* shooter) : TapComprisedCommand(drivers),
-                                                                                         brake_command(drivers, shooter, 500.0f),
-                                                                                         stop_command(drivers, shooter) {
+                                                                                                             brake_command(drivers, shooter, 500.0f),
+                                                                                                             stop_command(drivers, shooter) {
     this->comprisedCommandScheduler.registerSubsystem(shooter);
     this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
@@ -23,11 +23,10 @@ void StopShooterComprisedCommand::initialize() {
 // Run the brake command until it's finished, then run the stop command to keep the flywheels at 0 speed
 void StopShooterComprisedCommand::execute() {
     if (brake_command.isFinished() && !brakeFinished) {
-        brakeFinished=true;
+        brakeFinished = true;
         this->comprisedCommandScheduler.addCommand(&stop_command);
     }
     this->comprisedCommandScheduler.run();  // taproot docs say this is safe 👍
-    
 }
 /* TAPROOT WIKI COMPRISED COMMAND FORMAT -----------------------\
 void ExtendAndGrabCommand::initialize()                         |
@@ -46,7 +45,7 @@ void ExtendAndGrabCommand::refresh()                            |
     comprisedCommandScheduler.run();                            |
 }                                                               |
 ----------------------------------------------------------------/
-*/ 
+*/
 
 void StopShooterComprisedCommand::end(bool) {
 }

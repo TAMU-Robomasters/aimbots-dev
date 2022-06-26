@@ -1,5 +1,7 @@
 #include "gimbal.hpp"
 
+#include <drivers.hpp>
+
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
@@ -26,6 +28,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       targetChassisRelativePitchAngle(modm::toRadian(PITCH_START_ANGLE)) {}
 
 void GimbalSubsystem::initialize() {
+    drivers->cvCommunicator.setGimbalSubsystem(this);
+
     yawMotor.initialize();
     yawMotor.setDesiredOutput(0);
 
@@ -37,6 +41,7 @@ float yawChassisRelativeDisplay = 0.0f;
 float yawFieldRelativeDisplay = 0.0f;
 float pitchChassisRelativeDisplay = 0.0f;
 
+float pitchOutputDisplay = 0.0f;
 float yawOutputDisplay = 0.0f;
 
 // This is ugly, but I'm just doing this for simplicity
@@ -44,6 +49,9 @@ float yawOutputDisplay = 0.0f;
 static bool isStartYawSet = false;
 static int64_t heroStartYawUnwrappedEncoder = 0;
 #endif
+
+float currentYawAngleDisplay = 0.0f;
+float currentPitchAngleDisplay = 0.0f;
 
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
@@ -73,8 +81,15 @@ void GimbalSubsystem::refresh() {
         heroStartYawUnwrappedEncoder += startEncoderDelta;
 #endif
 
-        // FIXME: Verify that these plus and minus signs work out...
+// FIXME: Verify that these plus and minus signs work out...
+#ifndef TARGET_SENTRY
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
+#else
+        currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue());
+#endif
+
+        currentYawAngleDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());
+        currentPitchAngleDisplay = modm::toDegree(currentChassisRelativePitchAngle.getValue());
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
@@ -93,6 +108,8 @@ void GimbalSubsystem::refresh() {
         currentChassisRelativePitchAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
 
         pitchChassisRelativeDisplay = modm::toDegree(currentChassisRelativePitchAngle.getValue());
+
+        pitchOutputDisplay = desiredPitchMotorOutput;
 
         // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);

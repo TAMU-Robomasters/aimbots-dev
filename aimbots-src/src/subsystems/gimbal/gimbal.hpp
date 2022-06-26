@@ -1,12 +1,15 @@
 #pragma once
 #ifndef TARGET_ENGINEER
 
-#include <drivers.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
 #include <tap/algorithms/math_user_utils.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
+
+namespace src {
+class Drivers;
+}
 
 namespace src::Gimbal {
 

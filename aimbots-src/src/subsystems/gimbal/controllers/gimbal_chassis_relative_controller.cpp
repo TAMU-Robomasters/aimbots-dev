@@ -28,6 +28,8 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
 
+float gravityCompensationDisplay = 0.0f;
+
 void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle) {
     gimbal->setTargetChassisRelativePitchAngle(unit, targetChassisRelativePitchAngle);
 
@@ -41,7 +43,13 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float t
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
-    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
+    float toHorizonError = gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
+                               .difference(modm::toRadian(PITCH_START_ANGLE + HORIZON_OFFSET));
+
+    float gravityCompensation = -cos(toHorizonError) * kGRAVITY;
+    gravityCompensationDisplay = gravityCompensation;
+
+    gimbal->setPitchMotorOutput(pitchPositionPIDOutput + gravityCompensation);
 }
 
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }

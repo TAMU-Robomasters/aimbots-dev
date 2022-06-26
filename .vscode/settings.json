@@ -105,6 +105,11 @@
         "queue": "cpp",
         "stack": "cpp"
     },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "taproot/**": true,
+    },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
         "aimbots-src/taproot/src",

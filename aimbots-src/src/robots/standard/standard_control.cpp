@@ -17,12 +17,13 @@
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/run_feeder_command.hpp"
+#include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 //
@@ -71,14 +72,16 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
+ChassisFollowGimbalCommand chassisFollowGimbalCommand2(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-RunFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
-RunFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
@@ -100,7 +103,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisFollowGimbalCommand2, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper

@@ -20,7 +20,7 @@ void BurstFeederCommand::execute() {
 }
 
 void BurstFeederCommand::end(bool) {
-    feeder->setTargetRPM(0.0);
+    feeder->setTargetRPM(0);
 }
 
 bool BurstFeederCommand::isReady() {
@@ -29,7 +29,7 @@ bool BurstFeederCommand::isReady() {
 
 bool BurstFeederCommand::isFinished() const {
     int elapsedTotal = feeder->getTotalLimitCount() - startingTotalBallCount;
-
     return (elapsedTotal >= burstLength) || !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
 }
+
 }  // namespace src::Feeder

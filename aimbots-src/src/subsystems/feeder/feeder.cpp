@@ -4,14 +4,14 @@ namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       targetRPM(0),
       desiredOutput(0),
+      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
-      limitSwitchLeft(static_cast<std::string>("C6"), EdgeType::RISING)
+      limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 #ifdef TARGET_SENTRY
       ,
-      limitSwitchRight(static_cast<std::string>("C7"), EdgeType::RISING)
+      limitSwitchRight(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING)
 #endif
 {
 }

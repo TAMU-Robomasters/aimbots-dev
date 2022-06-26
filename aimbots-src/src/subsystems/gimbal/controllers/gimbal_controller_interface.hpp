@@ -16,4 +16,4 @@ class GimbalControllerInterface {
     virtual bool isOnline() const = 0;
 };
 
-}
+}  // namespace src::Gimbal

@@ -1,3 +1,4 @@
+#include "utils/robot_specific_inc.hpp"
 #ifdef TARGET_SENTRY
 
 #include "chassis_rail_bounce_command.hpp"
@@ -11,6 +12,8 @@ ChassisRailBounceCommand::ChassisRailBounceCommand(src::Drivers* drivers, Chassi
           {1.0f,     // max velocity
            2.0f,     // max acceleration
            10.0f}),  // max jerk
+      leftRailBound((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 + RAIL_SAFETY_BUFFER),
+      rightRailBound(FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 - RAIL_SAFETY_BUFFER),
       railTargetIndex(1),
       railTraverseProfile(nullptr) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));

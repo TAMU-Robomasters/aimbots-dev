@@ -1,5 +1,6 @@
 #pragma once
 
+#include "drivers.hpp"
 #include "informants/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
@@ -21,25 +22,33 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     mockable float setTargetRPM(float rpm);
 
+    float getTargetRPM() const {
+        return targetRPM;
+    }
+
+    float getCurrentRPM() const {
+        return feederMotor.getShaftRPM();
+    }
+
     int getTotalLimitCount() const;
 
     bool isBarrelHeatAcceptable(float maxPercentage);
-
-    SmoothPID feederVelPID;
 
 #ifndef ENV_UNIT_TESTS
    private:
 #else
    public:
 #endif
+
     float targetRPM;
     float desiredOutput;
 
+    SmoothPID feederVelPID;
     DJIMotor feederMotor;
 
-    LimitSwitch limitSwitchLeft;  // for single-barreled robots
+    src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
 #ifdef TARGET_SENTRY
-    LimitSwitch limitSwitchRight;  // for double-barreled robots
+    src::Informants::LimitSwitch limitSwitchRight;  // for double-barreled robots
 #endif
 
     // commands

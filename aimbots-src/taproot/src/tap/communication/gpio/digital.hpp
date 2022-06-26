@@ -68,6 +68,8 @@ public:
      */
     enum OutputPin
     {
+        C2,
+        C4,
         B13,
         B14,
         B15,

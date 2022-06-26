@@ -84,6 +84,8 @@ float robotPositionYDisplay = 0.0f;
 float robotPositionZDisplay = 0.0f;
 float robotRailPositionXDisplay = 0.0f;
 
+float railPositionRawDebug, wheelOffsetDebug;
+
 void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
 #ifdef TARGET_SENTRY
     // first, get unwrapped motor position
@@ -94,7 +96,16 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
     // now, convert to unwrapped wheel revolutions
     float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
     // now, convert to unwrapped wheel rotations to get the rail position
-    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS);  // current position in meters
+    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS) + wheelOffset;  // current position in meters
+
+    // grab ultrasonic data, recalibrate wheels if ultrasonics valid
+    float currUltrasonicPosition = UltrasonicDistanceSensor::getRailPosition() / 100.0;  // ultrasonic position in meters
+    if (UltrasonicDistanceSensor::isDataValid()) {
+        // wheelOffset += (currUltrasonicPosition - currWheelMovement) * ULTRASONIC_TRUST_FACTOR;
+    }
+
+    railPositionRawDebug = ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0) / 100.0;  // meters
+    wheelOffsetDebug = wheelOffset;
 
     // set the current rail position to a position matrix relative to the rail
     railRelativePosition[0][0] = currWheelMovement + robot_starting_rail_location_array[0];

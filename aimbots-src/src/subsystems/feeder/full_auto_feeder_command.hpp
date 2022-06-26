@@ -9,9 +9,9 @@
 
 namespace src::Feeder {
 
-class RunFeederCommand : public TapCommand {
+class FullAutoFeederCommand : public TapCommand {
    public:
-    RunFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -28,6 +28,10 @@ class RunFeederCommand : public TapCommand {
 
     float speed;
     float acceptableHeatThreshold;
+
+    MilliTimeout startupThreshold;
+    MilliTimeout unjamTimer;
+    float unjamSpeed = 0.0f;
 };
 
 }  // namespace src::Feeder

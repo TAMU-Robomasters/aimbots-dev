@@ -1,4 +1,5 @@
 #pragma once
+#include "informants/ultrasonic_distance_sensor.hpp"
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 #include "utils/common_types.hpp"
 
@@ -61,6 +62,8 @@ class FieldRelativeInformant {
 #ifdef TARGET_SENTRY
     DJIMotor* odomRailMotor;
     Matrix<float, 1, 3> railRelativePosition;
+
+    float wheelOffset;
 #endif
 };
 
