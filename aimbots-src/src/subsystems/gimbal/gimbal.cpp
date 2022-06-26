@@ -69,7 +69,7 @@ void GimbalSubsystem::refresh() {
         float angle = modm::toRadian(YAW_START_ANGLE) + (transformedDelta * (M_TWOPI / DJIMotor::ENC_RESOLUTION));
         currentChassisRelativeYawAngle.setValue(angle);
 
-        float startEncoderDelta = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+        float startEncoderDelta = drivers->remote.keyPressed(Remote::Key::X) - drivers->remote.keyPressed(Remote::Key::Z);
         heroStartYawUnwrappedEncoder += startEncoderDelta;
 #endif
 

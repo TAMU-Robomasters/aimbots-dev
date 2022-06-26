@@ -102,7 +102,10 @@ static constexpr size_t TD_NOTE_COUNT = sizeof(tokyoDriftNotes) / sizeof(MusicNo
 void enableTokyoDriftTune(bool value) { canPlayTD = value; }
 
 void continuePlayingTokyoDriftTune(src::Drivers* drivers) {
-    if (!xpTuneFinished || !canPlayTD) return;
+    if (!xpTuneFinished || !canPlayTD) {
+        tap::buzzer::silenceBuzzer(&drivers->pwm);
+        return;
+    }
     if (lastTDTime == 0) lastTDTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastTDTime;
@@ -114,6 +117,10 @@ void continuePlayingTokyoDriftTune(src::Drivers* drivers) {
         lastTDFreq = tokyoDriftNotes[currentTDNote].frequency;
         currentTDNote = (currentTDNote + 1) % TD_NOTE_COUNT;
     }
+}
+
+void playPacMan(src::Drivers* drivers) {
+
 }
 
 }

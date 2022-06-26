@@ -6,7 +6,6 @@ namespace utils::Music {
 
 void continuePlayingXPStartupTune(src::Drivers* drivers);
 
-void enableTokyoDriftTune(bool value);
-void continuePlayingTokyoDriftTune(src::Drivers* drivers);
+void playPacMan(src::Drivers* drivers);
 
 }

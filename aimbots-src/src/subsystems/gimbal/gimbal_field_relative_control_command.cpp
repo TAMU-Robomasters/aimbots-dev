@@ -26,7 +26,7 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset += 90.0f;
+        quickTurnOffset -= 90.0f;
     }
 
     if (drivers->remote.keyPressed(Remote::Key::E))
@@ -34,7 +34,7 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
-        quickTurnOffset -= 90.0f;
+        quickTurnOffset += 90.0f;
     }
 
     float targetYawAngle =

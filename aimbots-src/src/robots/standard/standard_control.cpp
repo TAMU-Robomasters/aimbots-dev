@@ -15,7 +15,6 @@
 #include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
-#include "subsystems/chassis/chassis_snap_right_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/run_feeder_command.hpp"
@@ -74,7 +73,6 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand2(drivers(), &chassis, &gimbal);
-ChassisSnapRightCommand chassisSnapRightCommand(drivers(), &chassis, &gimbal);
 
 
 
