@@ -32,7 +32,7 @@ class ChassisRailBounceCommand : public TapCommand {
 
     SCurveMotionProfile::Constraints profileConstraints;  // m/s, m/s/s, m/s/s/s
 
-    static constexpr float RAIL_SAFETY_BUFFER = 0.05f;  // meters
+    static constexpr float RAIL_SAFETY_BUFFER = 0.10f;  // meters
 
     static constexpr float leftRailBound =
         (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 + RAIL_SAFETY_BUFFER;

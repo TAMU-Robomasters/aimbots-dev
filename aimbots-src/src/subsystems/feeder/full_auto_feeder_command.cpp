@@ -23,6 +23,7 @@ void FullAutoFeederCommand::execute() {
     //     }
     // }
     // if (unjamTimer.isExpired() || unjamTimer.isStopped()) {
+
     feeder->setTargetRPM(speed);
     // } else {
     //     feeder->setTargetRPM(unjamSpeed);

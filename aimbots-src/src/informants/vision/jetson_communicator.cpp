@@ -40,6 +40,9 @@ float pitchOffsetDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 int readUnequal = 0;
 
+float fieldRelativeYawAngleDisplay = 0;
+float chassisRelativePitchAngleDisplay = 0;
+
 int lastMsgTime = 0;
 int msBetweenLastMessage = 0;
 
@@ -122,22 +125,25 @@ void JetsonCommunicator::updateSerial() {
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
                     chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
 
+                    fieldRelativeYawAngleDisplay = fieldRelativeYawAngleAtVisionUpdate;
+                    chassisRelativePitchAngleDisplay = chassisRelativePitchAngleAtVisionUpdate;
+
                     visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate + lastMessage.targetYawOffset;
                     visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + lastMessage.targetPitchOffset;
                 }
                 if (lastMessage.cvState == CVState::FOUND) {
-                    tap::buzzer::playNote(&drivers->pwm, 466);
+                    // tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
-                    tap::buzzer::playNote(&drivers->pwm, 932);
+                    // tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
+                    // tap::buzzer::playNote(&drivers->pwm, 0);
                 }
             }
             break;
         }
     }
     if (!isJetsonOnline()) {
-        tap::buzzer::playNote(&drivers->pwm, 0);
+        // tap::buzzer::playNote(&drivers->pwm, 0);
     }
 }
 

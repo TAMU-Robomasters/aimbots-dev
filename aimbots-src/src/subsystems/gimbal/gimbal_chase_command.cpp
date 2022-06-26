@@ -21,7 +21,12 @@ float targetYawAngleDisplay2 = 0.0f;
 float yawOffsetDisplay = 0.0f;
 float pitchOffsetDisplay = 0.0f;
 
+float fieldRelativeYawAngleDisplay = 0;
+float chassisRelativePitchAngleDisplay = 0;
+
 src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::FOUND;
+
+bool jetsonOnlineDisplay = false;
 
 void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
@@ -30,7 +35,9 @@ void GimbalChaseCommand::execute() {
     Matrix<float, 1, 2> visionTargetAngles = Matrix<float, 1, 2>::zeroMatrix();
     src::Informants::vision::CVState cvState;
 
+    jetsonOnlineDisplay = false;
     if (drivers->cvCommunicator.isJetsonOnline()) {
+        jetsonOnlineDisplay = true;
         cvState = drivers->cvCommunicator.getLastValidMessage().cvState;
         // if (cvState == src::Informants::vision::CVState::FIRE) {
         visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
@@ -42,6 +49,9 @@ void GimbalChaseCommand::execute() {
 
         yawOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetYawOffset);
         pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
+
+        fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
+        chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
 
         targetYawAngleDisplay2 = targetYawAngle;
         targetPitchAngleDisplay2 = targetPitchAngle;

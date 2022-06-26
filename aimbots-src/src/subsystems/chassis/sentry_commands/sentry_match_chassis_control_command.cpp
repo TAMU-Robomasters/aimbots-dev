@@ -29,7 +29,10 @@ float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
     auto botData = drivers->refSerial.getRobotData();
+    // auto gameData = drivers->refSerial.getGameData();
+
     float recievedDPS = botData.receivedDps;
+    // auto gameState = gameData.gameStage;
 
     dpsDisplay = recievedDPS;
 

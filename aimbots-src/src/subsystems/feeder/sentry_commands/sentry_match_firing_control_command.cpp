@@ -37,8 +37,8 @@ void SentryMatchFiringControlCommand::execute() {
     // if (1) {
     if (drivers->cvCommunicator.isJetsonOnline()) {
         if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
-            auto botData = drivers->refSerial.getRobotData();
-            float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
+            // auto botData = drivers->refSerial.getRobotData();
+            // float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
             // if (healthPercentage >= 0.50f) {
             //     burstFeederCommand.setBurstLength(BASE_BURST_LENGTH);
