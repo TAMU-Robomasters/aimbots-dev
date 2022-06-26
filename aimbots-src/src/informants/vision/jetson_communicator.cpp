@@ -143,6 +143,8 @@ void JetsonCommunicator::updateSerial() {
         }
     }
     if (!isJetsonOnline()) {
+        lastMessage.targetYawOffset = 0.0f;
+        lastMessage.targetPitchOffset = 0.0f;
         // tap::buzzer::playNote(&drivers->pwm, 0);
     }
 }

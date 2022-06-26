@@ -7,30 +7,21 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
       feeder(feeder),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
-      unjamSpeed(speed / 2.0f) {
+      unjamSpeed(-speed / 2.0f) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
-    startupThreshold.restart(1000);
 }
 
 void FullAutoFeederCommand::execute() {
-    // if (!startupThreshold.isExpired()) {
-    //     if (fabs(feeder->getCurrentRPM()) < 100.0f && unjamTimer.isExpired()) {
-    //         unjamTimer.restart(300);
-    //     }
-    // }
-    // if (unjamTimer.isExpired() || unjamTimer.isStopped()) {
-
     feeder->setTargetRPM(speed);
-    // } else {
-    //     feeder->setTargetRPM(unjamSpeed);
-    // }
 }
 
-void FullAutoFeederCommand::end(bool) {}
+void FullAutoFeederCommand::end(bool) {
+    feeder->setTargetRPM(0.0f);
+}
 
 bool FullAutoFeederCommand::isReady() {
     return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
