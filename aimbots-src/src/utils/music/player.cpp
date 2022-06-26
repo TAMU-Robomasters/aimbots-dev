@@ -66,6 +66,8 @@ void continuePlayingXPStartupTune(src::Drivers* drivers) {
     }
 }
 
+static bool canPlayTD = false;
+
 static constexpr uint32_t TD_BPM = 120;
 static constexpr uint32_t TD_MS_PER_16th = (uint32_t)(((1.0f / TD_BPM) * 60.0f * 1000.0f) / 4.0f);
 
@@ -97,8 +99,10 @@ static MusicNote tokyoDriftNotes[16] = {
 
 static constexpr size_t TD_NOTE_COUNT = sizeof(tokyoDriftNotes) / sizeof(MusicNote);
 
+void enableTokyoDriftTune(bool value) { canPlayTD = value; }
+
 void continuePlayingTokyoDriftTune(src::Drivers* drivers) {
-    if (!xpTuneFinished) return;
+    if (!xpTuneFinished || !canPlayTD) return;
     if (lastTDTime == 0) lastTDTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastTDTime;

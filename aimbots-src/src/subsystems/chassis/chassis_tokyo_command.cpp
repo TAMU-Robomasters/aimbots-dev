@@ -3,6 +3,7 @@
 
 #include <subsystems/chassis/chassis_rel_drive.hpp>
 
+#include "utils/music/player.hpp"
 #include "chassis_tokyo_command.hpp"
 #warning "tokyo compatible"
 
@@ -25,6 +26,7 @@ void ChassisTokyoCommand::initialize() {
 float gimbalYawAngleDisplay = 0.0f;
 
 void ChassisTokyoCommand::execute() {
+    ::utils::Music::enableTokyoDriftTune(true);
     if (gimbal->isOnline()) {
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
         // this is wrapped between -PI and PI
@@ -67,6 +69,7 @@ void ChassisTokyoCommand::execute() {
 
 void ChassisTokyoCommand::end(bool) {
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
+    ::utils::Music::enableTokyoDriftTune(false);
 }
 
 bool ChassisTokyoCommand::isReady() {
