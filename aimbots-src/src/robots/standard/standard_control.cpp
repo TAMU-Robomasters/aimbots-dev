@@ -73,6 +73,8 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand2(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand3(drivers(), &chassis, &gimbal);
+
 
 
 
@@ -91,6 +93,7 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
+OpenHopperCommand openHopperCommand2(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);

@@ -9,9 +9,16 @@ namespace utils::Music {
 
 static constexpr uint32_t NOTE_Bb  = 466;
 static constexpr uint32_t NOTE_B   = 494;
+static constexpr uint32_t NOTE_C   = 523;
 static constexpr uint32_t NOTE_Eb  = 622;
+static constexpr uint32_t NOTE_E   = 659;
+static constexpr uint32_t NOTE_F   = 699;
+static constexpr uint32_t NOTE_Gb  = 740;
+static constexpr uint32_t NOTE_G   = 784;
 static constexpr uint32_t NOTE_Ab2 = 880;
 static constexpr uint32_t NOTE_Bb2 = 932;
+static constexpr uint32_t NOTE_B2  = 988;
+static constexpr uint32_t NOTE_C2  = 1047;
 static constexpr uint32_t NOTE_Eb2 = 1244;
 
 static constexpr uint32_t XP_BPM = 110;
@@ -99,13 +106,7 @@ static MusicNote tokyoDriftNotes[16] = {
 
 static constexpr size_t TD_NOTE_COUNT = sizeof(tokyoDriftNotes) / sizeof(MusicNote);
 
-void enableTokyoDriftTune(bool value) { canPlayTD = value; }
-
 void continuePlayingTokyoDriftTune(src::Drivers* drivers) {
-    if (!xpTuneFinished || !canPlayTD) {
-        tap::buzzer::silenceBuzzer(&drivers->pwm);
-        return;
-    }
     if (lastTDTime == 0) lastTDTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastTDTime;
@@ -119,8 +120,73 @@ void continuePlayingTokyoDriftTune(src::Drivers* drivers) {
     }
 }
 
-void playPacMan(src::Drivers* drivers) {
+static bool isPacManDone = false;
 
+static constexpr uint32_t PM_BPM = 130;
+static constexpr uint32_t PM_MS_PER_16th = (uint32_t)(((1.0f / TD_BPM) * 60.0f * 1000.0f) / 4.0f);
+
+static uint32_t lastPMTime = 0;
+static uint32_t currentPMNote = 0;
+static uint32_t lastPMFreq = 0;
+
+static MusicNote pacManNotes[ ] = {
+    { NOTE_B },
+    { NOTE_B2 },
+    { NOTE_Gb },
+    { NOTE_Eb },
+
+    { NOTE_B2 },
+    { 0 },
+    { NOTE_Eb },
+    { 0 },
+
+    { NOTE_C },
+    { NOTE_C2 },
+    { NOTE_G },
+    { NOTE_E },
+
+    { NOTE_C2 },
+    { 0 },
+    { NOTE_E},
+    { 0 },
+
+    { NOTE_B },
+    { NOTE_B2 },
+    { NOTE_Gb },
+    { NOTE_Eb },
+
+    { NOTE_B2 },
+    { 0 },
+    { NOTE_Eb },
+    { 0 },
+
+    { NOTE_Eb },
+    { NOTE_Eb },
+    { NOTE_F },
+    { NOTE_F },
+
+    { NOTE_G },
+    { NOTE_G },
+    { NOTE_B2 },
+    { }
+};
+
+static constexpr size_t PM_NOTE_COUNT = sizeof(pacManNotes) / sizeof(MusicNote);
+
+void playPacMan(src::Drivers* drivers) {
+    if (isPacManDone) return;
+    if (lastPMTime == 0) lastPMTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t timeSinceLast = currentTime - lastPMTime;
+
+    if (timeSinceLast >= PM_MS_PER_16th) {
+        lastPMTime = tap::arch::clock::getTimeMilliseconds();
+        if (lastPMFreq != pacManNotes[currentPMNote].frequency)
+            tap::buzzer::playNote(&drivers->pwm, pacManNotes[currentPMNote].frequency);
+        lastPMFreq = pacManNotes[currentPMNote].frequency;
+        currentPMNote++;
+        isPacManDone = currentPMNote == PM_NOTE_COUNT;
+    }
 }
 
 }
