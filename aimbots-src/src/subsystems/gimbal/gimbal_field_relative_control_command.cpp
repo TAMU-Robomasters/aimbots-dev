@@ -19,14 +19,32 @@ GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(src::Driver
 void GimbalFieldRelativeControlCommand::initialize() {}
 
 void GimbalFieldRelativeControlCommand::execute() {
-    float targetYawAngle = 0.0f;
-    targetYawAngle = controller->getTargetYaw(AngleUnit::Degrees) +
-                     drivers->controlOperatorInterface.getGimbalYawInput();
+    float quickTurnOffset = 0.0f;
+
+    if (drivers->remote.keyPressed(Remote::Key::Q))
+        wasQPressed = true;
+
+    if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
+        wasQPressed = false;
+        quickTurnOffset += 90.0f;
+    }
+
+    if (drivers->remote.keyPressed(Remote::Key::E))
+        wasEPressed = true;
+
+    if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
+        wasEPressed = false;
+        quickTurnOffset -= 90.0f;
+    }
+
+    float targetYawAngle =
+        controller->getTargetYaw(AngleUnit::Degrees) + quickTurnOffset +
+        drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
-    float targetPitchAngle = 0.0f;
-    targetPitchAngle = gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) +
-                       drivers->controlOperatorInterface.getGimbalPitchInput();
+    float targetPitchAngle =
+        gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) +
+        drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

@@ -27,6 +27,9 @@ class GimbalFieldRelativeControlCommand : public tap::control::Command {
 
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
+
+    bool wasQPressed = false;
+    bool wasEPressed = false;
 };
 
 }  // namespace src::Gimbal
