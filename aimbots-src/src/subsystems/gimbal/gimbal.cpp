@@ -83,9 +83,9 @@ void GimbalSubsystem::refresh() {
 
 // FIXME: Verify that these plus and minus signs work out...
 #ifndef TARGET_SENTRY
-        currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
-#else
         currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue());
+#else
+        currentFieldRelativeYawAngle.setValue(currentChassisRelativeYawAngle.getValue() + drivers->fieldRelativeInformant.getChassisYaw() - modm::toRadian(YAW_START_ANGLE));
 #endif
 
         currentYawAngleDisplay = modm::toDegree(currentChassisRelativeYawAngle.getValue());

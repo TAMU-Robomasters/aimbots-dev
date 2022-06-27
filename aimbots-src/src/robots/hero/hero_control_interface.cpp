@@ -39,7 +39,6 @@ namespace src::Control {
 float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    uint32_t dt = lastXInputCallTime - currTime;
     lastXInputCallTime = currTime;
 
     if (prevUpdateCounterX != updateCounter) {
@@ -76,7 +75,6 @@ float OperatorInterface::getChassisXInput() {
 float OperatorInterface::getChassisYInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    uint32_t dt = lastYInputCallTime - currTime;
     lastYInputCallTime = currTime;
 
     if (prevUpdateCounterY != updateCounter) {
@@ -110,7 +108,6 @@ float OperatorInterface::getChassisYInput() {
 float OperatorInterface::getChassisRotationInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    uint32_t dt = lastRInputCallTime - currTime;
     lastRInputCallTime = currTime;
 
     if (prevUpdateCounterRotation != updateCounter) {
@@ -120,7 +117,7 @@ float OperatorInterface::getChassisRotationInput() {
 
     float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f)*10.0f;
+    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f) * 10.0f;
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
 
     chassisRotationRamp.setTarget(finalRotation);
