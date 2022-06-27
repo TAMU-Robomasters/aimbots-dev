@@ -148,8 +148,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
 
-    utils::Music::continuePlayingXPStartupTune(drivers);
-    // utils::Music::continuePlayingTokyoDriftTune(drivers);
+    //utils::Music::continuePlayingXPStartupTune(drivers);
+    utils::Music::playPacMan(drivers);
 
     imuStatus = drivers->fieldRelativeInformant.getImuState();
 

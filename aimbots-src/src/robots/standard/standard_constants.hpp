@@ -14,20 +14,6 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = 180.0f;  // in radians
 
-/**
- * @brief Definitions for operator interface constants (may change based on preference of drivers)
- *
- */
-static constexpr int16_t USER_MOUSE_YAW_MAX = 1000;
-static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
-static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
-static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
-
-static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
-static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
-
-static constexpr float CTRL_SCALAR = (1.0f / 4);
-static constexpr float SHIFT_SCALAR = 0.6f;
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
