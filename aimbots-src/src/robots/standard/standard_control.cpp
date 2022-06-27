@@ -12,7 +12,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
+#include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
@@ -70,7 +70,7 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisFollowGimbalCommand chassisFollowGimbalCommand(drivers(), &chassis, &gimbal);
+ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand2(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand3(drivers(), &chassis, &gimbal);
@@ -102,7 +102,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisFollowGimbalCommand, &gimbalFieldRelativeControlCommand, },
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID)
     // RemoteMapState({Remote::Key::Q})
     );
