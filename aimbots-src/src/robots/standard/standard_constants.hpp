@@ -14,7 +14,6 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = 180.0f;  // in radians
 
-
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
     .ki = 0.0f,
@@ -62,6 +61,35 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .kp = 1850.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// VISION PID CONSTANTS
+static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
+    .kp = 600.0f,
+    .ki = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
+    .kp = 1000.0f,
     .ki = 0.0f,
     .kd = 150.0f,
     .maxICumulative = 10.0f,

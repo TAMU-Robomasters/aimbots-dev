@@ -1,3 +1,6 @@
+#include "utils/robot_specific_inc.hpp"
+#ifdef TARGET_SENTRY
+
 #pragma once
 
 #include <drivers.hpp>
@@ -50,3 +53,5 @@ class GimbalPatrolCommand : public tap::control::Command {
 };
 
 }  // namespace src::Gimbal
+
+#endif

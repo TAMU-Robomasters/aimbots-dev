@@ -14,8 +14,8 @@ class GimbalFieldRelativeController : public GimbalControllerInterface {
 
     void initialize() override;
 
-    void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle) override;
-    void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle) override;
+    void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle, bool vision = false) override;
+    void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle, bool vision = false) override;
 
     bool isOnline() const;
 
@@ -29,6 +29,9 @@ class GimbalFieldRelativeController : public GimbalControllerInterface {
 
     SmoothPID yawPositionPID;
     SmoothPID pitchPositionPID;
+
+    SmoothPID yawVisionPID;
+    SmoothPID pitchVisionPID;
 };
 
 }  // namespace src::Gimbal

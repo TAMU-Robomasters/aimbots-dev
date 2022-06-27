@@ -1,11 +1,11 @@
 #pragma once
 
 #include "drivers.hpp"
-#include "utils/common_types.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
+#include "utils/common_types.hpp"
 
 namespace src::Chassis {
 
@@ -24,6 +24,7 @@ class ChassisToggleDriveCommand : public TapComprisedCommand {
 
    private:
     src::Drivers* drivers;
+    ChassisSubsystem* chassis;
 
     ChassisFollowGimbalCommand followGimbalCommand;
     ChassisTokyoCommand tokyoCommand;
@@ -31,4 +32,4 @@ class ChassisToggleDriveCommand : public TapComprisedCommand {
     bool wasFPressed = false;
 };
 
-}
+}  // namespace src::Chassis

@@ -1,3 +1,4 @@
+#include "utils/robot_specific_inc.hpp"
 #ifdef TARGET_SENTRY
 
 #include "gimbal_patrol_command.hpp"

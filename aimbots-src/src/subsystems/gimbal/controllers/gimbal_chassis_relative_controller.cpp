@@ -14,8 +14,9 @@ void GimbalChassisRelativeController::initialize() {
     pitchPositionPID.pid.reset();
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle) {
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
     UNUSED(unit);
+    UNUSED(vision);
     gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, targetChassisRelativeYawAngle);
 
     float positionControllerError =
@@ -30,7 +31,8 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
 
 float gravityCompensationDisplay = 0.0f;
 
-void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle) {
+void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision) {
+    UNUSED(vision);
     gimbal->setTargetChassisRelativePitchAngle(unit, targetChassisRelativePitchAngle);
 
     // This gets converted to degrees so that we get a higher error. ig

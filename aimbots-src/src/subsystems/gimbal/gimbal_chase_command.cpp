@@ -56,8 +56,8 @@ void GimbalChaseCommand::execute() {
         targetYawAngleDisplay2 = targetYawAngle;
         targetPitchAngleDisplay2 = targetPitchAngle;
         // }
-        controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-        controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+        controller->runYawController(AngleUnit::Degrees, targetYawAngle, true);
+        controller->runPitchController(AngleUnit::Degrees, targetPitchAngle, true);
     }
 }
 

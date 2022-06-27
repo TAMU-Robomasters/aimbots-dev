@@ -128,15 +128,15 @@ void JetsonCommunicator::updateSerial() {
                     fieldRelativeYawAngleDisplay = fieldRelativeYawAngleAtVisionUpdate;
                     chassisRelativePitchAngleDisplay = chassisRelativePitchAngleAtVisionUpdate;
 
-                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate + lastMessage.targetYawOffset;
-                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate + lastMessage.targetPitchOffset;
+                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
+                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
                 }
                 if (lastMessage.cvState == CVState::FOUND) {
-                    // tap::buzzer::playNote(&drivers->pwm, 466);
+                    tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
-                    // tap::buzzer::playNote(&drivers->pwm, 932);
+                    tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
-                    // tap::buzzer::playNote(&drivers->pwm, 0);
+                    tap::buzzer::playNote(&drivers->pwm, 0);
                 }
             }
             break;

@@ -8,8 +8,8 @@ class GimbalControllerInterface {
    public:
     virtual void initialize() = 0;
 
-    virtual void runYawController(AngleUnit unit, float targetYawAngle) = 0;
-    virtual void runPitchController(AngleUnit unit, float targetPitchAngle) = 0;
+    virtual void runYawController(AngleUnit unit, float targetYawAngle, bool vision = false) = 0;
+    virtual void runPitchController(AngleUnit unit, float targetPitchAngle, bool vision = false) = 0;
 
     virtual float getTargetYaw(AngleUnit unit) const = 0;
 
