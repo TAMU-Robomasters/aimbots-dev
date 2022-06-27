@@ -96,8 +96,8 @@ void JetsonCommunicator::updateSerial() {
             displayBuffer[displayBufIndex] = rawSerialBuffer[0];
             displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
 
-            // We've gotten data from the Jetson, so we can restart this.
-            jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+            // // We've gotten data from the Jetson, so we can restart this.
+            // jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
             if (nextByteIndex == JETSON_MESSAGE_SIZE) {
                 lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
@@ -120,6 +120,9 @@ void JetsonCommunicator::updateSerial() {
 
                 yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
                 pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
+
+                // We've gotten data from the Jetson, so we can restart this.
+                jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
                 if (lastMessage.cvState == CVState::FOUND || lastMessage.cvState == CVState::FIRE) {
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);

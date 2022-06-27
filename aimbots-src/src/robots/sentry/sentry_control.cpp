@@ -94,7 +94,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&matchChassisControlCommand,*/ &matchFiringControlCommand, &matchGimbalControlCommand},
+    {&matchChassisControlCommand, &matchFiringControlCommand, &matchGimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control

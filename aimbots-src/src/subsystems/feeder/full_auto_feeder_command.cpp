@@ -13,7 +13,7 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
 
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
-    startupThreshold.restart(500);
+    startupThreshold.restart(1000);
     unjamTimer.restart(500);
 }
 
