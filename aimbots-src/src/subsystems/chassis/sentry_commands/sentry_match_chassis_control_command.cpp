@@ -2,8 +2,8 @@
 
 namespace src::Chassis {
 
-static constexpr float MAX_SAFE_DPS = 50.0f;
-static constexpr uint32_t EVADE_DURATION_MS = 3000;
+static constexpr float MAX_SAFE_DPS = 20.0f;
+static constexpr uint32_t EVADE_DURATION_MS = 4000;
 
 SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(src::Drivers* drivers, ChassisSubsystem* chassis, ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),

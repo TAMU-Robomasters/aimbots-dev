@@ -11,7 +11,7 @@ GimbalPatrolCommand::GimbalPatrolCommand(src::Drivers* drivers,
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
-      patrolCoordinates(Matrix<float, 5, 3>::zeroMatrix()),
+      patrolCoordinates(Matrix<float, 3, 3>::zeroMatrix()),
       patrolCoordinateIndex(0),
       patrolCoordinateIncrement(1) /* incrememnt set to -1 because index starts at 0 */
 {
@@ -25,14 +25,14 @@ float currPatrolCoordinateTimeDisplay = 0.0f;
 void GimbalPatrolCommand::initialize() {
 #ifdef TARGET_SENTRY
     // clang-format off
-    static constexpr float xy_field_relative_patrol_location_array[15] = {
+    static constexpr float xy_field_relative_patrol_location_array[9] = {
         5.0f, -3.0f, 500.0f, // field coordinate x, y, time spent at this angle
         -1.425f, -1.131f, 250.0f,
-        1.425f, 0.494f, 100.0f,
-        -1.425f, 2.119f, 250.0f,
-        -3.25f, 2.5f, 500.0f,
+        // 1.425f, 0.494f, 100.0f,
+        // -1.425f, 2.119f, 250.0f,
+        -3.25f, 2.5f, 1000.0f,
     };  // clang-format on
-    patrolCoordinates = Matrix<float, 5, 3>(xy_field_relative_patrol_location_array);
+    patrolCoordinates = Matrix<float, 3, 3>(xy_field_relative_patrol_location_array);
 #endif
 }
 

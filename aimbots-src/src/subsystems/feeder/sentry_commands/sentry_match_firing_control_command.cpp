@@ -5,6 +5,13 @@ namespace src::Control {
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
+static constexpr float MAX_FEEDER_SPEED = 500.0f;
+static constexpr float MIN_FEEDER_SPEED = 70.0f;
+
+float percentageToSpeed(float percentage) {
+    return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED;
+}
+
 SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(src::Drivers* drivers,
                                                                  FeederSubsystem* feeder,
                                                                  ShooterSubsystem* shooter,
@@ -37,16 +44,28 @@ void SentryMatchFiringControlCommand::execute() {
     // if (1) {
     if (drivers->cvCommunicator.isJetsonOnline()) {
         if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
-            // auto botData = drivers->refSerial.getRobotData();
-            // float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
+            auto botData = drivers->refSerial.getRobotData();
+            float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
+            float targetDepth = drivers->cvCommunicator.getLastValidMessage().depth;  // in meters
 
-            // if (healthPercentage >= 0.50f) {
-            //     burstFeederCommand.setBurstLength(BASE_BURST_LENGTH);
-            //     scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFeederCommand);
-            // } else if (healthPercentage >= 0.33f) {
-            //     burstFeederCommand.setBurstLength(ANNOYED_BURST_LENGTH);
-            //     scheduleIfNotScheduled(this->comprisedCommandScheduler, &burstFeederCommand);
-            // } else {
+            float feederSpeed = MAX_FEEDER_SPEED;
+            float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage
+
+            if (targetDepth <= 3.0f) {
+                feederSpeed = MAX_FEEDER_SPEED;
+            } else if (targetDepth <= 4.0f) {
+                feederSpeed = percentageToSpeed(0.75f + healthPressure);
+            } else if (targetDepth <= 5.0f) {
+                feederSpeed = percentageToSpeed(0.4f + healthPressure);
+            } else {
+                feederSpeed = percentageToSpeed(0.0f + healthPressure);
+            }
+
+            // healthBasedFeederSpeed = (healthPercentage < 0.35f) ? MAX_FEEDER_SPEED : healthBasedFeederSpeed;
+            // healthBasedFeederSpeed = (healthPercentage < 0.35f) ? MAX_FEEDER_SPEED : MIN_FEEDER_SPEED;
+            feederSpeed = limitVal(feederSpeed, MIN_FEEDER_SPEED, MAX_FEEDER_SPEED);
+            fullAutoFeederCommand.setSpeed(feederSpeed);
+
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
             // }
         } else {
