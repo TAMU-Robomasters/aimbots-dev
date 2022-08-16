@@ -1,8 +1,6 @@
 #include "jetson_communicator.hpp"
 
-#include <chrono>
 #include <drivers.hpp>
-#include <modm/platform/uart/uart_1.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 
@@ -13,8 +11,6 @@ namespace src::Informants::vision {
 
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
-      //   rawSerialByte(0),
-      //   messageBuffer(visionBuffer<512>(JETSON_END_BYTE)),
       lastMessage(),
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
@@ -34,103 +30,93 @@ void JetsonCommunicator::initialize() {
 }
 
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
+int displayBufIndex = 0;
 
 float yawOffsetDisplay = 0;
 float pitchOffsetDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
-int readUnequal = 0;
 
 float fieldRelativeYawAngleDisplay = 0;
 float chassisRelativePitchAngleDisplay = 0;
 
-int lastMsgTime = 0;
-int msBetweenLastMessage = 0;
-
-int displayBufIndex = 0;
+int lastMsgTimeDisplay = 0;
+int msBetweenLastMessageDisplay = 0;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
  * The Jetson sends information in the form of a JetsonMessage.
  *
+ * We send a magic number from the Jetson to the Development Board as the header of every message, and we can use that magic
+ * number to determine whether a message is (probably) going to be valid. If a long magic number comes through as valid, we can
+ * assume that the rest of the message is valid as well.
+ *
  * modm currently loads received bytes into an internal buffer, accessible using the READ() call.
- * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a JetsonMessage from our received bytes.
+ * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a JetsonMessage
+ * from our received bytes.
  */
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
+    size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
+    if (bytesRead != 1) return;
+
+    // We've successfully read a new byte from the Jetson, so we can restart this.
+    jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+
+    displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
+    displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
+
     switch (currentSerialState) {
         case JetsonCommunicatorSerialState::SearchingForMagic: {
-            size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
-            if (bytesRead != 1) return;
-
-            displayBuffer[displayBufIndex] = rawSerialBuffer[0];
-            displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
-
-            // We've gotten data from the Jetson, so we can restart this.
-            jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-
-            // little endian moment
-            // The the first byte in the message will be the LSB of the magic number,
-            // so we only have to and it with 0xff, rather than shifting it right first.
+            // Check if the byte we just read is the byte we expected in the magic number.
             if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
                 nextByteIndex++;
             } else {
-                nextByteIndex = 0;
+                nextByteIndex = 0;  // if not, reset the index and start over.
             }
 
+            // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match, we
+            // wouldn't have gotten this far.
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
-                // We know that the magic is right, so we can just change the state. If the
-                // magic number wasn't an exact match, we wouldn't have gotten this far.
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
             }
             break;
         }
         case JetsonCommunicatorSerialState::AssemblingMessage: {
-            size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);
-            if (bytesRead != 1) {
-                return;
-            } else {
-                nextByteIndex++;
-            }
+            nextByteIndex++;
 
-            displayBuffer[displayBufIndex] = rawSerialBuffer[0];
-            displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;
-
-            // We've gotten data from the Jetson, so we can restart this.
-            jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-
+            // Increment the byte index until we reach the expected end of a message, then parse the message.
             if (nextByteIndex == JETSON_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonMessage
                 lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 
-                if (lastMsgTime == 0) {
-                    lastMsgTime = tap::arch::clock::getTimeMilliseconds();
+                // Update last message time and time between last message and now.
+                if (lastMsgTimeDisplay == 0) {
+                    lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
                 } else {
-                    msBetweenLastMessage = currTime - lastMsgTime;
-                    lastMsgTime = currTime;
+                    msBetweenLastMessageDisplay = currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
+                    lastMsgTimeDisplay = currTime;
                 }
 
                 yawOffsetDisplay = lastMessage.targetYawOffset;
                 pitchOffsetDisplay = lastMessage.targetPitchOffset;
                 cvStateDisplay = lastMessage.cvState;
 
-                // uint8_t* buffer = reinterpret_cast<uint8_t*>(&lastMessage);
-                // WRITE(buffer, sizeof(decltype(JETSON_MESSAGE_MAGIC)));
-                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
-                nextByteIndex = 0;
-
-                yawOffsetPredictor.update(lastMessage.targetYawOffset, currTime);
-                pitchOffsetPredictor.update(lastMessage.targetPitchOffset, currTime);
-
-                if (lastMessage.cvState == CVState::FOUND || lastMessage.cvState == CVState::FIRE) {
+                if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
                     chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
 
                     fieldRelativeYawAngleDisplay = fieldRelativeYawAngleAtVisionUpdate;
                     chassisRelativePitchAngleDisplay = chassisRelativePitchAngleAtVisionUpdate;
 
+                    // Find the robot-relative target angles calculated at the vision update. Theoretically, we can snap to a target
+                    // using just one update from the vision system, and this target is refreshed on every update of the vision system.
                     visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
                     visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
+                    // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
                 }
+
+                // Auditory indicator that helps debug our vision pipeline.
                 if (lastMessage.cvState == CVState::FOUND) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
@@ -138,29 +124,19 @@ void JetsonCommunicator::updateSerial() {
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
                 }
+
+                // As we've received a full message, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
             break;
         }
     }
+
     if (!isJetsonOnline()) {
         lastMessage.targetYawOffset = 0.0f;
         lastMessage.targetPitchOffset = 0.0f;
-        // tap::buzzer::playNote(&drivers->pwm, 0);
     }
 }
 
-Matrix<float, 1, 2> const& JetsonCommunicator::getVisionTargetAngles() {
-    // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    // float yawOffsetPredicted = /*lastMessage.cvState == FIRE ? */ yawOffsetPredictor.getInterpolatedValue(currTime);
-    // float yawOffsetPredicted = lastMessage.targetYawOffset;
-    // float pitchOffsetPredicted = /*lastMessage.cvState == FIRE ? */ pitchOffsetPredictor.getInterpolatedValue(currTime);
-    // float pitchOffsetPredicted = lastMessage.targetPitchOffset;
-    // visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - yawOffsetPredicted;
-    // visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - pitchOffsetPredicted;
-    // return visionTargetAngles;
-
-    // visionTargetAngles[0][yaw] = modm::toRadian(38.0f);
-    // visionTargetAngles[0][pitch] = modm::toRadian(143.0f);
-    return visionTargetAngles;
-}
 }  // namespace src::Informants::vision
