@@ -1,6 +1,7 @@
 #pragma once
-#include "informants/ultrasonic_distance_sensor.hpp"
 #include "tap/communication/sensors/imu/imu_interface.hpp"
+
+#include "informants/ultrasonic_distance_sensor.hpp"
 #include "utils/common_types.hpp"
 
 namespace src {
@@ -16,7 +17,7 @@ class GimbalSubsystem;
 namespace src::Informants {
 
 class FieldRelativeInformant {
-   public:
+public:
     FieldRelativeInformant(src::Drivers* drivers);
     ~FieldRelativeInformant() = default;
 
@@ -51,7 +52,7 @@ class FieldRelativeInformant {
     Matrix<float, 1, 3> getRailRelativeRobotPosition() { return railRelativePosition; }
 #endif
 
-   private:
+private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem const* gimbal;
 
