@@ -1,47 +1,50 @@
 #include "subsystems/chassis/chassis.hpp"
 
-#include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
+
 #include "utils/common_types.hpp"
+
+#include "drivers.hpp"
 
 using namespace tap::algorithms;
 
 namespace src::Chassis {
 
-ChassisSubsystem::ChassisSubsystem(
-    src::Drivers* drivers) : ChassisSubsystemInterface(drivers),
-                             drivers(drivers),
+ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
+    : ChassisSubsystemInterface(drivers),
+      drivers(drivers),
 #ifdef TARGET_SENTRY
-                             railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
-                             railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+      railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
+      railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 #else
-                             leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
-                             leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
-                             rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
-                             rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
+      leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
+      leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
+      rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
+      rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
 
-                             leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-                             rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+      leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+      leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+      rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
+      rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
 
 #ifdef SWERVE
-                             leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
-                             leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
-                             rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
-                             rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
+      leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
+      leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
+      rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
+      rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
 #endif
 #endif
-                             targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-                             powerLimiter(drivers,
-                                          STARTING_ENERGY_BUFFER,
-                                          ENERGY_BUFFER_LIMIT_THRESHOLD,
-                                          ENERGY_BUFFER_CRIT_THRESHOLD,
-                                          POWER_LIMIT_SAFETY_FACTOR),
-                             wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
+      targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+      desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+      motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+      velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
+      powerLimiter(
+          drivers,
+          STARTING_ENERGY_BUFFER,
+          ENERGY_BUFFER_LIMIT_THRESHOLD,
+          ENERGY_BUFFER_CRIT_THRESHOLD,
+          POWER_LIMIT_SAFETY_FACTOR),
+      wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
 //
 {
 #ifdef TARGET_SENTRY
@@ -139,16 +142,29 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
 
 #if defined(TARGET_SENTRY)
 void ChassisSubsystem::setTargetRPMs(float x, float, float) {
-    calculateRail(x,
-                  ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+    calculateRail(
+        x,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(SWERVE)
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateSwerve(x, y, r,
-                    ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+    calculateSwerve(
+        x,
+        y,
+        r,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateMecanum(x, y, r,
-                     ChassisSubsystem::getMaxRefWheelSpeed(drivers->refSerial.getRefSerialReceivingData(), drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+    calculateMecanum(
+        x,
+        y,
+        r,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #endif
 }
 
@@ -161,33 +177,17 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
-    float leftFrontRotationRatio =
-        modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
-    float rightFrontRotationRatio =
-        modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
-    float leftBackRotationRatio =
-        modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
-    float rightBackRotationRatio =
-        modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
+    float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
+    float leftBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
 
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    targetRPMs[LF][0] = limitVal<float>(
-        x + y + chassisRotateTranslated * leftFrontRotationRatio,
-        -maxWheelSpeed,
-        maxWheelSpeed);
-    targetRPMs[RF][0] = limitVal<float>(
-        x - y + chassisRotateTranslated * rightFrontRotationRatio,
-        -maxWheelSpeed,
-        maxWheelSpeed);
-    targetRPMs[LB][0] = limitVal<float>(
-        -x + y + chassisRotateTranslated * leftBackRotationRatio,
-        -maxWheelSpeed,
-        maxWheelSpeed);
-    targetRPMs[RB][0] = limitVal<float>(
-        -x - y + chassisRotateTranslated * rightBackRotationRatio,
-        -maxWheelSpeed,
-        maxWheelSpeed);
+    targetRPMs[LF][0] = limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RF][0] = limitVal<float>(x - y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LB][0] = limitVal<float>(-x + y + chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RB][0] = limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
 
     desiredRotation = r;
 }
@@ -212,9 +212,8 @@ float ChassisSubsystem::calculateRotationTranslationalGain(float chassisRotation
 
         // power(max revolve speed - specified revolve speed, 2)
         // / power(max revolve speed, 2)
-        rTranslationalGain = powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD -
-                                      fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed,
-                                  2.0f);
+        rTranslationalGain =
+            powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD - fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed, 2.0f);
 
         rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
     }

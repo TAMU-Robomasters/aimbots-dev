@@ -11,23 +11,29 @@ ChassisManualDriveCommand::ChassisManualDriveCommand(src::Drivers* drivers, Chas
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisManualDriveCommand::initialize() {
-}
+void ChassisManualDriveCommand::initialize() {}
 
-void ChassisManualDriveCommand::execute() {
-    Movement::Independent::onExecute(drivers, chassis);
-}
+void ChassisManualDriveCommand::execute() { Movement::Independent::onExecute(drivers, chassis); }
 
-void ChassisManualDriveCommand::end(bool) {
+/**
+    @brief set the chassis power to 0
+*/
+x void ChassisManualDriveCommand::end(bool) {
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
-bool ChassisManualDriveCommand::isReady() {
-    return true;
-}
+/**
+    @brief detmerines if the functuon can be called by the scheduler
 
-bool ChassisManualDriveCommand::isFinished() const {
-    return false;
-}
+    @return true
+*/
+bool ChassisManualDriveCommand::isReady() { return true; }
+
+/**
+    @brief  runs the output command until scheduler interrupt is called
+
+    @return false
+*/
+bool ChassisManualDriveCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis

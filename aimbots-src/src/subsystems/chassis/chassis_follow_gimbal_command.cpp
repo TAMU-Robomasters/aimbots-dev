@@ -9,7 +9,10 @@
 
 namespace src::Chassis {
 
-ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, ChassisSubsystem* chassis, src::Gimbal::GimbalSubsystem* gimbal)
+ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    src::Gimbal::GimbalSubsystem* gimbal)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
@@ -18,16 +21,17 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, Ch
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisFollowGimbalCommand::initialize() {
-}
-
+void ChassisFollowGimbalCommand::initialize() {}
+// Debug variables
 float gimbalYawFieldRelativeDisplay = 0.0f;
 float gimbalYawAngleDisplay2 = 0.0f;
 float chassisYawDisplay = 0.0f;
 float rotationControllerOutputDisplay = 0.0f;
-
 float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
 
+/**
+    @brief  Running the yaw angle to a PID. The output is passed through the power limiter to get a set speed for the RPMs
+*/
 void ChassisFollowGimbalCommand::execute() {
     if (gimbal->isOnline()) {
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
@@ -66,17 +70,24 @@ void ChassisFollowGimbalCommand::execute() {
     }
 }
 
-void ChassisFollowGimbalCommand::end(bool) {
-    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
-}
+/**
+    @brief set the chassis power to 0
+*/
+void ChassisFollowGimbalCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
 
-bool ChassisFollowGimbalCommand::isReady() {
-    return true;
-}
+/**
+    @brief detmerines if the functuon can be called by the scheduler 
 
-bool ChassisFollowGimbalCommand::isFinished() const {
-    return false;
-}
+    @return true
+*/
+bool ChassisFollowGimbalCommand::isReady() { return true; }
+
+/**
+    @brief  runs the output command until scheduler interrupt is called
+
+    @return false
+*/
+bool ChassisFollowGimbalCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
