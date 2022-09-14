@@ -5,13 +5,14 @@
 
 namespace src::Gimbal {
 
-GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(src::Drivers* drivers,
-                                           GimbalSubsystem* gimbalSubsystem,
-                                           GimbalControllerInterface* gimbalController)
+GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbalSubsystem,
+    GimbalControllerInterface* gimbalController)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
-      controller(gimbalController) //
+      controller(gimbalController)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
@@ -21,30 +22,24 @@ void GimbalFieldRelativeControlCommand::initialize() {}
 void GimbalFieldRelativeControlCommand::execute() {
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q))
-        wasQPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::Q)) wasQPressed = true;
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
         quickTurnOffset -= 90.0f;
     }
 
-    if (drivers->remote.keyPressed(Remote::Key::E))
-        wasEPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
         quickTurnOffset += 90.0f;
     }
 
-    float targetYawAngle =
-        controller->getTargetYaw(AngleUnit::Degrees) + quickTurnOffset +
-        drivers->controlOperatorInterface.getGimbalYawInput();
+    float targetYawAngle = controller->getTargetYaw(AngleUnit::Degrees) + quickTurnOffset + drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
-    float targetPitchAngle =
-        gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) +
-        drivers->controlOperatorInterface.getGimbalPitchInput();
+    float targetPitchAngle = gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

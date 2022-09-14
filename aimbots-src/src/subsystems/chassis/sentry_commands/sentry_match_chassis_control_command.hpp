@@ -1,10 +1,12 @@
 #pragma once
+#ifdef TARGET_SENTRY
 
-#include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
 #include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
 #include "utils/common_types.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Chassis {
 
@@ -15,7 +17,7 @@ enum ChassisMatchStates {
 };
 
 class SentryMatchChassisControlCommand : public TapComprisedCommand {
-   public:
+public:
     SentryMatchChassisControlCommand(src::Drivers*, ChassisSubsystem*, ChassisMatchStates& chassisState);
 
     void initialize() override;
@@ -27,7 +29,7 @@ class SentryMatchChassisControlCommand : public TapComprisedCommand {
 
     const char* getName() const override { return "Sentry Match Chassis Control Command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 
@@ -40,3 +42,5 @@ class SentryMatchChassisControlCommand : public TapComprisedCommand {
 };
 
 }  // namespace src::Chassis
+
+#endif

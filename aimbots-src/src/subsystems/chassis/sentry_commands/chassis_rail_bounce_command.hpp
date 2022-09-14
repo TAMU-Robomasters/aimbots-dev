@@ -1,20 +1,23 @@
 #pragma once
+#ifdef TARGET_SENTRY
 
-#include "drivers.hpp"
-#include "subsystems/chassis/chassis.hpp"
 #include "tap/control/command.hpp"
+
+#include "subsystems/chassis/chassis.hpp"
 #include "utils/common_types.hpp"
 #include "utils/motion/s_curve_acceleration.hpp"
 #include "utils/motion/s_curve_motion_profile.hpp"
 #include "utils/motion/settled_util.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#include "drivers.hpp"
+
 using namespace src::utils::motion;
 
 namespace src::Chassis {
 
 class ChassisRailBounceCommand : public TapCommand {
-   public:
+public:
     ChassisRailBounceCommand(src::Drivers*, ChassisSubsystem*);
     void initialize() override;
 
@@ -26,7 +29,7 @@ class ChassisRailBounceCommand : public TapCommand {
 
     const char* getName() const override { return "chassis rail bounce"; }
 
-   private:
+private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 
@@ -34,8 +37,9 @@ class ChassisRailBounceCommand : public TapCommand {
 
     static constexpr float RAIL_SAFETY_BUFFER = 0.10f;  // meters
 
-    static float leftRailBound;
-    static float rightRailBound;
+    static constexpr float leftRailBound = (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 + RAIL_SAFETY_BUFFER;
+
+    static constexpr float rightRailBound = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 - RAIL_SAFETY_BUFFER;
 
     Matrix<float, 2, 1> railTargets;
     int railTargetIndex;
@@ -50,3 +54,5 @@ class ChassisRailBounceCommand : public TapCommand {
 };
 
 }  // namespace src::Chassis
+
+#endif

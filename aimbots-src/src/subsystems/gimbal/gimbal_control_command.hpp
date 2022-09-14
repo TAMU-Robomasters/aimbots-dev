@@ -8,10 +8,8 @@
 namespace src::Gimbal {
 
 class GimbalControlCommand : public tap::control::Command {
-   public:
-    GimbalControlCommand(src::Drivers*,
-                         GimbalSubsystem*,
-                         GimbalControllerInterface*);
+public:
+    GimbalControlCommand(src::Drivers*, GimbalSubsystem*, GimbalControllerInterface*);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -22,7 +20,7 @@ class GimbalControlCommand : public tap::control::Command {
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-   private:
+private:
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;

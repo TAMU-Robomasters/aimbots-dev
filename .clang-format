@@ -22,7 +22,7 @@ IndentWidth: 4
 # public, private, protected are 4 spaces to the left of a class indent
 AccessModifierOffset: -4
 
-ColumnLimit: 135
+ColumnLimit: 150
 
 # Always break before braces.
 # BreakBeforeBraces: Allman
