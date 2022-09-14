@@ -88,10 +88,10 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 300.0f,
-    .ki = 1.0f,
+    .kp = 350.0f,
+    .ki = 1.3f,
     .kd = 200.0f,
-    .maxICumulative = 1500.0f,
+    .maxICumulative = 1000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -187,8 +187,8 @@ static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;
 
 // PITCH PATROL FUNCTION CONSTANTS
-static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
-static constexpr float PITCH_PATROL_FREQUENCY = 1.0f * M_PI;
+static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
+static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 
 /**

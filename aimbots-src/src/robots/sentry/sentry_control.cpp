@@ -1,8 +1,9 @@
 #ifdef TARGET_SENTRY
 
+#include "utils/common_types.hpp"
+
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-#include "utils/common_types.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -79,7 +80,7 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisRailBounceCommand chassisRailBounceCommand(drivers(), &chassis);
 ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // velocity ramp value is 25.0f
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController, USER_JOYSTICK_YAW_SCALAR, USER_JOYSTICK_PITCH_SCALAR);
+GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController);
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController);
 // pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalController);
@@ -100,14 +101,11 @@ HoldCommandMapping leftSwitchUp(
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand, &gimbalChaseCommand},
+    {&chassisManualDriveCommand, &gimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter only
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchMid(drivers(), {&runShooterCommand}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(

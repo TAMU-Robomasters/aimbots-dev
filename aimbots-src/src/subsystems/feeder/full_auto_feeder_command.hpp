@@ -20,6 +20,8 @@ class FullAutoFeederCommand : public TapCommand {
 
     bool isFinished() const override;
 
+    void setSpeed(float speed) { this->speed = speed; }
+
     const char* getName() const override { return "run feeder"; }
 
    private:

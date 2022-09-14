@@ -18,9 +18,7 @@ void ChassisManualDriveCommand::execute() { Movement::Independent::onExecute(dri
 /**
     @brief set the chassis power to 0
 */
-x void ChassisManualDriveCommand::end(bool) {
-    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
-}
+void ChassisManualDriveCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
 
 /**
     @brief detmerines if the functuon can be called by the scheduler

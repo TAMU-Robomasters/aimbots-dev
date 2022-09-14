@@ -7,16 +7,27 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
       feeder(feeder),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
-      unjamSpeed(-speed / 2.0f) {
+      unjamSpeed(-250.0f)  //
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
+    startupThreshold.restart(1000);
+    unjamTimer.restart(500);
 }
 
 void FullAutoFeederCommand::execute() {
-    feeder->setTargetRPM(speed);
+    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+        feeder->setTargetRPM(unjamSpeed);
+        unjamTimer.restart(500);
+    }
+
+    if (unjamTimer.execute()) {
+        feeder->setTargetRPM(speed);
+        startupThreshold.restart(500);
+    }
 }
 
 void FullAutoFeederCommand::end(bool) {

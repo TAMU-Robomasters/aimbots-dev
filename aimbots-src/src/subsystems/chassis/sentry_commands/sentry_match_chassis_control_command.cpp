@@ -1,9 +1,10 @@
 #include "sentry_match_chassis_control_command.hpp"
+#ifdef TARGET_SENTRY
 
 namespace src::Chassis {
 
-static constexpr float MAX_SAFE_DPS = 50.0f;
-static constexpr uint32_t EVADE_DURATION_MS = 3000;
+static constexpr float MAX_SAFE_DPS = 20.0f;
+static constexpr uint32_t EVADE_DURATION_MS = 4000;
 
 SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(src::Drivers* drivers, ChassisSubsystem* chassis, ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
@@ -69,3 +70,5 @@ bool SentryMatchChassisControlCommand::isReady() { return true; }
 bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
+
+#endif
