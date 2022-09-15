@@ -4,15 +4,14 @@
 
 float xFromRemote = 0.0f;
 
-int8_t chassisXDesiredWheelspeedWatch = 0;
 int8_t chassisYDesiredWheelspeedWatch = 0;
+int8_t chassisXDesiredWheelspeedWatch = 0;
 
 namespace src::Chassis::Movement::Independent {
 
 /**
  * @brief Reads controller input and calculates desired rotation values, limiting
  *        translational movement based on rotational movement (inversely proportional).
- *
  */
 void calculateUserDesiredMovement(
     src::Drivers* drivers,
@@ -31,11 +30,9 @@ void calculateUserDesiredMovement(
     // what we will multiply x and y speed by to take into account rotation
     float rTranslationalGain = chassis->calculateRotationTranslationalGain(desiredChassisRotation) * maxWheelSpeed;
 
-    *desiredXSpeed =
-        limitVal<float>(drivers->controlOperatorInterface.getChassisXInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
+    *desiredXSpeed = limitVal<float>(drivers->controlOperatorInterface.getChassisXInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
 
-    *desiredYSpeed =
-        limitVal<float>(drivers->controlOperatorInterface.getChassisYInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
+    *desiredYSpeed = limitVal<float>(drivers->controlOperatorInterface.getChassisYInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
 }
 
 float chassisRotationInputDisplay = 0.0f;
@@ -48,9 +45,7 @@ float chassisRotationDesiredWheelspeedDisplay = 0.0f;
 
 /**
  * @brief Updates driver inputs and sets desired wheel outputs
- *
  */
-
 void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
     const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
         drivers->refSerial.getRefSerialReceivingData(),
@@ -66,12 +61,7 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
     float chassisXDesiredWheelspeed = 0.0f;
     float chassisYDesiredWheelspeed = 0.0f;
 
-    calculateUserDesiredMovement(
-        drivers,
-        chassis,
-        &chassisXDesiredWheelspeed,
-        &chassisYDesiredWheelspeed,
-        chassisRotationDesiredWheelspeed);
+    calculateUserDesiredMovement(drivers, chassis, &chassisXDesiredWheelspeed, &chassisYDesiredWheelspeed, chassisRotationDesiredWheelspeed);
 
     chassisXDesiredWheelspeedDisplay = chassisXDesiredWheelspeed;
     chassisYDesiredWheelspeedDisplay = chassisYDesiredWheelspeed;
