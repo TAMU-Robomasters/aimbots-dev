@@ -13,15 +13,12 @@ ChassisToggleDriveCommand::ChassisToggleDriveCommand(src::Drivers* drivers, Chas
 }
 
 void ChassisToggleDriveCommand::initialize() {
-    if (!comprisedCommandScheduler.isCommandScheduled(&tokyoCommand))
-        comprisedCommandScheduler.removeCommand(&tokyoCommand, true);
-    if (!comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand))
-        comprisedCommandScheduler.addCommand(&followGimbalCommand);
+    if (!comprisedCommandScheduler.isCommandScheduled(&tokyoCommand)) comprisedCommandScheduler.removeCommand(&tokyoCommand, true);
+    if (!comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand)) comprisedCommandScheduler.addCommand(&followGimbalCommand);
 }
 
 void ChassisToggleDriveCommand::execute() {
-    if (drivers->remote.keyPressed(Remote::Key::F))
-        wasFPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::F)) wasFPressed = true;
 
     if (wasFPressed && !drivers->remote.keyPressed(Remote::Key::F)) {
         wasFPressed = false;
@@ -36,7 +33,6 @@ void ChassisToggleDriveCommand::execute() {
 }
 
 void ChassisToggleDriveCommand::end(bool interrupted) {
-    UNUSED(interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &followGimbalCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, interrupted);
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);

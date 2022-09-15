@@ -30,16 +30,10 @@ void FullAutoFeederCommand::execute() {
     }
 }
 
-void FullAutoFeederCommand::end(bool) {
-    feeder->setTargetRPM(0.0f);
-}
+void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool FullAutoFeederCommand::isReady() {
-    return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
-}
+bool FullAutoFeederCommand::isReady() { return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
-bool FullAutoFeederCommand::isFinished() const {
-    return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
-}
+bool FullAutoFeederCommand::isFinished() const { return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
 }  // namespace src::Feeder

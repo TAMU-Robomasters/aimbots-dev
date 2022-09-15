@@ -9,10 +9,7 @@
 
 namespace src::Chassis {
 
-ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
-    src::Drivers* drivers,
-    ChassisSubsystem* chassis,
-    src::Gimbal::GimbalSubsystem* gimbal)
+ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, ChassisSubsystem* chassis, src::Gimbal::GimbalSubsystem* gimbal)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
@@ -47,8 +44,7 @@ void ChassisFollowGimbalCommand::execute() {
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        float rotationLimitedMaxTranslationalSpeed =
-            maxWheelSpeed * chassis->calculateRotationTranslationalGain(rotationController.getOutput());
+        float rotationLimitedMaxTranslationalSpeed = maxWheelSpeed * chassis->calculateRotationTranslationalGain(rotationController.getOutput());
 
         rotationLimitedMaxTranslationalSpeedDisplay = rotationLimitedMaxTranslationalSpeed;
 
@@ -76,7 +72,7 @@ void ChassisFollowGimbalCommand::execute() {
 void ChassisFollowGimbalCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
 
 /**
-    @brief detmerines if the functuon can be called by the scheduler 
+    @brief determine if the function can be called by the scheduler
 
     @return true
 */
