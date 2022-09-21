@@ -14,19 +14,24 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
 
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
-    startupThreshold.restart(1000);
-    unjamTimer.restart(500);
+    startupThreshold.restart(1000);  // delay to wait before attempting unjam
+    unjamTimer.restart(0);
 }
 
+bool unjaming = false;
 void FullAutoFeederCommand::execute() {
     if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
         unjamTimer.restart(500);
+        unjaming = true;
     }
 
     if (unjamTimer.execute()) {
         feeder->setTargetRPM(speed);
-        startupThreshold.restart(500);
+        unjaming = false;
+        // if (startupThreshold.isExpired()) {
+            startupThreshold.restart(500);
+        // }
     }
 }
 
