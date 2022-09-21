@@ -25,7 +25,7 @@ void ChassisTokyoCommand::initialize() {
 float gimbalYawAngleDisplay = 0.0f;
 
 void ChassisTokyoCommand::execute() {
-    if (gimbal->isOnline()) {
+    if (gimbal->isOnline()) {  // TODO: a lot of this can be simplified down by using the onexecute command
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
@@ -43,7 +43,8 @@ void ChassisTokyoCommand::execute() {
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        const float translationalSpeedThreshold = maxWheelSpeed * TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED;
+        const float translationalSpeedThreshold =
+            maxWheelSpeed * TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED;
 
         float rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX;
 
@@ -65,17 +66,11 @@ void ChassisTokyoCommand::execute() {
     }
 }
 
-void ChassisTokyoCommand::end(bool) {
-    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
-}
+void ChassisTokyoCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
 
-bool ChassisTokyoCommand::isReady() {
-    return true;
-}
+bool ChassisTokyoCommand::isReady() { return true; }
 
-bool ChassisTokyoCommand::isFinished() const {
-    return false;
-}
+bool ChassisTokyoCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 

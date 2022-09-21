@@ -51,7 +51,9 @@ void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
         drivers->refSerial.getRefSerialReceivingData(),
         drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-    float chassisRotationDesiredWheelspeed = drivers->controlOperatorInterface.getChassisRotationInput() * maxWheelSpeed;
+    float chassisRotationDesiredWheelspeed =
+        drivers->controlOperatorInterface.getChassisRotationInput() *
+        maxWheelSpeed;  // TODO: this is the hard-coded driver control part, should be able to pass it an input based on the command using it.
 
     chassisRotationInputDisplay = drivers->controlOperatorInterface.getChassisRotationInput();
 

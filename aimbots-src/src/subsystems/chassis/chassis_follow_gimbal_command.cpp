@@ -30,7 +30,7 @@ float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
     @brief  Running the yaw angle to a PID. The output is passed through the power limiter to get a set speed for the RPMs
 */
 void ChassisFollowGimbalCommand::execute() {
-    if (gimbal->isOnline()) {
+    if (gimbal->isOnline()) {  // TODO: a lot of this can be simplified down by using the onexecute command
         float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
 
         float rotationControllerError = gimbalYawAngle;
