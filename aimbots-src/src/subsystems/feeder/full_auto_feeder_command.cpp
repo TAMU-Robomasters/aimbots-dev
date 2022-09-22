@@ -18,20 +18,15 @@ void FullAutoFeederCommand::initialize() {
     unjamTimer.restart(0);
 }
 
-bool unjaming = false;
 void FullAutoFeederCommand::execute() {
     if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
         unjamTimer.restart(500);
-        unjaming = true;
     }
 
     if (unjamTimer.execute()) {
         feeder->setTargetRPM(speed);
-        unjaming = false;
-        // if (startupThreshold.isExpired()) {
-            startupThreshold.restart(500);
-        // }
+        startupThreshold.restart(500);
     }
 }
 
