@@ -46,7 +46,7 @@ Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
     float c = cosf(angle);
     float s = sinf(angle);
     // clang-format off
-            float I_rotation_array[9] = {
+            float rotation_array[9] = {
                 1.0f, 0.0f, 0.0f, 
                 0.0f, 1.0f, 0.0f, 
                 0.0f, 0.0f, 1.0f};
@@ -57,12 +57,10 @@ Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
             // In ground robots this is the "roll" and does not exist
             // In Sentry this is the "pitch"
             // clang-format off
-            float x_rotation_array[9] = {
-                 1.0f, 0.0f, 0.0f,
-                 0.0f,    c,   -s, 
-                 0.0f,    s,   c};
+             rotation_array[0] = 1.0f; rotation_array[1] = 0.0f; rotation_array[2] = 0.0f;
+             rotation_array[3] = 0.0f; rotation_array[4] = c; rotation_array[5] = -s;
+             rotation_array[6] = 0.0f; rotation_array[7] = s; rotation_array[9] = c;
             // clang-format on
-            return Matrix<float, 3, 3>(x_rotation_array);
             break;
         }
         case 1: {
@@ -70,29 +68,24 @@ Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
             // In ground rotbots this is the "pitch"
             // In sentry this is the "roll" and does not exist
             // clang-format off
-            float y_rotation_array[9] = {
-                   c, 0.0f,    s, 
-                0.0f, 1.0f, 0.0f, 
-                  -s, 0.0f,    c};
+            rotation_array[0] = c; rotation_array[1] = 0.0f; rotation_array[2] = s;
+            rotation_array[3] = 0.0f; rotation_array[4] = 1.0; rotation_array[5] = 0.0f;
+            rotation_array[6] = -s; rotation_array[7] = 0.0f; rotation_array[9] = c;
             // clang-format on
-            return Matrix<float, 3, 3>(y_rotation_array);
             break;
         }
         case 2: {
             // Creates a Z-Axis rotation matrix
             // In Ground robots and sentry this is "yaw"
             // clang-format off
-            float z_rotation_array[9] = {
-                   c,   -s, 0.0f, 
-                   s,    c, 0.0f, 
-                0.0f, 0.0f, 1.0f};
+            rotation_array[0] = c; rotation_array[1] = -s; rotation_array[2] = 0.0f;
+            rotation_array[3] = s; rotation_array[4] = c; rotation_array[5] = 0.0f;
+            rotation_array[6] = 0.0f; rotation_array[7] = 0.0f; rotation_array[9] = 1.0f;
             // clang-format on
-            return Matrix<float, 3, 3>(z_rotation_array);
             break;
         }
-
-            return Matrix<float, 3, 3>(I_rotation_array);
     }
+    return Matrix<float, 3, 3>(rotation_array);
 }
 
 }  // namespace src::utils::MatrixHelper
