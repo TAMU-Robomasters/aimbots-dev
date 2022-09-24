@@ -1,11 +1,13 @@
 #pragma once
 
-#include "drivers.hpp"
 #include "tap/control/chassis/chassis_subsystem_interface.hpp"
 #include "tap/motor/m3508_constants.hpp"
+
 #include "utils/common_types.hpp"
 #include "utils/motion/power_limiter/power_limiter.hpp"
 #include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Chassis {
 
@@ -25,7 +27,7 @@ enum MotorOnWheelIndex {
 };
 
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
-   public:
+public:
     ChassisSubsystem(  // Default chassis constructor
         src::Drivers* drivers);
 
@@ -97,13 +99,15 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
      * @return A number between 0 and 1 that is the ratio between the rotationRpm and
      *      the max rotation speed.
      */
-    mockable float calculateRotationTranslationalGain(float chassisRotationDesiredWheelspeed);
+    mockable float calculateRotationLimitedTranslationalWheelspeed(float chassisRotationDesiredWheelspeed, float maxWheelSpeed);
 
-    static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPower) {
+    /**
+     * @return Returns the maximum wheel speed that can be reasonably achieved while maintaining the current power limit.
+     */
+    static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPowerLimit) {
         if (refSerialOnline) {
-            float desWheelSpeed = WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE *
-                                      static_cast<float>(chassisPower - MIN_CHASSIS_POWER) +
-                                  MIN_WHEEL_SPEED_SINGLE_MOTOR;
+            float desWheelSpeed =
+                WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) + MIN_WHEEL_SPEED_SINGLE_MOTOR;
 
             return tap::algorithms::limitVal(
                 desWheelSpeed,
@@ -132,9 +136,9 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
     }
 
 #ifndef ENV_UNIT_TESTS
-   private:
+private:
 #else
-   public:
+public:
 #endif
     src::Drivers* drivers;
     float desiredRotation = 0.0f;
@@ -163,11 +167,9 @@ class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface
 
     Matrix<float, 4, 3> wheelLocationMatrix;
 
-   public:
+public:
 #ifdef TARGET_SENTRY
-    inline int16_t getLeftFrontRpmActual() const override {
-        return railWheel.getShaftRPM();
-    }
+    inline int16_t getLeftFrontRpmActual() const override { return railWheel.getShaftRPM(); }
     inline int16_t getLeftBackRpmActual() const override { return railWheel.getShaftRPM(); }
     inline int16_t getRightFrontRpmActual() const override { return railWheel.getShaftRPM(); }
     inline int16_t getRightBackRpmActual() const override { return railWheel.getShaftRPM(); }

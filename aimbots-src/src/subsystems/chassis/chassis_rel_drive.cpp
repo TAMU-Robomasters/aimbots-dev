@@ -2,74 +2,43 @@
 
 #include "utils/robot_specific_inc.hpp"
 
-float xFromRemote = 0.0f;
-
 int8_t chassisYDesiredWheelspeedWatch = 0;
 int8_t chassisXDesiredWheelspeedWatch = 0;
 
-namespace src::Chassis::Movement::Independent {
+namespace src::Chassis::Helper {
 
-/**
- * @brief Reads controller input and calculates desired rotation values, limiting
- *        translational movement based on rotational movement (inversely proportional).
- */
-void calculateUserDesiredMovement(
-    src::Drivers* drivers,
-    ChassisSubsystem* chassis,
-    float* desiredXSpeed,
-    float* desiredYSpeed,
-    float desiredChassisRotation) {
-    if (drivers == nullptr || chassis == nullptr || desiredXSpeed == nullptr || desiredYSpeed == nullptr) {
+void getUserDesiredInput(src::Drivers* drivers, ChassisSubsystem* chassis, float* desiredXInput, float* desiredYInput, float* desiredRotationInput) {
+    if (drivers == nullptr || chassis == nullptr || desiredXInput == nullptr || desiredYInput == nullptr || desiredRotationInput == nullptr) {
         return;
     }
 
+    *desiredXInput = drivers->controlOperatorInterface.getChassisXInput();
+    *desiredYInput = drivers->controlOperatorInterface.getChassisYInput();
+    *desiredRotationInput = drivers->controlOperatorInterface.getChassisRotationInput();
+}
+
+void rescaleDesiredInputToPowerLimitedSpeeds(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredX,
+    float* desiredY,
+    float* desiredRotation) {
+    if (desiredX == nullptr || desiredY == nullptr || desiredRotation == nullptr) {
+        return;
+    }
+
+    // Gets the maximum speed that we're realistically able to achieve with the current power limit
     const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
         drivers->refSerial.getRefSerialReceivingData(),
         drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-    // what we will multiply x and y speed by to take into account rotation
-    float rTranslationalGain = chassis->calculateRotationTranslationalGain(desiredChassisRotation) * maxWheelSpeed;
+    *desiredRotation *= maxWheelSpeed;
 
-    *desiredXSpeed = limitVal<float>(drivers->controlOperatorInterface.getChassisXInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
+    // the maximum translational speed that we can achieve while maintaining the desired rotation speed
+    float rTranslationalGain = chassis->calculateRotationLimitedTranslationalWheelspeed(*desiredRotation, maxWheelSpeed);
 
-    *desiredYSpeed = limitVal<float>(drivers->controlOperatorInterface.getChassisYInput(), -rTranslationalGain, rTranslationalGain) * maxWheelSpeed;
+    *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
+    *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
 }
 
-float chassisRotationInputDisplay = 0.0f;
-float chassisYInputDisplay = 0.0f;
-float chassisXInputDisplay = 0.0f;
-
-float chassisXDesiredWheelspeedDisplay = 0.0f;
-float chassisYDesiredWheelspeedDisplay = 0.0f;
-float chassisRotationDesiredWheelspeedDisplay = 0.0f;
-
-/**
- * @brief Updates driver inputs and sets desired wheel outputs
- */
-void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis) {
-    const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
-        drivers->refSerial.getRefSerialReceivingData(),
-        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
-
-    float chassisRotationDesiredWheelspeed =
-        drivers->controlOperatorInterface.getChassisRotationInput() *
-        maxWheelSpeed;  // TODO: this is the hard-coded driver control part, should be able to pass it an input based on the command using it.
-
-    chassisRotationInputDisplay = drivers->controlOperatorInterface.getChassisRotationInput();
-
-    chassisXInputDisplay = drivers->controlOperatorInterface.getChassisXInput();
-    chassisYInputDisplay = drivers->controlOperatorInterface.getChassisYInput();
-
-    float chassisXDesiredWheelspeed = 0.0f;
-    float chassisYDesiredWheelspeed = 0.0f;
-
-    calculateUserDesiredMovement(drivers, chassis, &chassisXDesiredWheelspeed, &chassisYDesiredWheelspeed, chassisRotationDesiredWheelspeed);
-
-    chassisXDesiredWheelspeedDisplay = chassisXDesiredWheelspeed;
-    chassisYDesiredWheelspeedDisplay = chassisYDesiredWheelspeed;
-    chassisRotationDesiredWheelspeedDisplay = chassisRotationDesiredWheelspeed;
-
-    // set chassis targets using setDesiredOutputs
-    chassis->setTargetRPMs(chassisXDesiredWheelspeed, chassisYDesiredWheelspeed, chassisRotationDesiredWheelspeed);
-}
-}  // namespace src::Chassis::Movement::Independent
+}  // namespace src::Chassis::Helper

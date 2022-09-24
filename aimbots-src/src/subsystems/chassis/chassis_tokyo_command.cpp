@@ -25,23 +25,26 @@ void ChassisTokyoCommand::initialize() {
 float gimbalYawAngleDisplay = 0.0f;
 
 void ChassisTokyoCommand::execute() {
-    if (gimbal->isOnline()) {  // TODO: a lot of this can be simplified down by using the onexecute command
-        float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
+    float desiredX = 0.0f;
+    float desiredY = 0.0f;
+    float desiredRotation = 0.0f;
+
+    // we overwrite desiredRotation later if tokyo drifting
+    Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
+
+    if (gimbal->isOnline()) {
+        float yawAngleFromChassisCenter = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
-        gimbalYawAngleDisplay = modm::toDegree(gimbalYawAngle);
+        gimbalYawAngleDisplay = modm::toDegree(yawAngleFromChassisCenter);
 
-        float x = 0.0f;
-        float y = 0.0f;
-
-        Movement::Independent::calculateUserDesiredMovement(drivers, chassis, &x, &y, 0.0f);
-
-        x *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER;
-        y *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER;
-
+        // The maximum speed that we're realistically able to achieve with the current power limit
         const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+        desiredX *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * maxWheelSpeed;
+        desiredY *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * maxWheelSpeed;
 
         const float translationalSpeedThreshold =
             maxWheelSpeed * TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED;
@@ -49,24 +52,27 @@ void ChassisTokyoCommand::execute() {
         float rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX;
 
         // reduces rotation speed when translation speed is high
-        if (fabsf(x) > translationalSpeedThreshold || fabsf(y) > translationalSpeedThreshold) {
+        if (fabsf(desiredX) > translationalSpeedThreshold || fabsf(desiredY) > translationalSpeedThreshold) {
             rampTarget *= TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING;
         }
 
         rotationSpeedRamp.setTarget(rampTarget);
         rotationSpeedRamp.update(TOKYO_ROTATIONAL_SPEED_INCREMENT);
+        desiredRotation = rotationSpeedRamp.getValue();
 
-        float r = rotationSpeedRamp.getValue();
+        rotateVector(&desiredX, &desiredY, -yawAngleFromChassisCenter);
 
-        rotateVector(&x, &y, -gimbalYawAngle);
-
-        chassis->setTargetRPMs(x, y, r);
     } else {
-        Movement::Independent::onExecute(drivers, chassis);
+        Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
+
+    chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
-void ChassisTokyoCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
+void ChassisTokyoCommand::end(bool interrupted) {
+    UNUSED(interrupted);
+    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
+}
 
 bool ChassisTokyoCommand::isReady() { return true; }
 

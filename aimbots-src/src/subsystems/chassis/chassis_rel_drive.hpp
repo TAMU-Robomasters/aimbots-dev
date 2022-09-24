@@ -3,14 +3,23 @@
 #include <drivers.hpp>
 #include <subsystems/chassis/chassis.hpp>
 
-namespace src::Chassis::Movement::Independent {
+namespace src::Chassis::Helper {
 
-void calculateUserDesiredMovement(
+/**
+ * @brief Gets the user's desired movement from the control operator interface from [-1, 1]
+ */
+void getUserDesiredInput(src::Drivers* drivers, ChassisSubsystem* chassis, float* desiredXInput, float* desiredYInput, float* desiredRotationInput);
+
+/**
+ * @brief Limits translational movement based on rotational movement (inversely proportional)
+ *
+ * Input range should be [-1, 1], output will be [-maxWheelSpeed, maxWheelSpeed]
+ **/
+void rescaleDesiredInputToPowerLimitedSpeeds(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
-    float* desiredXSpeed,
-    float* desiredYSpeed,
-    float desiredChassisRotation);
+    float* desiredX,
+    float* desiredY,
+    float* desiredRotation);
 
-void onExecute(src::Drivers* drivers, ChassisSubsystem* chassis);
-}  // namespace src::Chassis::Movement::Independent
+}  // namespace src::Chassis::Helper

@@ -19,70 +19,50 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, Ch
 }
 
 void ChassisFollowGimbalCommand::initialize() {}
+
 // Debug variables
 float gimbalYawFieldRelativeDisplay = 0.0f;
-float gimbalYawAngleDisplay2 = 0.0f;
+float yawAngleFromChassisCenterDisplay2 = 0.0f;
 float chassisYawDisplay = 0.0f;
 float rotationControllerOutputDisplay = 0.0f;
 float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
 
-/**
-    @brief  Running the yaw angle to a PID. The output is passed through the power limiter to get a set speed for the RPMs
-*/
 void ChassisFollowGimbalCommand::execute() {
-    if (gimbal->isOnline()) {  // TODO: a lot of this can be simplified down by using the onexecute command
-        float gimbalYawAngle = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
+    float desiredX = 0.0f;
+    float desiredY = 0.0f;
+    float desiredRotation = 0.0f;
 
-        float rotationControllerError = gimbalYawAngle;
-        gimbalYawAngleDisplay2 = modm::toDegree(gimbalYawAngle);
+    // gets desired user input from operator interface
+    Chassis::Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
-        rotationController.runController(rotationControllerError, (RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz()));
+    if (gimbal->isOnline()) {  // if the gimbal is online, follow the gimbal's yaw
+        float yawAngleFromChassisCenter = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
 
+        // Find rotation correction power
+        rotationController.runController(yawAngleFromChassisCenter, RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz());
         rotationControllerOutputDisplay = rotationController.getOutput();
 
-        const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+        // overwrite desired rotation with rotation controller output, range [-1, 1]
+        desiredRotation = rotationController.getOutput();
 
-        float rotationLimitedMaxTranslationalSpeed = maxWheelSpeed * chassis->calculateRotationTranslationalGain(rotationController.getOutput());
+        Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
-        rotationLimitedMaxTranslationalSpeedDisplay = rotationLimitedMaxTranslationalSpeed;
+        tap::algorithms::rotateVector(&desiredX, &desiredY, -yawAngleFromChassisCenter);
 
-        float chassisXDesiredWheelspeed = limitVal(
-            maxWheelSpeed * drivers->controlOperatorInterface.getChassisXInput(),
-            -rotationLimitedMaxTranslationalSpeed,
-            rotationLimitedMaxTranslationalSpeed);
-
-        float chassisYDesiredWheelspeed = limitVal(
-            maxWheelSpeed * drivers->controlOperatorInterface.getChassisYInput(),
-            -rotationLimitedMaxTranslationalSpeed,
-            rotationLimitedMaxTranslationalSpeed);
-
-        rotateVector(&chassisXDesiredWheelspeed, &chassisYDesiredWheelspeed, -gimbalYawAngle);
-
-        chassis->setTargetRPMs(chassisXDesiredWheelspeed, chassisYDesiredWheelspeed, rotationController.getOutput());
-    } else {
-        Movement::Independent::onExecute(drivers, chassis);
+    } else {  // if the gimbal is offline, run the normal manual drive command
+        Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
+
+    chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
-/**
-    @brief set the chassis power to 0
-*/
-void ChassisFollowGimbalCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
+void ChassisFollowGimbalCommand::end(bool interrupted) {
+    UNUSED(interrupted);
+    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
+}
 
-/**
-    @brief determine if the function can be called by the scheduler
-
-    @return true
-*/
 bool ChassisFollowGimbalCommand::isReady() { return true; }
 
-/**
-    @brief  runs the output command until scheduler interrupt is called
-
-    @return false
-*/
 bool ChassisFollowGimbalCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis

@@ -25,8 +25,9 @@
 #include "tap/motor/motorsim/sim_handler.hpp"
 #endif
 
-#include "modm/architecture/interface/delay.hpp"
 #include "tap/board/board.hpp"
+
+#include "modm/architecture/interface/delay.hpp"
 
 /* arch includes ------------------------------------------------------------*/
 #include "tap/architecture/periodic_timer.hpp"
@@ -75,8 +76,6 @@ int main() {
 
     Board::initialize();
 
-    // desperate test code
-    // with magic numbers included
     tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
 
     initializeIo(drivers);
@@ -148,7 +147,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
 
-    //utils::Music::continuePlayingXPStartupTune(drivers);
+    // utils::Music::continuePlayingXPStartupTune(drivers);
     utils::Music::playPacMan(drivers);
 
     imuStatus = drivers->fieldRelativeInformant.getImuState();
