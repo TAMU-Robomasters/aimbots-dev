@@ -6,7 +6,7 @@ chassis
 		chassis_tokyo_command (TODO: separate into chassis and gimble commands + command group, abstract calculations and movement to Movement::Independent namespace)
 		chassis_toggle_drive_command (TODO: move to command group folder)
 	subsystem:
-		chassis_rel_drive (TODO: retool onExecute to take input)
+		chassis_helper (TODO: retool onExecute to take input)
 		chassis (TODO: move calculations etc to Movement::Independent)
 feeder
 	commands:

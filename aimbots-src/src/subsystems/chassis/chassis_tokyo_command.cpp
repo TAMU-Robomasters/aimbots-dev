@@ -1,7 +1,7 @@
 #include "utils/robot_specific_inc.hpp"
 #ifdef TOKYO_COMPATIBLE
 
-#include <subsystems/chassis/chassis_rel_drive.hpp>
+#include <subsystems/chassis/chassis_helper.hpp>
 
 #include "chassis_tokyo_command.hpp"
 #warning "tokyo compatible"
@@ -22,7 +22,7 @@ void ChassisTokyoCommand::initialize() {
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
 }
 
-float gimbalYawAngleDisplay = 0.0f;
+float yawAngleFromChassisCenterDisplay = 0.0f;
 
 void ChassisTokyoCommand::execute() {
     float desiredX = 0.0f;
@@ -36,7 +36,7 @@ void ChassisTokyoCommand::execute() {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
-        gimbalYawAngleDisplay = modm::toDegree(yawAngleFromChassisCenter);
+        yawAngleFromChassisCenterDisplay = modm::toDegree(yawAngleFromChassisCenter);
 
         // The maximum speed that we're realistically able to achieve with the current power limit
         const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(

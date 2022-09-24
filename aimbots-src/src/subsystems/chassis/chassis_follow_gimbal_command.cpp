@@ -1,7 +1,7 @@
 #include "utils/robot_specific_inc.hpp"
 #ifdef TOKYO_COMPATIBLE
 
-#include <subsystems/chassis/chassis_rel_drive.hpp>
+#include <subsystems/chassis/chassis_helper.hpp>
 
 #include "chassis_follow_gimbal_command.hpp"
 
