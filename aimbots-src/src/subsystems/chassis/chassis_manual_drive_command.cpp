@@ -19,7 +19,7 @@ void ChassisManualDriveCommand::execute() {
     float rotationDesiredWheelspeed = 0.0f;
 
     // gets desired user input from operator interface
-    Helper::getUserDesiredWheelspeeds(drivers, chassis, &xDesiredWheelspeed, &yDesiredWheelspeed, &rotationDesiredWheelspeed);
+    Helper::getUserDesiredInput(drivers, chassis, &xDesiredWheelspeed, &yDesiredWheelspeed, &rotationDesiredWheelspeed);
 
     // rescales desired input to power limited speed, also limits translational movement based on rotational movement
     Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &xDesiredWheelspeed, &yDesiredWheelspeed, &rotationDesiredWheelspeed);
