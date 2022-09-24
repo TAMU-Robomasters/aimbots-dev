@@ -119,10 +119,13 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr uint16_t shooter_speed_array[6] =
-    {15, 3900,  // {ball m/s, flywheel rpm}
-     18, 4500,
-     30, 9000};
+static constexpr uint16_t shooter_speed_array[6] = {
+    15,
+    3900,  // {ball m/s, flywheel rpm}
+    18,
+    4500,
+    30,
+    9000};
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -227,8 +230,7 @@ static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
 static constexpr int MIN_CHASSIS_POWER = 40;
 static constexpr int MAX_CHASSIS_POWER = 120;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
-    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
-    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) / (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
 static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
 
 /**
@@ -244,11 +246,11 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 5000.0f,
+    .kp = 1.25f,
     .ki = 0.0f,
-    .kd = 25.0f,
+    .kd = 0.00625f,
     .maxICumulative = 10.0f,
-    .maxOutput = ROTATION_POSITION_PID_CONFIG.kp * M_PI,
+    .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
