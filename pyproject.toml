@@ -5,7 +5,6 @@ description = ""
 authors = [""]
 
 [tool.poetry.dependencies]
-python = "3.9"
 pip = "20.1.1"
 lbuild = "1.20.0"
 pyelftools = "0.27"
