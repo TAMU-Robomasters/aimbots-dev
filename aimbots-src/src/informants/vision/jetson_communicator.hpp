@@ -40,6 +40,7 @@ public:
 
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
+    //What is this???
     Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
 
 private:
