@@ -32,6 +32,11 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
       rightFrontYaw(drivers, RIGHT_FRONT_YAW_ID, CHASSIS_BUS, false, "Right Front Yaw Motor"),
       rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
+      leftBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
+      leftFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
+      rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
+      rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
+
 #endif
 #endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -129,9 +134,13 @@ void ChassisSubsystem::limitChassisPower() {
 }
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
-    float err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
+    float err = 0;
+    if (WheelIndex == 0) {
+        err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
+    }else{
+        err = targetRPMs[WheelIndex][MotorPerWheelIdx]- motors[WheelIdx][MotorPerWheelIdx]->getPosition();
+    }
     velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(err);
-
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
@@ -167,6 +176,7 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
     motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[WheelIdx][MotorPerWheelIdx]));
 }
 
+#ifndef SWERVE
 void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
@@ -187,7 +197,41 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     desiredRotation = r;
 }
 
-void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
+#endif
+
+#ifdef SWERVE
+float oneYaw = 0.0f;
+float twoYaw = 0.0f;
+float threeYaw = 0.0f;
+float fourYaw = 0.0f;
+
+void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
+    // float theta = fieldRelativeInformant->getYaw();
+    // float temp = y*cos(theta)+x*sin(theta);
+    // x = -y*sin(theta)+x*cos(theta);
+    // y = temp;
+
+    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+
+    float a = x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    float b = x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    float c = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+    float d = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+
+    targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LF][1] = 0;  // atan2f(d,b)*(180 / M_PI)/360 * 8191;
+    oneYaw = targetRPMs[LF][1];
+    targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RF][1] = 0;  // atan2f(c,b)*(180 / M_PI)/360 * 8191;
+    twoYaw = targetRPMs[LF][1];
+    targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LB][1] = 0;  // atan2f(d,a)*(180 / M_PI)/360 * 8191;
+    threeYaw = targetRPMs[LB][1];
+    targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RB][1] = 0;  // atan2f(c,a)*(180 / M_PI)/360 * 8191;
+    fourYaw = targetRPMs[RB][1];
+}
+#endif
 
 void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) { targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed); }
 
