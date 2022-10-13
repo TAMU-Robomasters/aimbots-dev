@@ -272,3 +272,11 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
 static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
+
+// -------------------------------------------------------------------
+//GUI Constants ------------------------------------------------------
+// -------------------------------------------------------------------
+static constexpr uint8_t SCREEN_WIDTH = 1920;
+static constexpr uint8_t SCREEN_HEIGHT = 1080;
+
+static constexpr uint8_t DEFAULT_GRAPHIC_LAYER = 0;
