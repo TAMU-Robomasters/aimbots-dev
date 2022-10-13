@@ -1,14 +1,17 @@
 #pragma once
+#ifdef TARGET_SENTRY
+
+#include "tap/control/command.hpp"
+
+#include "subsystems/chassis/chassis.hpp"
 
 #include "drivers.hpp"
-#include "subsystems/chassis/chassis.hpp"
-#include "tap/control/command.hpp"
 
 namespace src::Chassis {
 
 class ChassisRailEvadeCommand : public TapCommand {
-   public:
-    ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*);
+public:
+    ChassisRailEvadeCommand(src::Drivers*, ChassisSubsystem*, float velocityRampValue = 25.0f);
 
     char const* getName() const override { return "Sentry Evade Command"; }
 
@@ -19,7 +22,9 @@ class ChassisRailEvadeCommand : public TapCommand {
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-    inline bool hasTraveledDriveDistance(float currentPosition) const { return fabs(lastPositionWhenDirectionChanged - currentPosition) >= distanceToDrive; }
+    inline bool hasTraveledDriveDistance(float currentPosition) const {
+        return fabs(lastPositionWhenDirectionChanged - currentPosition) >= distanceToDrive;
+    }
 
     void changeDirectionForRandomDistance(int32_t minimumDistance, int32_t maximumDistance);
     void changeDirectionIfCloseToEnd(float currentRailPosition);
@@ -29,9 +34,12 @@ class ChassisRailEvadeCommand : public TapCommand {
 
     int32_t getNewRPM();
 
-   private:
+private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
+
+    float velocityRampValue = 0.0f;
+    tap::algorithms::Ramp velocityRamp;
 
     float distanceToDrive = 0.0f;
     float lastPositionWhenDirectionChanged = 0.0f;
@@ -39,3 +47,5 @@ class ChassisRailEvadeCommand : public TapCommand {
 };
 
 }  // namespace src::Chassis
+
+#endif

@@ -74,9 +74,9 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 600.0f,
+    .kp = 500.0f,
     .ki = 0.0f,
-    .kd = 500.0f,
+    .kd = 700.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -88,10 +88,10 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
-    .ki = 0.0f,
-    .kd = 150.0f,
-    .maxICumulative = 10.0f,
+    .kp = 350.0f,
+    .ki = 1.3f,
+    .kd = 200.0f,
+    .maxICumulative = 1000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -101,11 +101,19 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+static constexpr float kGRAVITY = 6000.0f;
+static constexpr float HORIZON_OFFSET = -30.0f;
+
+// sentry only has one speed: death
+static constexpr uint16_t shooter_speed_array[2] =
+    {30, 8000};  // {m/s, rpm}
+
+static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
-static constexpr int DEFAULT_BURST_LENGTH = 10;  // balls
+static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
+
 static constexpr int MAX_BURST_LENGTH = 20;
 static constexpr int MIN_BURST_LENGTH = 4;
 
@@ -169,15 +177,6 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
-// sentry ultrasonic settings
-static constexpr bool ORIGIN_SIDE = false;                   // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
-static constexpr int TIMEOUT_DURATION = 30000;               // microseconds
-static constexpr float ULTRASONIC_MAX_VALID_SPEED = 45.0f;   // cm/s, robot speed above which ultrasonic is ignored
-static constexpr float ULTRASONIC_LENGTH = 37.4f;            // cm, distance between the two ultrasonics (PCB to PCB)
-static constexpr float ULTRASONIC_OFFSET = 0.0f;             // cm, "distance from PCB to outer plate"
-static constexpr float ULTRASONIC_MIN_VALID_RANGE = 10.0f;   // cm
-static constexpr float ULTRASONIC_MAX_VALID_RANGE = 250.0f;  // cm
-
 // field-relative math is based on
 
 // Values specific for Sentry hardware setup
@@ -188,8 +187,8 @@ static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;
 
 // PITCH PATROL FUNCTION CONSTANTS
-static constexpr float PITCH_PATROL_AMPLITUDE = 22.5f;  // degrees
-static constexpr float PITCH_PATROL_FREQUENCY = 1.0f * M_PI;
+static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
+static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 
 /**
@@ -198,12 +197,10 @@ static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from hori
 static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
-static constexpr float MAX_ENERGY_BUFFER = 60.0f;
-static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
-static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
-static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
-static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
-
+static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
+static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
+static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
+static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
 /**
  * @brief Power constants for chassis
  */

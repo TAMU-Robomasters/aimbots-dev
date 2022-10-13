@@ -1,0 +1,63 @@
+chassis
+	commands:
+		chassis_manual_drive_command (TODO: correct onexecute function from rel_drive)
+	command groups:
+		chassis_follow_gimbal (TODO: separate into chassis and gimble commands + command group, abstract calculations and movement to Movement::Independent namespace)
+		chassis_tokyo_command (TODO: separate into chassis and gimble commands + command group, abstract calculations and movement to Movement::Independent namespace)
+		chassis_toggle_drive_command (TODO: move to command group folder)
+	subsystem:
+		chassis_helper (TODO: retool onExecute to take input)
+		chassis (TODO: move calculations etc to Movement::Independent)
+feeder
+	commands:
+		TODO: abstract setrpm() to Movement::Independent namespace
+		stop_feeder_command
+		burst_feeder_command
+		full_auto_feeder_command
+
+	command groups:
+
+	subsystem:
+		feeder
+	
+gimbal 【/(|{[have sid figure out controllers :)]}|)/】(╯°□°)╯︵ ┻━┻
+	commands:
+		gimbal_field_relative_command (TODO: abomination. separate out keyboard input from gimbal parts and abstract out to Movement::Independent namespace)
+		gimbal_chase_command (TODO: controllers & informants sadge)
+		gimbal_control_command (TODO: controllers sadge)
+		
+	command groups:
+		
+	subsystem:
+		gimbal
+	
+hopper (abstract setHopperAngle() to Movement::Independent namespace)
+	commands:
+		close_hopper_command (TODO: )
+		open_hopper_command (TODO: )
+	
+	command groups:
+		toggle_hopper_command (TODO: )
+		
+	subsystem:
+		hopper
+
+shooter (abstract to Movement::Independent namespace) (REF???)
+	commands:
+		run_shooter_command (TODO: )
+		break_shooter_command (TODO: )
+		stop_shooter_command (TODO: )
+		
+	command groups:
+		stop_shooter_comprised_command (TODO: )
+		
+	subsystem:
+		shooter
+
+solenoid (GET GOOD)
+	commands:
+		
+	command groups:
+		
+	subsystem:
+		solenoid

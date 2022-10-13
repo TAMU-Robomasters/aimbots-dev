@@ -16,12 +16,17 @@ class OperatorInterface {
     uint32_t prevUpdateCounterY = 0;
     uint32_t prevUpdateCounterRotation = 0;
 
+    uint32_t lastXInputCallTime = 0;
+    uint32_t lastYInputCallTime = 0;
+    uint32_t lastRInputCallTime = 0;
+
     LinearInterpolationPredictor chassisXInput;
     LinearInterpolationPredictor chassisYInput;
     LinearInterpolationPredictor chassisRotationInput;
 
-    // LinearInterpolationPredictor gimbalYawInput;
-    // LinearInterpolationPredictor gimbalPitchInput;
+    tap::algorithms::Ramp chassisXRamp;
+    tap::algorithms::Ramp chassisYRamp;
+    tap::algorithms::Ramp chassisRotationRamp;
 
    public:
     OperatorInterface(tap::Drivers *drivers) : drivers(drivers) {}
@@ -40,10 +45,10 @@ class OperatorInterface {
     // The scalar is used in the calculation to determine what percentage of that range is currently being used
     //(Or so I believe, this is techincally straight copied from UW's code and has yet to be field tested)
     static constexpr int16_t USER_MOUSE_YAW_MAX = 250;
-    static constexpr float USER_MOUSE_YAW_SCALAR = 1.0f / USER_MOUSE_YAW_MAX;
+    static constexpr float USER_MOUSE_YAW_SCALAR =16.0f / USER_MOUSE_YAW_MAX;
 
     static constexpr int16_t USER_MOUSE_PITCH_MAX = 100;
-    static constexpr float USER_MOUSE_PITCH_SCALAR = 1.0f / USER_MOUSE_PITCH_MAX;
+    static constexpr float USER_MOUSE_PITCH_SCALAR = 5.0f / USER_MOUSE_PITCH_MAX;
 };
 
 }  // namespace src::Control

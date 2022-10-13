@@ -1,6 +1,5 @@
-#ifdef TARGET_SENTRY
-
 #include "chassis_rail_bounce_command.hpp"
+#ifdef TARGET_SENTRY
 
 namespace src::Chassis {
 
@@ -113,13 +112,9 @@ void ChassisRailBounceCommand::end(bool) {
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
-bool ChassisRailBounceCommand::isReady() {
-    return true;
-}
+bool ChassisRailBounceCommand::isReady() { return true; }
 
-bool ChassisRailBounceCommand::isFinished() const {
-    return false;
-}
+bool ChassisRailBounceCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 

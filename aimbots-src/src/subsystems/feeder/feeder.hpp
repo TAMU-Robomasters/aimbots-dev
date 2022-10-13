@@ -1,17 +1,17 @@
 #pragma once
 
-#include "tap/control/subsystem.hpp"
-#include "tap/motor/m3508_constants.hpp"
 #include "drivers.hpp"
 #include "informants/limit_switch.hpp"
+#include "tap/control/subsystem.hpp"
+#include "tap/motor/m3508_constants.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 namespace src::Feeder {
-
 class FeederSubsystem : public tap::control::Subsystem {
    public:
-    FeederSubsystem(src::Drivers* drivers);
+    FeederSubsystem(
+        src::Drivers* drivers);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -22,7 +22,17 @@ class FeederSubsystem : public tap::control::Subsystem {
 
     mockable float setTargetRPM(float rpm);
 
+    float getTargetRPM() const {
+        return targetRPM;
+    }
+
+    float getCurrentRPM() const {
+        return feederMotor.getShaftRPM();
+    }
+
     int getTotalLimitCount() const;
+
+    bool isBarrelHeatAcceptable(float maxPercentage);
 
 #ifndef ENV_UNIT_TESTS
    private:

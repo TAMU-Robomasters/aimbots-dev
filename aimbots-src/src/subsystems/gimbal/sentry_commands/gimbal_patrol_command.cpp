@@ -1,3 +1,4 @@
+#include "utils/robot_specific_inc.hpp"
 #ifdef TARGET_SENTRY
 
 #include "gimbal_patrol_command.hpp"
@@ -11,7 +12,7 @@ GimbalPatrolCommand::GimbalPatrolCommand(src::Drivers* drivers,
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
-      patrolCoordinates(Matrix<float, 5, 3>::zeroMatrix()),
+      patrolCoordinates(Matrix<float, 3, 3>::zeroMatrix()),
       patrolCoordinateIndex(0),
       patrolCoordinateIncrement(1) /* incrememnt set to -1 because index starts at 0 */
 {
@@ -25,14 +26,14 @@ float currPatrolCoordinateTimeDisplay = 0.0f;
 void GimbalPatrolCommand::initialize() {
 #ifdef TARGET_SENTRY
     // clang-format off
-    static constexpr float xy_field_relative_patrol_location_array[15] = {
-        5.0f, -3.0f, 2000.0f, // field coordinate x, y, time spent at this angle
-        -1.425f, -1.131f, 1000.0f,
-        1.425f, 0.494f, 500.0f,
-        -1.425f, 2.119f, 1000.0f,
-        -3.25f, 2.5f, 2000.0f,
+    static constexpr float xy_field_relative_patrol_location_array[9] = {
+        5.0f, -3.0f, 500.0f, // field coordinate x, y, time spent at this angle
+        -1.425f, -1.131f, 250.0f,
+        // 1.425f, 0.494f, 100.0f,
+        // -1.425f, 2.119f, 250.0f,
+        -3.25f, 2.5f, 1000.0f,
     };  // clang-format on
-    patrolCoordinates = Matrix<float, 5, 3>(xy_field_relative_patrol_location_array);
+    patrolCoordinates = Matrix<float, 3, 3>(xy_field_relative_patrol_location_array);
 #endif
 }
 
@@ -70,7 +71,7 @@ void GimbalPatrolCommand::updateYawPatrolTarget() {
     yawPositionPIDErrorDisplay = this->controller->getYawPositionPID()->getError();
     yawPositionPIDDerivativeDisplay = this->controller->getYawPositionPID()->getDerivative();
 
-    if (controller->getYawPositionPID()->isSettled(5.0f /*, 0.04f, 250.0f*/)) {
+    if (controller->getYawPositionPID()->isSettled(15.0f /*, 0.04f, 250.0f*/)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
             // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate index

@@ -34,19 +34,13 @@ void FeederSubsystem::refresh() {
 #endif
 }
 
-float feederPidDisplay = 0;
-
 void FeederSubsystem::updateMotorVelocityPID() {
     float err = targetRPM - feederMotor.getShaftRPM();
     feederVelPID.runControllerDerivateError(err);
-    feederPidDisplay = feederVelPID.getOutput();
     desiredOutput = feederVelPID.getOutput();
 }
 
-float targetRPMDisplay = 0;
-
 float FeederSubsystem::setTargetRPM(float rpm) {
-    targetRPMDisplay = rpm;
     this->targetRPM = rpm;
     return targetRPM;
 }
@@ -62,6 +56,37 @@ int FeederSubsystem::getTotalLimitCount() const {
 #ifdef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
 #endif
+}
+
+bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
+    using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
+    auto turretData = drivers->refSerial.getRobotData().turret;
+
+    uint16_t lastHeat = 0;
+    uint16_t heatLimit = 0;
+
+    auto launcherID = turretData.launchMechanismID;
+    switch (launcherID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            lastHeat = turretData.heat17ID1;
+            heatLimit = turretData.heatLimit17ID1;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
+            break;
+        }
+        default:
+            break;
+    }
+
+    return (lastHeat <= (static_cast<float>(heatLimit) * maxPercentage));
 }
 
 }  // namespace src::Feeder

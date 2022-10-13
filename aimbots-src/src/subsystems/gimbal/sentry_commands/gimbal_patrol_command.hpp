@@ -1,3 +1,6 @@
+#include "utils/robot_specific_inc.hpp"
+#ifdef TARGET_SENTRY
+
 #pragma once
 
 #include <drivers.hpp>
@@ -44,9 +47,11 @@ class GimbalPatrolCommand : public tap::control::Command {
     GimbalChassisRelativeController* controller;
 
     MilliTimeout patrolTimer;
-    Matrix<float, 5, 3> patrolCoordinates;
+    Matrix<float, 3, 3> patrolCoordinates;
     int patrolCoordinateIndex;
     int patrolCoordinateIncrement;
 };
 
 }  // namespace src::Gimbal
+
+#endif

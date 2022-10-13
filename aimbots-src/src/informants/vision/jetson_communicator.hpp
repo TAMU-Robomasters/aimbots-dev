@@ -5,10 +5,9 @@
 #include <tap/util_macros.hpp>
 #include <utils/common_types.hpp>
 
-#include "jetson_protocol.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
-#include "tap/algorithms/linear_interpolation_predictor.hpp"
-#include "vision_buffer.hpp"
+
+#include "jetson_protocol.hpp"
 
 namespace src {
 class Drivers;
@@ -27,7 +26,7 @@ enum GimbalAxis {
 };
 
 class JetsonCommunicator {
-   public:
+public:
     JetsonCommunicator(src::Drivers* drivers);
     DISALLOW_COPY_AND_ASSIGN(JetsonCommunicator);
     ~JetsonCommunicator() = default;
@@ -35,19 +34,15 @@ class JetsonCommunicator {
     void initialize();
     void updateSerial();
 
-    void setTurretMotors(DJIMotor yaw, DJIMotor pitch);
-
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
-    inline JetsonMessage const& lastValidMessage() const { return lastMessage; }
+    inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) {
-        this->gimbal = gimbal;
-    }
+    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
-    Matrix<float, 1, 2> const& getVisionTargetAngles();
+    Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
 
-   private:
+private:
     src::Drivers* drivers;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
@@ -58,9 +53,6 @@ class JetsonCommunicator {
     size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
-
-    tap::algorithms::LinearInterpolationPredictor yawOffsetPredictor;
-    tap::algorithms::LinearInterpolationPredictor pitchOffsetPredictor;
 
     src::Gimbal::GimbalSubsystem* gimbal;
 

@@ -14,21 +14,6 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = 180.0f;  // in radians
 
-/**
- * @brief Definitions for operator interface constants (may change based on preference of drivers)
- *
- */
-static constexpr int16_t USER_MOUSE_YAW_MAX = 1000;
-static constexpr int16_t USER_MOUSE_PITCH_MAX = 1000;
-static constexpr float USER_MOUSE_YAW_SCALAR = (1.0f / USER_MOUSE_YAW_MAX);
-static constexpr float USER_MOUSE_PITCH_SCALAR = (1.0f / USER_MOUSE_PITCH_MAX);
-
-static constexpr float USER_JOYSTICK_YAW_SCALAR = 0.3f;
-static constexpr float USER_JOYSTICK_PITCH_SCALAR = 0.15f;
-
-static constexpr float CTRL_SCALAR = (1.0f / 4);
-static constexpr float SHIFT_SCALAR = (1.0f / 2);
-
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
     .ki = 0.0f,
@@ -44,7 +29,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
     .kd = 0.8f,
     .maxICumulative = 10.0f,
@@ -88,10 +73,42 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 50.0f,
+// VISION PID CONSTANTS
+static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
+    .kp = 600.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 500.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 150.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr float kGRAVITY = 0.0f;
+static constexpr float HORIZON_OFFSET = -0.0f;
+
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 40.0f,
+    .ki = 0.10f,
+    .kd = 0.00f,
     .maxICumulative = 10.0f,
     .maxOutput = 30000.0f,
     .tQDerivativeKalman = 1.0f,
@@ -102,10 +119,17 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float FLYWHEEL_DEFAULT_RPM = 8000.0f;
+static constexpr uint16_t shooter_speed_array[6] = {
+    15,
+    3900,  // {ball m/s, flywheel rpm}
+    18,
+    4500,
+    30,
+    9000};
+
+static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
-
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
@@ -193,11 +217,10 @@ static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
-static constexpr float MAX_ENERGY_BUFFER = 60.0f;
-static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
-static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 5;
-static constexpr uint16_t POWER_CONSUMPTION_THRESHOLD = 20;
-static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
+static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
+static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
+static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
+static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
 
 /**
  * @brief Power constants for chassis
@@ -207,8 +230,7 @@ static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
 static constexpr int MIN_CHASSIS_POWER = 40;
 static constexpr int MAX_CHASSIS_POWER = 120;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
-    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
-    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) / (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
 static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
 
 /**
@@ -224,11 +246,11 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 5000.0f,
+    .kp = 1.25f,
     .ki = 0.0f,
-    .kd = 25.0f,
+    .kd = 0.00625f,
     .maxICumulative = 10.0f,
-    .maxOutput = ROTATION_POSITION_PID_CONFIG.kp * M_PI,
+    .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

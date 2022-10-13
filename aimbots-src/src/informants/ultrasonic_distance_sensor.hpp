@@ -6,9 +6,19 @@
 #include "tap/communication/gpio/pwm.hpp"
 #include "utils/common_types.hpp"
 
+// sentry ultrasonic settings
+static constexpr bool ORIGIN_SIDE = false;                   // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless
+static constexpr int TIMEOUT_DURATION = 30000;               // microseconds
+static constexpr float ULTRASONIC_MAX_VALID_SPEED = 20.0f;   // cm/s, robot speed above which ultrasonic is ignored
+static constexpr float ULTRASONIC_LENGTH = 39.0f;            // cm, distance between the two ultrasonics (PCB to PCB)
+static constexpr float ULTRASONIC_OFFSET = 0.5f;             // cm, "distance from PCB to outer plate"
+static constexpr float ULTRASONIC_MIN_VALID_RANGE = 10.0f;   // cm
+static constexpr float ULTRASONIC_MAX_VALID_RANGE = 250.0f;  // cm
+static constexpr float ULTRASONIC_TRUST_FACTOR = 0.5f;       // range 0-1
+
 enum leftAndRight {
-    LEFT=0,
-    RIGHT=1
+    LEFT = 0,
+    RIGHT = 1
 };
 
 namespace src {
@@ -43,7 +53,7 @@ class UltrasonicDistanceSensor {
     /**
      * @brief Returns rail position in cm. The origin can be on either side of the rail (see bool in sentry_constants.hpp).
      * Depends on total rail length (in sentry_constants.hpp)
-     * 
+     *
      * @return float rail position in cm
      */
     static float getRailPosition();
@@ -51,7 +61,7 @@ class UltrasonicDistanceSensor {
     /**
      * @brief Returns bool to indicate if either ultrasonic is reading-- if not, any data provided by ultrasonic class is outdated
      */
-    static inline bool isDataValid() { return (leftValid || rightValid); };
+    static inline bool isDataValid() { return (leftValid && rightValid); };
 
    private:
     src::Drivers* drivers;

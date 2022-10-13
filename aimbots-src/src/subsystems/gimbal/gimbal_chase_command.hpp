@@ -11,7 +11,7 @@ class GimbalChaseCommand : public tap::control::Command {
    public:
     GimbalChaseCommand(src::Drivers*,
                        GimbalSubsystem*,
-                       GimbalChassisRelativeController*);
+                       GimbalControllerInterface*);
 
     char const* getName() const override { return "Gimbal Chase Command"; }
 
@@ -26,7 +26,7 @@ class GimbalChaseCommand : public tap::control::Command {
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
-    GimbalChassisRelativeController* controller;
+    GimbalControllerInterface* controller;
 };
 
 }  // namespace src::Gimbal

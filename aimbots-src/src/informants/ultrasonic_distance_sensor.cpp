@@ -1,6 +1,8 @@
-#include "ultrasonic_distance_sensor.hpp"
+#include "utils/robot_specific_inc.hpp"
+#ifdef TARGET_SENTRY
 
 #include "drivers.hpp"
+#include "ultrasonic_distance_sensor.hpp"
 
 // FIXME: I have not set up the project.xml for this, so we have
 //        no idea if these interrupts are used by something else
@@ -52,10 +54,10 @@ void UltrasonicDistanceSensor::handleLeftEchoEnd(bool isRising) {
 
         bool timeValid = (echoEndLeftuS - echoStartLeftuS) < TIMEOUT_DURATION;
         bool rangeValid = distanceLeft >= ULTRASONIC_MIN_VALID_RANGE && distanceLeft <= ULTRASONIC_MAX_VALID_RANGE;
-        bool velocityValid = abs((distanceLeft - prevDistanceLeft)/(echoEndLeftuS - prevEchoEndLeftuS)) * 1000000 < ULTRASONIC_MAX_VALID_SPEED;
+        bool velocityValid = abs((distanceLeft - prevDistanceLeft) / (echoEndLeftuS - prevEchoEndLeftuS)) * 1000000 < ULTRASONIC_MAX_VALID_SPEED;
         leftValid = timeValid && rangeValid && velocityValid;
 
-        // leftDistanceDebug = distanceLeft;
+        leftDistanceDebug = distanceLeft;
         leftValidDebug = leftValid;
     }
 }
@@ -73,10 +75,10 @@ void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
 
         bool timeValid = (echoEndRightuS - echoStartRightuS) < TIMEOUT_DURATION;
         bool rangeValid = distanceRight >= ULTRASONIC_MIN_VALID_RANGE && distanceRight <= ULTRASONIC_MAX_VALID_RANGE;
-        bool velocityValid = abs((distanceRight - prevDistanceRight)/(echoEndRightuS - prevEchoEndRightuS))*1000000 < ULTRASONIC_MAX_VALID_SPEED;
+        bool velocityValid = abs((distanceRight - prevDistanceRight) / (echoEndRightuS - prevEchoEndRightuS)) * 1000000 < ULTRASONIC_MAX_VALID_SPEED;
         rightValid = timeValid && rangeValid && velocityValid;
 
-        // rightDistanceDebug = distanceRight;
+        rightDistanceDebug = distanceRight;
         rightValidDebug = rightValid;
     }
 }
@@ -84,7 +86,7 @@ void UltrasonicDistanceSensor::handleRightEchoEnd(bool isRising) {
 UltrasonicDistanceSensor::UltrasonicDistanceSensor(src::Drivers* drivers)
     : drivers(drivers) {}
 
-//initialize
+// initialize
 void UltrasonicDistanceSensor::initialize() {
     LeftEchoPin::setInput(modm::platform::Gpio::InputType::PullDown);
     LeftEchoPin::enableExternalInterruptVector(0);
@@ -109,33 +111,34 @@ void UltrasonicDistanceSensor::update() {
         drivers->digital.set(LEFT_TRIGGER_PIN, false);
         drivers->digital.set(RIGHT_TRIGGER_PIN, false);
     }
-
-    rightDistanceDebug = getRightDistance();
-    leftDistanceDebug = getLeftDistance();
 }
 
 float UltrasonicDistanceSensor::getRailPosition() {
-    if(leftValid && rightValid) {
+    if (leftValid && rightValid) {
         lastReturnedDistance = (getLeftDistance() + getRightDistance()) / 2.0;
-    } else if(leftValid) {
+    } else if (leftValid) {
         lastReturnedDistance = getLeftDistance();
-    } else if(rightValid) {
+    } else if (rightValid) {
         lastReturnedDistance = getRightDistance();
-    } //else ur done for
+    }  // else ur done for
 
     return lastReturnedDistance;
 }
 
 float UltrasonicDistanceSensor::getLeftDistance() {
-    if(ORIGIN_SIDE == LEFT) {
+    if (ORIGIN_SIDE == LEFT) {
         return distanceLeft + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceLeft - (ULTRASONIC_LENGTH / 2.0);
+    } else
+        return USABLE_RAIL_LENGTH * 100 - distanceLeft - (ULTRASONIC_LENGTH / 2.0);
 }
 
 float UltrasonicDistanceSensor::getRightDistance() {
-    if(ORIGIN_SIDE == RIGHT) {
+    if (ORIGIN_SIDE == RIGHT) {
         return distanceRight + ULTRASONIC_LENGTH / 2.0;
-    } else return FULL_RAIL_LENGTH_CM - distanceRight - (ULTRASONIC_LENGTH / 2.0);
+    } else
+        return USABLE_RAIL_LENGTH * 100 - distanceRight - (ULTRASONIC_LENGTH / 2.0);
 }
 
 }  // namespace src::Informants
+
+#endif

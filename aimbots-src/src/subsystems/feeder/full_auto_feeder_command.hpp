@@ -11,7 +11,7 @@ namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
    public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*);
+    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -20,12 +20,20 @@ class FullAutoFeederCommand : public TapCommand {
 
     bool isFinished() const override;
 
+    void setSpeed(float speed) { this->speed = speed; }
+
     const char* getName() const override { return "run feeder"; }
 
    private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+
     float speed;
+    float acceptableHeatThreshold;
+
+    MilliTimeout startupThreshold;
+    MilliTimeout unjamTimer;
+    float unjamSpeed = 0.0f;
 };
 
 }  // namespace src::Feeder

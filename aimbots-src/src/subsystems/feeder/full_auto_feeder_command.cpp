@@ -2,31 +2,38 @@
 
 namespace src::Feeder {
 
-FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder)
+FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold)
     : drivers(drivers),
       feeder(feeder),
-      speed(0)
+      speed(speed),
+      acceptableHeatThreshold(acceptableHeatThreshold),
+      unjamSpeed(-250.0f)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void FullAutoFeederCommand::initialize() {
-    speed = 0.0f;
-    feeder->setTargetRPM(speed);
+    feeder->setTargetRPM(0.0f);
+    startupThreshold.restart(1000);  // delay to wait before attempting unjam
+    unjamTimer.restart(0);
 }
 
 void FullAutoFeederCommand::execute() {
-    speed = FEEDER_DEFAULT_RPM;
-    feeder->setTargetRPM(speed);
+    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+        feeder->setTargetRPM(unjamSpeed);
+        unjamTimer.restart(500);
+    }
+
+    if (unjamTimer.execute()) {
+        feeder->setTargetRPM(speed);
+        startupThreshold.restart(500);
+    }
 }
 
-void FullAutoFeederCommand::end(bool) {}
+void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool FullAutoFeederCommand::isReady() {
-    return true;
-}
+bool FullAutoFeederCommand::isReady() { return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
-bool FullAutoFeederCommand::isFinished() const {
-    return false;  // finished condition (button released) or their api is nice and we don't have to
-}
+bool FullAutoFeederCommand::isFinished() const { return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+
 }  // namespace src::Feeder

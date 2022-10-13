@@ -8,12 +8,8 @@
 namespace src::Gimbal {
 
 class GimbalFieldRelativeControlCommand : public tap::control::Command {
-   public:
-    GimbalFieldRelativeControlCommand(src::Drivers*,
-                         GimbalSubsystem*,
-                         GimbalControllerInterface*,
-                         float inputYawSensitivity,
-                         float inputPitchSensitivity);
+public:
+    GimbalFieldRelativeControlCommand(src::Drivers*, GimbalSubsystem*, GimbalControllerInterface*);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -24,14 +20,14 @@ class GimbalFieldRelativeControlCommand : public tap::control::Command {
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-   private:
+private:
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
 
-    float userInputYawSensitivityFactor;
-    float userInputPitchSensitivityFactor;
+    bool wasQPressed = false;
+    bool wasEPressed = false;
 };
 
 }  // namespace src::Gimbal

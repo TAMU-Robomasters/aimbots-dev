@@ -14,8 +14,9 @@ void GimbalChassisRelativeController::initialize() {
     pitchPositionPID.pid.reset();
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle) {
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
     UNUSED(unit);
+    UNUSED(vision);
     gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, targetChassisRelativeYawAngle);
 
     float positionControllerError =
@@ -28,7 +29,10 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
 
-void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle) {
+float gravityCompensationDisplay = 0.0f;
+
+void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision) {
+    UNUSED(vision);
     gimbal->setTargetChassisRelativePitchAngle(unit, targetChassisRelativePitchAngle);
 
     // This gets converted to degrees so that we get a higher error. ig
@@ -41,7 +45,13 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float t
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
-    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
+    float toHorizonError = gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
+                               .difference(modm::toRadian(PITCH_START_ANGLE + HORIZON_OFFSET));
+
+    float gravityCompensation = -cos(toHorizonError) * kGRAVITY;
+    gravityCompensationDisplay = gravityCompensation;
+
+    gimbal->setPitchMotorOutput(pitchPositionPIDOutput + gravityCompensation);
 }
 
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
