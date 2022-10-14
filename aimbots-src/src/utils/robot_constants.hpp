@@ -7,7 +7,7 @@
 #include "robots/engineer/engineer_constants.hpp"
 
 #elif defined(TARGET_SWERVE_ENGINEER)
-#include "robots/engineer/swerve_engineer_constants.hpp"
+#include "robots/engineer-swerve/swerve_engineer_constants.hpp"
 
 #elif defined(TARGET_HERO)
 #include "robots/hero/hero_constants.hpp"

@@ -1,4 +1,5 @@
 #include "full_auto_feeder_command.hpp"
+#ifndef ENGINEER
 
 namespace src::Feeder {
 
@@ -37,3 +38,4 @@ bool FullAutoFeederCommand::isReady() { return feeder->isBarrelHeatAcceptable(ac
 bool FullAutoFeederCommand::isFinished() const { return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
 }  // namespace src::Feeder
+#endif

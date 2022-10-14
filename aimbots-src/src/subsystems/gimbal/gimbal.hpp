@@ -1,5 +1,6 @@
 #pragma once
-#ifndef TARGET_ENGINEER
+
+#ifndef ENGINEER
 
 #include <tap/algorithms/contiguous_float.hpp>
 #include <tap/algorithms/math_user_utils.hpp>

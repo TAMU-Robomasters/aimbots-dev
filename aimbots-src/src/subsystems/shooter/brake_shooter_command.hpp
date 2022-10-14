@@ -1,8 +1,11 @@
 #pragma once
 
 #include "drivers.hpp"
-#include "subsystems/shooter/shooter.hpp"
+#ifndef ENGINEER
+
 #include "tap/control/subsystem.hpp"
+
+#include "subsystems/shooter/shooter.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
@@ -11,7 +14,7 @@
 namespace src::Shooter {
 
 class BrakeShooterCommand : public TapCommand {
-   public:
+public:
     BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, float brakePower);
     void initialize() override;
 
@@ -23,7 +26,7 @@ class BrakeShooterCommand : public TapCommand {
 
     const char* getName() const override { return "shooter brake command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
     StockPID brakePID;
@@ -31,4 +34,4 @@ class BrakeShooterCommand : public TapCommand {
 
 }  // namespace src::Shooter
 
-//#endif
+#endif

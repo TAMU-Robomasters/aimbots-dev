@@ -1,5 +1,5 @@
 #include "subsystems/feeder/feeder.hpp"
-
+#ifndef ENGINEER
 namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
@@ -90,3 +90,4 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
 }
 
 }  // namespace src::Feeder
+#endif

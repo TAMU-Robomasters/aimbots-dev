@@ -135,10 +135,10 @@ void ChassisSubsystem::limitChassisPower() {
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = 0;
-    if (WheelIndex == 0) {
+    if (WheelIdx == 0) {
         err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
     }else{
-        err = targetRPMs[WheelIndex][MotorPerWheelIdx]- motors[WheelIdx][MotorPerWheelIdx]->getPosition();
+        err = targetRPMs[WheelIdx][MotorPerWheelIdx]- motors[WheelIdx][MotorPerWheelIdx]->getEncoderWrapped();
     }
     velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(err);
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();

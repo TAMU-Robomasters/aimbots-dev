@@ -1,4 +1,5 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
+#ifndef ENGINEER
 
 #include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
@@ -75,3 +76,5 @@ bool RunShooterCommand::isFinished() const {
     return false;
 }
 }  // namespace src::Shooter
+
+#endif

@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define SWERVE
+#define ENGINEER
 
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
@@ -204,5 +205,15 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
 /**
  * The minimum desired wheel speed for chassis rotation, measured in RPM before
  * we start slowing down translational speed.
+ *
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
+
+// // Power limiting constants, will explain later
+static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
+static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
+// static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
+// static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
+static constexpr bool PITCH_DIRECTION = false;
+
+static constexpr float DEV_BOARD_YAW_OFFSET = M_PI;  // in radians

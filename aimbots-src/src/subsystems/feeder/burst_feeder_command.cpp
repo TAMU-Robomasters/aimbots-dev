@@ -1,4 +1,5 @@
 #include "burst_feeder_command.hpp"
+#ifndef ENGINEER
 
 namespace src::Feeder {
 BurstFeederCommand::BurstFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold, int burstLength)
@@ -33,3 +34,4 @@ bool BurstFeederCommand::isFinished() const {
 }
 
 }  // namespace src::Feeder
+#endif

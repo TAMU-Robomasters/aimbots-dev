@@ -1,4 +1,5 @@
 #include "utils/robot_specific_inc.hpp"
+#ifndef ENGINEER
 #ifdef TOKYO_COMPATIBLE
 
 #include <subsystems/chassis/chassis_helper.hpp>
@@ -80,4 +81,5 @@ bool ChassisTokyoCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
+#endif
 #endif
