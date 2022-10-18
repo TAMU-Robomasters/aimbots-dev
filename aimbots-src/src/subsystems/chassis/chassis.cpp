@@ -230,6 +230,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[RB][1] = atan2f(c, a) * (180 / M_PI) / 360 * 8191;
     fourYaw = targetRPMs[RB][1];
+    // wooo! just for commants
 }
 #endif
 
