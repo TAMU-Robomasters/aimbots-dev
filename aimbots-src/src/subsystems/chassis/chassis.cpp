@@ -135,9 +135,9 @@ void ChassisSubsystem::limitChassisPower() {
 
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = 0;
-    if (WheelIdx == 0) {
+    if (MotorPerWheelIdx == DRIVER) {
         err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
-    } else {
+    } else if (MotorPerWheelIdx == YAW) {
         err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getEncoderWrapped();
     }
     velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(err);
@@ -218,17 +218,17 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     float c = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
     float d = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
 
-    targetRPMs[LF][0] = 0;   // limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[LF][1] = 40;  // atan2f(d,b)*(180 / M_PI)/360 * 8191;
+    targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LF][1] = atan2f(d, b) * (180 / M_PI) / 360 * 8191;
     oneYaw = targetRPMs[LF][1];
-    targetRPMs[RF][0] = 0;   // limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RF][1] = 40;  // atan2f(c,b)*(180 / M_PI)/360 * 8191;
+    targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RF][1] = atan2f(c, b) * (180 / M_PI) / 360 * 8191;
     twoYaw = targetRPMs[LF][1];
-    targetRPMs[LB][0] = 0;   // limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[LB][1] = 40;  // atan2f(d,a)*(180 / M_PI)/360 * 8191;
+    targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LB][1] = atan2f(d, a) * (180 / M_PI) / 360 * 8191;
     threeYaw = targetRPMs[LB][1];
-    targetRPMs[RB][0] = 0;   // limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RB][1] = 40;  // atan2f(c,a)*(180 / M_PI)/360 * 8191;
+    targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RB][1] = atan2f(c, a) * (180 / M_PI) / 360 * 8191;
     fourYaw = targetRPMs[RB][1];
 }
 #endif
