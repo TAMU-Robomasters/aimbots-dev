@@ -17,6 +17,16 @@ GraphicHelper(refSerialTransmitter),
 modm::ResumableResult<bool> SubsystemStatusGraphic::sendInitialGraphics() {
     RF_BEGIN(0);
 
+    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+
+    RF_END();
+}
+
+modm::ResumableResult<bool> SubsystemStatusGraphic::update() {
+    RF_BEGIN(1);
+
+    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+
     RF_END();
 }
 
