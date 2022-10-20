@@ -2,23 +2,26 @@
 
 #include <drivers.hpp>
 
-namespace src::Informants::vision {
+namespace src::Informants {
 EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(drivers) {}
 
 void EnemyDataConversion::updateConversion() {
-    if (drivers->cvCommunicator.isJetsonOnline()) {
-        // get angles and depth
-        angularMatrix = drivers->cvCommunicator.getVisionTargetAngles();
-        float targetPitchAngle = angularMatrix[0][src::Informants::vision::pitch];  // I still don't know what space these are in
-        float targetYawAngle = angularMatrix[0][src::Informants::vision::yaw];
-        float depth = drivers->cvCommunicator.getLastValidMessage().depth;
-        // derive XYZ (in what space?!?!)
-        float targetXCoord = depth * cos(targetPitchAngle) * sin(targetYawAngle);
-        float targetYCoord = depth * cos(targetPitchAngle) * cos(targetYawAngle);
-        float targetZCoord = depth * sin(targetPitchAngle);
-        positionMatrix[0][X_AXIS] = targetXCoord;
-        positionMatrix[0][Y_AXIS] = targetYCoord;
-        positionMatrix[0][Z_AXIS] = targetZCoord;
+    if (drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
+        // get CV data for enemy position
+        float enemyXPos = 0;  // TODO
+        float enemyYPos = 0;  // TODO
+        float enemyZPos = 0;  // TODO
+        float enemyPos[3] = {enemyXPos, enemyYPos, enemyZPos};
+        // timestamp
+        uint32_t timestamp = tap::arch::clock::getTimeMicroseconds();
+
+        enemyTimedPosition currentData;
+        currentData.position = Matrix<float, 1, 3>(enemyPos);
+        currentData.timestamp_uS = timestamp;
+
+        // save to buffer, overwriting oldest data as necessary
+        rawPositionBuffer.appendOverwrite(currentData);
     }
 }
-}  // namespace src::Informants::vision
+
+}  // namespace src::Informants
