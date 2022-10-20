@@ -13,36 +13,53 @@ CV gives us gimbal-relative angles and depth.
     Depth must be accessed directly from the Jetson messages as follows:
         drivers->cvCommunicator.getLastValidMessage().depth;
 */
-/* CV gives us data in camera space-- the yaw angle, pitch angle, and the distance
-   So.. this method should convert camera-space angles to camera-space 3D vector, then to chassis space 3D vector (using transformation matrices)
-   ^^^ I'm not sure if this is still true 2022-10-19
-   */
 
-namespace src::Informants::vision {
+/*
+CV will be giving us (at the very least) an XYZ position vector in CAMERA SPACE
+This class should be producing position, velocity, and acceleration vectors for the ENEMY in CHASSIS SPACE (and/or FIELD SPACE)
+Additionally, this class should be producing position, velocity, and acceleration vectors for OUR ROBOT in FIELD SPACE (Though I'm not sure if this
+class should be called EnemyDataConversion then)
+*/
+namespace src::Informants {
 
 enum Axis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
+
+// for internal use
+struct enemyTimedPosition {
+    Matrix<float, 1, 3> position;
+    uint32_t timestamp_uS;
+};
+
+// for output use
+struct enemyTimedData {
+    Matrix<float, 1, 3> position;
+    Matrix<float, 1, 3> velocity;
+    Matrix<float, 1, 3> acceleration;
+    float timestamp_uS;  // time that 'best guess' was made
+};
 
 class EnemyDataConversion {
 public:
     EnemyDataConversion(src::Drivers* drivers);
 
     /**
-     * @brief Gets latest valid enemy target angles and converts it to XYZ coordinates. Should be called continuously.
+     * @brief Gets latest valid enemy target data from CV and stores it in a circular/ring buffer.
+     * Should be called continuously.
      *
      */
     void updateConversion();
 
     /**
-     * @brief Returns enemy position as gimbal-relative XYZ coordinates.
-     * The +Y-axis extrudes from the barrel (in direction of bullets), +Z-axis goes up from the barrel, and +X-axis goes right from the barrel.
-     *
-     * Information may or may not be out-of-date
+     * @brief Calculates best guess of current enemy position, velocity, and acceleration. Does not need to be called continuously.
      */
-    Matrix<float, 1, 3> const& getEnemyPosition() { return positionMatrix; }
+    enemyTimedData calculateBestGuess();
+    // Matrix<float, 1, 3> const& getEnemyPosition() { return positionMatrix; }
 
 private:
     src::Drivers* drivers;
-    Matrix<float, 1, 2> angularMatrix;   // "given"
-    Matrix<float, 1, 3> positionMatrix;  // somehow math this up from angles
+    static const int BUFFER_SIZE = 10;  // prolly move this to constants at some point or something IDK
+
+    // buffer for XYZ + timestamp
+    Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
 };
-}  // namespace src::Informants::vision
+}  // namespace src::Informants

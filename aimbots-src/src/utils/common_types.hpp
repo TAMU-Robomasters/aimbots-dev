@@ -9,12 +9,14 @@
 #include <tap/control/command.hpp>
 #include <tap/control/comprised_command.hpp>
 
-#include "modm/math/matrix.hpp"
-#include "pid/smooth_pid_wrap.hpp"
 #include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "tap/communication/serial/remote.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 #include "tap/motor/servo.hpp"
+
+#include "modm/container/deque.hpp"
+#include "modm/math/matrix.hpp"
+#include "pid/smooth_pid_wrap.hpp"
 
 // #include <bit_cast>
 
@@ -36,12 +38,7 @@ enum class AngleUnit : uint8_t {
     None,
 };
 
-enum Dimensions {
-    X = 0,
-    Y = 1,
-    Z = 2,
-    TIME = 2
-};
+enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 // if this looks cursed, that's because it is.
 // currently, we're using a 1x3 matrix for X, Y, TIME patrol coordinates and also X, Y, Z location coordinates.
 // ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol becomes field-relative
@@ -81,21 +78,19 @@ using InputPins = tap::gpio::Digital::InputPin;
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
 
+template <typename T, std::size_t N>
+using Deque = modm::BoundedDeque<T, N>;
+
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
 
-static inline void scheduleIfNotScheduled(
-    tap::control::CommandScheduler &scheduler,
-    tap::control::Command *cmd) {
+static inline void scheduleIfNotScheduled(tap::control::CommandScheduler &scheduler, tap::control::Command *cmd) {
     if (!scheduler.isCommandScheduled(cmd)) {
         scheduler.addCommand(cmd);
     }
 }
 
-static inline void descheduleIfScheduled(
-    tap::control::CommandScheduler &scheduler,
-    tap::control::Command *cmd,
-    bool interrupted) {
+static inline void descheduleIfScheduled(tap::control::CommandScheduler &scheduler, tap::control::Command *cmd, bool interrupted) {
     if (scheduler.isCommandScheduled(cmd)) {
         scheduler.removeCommand(cmd, interrupted);
     }
