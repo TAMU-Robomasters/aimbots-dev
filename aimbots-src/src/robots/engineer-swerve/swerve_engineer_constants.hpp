@@ -217,3 +217,8 @@ static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr bool PITCH_DIRECTION = false;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = M_PI;  // in radians
+
+static constexpr float LEFT_FRONT_YAW_OFFSET = 1311.0f;
+static constexpr float LEFT_BACK_YAW_OFFSET = 5446.0f;
+static constexpr float RIGHT_FRONT_YAW_OFFSET = 7000.0f;
+static constexpr float RIGHT_BACK_YAW_OFFSET = 6829.0f;

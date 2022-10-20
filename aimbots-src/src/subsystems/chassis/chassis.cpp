@@ -205,6 +205,11 @@ float twoYaw = 0.0f;
 float threeYaw = 0.0f;
 float fourYaw = 0.0f;
 
+int left_front_yaw;
+int right_front_yaw;
+int left_back_yaw;
+int right_back_yaw;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // float theta = fieldRelativeInformant->getYaw();
     // float temp = y*cos(theta)+x*sin(theta);
@@ -219,17 +224,21 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     float d = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
 
     targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[LF][1] = atan2f(d, b) * (180 / M_PI) / 360 * 8191;
-    oneYaw = targetRPMs[LF][1];
+    left_front_yaw = (atan2f(d, b) + M_PI) * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
+    targetRPMs[LF][1] = left_front_yaw % 8191;
+    oneYaw = motors[LF][1]->getEncoderWrapped();
     targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RF][1] = atan2f(c, b) * (180 / M_PI) / 360 * 8191;
-    twoYaw = targetRPMs[LF][1];
+    right_front_yaw = (atanf(c/b) + M_PI * 0) * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
+    targetRPMs[RF][1] = right_front_yaw % 8191;
+    twoYaw = motors[RF][1]->getEncoderWrapped();
     targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[LB][1] = atan2f(d, a) * (180 / M_PI) / 360 * 8191;
-    threeYaw = targetRPMs[LB][1];
+    left_back_yaw = (atan2f(d, a) + M_PI) * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
+    targetRPMs[LB][1] = left_back_yaw % 8191;
+    threeYaw = motors[LB][1]->getEncoderWrapped();
     targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RB][1] = atan2f(c, a) * (180 / M_PI) / 360 * 8191;
-    fourYaw = targetRPMs[RB][1];
+    int right_back_yaw = (atan2f(c, a) + M_PI) * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;
+    targetRPMs[RB][1] = right_back_yaw % 8191;
+    fourYaw = motors[RB][1]->getEncoderWrapped();
     // wooo! just for commants
 }
 #endif
