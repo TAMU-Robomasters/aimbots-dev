@@ -90,7 +90,7 @@ double get_priority_root(vector<complex<double>> roots){
     return reals.at(0);
 }
 
-double deep_impact(complex<double> (*func)(complex<double>), double estimate){
+double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate){
     vector<complex<double>> roots;
     bool all_found = false;
 
@@ -102,9 +102,8 @@ double deep_impact(complex<double> (*func)(complex<double>), double estimate){
     */
 
     while(all_found == false){
-        complex<double> estimate1 (1,0);
         complex<double> root = find_next_root(func, estimate1, roots, all_found);
-        cout << "root found: " << root << endl;
+        if(DEBUG) cout << "root found: " << root << endl;
         if(all_found == true){
             break;
         } else{
@@ -113,6 +112,7 @@ double deep_impact(complex<double> (*func)(complex<double>), double estimate){
     }
     
     double priority = get_priority_root(roots);
+    return priority;
     if(priority == -1){
         perror("No valid trajectory");
         exit(1);
@@ -128,7 +128,7 @@ double deep_impact(complex<double> (*func)(complex<double>), double estimate){
 int main(){
     auto start = high_resolution_clock::now();
 
-    double root = deep_impact(&example_func, 1);
+    double root = deep_impact(&example_func, (complex<double>)(1,0));
 
     auto stop = high_resolution_clock::now();
 
