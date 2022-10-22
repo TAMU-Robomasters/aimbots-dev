@@ -4,30 +4,31 @@
 #include <float.h>
 #include <algorithm>
 #include <chrono>
+#include <complex>
 
 #include <vector>
 
 using namespace std;
 using namespace std::chrono;
 
-#define DEBUG true
+#define DEBUG false
 
 #define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
+#define PRECISION_OF_DERIVATIVE (complex<double>)(1e-10,1e-10)  //the precision used when finding slope using the def of a derivative
 #define ALLOWED_ITERATIONS 30  //the number of allowed_iterations until divergency is assumed
-#define UPPER_ACCEPTED_BOUND 30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
+#define UPPER_ACCEPTED_BOUND (complex<double>)30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 #define POLY_ORDER 5
 
-using std::cout, std::endl, std::sort;
+using std::cout, std::endl;
 
-double example_func(double time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
-    return (time - 3)*(time + 2)*(time + 3) + 9; //-3, -2, 3
+complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
+    return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
     //return (4 * pow(time, 4)) - (2 * pow(time, 3)) - (4 * pow(time, 2)) + time - 3;
 }
 
 
-double modified_function(double input, double (*func)(double), vector<double> roots){
-    double factor = 1;
+complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots){
+    complex<double> factor = 1;
     for(int i = 0; i < roots.size(); i++){
         factor *= (input - roots.at(i));
     }
@@ -35,21 +36,21 @@ double modified_function(double input, double (*func)(double), vector<double> ro
 }
 
 
-double find_next_root(double (*func)(double), double estimate, vector<double> roots, bool &all_found){ //takes as arg a function to evaluate roots for
-    double x = estimate;
+complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found){ //takes as arg a function to evaluate roots for
+    complex<double> x = estimate;
     int iterations = 0;
-    double factor = 1;
-    while(abs(modified_function(x, func, roots)) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
-        double slope = (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
+    complex<double> factor = 1;
+    while(abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
+        complex<double> slope = (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
         x = x - (modified_function(x, func, roots) / slope);
         if(DEBUG) cout  << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl; 
         iterations++;
     }
-    if((iterations >= ALLOWED_ITERATIONS - 1) || (x > 1024) || (x < -1024) || (x == NAN)){
+    if((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > real(UPPER_ACCEPTED_BOUND)) || (real(x) < -real(UPPER_ACCEPTED_BOUND))){
         all_found = true;
         return DBL_MAX;
     }
-    if(DEBUG) cout << "number of iterations: " << iterations << endl;
+    if(DEBUG) cout << "number of iterations: " << iterations << endl << endl;
     return x;
 }
 
@@ -72,22 +73,25 @@ void BubbleSort(vector<double> &array) {
     }
 }
 
-double get_priority_root(vector<double> roots){
+double get_priority_root(vector<complex<double>> roots){
     //return the lowest, positive, real root
+    vector<double> reals;
     for(int i = 0; i < roots.size(); i++){
-        if(roots.at(i)  < 0){
-            roots.at(i) = 1024;
+        if(abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0){
+            reals.push_back(30);
+        } else if(real(roots.at(i)) <= ACCEPTED_ERROR){
+            reals.push_back(real(roots.at(i)));
         }
     }
-    BubbleSort(roots);
-    if(roots.at(0) >= 1024){
+    BubbleSort(reals);
+    if(reals.at(0) >= 30){
         return -1;
     }
-    return roots.at(0);
+    return reals.at(0);
 }
 
-double deep_impact(double (*func)(double), double estimate){
-    vector<double> roots;
+double deep_impact(complex<double> (*func)(complex<double>), double estimate){
+    vector<complex<double>> roots;
     bool all_found = false;
 
     /*
@@ -98,13 +102,16 @@ double deep_impact(double (*func)(double), double estimate){
     */
 
     while(all_found == false){
-        double root = find_next_root(func, estimate, roots, all_found);
+        complex<double> estimate1 (1,0);
+        complex<double> root = find_next_root(func, estimate1, roots, all_found);
+        cout << "root found: " << root << endl;
         if(all_found == true){
             break;
         } else{
             roots.push_back(root);
         }
     }
+    
     double priority = get_priority_root(roots);
     if(priority == -1){
         perror("No valid trajectory");
@@ -112,6 +119,8 @@ double deep_impact(double (*func)(double), double estimate){
     } else{
         return priority;
     }
+    
+    return 1;
     
 }
 
@@ -138,6 +147,30 @@ ideally needs to find imaginary solutions
 
 needs to know to exit with error if there is no real positive solution
 
+
+
+
+deep_impact recieves an estimate and the function
+
+deep impact calls root_finder and keeps a list of all found roots
+
+root_finder iteratively finds roots of polynomials using newtons algorithm
+
+root_finder is sped up by dividing out already found roots 
+
+root_finder returns a found root to deep_impact
+
+deep_impact runs until the root_finder method takes too long to find a root
+
+deep_impact calls get_priority_root to find the prefered output
+
+get_priority_root filters out negative values then calls BubbleSort
+
+BubbleSort sorts the list for get_priority_root
+
+get_priority_root returns the lowest value, or an error if no valid time was found
+
+deep_impact passes on that lowest value as its output
 
 
 
