@@ -28,6 +28,7 @@ void GUI_DisplayCommand::execute() {
 }
 
 bool GUI_DisplayCommand::run() {
+    //Intentional error, ignore
     PT_BEGIN();
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
