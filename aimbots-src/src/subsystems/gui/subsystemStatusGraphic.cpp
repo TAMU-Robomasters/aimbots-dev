@@ -4,28 +4,43 @@
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
 #include "drivers.hpp"
+// #ifdef __INTELLISENSE__
+//     #pragma diag_suppress 1227
+// #endif
 
 using namespace tap::communication::serial;
 using namespace tap::communication::referee;
 
 namespace src::GUI {
 
-SubsystemStatusGraphic::SubsystemStatusGraphic(src::Drivers* drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter) :
+SubsystemStatusGraphic::SubsystemStatusGraphic(src::Drivers &drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter) :
 GraphicHelper(refSerialTransmitter),
-      drivers(drivers) {}
+      drivers(&drivers) {
+
+      }
 
 modm::ResumableResult<bool> SubsystemStatusGraphic::sendInitialGraphics() {
+    // not actually an error
+    #ifdef __INTELLISENSE__
+        #pragma diag_suppress 1227
+    #endif
     RF_BEGIN(0);
+    #ifdef __INTELLISENSE__
+        #pragma diag_default 1227
+    #endif
 
-    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+    //RF_RETURN_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+    // RF_END_RETURN_CALL();
+    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
 
     RF_END();
 }
 
 modm::ResumableResult<bool> SubsystemStatusGraphic::update() {
+    // not actually an error
     RF_BEGIN(1);
 
-    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
 
     RF_END();
 }

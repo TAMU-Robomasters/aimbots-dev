@@ -5,7 +5,10 @@
 namespace src::GUI {
 
 GUI_DisplayCommand::GUI_DisplayCommand(src::Drivers &drivers,GUI_DisplaySubsystem &GUI_Display) :
-Command(), drivers(drivers), refSerialTransmitter(&drivers) {
+Command(), drivers(drivers), refSerialTransmitter(&drivers), subsystemStatGraphics(drivers, refSerialTransmitter) {
+    
+    
+
     addSubsystemRequirement(&GUI_Display);
 
     
@@ -16,6 +19,7 @@ void GUI_DisplayCommand::initialize() {
     
     restart();
     
+    subsystemStatGraphics.initialize();
     //Initialize other drawing commands here
 }
 
@@ -28,11 +32,11 @@ bool GUI_DisplayCommand::run() {
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
-    //PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    PT_CALL(subsystemStatGraphics.sendInitialGraphics());
 
     while (true)
     {
-        //PT_CALL(booleanHudIndicators.update());
+        PT_CALL(subsystemStatGraphics.update());
         PT_YIELD();
     }
     PT_END();
