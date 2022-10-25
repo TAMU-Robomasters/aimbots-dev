@@ -11,15 +11,25 @@
 using namespace std;
 using namespace std::chrono;
 
-#define DEBUG false
+#define DEBUG true
 
 #define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
 #define PRECISION_OF_DERIVATIVE (complex<double>)(1e-10,1e-10)  //the precision used when finding slope using the def of a derivative
-#define ALLOWED_ITERATIONS 30  //the number of allowed_iterations until divergency is assumed
+#define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
 #define UPPER_ACCEPTED_BOUND (complex<double>)30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 #define POLY_ORDER 5
 
 using std::cout, std::endl;
+
+complex<double> co[] = {1, 2, 3, 4, 1};
+
+complex<double> unit_func4(complex<double>* coeffs, complex<double> time){
+    return (coeffs[0]*(time)*(time)*(time)*(time) + coeffs[1]*(time)*(time)*(time) + coeffs[2]*(time)*(time) + coeffs[3]*time + coeffs[4]);
+}
+
+complex<double> unit_func(complex<double> time){
+    return unit_func4(co, time);
+}
 
 complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
     return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
@@ -50,7 +60,7 @@ complex<double> find_next_root(complex<double> (*func)(complex<double>), complex
         all_found = true;
         return DBL_MAX;
     }
-    if(DEBUG) cout << "number of iterations: " << iterations << endl << endl;
+    if(DEBUG) cout << endl << "number of iterations: " << iterations << endl;
     return x;
 }
 
@@ -84,9 +94,11 @@ double get_priority_root(vector<complex<double>> roots){
         }
     }
     BubbleSort(reals);
-    if(reals.at(0) >= 30){
+    cout << "reals size: " << reals.size() << endl;
+    if(reals.size() == 0 || reals.at(0) >= 30){
         return -1;
     }
+    
     return reals.at(0);
 }
 
@@ -102,8 +114,8 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
     */
 
     while(all_found == false){
-        complex<double> root = find_next_root(func, estimate1, roots, all_found);
-        if(DEBUG) cout << "root found: " << root << endl;
+        complex<double> root = find_next_root(func, estimate, roots, all_found);
+        if(DEBUG) cout << "root found: " << root << endl << endl;
         if(all_found == true){
             break;
         } else{
@@ -128,7 +140,7 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 int main(){
     auto start = high_resolution_clock::now();
 
-    double root = deep_impact(&example_func, (complex<double>)(1,0));
+    double root = deep_impact(&unit_func, (complex<double>)(1,0));
 
     auto stop = high_resolution_clock::now();
 
@@ -144,8 +156,11 @@ cannot self determine the order of the polynomial
     could return an all found if too many iterations pass
 
 ideally needs to find imaginary solutions
+    WIP, the complex number system should converge on the solution though it does not seem to
 
 needs to know to exit with error if there is no real positive solution
+    exits when it takes too long to find a solution and returns an invalid solution
+    if the only solutions are all invalid, the invalid solution is returned to be handled by the caller
 
 
 
