@@ -239,11 +239,11 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     left_front_yaw_db = targetRPMs[LF][1];
     left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
 
-    // targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    // right_front_yaw = (atanf(c / b) + 3 *M_PI/2) * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
-    // targetRPMs[RF][1] = right_front_yaw % 8191;
-    // right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
-    // right_front_yaw_db = targetRPMs[RF][1];
+    targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    right_front_yaw = (atanf(c / b) + 3 *M_PI/2) * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
+    targetRPMs[RF][1] = right_front_yaw % 8191;
+    right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
+    right_front_yaw_db = targetRPMs[RF][1];
 
     targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
     left_back_yaw = (atan2f(d, a) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
