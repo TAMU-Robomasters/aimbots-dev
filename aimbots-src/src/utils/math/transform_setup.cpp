@@ -4,6 +4,7 @@ namespace src::utils::MatrixHelper {
 
 // make Gimbal Transformation matrix
 // combine rotation matricies
+// Updtate Transformation matricies
 
 // Rotation Merge
 Matrix<float, 3, 3> merge_rotation_matrix(Matrix<float, 3, 3> R12, Matrix<float, 3, 3> R23) {
