@@ -40,7 +40,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -218,7 +218,8 @@ static constexpr bool PITCH_DIRECTION = false;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = M_PI;  // in radians
 
-static constexpr float LEFT_FRONT_YAW_OFFSET = 1311.0f;
-static constexpr float LEFT_BACK_YAW_OFFSET = 5446.0f;
-static constexpr float RIGHT_FRONT_YAW_OFFSET = 7000.0f;
-static constexpr float RIGHT_BACK_YAW_OFFSET = 6829.0f;
+static constexpr float LEFT_FRONT_YAW_OFFSET = 6000.0f;
+
+static constexpr float LEFT_BACK_YAW_OFFSET = 8191.0f - 6840.0f;
+static constexpr float RIGHT_FRONT_YAW_OFFSET = 4000.0f;
+static constexpr float RIGHT_BACK_YAW_OFFSET = 8191.0f - 5449.0f;
