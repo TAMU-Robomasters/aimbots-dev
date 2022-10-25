@@ -14,7 +14,7 @@ using namespace std::chrono;
 #define DEBUG true
 
 #define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE (complex<double>)(1e-10,1e-10)  //the precision used when finding slope using the def of a derivative
+#define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
 #define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
 #define UPPER_ACCEPTED_BOUND (complex<double>)30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 #define POLY_ORDER 5
@@ -39,7 +39,7 @@ complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x 
 
 complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots){
     complex<double> factor = 1;
-    for(int i = 0; i < roots.size(); i++){
+    for(unsigned int i = 0; i < roots.size(); i++){
         factor *= (input - roots.at(i));
     }
     return func(input) / factor;
@@ -49,9 +49,10 @@ complex<double> modified_function(complex<double> input, complex<double> (*func)
 complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found){ //takes as arg a function to evaluate roots for
     complex<double> x = estimate;
     int iterations = 0;
-    complex<double> factor = 1;
+    complex<double> precision (PRECISION_OF_DERIVATIVE, PRECISION_OF_DERIVATIVE);
+    //complex<double> factor = 1;
     while(abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
-        complex<double> slope = (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
+        complex<double> slope = (modified_function(x + precision, func, roots) - modified_function(x, func, roots)) / precision;
         x = x - (modified_function(x, func, roots) / slope);
         if(DEBUG) cout  << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl; 
         iterations++;
@@ -73,9 +74,9 @@ void Swap(double *a, double *b) {
 }
 
 void BubbleSort(vector<double> &array) {
-    for (int i = 0; i < array.size(); i++)
+    for (long long unsigned int i = 0; i < array.size(); i++)
     {
-        for(int j = 0; j < array.size() - 1; j++)
+        for(long long unsigned int j = 0; j < array.size() - 1; j++)
         {   
             if (array[j] > array[j+1])
                 Swap(&array[j], &array[j+1]);
@@ -86,7 +87,7 @@ void BubbleSort(vector<double> &array) {
 double get_priority_root(vector<complex<double>> roots){
     //return the lowest, positive, real root
     vector<double> reals;
-    for(int i = 0; i < roots.size(); i++){
+    for(long long unsigned int i = 0; i < roots.size(); i++){
         if(abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0){
             reals.push_back(30);
         } else if(real(roots.at(i)) <= ACCEPTED_ERROR){
@@ -94,7 +95,7 @@ double get_priority_root(vector<complex<double>> roots){
         }
     }
     BubbleSort(reals);
-    cout << "reals size: " << reals.size() << endl;
+    if(DEBUG) cout << "reals size: " << reals.size() << endl;
     if(reals.size() == 0 || reals.at(0) >= 30){
         return -1;
     }
@@ -102,9 +103,10 @@ double get_priority_root(vector<complex<double>> roots){
     return reals.at(0);
 }
 
-double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate){
+double deep_impact(complex<double> (*func)(complex<double>)){
     vector<complex<double>> roots;
     bool all_found = false;
+    complex<double> estimate(1,0);
 
     /*
     for(int i = 0; i < 5; i++){
@@ -140,7 +142,7 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 int main(){
     auto start = high_resolution_clock::now();
 
-    double root = deep_impact(&unit_func, (complex<double>)(1,0));
+    double root = deep_impact(&unit_func);
 
     auto stop = high_resolution_clock::now();
 
