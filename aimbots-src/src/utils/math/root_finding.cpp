@@ -13,12 +13,13 @@ using namespace std::chrono;
 
 #define DEBUG false
 
-#define ACCEPTED_ERROR 1e-10                                     // how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE (complex<double>)(1e-10, 1e-10)  // the precision used when finding slope using the def of a derivative
-#define ALLOWED_ITERATIONS 50                                    // the number of allowed_iterations until divergency is assumed
+#define ACCEPTED_ERROR 1e-10           // how far the root can deviate from the x-axis
+#define PRECISION_OF_DERIVATIVE 1e-10  // the precision used when finding slope using the def of a derivative
+#define ALLOWED_ITERATIONS 50          // the number of allowed_iterations until divergency is assumed
 #define UPPER_ACCEPTED_BOUND \
     (complex<double>)30  // the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30
                          // seconds of airtime
+
 #define POLY_ORDER 5
 
 using std::cout, std::endl;
@@ -53,10 +54,10 @@ complex<double> find_next_root(
     bool &all_found) {  // takes as arg a function to evaluate roots for
     complex<double> x = estimate;
     int iterations = 0;
-    complex<double> factor = 1;
+    complex<double> precision(PRECISION_OF_DERIVATIVE, PRECISION_OF_DERIVATIVE);
+    // complex<double> factor = 1;
     while (abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS) {
-        complex<double> slope =
-            (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
+        complex<double> slope = (modified_function(x + precision, func, roots) - modified_function(x, func, roots)) / precision;
         x = x - (modified_function(x, func, roots) / slope);
         if (DEBUG) cout << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl;
         iterations++;
@@ -86,7 +87,7 @@ void BubbleSort(vector<double> &array) {
 double get_priority_root(vector<complex<double>> roots) {
     // return the lowest, positive, real root
     vector<double> reals;
-    for (unsigned int i = 0; i < roots.size(); i++) {
+    for (long long unsigned int i = 0; i < roots.size(); i++) {
         if (abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0) {
             reals.push_back(30);
         } else if (real(roots.at(i)) <= ACCEPTED_ERROR) {
@@ -102,9 +103,10 @@ double get_priority_root(vector<complex<double>> roots) {
     return reals.at(0);
 }
 
-double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate) {
+double deep_impact(complex<double> (*func)(complex<double>)) {
     vector<complex<double>> roots;
     bool all_found = false;
+    complex<double> estimate(1, 0);
 
     /*
     for(int i = 0; i < 5; i++){
@@ -141,6 +143,7 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 //     double root = deep_impact(&unit_func, (complex<double>)(1, 0));
 
 //     auto stop = high_resolution_clock::now();
+double root = deep_impact(&unit_func);
 
 //     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 //     cout << "runtime in microseconds " << duration.count() << endl;
