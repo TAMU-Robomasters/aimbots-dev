@@ -1,11 +1,11 @@
-#include <iostream>
-#include <iomanip>
-#include <math.h>
 #include <float.h>
+#include <math.h>
+
 #include <algorithm>
 #include <chrono>
 #include <complex>
-
+#include <iomanip>
+#include <iostream>
 #include <vector>
 
 using namespace std;
@@ -49,10 +49,9 @@ complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x 
     return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
 }
 
-
-complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots){
+complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots) {
     complex<double> factor = 1;
-    for(unsigned int i = 0; i < roots.size(); i++){
+    for (unsigned int i = 0; i < roots.size(); i++) {
         factor *= (input - roots.at(i));
     }
     return func(input) / factor;
@@ -80,11 +79,9 @@ complex<double> find_next_root(complex<double> (*func)(complex<double>), vector<
         all_found = true;
         return DBL_MAX;
     }
-    if(DEBUG) cout << endl << "number of iterations: " << iterations << endl;
+    if (DEBUG) cout << endl << "number of iterations: " << iterations << endl;
     return x;
 }
-
-
 
 void Swap(double *a, double *b) {
     double temp = *a;
@@ -93,12 +90,9 @@ void Swap(double *a, double *b) {
 }
 
 void BubbleSort(vector<double> &array) {
-    for (long long unsigned int i = 0; i < array.size(); i++)
-    {
-        for(long long unsigned int j = 0; j < array.size() - 1; j++)
-        {   
-            if (array[j] > array[j+1])
-                Swap(&array[j], &array[j+1]);
+    for (unsigned int i = 0; i < array.size(); i++) {
+        for (unsigned int j = 0; j < array.size() - 1; j++) {
+            if (array[j] > array[j + 1]) Swap(&array[j], &array[j + 1]);
         }
     }
 }
@@ -113,14 +107,14 @@ double get_priority_root(vector<complex<double>> roots){ //return the lowest, po
         }
     }
     BubbleSort(reals);
-    if(DEBUG) cout << "reals size: " << reals.size() << endl;
-    if(reals.size() == 0 || reals.at(0) >= 30){
+    if (DEBUG) cout << "reals size: " << reals.size() << endl;
+    if (reals.size() == 0 || reals.at(0) >= 30) {
         return -1;
     }
     return reals.at(0);
 }
 
-double deep_impact(complex<double> (*func)(complex<double>)){
+double deep_impact(complex<double> (*func)(complex<double>)) {
     vector<complex<double>> roots;
     bool all_found = false;
 
@@ -129,7 +123,7 @@ double deep_impact(complex<double> (*func)(complex<double>)){
         if(DEBUG) cout << "root found: " << root << endl << endl;
         if(all_found == true){
             break;
-        } else{
+        } else {
             roots.push_back(root);
         }
         if(DEBUG){
@@ -144,6 +138,8 @@ double deep_impact(complex<double> (*func)(complex<double>)){
     
 }
 
+// int main() {
+//     auto start = high_resolution_clock::now();
 
 
 /*
@@ -199,7 +195,7 @@ deep impact calls root_finder and keeps a list of all found roots
 
 root_finder iteratively finds roots of polynomials using newtons algorithm
 
-root_finder is sped up by dividing out already found roots 
+root_finder is sped up by dividing out already found roots
 
 root_finder returns a found root to deep_impact
 
