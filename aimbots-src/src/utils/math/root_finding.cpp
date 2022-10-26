@@ -11,29 +11,42 @@
 using namespace std;
 using namespace std::chrono;
 
-#define DEBUG true
+#define DEBUG false  //sets print statements
 
 #define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
 #define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
 #define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
-#define UPPER_ACCEPTED_BOUND (complex<double>)30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
-#define POLY_ORDER 5
+#define UPPER_ACCEPTED_BOUND 30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 
 using std::cout, std::endl;
 
-complex<double> co[] = {1, 2, 3, 4, 1};
+int curr_unit_test = 0;
+vector<vector<int>> testing_coeffs {
+    {-9, -3, 4, -10, -1},
+    {-6, 8, 8, -8, -6},
+    {-5, -5, -9, -3, -9}, 
+    {1, 5, -8, -3, 6},
+    {1, -6, -8, 3, 2},
+    {-8, -9, 6, 8, 5},
+    {-3, -4, 1, 8, -1},
+    {2, -3, 9, 5, 4},
+    {-7, 1, -8, 3, 3},
+    {-6, -9, 1, 3, -2}
+};
+vector<vector<complex<double>>> unit_outputs;
 
-complex<double> unit_func4(complex<double>* coeffs, complex<double> time){
-    return (coeffs[0]*(time)*(time)*(time)*(time) + coeffs[1]*(time)*(time)*(time) + coeffs[2]*(time)*(time) + coeffs[3]*time + coeffs[4]);
+complex<double> unit_func4(vector<int> coeffs, complex<double> time){
+    return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
 }
 
 complex<double> unit_func(complex<double> time){
-    return unit_func4(co, time);
+    return unit_func4(testing_coeffs.at(curr_unit_test), time);
+    //return 0;
+    //return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
 }
 
 complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
     return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
-    //return (4 * pow(time, 4)) - (2 * pow(time, 3)) - (4 * pow(time, 2)) + time - 3;
 }
 
 
@@ -46,18 +59,24 @@ complex<double> modified_function(complex<double> input, complex<double> (*func)
 }
 
 
-complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found){ //takes as arg a function to evaluate roots for
-    complex<double> x = estimate;
+complex<double> find_next_root(complex<double> (*func)(complex<double>), vector<complex<double>> roots, bool &all_found){ //takes as arg a function to evaluate roots for
+    complex<double> x (rand(), rand());
     int iterations = 0;
     complex<double> precision (PRECISION_OF_DERIVATIVE, PRECISION_OF_DERIVATIVE);
-    //complex<double> factor = 1;
-    while(abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
+
+    if(DEBUG) cout << "entered find_next_root" << endl;
+    if(DEBUG) cout << abs((double)real(modified_function(x, func, roots))) << endl;
+
+    while(abs((double)real(modified_function(x, func, roots))) > (double)ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
+
         complex<double> slope = (modified_function(x + precision, func, roots) - modified_function(x, func, roots)) / precision;
         x = x - (modified_function(x, func, roots) / slope);
+
         if(DEBUG) cout  << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl; 
+
         iterations++;
     }
-    if((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > real(UPPER_ACCEPTED_BOUND)) || (real(x) < -real(UPPER_ACCEPTED_BOUND))){
+    if((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > UPPER_ACCEPTED_BOUND) || (real(x) < -UPPER_ACCEPTED_BOUND)){
         all_found = true;
         return DBL_MAX;
     }
@@ -84,13 +103,12 @@ void BubbleSort(vector<double> &array) {
     }
 }
 
-double get_priority_root(vector<complex<double>> roots){
-    //return the lowest, positive, real root
+double get_priority_root(vector<complex<double>> roots){ //return the lowest, positive, real root
     vector<double> reals;
-    for(long long unsigned int i = 0; i < roots.size(); i++){
-        if(abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0){
+    for(size_t i = 0; i < roots.size(); i++){
+        if((abs((double)imag(roots.at(i))) > ((double)ACCEPTED_ERROR * 2)) || (real(roots.at(i)) < 0)){
             reals.push_back(30);
-        } else if(real(roots.at(i)) <= ACCEPTED_ERROR){
+        } else{
             reals.push_back(real(roots.at(i)));
         }
     }
@@ -99,73 +117,81 @@ double get_priority_root(vector<complex<double>> roots){
     if(reals.size() == 0 || reals.at(0) >= 30){
         return -1;
     }
-    
     return reals.at(0);
 }
 
 double deep_impact(complex<double> (*func)(complex<double>)){
     vector<complex<double>> roots;
     bool all_found = false;
-    complex<double> estimate(1,0);
-
-    /*
-    for(int i = 0; i < 5; i++){
-        roots.push_back(find_next_root(func, estimate, roots, all_found));
-        cout << roots.back() << " is a root and all_found is " << all_found << endl;
-    }
-    */
 
     while(all_found == false){
-        complex<double> root = find_next_root(func, estimate, roots, all_found);
+        complex<double> root = find_next_root(func, roots, all_found);
         if(DEBUG) cout << "root found: " << root << endl << endl;
         if(all_found == true){
             break;
         } else{
             roots.push_back(root);
         }
+        if(DEBUG){
+            for(size_t i = 0; i < roots.size(); i++){
+                cout << roots.at(i) << " ";
+            } cout << endl;
+        }
     }
+    unit_outputs.push_back(roots);
     
-    double priority = get_priority_root(roots);
-    return priority;
-    if(priority == -1){
-        perror("No valid trajectory");
-        exit(1);
-    } else{
-        return priority;
-    }
-    
-    return 1;
+    return get_priority_root(roots);
     
 }
 
 
+
+/*
 int main(){
+    double r;
     auto start = high_resolution_clock::now();
 
-    double root = deep_impact(&unit_func);
+    for(int i = 0; i < 10; i++){
+        auto start1 = high_resolution_clock::now();
+        r = deep_impact(&unit_func);
+        auto stop1 = high_resolution_clock::now();
+        auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop1 - start1);
+        cout << "runtime in microseconds " << duration1.count() << " on run " << i << endl;
+        //cout << deep_impact(&unit_func) << " was the found root on test " << curr_unit_test << endl;
+        curr_unit_test++;
+    }
 
     auto stop = high_resolution_clock::now();
-
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     cout << "runtime in microseconds " << duration.count() << endl;
-
-    cout << "the final root is " << root << endl;
+    cout << r << endl;
+    
+    for(int i = 0; i < unit_outputs.size(); i++){
+        cout << i << endl;
+        for(int j = 0; j < unit_outputs.at(i).size(); j++){
+            cout << unit_outputs.at(i).at(j) << " ";
+        } cout << endl << endl;
+    }
+    
+    //if(DEBUG) cout << "the final root is " << root << endl;
     return 0;
 }
+*/
 
 /*
 cannot self determine the order of the polynomial
-    could return an all found if too many iterations pass
+    returns an all found boolean if too many iterations pass
 
 ideally needs to find imaginary solutions
-    WIP, the complex number system should converge on the solution though it does not seem to
+    the complex number system converges on both real and imaginary solutions
 
 needs to know to exit with error if there is no real positive solution
     exits when it takes too long to find a solution and returns an invalid solution
     if the only solutions are all invalid, the invalid solution is returned to be handled by the caller
+    note: the invalid solution is hardcoded as -1, because this represents a time it should be clear that is not valid
 
 
-
+High level explainer:
 
 deep_impact recieves an estimate and the function
 

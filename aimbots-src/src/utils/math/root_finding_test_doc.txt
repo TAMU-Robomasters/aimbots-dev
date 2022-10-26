@@ -1,0 +1,57 @@
+Inputs provided for unit testing in the format
+	Ax^4 + Bx^3 + Cx^2 + Dx + E
+
+    A   B   C   D   E
+0: -9  -3   4 -10  -1
+1: -6   8   8  -8  -6
+2: -5  -5  -9  -3  -9
+3:  1   5  -8  -3   6
+4:  1  -6  -8   3   2
+5: -8  -9   6   8   5
+6: -3  -4   1   8  -1
+7:  2  -3   9   5   4
+7: -7   1  -8   3   3
+9: -6  -9   1   3  -2
+
+Real root values for the respective functions
+0: -1.29177, -.0963
+1: none
+2: none
+3: -6.1891, -.862
+4: -1.2572, -.389, .5788, 7.0663
+5: -1.3811, 1.047
+6: 1.0628, .1241
+7: none
+8: -.4237, .69
+9: none
+
+Expected approximate returns from deep_impact unit testing
+0: -1
+1: -1
+2: -1
+3: -1
+4: .5788
+5: 1.047
+6: .1241
+7: -1
+8: .69
+9: -1
+
+Speed test outcomes (all results were correct) in microseconds
+    10 function tests:
+        2749
+        2366
+        2769
+        3250
+        2305
+    single function tests:
+        590
+        258
+        244
+        247
+        245
+        290
+        304
+        342
+        279
+        281
