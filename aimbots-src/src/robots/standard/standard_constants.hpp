@@ -272,38 +272,3 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
 static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
-
-
-/**
- * @brief Standard Rotation and Distance/Position matrixies 
- */
-
-float R_cam2gimb[9] = {1, 0, 0,
-                       0, 1, 0,
-                       0, 0, 1};
-float P_cam2gimb[3] = {1, 2, 3};
-
-float R_gimb2cam[9] = {1, 0, 0,
-                       0, 1, 0,
-                       0, 0, 1};
-float P_gimb2cam[3] = {-1,-2,-3};
-
-float R_chas2gimb[9] = {1, 0, 0,
-                        0, 1, 0,
-                        0, 0, 1};
-float P_chas2gimb[3] = {1, 2, 3};
-
-float R_gimb2chas[9] = {1, 0, 0,
-                        0, 1, 0,
-                        0, 0, 1};
-float P_gimb2chas[3] = {-1,-2,-3};
-
-float R_chas2field[9] = {1, 0, 0,
-                         0, 1, 0,
-                         0, 0, 1};
-float P_chas2field[3] = {1, 2, 3};
-
-float R_field2chas[9] = {1, 0, 0,
-                         0, 1, 0,
-                         0, 0, 1};
-float P_field2chas[3] = {-1,-2,-3};
