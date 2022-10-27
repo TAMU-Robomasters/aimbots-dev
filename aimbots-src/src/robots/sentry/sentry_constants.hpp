@@ -222,3 +222,38 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  * we start slowing down translational speed.
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
+
+
+/**
+ * @brief Sentry Rotation and Distance/Position matrixies 
+ */
+
+float R_cam2gimb[9] = {1, 0, 0,
+                       0, 1, 0,
+                       0, 0, 1};
+float P_cam2gimb[3] = {1, 2, 3};
+
+float R_gimb2cam[9] = {1, 0, 0,
+                       0, 1, 0,
+                       0, 0, 1};
+float P_gimb2cam[3] = {-1,-2,-3};
+
+float R_chas2gimb[9] = {1, 0, 0,
+                        0, 1, 0,
+                        0, 0, 1};
+float P_chas2gimb[3] = {1, 2, 3};
+
+float R_gimb2chas[9] = {1, 0, 0,
+                        0, 1, 0,
+                        0, 0, 1};
+float P_gimb2chas[3] = {-1,-2,-3};
+
+float R_chas2field[9] = {1, 0, 0,
+                         0, 1, 0,
+                         0, 0, 1};
+float P_chas2field[3] = {1, 2, 3};
+
+float R_field2chas[9] = {1, 0, 0,
+                         0, 1, 0,
+                         0, 0, 1};
+float P_field2chas[3] = {-1,-2,-3};
