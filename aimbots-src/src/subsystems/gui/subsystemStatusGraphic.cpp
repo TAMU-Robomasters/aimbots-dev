@@ -13,25 +13,20 @@ using namespace tap::communication::referee;
 
 namespace src::GUI {
 
-SubsystemStatusGraphic::SubsystemStatusGraphic(src::Drivers &drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter) :
+SubsystemStatusGraphic::SubsystemStatusGraphic(src::Drivers* drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter) :
 GraphicHelper(refSerialTransmitter),
-      drivers(&drivers) {
+      drivers(drivers) {
 
       }
 
 modm::ResumableResult<bool> SubsystemStatusGraphic::sendInitialGraphics() {
     // not actually an error
-    #ifdef __INTELLISENSE__
-        #pragma diag_suppress 1227
-    #endif
     RF_BEGIN(0);
-    #ifdef __INTELLISENSE__
-        #pragma diag_default 1227
-    #endif
 
     //RF_RETURN_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
     // RF_END_RETURN_CALL();
     RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[1]));
 
     RF_END();
 }
@@ -52,34 +47,32 @@ void SubsystemStatusGraphic::initialize() {
         //Gets a name and assigns it to graphicName
         getUnusedGraphicName(graphicName);
 
-        
-
         //Sets up the basic information for a graphic, needs to be called on every single one
         RefSerialTransmitter::configGraphicGenerics(&statusStaticGraphics[i].graphicData,
         graphicName,
         Tx::GRAPHIC_ADD,
         DEFAULT_GRAPHIC_LAYER,
-        Tx::GraphicColor::PURPLISH_RED);
+        Tx::GraphicColor::GREEN);
 
         //Specific graphic Configuration type
-        RefSerialTransmitter::configCircle(/*Width*/50,
-        /*X*/0,
-        /*Y*/0,
-        /*Radius*/50,
+        RefSerialTransmitter::configCircle(/*Width*/100,
+        /*X*/280,
+        /*Y*/760,
+        /*Radius*/250,
         &statusStaticGraphics[i].graphicData);
         
         //Couldn't get text on screen to work right, will revisit soon.
         
         
         //Gets a name and assigns it to graphicName
-        getUnusedGraphicName(graphicName);
+        //getUnusedGraphicName(graphicName);
 
         //Sets up the basic information for a graphic, needs to be called on every single one
-        RefSerialTransmitter::configGraphicGenerics(&statusStaticLabelGraphics[i].graphicData,
+        /*RefSerialTransmitter::configGraphicGenerics(&statusStaticLabelGraphics[i].graphicData,
         graphicName,
         Tx::GRAPHIC_ADD,
         DEFAULT_GRAPHIC_LAYER,
-        Tx::GraphicColor::GREEN);
+        Tx::GraphicColor::GREEN);*/
 
         //Specific graphic Configuration type
         //Char Size, Line Width, X, Y, Message (30 chars)

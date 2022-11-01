@@ -20,7 +20,7 @@ class SubsystemStatusGraphic : public GraphicHelper, protected modm::Resumable<2
 
 public:
 
-SubsystemStatusGraphic(src::Drivers &drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter);
+SubsystemStatusGraphic(src::Drivers* drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter);
 
 modm::ResumableResult<bool> sendInitialGraphics() override final;
 modm::ResumableResult<bool> update() override final;

@@ -37,12 +37,16 @@
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
+//
+#include "subsystems/gui/gui_display.hpp"
+#include "subsystems/gui/gui_display_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
+using namespace src::GUI;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -64,6 +68,8 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
+GUI_DisplaySubsystem gui(drivers());
+
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -93,6 +99,8 @@ OpenHopperCommand openHopperCommand2(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
+
+GUI_DisplayCommand guiDisplayCommand(drivers(),&gui);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -130,6 +138,11 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
+PressCommandMapping ctrlB(
+    drivers(), 
+    {&guiDisplayCommand},
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
+
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
 //     {&},
@@ -142,6 +155,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
+    drivers->commandScheduler.registerSubsystem(&gui);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -151,6 +165,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
+    gui.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -176,6 +191,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&ctrlB);
 }
 
 }  // namespace StandardControl

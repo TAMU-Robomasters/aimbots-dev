@@ -19,7 +19,7 @@ namespace src::GUI {
 
 class GUI_DisplayCommand : public tap::control::Command, ::modm::pt::Protothread {
     public:
-        GUI_DisplayCommand(src::Drivers &drivers, GUI_DisplaySubsystem &GUIDisplay);
+        GUI_DisplayCommand(src::Drivers* drivers, GUI_DisplaySubsystem* GUIDisplay);
 
     void initialize() override;
 
@@ -28,6 +28,8 @@ class GUI_DisplayCommand : public tap::control::Command, ::modm::pt::Protothread
     void end(bool) override {}
 
     bool isFinished() const override { return false; }
+
+    const char *getName() const override { return "client display"; }
     
     private:
         src::Drivers &drivers;

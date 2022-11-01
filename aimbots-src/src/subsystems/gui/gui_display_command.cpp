@@ -4,19 +4,16 @@
 
 namespace src::GUI {
 
-GUI_DisplayCommand::GUI_DisplayCommand(src::Drivers &drivers,GUI_DisplaySubsystem &GUI_Display) :
-Command(), drivers(drivers), refSerialTransmitter(&drivers), subsystemStatGraphics(drivers, refSerialTransmitter) {
-    
-    
+GUI_DisplayCommand::GUI_DisplayCommand(src::Drivers* drivers,GUI_DisplaySubsystem* GUI_Display) :
+Command(), drivers(*drivers), refSerialTransmitter(drivers), subsystemStatGraphics(drivers, refSerialTransmitter) {
 
-    addSubsystemRequirement(&GUI_Display);
-
-    
+    addSubsystemRequirement(GUI_Display);
 }
 
 //GUI command just runs a protothread (lightweight multithread) to allow for all graphic writing code to be run.
 void GUI_DisplayCommand::initialize() {
     
+    GraphicHelper::resetGraphicNameGenerator();
     restart();
     
     subsystemStatGraphics.initialize();
