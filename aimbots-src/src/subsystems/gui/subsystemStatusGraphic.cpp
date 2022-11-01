@@ -40,7 +40,7 @@ modm::ResumableResult<bool> SubsystemStatusGraphic::update() {
     // not actually an error
     RF_BEGIN(1);
 
-    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
+    //RF_CALL(statusStaticGraphics[0].draw());
 
     RF_END();
 }
@@ -60,15 +60,15 @@ void SubsystemStatusGraphic::initialize() {
         Tx::GraphicColor::PURPLISH_RED);
 
         //Specific graphic Configuration type
-        RefSerialTransmitter::configCircle(/*Width*/20,
-        /*X*/280,
-        /*Y*/760,
-        /*Radius*/15,
+        RefSerialTransmitter::configCircle(/*Width*/50,
+        /*X*/0,
+        /*Y*/0,
+        /*Radius*/50,
         &statusStaticGraphics[i].graphicData);
         
         //Couldn't get text on screen to work right, will revisit soon.
         
-        /*
+        
         //Gets a name and assigns it to graphicName
         getUnusedGraphicName(graphicName);
 
@@ -80,15 +80,15 @@ void SubsystemStatusGraphic::initialize() {
         Tx::GraphicColor::GREEN);
 
         //Specific graphic Configuration type
-        RefSerialTransmitter::configCharacterMsg(Char Size20,
-            Line Width11,
-            X500,
-            Y500,
-            The message in graphic (limited to 30 chars)sampleMsg,
+        RefSerialTransmitter::configCharacterMsg(/*Char Size*/20,
+            /*Line Width*/11,
+            /*X*/500,
+            /*Y*/500,
+            /*The message in graphic (limited to 30 chars)*/sampleMsg,
             &statusStaticLabelGraphics[i].graphicData);
 
 
-        */
+        
     }
 
 }

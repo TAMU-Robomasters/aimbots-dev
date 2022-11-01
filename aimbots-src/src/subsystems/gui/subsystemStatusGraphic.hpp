@@ -32,7 +32,7 @@ src::Drivers *drivers;
 
 static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 280;
 static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 760;
-static constexpr uint16_t BOOLEAN_HUD_INDICATOR_WIDTH = 17;
+static constexpr uint16_t BOOLEAN_HUD_INDICATOR_WIDTH = 40;
 
 Tx::Graphic1Message statusStaticGraphics[2];
 Tx::GraphicCharacterMessage statusStaticLabelGraphics[2];
