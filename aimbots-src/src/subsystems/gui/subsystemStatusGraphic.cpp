@@ -52,6 +52,8 @@ void SubsystemStatusGraphic::initialize() {
         //Gets a name and assigns it to graphicName
         getUnusedGraphicName(graphicName);
 
+        
+
         //Sets up the basic information for a graphic, needs to be called on every single one
         RefSerialTransmitter::configGraphicGenerics(&statusStaticGraphics[i].graphicData,
         graphicName,
@@ -80,12 +82,13 @@ void SubsystemStatusGraphic::initialize() {
         Tx::GraphicColor::GREEN);
 
         //Specific graphic Configuration type
-        RefSerialTransmitter::configCharacterMsg(/*Char Size*/20,
-            /*Line Width*/11,
-            /*X*/500,
-            /*Y*/500,
-            /*The message in graphic (limited to 30 chars)*/sampleMsg,
-            &statusStaticLabelGraphics[i].graphicData);
+        //Char Size, Line Width, X, Y, Message (30 chars)
+        /*RefSerialTransmitter::configCharacterMsg(20,
+            11,
+            500,
+            500,
+            sampleMsg,
+            &statusStaticLabelGraphics[i].graphicData);*/
 
 
         
