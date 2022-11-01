@@ -47,7 +47,7 @@ public:
      * Should be called continuously.
      *
      */
-    void updateConversion();
+    void updateEnemyInfo();
 
     /**
      * @brief Calculates best guess of current enemy position, velocity, and acceleration. Does not need to be called continuously.
@@ -58,8 +58,13 @@ public:
 private:
     src::Drivers* drivers;
     static const int BUFFER_SIZE = 10;  // prolly move this to constants at some point or something IDK
+    static int size;                    // for internal use to tell the prediction thing how many valid entries we actually have
 
     // buffer for XYZ + timestamp
     Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
+
+    // we want to scrub/ignore data entries that are too outdated... so this access function only returns the last such and such entries within a
+    // given time
+    enemyTimedPosition* getLastEntriesWithinTime(uint32_t time);
 };
 }  // namespace src::Informants
