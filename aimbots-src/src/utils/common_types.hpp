@@ -50,6 +50,8 @@ static constexpr float M3508_MAX_OUTPUT = 30000.0f;
 static constexpr float M2006_MAX_OUTPUT = 10000.0f;
 static constexpr float GM6020_MAX_OUTPUT = 16000.0f;
 
+static constexpr uint32_t MICROSECONDS_PER_SECOND = 1000000;
+
 using StockPID = modm::Pid<float>;
 using SmoothPID = src::utils::SmoothPIDWrapper;
 using SmoothPIDConfig = tap::algorithms::SmoothPidConfig;
