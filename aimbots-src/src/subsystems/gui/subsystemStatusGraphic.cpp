@@ -59,29 +59,26 @@ void SubsystemStatusGraphic::initialize() {
         /*X*/280,
         /*Y*/760,
         /*Radius*/250,
-        &statusStaticGraphics[i].graphicData);
-        
-        //Couldn't get text on screen to work right, will revisit soon.
-        
+        &statusStaticGraphics[i].graphicData);    
         
         //Gets a name and assigns it to graphicName
-        //getUnusedGraphicName(graphicName);
+        getUnusedGraphicName(graphicName);
 
         //Sets up the basic information for a graphic, needs to be called on every single one
-        /*RefSerialTransmitter::configGraphicGenerics(&statusStaticLabelGraphics[i].graphicData,
+        RefSerialTransmitter::configGraphicGenerics(&statusStaticLabelGraphics[i].graphicData,
         graphicName,
         Tx::GRAPHIC_ADD,
         DEFAULT_GRAPHIC_LAYER,
-        Tx::GraphicColor::GREEN);*/
+        Tx::GraphicColor::GREEN);
 
         //Specific graphic Configuration type
         //Char Size, Line Width, X, Y, Message (30 chars)
-        /*RefSerialTransmitter::configCharacterMsg(20,
+        RefSerialTransmitter::configCharacterMsg(20,
             11,
             500,
             500,
             sampleMsg,
-            &statusStaticLabelGraphics[i].graphicData);*/
+            &statusStaticLabelGraphics[i]);
 
 
         
