@@ -1,10 +1,12 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
 
-#include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
+
+#include "drivers.hpp"
 
 //#ifndef TARGET_ENGINEER
 
@@ -67,11 +69,7 @@ void RunShooterCommand::end(bool) {
     // No cleanup needed
 }
 
-bool RunShooterCommand::isReady() {
-    return true;
-}
+bool RunShooterCommand::isReady() { return true; }
 
-bool RunShooterCommand::isFinished() const {
-    return false;
-}
+bool RunShooterCommand::isFinished() const { return false; }
 }  // namespace src::Shooter
