@@ -138,10 +138,10 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-PressCommandMapping ctrlB(
+PressCommandMapping ctrlC(
     drivers(), 
     {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));
 
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
@@ -191,7 +191,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&ctrlB);
+    drivers->commandMapper.addMap(&ctrlC);
 }
 
 }  // namespace StandardControl

@@ -28,6 +28,7 @@ bool GUI_DisplayCommand::run() {
     //Intentional error, ignore
     PT_BEGIN();
 
+    //Try commentting out this line next time
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
     PT_CALL(subsystemStatGraphics.sendInitialGraphics());
