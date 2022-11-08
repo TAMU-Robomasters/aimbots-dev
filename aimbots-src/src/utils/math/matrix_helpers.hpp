@@ -1,6 +1,8 @@
 #pragma once
 
 #include "utils/common_types.hpp"
+#include <complex>
+#include <vector>
 
 namespace src::utils::MatrixHelper {
 

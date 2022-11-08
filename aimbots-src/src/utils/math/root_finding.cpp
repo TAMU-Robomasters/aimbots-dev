@@ -1,3 +1,5 @@
+#include "root_finding.hpp"
+
 #include <float.h>
 #include <math.h>
 
