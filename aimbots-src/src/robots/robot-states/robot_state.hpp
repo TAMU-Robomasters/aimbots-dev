@@ -1,12 +1,8 @@
 #pragma once
+namespace src::robotStates {
+enum Color { RED = 0, BLUE = 1, UNKNOWN = 2 };
 
-enum Color {
-    RED = 0,
-    BLUE =1,
-    UNKNOWN = 2
-};
-
-class robot {
+class Robot {
 private:
     int number;
     int x, y, z;
@@ -15,9 +11,9 @@ private:
     Color color;
 
 public:
-    robot(int x, int y, int z, int number, int health, Color color);
-    robot();
-    ~robot();
+    Robot(int x, int y, int z, int number, int health, Color color);
+    Robot();
+    ~Robot();
 
     void setX(int x);
     void setY(int y);
@@ -32,3 +28,4 @@ public:
     int getNumber();
     Color getColor();
 };
+}  // namespace src::RobotStates
