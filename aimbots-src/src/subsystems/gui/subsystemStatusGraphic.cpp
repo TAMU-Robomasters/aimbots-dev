@@ -55,10 +55,10 @@ void SubsystemStatusGraphic::initialize() {
         Tx::GraphicColor::GREEN);
 
         //Specific graphic Configuration type
-        RefSerialTransmitter::configCircle(/*Width*/100,
+        RefSerialTransmitter::configCircle(/*Width*/40,
         /*X*/280,
         /*Y*/760,
-        /*Radius*/250,
+        /*Radius*/125,
         &statusStaticGraphics[i].graphicData);    
         
         //Gets a name and assigns it to graphicName
@@ -73,10 +73,10 @@ void SubsystemStatusGraphic::initialize() {
 
         //Specific graphic Configuration type
         //Char Size, Line Width, X, Y, Message (30 chars)
-        RefSerialTransmitter::configCharacterMsg(20,
-            11,
-            500,
-            500,
+        RefSerialTransmitter::configCharacterMsg(40,
+            50,
+            900,
+            760,
             sampleMsg,
             &statusStaticLabelGraphics[i]);
 
