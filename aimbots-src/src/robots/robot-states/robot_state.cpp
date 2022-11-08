@@ -1,6 +1,6 @@
 #include "robot_state.hpp"
-
-robot::robot(int x, int y, int z, int number, int health, Color color) {
+namespace src::robotStates {
+Robot::Robot(int x, int y, int z, int number, int health, Color color) {
     this->x = x;
     this->y = y;
     this->z = z;
@@ -10,35 +10,35 @@ robot::robot(int x, int y, int z, int number, int health, Color color) {
     this->color = color;
 }
 
-robot::robot() {
+Robot::Robot() {
     x = 0;
     y = 0;
     z = 0;
     number = -1;
 }
 
-robot::~robot() {}
+Robot::~Robot() {}
 
-void robot::setX(int x) { this->x = x; }
+void Robot::setX(int x) { this->x = x; }
 
-void robot::setY(int y) { this->y = y; }
+void Robot::setY(int y) { this->y = y; }
 
-void robot::setZ(int z) { this->z = z; }
+void Robot::setZ(int z) { this->z = z; }
 
-void robot::setHealth(int health) { this->health = health; }
+void Robot::setHealth(int health) { this->health = health; }
 
-int robot::getX() { return this->x; }
+int Robot::getX() { return this->x; }
 
-int robot::getY() { return this->y; }
+int Robot::getY() { return this->y; }
 
-int robot::getZ() { return this->z; }
+int Robot::getZ() { return this->z; }
 
-int robot::getHealth() { return this->health; }
+int Robot::getHealth() { return this->health; }
 
-int robot::getNumber() { return this->number; }
+int Robot::getNumber() { return this->number; }
 
-void robot::setColor(Color color) { this->color = color; }
+void Robot::setColor(Color color) { this->color = color; }
 
-Color robot::getColor() { return this->color; }
+Color Robot::getColor() { return this->color; }
 
-
+}  // namespace src::robotStates
