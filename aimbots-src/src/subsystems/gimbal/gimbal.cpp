@@ -2,6 +2,8 @@
 
 #include <drivers.hpp>
 
+using std::vector, std::complex;
+
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
@@ -25,7 +27,9 @@ namespace src::Gimbal {
           currentChassisRelativeYawAngle(0.0f, 0.0f, M_TWOPI),
           currentChassisRelativePitchAngle(0.0f, 0.0f, M_TWOPI),
           targetChassisRelativeYawAngle(modm::toRadian(YAW_START_ANGLE)),
-          targetChassisRelativePitchAngle(modm::toRadian(PITCH_START_ANGLE)) {}
+          targetChassisRelativePitchAngle(modm::toRadian(PITCH_START_ANGLE)) {
+
+          }
 
     void GimbalSubsystem::initialize() {
         drivers->cvCommunicator.setGimbalSubsystem(this);
@@ -146,6 +150,21 @@ namespace src::Gimbal {
                    (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                    (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
             .getValue();
+    }
+
+    complex<double> GimbalSubsystem::calculatedFunction(complex<double> time){
+        return unit_func4(bulletDropCoEff, time);
+    }
+
+    float GimbalSubsystem::getAimAngles() {
+        
+        //Need to manually find the calcs for these.
+        bulletDropCoEff = {0,0,0,0,0};
+        double time = 0;
+        time = deep_impact(&calculatedFunction,1);
+        
+
+
     }
 
 }  // namespace src::Gimbal

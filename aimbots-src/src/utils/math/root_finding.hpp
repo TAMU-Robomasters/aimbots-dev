@@ -3,6 +3,7 @@
 #include "utils/common_types.hpp"
 #include <complex>
 #include <vector>
+#include <gimbal.hpp>
 
 double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate);
 

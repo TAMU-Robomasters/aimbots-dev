@@ -6,6 +6,9 @@
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
+#include <vector>
+#include <complex>
+#include <utils/math/root_finding.hpp>
 
 namespace src {
 class Drivers;
@@ -30,6 +33,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
+
+    float getAimAngles(/*Insert Struct Here*/);
+    complex<double> calculatedFunction(complex<double> time);
 
     inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
     inline void setTargetChassisRelativeYawAngle(AngleUnit unit, float angle) {
@@ -77,6 +83,8 @@ class GimbalSubsystem : public tap::control::Subsystem {
 
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
+
+    vector<complex<double>> bulletDropCoEff;
 };
 
 }  // namespace src::Gimbal
