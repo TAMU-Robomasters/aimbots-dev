@@ -23,10 +23,11 @@ modm::ResumableResult<bool> SubsystemStatusGraphic::sendInitialGraphics() {
     // not actually an error
     RF_BEGIN(0);
 
-    //RF_RETURN_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
-    // RF_END_RETURN_CALL();
     RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[0]));
-    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[1]));
+    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticGraphics[1]));
+
+    RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticLabelGraphics[0]));
+    //RF_CALL(refSerialTransmitter.sendGraphic(&statusStaticLabelGraphics[1]));
 
     RF_END();
 }

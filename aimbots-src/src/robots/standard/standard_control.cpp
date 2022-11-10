@@ -138,10 +138,12 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-PressCommandMapping ctrlC(
+
+//This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
+/*PressCommandMapping ctrlC(
     drivers(), 
     {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
 
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
@@ -191,7 +193,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&ctrlC);
+    //drivers->commandMapper.addMap(&ctrlC);
 }
 
 }  // namespace StandardControl
