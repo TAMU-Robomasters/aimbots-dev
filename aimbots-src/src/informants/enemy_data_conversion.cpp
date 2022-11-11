@@ -33,7 +33,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
 
     enemyTimedPosition* validPoints = getLastEntriesWithinTime(0.5);  // arbitrary value rn
     enemyTimedPosition derivatives[size];
-    for (int n = 1; n < size - 1; n++)  // calculate and save nth order derivatives
+    for (int n = 1; n < size; n++)  // calculate and save nth order derivatives
     {
         // calculate nth order derivative
         for (int index = 0; index < size - n; index++) {
@@ -61,10 +61,12 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // iterate through our n derivatives to generate position prediction
     // x = x0 + v0t + a0t^2 / 2 + j0t^3 / 3 .. etc etc
     finalGuess_position = finalGuess_position + derivatives[0].position;  // the 0th derivative .. position
+    int the_number = 1;  // within the for loop this should be equal to factorial(n)
     for (int n = 1; n < size; n++) {
         // integrals for position
         float diff[3];
-        float pos_dt = pow(dt_uS, n) / n;  // dt for position use
+        the_number *= n;
+        float pos_dt = pow(dt_uS, n) / the_number;  // dt for position use
         diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * pos_dt;
         diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * pos_dt;
         diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * pos_dt;
@@ -72,7 +74,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
         finalGuess_position = finalGuess_position + nth_thing;
         // integrals for velocity
         if (n >= 2) {
-            float velo_dt = pow(dt_uS, n - 1) / (n - 1);  // dt for velocity use
+            float velo_dt = pow(dt_uS, n - 1) / (the_number - 1);  // dt for velocity use
             diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * velo_dt;
             diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * velo_dt;
             diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * velo_dt;
@@ -80,7 +82,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
             finalGuess_velocity = finalGuess_velocity + nth_thing;
         }
         if (n >= 3) {
-            float accel_dt = pow(dt_uS, n - 2) / (n - 2);  // dt for acceleration use
+            float accel_dt = pow(dt_uS, n - 2) / (the_number - 2);  // dt for acceleration use
             diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * accel_dt;
             diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * accel_dt;
             diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * accel_dt;

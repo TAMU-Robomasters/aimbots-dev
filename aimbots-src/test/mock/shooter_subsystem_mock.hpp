@@ -1,11 +1,12 @@
 #include <gmock/gmock.h>
 
-#include "drivers.hpp"
 #include "subsystems/shooter/shooter.hpp"
+
+#include "drivers.hpp"
 
 namespace src::mock {
 class shooterSubsystemMock : public src::Shooter::ShooterSubsystem {
-   public:
+public:
     shooterSubsystemMock(src::Drivers *drivers);
     virtual ~shooterSubsystemMock();
 
