@@ -153,17 +153,72 @@ namespace src::Gimbal {
     }
 
     complex<double> GimbalSubsystem::calculatedFunction(complex<double> time){
-        return unit_func4(bulletDropCoEff, time);
+        return func4(bulletDropCoEff, time);
     }
 
-    float GimbalSubsystem::getAimAngles() {
-        
+    GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles() {
+        using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+
+        float px = 0;
+        float py = 0;
+        float pz = 0;
+
+        float vx = 0;
+        float vy = 0;
+        float vz = 0;
+
+        float ax = 0;
+        float ay = 0;
+        float az = 0;
+
+        float L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
+        float v0 = 0; //Shooter Velocity Constant goes here
+
+        //This was all copied from run_shooter_command.cpp
+        //Reads the shooter connected to the ref system and pulls the current speed limit
+        auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
+        auto launcherID = refSysRobotTurretData.launchMechanismID;
+        switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
+                           // #if defined(TARGET_STANDARD) || defined(TARGET_SENTRY)
+            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+                v0 = refSysRobotTurretData.barrelSpeedLimit17ID1;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+                v0 = refSysRobotTurretData.barrelSpeedLimit17ID2;
+                break;
+            }
+            // #endif
+            case RefSerialRxData::MechanismID::TURRET_42MM: {
+                v0 = refSysRobotTurretData.barrelSpeedLimit42;
+                break;
+            }
+            default:
+                break;
+        }
+
         //Need to manually find the calcs for these.
-        bulletDropCoEff = {0,0,0,0,0};
+        //Created with G as 9.8m/s
+        bulletDropCoEff = {(0.25*ax*ax) + (0.25*ay*ay) + (0.25*az*az) + (4.9*az) + (24.01) //t^4
+            ,(vx*ax) + (vy*ay) + (vz*az) + (9.8*vz) // t^3
+            ,(vx*vx) + (vy*vy) + (vz*vz) + (ax*px) + (ay*py) + (az*pz) - (v0*v0) + (9.8*pz) //t^2
+            ,(2*vx*px) + (2*vy*py) + (2*vz*pz) - (2*L*v0) //t
+            ,(px*px) + (py*py) + (pz*pz) - (L*L) //1
+            };
+
         double time = 0;
         time = deep_impact(&calculatedFunction,1);
-        
 
+        //float pitch = 0; //phi +up
+        //float yaw = 0; //theta +ccw
+
+        aimAngles a;
+
+        a.pitch = asin((pz+vz*time+0.5*time*time*(az+9.8))/(L*v0*time));
+
+        a.yaw = acos((py+vy*time+0.5*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
+
+        return a;
 
     }
 

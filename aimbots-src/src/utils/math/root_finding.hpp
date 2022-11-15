@@ -1,9 +1,12 @@
 #pragma once
 
 #include "utils/common_types.hpp"
+#include "src/subsystems/gimbal/gimbal.hpp"
+//#include "gimbal.hpp"
 #include <complex>
 #include <vector>
-#include <gimbal.hpp>
+
+using namespace src::Gimbal;
 
 double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate);
 
@@ -17,3 +20,4 @@ complex<double> modified_function(complex<double> input, complex<double> (*func)
 complex<double> example_func(complex<double> time);
 complex<double> unit_func(complex<double> time);
 complex<double> unit_func4(vector<int> coeffs, complex<double> time);
+complex<double> func4(vector<double> coeffs, complex<double> time);

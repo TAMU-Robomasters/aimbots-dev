@@ -22,6 +22,11 @@ constexpr inline float constAbs(float value) {
 
 class GimbalSubsystem : public tap::control::Subsystem {
    public:
+
+    struct aimAngles {
+        float pitch, yaw;
+    };
+
     GimbalSubsystem(src::Drivers*);
 
     void initialize() override;
@@ -34,7 +39,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
 
-    float getAimAngles(/*Insert Struct Here*/);
+    aimAngles getAimAngles(/*Insert Struct Here*/);
     complex<double> calculatedFunction(complex<double> time);
 
     inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
@@ -84,7 +89,9 @@ class GimbalSubsystem : public tap::control::Subsystem {
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
 
-    vector<complex<double>> bulletDropCoEff;
+    vector<double> bulletDropCoEff;
+
+    
 };
 
 }  // namespace src::Gimbal

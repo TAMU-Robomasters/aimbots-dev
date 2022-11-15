@@ -158,6 +158,8 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;  // meters!!1!
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
+static constexpr float GIMBAL_BARREL_LENGTH = 0.13f;
+
 static constexpr float left_sentry_rail_pole_location[3] = {-4.375f, -0.960f, 0.0f};
 static const Matrix<float, 1, 3> left_sentry_rail_pole_location_matrix(left_sentry_rail_pole_location);
 // x, y, z in meters

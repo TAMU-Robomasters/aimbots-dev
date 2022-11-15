@@ -12,6 +12,7 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace src::Gimbal;
 
 #define DEBUG false  //sets print statements
 
@@ -38,6 +39,10 @@ vector<vector<int>> testing_coeffs {
 vector<vector<complex<double>>> unit_outputs;
 
 complex<double> unit_func4(vector<int> coeffs, complex<double> time){
+    return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
+}
+
+complex<double> func4(vector<double> coeffs, complex<double> time){
     return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
 }
 
