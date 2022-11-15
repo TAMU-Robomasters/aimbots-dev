@@ -110,7 +110,7 @@
         "**/bower_components": true,
         "taproot/**": true,
     },
-    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.errorSquiggles": "EnabledIfIncludesResolve",
     "C_Cpp.default.includePath": [
         "aimbots-src/taproot/src",
         "aimbots-src/src",
