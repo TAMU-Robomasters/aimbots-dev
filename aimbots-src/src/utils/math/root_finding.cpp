@@ -1,6 +1,8 @@
 #include <float.h>
 #include <math.h>
 
+#include "root_finding.hpp"
+
 #include <algorithm>
 #include <chrono>
 #include <complex>
@@ -13,12 +15,10 @@ using namespace std::chrono;
 
 #define DEBUG false  //sets print statements
 
-#define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
-#define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
-#define UPPER_ACCEPTED_BOUND 30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 
 using std::cout, std::endl;
+
+vector<double> global_coeffs;
 
 int curr_unit_test = 0;
 vector<vector<int>> testing_coeffs {
@@ -35,19 +35,11 @@ vector<vector<int>> testing_coeffs {
 };
 vector<vector<complex<double>>> unit_outputs;
 
-complex<double> unit_func4(vector<int> coeffs, complex<double> time){
+complex<double> unit_func4(vector<double> coeffs, complex<double> time){
     return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
 }
 
-complex<double> unit_func(complex<double> time){
-    return unit_func4(testing_coeffs.at(curr_unit_test), time);
-    //return 0;
-    //return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
-}
 
-complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
-    return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
-}
 
 complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots) {
     complex<double> factor = 1;
@@ -137,6 +129,20 @@ double deep_impact(complex<double> (*func)(complex<double>)) {
     return get_priority_root(roots);
     
 }
+
+complex<double> equation(complex<double> time){
+    return (((complex<double>)global_coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)global_coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)global_coeffs.at(2))*(time)*(time) + ((complex<double>)global_coeffs.at(3))*time + ((complex<double>)global_coeffs.at(4)));
+}
+
+double find_root(vector<double> coeffs){
+    for(int i = 0; i < (int)coeffs.size(); i++){
+        global_coeffs.push_back(coeffs.at(i));
+    }
+
+    return deep_impact(&equation);
+}
+
+
 
 // int main() {
 //     auto start = high_resolution_clock::now();
