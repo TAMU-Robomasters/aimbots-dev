@@ -16,7 +16,7 @@ void EnemyDataConversion::updateEnemyInfo() {
         uint32_t timestamp_uS = tap::arch::clock::getTimeMicroseconds();
 
         enemyTimedPosition currentData;
-        currentData.position = Matrix<float, 1, 3>(enemyPos);
+        currentData.position = Matrix<float, 3, 1>(enemyPos);
         currentData.timestamp_uS = timestamp_uS;
 
         // save to buffer, overwriting oldest data as necessary
@@ -31,9 +31,10 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // we'll make an array with [position, velocity, acceleration, jerk, snap, crackle, pop] where each entry is the value at latest time (which is
     // not necessarily current time)
 
-    enemyTimedPosition* validPoints = getLastEntriesWithinTime(0.5);  // arbitrary value rn
+    enemyTimedPosition validPoints[BUFFER_SIZE];
+    getLastEntriesWithinTime(0.5, validPoints);  // arbitrary value rn
     enemyTimedPosition derivatives[size];
-    for (int n = 1; n < size - 1; n++)  // calculate and save nth order derivatives
+    for (int n = 1; n < size; n++)  // calculate and save nth order derivatives
     {
         // calculate nth order derivative
         for (int index = 0; index < size - n; index++) {
@@ -41,12 +42,12 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
             enemyTimedPosition val2 = validPoints[index + 1];
             uint32_t dt_uS = val1.timestamp_uS - val2.timestamp_uS;
             // the names might be 'dx' but this is actually 'dx/dt'
-            float dx = (val1.position[0][X_AXIS] - val2.position[0][X_AXIS]) / dt_uS / MICROSECONDS_PER_SECOND;
-            float dy = (val1.position[0][Y_AXIS] - val2.position[0][Y_AXIS]) / dt_uS / MICROSECONDS_PER_SECOND;
-            float dz = (val1.position[0][Z_AXIS] - val2.position[0][Z_AXIS]) / dt_uS / MICROSECONDS_PER_SECOND;
+            float dx = (val1.position[X_AXIS][0] - val2.position[X_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
+            float dy = (val1.position[Y_AXIS][0] - val2.position[Y_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
+            float dz = (val1.position[Z_AXIS][0] - val2.position[Z_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
             // overwrite data point with calculated derivative
             float diff[3] = {dx, dy, dz};
-            val1.position = Matrix<float, 1, 3>(diff);
+            val1.position = Matrix<float, 3, 1>(diff);
         }
         // save nth order derivative
         derivatives[n] = validPoints[0];
@@ -54,54 +55,69 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // do our approximation
     // latest data time to current time
     uint32_t dt_uS = tap::arch::clock::getTimeMicroseconds() - derivatives[0].timestamp_uS;
-    Matrix<float, 1, 3> finalGuess_position = Matrix<float, 1, 3>::zeroMatrix();
-    Matrix<float, 1, 3> finalGuess_velocity = Matrix<float, 1, 3>::zeroMatrix();
-    Matrix<float, 1, 3> finalGuess_acceleration = Matrix<float, 1, 3>::zeroMatrix();
+    Matrix<float, 3, 1> finalGuess_position = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> finalGuess_velocity = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> finalGuess_acceleration = Matrix<float, 3, 1>::zeroMatrix();
 
     // iterate through our n derivatives to generate position prediction
     // x = x0 + v0t + a0t^2 / 2 + j0t^3 / 3 .. etc etc
     finalGuess_position = finalGuess_position + derivatives[0].position;  // the 0th derivative .. position
+    int the_number = 1;  // within the for loop this should be equal to factorial(n)
     for (int n = 1; n < size; n++) {
         // integrals for position
         float diff[3];
-        float pos_dt = pow(dt_uS, n) / n;  // dt for position use
-        diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * pos_dt;
-        diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * pos_dt;
-        diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * pos_dt;
-        Matrix<float, 1, 3> nth_thing = Matrix<float, 1, 3>(diff);
+        the_number *= n;
+        float pos_dt = pow(dt_uS, n) / the_number;  // dt for position use
+        diff[X_AXIS] = derivatives[n].position[X_AXIS][0] * pos_dt;
+        diff[Y_AXIS] = derivatives[n].position[Y_AXIS][0] * pos_dt;
+        diff[Z_AXIS] = derivatives[n].position[Z_AXIS][0] * pos_dt;
+        Matrix<float, 3, 1> nth_thing = Matrix<float, 3, 1>(diff);
         finalGuess_position = finalGuess_position + nth_thing;
         // integrals for velocity
         if (n >= 2) {
-            float velo_dt = pow(dt_uS, n - 1) / (n - 1);  // dt for velocity use
-            diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * velo_dt;
-            diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * velo_dt;
-            diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * velo_dt;
-            nth_thing = Matrix<float, 1, 3>(diff);
+            float velo_dt = pow(dt_uS, n - 1) / (the_number - 1);  // dt for velocity use
+            diff[X_AXIS] = derivatives[n].position[X_AXIS][0] * velo_dt;
+            diff[Y_AXIS] = derivatives[n].position[Y_AXIS][0] * velo_dt;
+            diff[Z_AXIS] = derivatives[n].position[Z_AXIS][0] * velo_dt;
+            nth_thing = Matrix<float, 3, 1>(diff);
             finalGuess_velocity = finalGuess_velocity + nth_thing;
         }
         if (n >= 3) {
-            float accel_dt = pow(dt_uS, n - 2) / (n - 2);  // dt for acceleration use
-            diff[X_AXIS] = derivatives[n].position[0][X_AXIS] * accel_dt;
-            diff[Y_AXIS] = derivatives[n].position[0][Y_AXIS] * accel_dt;
-            diff[Z_AXIS] = derivatives[n].position[0][Z_AXIS] * accel_dt;
-            nth_thing = Matrix<float, 1, 3>(diff);
+            float accel_dt = pow(dt_uS, n - 2) / (the_number - 2);  // dt for acceleration use
+            diff[X_AXIS] = derivatives[n].position[X_AXIS][0] * accel_dt;
+            diff[Y_AXIS] = derivatives[n].position[Y_AXIS][0] * accel_dt;
+            diff[Z_AXIS] = derivatives[n].position[Z_AXIS][0] * accel_dt;
+            nth_thing = Matrix<float, 3, 1>(diff);
             finalGuess_acceleration = finalGuess_acceleration + nth_thing;
         }
     }
-    // after all that, we have a predicted position, velocity, acceleration, and the time of this prediction
     enemyTimedData enemyGuess;
-    enemyGuess.position = finalGuess_position;
-    enemyGuess.velocity = finalGuess_velocity;
-    enemyGuess.acceleration = finalGuess_acceleration;
+    
+    // final guess is transformed for now
+    Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
+    Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
+    Matrix<float, 3, 3> R_cam2gimb_matrix = Matrix<float, 3, 3>(R_cam2gimb);
+    Matrix<float, 3, 3>R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
+    // for Position we use T
+                                                    // remove last 1                                                // adds a 1 at end
+    enemyGuess.position = src::utils::MatrixHelper::P_crop_extend(T_gimb2chas*T_cam2gimb*src::utils::MatrixHelper::P_crop_extend(finalGuess_position));
+    // for Acceleration & Velocity we use R
+    enemyGuess.velocity = R_gimb2chas_matrix*R_cam2gimb_matrix*finalGuess_velocity;
+    enemyGuess.acceleration = R_gimb2chas_matrix*R_cam2gimb_matrix*finalGuess_acceleration;
+
+    // after all that, we have a predicted position, velocity, acceleration, and the time of this prediction
+    // enemyGuess.position = finalGuess_position;
+    // enemyGuess.velocity = finalGuess_velocity;
+    // enemyGuess.acceleration = finalGuess_acceleration;
     enemyGuess.timestamp_uS = tap::arch::clock::getTimeMicroseconds();
 
     return enemyGuess;
 }
 
-enemyTimedPosition* EnemyDataConversion::getLastEntriesWithinTime(uint32_t time_seconds) {
-    size = 0;  // private class member
+void EnemyDataConversion::getLastEntriesWithinTime(uint32_t time_seconds, enemyTimedPosition* validPositionArray) {
+    this->size = 0;  // private class member
     uint32_t currentTime_uS;
-    enemyTimedPosition* validPositionArray;
+    // enemyTimedPosition* validPositionArray[BUFFER_SIZE];
 
     // traverse bounded deque until invalid time found
     for (int index = 0; index < BUFFER_SIZE; index++) {
@@ -115,7 +131,6 @@ enemyTimedPosition* EnemyDataConversion::getLastEntriesWithinTime(uint32_t time_
             break;
         }
     }
-    return validPositionArray;
 }
 
 }  // namespace src::Informants

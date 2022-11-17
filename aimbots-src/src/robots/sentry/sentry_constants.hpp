@@ -105,8 +105,7 @@ static constexpr float kGRAVITY = 6000.0f;
 static constexpr float HORIZON_OFFSET = -30.0f;
 
 // sentry only has one speed: death
-static constexpr uint16_t shooter_speed_array[2] =
-    {30, 8000};  // {m/s, rpm}
+static constexpr uint16_t shooter_speed_array[2] = {30, 8000};  // {m/s, rpm}
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -173,7 +172,8 @@ static constexpr float FULL_RAIL_LENGTH = 2.130f;                               
 static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;                                                    // cm
 static constexpr float USABLE_RAIL_LENGTH = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER);  // in meters
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = left_sentry_rail_pole_location_matrix + robot_starting_rail_location * src::utils::MatrixHelper::xy_rotation_matrix(AngleUnit::Degrees, 45.0f);
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION =
+    left_sentry_rail_pole_location_matrix + robot_starting_rail_location * src::utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
@@ -209,8 +209,7 @@ static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
 static constexpr int MIN_CHASSIS_POWER = 40;
 static constexpr int MAX_CHASSIS_POWER = 120;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
-    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) /
-    (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
+    (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) / (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
 static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
 
 /**
@@ -227,7 +226,7 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 /**
  * @brief Sentry Rotation and Distance/Position matrixies 
  */
-namespace src::robots::sentry {
+// namespace src::robots::sentry {
 
 float R_cam2gimb[9] = {1, 0, 0,
                        0, 1, 0,
@@ -258,4 +257,4 @@ float R_field2chas[9] = {1, 0, 0,
                          0, 1, 0,
                          0, 0, 1};
 float P_field2chas[3] = {-1,-2,-3};
-}
+// }

@@ -39,5 +39,16 @@ Matrix<float, 4, 4> transform_matrix(float R[], float P[]) {
         0.0f,    0.0f,    0.0f,    1.0f};
     return Matrix<float, 4, 4>(transform_array);
 }
+Matrix<float, 4, 1> P_crop_extend(Matrix<float, 3, 1> P) {
+    float P_4by1[4] = {P[0][0], P[1][0], P[2][0], 1.0f};
+    return Matrix<float, 4, 1>(P_4by1);
+
+}
+
+Matrix<float, 3, 1> P_crop_extend(Matrix<float, 4, 1> P) {
+    float P_3by1[3] = {P[0][0], P[1][0], P[2][0]};
+    return Matrix<float, 3, 1>(P_3by1);
+
+}
 
 }  // namespace src::utils::MatrixHelper

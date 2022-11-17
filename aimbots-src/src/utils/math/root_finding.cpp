@@ -1,20 +1,7 @@
-#include <float.h>
-#include <math.h>
-
 #include "root_finding.hpp"
-
-#include <algorithm>
-#include <chrono>
-#include <complex>
-#include <iomanip>
-#include <iostream>
-#include <vector>
 
 using namespace std;
 using namespace std::chrono;
-
-#define DEBUG false  //sets print statements
-
 
 using std::cout, std::endl;
 
@@ -43,31 +30,24 @@ complex<double> unit_func4(vector<double> coeffs, complex<double> time){
 
 complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots) {
     complex<double> factor = 1;
-    for (unsigned int i = 0; i < roots.size(); i++) {
+    for(unsigned int i = 0; i < roots.size(); i++){
         factor *= (input - roots.at(i));
     }
     return func(input) / factor;
 }
 
-
-complex<double> find_next_root(complex<double> (*func)(complex<double>), vector<complex<double>> roots, bool &all_found){ //takes as arg a function to evaluate roots for
-    complex<double> x (rand(), rand());
+complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found) {  // takes as arg a function to evaluate roots for
+    complex<double> x = estimate;
     int iterations = 0;
-    complex<double> precision (PRECISION_OF_DERIVATIVE, PRECISION_OF_DERIVATIVE);
-
-    if(DEBUG) cout << "entered find_next_root" << endl;
-    if(DEBUG) cout << abs((double)real(modified_function(x, func, roots))) << endl;
-
-    while(abs((double)real(modified_function(x, func, roots))) > (double)ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS){ 
-
-        complex<double> slope = (modified_function(x + precision, func, roots) - modified_function(x, func, roots)) / precision;
+    complex<double> factor = 1;
+    while (abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS) {
+        complex<double> slope =
+            (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
         x = x - (modified_function(x, func, roots) / slope);
-
-        if(DEBUG) cout  << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl; 
-
+        if (DEBUG) cout << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl;
         iterations++;
     }
-    if((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > UPPER_ACCEPTED_BOUND) || (real(x) < -UPPER_ACCEPTED_BOUND)){
+    if ((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > real(UPPER_ACCEPTED_BOUND)) || (real(x) < -real(UPPER_ACCEPTED_BOUND))) {
         all_found = true;
         return DBL_MAX;
     }
@@ -82,38 +62,66 @@ void Swap(double *a, double *b) {
 }
 
 void BubbleSort(vector<double> &array) {
-    for (unsigned int i = 0; i < array.size(); i++) {
-        for (unsigned int j = 0; j < array.size() - 1; j++) {
-            if (array[j] > array[j + 1]) Swap(&array[j], &array[j + 1]);
+    for (long long unsigned int i = 0; i < array.size(); i++)
+    {
+        for(long long unsigned int j = 0; j < array.size() - 1; j++)
+        {   
+            if (array[j] > array[j+1])
+                Swap(&array[j], &array[j+1]);
         }
     }
 }
 
-double get_priority_root(vector<complex<double>> roots){ //return the lowest, positive, real root
+double get_priority_root(vector<complex<double>> roots) {
+    // return the lowest, positive, real root
     vector<double> reals;
-    for(size_t i = 0; i < roots.size(); i++){
-        if((abs((double)imag(roots.at(i))) > ((double)ACCEPTED_ERROR * 2)) || (real(roots.at(i)) < 0)){
+    for (unsigned int i = 0; i < roots.size(); i++) {
+        if (abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0) {
             reals.push_back(30);
+        //} else if (real(roots.at(i)) <= ACCEPTED_ERROR) {
         } else{
             reals.push_back(real(roots.at(i)));
         }
+    }
+    if(DEBUG){
+
+    for(int i = 0; i < reals.size(); i++){
+        cout << "reals at " << i << " = " << reals.at(i) << endl;
+    }
+
     }
     BubbleSort(reals);
     if (DEBUG) cout << "reals size: " << reals.size() << endl;
     if (reals.size() == 0 || reals.at(0) >= 30) {
         return -1;
     }
+
     return reals.at(0);
 }
 
-double deep_impact(complex<double> (*func)(complex<double>)) {
+complex<double> equation(complex<double> time){
+    cout << "global_coeffs size = " << global_coeffs.size() << endl;
+    assert(global_coeffs.size() >= 5);
+    return (((complex<double>)global_coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)global_coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)global_coeffs.at(2))*(time)*(time) + ((complex<double>)global_coeffs.at(3))*time + ((complex<double>)global_coeffs.at(4)));
+}
+
+
+double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate) {
     vector<complex<double>> roots;
     bool all_found = false;
+    //complex<double> estimate = 1;
 
-    while(all_found == false){
-        complex<double> root = find_next_root(func, roots, all_found);
-        if(DEBUG) cout << "root found: " << root << endl << endl;
-        if(all_found == true){
+    /*
+    for(int i = 0; i < 5; i++){
+        roots.push_back(find_next_root(func, estimate, roots, all_found));
+        cout << roots.back() << " is a root and all_found is " << all_found << endl;
+    }
+    */
+
+    while (all_found == false) {
+        complex<double> root = find_next_root(func, estimate, roots, all_found);
+        if (DEBUG) cout << "root found: " << root << endl << endl;
+        if (all_found == true) {
             break;
         } else {
             roots.push_back(root);
@@ -124,61 +132,52 @@ double deep_impact(complex<double> (*func)(complex<double>)) {
             } cout << endl;
         }
     }
-    unit_outputs.push_back(roots);
+    //unit_outputs.push_back(roots);
+
+    if(DEBUG){
+
+    for(int i = 0; i < roots.size(); i++){
+        cout << "roots at " << i << " = " << roots.at(i) << endl;
+    }
+
+    }
     
     return get_priority_root(roots);
     
 }
 
-complex<double> equation(complex<double> time){
-    return (((complex<double>)global_coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)global_coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)global_coeffs.at(2))*(time)*(time) + ((complex<double>)global_coeffs.at(3))*time + ((complex<double>)global_coeffs.at(4)));
-}
 
 double find_root(vector<double> coeffs){
-    for(int i = 0; i < (int)coeffs.size(); i++){
+    for(int i = 0; i < coeffs.size(); i++){
         global_coeffs.push_back(coeffs.at(i));
     }
 
-    return deep_impact(&equation);
+    return deep_impact(&equation, 1);
 }
 
+/*
+int main(){
 
+    vector<double> vec = {-8, -9, 6, 8, 5};
+    cout << find_root(vec) << endl;
+
+    return 1;
+}
+*/
 
 // int main() {
 //     auto start = high_resolution_clock::now();
 
+//     double root = deep_impact(&unit_func, (complex<double>)(1, 0));
 
-/*
-int main(){
-    double r;
-    auto start = high_resolution_clock::now();
+//     auto stop = high_resolution_clock::now();
 
-    for(int i = 0; i < 10; i++){
-        auto start1 = high_resolution_clock::now();
-        r = deep_impact(&unit_func);
-        auto stop1 = high_resolution_clock::now();
-        auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop1 - start1);
-        cout << "runtime in microseconds " << duration1.count() << " on run " << i << endl;
-        //cout << deep_impact(&unit_func) << " was the found root on test " << curr_unit_test << endl;
-        curr_unit_test++;
-    }
+//     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+//     cout << "runtime in microseconds " << duration.count() << endl;
 
-    auto stop = high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    cout << "runtime in microseconds " << duration.count() << endl;
-    cout << r << endl;
-    
-    for(int i = 0; i < unit_outputs.size(); i++){
-        cout << i << endl;
-        for(int j = 0; j < unit_outputs.at(i).size(); j++){
-            cout << unit_outputs.at(i).at(j) << " ";
-        } cout << endl << endl;
-    }
-    
-    //if(DEBUG) cout << "the final root is " << root << endl;
-    return 0;
-}
-*/
+//     cout << "the final root is " << root << endl;
+//     return 0;
+// }
 
 /*
 cannot self determine the order of the polynomial

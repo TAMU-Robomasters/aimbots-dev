@@ -80,7 +80,7 @@ static constexpr float CURRENT_ALLOCATED_FOR_ENERGY_BUFFER_LIMITING = 30000;
 /**
  * @brief Engineer Rotation and Distance/Position matrixies 
  */
-namespace src::robots::engineer {
+// namespace src::robots::engineer {
 
 float R_cam2gimb[9] = {1, 0, 0,
                        0, 1, 0,
@@ -111,4 +111,4 @@ float R_field2chas[9] = {1, 0, 0,
                          0, 1, 0,
                          0, 0, 1};
 float P_field2chas[3] = {-1,-2,-3};
-}
+// }
