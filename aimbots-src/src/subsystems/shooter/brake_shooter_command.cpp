@@ -1,10 +1,12 @@
 #include "subsystems/shooter/brake_shooter_command.hpp"
-
-#include "drivers.hpp"
+#ifndef ENGINEER
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
+
+#include "drivers.hpp"
 
 //#ifndef TARGET_ENGINEER
 
@@ -24,15 +26,13 @@ void BrakeShooterCommand::execute() {
     brakePID.update(-shooter->getHighestMotorSpeed());
     float output = brakePID.getValue();
     float highestSpeed = shooter->getHighestMotorSpeed();
-    highestSpeedDebug = (int) highestSpeed;
+    highestSpeedDebug = (int)highestSpeed;
     shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, output);
 }
 
 void BrakeShooterCommand::end(bool) {}
 
-bool BrakeShooterCommand::isReady() {
-    return true;
-}
+bool BrakeShooterCommand::isReady() { return true; }
 
 bool BrakeShooterCommand::isFinished() const {
     float speedTolerance = 1000.0f;
@@ -42,3 +42,4 @@ bool BrakeShooterCommand::isFinished() const {
 }  // namespace src::Shooter
 
 //#endif //#ifndef TARGET_ENGINEER
+#endif

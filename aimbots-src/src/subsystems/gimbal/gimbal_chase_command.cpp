@@ -1,4 +1,5 @@
 #include "gimbal_chase_command.hpp"
+#ifndef ENGINEER
 
 namespace src::Gimbal {
 // feed chassis relative controller for sentry, field relative for ground robots
@@ -70,3 +71,4 @@ void GimbalChaseCommand::end(bool) {
     gimbal->setPitchMotorOutput(0);
 }
 };  // namespace src::Gimbal
+#endif

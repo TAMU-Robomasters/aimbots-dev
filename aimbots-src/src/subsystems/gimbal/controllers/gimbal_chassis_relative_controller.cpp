@@ -1,4 +1,5 @@
 #include "gimbal_chassis_relative_controller.hpp"
+#ifndef ENGINEER
 
 #include <utils/robot_specific_inc.hpp>
 
@@ -57,3 +58,4 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float t
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
 
 }  // namespace src::Gimbal
+#endif

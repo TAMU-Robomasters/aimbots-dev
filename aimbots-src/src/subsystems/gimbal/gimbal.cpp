@@ -2,6 +2,8 @@
 
 #include <drivers.hpp>
 
+#ifndef ENGINEER
+
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
@@ -149,3 +151,4 @@ namespace src::Gimbal {
     }
 
 }  // namespace src::Gimbal
+#endif

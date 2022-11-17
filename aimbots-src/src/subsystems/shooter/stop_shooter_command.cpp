@@ -1,4 +1,5 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
+#ifndef ENGINEER
 
 #include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
@@ -37,4 +38,4 @@ bool StopShooterCommand::isFinished() const {
 
 }  // namespace src::Shooter
 
-//#endif //#ifndef TARGET_ENGINEER
+#endif //#ifndef TARGET_ENGINEER

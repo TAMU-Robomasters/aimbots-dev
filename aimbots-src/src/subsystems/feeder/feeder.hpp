@@ -1,5 +1,5 @@
 #pragma once
-
+#ifndef ENGINEER
 #include "drivers.hpp"
 #include "informants/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
@@ -55,3 +55,5 @@ class FeederSubsystem : public tap::control::Subsystem {
 };
 
 }  // namespace src::Feeder
+
+#endif

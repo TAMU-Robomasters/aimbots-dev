@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#ifndef ENGINEER
+
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
 #include "utils/common_types.hpp"
@@ -121,3 +123,5 @@ class ShooterSubsystem : public tap::control::Subsystem {
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
 };
 };  // namespace src::Shooter
+
+#endif

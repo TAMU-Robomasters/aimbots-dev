@@ -1,4 +1,5 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
+#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
@@ -71,5 +72,10 @@ void RunShooterCommand::end(bool) {
 
 bool RunShooterCommand::isReady() { return true; }
 
-bool RunShooterCommand::isFinished() const { return false; }
+bool RunShooterCommand::isFinished() const {
+    return false;
+}
 }  // namespace src::Shooter
+
+#endif
+

@@ -1,5 +1,5 @@
 #pragma once
-
+#ifndef ENGINEER
 #include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -34,3 +34,4 @@ class ChassisTokyoCommand : public TapCommand {
 };
 
 }  // namespace src::Chassis
+#endif
