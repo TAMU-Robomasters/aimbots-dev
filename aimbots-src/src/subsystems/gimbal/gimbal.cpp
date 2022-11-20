@@ -152,10 +152,6 @@ namespace src::Gimbal {
             .getValue();
     }
 
-    complex<double> GimbalSubsystem::calculatedFunction(complex<double> time){
-        return func4(bulletDropCoEff, time);
-    }
-
     GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles() {
         using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
@@ -207,7 +203,7 @@ namespace src::Gimbal {
             };
 
         double time = 0;
-        time = deep_impact(&calculatedFunction,1);
+        time = find_root(bulletDropCoEff);
 
         //float pitch = 0; //phi +up
         //float yaw = 0; //theta +ccw
