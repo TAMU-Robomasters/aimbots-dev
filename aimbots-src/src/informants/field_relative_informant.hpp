@@ -68,4 +68,8 @@ private:
 #endif
 };
 
+// calculate and return new postion and velocity for a specific coordinate (X,y, or Z)
+Matrix<float, 2, 1> getPosVel(Matrix<float, X, 1> XVA, double deltat = 0.001);
+Matrix<float, 2, 1> getNew_PosVel(float Pos, float Vel, float Accel, double deltat = 0.001);
+
 }  // namespace src::Informants

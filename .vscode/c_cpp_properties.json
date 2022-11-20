@@ -1,48 +1,47 @@
 {
-    "configurations": [
-        {
-            "name": "Test",
-            "defines": [
-                "${default}",
-                "ENV_UNIT_TESTS",
-                "PLATFORM_HOSTED",
-                "RUN_WITH_PROFILING"
-            ],
-            "includePath": [
-                "${default}",
-                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src",
-                "aimbots-src/taproot/test",
-                "aimbots-src/test"
-            ],
-            "compilerPath": "g++",
-            "intelliSenseMode": "gcc-x64"
-        },
-        {
-            "name": "Sim",
-            "defines": [
-                "${default}",
-                "PLATFORM_HOSTED",
-                "RUN_WITH_PROFILING"
-            ],
-            "includePath": [
-                "${default}",
-                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src"
-            ],
-            "compilerPath": "g++",
-            "intelliSenseMode": "gcc-x64"
-        },
-        {
-            "name": "MCB",
-            "includePath": [
-                "${default}",
-                "aimbots-src/taproot/modm/src",
-                "aimbots-src/taproot/modm/ext/cmsis/core",
-                "aimbots-src/taproot/modm/ext/cmsis/device",
-                "aimbots-src/taproot/modm/ext/cmsis/dsp",
-                "${workspaceFolder}/aimbots-src"
-            ],
-            "intelliSenseMode": "gcc-arm"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "windows-gcc-x64",
+      "defines": [
+        "${default}",
+        "ENV_UNIT_TESTS",
+        "PLATFORM_HOSTED",
+        "RUN_WITH_PROFILING"
+      ],
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compilerPath": "gcc",
+      "intelliSenseMode": "windows-gcc-x64",
+      "cStandard": "${default}",
+      "cppStandard": "${default}"
+    },
+    {
+      "name": "Sim",
+      "defines": [
+        "${default}",
+        "PLATFORM_HOSTED",
+        "RUN_WITH_PROFILING"
+      ],
+      "includePath": [
+        "${default}",
+        "aimbots-src/taproot/sim-modm/hosted-linux/modm/src"
+      ],
+      "compilerPath": "g++",
+      "intelliSenseMode": "gcc-x64"
+    },
+    {
+      "name": "MCB",
+      "includePath": [
+        "${default}",
+        "aimbots-src/taproot/modm/src",
+        "aimbots-src/taproot/modm/ext/cmsis/core",
+        "aimbots-src/taproot/modm/ext/cmsis/device",
+        "aimbots-src/taproot/modm/ext/cmsis/dsp",
+        "${workspaceFolder}/aimbots-src"
+      ],
+      "intelliSenseMode": "gcc-arm"
+    }
+  ],
+  "version": 4
 }

@@ -3,7 +3,7 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-
+#include "utils/math/matrix_helpers.hpp"
 #include "drivers.hpp"
 
 namespace src::Informants {
@@ -120,6 +120,7 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
     robotPositionZDisplay = fieldRelativeRobotPosition[0][2];
 #endif
+    
 }
 
 // gets the angle between the robot's current position and the field coordinate
@@ -130,4 +131,43 @@ float FieldRelativeInformant::getXYAngleToFieldCoordinate(AngleUnit unit, Matrix
     }
     return xy_angle;
 }
+
+// The two functions below return [X_t+1, V_t+1] with two different types of parameter inputs
+// Below the parameters are in matrix form
+Matrix<float, 2, 1> getNew_PosVel(Matrix<float, 3, 1> XVA, double deltat) {
+    // [x, Vx]_t+1 = [A]*[x, Vx] 
+    // [y, Vy]_t+1 = [A]*[y, Vy] 
+    // [z, Vz]_t+1 = [A]*[z, Vz] 
+    float A_array[6] = {1.0f, deltat, deltat*deltat/2.0f,
+                        0.0f, 1.0f, deltat};
+    Matrix<float, 2, 3> A = Matrix<float, 2, 3>(A_array);
+    return A*XVA;
+}
+
+// Parameters are in individual components of vector being multplied
+/*
+* [Pos,
+   Vel,
+   Accel]
+*/
+Matrix<float, 2, 1> getNew_PosVel(float Pos, float Vel, float Accel, float deltat) {
+    float XVA_array[3] = {Pos,Vel,Accel};
+    Matrix<float, 3, 1> XVA = Matrix<float, 3, 1>(XVA_array);  
+    // [x, Vx]_t+1 = [A]*[x, Vx] 
+    // [y, Vy]_t+1 = [A]*[y, Vy] 
+    // [z, Vz]_t+1 = [A]*[z, Vz] 
+    float A_array[6] = {1.0f, deltat, deltat*deltat/2.0f,
+                        0.0f, 1.0f, deltat};
+    Matrix<float, 2, 3> A = Matrix<float, 2, 3>(A_array);
+    return A*XVA;
+}
+
+
+
+
+
+
+
+
+
 }  // namespace src::Informants
