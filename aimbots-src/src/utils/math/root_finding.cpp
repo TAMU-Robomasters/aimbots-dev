@@ -39,7 +39,7 @@ complex<double> modified_function(complex<double> input, complex<double> (*func)
 complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found) {  // takes as arg a function to evaluate roots for
     complex<double> x = estimate;
     int iterations = 0;
-    complex<double> factor = 1;
+    //complex<double> factor = 1;
     while (abs(real(modified_function(x, func, roots))) > ACCEPTED_ERROR && iterations < ALLOWED_ITERATIONS) {
         complex<double> slope =
             (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;

@@ -38,11 +38,23 @@ enum class AngleUnit : uint8_t {
     None,
 };
 
-enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 // if this looks cursed, that's because it is.
 // currently, we're using a 1x3 matrix for X, Y, TIME patrol coordinates and also X, Y, Z location coordinates.
 // ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol becomes field-relative
+enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 
+// :)
+enum Axis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
+
+namespace src::Informants {
+//for ballistics use
+struct enemyTimedData {
+    modm::Matrix<float, 3, 1> position;
+    modm::Matrix<float, 3, 1> velocity;
+    modm::Matrix<float, 3, 1> acceleration;
+    float timestamp_uS;  // time that 'best guess' was made
+};
+}
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;
 

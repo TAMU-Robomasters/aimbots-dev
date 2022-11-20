@@ -10,6 +10,8 @@
 #include <complex>
 #include <utils/math/root_finding.hpp>
 
+using src::Informants::enemyTimedData;
+
 namespace src {
 class Drivers;
 }
@@ -39,7 +41,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
 
-    aimAngles getAimAngles(/*Insert Struct Here*/);
+    aimAngles getAimAngles(enemyTimedData data);
 
     inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
     inline void setTargetChassisRelativeYawAngle(AngleUnit unit, float angle) {

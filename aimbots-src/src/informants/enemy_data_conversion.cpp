@@ -8,6 +8,7 @@ EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(driver
 void EnemyDataConversion::updateEnemyInfo() {
     if (drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
         // get CV data for enemy position
+        // jetson communicator is outdated, need to talk with CV about new jetson messages with position :(
         float enemyXPos = 0;  // TODO
         float enemyYPos = 0;  // TODO
         float enemyZPos = 0;  // TODO
@@ -24,15 +25,33 @@ void EnemyDataConversion::updateEnemyInfo() {
     }
 }
 
-// what are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get position at our CURRENT
-// time with n valid datapoints, we can only go up to the (n-1)th derivative. shame.
+
+vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
+    vector<enemyTimedPosition> validPositions;
+    uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
+    // traverse bounded deque until invalid time found
+    for (int index = 0; index < BUFFER_SIZE; index++) {
+        enemyTimedPosition position = rawPositionBuffer[index];
+        if (currentTime_uS - position.timestamp_uS > time_seconds * MICROSECONDS_PER_SECOND) {
+            validPositions.push_back(position);
+        } else {
+            break;
+        }
+    }
+    return validPositions;
+}
+
+
+// What are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get position at our CURRENT time.
+// With n valid datapoints, we can only go up to the (n-1)th derivative. shame.
 enemyTimedData EnemyDataConversion::calculateBestGuess() {
-    // for the sake of memory, calculating to the nth order derivative will be an in-place destructive algorithm
+    // for the sake of memory, calculating to the nth order derivative will be an in-place destructive algorithm.
     // we'll make an array with [position, velocity, acceleration, jerk, snap, crackle, pop] where each entry is the value at latest time (which is
     // not necessarily current time)
 
-    enemyTimedPosition validPoints[BUFFER_SIZE];
-    getLastEntriesWithinTime(0.5, validPoints);  // arbitrary value rn
+    vector<enemyTimedPosition> validPoints;
+    validPoints = this->getLastEntriesWithinTime(VALID_TIME);
+    int size = validPoints.size();
     enemyTimedPosition derivatives[size];
     for (int n = 1; n < size; n++)  // calculate and save nth order derivatives
     {
@@ -41,10 +60,10 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
             enemyTimedPosition val1 = validPoints[index];
             enemyTimedPosition val2 = validPoints[index + 1];
             uint32_t dt_uS = val1.timestamp_uS - val2.timestamp_uS;
-            // the names might be 'dx' but this is actually 'dx/dt'
-            float dx = (val1.position[X_AXIS][0] - val2.position[X_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
-            float dy = (val1.position[Y_AXIS][0] - val2.position[Y_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
-            float dz = (val1.position[Z_AXIS][0] - val2.position[Z_AXIS][0]) / dt_uS / MICROSECONDS_PER_SECOND;
+            // the names might be 'dx' but this is actually 'dx/dt' -- dt is seconds!!!
+            float dx = (val1.position[X_AXIS][0] - val2.position[X_AXIS][0]) / dt_uS * MICROSECONDS_PER_SECOND;
+            float dy = (val1.position[Y_AXIS][0] - val2.position[Y_AXIS][0]) / dt_uS * MICROSECONDS_PER_SECOND;
+            float dz = (val1.position[Z_AXIS][0] - val2.position[Z_AXIS][0]) / dt_uS * MICROSECONDS_PER_SECOND;
             // overwrite data point with calculated derivative
             float diff[3] = {dx, dy, dz};
             val1.position = Matrix<float, 3, 1>(diff);
@@ -106,6 +125,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     enemyGuess.acceleration = R_gimb2chas_matrix*R_cam2gimb_matrix*finalGuess_acceleration;
 
     // after all that, we have a predicted position, velocity, acceleration, and the time of this prediction
+    // in chassis space!!!
     // enemyGuess.position = finalGuess_position;
     // enemyGuess.velocity = finalGuess_velocity;
     // enemyGuess.acceleration = finalGuess_acceleration;
@@ -114,23 +134,5 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     return enemyGuess;
 }
 
-void EnemyDataConversion::getLastEntriesWithinTime(uint32_t time_seconds, enemyTimedPosition* validPositionArray) {
-    this->size = 0;  // private class member
-    uint32_t currentTime_uS;
-    // enemyTimedPosition* validPositionArray[BUFFER_SIZE];
-
-    // traverse bounded deque until invalid time found
-    for (int index = 0; index < BUFFER_SIZE; index++) {
-        currentTime_uS = tap::arch::clock::getTimeMicroseconds();
-        enemyTimedPosition position = rawPositionBuffer[index];
-        if (currentTime_uS - position.timestamp_uS > time_seconds * 1000000) {
-            validPositionArray[index] = position;
-            size = index;
-        } else {
-            size = index;
-            break;
-        }
-    }
-}
 
 }  // namespace src::Informants

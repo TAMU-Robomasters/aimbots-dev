@@ -1,8 +1,10 @@
 #include "gimbal.hpp"
 
 #include <drivers.hpp>
+#include <utils/common_types.hpp>
 
 using std::vector, std::complex;
+
 
 static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
@@ -152,20 +154,23 @@ namespace src::Gimbal {
             .getValue();
     }
 
-    GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles() {
+    GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles(enemyTimedData data) {
         using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
-        double px = 0;
-        double py = 0;
-        double pz = 0;
+        //whitespace!!!
 
-        double vx = 0;
-        double vy = 0;
-        double vz = 0;
+        //get enemy position, velocity, acceleration
+        double px = data.position[X_AXIS][0];
+        double py = data.position[Y_AXIS][0];
+        double pz = data.position[Z_AXIS][0];
 
-        double ax = 0;
-        double ay = 0;
-        double az = 0;
+        double vx = data.velocity[X_AXIS][0];
+        double vy = data.velocity[Y_AXIS][0];
+        double vz = data.velocity[Z_AXIS][0];
+
+        double ax = data.acceleration[X_AXIS][0];
+        double ay = data.acceleration[Y_AXIS][0];
+        double az = data.acceleration[Z_AXIS][0];
 
         double L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
         double v0 = 0; //Shooter Velocity Constant found below
@@ -215,7 +220,6 @@ namespace src::Gimbal {
         a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
 
         return a;
-
     }
 
 }  // namespace src::Gimbal
