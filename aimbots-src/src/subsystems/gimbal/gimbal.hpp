@@ -24,7 +24,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
    public:
 
     struct aimAngles {
-        float pitch, yaw;
+        double pitch, yaw;
     };
 
     GimbalSubsystem(src::Drivers*);

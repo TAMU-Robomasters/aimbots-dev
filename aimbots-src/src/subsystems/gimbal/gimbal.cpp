@@ -155,20 +155,20 @@ namespace src::Gimbal {
     GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles() {
         using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
-        float px = 0;
-        float py = 0;
-        float pz = 0;
+        double px = 0;
+        double py = 0;
+        double pz = 0;
 
-        float vx = 0;
-        float vy = 0;
-        float vz = 0;
+        double vx = 0;
+        double vy = 0;
+        double vz = 0;
 
-        float ax = 0;
-        float ay = 0;
-        float az = 0;
+        double ax = 0;
+        double ay = 0;
+        double az = 0;
 
-        float L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
-        float v0 = 0; //Shooter Velocity Constant goes here
+        double L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
+        double v0 = 0; //Shooter Velocity Constant found below
 
         //This was all copied from run_shooter_command.cpp
         //Reads the shooter connected to the ref system and pulls the current speed limit
@@ -195,9 +195,9 @@ namespace src::Gimbal {
 
         //Need to manually find the calcs for these.
         //Created with G as 9.8m/s
-        bulletDropCoEff = {(0.25*ax*ax) + (0.25*ay*ay) + (0.25*az*az) + (4.9*az) + (24.01) //t^4
-            ,(vx*ax) + (vy*ay) + (vz*az) + (9.8*vz) // t^3
-            ,(vx*vx) + (vy*vy) + (vz*vz) + (ax*px) + (ay*py) + (az*pz) - (v0*v0) + (9.8*pz) //t^2
+        bulletDropCoEff = {(((double)0.25)*ax*ax) + (((double)0.25)*ay*ay) + (((double)0.25)*az*az) + (((double)4.9)*az) + ((double)24.01) //t^4
+            ,(vx*ax) + (vy*ay) + (vz*az) + (((double)9.8)*vz) // t^3
+            ,(vx*vx) + (vy*vy) + (vz*vz) + (ax*px) + (ay*py) + (az*pz) - (v0*v0) + (((double)9.8)*pz) //t^2
             ,(2*vx*px) + (2*vy*py) + (2*vz*pz) - (2*L*v0) //t
             ,(px*px) + (py*py) + (pz*pz) - (L*L) //1
             };
@@ -210,9 +210,9 @@ namespace src::Gimbal {
 
         aimAngles a;
 
-        a.pitch = asin((pz+vz*time+0.5*time*time*(az+9.8))/(L*v0*time));
+        a.pitch = asin((pz+vz*time+((double)0.5)*time*time*(az+((double)9.8)))/(L*v0*time));
 
-        a.yaw = acos((py+vy*time+0.5*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
+        a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
 
         return a;
 

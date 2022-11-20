@@ -1,9 +1,6 @@
 #pragma once
 
 #include "utils/common_types.hpp"
-#include "src/subsystems/gimbal/gimbal.hpp"
-//#include "gimbal.hpp"
-//#include "utils/common_types.hpp"
 #include <float.h>
 #include <math.h>
 #include <algorithm>
@@ -14,12 +11,10 @@
 #include <vector>
 #include <cassert>
 
-using namespace src::Gimbal;
-
 #define DEBUG false  //sets print statements
 
 #define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
+#define PRECISION_OF_DERIVATIVE (complex<double>)1e-10  //the precision used when finding slope using the def of a derivative
 #define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
 #define UPPER_ACCEPTED_BOUND 30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
 

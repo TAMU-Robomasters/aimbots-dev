@@ -2,7 +2,6 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace src::Gimbal;
 
 using std::cout, std::endl;
 
@@ -86,7 +85,7 @@ double get_priority_root(vector<complex<double>> roots) {
     }
     if(DEBUG){
 
-    for(int i = 0; i < reals.size(); i++){
+    for(long long unsigned int i = 0; i < reals.size(); i++){
         cout << "reals at " << i << " = " << reals.at(i) << endl;
     }
 
@@ -137,7 +136,7 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 
     if(DEBUG){
 
-    for(int i = 0; i < roots.size(); i++){
+    for(long long unsigned int i = 0; i < roots.size(); i++){
         cout << "roots at " << i << " = " << roots.at(i) << endl;
     }
 
@@ -149,7 +148,7 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 
 
 double find_root(vector<double> coeffs){
-    for(int i = 0; i < coeffs.size(); i++){
+    for(long long unsigned int i = 0; i < coeffs.size(); i++){
         global_coeffs.push_back(coeffs.at(i));
     }
 
