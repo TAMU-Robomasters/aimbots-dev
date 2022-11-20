@@ -1,27 +1,12 @@
 #include "root_finding.hpp"
 
-#include <float.h>
-#include <math.h>
-
-#include <algorithm>
-#include <chrono>
-#include <complex>
-#include <iomanip>
-#include <iostream>
-#include <vector>
-
 using namespace std;
 using namespace std::chrono;
 using namespace src::Gimbal;
 
-#define DEBUG false  //sets print statements
-
-#define ACCEPTED_ERROR 1e-10  //how far the root can deviate from the x-axis
-#define PRECISION_OF_DERIVATIVE 1e-10  //the precision used when finding slope using the def of a derivative
-#define ALLOWED_ITERATIONS 50  //the number of allowed_iterations until divergency is assumed
-#define UPPER_ACCEPTED_BOUND 30  //the upper limit in seconds that a trajectory intersection will be looked for, we will not expect bullets to have 30 seconds of airtime
-
 using std::cout, std::endl;
+
+vector<double> global_coeffs;
 
 int curr_unit_test = 0;
 vector<vector<int>> testing_coeffs {
@@ -38,23 +23,11 @@ vector<vector<int>> testing_coeffs {
 };
 vector<vector<complex<double>>> unit_outputs;
 
-complex<double> unit_func4(vector<int> coeffs, complex<double> time){
+complex<double> unit_func4(vector<double> coeffs, complex<double> time){
     return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
 }
 
-complex<double> func4(vector<double> coeffs, complex<double> time){
-    return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
-}
 
-complex<double> unit_func(complex<double> time){
-    return unit_func4(testing_coeffs.at(curr_unit_test), time);
-    //return 0;
-    //return (((complex<double>)coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)coeffs.at(2))*(time)*(time) + ((complex<double>)coeffs.at(3))*time + ((complex<double>)coeffs.at(4)));
-}
-
-complex<double> example_func(complex<double> time){ // 4x^4 + -2x^3 + -4x^2 + x - 3
-    return (time - (complex<double>)3)*(time + (complex<double>)2)*(time + (complex<double>)3) + (complex<double>)100; //-3, -2, 3
-}
 
 complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots) {
     complex<double> factor = 1;
@@ -64,11 +37,7 @@ complex<double> modified_function(complex<double> input, complex<double> (*func)
     return func(input) / factor;
 }
 
-complex<double> find_next_root(
-    complex<double> (*func)(complex<double>),
-    complex<double> estimate,
-    vector<complex<double>> roots,
-    bool &all_found) {  // takes as arg a function to evaluate roots for
+complex<double> find_next_root(complex<double> (*func)(complex<double>), complex<double> estimate, vector<complex<double>> roots, bool &all_found) {  // takes as arg a function to evaluate roots for
     complex<double> x = estimate;
     int iterations = 0;
     complex<double> factor = 1;
@@ -110,9 +79,17 @@ double get_priority_root(vector<complex<double>> roots) {
     for (unsigned int i = 0; i < roots.size(); i++) {
         if (abs(imag(roots.at(i))) > ACCEPTED_ERROR || real(roots.at(i)) < 0) {
             reals.push_back(30);
-        } else if (real(roots.at(i)) <= ACCEPTED_ERROR) {
+        //} else if (real(roots.at(i)) <= ACCEPTED_ERROR) {
+        } else{
             reals.push_back(real(roots.at(i)));
         }
+    }
+    if(DEBUG){
+
+    for(int i = 0; i < reals.size(); i++){
+        cout << "reals at " << i << " = " << reals.at(i) << endl;
+    }
+
     }
     BubbleSort(reals);
     if (DEBUG) cout << "reals size: " << reals.size() << endl;
@@ -123,9 +100,17 @@ double get_priority_root(vector<complex<double>> roots) {
     return reals.at(0);
 }
 
+complex<double> equation(complex<double> time){
+    cout << "global_coeffs size = " << global_coeffs.size() << endl;
+    assert(global_coeffs.size() >= 5);
+    return (((complex<double>)global_coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)global_coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)global_coeffs.at(2))*(time)*(time) + ((complex<double>)global_coeffs.at(3))*time + ((complex<double>)global_coeffs.at(4)));
+}
+
+
 double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate) {
     vector<complex<double>> roots;
     bool all_found = false;
+    //complex<double> estimate = 1;
 
     /*
     for(int i = 0; i < 5; i++){
@@ -148,18 +133,38 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
             } cout << endl;
         }
     }
+    //unit_outputs.push_back(roots);
 
-    double priority = get_priority_root(roots);
-    return priority;
-    if (priority == -1) {
-        perror("No valid trajectory");
-        exit(1);
-    } else {
-        return priority;
+    if(DEBUG){
+
+    for(int i = 0; i < roots.size(); i++){
+        cout << "roots at " << i << " = " << roots.at(i) << endl;
     }
+
+    }
+    
+    return get_priority_root(roots);
+    
+}
+
+
+double find_root(vector<double> coeffs){
+    for(int i = 0; i < coeffs.size(); i++){
+        global_coeffs.push_back(coeffs.at(i));
+    }
+
+    return deep_impact(&equation, 1);
+}
+
+/*
+int main(){
+
+    vector<double> vec = {-8, -9, 6, 8, 5};
+    cout << find_root(vec) << endl;
 
     return 1;
 }
+*/
 
 // int main() {
 //     auto start = high_resolution_clock::now();

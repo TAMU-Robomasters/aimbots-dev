@@ -1,5 +1,7 @@
 #pragma once
 #include <utils/common_types.hpp>
+#include <utils/robot_constants.hpp>
+#include <utils/math/transform_setup.hpp>
 
 #include "src/informants/vision/jetson_communicator.hpp"
 
@@ -26,15 +28,15 @@ enum Axis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
 // for internal use
 struct enemyTimedPosition {
-    Matrix<float, 1, 3> position;
+    Matrix<float, 3, 1> position;
     uint32_t timestamp_uS;
 };
 
 // for output use
 struct enemyTimedData {
-    Matrix<float, 1, 3> position;
-    Matrix<float, 1, 3> velocity;
-    Matrix<float, 1, 3> acceleration;
+    Matrix<float, 3, 1> position;
+    Matrix<float, 3, 1> velocity;
+    Matrix<float, 3, 1> acceleration;
     float timestamp_uS;  // time that 'best guess' was made
 };
 
@@ -65,6 +67,6 @@ private:
 
     // we want to scrub/ignore data entries that are too outdated... so this access function only returns the last such and such entries within a
     // given time
-    enemyTimedPosition* getLastEntriesWithinTime(uint32_t time);
+    void getLastEntriesWithinTime(uint32_t time, enemyTimedPosition* validPositionArray);
 };
 }  // namespace src::Informants
