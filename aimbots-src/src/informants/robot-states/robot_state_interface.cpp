@@ -1,5 +1,5 @@
 #include "drivers.hpp"
-#include "ref_serial.hpp"
+// #include "ref_serial.hpp"
 #include "robot_state.hpp"
 #include "robot_states_interface.hpp"
 
@@ -46,12 +46,12 @@ void RobotStates::updateRobotStatePosition(int number, Team teamColor, float x, 
 
 void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health) { robotStates[teamColor][number - 1].setHealth(health); }
 
-void updateRefSystem() {
-    if (driver->refSerial.getRefSerialReceivingData()) {
-        driver->refSerial.messageReceiveCallback();
-        uint8_t id = driver->refSerial.getRobotData().RobotData.robotId;
-        uint16_t hp = driver->refSerial.getRobotData().RobotData.currentHp;
-    }
+void RobotStates::updateRefSystem() {
+    // if (driver->refSerial.getRefSerialReceivingData()) {
+    //     driver->refSerial.messageReceiveCallback();
+    //     uint8_t id = driver->refSerial.getRobotData().RobotData.robotId;
+    //     uint16_t hp = driver->refSerial.getRobotData().RobotData.currentHp;
+    // }
 }
 
 }  // namespace src::robotStates
