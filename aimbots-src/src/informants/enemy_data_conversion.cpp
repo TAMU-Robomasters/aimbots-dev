@@ -7,6 +7,13 @@ EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(driver
 
 void EnemyDataConversion::updateEnemyInfo() {
     if (drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
+        prev_cv_valid = cv_valid;
+        cv_valid = true;
+
+        // if our cv connection just turned back on... throw out the data
+        if (cv_valid && !prev_cv_valid) {
+            rawPositionBuffer.clear();  // goodbye
+        }
         // get CV data for enemy position
         // jetson communicator is outdated, need to talk with CV about new jetson messages with position :(
         float enemyXPos = 0;  // TODO
@@ -14,17 +21,22 @@ void EnemyDataConversion::updateEnemyInfo() {
         float enemyZPos = 0;  // TODO
         float enemyPos[3] = {enemyXPos, enemyYPos, enemyZPos};
         // timestamp
+        // !! NOTE !!
+        // TIMESTAMPING IS PRONE TO CHANGE, TALK WITH CV!!!
         uint32_t timestamp_uS = tap::arch::clock::getTimeMicroseconds();
 
         enemyTimedPosition currentData;
-        currentData.position = Matrix<float, 3, 1>(enemyPos);
+        // currentData.position = Matrix<float, 3, 1>(enemyPos);
+        updateAndGetEnemyPosition(currentData.position);  // because we're apparently starting sentry testing very very soon
         currentData.timestamp_uS = timestamp_uS;
 
         // save to buffer, overwriting oldest data as necessary
         rawPositionBuffer.appendOverwrite(currentData);
+    } else {
+        prev_cv_valid = cv_valid;
+        cv_valid = false;
     }
 }
-
 
 vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
     vector<enemyTimedPosition> validPositions;
@@ -41,9 +53,8 @@ vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float t
     return validPositions;
 }
 
-
-// What are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get position at our CURRENT time.
-// With n valid datapoints, we can only go up to the (n-1)th derivative. shame.
+// What are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get position at our CURRENT
+// time. With n valid datapoints, we can only go up to the (n-1)th derivative. shame.
 enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // for the sake of memory, calculating to the nth order derivative will be an in-place destructive algorithm.
     // we'll make an array with [position, velocity, acceleration, jerk, snap, crackle, pop] where each entry is the value at latest time (which is
@@ -81,7 +92,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // iterate through our n derivatives to generate position prediction
     // x = x0 + v0t + a0t^2 / 2 + j0t^3 / 3 .. etc etc
     finalGuess_position = finalGuess_position + derivatives[0].position;  // the 0th derivative .. position
-    int the_number = 1;  // within the for loop this should be equal to factorial(n)
+    int the_number = 1;                                                   // within the for loop this should be equal to factorial(n)
     for (int n = 1; n < size; n++) {
         // integrals for position
         float diff[3];
@@ -111,18 +122,19 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
         }
     }
     enemyTimedData enemyGuess;
-    
+
     // final guess is transformed for now
     Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
     Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
     Matrix<float, 3, 3> R_cam2gimb_matrix = Matrix<float, 3, 3>(R_cam2gimb);
-    Matrix<float, 3, 3>R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
+    Matrix<float, 3, 3> R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
     // for Position we use T
-                                                    // remove last 1                                                // adds a 1 at end
-    enemyGuess.position = src::utils::MatrixHelper::P_crop_extend(T_gimb2chas*T_cam2gimb*src::utils::MatrixHelper::P_crop_extend(finalGuess_position));
+    // remove last 1                                                // adds a 1 at end
+    enemyGuess.position =
+        src::utils::MatrixHelper::P_crop_extend(T_gimb2chas * T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(finalGuess_position));
     // for Acceleration & Velocity we use R
-    enemyGuess.velocity = R_gimb2chas_matrix*R_cam2gimb_matrix*finalGuess_velocity;
-    enemyGuess.acceleration = R_gimb2chas_matrix*R_cam2gimb_matrix*finalGuess_acceleration;
+    enemyGuess.velocity = R_gimb2chas_matrix * R_cam2gimb_matrix * finalGuess_velocity;
+    enemyGuess.acceleration = R_gimb2chas_matrix * R_cam2gimb_matrix * finalGuess_acceleration;
 
     // after all that, we have a predicted position, velocity, acceleration, and the time of this prediction
     // in chassis space!!!
@@ -134,5 +146,23 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     return enemyGuess;
 }
 
+bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition) {
+    if (drivers->cvCommunicator.isJetsonOnline()) {
+        // get angles and depth
+        Matrix<float, 1, 2> angularMatrix = drivers->cvCommunicator.getVisionTargetAngles();
+        float targetPitchAngle = angularMatrix[0][src::Informants::vision::pitch];
+        float targetYawAngle = angularMatrix[0][src::Informants::vision::yaw];
+        float depth = drivers->cvCommunicator.getLastValidMessage().depth;
+        // derive XYZ
+        float targetXCoord = depth * cos(targetPitchAngle) * sin(targetYawAngle);
+        float targetYCoord = depth * cos(targetPitchAngle) * cos(targetYawAngle);
+        float targetZCoord = depth * sin(targetPitchAngle);
+        enemyPosition[X_AXIS][0] = targetXCoord;
+        enemyPosition[Y_AXIS][0] = targetYCoord;
+        enemyPosition[Z_AXIS][0] = targetZCoord;
+        return true;
+    }
+    return false;
+}
 
 }  // namespace src::Informants

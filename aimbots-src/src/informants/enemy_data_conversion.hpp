@@ -1,12 +1,12 @@
 #pragma once
-#include <utils/common_types.hpp>
+#include <vector>
+
 #include <robots/robot-matricies/robot-matricies.hpp>
 #include <utils/math/transform_setup.hpp>
-#include <vector>
 
 using std::vector;
 
-//don't need to include jetson communicator-- it's included in drivers!
+// don't need to include jetson communicator-- it's included in drivers!
 
 /*
 Convert enemy data (from CV) from camera space to chassis space (somehow)
@@ -27,11 +27,10 @@ class should be called EnemyDataConversion then)
 */
 
 namespace src {
-    class Drivers;
+class Drivers;
 }
 
 namespace src::Informants {
-
 
 // for internal use
 struct enemyTimedPosition {
@@ -42,7 +41,7 @@ struct enemyTimedPosition {
 class EnemyDataConversion {
 public:
     EnemyDataConversion(src::Drivers* drivers);
-
+    ~EnemyDataConversion() = default;
     /**
      * @brief Gets latest valid enemy target data from CV and stores it in a circular/ring buffer.
      * Should be called continuously.
@@ -65,12 +64,21 @@ public:
      */
     std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
+    /**
+     * @brief Generates a gimbal-space position vector for an enemy target from CV data (in angles).
+     * Exists just in case testing occurs before Jetson communicator updates are worked out. :)
+     *
+     * @return bool: Whether or not the data should be listened to
+     */
+    bool updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition);
+
 private:
     src::Drivers* drivers;
-    static const int BUFFER_SIZE = 10;  // prolly move this to constants at some point or something IDK
-    static constexpr float VALID_TIME = 0.5; //max elapsed seconds before an enemy position entry is invalid
+    static const int BUFFER_SIZE = 10;        // prolly move this to constants at some point or something IDK
+    static constexpr float VALID_TIME = 0.5;  // max elapsed seconds before an enemy position entry is invalid
 
     // buffer for XYZ + timestamp
     Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
+    bool prev_cv_valid, cv_valid;
 };
 }  // namespace src::Informants

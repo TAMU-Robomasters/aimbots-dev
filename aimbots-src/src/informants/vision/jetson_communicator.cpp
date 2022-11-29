@@ -114,6 +114,8 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
                     visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
+
+                    // update visionTargetPosition here...
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.

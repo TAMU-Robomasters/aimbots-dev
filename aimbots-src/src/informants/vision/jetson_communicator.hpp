@@ -40,8 +40,11 @@ public:
 
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
-    //What is this???
+    // What is this???
     Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
+
+    // Doesn't yet actually do anything...
+    Matrix<float, 1, 3> const& getVisionTargetPosition() { return visionTargetPosition; }
 
 private:
     src::Drivers* drivers;
@@ -61,6 +64,7 @@ private:
     float chassisRelativePitchAngleAtVisionUpdate;
 
     Matrix<float, 1, 2> visionTargetAngles;
+    Matrix<float, 1, 3> visionTargetPosition;
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;

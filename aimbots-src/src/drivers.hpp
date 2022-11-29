@@ -20,10 +20,12 @@
 #ifndef DRIVERS_HPP_
 #define DRIVERS_HPP_
 
+#include "tap/drivers.hpp"
+
+#include "informants/enemy_data_conversion.hpp"
 #include "informants/field_relative_informant.hpp"
 #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/vision/jetson_communicator.hpp"
-#include "tap/drivers.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/nxp_imu/nxp_bmi088.hpp"
 #include "utils/robot_specific_inc.hpp"
@@ -33,20 +35,22 @@ class Drivers : public tap::Drivers {
     friend class DriversSingleton;
 
 #ifdef ENV_UNIT_TESTS
-   public:
+public:
 #endif
-    Drivers() : tap::Drivers(),
+    Drivers()
+        : tap::Drivers(),
 #ifdef TARGET_SENTRY
-                railDistanceSensor(this),
+          railDistanceSensor(this),
 #endif
-                controlOperatorInterface(this),
-                imu(this),
-                magnetometer(),
-                cvCommunicator(this),
-                fieldRelativeInformant(this) {
+          controlOperatorInterface(this),
+          imu(this),
+          magnetometer(),
+          cvCommunicator(this),
+          fieldRelativeInformant(this),
+          enemyDataConverter(this) {
     }
 
-   public:
+public:
 #ifdef TARGET_SENTRY
     Informants::UltrasonicDistanceSensor railDistanceSensor;
 #endif
@@ -55,6 +59,7 @@ class Drivers : public tap::Drivers {
     ::utils::Ist8310 magnetometer;
     Informants::vision::JetsonCommunicator cvCommunicator;
     Informants::FieldRelativeInformant fieldRelativeInformant;
+    Informants::EnemyDataConversion enemyDataConverter;
 };  // class Drivers
 
 }  // namespace src
