@@ -5,22 +5,21 @@ namespace src::robotStates {
 #ifdef TARGET_SENTRY
 struct robot_state_message_team {
     /* data */
-    int robotId;
-    Matrix<float, 3, 1> position;
-    int health;
+    uint32_t standardX, standardY, heroX, heroY, sentryX, sentryY;
 };
 
-struct robt_state_message_enemy {
-    int robotID;
-    Matrix<float, 3, 1> lastPosition;
-    bool found;
-}
 #else
 struct robot_state_message {
     /* data */
-    Matrix<float, 3, 1> position;
-    int health;
+    unit8_t robotID;
+    unit32_t x, y;
 };
+
+struct robt_state_message_enemy {
+    unit8_t robotID;
+    unit32_t x, y;
+    unit16_t timestamp;
+}
 
 #endif
 }  // namespace src::robotStates
