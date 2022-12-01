@@ -17,6 +17,9 @@ public:
 	float getRoll() { return PhiPl; }
 	float getPitch() { return ThePl; }
 	float getYaw() { return PsiPl; }
+        float getOmegaX() { return Omega[0]; }
+        float getOmegaY() { return Omega[1]; }
+        float getOmegaZ() { return Omega[2]; }
 	typedef struct {
 		float q0; // w
 		float q1; // x

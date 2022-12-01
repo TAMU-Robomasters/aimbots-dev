@@ -100,6 +100,10 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
     mockable inline float getAy() final_mockable { return data.accG[ImuData::Y]; }
     mockable inline float getAz() final_mockable { return data.accG[ImuData::Z]; }
 
+    inline float getOmegaX() { return nxpAlgorithm.getOmegaX(); }   // angular velocity
+    inline float getOmegaY() { return nxpAlgorithm.getOmegaY(); }
+    inline float getOmegaZ() { return nxpAlgorithm.getOmegaZ(); }
+
     mockable inline float getTemp() final_mockable { return data.temperature; }
 
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }

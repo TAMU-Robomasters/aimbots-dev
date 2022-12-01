@@ -3,7 +3,7 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "utils/math/matrix_helpers.hpp"
+
 #include "drivers.hpp"
 
 namespace src::Informants {
@@ -120,7 +120,74 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
     robotPositionZDisplay = fieldRelativeRobotPosition[0][2];
 #endif
+    // Step 1. get the CenterAccMatrix.
+    // CenterAccMatrix(3x1) - ImuAccMatrix(3x1)
+    //    = alpha(3x1) x (r_center - r_imu) + omega(3x1) x omega(3x1) x (r_center - r_imu)
+
+    // alpha: Imu angular acceleration
+    // omega: Imu angular velocity
+
+    Matrix<float, 3, 1> CenterAccMatrix = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> ImuAccMatrix = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> alphaMatrix = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> omegaMatrix = Matrix<float, 3, 1>::zeroMatrix();
+
+    // need this from hardware info.
+    Matrix<float, 3, 1> imuToCenterMatrix = Matrix<float, 3, 1>::zeroMatrix();
+
+    ImuAccMatrix[0][0] = drivers->bmi088.getAx();
+    ImuAccMatrix[1][0] = drivers->bmi088.getAy();
+    ImuAccMatrix[2][0] = drivers->bmi088.getAz();
     
+    CenterAccMatrix = ImuAccMatrix;
+
+    // alphaMatrix[0][0] = drivers->imu.nxpAlgorithm.getAlphaX();
+    // alphaMatrix[1][0] = drivers->imu.nxpAlgorithm.getAlphaY();
+    // alphaMatrix[2][0] = drivers->imu.nxpAlgorithm.getAlphaZ();
+
+    omegaMatrix[0][0] = drivers->imu.getOmegaX();
+    omegaMatrix[1][0] = drivers->imu.getOmegaY();
+    omegaMatrix[2][0] = drivers->imu.getOmegaZ();
+
+    // cross product : alpha (angular acceleration) x (imuToCenterMatrix)
+    CenterAccMatrix[0][0] += (alphaMatrix[1][0] * imuToCenterMatrix[2][0] - alphaMatrix[2][0] * imuToCenterMatrix[1][0]);
+    CenterAccMatrix[1][0] += -(alphaMatrix[0][0] * imuToCenterMatrix[2][0] - alphaMatrix[2][0] * imuToCenterMatrix[0][0]);
+    CenterAccMatrix[2][0] += (alphaMatrix[0][0] * imuToCenterMatrix[1][0] - alphaMatrix[1][0] * imuToCenterMatrix[0][0]);
+    
+    // cross product : omega (angular velocity) x ( omega (angular velocity) x (imuToCenterMatrix))
+    Matrix<float, 3, 1> tmp1Matrix = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> tmp2Matrix = Matrix<float, 3, 1>::zeroMatrix();
+
+    tmp1Matrix[0][0] += (omegaMatrix[1][0] * imuToCenterMatrix[2][0] - omegaMatrix[2][0] * imuToCenterMatrix[1][0]);
+    tmp1Matrix[1][0] += -(omegaMatrix[0][0] * imuToCenterMatrix[2][0] - omegaMatrix[2][0] * imuToCenterMatrix[0][0]);
+    tmp1Matrix[2][0] += (omegaMatrix[0][0] * imuToCenterMatrix[1][0] - omegaMatrix[1][0] * imuToCenterMatrix[0][0]);
+
+    tmp2Matrix[0][0] += (omegaMatrix[1][0] * tmp1Matrix[2][0] - omegaMatrix[2][0] * tmp1Matrix[1][0]);
+    tmp2Matrix[1][0] += -(omegaMatrix[0][0] * tmp1Matrix[2][0] - omegaMatrix[2][0] * tmp1Matrix[0][0]);
+    tmp2Matrix[2][0] += (omegaMatrix[0][0] * tmp1Matrix[1][0] - omegaMatrix[1][0] * tmp1Matrix[0][0]);
+
+    CenterAccMatrix += tmp2Matrix;
+
+    // Step 2. get Rotation matrix (R) x CenterAccMatrix
+    Matrix<float, 3, 3> RotationMatrix = Matrix<float, 3, 3>::zeroMatrix();
+    // RotationMatrix = getRotationMatrix();
+    float deltaTime = 1;
+    // deltaTime = getDeltaTime(); // ???what is the delta time?
+    
+    Matrix<float, 3, 1> locationChange = Matrix<float, 3, 1>::zeroMatrix();
+    locationChange = RotationMatrix * CenterAccMatrix;
+
+    locationChange = 0.5 * locationChange * deltaTime * deltaTime;
+    
+    // Step3. update position.
+    // current position + locationChange;
+    fieldRelativeRobotPosition[0][0] += locationChange[0][0];
+    fieldRelativeRobotPosition[0][1] += locationChange[1][0];
+    fieldRelativeRobotPosition[0][2] += locationChange[2][0];
+
+    robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
+    robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
+    robotPositionZDisplay = fieldRelativeRobotPosition[0][2];
 }
 
 // gets the angle between the robot's current position and the field coordinate
@@ -131,43 +198,4 @@ float FieldRelativeInformant::getXYAngleToFieldCoordinate(AngleUnit unit, Matrix
     }
     return xy_angle;
 }
-
-// The two functions below return [X_t+1, V_t+1] with two different types of parameter inputs
-// Below the parameters are in matrix form
-Matrix<float, 2, 1> getNew_PosVel(Matrix<float, 3, 1> XVA, double deltat) {
-    // [x, Vx]_t+1 = [A]*[x, Vx] 
-    // [y, Vy]_t+1 = [A]*[y, Vy] 
-    // [z, Vz]_t+1 = [A]*[z, Vz] 
-    float A_array[6] = {1.0f, deltat, deltat*deltat/2.0f,
-                        0.0f, 1.0f, deltat};
-    Matrix<float, 2, 3> A = Matrix<float, 2, 3>(A_array);
-    return A*XVA;
-}
-
-// Parameters are in individual components of vector being multplied
-/*
-* [Pos,
-   Vel,
-   Accel]
-*/
-Matrix<float, 2, 1> getNew_PosVel(float Pos, float Vel, float Accel, float deltat) {
-    float XVA_array[3] = {Pos,Vel,Accel};
-    Matrix<float, 3, 1> XVA = Matrix<float, 3, 1>(XVA_array);  
-    // [x, Vx]_t+1 = [A]*[x, Vx] 
-    // [y, Vy]_t+1 = [A]*[y, Vy] 
-    // [z, Vz]_t+1 = [A]*[z, Vz] 
-    float A_array[6] = {1.0f, deltat, deltat*deltat/2.0f,
-                        0.0f, 1.0f, deltat};
-    Matrix<float, 2, 3> A = Matrix<float, 2, 3>(A_array);
-    return A*XVA;
-}
-
-
-
-
-
-
-
-
-
 }  // namespace src::Informants
