@@ -1,8 +1,10 @@
 #pragma once
 
+#include "tap/communication/serial/ref_serial.hpp"
+#include "tap/communication/serial/ref_serial_transmitter.hpp"
+
 #include "modm/architecture/interface/register.hpp"
 #include "modm/processing/protothread.hpp"
-#include "src/communication/serial/ref_serial.hpp"
 
 #include "drivers.hpp"
 #include "robot_state.hpp"
@@ -16,20 +18,20 @@ private:
     tap::communication::serial::RefSerialTransmitter refSerial;
     tap::communication::serial::RefSerialData::Tx::RobotToRobotMessage robotToRobotMessage;
 
-    RobotStateInterface* robotStateInterface;
+    RobotStates* robotStateInterface;
 
-    uint_16 message{};
+    uint16_t message{};
 
-// #ifdef TARGET_SENTRY
+    // #ifdef TARGET_SENTRY
     static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
 
-// #endif
+    // #endif
 public:
     RobotStateOutBound(src::Drivers* drivers);
 
     bool send();
 
     void updateQue();
-}
+};
 
 }  // namespace src::robotStates

@@ -8,9 +8,13 @@
 #include "robot_state_interface.hpp"
 
 namespace src::robotStates {
-RobotStateInBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
-bool recive() { return false; }
+RobotStateInBound::RobotStateInBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
+
+bool recive() {
+    // return refSerial
+    return false;
+}
 
 void updateStates() {}
 }  // namespace src::robotStates

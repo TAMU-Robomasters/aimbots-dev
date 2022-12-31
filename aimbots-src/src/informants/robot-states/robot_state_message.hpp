@@ -11,15 +11,15 @@ struct robot_state_message_team {
 #else
 struct robot_state_message {
     /* data */
-    unit8_t robotID;
-    unit32_t x, y;
+    uint8_t robotID;
+    uint32_t x, y;
 };
 
 struct robt_state_message_enemy {
-    unit8_t robotID;
-    unit32_t x, y;
-    unit16_t timestamp;
-}
+    uint8_t robotID;
+    uint32_t x, y;
+    uint16_t timestamp;
+};
 
 #endif
 }  // namespace src::robotStates
