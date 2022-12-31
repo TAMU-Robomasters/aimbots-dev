@@ -19,21 +19,20 @@ public:
     Robot();
     ~Robot();
 
-    void setX(float x); 
-    void setY(float y); 
-    void setZ(float z); 
+    void setX(float x);
+    void setY(float y);
+    void setZ(float z);
     void setPosition(float x, float y, float z);
-    void setPosition(Matrix<float, 3, 1> position); 
+    void setPosition(Matrix<float, 3, 1> position);
     void setHealth(int health);
     void setTeamColor(Team teamColor);
 
-
-    float getX(); 
-    float getY(); 
-    float getZ(); 
-    Matrix<float, 3, 1> getPosition(); 
+    float getX();
+    float getY();
+    float getZ();
+    Matrix<float, 3, 1> getPosition();
     int getHealth();
     int getRobotID();
     Team getTeamColor();
 };
-}  // namespace src::RobotStates
+}  // namespace src::robotStates
