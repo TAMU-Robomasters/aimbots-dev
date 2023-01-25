@@ -16,5 +16,11 @@ bool recive() {
     return false;
 }
 
-void updateStates() {}
+void updateStates() {
+    if(recive()){
+        //TODO: check message type, depending on it do funny things
+         
+    }
+
+}
 }  // namespace src::robotStates
