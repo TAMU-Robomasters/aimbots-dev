@@ -123,6 +123,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     }
     enemyTimedData enemyGuess;
 
+    /* god I hope I don't have to uncomment this
     // final guess is transformed for now
     Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
     Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
@@ -135,6 +136,7 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // for Acceleration & Velocity we use R
     enemyGuess.velocity = R_gimb2chas_matrix * R_cam2gimb_matrix * finalGuess_velocity;
     enemyGuess.acceleration = R_gimb2chas_matrix * R_cam2gimb_matrix * finalGuess_acceleration;
+    */
 
     // after all that, we have a predicted position, velocity, acceleration, and the time of this prediction
     // in chassis space!!!
@@ -160,6 +162,16 @@ bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPo
         enemyPosition[X_AXIS][0] = targetXCoord;
         enemyPosition[Y_AXIS][0] = targetYCoord;
         enemyPosition[Z_AXIS][0] = targetZCoord;
+
+        // now that we have enemy position (in METERS), transform to chassis space ! ! !
+        Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
+        Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
+        Matrix<float, 3, 3> R_cam2gimb_matrix = Matrix<float, 3, 3>(R_cam2gimb);
+        Matrix<float, 3, 3> R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
+        // for Position we use T
+        // remove last 1                                                // adds a 1 at end
+        enemyPosition =
+            src::utils::MatrixHelper::P_crop_extend(T_gimb2chas * T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(enemyPosition));
         return true;
     }
     return false;

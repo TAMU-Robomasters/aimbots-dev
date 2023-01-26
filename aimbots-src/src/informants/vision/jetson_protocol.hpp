@@ -14,7 +14,7 @@ struct JetsonMessage {
     uint8_t magic;
     float targetYawOffset;    // radians, if target is to the left of camera-center, this will be negative
     float targetPitchOffset;  // radians, if target is below camera-center, this will be positive for some reason
-    float depth;
+    float depth;              // METERS!!!!!
     CVState cvState;
 } __attribute__((packed));
 
