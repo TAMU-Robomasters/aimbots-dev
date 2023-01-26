@@ -4,6 +4,7 @@
 #include <subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
+#include <src/informants/enemy_data_conversion.hpp>
 
 namespace src::Gimbal {
 
@@ -27,6 +28,9 @@ class GimbalChaseCommand : public tap::control::Command {
 
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
+
+    enemyTimedData data;
+    GimbalSubsystem::aimAngles aimAtAngles;
 };
 
 }  // namespace src::Gimbal

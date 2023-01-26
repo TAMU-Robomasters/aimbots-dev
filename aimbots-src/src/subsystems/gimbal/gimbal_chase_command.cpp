@@ -44,7 +44,9 @@ void GimbalChaseCommand::execute() {
 
         cvStateDisplay = cvState;
 
-        
+        data = drivers->enemyDataConverter.calculateBestGuess();
+
+        aimAtAngles = gimbal->getAimAngles(data);
 
         targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
         targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
