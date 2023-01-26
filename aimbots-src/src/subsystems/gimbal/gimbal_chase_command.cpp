@@ -44,6 +44,8 @@ void GimbalChaseCommand::execute() {
 
         cvStateDisplay = cvState;
 
+        
+
         targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
         targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
 
@@ -56,6 +58,8 @@ void GimbalChaseCommand::execute() {
         targetYawAngleDisplay2 = targetYawAngle;
         targetPitchAngleDisplay2 = targetPitchAngle;
         // }
+
+        //Should be absolute angle, will double check
         controller->runYawController(AngleUnit::Degrees, targetYawAngle, true);
         controller->runPitchController(AngleUnit::Degrees, targetPitchAngle, true);
     }
