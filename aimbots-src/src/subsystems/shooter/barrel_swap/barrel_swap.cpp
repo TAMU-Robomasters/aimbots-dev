@@ -18,6 +18,7 @@ void BarrelSwapSubsytem::initialize() {
 }
 
 void BarrelSwapSubsytem::refresh() {
+
     // constantly check barrel heat
     // give command to move if 1. not firing for >threshold dead time and 2. barrel is overheating
     // add edge case in case both are overheating (maybe ?)

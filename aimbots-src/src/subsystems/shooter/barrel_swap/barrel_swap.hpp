@@ -23,6 +23,7 @@ public:
 
 private:
     tap::Drivers* drivers;
+    location position;
 };
 
 }  // namespace src::Shooter
