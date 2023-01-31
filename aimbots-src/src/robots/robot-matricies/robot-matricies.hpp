@@ -129,10 +129,12 @@ static constexpr float P_field2chas[3] = {-1, -2, -3};
  * @brief Standard Rotation and Distance/Position matrixies
  */
 static constexpr float R_cam2gimb[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-static constexpr float P_cam2gimb[3] = {0, -0.09907, -0.047841};
+static constexpr float P_cam2gimb[3] = {-0.085, 0.07, 0};
+//{0, -0.09907, -0.047841} normally
 
 static constexpr float R_gimb2cam[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-static constexpr float P_gimb2cam[3] = {0, 0.09907, -0.047841};
+static constexpr float P_gimb2cam[3] = {0.085, -0.07, 0};
+//{0, 0.09907, -0.047841} normally
 
 static constexpr float R_chas2gimb[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 static constexpr float P_chas2gimb[3] = {1, 2, 3};

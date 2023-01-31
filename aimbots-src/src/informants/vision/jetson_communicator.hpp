@@ -63,6 +63,7 @@ private:
     float fieldRelativeYawAngleAtVisionUpdate;
     float chassisRelativePitchAngleAtVisionUpdate;
 
+
     Matrix<float, 1, 2> visionTargetAngles;
     Matrix<float, 1, 3> visionTargetPosition;
 

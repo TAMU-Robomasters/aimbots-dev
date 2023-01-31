@@ -5,6 +5,19 @@
 namespace src::Informants {
 EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(drivers) {}
 
+    float targetXCoordDisplay_camera = 0;
+    float targetYCoordDisplay_camera = 0;
+    float targetZCoordDisplay_camera = 0;
+
+    Matrix<float,3,1> enemyPositionDisplay_gimbal;
+    float targetXCoordDisplay_gimbal = 0;
+    float targetYCoordDisplay_gimbal = 0;
+    float targetZCoordDisplay_gimbal = 0;
+
+    float targetXCoordDisplay_chassis = 0;
+    float targetYCoordDisplay_chassis = 0;
+    float targetZCoordDisplay_chassis = 0;
+
 void EnemyDataConversion::updateEnemyInfo() {
     if (drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
         prev_cv_valid = cv_valid;
@@ -53,6 +66,7 @@ vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float t
     return validPositions;
 }
 
+// !!! note from future self: stop taking so many damn derivatives
 // What are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get position at our CURRENT
 // time. With n valid datapoints, we can only go up to the (n-1)th derivative. shame.
 enemyTimedData EnemyDataConversion::calculateBestGuess() {
@@ -150,19 +164,17 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
 
 bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition) {
     if (drivers->cvCommunicator.isJetsonOnline()) {
-        // get angles and depth
-        Matrix<float, 1, 2> angularMatrix = drivers->cvCommunicator.getVisionTargetAngles();
-        float targetPitchAngle = angularMatrix[0][src::Informants::vision::pitch];
-        float targetYawAngle = angularMatrix[0][src::Informants::vision::yaw];
-        float depth = drivers->cvCommunicator.getLastValidMessage().depth;
-        // derive XYZ
-        float targetXCoord = depth * cos(targetPitchAngle) * sin(targetYawAngle);
-        float targetYCoord = depth * cos(targetPitchAngle) * cos(targetYawAngle);
-        float targetZCoord = depth * sin(targetPitchAngle);
-        enemyPosition[X_AXIS][0] = targetXCoord;
+        // get XYZ
+        float targetXCoord = drivers->cvCommunicator.getLastValidMessage().targetX;
+        float targetYCoord = drivers->cvCommunicator.getLastValidMessage().targetY;
+        float targetZCoord = drivers->cvCommunicator.getLastValidMessage().targetZ;
+        enemyPosition[X_AXIS][0] = targetXCoord\
         enemyPosition[Y_AXIS][0] = targetYCoord;
         enemyPosition[Z_AXIS][0] = targetZCoord;
 
+        targetXCoordDisplay_camera = targetXCoord;
+        targetYCoordDisplay_camera = targetXCoord;
+        targetZCoordDisplay_camera = targetXCoord;
         // now that we have enemy position (in METERS), transform to chassis space ! ! !
         Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
         Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
@@ -170,8 +182,19 @@ bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPo
         Matrix<float, 3, 3> R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
         // for Position we use T
         // remove last 1                                                // adds a 1 at end
+
+        //debug..
+        enemyPositionDisplay_gimbal = src::utils::MatrixHelper::P_crop_extend(T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(enemyPosition));
         enemyPosition =
             src::utils::MatrixHelper::P_crop_extend(T_gimb2chas * T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(enemyPosition));
+
+        float targetXCoordDisplay_gimbal = enemyPositionDisplay_gimbal[X_AXIS][0];
+        float targetYCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Y_AXIS][0];
+        float targetZCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Z_AXIS][0];
+        
+        float targetXCoordDisplay_chassis = enemyPosition[X_AXIS][0];
+        float targetYCoordDisplay_chassis = enemyPosition[Y_AXIS][0];
+        float targetZCoordDisplay_chassis = enemyPosition[Z_AXIS][0];
         return true;
     }
     return false;

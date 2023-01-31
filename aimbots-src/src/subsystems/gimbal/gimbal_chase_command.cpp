@@ -39,27 +39,30 @@ void GimbalChaseCommand::execute() {
     if (drivers->cvCommunicator.isJetsonOnline()) {
         jetsonOnlineDisplay = true;
         cvState = drivers->cvCommunicator.getLastValidMessage().cvState;
-        // if (cvState == src::Informants::vision::CVState::FIRE) {
-        visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
+        if (cvState == src::Informants::vision::CVState::FOUND) {
+            visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
-        cvStateDisplay = cvState;
+            cvStateDisplay = cvState;
 
-        data = drivers->enemyDataConverter.calculateBestGuess();
+            data = drivers->enemyDataConverter.calculateBestGuess();
 
-        aimAtAngles = gimbal->getAimAngles(data);
+            //aimAtAngles = gimbal->getAimAngles(data);
+            aimAtAngles = gimbal->aimAtPoint(0,1,0);
 
-        targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
-        targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
+            //targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
+            //targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
+            //targetYawAngle = aimAtAngles.yaw;
+            //targetPitchAngle = aimAtAngles.pitch;
 
-        yawOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetYawOffset);
-        pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
+            //yawOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetYawOffset);
+            //pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
 
-        fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-        chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
+            fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
+            chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
 
-        targetYawAngleDisplay2 = targetYawAngle;
-        targetPitchAngleDisplay2 = targetPitchAngle;
-        // }
+            targetYawAngleDisplay2 = aimAtAngles.yaw;
+            targetPitchAngleDisplay2 = aimAtAngles.pitch;
+        }
 
         //Should be absolute angle, will double check
         controller->runYawController(AngleUnit::Degrees, targetYawAngle, true);

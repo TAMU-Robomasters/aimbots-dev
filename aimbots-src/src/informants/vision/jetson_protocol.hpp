@@ -12,13 +12,14 @@ static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
 
 struct JetsonMessage {
     uint8_t magic;
-    float targetYawOffset;    // radians, if target is to the left of camera-center, this will be negative
-    float targetPitchOffset;  // radians, if target is below camera-center, this will be positive for some reason
-    float depth;              // METERS!!!!!
+    float targetX;              // targetYawOffset
+    float targetY;              // targetPitchOffset
+    float targetZ;              // depth
+    uint8_t delay;
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 14, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::vision

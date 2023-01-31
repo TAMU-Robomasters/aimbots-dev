@@ -32,8 +32,8 @@ void JetsonCommunicator::initialize() {
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 int displayBufIndex = 0;
 
-float yawOffsetDisplay = 0;
-float pitchOffsetDisplay = 0;
+float targetXDisplay = 0;
+float targetYDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 
 float fieldRelativeYawAngleDisplay = 0;
@@ -67,6 +67,7 @@ void JetsonCommunicator::updateSerial() {
     displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
 
     switch (currentSerialState) {
+        // ...looking for message start...
         case JetsonCommunicatorSerialState::SearchingForMagic: {
             // Check if the byte we just read is the byte we expected in the magic number.
             if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
@@ -82,6 +83,7 @@ void JetsonCommunicator::updateSerial() {
             }
             break;
         }
+        // ...found message start, assemble message...
         case JetsonCommunicatorSerialState::AssemblingMessage: {
             nextByteIndex++;
 
@@ -98,25 +100,20 @@ void JetsonCommunicator::updateSerial() {
                     lastMsgTimeDisplay = currTime;
                 }
 
-                yawOffsetDisplay = lastMessage.targetYawOffset;
-                pitchOffsetDisplay = lastMessage.targetPitchOffset;
+                targetXDisplay = lastMessage.targetX;
+                targetYDisplay = lastMessage.targetY;
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
-                    fieldRelativeYawAngleAtVisionUpdate = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Radians);
-                    chassisRelativePitchAngleAtVisionUpdate = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians);
-
-                    fieldRelativeYawAngleDisplay = fieldRelativeYawAngleAtVisionUpdate;
-                    chassisRelativePitchAngleDisplay = chassisRelativePitchAngleAtVisionUpdate;
-
-                    // Find the robot-relative target angles calculated at the vision update. Theoretically, we can snap to a target
-                    // using just one update from the vision system, and this target is refreshed on every update of the vision system.
-                    visionTargetAngles[0][yaw] = fieldRelativeYawAngleAtVisionUpdate - lastMessage.targetYawOffset;
-                    visionTargetAngles[0][pitch] = chassisRelativePitchAngleAtVisionUpdate - lastMessage.targetPitchOffset;
+                    //there was some angle stuff here
 
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
                     // update visionTargetPosition here...
+                    // camera space
+                    visionTargetPosition[0][X_AXIS] = lastMessage.targetX;
+                    visionTargetPosition[0][Y_AXIS] = lastMessage.targetY;
+                    visionTargetPosition[0][Z_AXIS] = lastMessage.targetZ;
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
@@ -137,8 +134,8 @@ void JetsonCommunicator::updateSerial() {
     }
 
     if (!isJetsonOnline()) {
-        lastMessage.targetYawOffset = 0.0f;
-        lastMessage.targetPitchOffset = 0.0f;
+        lastMessage.targetX = 0.0f;
+        lastMessage.targetY = 0.0f;
     }
 }
 

@@ -128,6 +128,7 @@ namespace src::Gimbal {
         // it isn't overflowed, we limit it within +/- 30,000, which is just
         // the max and min of an int16_t (int16_t has a range of about +/- 32,000).
         desiredYawMotorOutput = tap::algorithms::limitVal(output, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
+        
     }
 
     void GimbalSubsystem::setPitchMotorOutput(float output) {
@@ -218,6 +219,15 @@ namespace src::Gimbal {
         a.pitch = asin((pz+vz*time+((double)0.5)*time*time*(az+((double)9.8)))/(L*v0*time));
 
         a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
+
+        return a;
+    }
+
+    GimbalSubsystem::aimAngles GimbalSubsystem::aimAtPoint(float x, float y, float z) {
+        aimAngles a;
+
+        a.pitch = atan2(z, sqrt((x*x) + (y*y)));
+        a.yaw = atan2(x,y);
 
         return a;
     }

@@ -45,7 +45,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 /**
  * @brief Position PID constants
  */
-static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
+/*static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 600.0f,
     .ki = 0.0f,
     .kd = 500.0f,
@@ -57,13 +57,41 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
+};*/
+
+static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
+    .kp = 100.0f,
+    .ki = 3.0f,
+    .kd = 80.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
+/*static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .kp = 1850.0f,
     .ki = 0.0f,
     .kd = 150.0f,
     .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};*/
+
+static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
+    .kp = 100.0f,
+    .ki = 3.0f,
+    .kd = 80.0f,
+    .maxICumulative = 1000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -200,14 +228,15 @@ static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 //Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.205f; //Measured from 2022 Standard
+static constexpr float GIMBAL_BARREL_LENGTH = 0.0f; //Measured from 2022 Standard
+//0.205f normally
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 135.0f;
-static constexpr float PITCH_START_ANGLE = 2.5f;
+static constexpr float YAW_START_ANGLE = 61.69f;
+static constexpr float PITCH_START_ANGLE = 53.04f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;

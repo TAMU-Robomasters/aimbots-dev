@@ -42,6 +42,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setPitchMotorOutput(float output);
 
     aimAngles getAimAngles(enemyTimedData data);
+    aimAngles aimAtPoint(float x, float y, float z);
 
     inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
     inline void setTargetChassisRelativeYawAngle(AngleUnit unit, float angle) {
