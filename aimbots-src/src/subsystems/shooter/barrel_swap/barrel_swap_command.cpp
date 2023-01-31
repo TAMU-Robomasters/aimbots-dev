@@ -10,7 +10,9 @@ BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelSwapSubsytem* 
 
 void BarrelSwapCommand::initialize() {}
 
-void BarrelSwapCommand::end(bool) {}
+void BarrelSwapCommand::end(bool) {
+    // turn the shooter command on
+}
 
 bool BarrelSwapCommand::isReady() { return true; }
 
