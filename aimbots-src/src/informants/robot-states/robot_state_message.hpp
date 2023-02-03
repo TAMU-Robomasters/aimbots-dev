@@ -15,11 +15,22 @@ struct robot_state_message {
     uint32_t x, y;
 };
 
-struct robt_state_message_enemy {
+struct robot_state_message_enemy {
     uint8_t robotID;
     uint32_t x, y;
     uint16_t timestamp;
 };
 
 #endif
+
+enum class MessageType : uint8_t {
+#ifdef TARGET_SENTRY
+    TEAM_MESSAGE,
+#else
+    ROBOT_STATE,
+    ENEMY_STATE,
+#endif
+    NUM_MESSAGE_TYPES,
+};
+
 }  // namespace src::robotStates

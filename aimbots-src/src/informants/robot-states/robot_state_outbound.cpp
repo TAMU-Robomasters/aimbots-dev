@@ -14,25 +14,36 @@
 namespace src::robotStates {
 RobotStateOutBound::RobotStateOutBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
-bool send() {
-    // updateQue();
+bool RobotStateOutBound::send() {
+    PT_BEGIN();
+    // uint16_t lastMessage;
+    while (true) {
+        getNextMessageToSend();
 
-    // PT_CALL(refSerial.sendRobotToRobotMsg(
-    //     &robotToRobotMessage,
-    //     SENTRY_REQUEST_ROBOT_ID,
-    //     drivers->refSerial.getRobotIdBasedOnCurrentRobotTeam(RefSerialData::RobotId::BLUE_SENTINEL),
-    //     1));
-
-    // PT_END();
+        if (/*message != lastMessage*/ true) {
+            PT_CALL(refSerial.sendRobotToRobotMsg(
+                &robotToRobotMessage,
+                SENTRY_REQUEST_ROBOT_ID,
+                drivers->refSerial.getRobotIdBasedOnCurrentRobotTeam(RefSerialData::RobotId::BLUE_SENTINEL),
+                1));
+        } else {
+            PT_YIELD();
+        }
+        updateQue();
+        // lastMessage = message;
+    }
+    PT_END();
     return false;
 }
 
-void updateQue() {
-    // #ifdef TARGET_SENTRY
-    //     Team color = drivers->getRobotData->robotData.robotId == RED_SENTINEL ? Team::RED : Team::BLUE;
-    //     Team colorEnemy = color == TEAM::RED ? TEAM::BLUE : TEAM::RED;
+void RobotStateOutBound::updateQue() {
+#ifdef TARGET_SENTRY
+    // Team color = drivers->refSerial->getRobotData().robotID == 7 ? Team::RED : Team::BLUE;
+    Team color = Team::RED;
+    // Team color = drivers->getRobotData->robotData.robotId == RED_SENTINEL ? Team::RED : Team::BLUE;
+    Team colorEnemy = color == Team::RED ? Team::BLUE : Team::RED;
 
-    // #endif
+#endif
 }
 
 }  // namespace src::robotStates
