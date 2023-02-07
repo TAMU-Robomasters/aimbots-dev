@@ -19,7 +19,7 @@ EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(driver
     float targetZCoordDisplay_chassis = 0;
 
 void EnemyDataConversion::updateEnemyInfo() {
-    if (drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
+    if (true || drivers->cvCommunicator.isJetsonOnline() && drivers->cvCommunicator.getLastValidMessage().cvState >= src::Informants::vision::FOUND) {
         prev_cv_valid = cv_valid;
         cv_valid = true;
 
@@ -57,7 +57,7 @@ vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float t
     // traverse bounded deque until invalid time found
     for (int index = 0; index < BUFFER_SIZE; index++) {
         enemyTimedPosition position = rawPositionBuffer[index];
-        if (currentTime_uS - position.timestamp_uS > time_seconds * MICROSECONDS_PER_SECOND) {
+        if (currentTime_uS - position.timestamp_uS < time_seconds * MICROSECONDS_PER_SECOND) {
             validPositions.push_back(position);
         } else {
             break;
@@ -163,18 +163,24 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
 }
 
 bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition) {
-    if (drivers->cvCommunicator.isJetsonOnline()) {
+    if (true || drivers->cvCommunicator.isJetsonOnline()) {
         // get XYZ
-        float targetXCoord = drivers->cvCommunicator.getLastValidMessage().targetX;
-        float targetYCoord = drivers->cvCommunicator.getLastValidMessage().targetY;
-        float targetZCoord = drivers->cvCommunicator.getLastValidMessage().targetZ;
-        enemyPosition[X_AXIS][0] = targetXCoord\
+        // undebug
+        // float targetXCoord = drivers->cvCommunicator.getLastValidMessage().targetX;
+        // float targetYCoord = drivers->cvCommunicator.getLastValidMessage().targetY;
+        // float targetZCoord = drivers->cvCommunicator.getLastValidMessage().targetZ;
+
+        //debug
+        float targetXCoord = 0;
+        float targetYCoord = 1;
+        float targetZCoord = 0;
+        enemyPosition[X_AXIS][0] = targetXCoord;
         enemyPosition[Y_AXIS][0] = targetYCoord;
         enemyPosition[Z_AXIS][0] = targetZCoord;
 
         targetXCoordDisplay_camera = targetXCoord;
-        targetYCoordDisplay_camera = targetXCoord;
-        targetZCoordDisplay_camera = targetXCoord;
+        targetYCoordDisplay_camera = targetYCoord;
+        targetZCoordDisplay_camera = targetZCoord;
         // now that we have enemy position (in METERS), transform to chassis space ! ! !
         Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
         Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
@@ -188,13 +194,13 @@ bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPo
         enemyPosition =
             src::utils::MatrixHelper::P_crop_extend(T_gimb2chas * T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(enemyPosition));
 
-        float targetXCoordDisplay_gimbal = enemyPositionDisplay_gimbal[X_AXIS][0];
-        float targetYCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Y_AXIS][0];
-        float targetZCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Z_AXIS][0];
-        
-        float targetXCoordDisplay_chassis = enemyPosition[X_AXIS][0];
-        float targetYCoordDisplay_chassis = enemyPosition[Y_AXIS][0];
-        float targetZCoordDisplay_chassis = enemyPosition[Z_AXIS][0];
+        targetXCoordDisplay_gimbal = enemyPositionDisplay_gimbal[X_AXIS][0];
+        targetYCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Y_AXIS][0];
+        targetZCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Z_AXIS][0];
+
+        targetXCoordDisplay_chassis = enemyPosition[X_AXIS][0];
+        targetYCoordDisplay_chassis = enemyPosition[Y_AXIS][0];
+        targetZCoordDisplay_chassis = enemyPosition[Z_AXIS][0];
         return true;
     }
     return false;

@@ -173,12 +173,20 @@ namespace src::Gimbal {
         double ay = data.acceleration[Y_AXIS][0];
         double az = data.acceleration[Z_AXIS][0];
 
+        ax = 0;
+        ay = 0;
+        az = 0;
+
+        vx = 0;
+        vy = 0;
+        vz = 0;
+
         double L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
-        double v0 = 0; //Shooter Velocity Constant found below
+        double v0 = 30; //Shooter Velocity Constant found below
 
         //This was all copied from run_shooter_command.cpp
         //Reads the shooter connected to the ref system and pulls the current speed limit
-        auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
+        /*auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
         auto launcherID = refSysRobotTurretData.launchMechanismID;
         switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
                            // #if defined(TARGET_STANDARD) || defined(TARGET_SENTRY)
@@ -197,7 +205,7 @@ namespace src::Gimbal {
             }
             default:
                 break;
-        }
+        }*/
 
         //Need to manually find the calcs for these.
         //Created with G as 9.8m/s
@@ -216,9 +224,9 @@ namespace src::Gimbal {
 
         aimAngles a;
 
-        a.pitch = asin((pz+vz*time+((double)0.5)*time*time*(az+((double)9.8)))/(L*v0*time));
+        a.pitch = asin((pz+vz*time+((double)0.5)*time*time*(az+((double)9.8))) / (L+(v0*time)));
 
-        a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay)/(cos(a.pitch)*(L*v0*time)));
+        a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay) / (cos(a.pitch)*(L+(v0*time))));
 
         return a;
     }

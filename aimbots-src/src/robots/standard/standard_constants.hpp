@@ -228,15 +228,15 @@ static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 //Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.0f; //Measured from 2022 Standard
+static constexpr float GIMBAL_BARREL_LENGTH = 0.1f; //Measured from 2022 Standard
 //0.205f normally
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 61.69f;
-static constexpr float PITCH_START_ANGLE = 53.04f;
+static constexpr float YAW_START_ANGLE = 348.91f + 54.0f;
+static constexpr float PITCH_START_ANGLE = 61.34f + 57.0f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;

@@ -72,10 +72,16 @@ public:
      */
     bool updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition);
 
+    /**
+     * @brief should probably put this somewhere else but drivers is already here so it's convenient
+     * 
+     */
+    void updateTransformations();
+
 private:
     src::Drivers* drivers;
     static const int BUFFER_SIZE = 10;        // prolly move this to constants at some point or something IDK
-    static constexpr float VALID_TIME = 0.5;  // max elapsed seconds before an enemy position entry is invalid
+    static constexpr float VALID_TIME = 5;  // max elapsed seconds before an enemy position entry is invalid
 
     // buffer for XYZ + timestamp
     Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
