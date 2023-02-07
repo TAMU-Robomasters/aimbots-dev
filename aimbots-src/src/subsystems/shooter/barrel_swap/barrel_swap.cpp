@@ -12,17 +12,30 @@
 namespace src::Shooter {
 BarrelSwapSubsytem::BarrelSwapSubsytem(tap::Drivers*) : Subsystem(drivers) {}
 
+BarrelSwapSubsytem::BarrelSwapSubsytem(src::Drivers* drivers, ShooterSubsystem* shooter) {
+    this->drivers = drivers;
+    this->shooter = shooter;
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
+}
+
 void BarrelSwapSubsytem::initialize() {
     // move until hits limit switch
-    // reset encoders
+    // LimitSwitch.isFalling
+    // reset encoders (how)
 }
 
 void BarrelSwapSubsytem::refresh() {
-
-    // constantly check barrel heat
-    // give command to move if 1. not firing for >threshold dead time and 2. barrel is overheating
-    // add edge case in case both are overheating (maybe ?)
-}
+    
+    if (shooter.runShooterCommand.isFinished) {
+        clock_t t = clock();
+        // if (clock() - t <(0.2*CLOCKS_PER_SEC) && current shooter heat > max_heat) {
+            // current shooter.stopShooterCommand.execute();
+            // swap shooters
+            // 
+            // current shooter = other shooter
+        }
+    }
+    
 }  // namespace src::Shooter
 
 #endif
