@@ -20,19 +20,20 @@ BarrelSwapSubsytem::BarrelSwapSubsytem(src::Drivers* drivers, ShooterSubsystem* 
 
 void BarrelSwapSubsytem::initialize() {
     // move until hits limit switch
-    // LimitSwitch.isFalling
-    // reset encoders (how)
+    // LimitSwitch.isFalling or something maybe
+    // reset encoders (how?)
 }
 
 void BarrelSwapSubsytem::refresh() {
     
     if (shooter.runShooterCommand.isFinished) {
+        // calculate how long the shooter has been not firing, and if it is over a minimum threshold, switch barrels
         clock_t t = clock();
-        // if (clock() - t <(0.2*CLOCKS_PER_SEC) && current shooter heat > max_heat) {
-            // current shooter.stopShooterCommand.execute();
-            // swap shooters
-            // 
-            // current shooter = other shooter
+        // if (clock() - t <(DEAD_TIME*CLOCKS_PER_SEC) && current_shooter.heat > MAX_HEAT) {
+            // current_shooter.stopShooterCommand.execute();
+            // something here to swap barrels until barrel is in proper spot
+            // swap current shooter with other shooter
+            // current_shooter = other_shooter
         }
     }
     
