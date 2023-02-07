@@ -9,6 +9,11 @@
 #include "drivers.hpp"
 #include "robot_state.hpp"
 #include "robot_state_interface.hpp"
+#include "robot_state_message.hpp"
+
+namespace src {
+class Drivers;
+}
 
 namespace src::robotStates {
 
@@ -22,14 +27,13 @@ private:
 
     // #ifdef TARGET_SENTRY
     static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
-    MessageType lastSentMessage;
+
 #ifdef TARGET_SENTRY
-    lastSentMessage = MessageType::TEAM_MESSAGE;
+    MessageType lastSentMessage = MessageType::TEAM_MESSAGE;
 #else
-    lastSentMessage = MessageType::ROBOT_STATE;
+    MessageType lastSentMessage = MessageType::ROBOT_STATE;
 #endif
     uint32_t queuedMessageType{};
-    tap::communication::serial::RefSerialData::Tx::RobotToRobotMessage robotToRobotMessage;
 
     inline void getNextMessageToSend() {
         // either no queued messages or lastSentMessage is the only message to send, return
@@ -60,7 +64,7 @@ public:
 
     bool send();
 
-    void updateQue();
+    void updateQue(MessageType type);
 };
 
 }  // namespace src::robotStates
