@@ -1,4 +1,4 @@
-#include "robot_state_outbound.hpp"
+#include "robot_state_outbound_transmiter.hpp"
 
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
@@ -12,9 +12,9 @@
 #include "robot_state_message.hpp"
 
 namespace src::robotStates {
-RobotStateOutBound::RobotStateOutBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
+RobotStateOutBoundTransmiter::RobotStateOutBoundTransmiter(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
-bool RobotStateOutBound::send() {
+bool RobotStateOutBoundTransmiter::send() {
     PT_BEGIN();
     // uint16_t lastMessage;
     while (true) {
@@ -38,7 +38,7 @@ bool RobotStateOutBound::send() {
     return false;
 }
 
-void RobotStateOutBound::updateQue(MessageType type) {
+void RobotStateOutBoundTransmiter::updateQue(MessageType type) {
     queuedMessageType |= (1 << static_cast<uint8_t>(type));
 
     // #ifdef TARGET_SENTRY

@@ -12,19 +12,6 @@
 
 namespace src::robotStates {
 
-class RobotStateInBound : public modm::pt::Protothread {
-private:
-    src::Drivers* drivers;
-    tap::communication::serial::RefSerialTransmitter refSerial;
 
-    RobotStates* robotStateInterface;
-
-public:
-    RobotStateInBound(src::Drivers* drivers);
-
-    bool recive();
-
-    void updateStates();
-};
 
 }  // namespace src::robotStates

@@ -1,5 +1,7 @@
 #include "robot_state_inbound.hpp"
 
+#include "tap/communication/serial/ref_serial.hpp"
+
 #include "modm/architecture/interface/register.hpp"
 #include "modm/processing/protothread.hpp"
 
@@ -9,18 +11,17 @@
 
 namespace src::robotStates {
 
-RobotStateInBound::RobotStateInBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
+// RobotStateInBound::RobotStateInBound(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
-bool recive() {
-    // return refSerial
-    return false;
-}
+// bool recive() {
+//     // return refSerial
+//     return false;
+// }
 
-void updateStates() {
-    if(recive()){
-        //TODO: check message type, depending on it do funny things
-         
-    }
+// void updateStates() {
+//     if(recive()){
+//         //TODO: check message type, depending on it do funny things
 
-}
+//     }
+
 }  // namespace src::robotStates

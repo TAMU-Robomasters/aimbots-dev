@@ -17,7 +17,7 @@ class Drivers;
 
 namespace src::robotStates {
 
-class RobotStateOutBound : public modm::pt::Protothread {
+class RobotStateOutBoundTransmiter : public modm::pt::Protothread {
 private:
     src::Drivers* drivers;
     tap::communication::serial::RefSerialTransmitter refSerial;
@@ -29,7 +29,7 @@ private:
     static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
 
 #ifdef TARGET_SENTRY
-    MessageType lastSentMessage = MessageType::TEAM_MESSAGE;
+    MessageType lastSentMessage = MessageType::TEAM_MESSAGE_STANDARD;
 #else
     MessageType lastSentMessage = MessageType::ROBOT_STATE;
 #endif
@@ -60,7 +60,7 @@ private:
 
     // #endif
 public:
-    RobotStateOutBound(src::Drivers* drivers);
+    RobotStateOutBoundTransmiter(src::Drivers* drivers);
 
     bool send();
 

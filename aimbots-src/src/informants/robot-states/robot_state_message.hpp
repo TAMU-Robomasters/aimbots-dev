@@ -25,7 +25,8 @@ struct robot_state_message_enemy {
 
 enum class MessageType : uint8_t {
 #ifdef TARGET_SENTRY
-    TEAM_MESSAGE,
+    TEAM_MESSAGE_STANDARD,
+    TEAM_MESSAGE_HERO,
 #else
     ROBOT_STATE,
     ENEMY_STATE,
