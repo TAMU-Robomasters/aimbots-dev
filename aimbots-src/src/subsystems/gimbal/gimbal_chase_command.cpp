@@ -85,8 +85,10 @@ void GimbalChaseCommand::execute() {
             //yawOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetYawOffset);
             //pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
 
-            fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-            chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
+            //fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
+            //chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
+            fieldRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
+            chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAngleFromChassisCenter(AngleUnit::Degrees);
 
             targetYawAngleDisplay2 = aimAtAngles.yaw * (180 / 3.14);
             targetPitchAngleDisplay2 = aimAtAngles.pitch * (180 / 3.14);

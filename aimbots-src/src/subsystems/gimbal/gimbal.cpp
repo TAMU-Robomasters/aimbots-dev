@@ -35,6 +35,7 @@ namespace src::Gimbal {
 
     void GimbalSubsystem::initialize() {
         drivers->cvCommunicator.setGimbalSubsystem(this);
+        drivers->enemyDataConverter.setGimbalSubsystem(this);
 
         yawMotor.initialize();
         yawMotor.setDesiredOutput(0);

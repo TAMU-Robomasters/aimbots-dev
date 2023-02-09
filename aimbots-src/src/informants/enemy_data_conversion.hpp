@@ -3,6 +3,7 @@
 
 #include <robots/robot-matricies/robot-matricies.hpp>
 #include <utils/math/transform_setup.hpp>
+#include <subsystems/gimbal/gimbal.hpp>
 
 using std::vector;
 
@@ -78,6 +79,9 @@ public:
      */
     void updateTransformations();
 
+    //bruh
+    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
+
 private:
     src::Drivers* drivers;
     static const int BUFFER_SIZE = 10;        // prolly move this to constants at some point or something IDK
@@ -86,5 +90,7 @@ private:
     // buffer for XYZ + timestamp
     Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
     bool prev_cv_valid, cv_valid;
+    
+    src::Gimbal::GimbalSubsystem* gimbal;
 };
 }  // namespace src::Informants

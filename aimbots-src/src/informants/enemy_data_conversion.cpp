@@ -53,12 +53,14 @@ void EnemyDataConversion::updateEnemyInfo() {
 
 vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
     vector<enemyTimedPosition> validPositions;
+    //avoid 0 entries, debug only?
+    validPositions.push_back(rawPositionBuffer[0]);
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     // traverse bounded deque until invalid time found
-    for (int index = 0; index < BUFFER_SIZE; index++) {
-        enemyTimedPosition position = rawPositionBuffer[index];
-        if (currentTime_uS - position.timestamp_uS < time_seconds * MICROSECONDS_PER_SECOND) {
-            validPositions.push_back(position);
+    for (int index = 1; index < BUFFER_SIZE; index++) {
+        enemyTimedPosition pos = rawPositionBuffer[index];
+        if (currentTime_uS - pos.timestamp_uS < time_seconds * MICROSECONDS_PER_SECOND && sqrt(pow(pos.position[X_AXIS][0],2) + pow(pos.position[Y_AXIS][0],2) + pow(pos.position[Z_AXIS][0] != 0,2)) >= 0) {
+            validPositions.push_back(pos);
         } else {
             break;
         }
@@ -181,14 +183,17 @@ bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPo
         targetXCoordDisplay_camera = targetXCoord;
         targetYCoordDisplay_camera = targetYCoord;
         targetZCoordDisplay_camera = targetZCoord;
+
         // now that we have enemy position (in METERS), transform to chassis space ! ! !
+        //update matrices
+        updateTransformations();
+        //pull matricies
         Matrix<float, 4, 4> T_cam2gimb = src::utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
         Matrix<float, 4, 4> T_gimb2chas = src::utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
         Matrix<float, 3, 3> R_cam2gimb_matrix = Matrix<float, 3, 3>(R_cam2gimb);
         Matrix<float, 3, 3> R_gimb2chas_matrix = Matrix<float, 3, 3>(R_gimb2chas);
         // for Position we use T
         // remove last 1                                                // adds a 1 at end
-
         //debug..
         enemyPositionDisplay_gimbal = src::utils::MatrixHelper::P_crop_extend(T_cam2gimb * src::utils::MatrixHelper::P_crop_extend(enemyPosition));
         enemyPosition =
@@ -204,6 +209,27 @@ bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPo
         return true;
     }
     return false;
+}
+
+float theta_display;
+float phi_display;
+
+void EnemyDataConversion::updateTransformations() {
+    float theta = gimbal->getCurrentChassisRelativeYawAngle(AngleUnit::Radians) - modm::toRadian(YAW_START_ANGLE);
+    float phi = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians) - modm::toRadian(PITCH_START_ANGLE);
+    theta_display = theta;
+    phi_display = phi;
+    auto cph=cos(phi), sph=sin(phi);
+    auto cth=cos(theta), sth=sin(theta);
+    R_gimb2chas[0] = cth;
+    R_gimb2chas[1] = cph*sth;
+    R_gimb2chas[2] = sth*sph;
+    R_gimb2chas[3] = -sth;
+    R_gimb2chas[4] = cph*cth;
+    R_gimb2chas[5] = sph*cth;
+    R_gimb2chas[6] = 0;
+    R_gimb2chas[7] = -sph;
+    R_gimb2chas[8] = cph;
 }
 
 }  // namespace src::Informants
