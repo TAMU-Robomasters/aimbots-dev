@@ -29,6 +29,33 @@ void BarrelSwapSubsytem::refresh() {
     if (shooter.runShooterCommand.isFinished) {
         // calculate how long the shooter has been not firing, and if it is over a minimum threshold, switch barrels
         clock_t t = clock();
+        using RefSerialData = tap::communication::serial::RefSerial::Rx;
+        auto turretData = drivers -> refSerial.getRobotData().turret;
+
+        uint16_t heat = 0;
+        uint16_t MAX_HEAT = 0;
+
+        auto launcherID = turretData.launchMechanismID;
+        switch (launcherID) {
+            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+                heat = turretData.heat17ID1;
+                MAX_HEAT = turretData.heatLimit17ID1;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+                heat = turretData.heat17ID2;
+                MAX_HEAT = turretData.heatLimit17ID2;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_42MM: {
+                heat = turretData.heatLimit42;
+                MAX_HEAT = turretData.heatLimit42;
+                break;
+            }
+            default;
+                break;
+        }
+
         // if (clock() - t <(DEAD_TIME*CLOCKS_PER_SEC) && current_shooter.heat > MAX_HEAT) {
             // current_shooter.stopShooterCommand.execute();
             // something here to swap barrels until barrel is in proper spot
