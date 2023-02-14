@@ -91,8 +91,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
 
-    vector<double> bulletDropCoEff;
-
+    vector<float> ballisticsCoefficients;
     
 };
 

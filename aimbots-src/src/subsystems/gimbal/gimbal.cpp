@@ -61,6 +61,7 @@ namespace src::Gimbal {
     float currentPitchAngleDisplay = 0.0f;
 
     void GimbalSubsystem::refresh() {
+
         if (yawMotor.isMotorOnline()) {
             // Update subsystem state to stay up-to-date with reality
             uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
@@ -162,17 +163,17 @@ namespace src::Gimbal {
         //whitespace!!!
 
         //get enemy position, velocity, acceleration
-        double px = data.position[X_AXIS][0];
-        double py = data.position[Y_AXIS][0];
-        double pz = data.position[Z_AXIS][0];
+        float px = data.position[X_AXIS][0];
+        float py = data.position[Y_AXIS][0];
+        float pz = data.position[Z_AXIS][0];
 
-        double vx = data.velocity[X_AXIS][0];
-        double vy = data.velocity[Y_AXIS][0];
-        double vz = data.velocity[Z_AXIS][0];
+        float vx = data.velocity[X_AXIS][0];
+        float vy = data.velocity[Y_AXIS][0];
+        float vz = data.velocity[Z_AXIS][0];
 
-        double ax = data.acceleration[X_AXIS][0];
-        double ay = data.acceleration[Y_AXIS][0];
-        double az = data.acceleration[Z_AXIS][0];
+        float ax = data.acceleration[X_AXIS][0];
+        float ay = data.acceleration[Y_AXIS][0];
+        float az = data.acceleration[Z_AXIS][0];
 
         ax = 0;
         ay = 0;
@@ -182,8 +183,8 @@ namespace src::Gimbal {
         vy = 0;
         vz = 0;
 
-        double L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
-        double v0 = 30; //Shooter Velocity Constant found below
+        float L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
+        float v0 = 30.0f; //Shooter Velocity Constant found below
 
         //This was all copied from run_shooter_command.cpp
         //Reads the shooter connected to the ref system and pulls the current speed limit
@@ -210,24 +211,34 @@ namespace src::Gimbal {
 
         //Need to manually find the calcs for these.
         //Created with G as 9.8m/s
-        bulletDropCoEff = {(((double)0.25)*ax*ax) + (((double)0.25)*ay*ay) + (((double)0.25)*az*az) + (((double)4.9)*az) + ((double)24.01) //t^4
-            ,(vx*ax) + (vy*ay) + (vz*az) + (((double)9.8)*vz) // t^3
-            ,(vx*vx) + (vy*vy) + (vz*vz) + (ax*px) + (ay*py) + (az*pz) - (v0*v0) + (((double)9.8)*pz) //t^2
-            ,(2*vx*px) + (2*vy*py) + (2*vz*pz) - (2*L*v0) //t
-            ,(px*px) + (py*py) + (pz*pz) - (L*L) //1
+        ballisticsCoefficients = {
+            (0.25f*ax*ax) + (0.25f*ay*ay) + (0.25f*az*az) + (4.9f*az) + (24.01f), //t^4
+            (vx*ax) + (vy*ay) + (vz*az) + (9.8f*vz), // t^3
+            (vx*vx) + (vy*vy) + (vz*vz) + (ax*px) + (ay*py) + (az*pz) - (v0*v0) + (9.8f*pz), //t^2
+            (2.0f*vx*px) + (2.0f*vy*py) + (2.0f*vz*pz) - (2.0f*L*v0), // t
+            (px*px) + (py*py) + (pz*pz) - (L*L) // 1
             };
 
-        double time = 0;
-        time = find_root(bulletDropCoEff);
+        float time = 0;
+        time = find_root(ballisticsCoefficients);
+
+        
 
         //float pitch = 0; //phi +up
         //float yaw = 0; //theta +ccw
 
         aimAngles a;
 
-        a.pitch = asin((pz+vz*time+((double)0.5)*time*time*(az+((double)9.8))) / (L+(v0*time)));
+        if (time <= 0) {
+            a.pitch = 0;
+            a.yaw = 0;   
+        }
+        else {
 
-        a.yaw = acos((py+vy*time+((double)0.5)*time*time*ay) / (cos(a.pitch)*(L+(v0*time))));
+            a.pitch = asin(pz+vz*time+(0.5f)*time*time*(az+(9.8f)) / (L+(v0*time)));
+
+            a.yaw = acos((py+vy*time+(0.5f)*time*time*ay) / (cos(a.pitch)*(L+(v0*time))));
+        }
 
         return a;
     }

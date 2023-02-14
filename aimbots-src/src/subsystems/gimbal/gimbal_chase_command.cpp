@@ -60,6 +60,7 @@ void GimbalChaseCommand::execute() {
 
             cvStateDisplay = cvState;
 
+
             data = drivers->enemyDataConverter.calculateBestGuess();
             //debug
             posXDisplay_guess = data.position[X_AXIS][0];
@@ -75,6 +76,8 @@ void GimbalChaseCommand::execute() {
             accelZDisplay_guess = data.acceleration[X_AXIS][0];
 
             aimAtAngles = gimbal->getAimAngles(data);
+
+
             //aimAtAngles = gimbal->aimAtPoint(0,1,0);
 
             //targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
@@ -90,8 +93,8 @@ void GimbalChaseCommand::execute() {
             fieldRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
             chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAngleFromChassisCenter(AngleUnit::Degrees);
 
-            targetYawAngleDisplay2 = aimAtAngles.yaw * (180 / 3.14);
-            targetPitchAngleDisplay2 = aimAtAngles.pitch * (180 / 3.14);
+            targetYawAngleDisplay2 = aimAtAngles.yaw * (180.0f / M_PI);
+            targetPitchAngleDisplay2 = aimAtAngles.pitch * (180.0f / M_PI);
         }
 
         //Should be absolute angle, will double check

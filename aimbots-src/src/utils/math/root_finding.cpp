@@ -3,7 +3,7 @@
 using namespace std;
 using namespace std::chrono;
 
-using std::cout, std::endl;
+// using std::cout, std::endl;
 
 vector<double> global_coeffs;
 
@@ -44,14 +44,14 @@ complex<double> find_next_root(complex<double> (*func)(complex<double>), complex
         complex<double> slope =
             (modified_function(x + PRECISION_OF_DERIVATIVE, func, roots) - modified_function(x, func, roots)) / PRECISION_OF_DERIVATIVE;
         x = x - (modified_function(x, func, roots) / slope);
-        if (DEBUG) cout << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl;
+        // if (DEBUG) cout << "function returned " << modified_function(x, func, roots) << " on iteration " << iterations << endl;
         iterations++;
     }
     if ((iterations >= ALLOWED_ITERATIONS - 1) || (real(x) > real(UPPER_ACCEPTED_BOUND)) || (real(x) < -real(UPPER_ACCEPTED_BOUND))) {
         all_found = true;
         return DBL_MAX;
     }
-    if (DEBUG) cout << endl << "number of iterations: " << iterations << endl;
+    // if (DEBUG) cout << endl << "number of iterations: " << iterations << endl;
     return x;
 }
 
@@ -62,9 +62,9 @@ void Swap(double *a, double *b) {
 }
 
 void BubbleSort(vector<double> &array) {
-    for (long long unsigned int i = 0; i < array.size(); i++)
+    for ( unsigned int i = 0; i < array.size(); i++)
     {
-        for(long long unsigned int j = 0; j < array.size() - 1; j++)
+        for( unsigned int j = 0; j < array.size() - 1; j++)
         {   
             if (array[j] > array[j+1])
                 Swap(&array[j], &array[j+1]);
@@ -83,15 +83,13 @@ double get_priority_root(vector<complex<double>> roots) {
             reals.push_back(real(roots.at(i)));
         }
     }
-    if(DEBUG){
-
-    for(long long unsigned int i = 0; i < reals.size(); i++){
-        cout << "reals at " << i << " = " << reals.at(i) << endl;
-    }
-
-    }
+    // if(DEBUG){
+    //     for(long long unsigned int i = 0; i < reals.size(); i++){
+    //         cout << "reals at " << i << " = " << reals.at(i) << endl;
+    //     }
+    // }
     BubbleSort(reals);
-    if (DEBUG) cout << "reals size: " << reals.size() << endl;
+    // if (DEBUG) cout << "reals size: " << reals.size() << endl;
     if (reals.size() == 0 || reals.at(0) >= 30) {
         return -1;
     }
@@ -100,7 +98,7 @@ double get_priority_root(vector<complex<double>> roots) {
 }
 
 complex<double> equation(complex<double> time){
-    cout << "global_coeffs size = " << global_coeffs.size() << endl;
+    // cout << "global_coeffs size = " << global_coeffs.size() << endl;
     assert(global_coeffs.size() >= 5);
     return (((complex<double>)global_coeffs.at(0))*(time)*(time)*(time)*(time) + ((complex<double>)global_coeffs.at(1)*(time)*(time)*(time)) + ((complex<double>)global_coeffs.at(2))*(time)*(time) + ((complex<double>)global_coeffs.at(3))*time + ((complex<double>)global_coeffs.at(4)));
 }
@@ -120,35 +118,35 @@ double deep_impact(complex<double> (*func)(complex<double>), complex<double> est
 
     while (all_found == false) {
         complex<double> root = find_next_root(func, estimate, roots, all_found);
-        if (DEBUG) cout << "root found: " << root << endl << endl;
+        // if (DEBUG) cout << "root found: " << root << endl << endl;
         if (all_found == true) {
             break;
         } else {
             roots.push_back(root);
         }
-        if(DEBUG){
-            for(size_t i = 0; i < roots.size(); i++){
-                cout << roots.at(i) << " ";
-            } cout << endl;
-        }
+        // if(DEBUG){
+        //     for(size_t i = 0; i < roots.size(); i++){
+        //         cout << roots.at(i) << " ";
+        //     } cout << endl;
+        // }
     }
     //unit_outputs.push_back(roots);
 
-    if(DEBUG){
+    // if(DEBUG){
 
-    for(long long unsigned int i = 0; i < roots.size(); i++){
-        cout << "roots at " << i << " = " << roots.at(i) << endl;
-    }
+    // for(long long unsigned int i = 0; i < roots.size(); i++){
+    //     cout << "roots at " << i << " = " << roots.at(i) << endl;
+    // }
 
-    }
+    // }
     
     return get_priority_root(roots);
     
 }
 
 
-double find_root(vector<double> coeffs){
-    for(long long unsigned int i = 0; i < coeffs.size(); i++){
+float find_root(vector<float> coeffs){
+    for(size_t i = 0; i < coeffs.size(); i++){
         global_coeffs.push_back(coeffs.at(i));
     }
 

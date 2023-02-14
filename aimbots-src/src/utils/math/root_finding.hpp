@@ -20,7 +20,7 @@
 
 using namespace std;
 
-double find_root(vector<double> coeffs);
+float find_root(vector<float> coeffs);
 double deep_impact(complex<double> (*func)(complex<double>), complex<double> estimate);
 complex<double> unit_func4(vector<double> coeffs, complex<double> time);
 complex<double> modified_function(complex<double> input, complex<double> (*func)(complex<double>), vector<complex<double>> roots);
