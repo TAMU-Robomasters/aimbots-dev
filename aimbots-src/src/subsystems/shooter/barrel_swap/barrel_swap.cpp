@@ -22,6 +22,10 @@ void BarrelSwapSubsytem::initialize() {
     // move until hits limit switch
     // LimitSwitch.isFalling or something maybe
     // reset encoders (how?)
+    // from field_relative_informant.cpp
+    // motorRevolutionsUnwrapped = static_cast<float>(odomRailMotor->getEncoderUnwrapped()) /
+    //                             static_cast<float>(odomRailMotor->ENC_RESOLUTION);
+
 }
 
 void BarrelSwapSubsytem::refresh() {
