@@ -79,6 +79,54 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     vector<enemyTimedPosition> validPoints;
     validPoints = this->getLastEntriesWithinTime(VALID_TIME);
     int size = validPoints.size();
+
+    enemyTimedData enemyGuess;
+
+    Matrix<float, 3, 1> finalGuess_position = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> finalGuess_velocity = Matrix<float, 3, 1>::zeroMatrix();
+    Matrix<float, 3, 1> finalGuess_acceleration = Matrix<float, 3, 1>::zeroMatrix();
+
+    
+
+    if (size == 0) {
+        //Doesn't do anything
+    }
+    
+    float v_guess[3];
+    for (int p = 0; p < size; p++) {
+        if (p >= 1) {
+            //Position
+            finalGuess_position = validPoints[p].position;
+        }
+        if (p >= 2) {
+            //Velocity
+            
+            for (int axis = 0; axis < 3; axis++) {
+                v_guess[axis] = (validPoints[p].position[axis] - validPoints[p-1].position[axis]) / (validPoints[p].timestamp_uS - validPoints[p-1].timestamp_uS);
+
+            }
+
+
+
+        }
+        if (p >= 3) { 
+            //Acceleration
+
+
+
+        }
+
+    }
+
+    finalGuess_velocity = Matrix<float, 3, 1>(v_guess);
+
+
+    enemyGuess.position = finalGuess_position;
+    enemyGuess.velocity = finalGuess_velocity;
+    enemyGuess.acceleration = finalGuess_acceleration;
+
+
+    /*
     enemyTimedPosition derivatives[size];
     for (int n = 1; n < size; n++)  // calculate and save nth order derivatives
     {
@@ -137,7 +185,9 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
             finalGuess_acceleration = finalGuess_acceleration + nth_thing;
         }
     }
-    enemyTimedData enemyGuess;
+    */
+
+    
 
     /* god I hope I don't have to uncomment this
     // final guess is transformed for now

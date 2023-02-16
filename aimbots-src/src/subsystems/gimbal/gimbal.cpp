@@ -157,6 +157,9 @@ namespace src::Gimbal {
             .getValue();
     }
 
+    float co5, co4, co3, co2, co1;
+    float show_py, show_px, show_pz;
+
     GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles(enemyTimedData data) {
         using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
@@ -182,6 +185,12 @@ namespace src::Gimbal {
         vx = 0;
         vy = 0;
         vz = 0;
+        
+        //py = 1;
+
+        show_px = px;
+        show_py = py;
+        show_pz = pz;
 
         float L = GIMBAL_BARREL_LENGTH; //Barrel Length Constant goes here
         float v0 = 30.0f; //Shooter Velocity Constant found below
@@ -219,10 +228,14 @@ namespace src::Gimbal {
             (px*px) + (py*py) + (pz*pz) - (L*L) // 1
             };
 
+        co5 = ballisticsCoefficients[0];
+        co4 = ballisticsCoefficients[1];
+        co3 = ballisticsCoefficients[2];
+        co2 = ballisticsCoefficients[3];
+        co1 = ballisticsCoefficients[4];
+
         float time = 0;
         time = find_root(ballisticsCoefficients);
-
-        
 
         //float pitch = 0; //phi +up
         //float yaw = 0; //theta +ccw
