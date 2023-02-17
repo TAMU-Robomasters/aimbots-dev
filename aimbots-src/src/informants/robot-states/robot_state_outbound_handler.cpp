@@ -16,6 +16,9 @@ void RobotStateOutBoundHandler::operator()(const tap::communication::serial::DJI
     switch (type) {
 #ifdef TARGET_SENTRY
         case MessageType::TEAM_MESSAGE_STANDARD:
+            if(teamMesssageHandlerStandard != nullptr){
+                
+            }
             break;
 
 #else
