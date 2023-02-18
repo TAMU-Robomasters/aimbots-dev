@@ -16,6 +16,7 @@ BarrelSwapSubsytem::BarrelSwapSubsytem(src::Drivers* drivers, ShooterSubsystem* 
     this->drivers = drivers;
     this->shooter = shooter;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
+    limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 }
 
 void BarrelSwapSubsytem::initialize() {
@@ -23,13 +24,16 @@ void BarrelSwapSubsytem::initialize() {
     // LimitSwitch.isFalling or something maybe
     // reset encoders
     // from field_relative_informant.cpp
+    shooter.initialize();
+    limitSwitchLeft.inialize();
     // motorRevolutionsUnwrapped = static_cast<float>(odomRailMotor->getEncoderUnwrapped()) /
     //                             static_cast<float>(odomRailMotor->ENC_RESOLUTION);
 
 }
 
 void BarrelSwapSubsytem::refresh() {
-    
+    updateMotorVelocityPID();
+    limitSwitchLeft.refresh();
     if (shooter.runShooterCommand.isFinished) {
         // calculate how long the shooter has been not firing, and if it is over a minimum threshold, switch barrels
         clock_t t = clock();
@@ -63,8 +67,10 @@ void BarrelSwapSubsytem::refresh() {
 
         if (heat >= MAX_HEAT) {
             // current_shooter.stopShooterCommand
-            // swap barrels somehow
+            // swap barrels
             // m2006 motor
+            // swap_mechanism.cpp
+            // SwapMechanismSubsystem
             // temp = other_shooter
             // other_shooter = current_shooter
             // current_shooter = temp

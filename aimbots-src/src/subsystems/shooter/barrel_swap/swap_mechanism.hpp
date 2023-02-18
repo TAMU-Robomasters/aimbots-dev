@@ -46,14 +46,9 @@ class ShooterSubsystem : public tap::control::Subsystem {
     SmoothPID shooterVelPID;
     DJIMotor shooterMotor;
 
-    src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
-#ifdef TARGET_SENTRY
-    src::Informants::LimitSwitch limitSwitchRight;  // for double-barreled robots
-#endif
-
-    // commands
+    src::Informants::LimitSwitch limitSwitchLeft;
 };
 
-}  // namespace src::Feeder
+}
 
 #endif

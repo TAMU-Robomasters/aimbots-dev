@@ -4,25 +4,18 @@ namespace src::Shooter{
 
     SwapMechanismSubsystem::SwapMechanismSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-    targetRPM(0),
-    desiredOutput(0),
-    shooterVelPID(SHOOTER_VELOCITY_PID_CONFIG),
-    shooterMotor(drivers, SHOOTER_1_ID, SHOOTER_BUS, SHOOTER_1_DIRECTION, "Shooter 1 Motor"),
-    shooterMotor(drivers, SHOOTER_2_ID, SHOOTER_BUS, SHOOTER_2_DIRECTION, "Shooter 2 Motor"),
-    limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
-    limitSwitchRight(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING)
+    swapMotor(drivers, SWAP_MOTOR_ID, GIMBAL_BUS, SWAP_DIRECTION),
+    barrelMotor(drivers, SHOOTER_1_ID, SHOOTER_BUS, SHOOTER_1_DIRECTION, "Shooter 1 Motor")
 
     void SwapMechanismSubsystem::initialize() {
         shooterMotor.initialize();
         limitSwitchLeft.initialize();
-        limitSwitchRight.initialize();
     }
 
     void SwapMechanismSubsystem::refresh() {
         updateMotorVelocityPID();
         setDesiredOutput();
         limitSwitchLeft.refresh();
-        limitSwitchRight.refresh();
     }
 
     void SwapMechanismSubsystem::updateMotorVelocityPID() {
@@ -31,13 +24,22 @@ namespace src::Shooter{
         desiredOutput = shooterVelPID.getOutput();
     }
 
-    float SwapMechanismSubsystem::setTargetRPM(float rpm) {
-        this->targetRPM = rpm;
-        return targetRPM;
+    void SwapMechanismSubsystem::setDesiredOutput() {
+        // shooterMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
+        // below modified from gimbal.cpp:109
+        uint16_t currentSwapEncoderPosition = swapMotor.getEncoderWrapped();
+        currentSwapMotorRelativeAngle.setValue(wrappedEncoderValueToRadians(currentSwapEncoderPosition));
+
+        swapRelativeDisplay = modm::toDegree(currentSwapMotorRelativeAngle.getValue());
+        swapOutputDisplay = desiredSwapMotorOutput;
+
+        swapMotor.setDesiredOutput(desiredSwapMotorOutput);
     }
 
-    void SwapMechanismSubsystem::setDesiredOutput() {
-        shooterMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
+    void SwapMechanismSubsystem::setSwapMotorOutput(float output) {
+        // m2006 motor
+        // this function modified from gimbal.cpp:129
+        desiredSwapMotorOutput = tap::algorithms::limitVal(output, -M2006_MAX_OUTPUT, M2006_MAX_OUTPUT);
     }
 
     int SwapMechanismSubsystem::getTotalLimitCount() const {
