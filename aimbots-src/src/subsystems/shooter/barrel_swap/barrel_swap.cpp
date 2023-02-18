@@ -21,7 +21,7 @@ BarrelSwapSubsytem::BarrelSwapSubsytem(src::Drivers* drivers, ShooterSubsystem* 
 void BarrelSwapSubsytem::initialize() {
     // move until hits limit switch
     // LimitSwitch.isFalling or something maybe
-    // reset encoders (how?)
+    // reset encoders
     // from field_relative_informant.cpp
     // motorRevolutionsUnwrapped = static_cast<float>(odomRailMotor->getEncoderUnwrapped()) /
     //                             static_cast<float>(odomRailMotor->ENC_RESOLUTION);
@@ -39,6 +39,7 @@ void BarrelSwapSubsytem::refresh() {
         uint16_t heat = 0;
         uint16_t MAX_HEAT = 0;
 
+        // replace later once mechanism ID is known
         auto launcherID = turretData.launchMechanismID;
         switch (launcherID) {
             case RefSerialRxData::MechanismID::TURRET_17MM_1: {
@@ -60,11 +61,14 @@ void BarrelSwapSubsytem::refresh() {
                 break;
         }
 
-        // if (clock() - t <(DEAD_TIME*CLOCKS_PER_SEC) && current_shooter.heat > MAX_HEAT) {
-            // current_shooter.stopShooterCommand.execute();
-            // something here to swap barrels until barrel is in proper spot
-            // swap current shooter with other shooter
-            // current_shooter = other_shooter
+        if (heat >= MAX_HEAT) {
+            // current_shooter.stopShooterCommand
+            // swap barrels somehow
+            // m2006 motor
+            // temp = other_shooter
+            // other_shooter = current_shooter
+            // current_shooter = temp
+        }
         }
     }
     
