@@ -76,54 +76,71 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // we'll make an array with [position, velocity, acceleration, jerk, snap, crackle, pop] where each entry is the value at latest time (which is
     // not necessarily current time)
 
+    //Sets the finite difference accuracy
+    const int ACCURACY = 1;
+
+    float order1CoEffs[3][4] = {{0,0,-1,1},
+                            {0,0.5,-2,1.5},
+                            {(-1.0f/3.0f), (-3.0f/2.0f), (-3), (11.0f/6.0f)}};
+
+    float order2CoEffs[3][5] = {{0,0,1,-2,1},
+                            {0,-1,4,-5,2},
+                            {(-35.0f/12.0f),(26.0f/3.0f),(-19.0f/2.0f),(14.0f/3.0f),(-11.0f/12.0f)}};
+
+
+
     vector<enemyTimedPosition> validPoints;
+    vector<enemyTimedData> calculatedData; 
     validPoints = this->getLastEntriesWithinTime(VALID_TIME);
     int size = validPoints.size();
 
+    float v_guess[3];
+    float a_guess[3];
+
     enemyTimedData enemyGuess;
 
-    Matrix<float, 3, 1> finalGuess_position = Matrix<float, 3, 1>::zeroMatrix();
-    Matrix<float, 3, 1> finalGuess_velocity = Matrix<float, 3, 1>::zeroMatrix();
-    Matrix<float, 3, 1> finalGuess_acceleration = Matrix<float, 3, 1>::zeroMatrix();
-
-    
-
-    if (size == 0) {
-        //Doesn't do anything
-    }
-    
-    float v_guess[3];
     for (int p = 0; p < size; p++) {
-        if (p >= 1) {
+        Matrix<float, 3, 1> guess_position = Matrix<float, 3, 1>::zeroMatrix();
+        Matrix<float, 3, 1> guess_velocity = Matrix<float, 3, 1>::zeroMatrix();
+        Matrix<float, 3, 1> guess_acceleration = Matrix<float, 3, 1>::zeroMatrix();
+
+        if (p >= 0) {
             //Position
-            finalGuess_position = validPoints[p].position;
+            guess_position = validPoints[p].position;
         }
-        if (p >= 2) {
+        if (p >= (1+ACCURACY)) {
             //Velocity
             
             for (int axis = 0; axis < 3; axis++) {
-                v_guess[axis] = (validPoints[p].position[axis] - validPoints[p-1].position[axis]) / (validPoints[p].timestamp_uS - validPoints[p-1].timestamp_uS);
+                v_guess[axis] = (validPoints[p].position[axis][0] - validPoints[p-1].position[axis][0]) / (validPoints[p].timestamp_uS - validPoints[p-1].timestamp_uS);
 
             }
-
-
+            guess_velocity = Matrix<float, 3, 1>(v_guess);
 
         }
-        if (p >= 3) { 
+        if (p >= (2+ACCURACY)) { 
             //Acceleration
-
-
-
+            
+            for (int axis = 0; axis < 3; axis++) {
+                a_guess[axis] = (validPoints[p-2].position[axis][0] - (2.0f * validPoints[p-1].position[axis][0]) + validPoints[p].position[axis][0]) 
+                                /
+                                ((validPoints[p-1].timestamp_uS-validPoints[p-2].timestamp_uS) * (validPoints[p].timestamp_uS - validPoints[p-1].timestamp_uS));
+            }
+            
+            guess_acceleration = Matrix<float, 3, 1>(a_guess);
         }
 
+        enemyGuess.position = guess_position;
+        enemyGuess.velocity = guess_velocity;
+        enemyGuess.acceleration = guess_acceleration;
+        enemyGuess.timestamp_uS = validPoints[p].timestamp_uS;
+
+        calculatedData.push_back(enemyGuess);
     }
 
-    finalGuess_velocity = Matrix<float, 3, 1>(v_guess);
+    return calculatedData[size-1];
 
-
-    enemyGuess.position = finalGuess_position;
-    enemyGuess.velocity = finalGuess_velocity;
-    enemyGuess.acceleration = finalGuess_acceleration;
+    
 
 
     /*
@@ -209,9 +226,9 @@ enemyTimedData EnemyDataConversion::calculateBestGuess() {
     // enemyGuess.position = finalGuess_position;
     // enemyGuess.velocity = finalGuess_velocity;
     // enemyGuess.acceleration = finalGuess_acceleration;
-    enemyGuess.timestamp_uS = tap::arch::clock::getTimeMicroseconds();
+    // enemyGuess.timestamp_uS = tap::arch::clock::getTimeMicroseconds();
 
-    return enemyGuess;
+    // return enemyGuess;
 }
 
 bool EnemyDataConversion::updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition) {
