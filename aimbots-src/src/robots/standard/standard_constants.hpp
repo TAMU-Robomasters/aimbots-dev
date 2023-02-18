@@ -147,13 +147,12 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {
-    15,
-    3900,  // {ball m/s, flywheel rpm}
-    18,
-    4500,
-    30,
-    9000};
+    15, 3900,  // {ball m/s, flywheel rpm}
+    18, 4500,
+    30, 9000};
+// clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -227,15 +226,15 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-//Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f; //Measured from 2022 Standard
-//0.205f normally
+// Distance from gimbal to tip of barrel, in m
+static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
+// 0.205f normally
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 59.7f;    // original angles that should be zero when 6020 is mounted to chassis 
+static constexpr float YAW_START_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
 static constexpr float PITCH_START_ANGLE = 51.1f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
@@ -305,3 +304,26 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
+/**
+ * @brief Transformation Matrices, specific to robot
+ */
+
+// clang-format off
+static constexpr float CAMERA_POSITION_RELATIVE_TO_TURRET_ORIGIN[3]{ // in meters
+    -0.085f, // x
+    0.07f, // y
+    0.0f,  // z
+};
+
+static constexpr float TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN[3]{
+    0.0f, // x
+    0.0f, // y
+    0.0f  // z
+};
+
+static constexpr float CHASSIS_ORIGIN_RELATIVE_TO_WORLD_ORIGIN[4]{
+    0.0f, // x
+    0.0f, // y
+    0.0f, // z
+    0.0f  // theta (about z axis)
+};

@@ -1,8 +1,10 @@
 #ifdef TARGET_STANDARD
 
+#include "utils/common_types.hpp"
+
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-#include "utils/common_types.hpp"
+
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -96,14 +98,13 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
-    drivers(),                  //gimbalFieldRelativeControlCommand
+    drivers(),  // gimbalFieldRelativeControlCommand
     {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-    
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
-    drivers(),              //gimbalFieldRelativeControlCommand2
+    drivers(),  // gimbalFieldRelativeControlCommand2
     {&chassisTokyoCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
