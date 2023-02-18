@@ -2,7 +2,7 @@
 #ifndef ENGINEER
 namespace src::Shooter{
 
-    ShooterSubsystem::ShooterSubsystem(src::Drivers* drivers)
+    SwapMechanismSubsystem::SwapMechanismSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
     targetRPM(0),
     desiredOutput(0),
@@ -12,39 +12,39 @@ namespace src::Shooter{
     limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
     limitSwitchRight(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING)
 
-    void ShooterSubsystem::initialize() {
+    void SwapMechanismSubsystem::initialize() {
         shooterMotor.initialize();
         limitSwitchLeft.initialize();
         limitSwitchRight.initialize();
     }
 
-    void ShooterSubsystem::refresh() {
+    void SwapMechanismSubsystem::refresh() {
         updateMotorVelocityPID();
         setDesiredOutput();
         limitSwitchLeft.refresh();
         limitSwitchRight.refresh();
     }
 
-    void ShooterSubstem::updateMotorVelocityPID() {
+    void SwapMechanismSubsystem::updateMotorVelocityPID() {
         float err = targetRPM - shooterMotor.getShaftRPM();
         shooterVelPID.runControllerDerivateError(err);
         desiredOutput = shooterVelPID.getOutput();
     }
 
-    float ShooterSubsystem::setTargetRPM(float rpm) {
+    float SwapMechanismSubsystem::setTargetRPM(float rpm) {
         this->targetRPM = rpm;
         return targetRPM;
     }
 
-    void ShooterSubsystem::setDesiredOutput() {
+    void SwapMechanismSubsystem::setDesiredOutput() {
         shooterMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
     }
 
-    int ShooterSubsystem::getTotalLimitCount() const {
+    int SwapMechanismSubsystem::getTotalLimitCount() const {
         return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
     }
 
-    bool ShooterSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
+    bool SwapMechanismSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
         using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
         auto turretData = drivers->refSerial.getRobotData().turret;
 
