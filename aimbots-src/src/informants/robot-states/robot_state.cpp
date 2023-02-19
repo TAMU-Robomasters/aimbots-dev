@@ -1,5 +1,5 @@
 #include "robot_state.hpp"
-namespace src::robotStates {
+namespace src::RobotStates {
 Robot::Robot(float x, float y, float z, int robotId, int health, Team teamColor) {
     this->position = Matrix<float, 3, 1>().zeroMatrix();
     position[Position::x][0] = x;

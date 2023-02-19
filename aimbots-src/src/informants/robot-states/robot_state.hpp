@@ -1,7 +1,7 @@
 #pragma once
 #include "utils/common_types.hpp"
 
-namespace src::robotStates {
+namespace src::RobotStates {
 enum Team { RED = 0, BLUE = 1 };
 enum Position { x = 0, y = 1, z = 2 };
 

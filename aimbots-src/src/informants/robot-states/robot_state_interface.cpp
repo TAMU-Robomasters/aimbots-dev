@@ -3,7 +3,7 @@
 #include "robot_state.hpp"
 #include "robot_state_interface.hpp"
 
-namespace src::robotStates {
+namespace src::RobotStates {
 
 RobotStates::RobotStates(src::Drivers* drivers) : drivers(drivers) {
     robotStates = Matrix<Robot, 2, 9>().zeroMatrix();
@@ -53,5 +53,9 @@ void RobotStates::updateRefSystem() {
     //     uint16_t hp = driver->refSerial.getRobotData().RobotData.currentHp;
     // }
 }
+
+void updateRobotStateHero() {}
+void updateRobotStateStandard() {}
+void updateRobotStateSentry() {}
 
 }  // namespace src::robotStates

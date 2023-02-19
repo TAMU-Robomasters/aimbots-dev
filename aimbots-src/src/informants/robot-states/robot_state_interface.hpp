@@ -5,7 +5,7 @@
 #include "drivers.hpp"
 #include "robot_state.hpp"
 
-namespace src::robotStates {
+namespace src::RobotStates {
 class RobotStates {
 private:
     Matrix<Robot, 2, 9> robotStates;
@@ -23,5 +23,10 @@ public:
     void updateRobotStatePosition(int robotNumber, Team teamColor, float x, float y, float z);
 
     void updateRefSystem();
+
+
 };
+    void updateRobotStateHero();
+    void updateRobotStateStandard();
+    void updateRobotStateSentry();
 }  // namespace src::robotStates
