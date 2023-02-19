@@ -114,6 +114,9 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition[0][X_AXIS] = lastMessage.targetX;
                     visionTargetPosition[0][Y_AXIS] = lastMessage.targetY;
                     visionTargetPosition[0][Z_AXIS] = lastMessage.targetZ;
+
+                    drivers->enemyDataConverter.updateEnemyInfo();
+                    lastPlateData = drivers->enemyDataConverter.calculateBestGuess(3);
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.

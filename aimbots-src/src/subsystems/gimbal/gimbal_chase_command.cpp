@@ -22,20 +22,22 @@ float targetYawAngleDisplay2 = 0.0f;
 float yawOffsetDisplay = 0.0f;
 float pitchOffsetDisplay = 0.0f;
 
-float fieldRelativeYawAngleDisplay = 0;
+float chassisRelativeYawAngleDisplay = 0;
 float chassisRelativePitchAngleDisplay = 0;
 
-float posXDisplay_guess = 0;
-float posYDisplay_guess = 0;
-float posZDisplay_guess = 0;
+float posXDisplay_guess;
+float posYDisplay_guess;
+float posZDisplay_guess;
 
-float veloXDisplay_guess = 0;
-float veloYDisplay_guess = 0;
-float veloZDisplay_guess = 0;
+float veloXDisplay_guess;
+float veloYDisplay_guess;
+float veloZDisplay_guess;
 
-float accelXDisplay_guess = 0;
-float accelYDisplay_guess = 0;
-float accelZDisplay_guess = 0;
+float accelXDisplay_guess;
+float accelYDisplay_guess;
+float accelZDisplay_guess;
+
+float timestampDisplay;
 
 src::Informants::vision::CVState cvStateDisplay = src::Informants::vision::CVState::FOUND;
 
@@ -51,32 +53,60 @@ void GimbalChaseCommand::execute() {
     jetsonOnlineDisplay = false;
 
     // remove the "|| true" for later
-
-    if (drivers->cvCommunicator.isJetsonOnline() || true) {
+    if (drivers->cvCommunicator.isJetsonOnline()) {
         jetsonOnlineDisplay = true;
-        // cvState = drivers->cvCommunicator.getLastValidMessage().cvState;
-        if (cvState == src::Informants::vision::CVState::FOUND || true) {
+        cvState = drivers->cvCommunicator.getLastValidMessage().cvState;
+        if (cvState == src::Informants::vision::CVState::FOUND) {
             // visionTargetAngles = drivers->cvCommunicator.getVisionTargetAngles();
 
             cvStateDisplay = cvState;
 
-            data = drivers->enemyDataConverter.calculateBestGuess();
+            //data = drivers->enemyDataConverter.calculateBestGuess(2); // passing 1 as desired_finite_diff_accuracy
+            data = drivers->cvCommunicator.getPlateData();
             // debug
-            posXDisplay_guess = data.position[X_AXIS][0];
-            posYDisplay_guess = data.position[Y_AXIS][0];
-            posZDisplay_guess = data.position[Z_AXIS][0];
+            posXDisplay_guess = data.position.getX();
+            posYDisplay_guess = data.position.getY();
+            posZDisplay_guess = data.position.getZ();
 
-            veloXDisplay_guess = data.velocity[X_AXIS][0];
-            veloYDisplay_guess = data.velocity[Y_AXIS][0];
-            veloZDisplay_guess = data.velocity[Z_AXIS][0];
+            veloXDisplay_guess = data.velocity.getX();
+            veloYDisplay_guess = data.velocity.getY();
+            veloZDisplay_guess = data.velocity.getZ();
 
-            accelXDisplay_guess = data.acceleration[X_AXIS][0];
-            accelYDisplay_guess = data.acceleration[X_AXIS][0];
-            accelZDisplay_guess = data.acceleration[X_AXIS][0];
+            accelXDisplay_guess = data.acceleration.getX();
+            accelYDisplay_guess = data.acceleration.getY();
+            accelZDisplay_guess = data.acceleration.getZ();
 
-            modm::Vector3f 
+            timestampDisplay = data.timestamp_uS;
 
-            ballistics::MeasuredKinematicState measuredKinematicState;
+            ballistics::MeasuredKinematicState targetKinematicState = {
+                .position = data.position,
+                .velocity = data.velocity,
+                .acceleration = data.acceleration,
+            };
+            
+            int64_t forwardProjectionTime = static_cast<int64_t>(data.timestamp_uS) - static_cast<int64_t>(tap::arch::clock::getTimeMicroseconds());
+
+            targetKinematicState.position = targetKinematicState.projectForward(forwardProjectionTime / MICROSECONDS_PER_SECOND);
+
+            float timeOfFlight = 0.0f;
+
+            if (!ballistics::findTargetProjectileIntersection(
+                    targetKinematicState,
+                    30.0f,
+                    3,
+                    &targetPitchAngle,
+                    &targetYawAngle,
+                    &timeOfFlight)) {
+                // unable to find intersection
+            }
+
+            targetYawAngle = M_PI_2 + M_PI_4 - targetYawAngle;
+            targetPitchAngle += M_PI_4;
+
+            targetYawAngleDisplay2 = modm::toDegree(targetYawAngle);
+            targetPitchAngleDisplay2 = modm::toDegree(targetPitchAngle);
+
+            // last
 
             // targetYawAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::yaw]);
             // targetPitchAngle = modm::toDegree(visionTargetAngles[0][src::Informants::vision::pitch]);
@@ -87,20 +117,18 @@ void GimbalChaseCommand::execute() {
             // pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
 
             // fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-            // chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
-            fieldRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
-            chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAngleFromChassisCenter(AngleUnit::Degrees);
+            chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
+            //fieldRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
+            chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
 
-            targetYawAngleDisplay2 = aimAtAngles.yaw * (180.0f / M_PI);
-            targetPitchAngleDisplay2 = aimAtAngles.pitch * (180.0f / M_PI);
+            //targetYawAngleDisplay2 = aimAtAngles.yaw * (180.0f / M_PI);
+            //targetPitchAngleDisplay2 = aimAtAngles.pitch * (180.0f / M_PI);
         }
 
         // Should be absolute angle, will double check
 
-        /*
-        controller->runYawController(AngleUnit::Degrees, targetYawAngle, true);
-        controller->runPitchController(AngleUnit::Degrees, targetPitchAngle, true);
-        */
+        controller->runYawController(AngleUnit::Radians, targetYawAngle, false);
+        controller->runPitchController(AngleUnit::Radians, targetPitchAngle, false);
     }
 }
 

@@ -8,9 +8,6 @@
 #include <utils/robot_specific_inc.hpp>
 #include <vector>
 #include <complex>
-#include <utils/math/root_finding.hpp>
-
-using src::Informants::enemyTimedData;
 
 namespace src {
 class Drivers;
@@ -41,7 +38,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     void setYawMotorOutput(float output);
     void setPitchMotorOutput(float output);
 
-    aimAngles getAimAngles(enemyTimedData data);
+    aimAngles getAimAngles(src::Informants::plateKinematicState data);
     aimAngles aimAtPoint(float x, float y, float z);
 
     inline float getTargetChassisRelativeYawAngle(AngleUnit unit) const { return (unit == AngleUnit::Degrees) ? modm::toDegree(targetChassisRelativeYawAngle) : targetChassisRelativeYawAngle; }
@@ -91,8 +88,7 @@ class GimbalSubsystem : public tap::control::Subsystem {
     float desiredYawMotorOutput;
     float desiredPitchMotorOutput;
 
-    vector<float> ballisticsCoefficients;
-    
+    std::vector<float> ballisticsCoefficients;
 };
 
 }  // namespace src::Gimbal

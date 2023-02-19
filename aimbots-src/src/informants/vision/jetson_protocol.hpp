@@ -15,7 +15,7 @@ struct JetsonMessage {
     float targetX;              // targetYawOffset
     float targetY;              // targetPitchOffset
     float targetZ;              // depth
-    uint8_t delay;
+    uint8_t delay;              // ms
     CVState cvState;
 } __attribute__((packed));
 

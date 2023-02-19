@@ -16,6 +16,7 @@
 
 #include "modm/container/deque.hpp"
 #include "modm/math/matrix.hpp"
+#include "modm/math/geometry/vector.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
 // #include <bit_cast>
@@ -48,12 +49,13 @@ enum Axis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
 namespace src::Informants {
 //for ballistics use
-struct enemyTimedData {
-    modm::Matrix<float, 3, 1> position;
-    modm::Matrix<float, 3, 1> velocity;
-    modm::Matrix<float, 3, 1> acceleration;
+struct plateKinematicState {
+    modm::Vector3f position;
+    modm::Vector3f velocity;
+    modm::Vector3f acceleration;
     float timestamp_uS;  // time that 'best guess' was made
 };
+
 }
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;
@@ -91,6 +93,7 @@ using InputPins = tap::gpio::Digital::InputPin;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
+using Vector3f = modm::Vector3f;
 
 template <typename T, std::size_t N>
 using Deque = modm::BoundedDeque<T, N>;

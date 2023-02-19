@@ -88,9 +88,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };*/
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 100.0f,
+    .kp = 50.0f,
     .ki = 3.0f,
-    .kd = 80.0f,
+    .kd = 40.0f,
     .maxICumulative = 1000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

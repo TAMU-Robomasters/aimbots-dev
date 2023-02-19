@@ -160,31 +160,31 @@ namespace src::Gimbal {
     float co5, co4, co3, co2, co1;
     float show_py, show_px, show_pz;
 
-    GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles(enemyTimedData data) {
+    GimbalSubsystem::aimAngles GimbalSubsystem::getAimAngles(src::Informants::plateKinematicState data) {
         using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
         //whitespace!!!
 
         //get enemy position, velocity, acceleration
-        float px = data.position[X_AXIS][0];
-        float py = data.position[Y_AXIS][0];
-        float pz = data.position[Z_AXIS][0];
+        float px = data.position.getX();
+        float py = data.position.getY();
+        float pz = data.position.getZ();
 
-        float vx = data.velocity[X_AXIS][0];
-        float vy = data.velocity[Y_AXIS][0];
-        float vz = data.velocity[Z_AXIS][0];
+        float vx = data.velocity.getX();
+        float vy = data.velocity.getY();
+        float vz = data.velocity.getZ();
 
-        float ax = data.acceleration[X_AXIS][0];
-        float ay = data.acceleration[Y_AXIS][0];
-        float az = data.acceleration[Z_AXIS][0];
+        float ax = data.acceleration.getX();
+        float ay = data.acceleration.getY();
+        float az = data.acceleration.getZ();
 
-        ax = 0;
-        ay = 0;
-        az = 0;
-
-        vx = 0;
-        vy = 0;
-        vz = 0;
+        //ax = 0;
+        //ay = 0;
+        //az = 0;
+        
+        //vx = 0;
+        //vy = 0;
+        //vz = 0;
         
         //py = 1;
 
@@ -235,7 +235,7 @@ namespace src::Gimbal {
         co1 = ballisticsCoefficients[4];
 
         float time = 0;
-        time = find_root(ballisticsCoefficients);
+        //time = find_root(ballisticsCoefficients);
 
         //float pitch = 0; //phi +up
         //float yaw = 0; //theta +ccw

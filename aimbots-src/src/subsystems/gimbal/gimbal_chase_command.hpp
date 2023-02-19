@@ -6,6 +6,7 @@
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/algorithms/ballistics.hpp>
 #include <tap/control/command.hpp>
+#include "src/informants/enemy_data_conversion.hpp"
 
 namespace src::Gimbal {
 
@@ -28,7 +29,7 @@ private:
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
 
-    enemyTimedData data;
+    src::Informants::plateKinematicState data;
     GimbalSubsystem::aimAngles aimAtAngles;
 };
 

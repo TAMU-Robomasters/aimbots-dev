@@ -147,7 +147,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
     drivers->cvCommunicator.updateSerial();
 
-    drivers->enemyDataConverter.updateEnemyInfo();
+    // drivers->enemyDataConverter.updateEnemyInfo();
     // utils::Music::continuePlayingXPStartupTune(drivers);
     utils::Music::playPacMan(drivers);
 

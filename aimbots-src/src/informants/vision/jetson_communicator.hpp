@@ -40,6 +40,8 @@ public:
 
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
+    plateKinematicState getPlateData() {return lastPlateData;}
+
     // What is this???
     Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
 
@@ -63,12 +65,13 @@ private:
     float fieldRelativeYawAngleAtVisionUpdate;
     float chassisRelativePitchAngleAtVisionUpdate;
 
-
     Matrix<float, 1, 2> visionTargetAngles;
     Matrix<float, 1, 3> visionTargetPosition;
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+
+    plateKinematicState lastPlateData;
 };
 }  // namespace src::Informants::vision

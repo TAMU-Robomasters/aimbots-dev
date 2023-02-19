@@ -35,7 +35,7 @@ namespace src::Informants {
 
 // for internal use
 struct enemyTimedPosition {
-    Matrix<float, 3, 1> position;
+    Vector3f position;
     uint32_t timestamp_uS;
 };
 
@@ -53,7 +53,7 @@ public:
     /**
      * @brief Calculates best guess of current enemy position, velocity, and acceleration. Does not need to be called continuously.
      */
-    enemyTimedData calculateBestGuess();
+    plateKinematicState calculateBestGuess(int desired_finite_diff_accuracy = 3);
     // Matrix<float, 1, 3> const& getEnemyPosition() { return positionMatrix; }
 
     /**
@@ -64,14 +64,6 @@ public:
      * @return vector with enemyTimedPositions
      */
     std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
-
-    /**
-     * @brief Generates a gimbal-space position vector for an enemy target from CV data (in angles).
-     * Exists just in case testing occurs before Jetson communicator updates are worked out. :)
-     *
-     * @return bool: Whether or not the data should be listened to
-     */
-    bool updateAndGetEnemyPosition(Matrix<float, 3, 1>& enemyPosition);
 
     /**
      * @brief should probably put this somewhere else but drivers is already here so it's convenient
