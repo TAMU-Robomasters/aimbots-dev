@@ -1,20 +1,20 @@
-#include "robot_state_outbound_transmiter.hpp"
+#include "communication_request_transmiter.hpp"
 
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
+#include "informants/robot-states/robot_state.hpp"
+#include "informants/robot-states/robot_state_interface.hpp"
 #include "modm/architecture/interface/register.hpp"
 #include "modm/processing/protothread.hpp"
 
+#include "communication_message.hpp"
 #include "drivers.hpp"
-#include "robot_state.hpp"
-#include "robot_state_interface.hpp"
-#include "robot_state_message.hpp"
 
-namespace src::robotStates {
-RobotStateOutBoundTransmiter::RobotStateOutBoundTransmiter(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
+namespace src::Communication {
+CommunicationRequestTransmiter::CommunicationRequestTransmiter(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
-bool RobotStateOutBoundTransmiter::send() {
+bool CommunicationRequestTransmiter::send() {
     PT_BEGIN();
     // uint16_t lastMessage;
     while (true) {
@@ -38,7 +38,7 @@ bool RobotStateOutBoundTransmiter::send() {
     return false;
 }
 
-void RobotStateOutBoundTransmiter::updateQue(MessageType type) {
+void CommunicationRequestTransmiter::updateQue(MessageType type) {
     queuedMessageType |= (1 << static_cast<uint8_t>(type));
 
     // #ifdef TARGET_SENTRY
@@ -50,4 +50,4 @@ void RobotStateOutBoundTransmiter::updateQue(MessageType type) {
     // #endif
 }
 
-}  // namespace src::robotStates
+}  // namespace src::Communication

@@ -1,7 +1,7 @@
 #pragma once
 #include "utils/common_types.hpp"
 
-namespace src::robotStates {
+namespace src::Communication {
 #ifdef TARGET_SENTRY
 struct robot_state_message_team {
     /* data */
@@ -27,6 +27,7 @@ enum class MessageType : uint8_t {
 #ifdef TARGET_SENTRY
     TEAM_MESSAGE_STANDARD,
     TEAM_MESSAGE_HERO,
+    TEAM_MESSAGE_SENTRY,
 #else
     ROBOT_STATE,
     ENEMY_STATE,
@@ -34,4 +35,8 @@ enum class MessageType : uint8_t {
     NUM_MESSAGE_TYPES,
 };
 
-}  // namespace src::robotStates
+static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
+
+static constexpr uint16_t SENTRY_RESPONSE_MESSAGE_ID = 0x201;
+
+}  // namespace src::Communication

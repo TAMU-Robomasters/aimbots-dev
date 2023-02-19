@@ -3,27 +3,28 @@
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
+#include "informants/robot-states/robot_state.hpp"
+#include "informants/robot-states/robot_state_interface.hpp"
 #include "modm/architecture/interface/register.hpp"
 #include "modm/processing/protothread.hpp"
 
+#include "communication_message.hpp"
 #include "drivers.hpp"
-#include "robot_state.hpp"
-#include "robot_state_interface.hpp"
-#include "robot_state_message.hpp"
 
 namespace src {
 class Drivers;
 }
+using namespace src::RobotStates;
 
-namespace src::robotStates {
+namespace src::Communication {
 
-class RobotStateOutBoundTransmiter : public modm::pt::Protothread {
+class CommunicationRequestTransmiter : public modm::pt::Protothread {
 private:
     src::Drivers* drivers;
     tap::communication::serial::RefSerialTransmitter refSerial;
     tap::communication::serial::RefSerialData::Tx::RobotToRobotMessage robotToRobotMessage;
 
-    RobotStates* robotStateInterface;
+    // RobotStates* robotStateInterface;
 
     // #ifdef TARGET_SENTRY
     static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
@@ -60,11 +61,11 @@ private:
 
     // #endif
 public:
-    RobotStateOutBoundTransmiter(src::Drivers* drivers);
+    CommunicationRequestTransmiter(src::Drivers* drivers);
 
     bool send();
 
     void updateQue(MessageType type);
 };
 
-}  // namespace src::robotStates
+}  // namespace src::Communication

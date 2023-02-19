@@ -5,17 +5,18 @@
 
 #include "modm/architecture/interface/register.hpp"
 #include "modm/processing/protothread.hpp"
+#include "informants/robot-states/robot_state.hpp"
+#include "informants/robot-states/robot_state_interface.hpp"
 
 #include "drivers.hpp"
-#include "robot_state.hpp"
-#include "robot_state_interface.hpp"
-namespace src::robotStates {
-class RobotStateOutBoundHandler : public tap::communication::serial::RefSerial::RobotToRobotMessageHandler {
+
+namespace src::Communication {
+class CommunicationRequestHandler : public tap::communication::serial::RefSerial::RobotToRobotMessageHandler {
 public:
     using MessageReceivedCallback = void (*)();
     void operator()(const tap::communication::serial::DJISerial::ReceivedSerialMessage& message) override final;
 
-    RobotStateOutBoundHandler(src::Drivers* drivers);
+    CommunicationRequestHandler(src::Drivers* drivers);
 
     bool recive();
 
@@ -34,6 +35,7 @@ private:
 #ifdef TARGET_SENTRY
     MessageReceivedCallback teamMesssageHandlerStandard = nullptr;
     MessageReceivedCallback teamMesssageHandlerHero = nullptr;
+    MessageReceivedCallback teamMessageHandlerSentry = nullptr;
 #else
     MessageReceivedCallback robotStateHandler = nullptr;
     MessageReceivedCallback enemyRobotStateHandler = nullptr;

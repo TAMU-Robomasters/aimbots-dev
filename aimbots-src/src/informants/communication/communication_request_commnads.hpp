@@ -2,15 +2,15 @@
 
 #include "tap/control/command.hpp"
 
-#include "robot_state_outbound_subsystem.hpp"
+#include "communication_outbound_subsystem.hpp"
 
-namespace src::robotStates {
+namespace src::Communication {
 
 #ifdef TARGET_SENTRY
 class TeamMessageStandard : public tap::control::Command {
 public:
-    TeamMessageStandard(RobotStateOutBoundSubsystem &robotStateOutBoundSubsystem) : sub(robotStateOutBoundSubsystem) {
-        this->addSubsyemRequirement(&robotStateOutBoundSubsystem);
+    TeamMessageStandard(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+        this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
     const char *getName() const { return "team standard info"; }
@@ -21,13 +21,13 @@ public:
     bool isFinished() const { return true; }
 
 private:
-    RobotStateOutBoundSubsystem &sub;
+    CommunicationOutBoundSubsystem &sub;
 };
 
 class TeamMessageHero : public tap::control::Command {
 public:
-    TeamMessageHero(RobotStateOutBoundSubsystem &robotStateOutBoundSubsystem) : sub(robotStateOutBoundSubsystem) {
-        this->addSubsyemRequirement(&robotStateOutBoundSubsystem);
+    TeamMessageHero(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+        this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
     const char *getName() const { return "team hero info"; }
@@ -38,14 +38,14 @@ public:
     bool isFinished() const { return true; }
 
 private:
-    RobotStateOutBoundSubsystem &sub;
+    CommunicationOutBoundSubsystem &sub;
 };
 
 #else
-class RobotStateMessage : public tap::control::Command {
+class CommunicationMessage : public tap::control::Command {
 public:
-    RobotStateMessage(RobotStateOutBoundSubsystem &robotStateOutBoundSubsystem) : sub(robotStateOutBoundSubsystem) {
-        this->addSubsyemRequirement(&robotStateOutBoundSubsystem);
+    communicationMessage(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+        this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
     const char *getName() const { return "robot state"; }
@@ -56,13 +56,13 @@ public:
     bool isFinished() const { return true; }
 
 private:
-    RobotStateOutBoundSubsystem &sub;
+    CommunicationOutBoundSubsystem &sub;
 };
 
 class EnemyStateMessage : public tap::control::Command {
 public:
-    EnemyStateMessage(RobotStateOutBoundSubsystem &robotStateOutBoundSubsystem) : sub(robotStateOutBoundSubsystem) {
-        this->addSubsyemRequirement(&robotStateOutBoundSubsystem);
+    EnemyStateMessage(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+        this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
     const char *getName() const { return "enemey state"; }
@@ -73,8 +73,8 @@ public:
     bool isFinished() const { return true; }
 
 private:
-    RobotStateOutBoundSubsystem &sub;
+    CommunicationOutBoundSubsystem &sub;
 };
 
 #endif
-}  // namespace src::robotStates
+}  // namespace src::Communication
