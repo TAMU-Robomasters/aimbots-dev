@@ -56,8 +56,8 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
         lastBallisticsSolution = std::nullopt;
     }
 
-    lastBallisticsSolution->pitchAngle = pitchFilter.filterData(lastBallisticsSolution->pitchAngle);
-    lastBallisticsSolution->yawAngle = yawFilter.filterData(lastBallisticsSolution->yawAngle);
+    //lastBallisticsSolution->pitchAngle = pitchFilter.filterData(lastBallisticsSolution->pitchAngle);
+    //lastBallisticsSolution->yawAngle = yawFilter.filterData(lastBallisticsSolution->yawAngle);
 
     return lastBallisticsSolution;
 }

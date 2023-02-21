@@ -60,9 +60,9 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 };*/
 
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 100.0f,
-    .ki = 0.0f,
-    .kd = 0.0f,
+    .kp = 200.0f,
+    .ki = 3.0f,
+    .kd = 50.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

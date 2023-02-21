@@ -3,7 +3,17 @@
 #include <drivers.hpp>
 
 namespace src::Informants {
-EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(drivers) {}
+EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(drivers),
+                                                                positionKalman({ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
+                                                                                ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
+                                                                                ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman)}),
+                                                                velocityKalman({ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
+                                                                                ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
+                                                                                ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman)}),
+                                                                accelKalman({ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
+                                                                             ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
+                                                                             ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)})
+{}
 
 // watchable variables
 float targetXCoordDisplay_camera = 0;
@@ -25,6 +35,10 @@ int accuracy_watch;
 float watchVelX;
 int buffer_size_watch;
 float last_entry_timestamp_watch;
+
+float px, py, pz = 0;
+float vx, vy, vz = 0;
+float ax, ay, az = 0;
 
 // gather data, transform data,
 void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptureDelay) {
@@ -89,7 +103,7 @@ float raw_time_display;
 float raw_x_display2;
 
 std::vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
-    vector<enemyTimedPosition> validPositions;
+    std::vector<enemyTimedPosition> validPositions;
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     raw_x_display = rawPositionBuffer[0].position.getX();
     raw_time_display = rawPositionBuffer[0].timestamp_uS;
@@ -128,7 +142,7 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
         {2, -5, 4, -1, 0},
         {(35.0f / 12.0f), (-26.0f / 3.0f), (19.0f / 2.0f), (-14.0f / 3.0f), (11.0f / 12.0f)}};
 
-    vector<enemyTimedPosition> validPoints;
+    std::vector<enemyTimedPosition> validPoints;
     validPoints = this->getLastEntriesWithinTime(VALID_TIME);
     int size = validPoints.size();
     // DEBUG
@@ -154,8 +168,12 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
     accuracy_watch = finite_diff_accuracy;
 
     if (size > 0) {
-        // Position
-        guess_position = validPoints[0].position;
+        // Position .. unfiltered!!!
+        // guess_position = validPoints[0].position;
+        // Position .. filtered!!
+        guess_position.setX(positionKalman[0].filterData(validPoints[0].position.getX()));
+        guess_position.setY(positionKalman[1].filterData(validPoints[0].position.getY()));
+        guess_position.setZ(positionKalman[2].filterData(validPoints[0].position.getZ()));
 
         // check for Velocity (if-statement nested in Position if-statement)
         if (size > 1) {
@@ -207,7 +225,7 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
                     dt_uS =
                         (validPoints[0].timestamp_uS - validPoints[3].timestamp_uS) / 3.0f / (float)MICROSECONDS_PER_SECOND;
                     dt_vel_watch = dt_uS;
-                    //                   order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
+                    //order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
                     guess_velocity.set(
                         (order1CoEffs[2][0] * validPoints[0].position.getX() +
                          order1CoEffs[2][1] * validPoints[1].position.getX() +
@@ -304,10 +322,31 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
         }      // Velocity if-statement
     }          // Position if-statement
 
+    guess_velocity.setX(velocityKalman[0].filterData(guess_velocity.getX()));
+    guess_velocity.setY(velocityKalman[1].filterData(guess_velocity.getY()));
+    guess_velocity.setZ(velocityKalman[2].filterData(guess_velocity.getZ()));
+
+
+    guess_acceleration.setX(accelKalman[0].filterData(guess_acceleration.getX()));
+    guess_acceleration.setY(accelKalman[1].filterData(guess_acceleration.getY()));
+    guess_acceleration.setZ(accelKalman[2].filterData(guess_acceleration.getZ()));
+
     enemyGuess.position = guess_position;
     enemyGuess.velocity = guess_velocity;
     enemyGuess.acceleration = guess_acceleration;
     enemyGuess.timestamp_uS = validPoints[0].timestamp_uS;
+
+    px = guess_position.getX();
+    py = guess_position.getY();
+    pz = guess_position.getZ();
+
+    vx = guess_velocity.getX();
+    vy = guess_velocity.getY();
+    vz = guess_velocity.getZ();
+
+    ax = guess_acceleration.getX();
+    ay = guess_acceleration.getY();
+    az = guess_acceleration.getZ();
 
     return enemyGuess;
 }
