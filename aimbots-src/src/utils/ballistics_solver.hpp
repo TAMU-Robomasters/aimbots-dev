@@ -23,6 +23,17 @@ public:
         const src::Informants::vision::JetsonCommunicator &jetsonCommunicator);
     ~BallisticsSolver() = default;
 
+    struct AngularFilterConfig {
+        float tQDerivativeKalman = 1.0f;   /**< The system noise covariance for the kalman filter that
+                                            * is applied to the derivative of the error. */
+        float tRDerivativeKalman = 0.0f;   /**< The measurement noise covariance for the kalman filter
+                                            * that is applied to the derivative of the error. */
+        float tQProportionalKalman = 1.0f; /**< The system noise covariance for the kalman filter that
+                                            *  is applied to the proportional error. */
+        float tRProportionalKalman = 0.0f; /**< The measurement noise covariance for the kalman filter
+                                            * that is applied to the proportional error. */
+    };
+
     struct BallisticsSolution {
         float pitchAngle;
         float yawAngle;
@@ -39,6 +50,11 @@ private:
     const float defaultProjectileSpeed = 30.0f;  // m/s
 
     uint32_t lastFoundTargetTime = 0;
+
+    AngularFilterConfig config;
+
+    tap::algorithms::ExtendedKalman pitchFilter;
+    tap::algorithms::ExtendedKalman yawFilter;
 
     std::optional<BallisticsSolution> lastBallisticsSolution = {};
 };

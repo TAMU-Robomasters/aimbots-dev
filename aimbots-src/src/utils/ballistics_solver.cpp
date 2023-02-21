@@ -10,7 +10,9 @@ BallisticsSolver::BallisticsSolver(
     const src::Gimbal::GimbalSubsystem &gimbalSubsystem,
     const src::Informants::vision::JetsonCommunicator &jetsonCommunicator)
     : gimbalSubsystem(gimbalSubsystem),
-      jetsonCommunicator(jetsonCommunicator) {}
+      jetsonCommunicator(jetsonCommunicator),
+      pitchFilter(config.tQProportionalKalman, config.tRProportionalKalman),
+      yawFilter(config.tQProportionalKalman, config.tRProportionalKalman) {}
 
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
     if (!jetsonCommunicator.isJetsonOnline() ||
@@ -53,6 +55,9 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
             0.0f)) {
         lastBallisticsSolution = std::nullopt;
     }
+
+    lastBallisticsSolution->pitchAngle = pitchFilter.filterData(lastBallisticsSolution->pitchAngle);
+    lastBallisticsSolution->yawAngle = yawFilter.filterData(lastBallisticsSolution->yawAngle);
 
     return lastBallisticsSolution;
 }
