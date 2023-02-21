@@ -4,7 +4,7 @@
 
 #include "utils/motion/settled_util.hpp"
 
-namespace src::utils {
+namespace src::Utils {
 
 struct SmoothPIDWrapper {
     float lastTime;
@@ -12,7 +12,7 @@ struct SmoothPIDWrapper {
     float prevError;
     float errorDerivative;
 
-    src::utils::motion::SettledUtil settledUtil;
+    src::Utils::motion::SettledUtil settledUtil;
     tap::algorithms::SmoothPid pid;
 
     SmoothPIDWrapper(const tap::algorithms::SmoothPidConfig &config) : pid(config) {}
@@ -37,25 +37,17 @@ struct SmoothPIDWrapper {
         return pid.runControllerDerivateError(error, dt);
     }
 
-    bool isSettled(float errTolerance) {
-        return settledUtil.isSettled(this->error, errTolerance);
-    }
+    bool isSettled(float errTolerance) { return settledUtil.isSettled(this->error, errTolerance); }
 
     bool isSettled(float errTolerance, float derivTolerance, float derivToleranceTime) {
         return settledUtil.isSettled(this->error, errTolerance, this->errorDerivative, derivTolerance, derivToleranceTime);
     }
 
-    float getError() {
-        return this->error;
-    }
+    float getError() { return this->error; }
 
-    float getDerivative() {
-        return this->errorDerivative;
-    }
+    float getDerivative() { return this->errorDerivative; }
 
-    float getOutput() {
-        return pid.getOutput();
-    }
+    float getOutput() { return pid.getOutput(); }
 };
 
-}  // namespace src::utils
+}  // namespace src::Utils

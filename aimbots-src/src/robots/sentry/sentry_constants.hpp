@@ -170,12 +170,13 @@ static constexpr float RAIL_POLE_DIAMETER = 0.061f;
 static constexpr float robot_starting_rail_location_array[3] = {((WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2.0f), 0.0f, 0.0f};
 static const Matrix<float, 1, 3> robot_starting_rail_location(robot_starting_rail_location_array);
 
-static constexpr float FULL_RAIL_LENGTH = 2.130f;                                                       // meters, pole center to pole center
-static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;                                                    // cm
+static constexpr float FULL_RAIL_LENGTH = 2.130f;     // meters, pole center to pole center
+static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;  // cm
 static constexpr float USABLE_RAIL_LENGTH = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER);  // in meters
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION =
-    left_sentry_rail_pole_location_matrix + robot_starting_rail_location * src::utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2);
+    left_sentry_rail_pole_location_matrix +
+    robot_starting_rail_location * src::Utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
@@ -223,4 +224,3 @@ static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
  * we start slowing down translational speed.
  */
 static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
-

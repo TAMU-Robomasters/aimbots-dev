@@ -61,8 +61,8 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 100.0f,
-    .ki = 3.0f,
-    .kd = 80.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -88,9 +88,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };*/
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 50.0f,
-    .ki = 3.0f,
-    .kd = 40.0f,
+    .kp = 100.0f,
+    .ki = 0.0f,
+    .kd = 50.0f,
     .maxICumulative = 1000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -227,19 +227,22 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-//Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f; //Measured from 2022 Standard
-//0.205f normally
+// Distance from gimbal to tip of barrel, in m
+static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
+// 0.205f normally
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 59.7f;    // original angles that should be zero when 6020 is mounted to chassis 
+static constexpr float YAW_START_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
 static constexpr float PITCH_START_ANGLE = 51.1f;
 
+// static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
+// static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
+
 static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
+static constexpr float PITCH_SOFTSTOP_HIGH = 90.0f;
 
 static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 
@@ -304,4 +307,3 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
 static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
-

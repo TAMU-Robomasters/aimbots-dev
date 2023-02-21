@@ -12,7 +12,7 @@
 
 #include "drivers.hpp"
 
-using namespace src::utils::motion;
+using namespace src::Utils::motion;
 
 namespace src::Chassis {
 
@@ -39,7 +39,8 @@ private:
 
     static constexpr float leftRailBound = (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 + RAIL_SAFETY_BUFFER;
 
-    static constexpr float rightRailBound = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 - RAIL_SAFETY_BUFFER;
+    static constexpr float rightRailBound =
+        FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER) / 2 - RAIL_SAFETY_BUFFER;
 
     Matrix<float, 2, 1> railTargets;
     int railTargetIndex;

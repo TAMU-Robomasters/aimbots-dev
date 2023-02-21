@@ -55,7 +55,9 @@ float FieldRelativeInformant::getChassisRoll() {
     return roll;
 }
 
-tap::communication::sensors::imu::ImuInterface::ImuState FieldRelativeInformant::getImuState() { return drivers->bmi088.getImuState(); }
+tap::communication::sensors::imu::ImuInterface::ImuState FieldRelativeInformant::getImuState() {
+    return drivers->bmi088.getImuState();
+}
 
 float FieldRelativeInformant::getGz() {  // yaw
     return -modm::toRadian(drivers->bmi088.getGz());
@@ -92,9 +94,11 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
                                 static_cast<float>(odomRailMotor->ENC_RESOLUTION);  // current position in motor revolutions
 
     // now, convert to unwrapped wheel revolutions
-    float wheelRevolutionsUnwrapped = motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
+    float wheelRevolutionsUnwrapped =
+        motorRevolutionsUnwrapped * CHASSIS_GEARBOX_RATIO;  // current position in wheel revolutions
     // now, convert to unwrapped wheel rotations to get the rail position
-    float currWheelMovement = -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS) + wheelOffset;  // current position in meters
+    float currWheelMovement =
+        -wheelRevolutionsUnwrapped * (2.0f * M_PI * WHEEL_RADIUS) + wheelOffset;  // current position in meters
 
     // grab ultrasonic data, recalibrate wheels if ultrasonics valid
 
@@ -105,7 +109,9 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
         // wheelOffset += (currUltrasonicPosition - currWheelMovement) * ULTRASONIC_TRUST_FACTOR;
     }
 
-    railPositionRawDebug = ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0) / 100.0;  // meters
+    railPositionRawDebug =
+        ((UltrasonicDistanceSensor::getRightDistance() + UltrasonicDistanceSensor::getLeftDistance()) / 2.0) /
+        100.0;  // meters
     wheelOffsetDebug = wheelOffset;
 
     // set the current rail position to a position matrix relative to the rail
@@ -114,7 +120,8 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
 
     // rotate the matrix by 45 degrees (rail is mounted at 45 degree angle) and add to the robot's starting position
     fieldRelativeRobotPosition =
-        railRelativePosition * src::utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2) + left_sentry_rail_pole_location_matrix;
+        railRelativePosition * src::Utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2) +
+        left_sentry_rail_pole_location_matrix;
 
     robotPositionXDisplay = fieldRelativeRobotPosition[0][0];
     robotPositionYDisplay = fieldRelativeRobotPosition[0][1];
@@ -124,7 +131,10 @@ void FieldRelativeInformant::updateFieldRelativeRobotPosition() {
 
 // gets the angle between the robot's current position and the field coordinate
 float FieldRelativeInformant::getXYAngleToFieldCoordinate(AngleUnit unit, Matrix<float, 1, 3> fieldCoordinate) {
-    float xy_angle = src::utils::MatrixHelper::xy_angle_between_locations(AngleUnit::Radians, fieldRelativeRobotPosition, fieldCoordinate);
+    float xy_angle = src::Utils::MatrixHelper::xy_angle_between_locations(
+        AngleUnit::Radians,
+        fieldRelativeRobotPosition,
+        fieldCoordinate);
     if (unit == AngleUnit::Degrees) {
         xy_angle = modm::toDegree(xy_angle);
     }

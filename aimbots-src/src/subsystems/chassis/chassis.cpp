@@ -38,8 +38,12 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       velocityPIDs(Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
-      powerLimiter(drivers, STARTING_ENERGY_BUFFER, ENERGY_BUFFER_LIMIT_THRESHOLD, ENERGY_BUFFER_CRIT_THRESHOLD, POWER_LIMIT_SAFETY_FACTOR),
-      wheelLocationMatrix(Matrix<float, 4, 3>::zeroMatrix())
+      powerLimiter(
+          drivers,
+          STARTING_ENERGY_BUFFER,
+          ENERGY_BUFFER_LIMIT_THRESHOLD,
+          ENERGY_BUFFER_CRIT_THRESHOLD,
+          POWER_LIMIT_SAFETY_FACTOR)
 //
 {
 #ifdef TARGET_SENTRY
@@ -55,19 +59,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     velocityPIDs[LF][0] = &leftFrontWheelVelPID;
     velocityPIDs[RF][0] = &rightFrontWheelVelPID;
     velocityPIDs[RB][0] = &rightBackWheelVelPID;
-
-    wheelLocationMatrix[0][0] = -1.0f;
-    wheelLocationMatrix[0][1] = 1.0f;
-    wheelLocationMatrix[0][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
-    wheelLocationMatrix[1][0] = 1.0f;
-    wheelLocationMatrix[1][1] = 1.0f;
-    wheelLocationMatrix[1][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
-    wheelLocationMatrix[2][0] = -1.0f;
-    wheelLocationMatrix[2][1] = 1.0f;
-    wheelLocationMatrix[2][2] = WHEELBASE_WIDTH + WHEELBASE_LENGTH;
-    wheelLocationMatrix[3][0] = 1.0f;
-    wheelLocationMatrix[3][1] = 1.0f;
-    wheelLocationMatrix[3][2] = -(WHEELBASE_WIDTH + WHEELBASE_LENGTH);
 
 // NON SWERVE ROBOTS
 #ifdef SWERVE
@@ -120,7 +111,8 @@ void ChassisSubsystem::limitChassisPower() {
     bool totalErrorZero = compareFloatClose(totalError, 0.0f, 0.001f);
 
     for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-        float velocityErrorFrac = totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT) : (abs(velocityPIDs[i][0]->getError()) / totalError);
+        float velocityErrorFrac =
+            totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT) : (abs(velocityPIDs[i][0]->getError()) / totalError);
 
         float modifiedPowerLimitFrac = limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * velocityErrorFrac, 0.0f, 1.0f);
 
@@ -179,26 +171,35 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
 
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    targetRPMs[LF][0] = limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RF][0] = limitVal<float>(x - y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[LB][0] = limitVal<float>(-x + y + chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[RB][0] = limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LF][0] =
+        limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RF][0] =
+        limitVal<float>(x - y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[LB][0] =
+        limitVal<float>(-x + y + chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[RB][0] =
+        limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
 
     desiredRotation = r;
 }
 
 void ChassisSubsystem::calculateSwerve(float, float, float, float) {}
 
-void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) { targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed); }
+void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) {
+    targetRPMs[RAIL][0] = limitVal<float>(x, -maxWheelSpeed, maxWheelSpeed);
+}
 
-float ChassisSubsystem::calculateRotationLimitedTranslationalWheelspeed(float chassisRotationDesiredWheelspeed, float maxWheelSpeed) {
+float ChassisSubsystem::calculateRotationLimitedTranslationalWheelspeed(
+    float chassisRotationDesiredWheelspeed,
+    float maxWheelSpeed) {
     // what we will multiply x and y speed by to take into account rotation
     float rTranslationalGain = 1.0f;
 
     // the x and y movement will be slowed by a fraction of auto rotation amount for maximizing power
     // consumption when the wheel rotation speed for chassis rotation is greater than the MIN_ROTATION_THRESHOLD
     if (fabsf(chassisRotationDesiredWheelspeed) > MIN_ROTATION_THRESHOLD) {
-        rTranslationalGain = powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD - fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed, 2.0f);
+        rTranslationalGain =
+            powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD - fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed, 2.0f);
 
         rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
     }
