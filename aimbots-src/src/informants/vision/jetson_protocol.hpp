@@ -12,10 +12,10 @@ static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
 
 struct JetsonMessage {
     uint8_t magic;
-    float targetX;              // targetYawOffset
-    float targetY;              // targetPitchOffset
-    float targetZ;              // depth
-    uint8_t delay;
+    float targetX;
+    float targetY;
+    float targetZ;
+    uint8_t delay;  // ms
     CVState cvState;
 } __attribute__((packed));
 

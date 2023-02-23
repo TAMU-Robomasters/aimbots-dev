@@ -5,9 +5,10 @@
 
 namespace src::Gimbal {
 
-GimbalPatrolCommand::GimbalPatrolCommand(src::Drivers* drivers,
-                                         GimbalSubsystem* gimbalSubsystem,
-                                         GimbalChassisRelativeController* gimbalController)
+GimbalPatrolCommand::GimbalPatrolCommand(
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbalSubsystem,
+    GimbalChassisRelativeController* gimbalController)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
@@ -74,14 +75,16 @@ void GimbalPatrolCommand::updateYawPatrolTarget() {
     if (controller->getYawPositionPID()->isSettled(15.0f /*, 0.04f, 250.0f*/)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
-            // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate index
+            // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate
+            // index
             if (patrolCoordinateIndex == 0 || (patrolCoordinateIndex == patrolCoordinates.getNumberOfRows() - 1)) {
                 patrolCoordinateIncrement *= -1;
             }
             msBetweenLastPatrolChange = tap::arch::clock::getTimeMilliseconds() - lastPatrolChangeTime;
             lastPatrolChangeTime = tap::arch::clock::getTimeMilliseconds();
         } else if (patrolTimer.isExpired() || patrolTimer.isStopped()) {
-            // if we're settled at the target angle, and the timer has already expired or hasn't ever been started, start the timer
+            // if we're settled at the target angle, and the timer has already expired or hasn't ever been started, start the
+            // timer
             patrolTimer.restart(static_cast<uint32_t>(patrolCoordinates[patrolCoordinateIndex][TIME]));
         }
     }
@@ -106,7 +109,10 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     demoPosition2[0][0] = -3.6675f + 1.0f;
     demoPosition2[0][1] = -1.6675f + 1.0f;
 
-    float xy_angle = src::utils::MatrixHelper::xy_angle_between_locations(AngleUnit::Radians, drivers->fieldRelativeInformant.getFieldRelativeRobotPosition(), patrolCoordinates.getRow(patrolCoordinateIndex) /*demoPosition2*/);
+    float xy_angle = src::Utils::MatrixHelper::xy_angle_between_locations(
+        AngleUnit::Radians,
+        drivers->fieldRelativeInformant.getFieldRelativeRobotPosition(),
+        patrolCoordinates.getRow(patrolCoordinateIndex) /*demoPosition2*/);
     xy_angleDisplay = modm::toDegree(xy_angle);
 #ifdef TARGET_SENTRY
     // if robot is sentry, need to rotate by 45 degrees because sentry rail is at 45 degree angle relative to field

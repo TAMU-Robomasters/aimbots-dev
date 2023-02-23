@@ -15,9 +15,8 @@ void GimbalChassisRelativeController::initialize() {
 }
 
 void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
-    UNUSED(unit);
     UNUSED(vision);
-    gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, targetChassisRelativeYawAngle);
+    gimbal->setTargetChassisRelativeYawAngle(unit, targetChassisRelativeYawAngle);
 
     float positionControllerError =
         modm::toDegree(

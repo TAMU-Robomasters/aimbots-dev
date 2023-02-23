@@ -29,6 +29,8 @@
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 //
+#include "src/utils/ballistics_solver.hpp"
+//
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
@@ -71,6 +73,9 @@ HopperSubsystem hopper(drivers());
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
+// Ballistics Solver -------------------------------------------------------
+src::Utils::BallisticsSolver ballisticsSolver(gimbal, drivers()->cvCommunicator);
+
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
@@ -79,8 +84,8 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);

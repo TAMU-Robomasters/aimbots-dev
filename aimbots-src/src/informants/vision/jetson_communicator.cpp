@@ -47,12 +47,12 @@ int msBetweenLastMessageDisplay = 0;
  * The Jetson sends information in the form of a JetsonMessage.
  *
  * We send a magic number from the Jetson to the Development Board as the header of every message, and we can use that magic
- * number to determine whether a message is (probably) going to be valid. If a long magic number comes through as valid, we can
- * assume that the rest of the message is valid as well.
+ * number to determine whether a message is (probably) going to be valid. If a long magic number comes through as valid, we
+ * can assume that the rest of the message is valid as well.
  *
  * modm currently loads received bytes into an internal buffer, accessible using the READ() call.
- * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a JetsonMessage
- * from our received bytes.
+ * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a
+ * JetsonMessage from our received bytes.
  */
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
@@ -76,8 +76,8 @@ void JetsonCommunicator::updateSerial() {
                 nextByteIndex = 0;  // if not, reset the index and start over.
             }
 
-            // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match, we
-            // wouldn't have gotten this far.
+            // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
+            // we wouldn't have gotten this far.
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
             }
@@ -96,7 +96,8 @@ void JetsonCommunicator::updateSerial() {
                 if (lastMsgTimeDisplay == 0) {
                     lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
                 } else {
-                    msBetweenLastMessageDisplay = currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
+                    msBetweenLastMessageDisplay =
+                        currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
                     lastMsgTimeDisplay = currTime;
                 }
 
@@ -105,15 +106,16 @@ void JetsonCommunicator::updateSerial() {
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
-                    //there was some angle stuff here
-
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    // update visionTargetPosition here...
-                    // camera space
-                    visionTargetPosition[0][X_AXIS] = lastMessage.targetX;
-                    visionTargetPosition[0][Y_AXIS] = lastMessage.targetY;
-                    visionTargetPosition[0][Z_AXIS] = lastMessage.targetZ;
+                    // position is relative to camera
+                    visionTargetPosition.setX(lastMessage.targetX);
+                    visionTargetPosition.setY(lastMessage.targetY);
+                    visionTargetPosition.setZ(lastMessage.targetZ);
+
+                    drivers->enemyDataConverter.updateEnemyInfo(visionTargetPosition, lastMessage.delay);
+                    lastPlateKinematicState = drivers->enemyDataConverter.calculateBestGuess(3);
+                    lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
@@ -133,10 +135,10 @@ void JetsonCommunicator::updateSerial() {
         }
     }
 
-    if (!isJetsonOnline()) {
-        lastMessage.targetX = 0.0f;
-        lastMessage.targetY = 0.0f;
-    }
+    // if (!isJetsonOnline()) {
+    //     lastMessage.targetX = 0.0f;
+    //     lastMessage.targetY = 0.0f;
+    // }
 }
 
 }  // namespace src::Informants::vision

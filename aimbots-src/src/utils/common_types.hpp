@@ -15,6 +15,7 @@
 #include "tap/motor/servo.hpp"
 
 #include "modm/container/deque.hpp"
+#include "modm/math/geometry/vector.hpp"
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
@@ -40,21 +41,13 @@ enum class AngleUnit : uint8_t {
 
 // if this looks cursed, that's because it is.
 // currently, we're using a 1x3 matrix for X, Y, TIME patrol coordinates and also X, Y, Z location coordinates.
-// ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol becomes field-relative
+// ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol
+// becomes field-relative
 enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 
 // :)
 enum Axis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
-namespace src::Informants {
-//for ballistics use
-struct enemyTimedData {
-    modm::Matrix<float, 3, 1> position;
-    modm::Matrix<float, 3, 1> velocity;
-    modm::Matrix<float, 3, 1> acceleration;
-    float timestamp_uS;  // time that 'best guess' was made
-};
-}
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;
 
@@ -63,9 +56,10 @@ static constexpr float M2006_MAX_OUTPUT = 10000.0f;
 static constexpr float GM6020_MAX_OUTPUT = 16000.0f;
 
 static constexpr uint32_t MICROSECONDS_PER_SECOND = 1000000;
+static constexpr uint32_t MICROSECONDS_PER_MS = 1000;
 
 using StockPID = modm::Pid<float>;
-using SmoothPID = src::utils::SmoothPIDWrapper;
+using SmoothPID = src::Utils::SmoothPIDWrapper;
 using SmoothPIDConfig = tap::algorithms::SmoothPidConfig;
 
 using TapCommand = tap::control::Command;
@@ -91,6 +85,7 @@ using InputPins = tap::gpio::Digital::InputPin;
 
 template <typename T, uint8_t ROWS, uint8_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
+using Vector3f = modm::Vector3f;
 
 template <typename T, std::size_t N>
 using Deque = modm::BoundedDeque<T, N>;
@@ -104,7 +99,10 @@ static inline void scheduleIfNotScheduled(tap::control::CommandScheduler &schedu
     }
 }
 
-static inline void descheduleIfScheduled(tap::control::CommandScheduler &scheduler, tap::control::Command *cmd, bool interrupted) {
+static inline void descheduleIfScheduled(
+    tap::control::CommandScheduler &scheduler,
+    tap::control::Command *cmd,
+    bool interrupted) {
     if (scheduler.isCommandScheduled(cmd)) {
         scheduler.removeCommand(cmd, interrupted);
     }

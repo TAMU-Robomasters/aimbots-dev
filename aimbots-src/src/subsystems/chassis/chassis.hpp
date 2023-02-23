@@ -99,7 +99,9 @@ public:
      * @return A number between 0 and 1 that is the ratio between the rotationRpm and
      *      the max rotation speed.
      */
-    mockable float calculateRotationLimitedTranslationalWheelspeed(float chassisRotationDesiredWheelspeed, float maxWheelSpeed);
+    mockable float calculateRotationLimitedTranslationalWheelspeed(
+        float chassisRotationDesiredWheelspeed,
+        float maxWheelSpeed);
 
     /**
      * @return Returns the maximum wheel speed that can be reasonably achieved while maintaining the current power limit.
@@ -107,7 +109,8 @@ public:
     static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPowerLimit) {
         if (refSerialOnline) {
             float desWheelSpeed =
-                WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) + MIN_WHEEL_SPEED_SINGLE_MOTOR;
+                WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) +
+                MIN_WHEEL_SPEED_SINGLE_MOTOR;
 
             return tap::algorithms::limitVal(
                 desWheelSpeed,
@@ -163,9 +166,7 @@ public:
 
     Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
-    src::utils::Control::PowerLimiting::PowerLimiter powerLimiter;
-
-    Matrix<float, 4, 3> wheelLocationMatrix;
+    src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
 
 public:
 #ifdef TARGET_SENTRY

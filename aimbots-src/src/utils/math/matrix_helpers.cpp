@@ -1,6 +1,6 @@
 #include "utils/common_types.hpp"
 
-namespace src::utils::MatrixHelper {
+namespace src::Utils::MatrixHelper {
 
 float xy_angle_between_locations(AngleUnit unit, Matrix<float, 1, 3> v1, Matrix<float, 1, 3> v2) {
     // Gets the absolute angle from the horizontal in the positive direction of the vector from one point to another
@@ -90,4 +90,4 @@ Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
     return Matrix<float, 3, 3>(rotation_array);
 }
 
-}  // namespace src::utils::MatrixHelper
+}  // namespace src::Utils::MatrixHelper

@@ -20,9 +20,11 @@ enum class JetsonCommunicatorSerialState : uint8_t {
     AssemblingMessage,
 };
 
-enum GimbalAxis {
-    yaw = 0,
-    pitch = 1,
+struct plateKinematicState {
+    Vector3f position;
+    Vector3f velocity;
+    Vector3f acceleration;
+    float timestamp_uS;  // time that 'best guess' was made
 };
 
 class JetsonCommunicator {
@@ -40,35 +42,40 @@ public:
 
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
+    plateKinematicState getPlateKinematicState() const { return lastPlateKinematicState; }
+
     // What is this???
     Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
 
     // Doesn't yet actually do anything...
-    Matrix<float, 1, 3> const& getVisionTargetPosition() { return visionTargetPosition; }
+    Vector3f const& getVisionTargetPosition() { return visionTargetPosition; }
+
+    uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
 private:
     src::Drivers* drivers;
+    src::Gimbal::GimbalSubsystem* gimbal;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
-
-    JetsonMessage lastMessage;
 
     JetsonCommunicatorSerialState currentSerialState;
     size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
 
-    src::Gimbal::GimbalSubsystem* gimbal;
+    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
+    static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
+    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+
+    JetsonMessage lastMessage;
+    uint32_t lastFoundTargetTime;
 
     float fieldRelativeYawAngleAtVisionUpdate;
     float chassisRelativePitchAngleAtVisionUpdate;
 
+    plateKinematicState lastPlateKinematicState;
 
     Matrix<float, 1, 2> visionTargetAngles;
-    Matrix<float, 1, 3> visionTargetPosition;
-
-    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
-    static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+    Vector3f visionTargetPosition;
 };
 }  // namespace src::Informants::vision
