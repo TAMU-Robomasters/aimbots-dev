@@ -1,18 +1,40 @@
 #include "communication_response_subsytem.hpp"
 
+#include "informants/robot-states/robot_state.hpp"
+// #include "communication_message.hpp"
 #include "communication_message.hpp"
 #include "drivers.hpp"
 
 namespace src::Communication {
 
-CommunicationResponseSubsytem::CommunicationResponseSubsytem(src::Drivers &drivers)
+CommunicationResponseSubsytem::CommunicationResponseSubsytem(src::Drivers &drivers, RobotStates::RobotStates &states)
     : tap::control::Subsystem(&drivers),
       drivers(drivers),
-      refSerialTransmitter(&drivers) {}
+      refSerialTransmitter(&drivers),
+      states(states) {}
 
 void CommunicationResponseSubsytem::refresh() { this->run(); }
 
 bool CommunicationResponseSubsytem::run() {
+#ifdef TARGET_SENTRY
+    this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
+    uint16_t sx = ms.standardX;
+    this->robotToRobotMessage.dataAndCRC16[1] = static_cast<uint8_t>(sx);
+    sx = sx >> 8;
+    this->robotToRobotMessage.dataAndCRC16[2] = static_cast<uint8_t>(sx);
+    uint16_t sy = ms.standardY;
+    this->robotToRobotMessage.dataAndCRC16[3] = static_cast<uint8_t>(sy);
+    sy = sy >> 8;
+    this->robotToRobotMessage.dataAndCRC16[4] = static_cast<uint8_t>(sy);
+
+    
+#endif
+
+    // short standardY = 0;
+    // this->robotToRobotMessage.dataAndCRC16[3] = static_cast<uint8_t>(standardY);
+    // standardY = standardY >> 8;
+    // this->robotToRobotMessage.dataAndCRC16[4] = static_cast<uint8_t>(standardY);
+
     PT_BEGIN();
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
@@ -20,8 +42,9 @@ bool CommunicationResponseSubsytem::run() {
     while (true) {
         // if (this->sentryMoving != this->getDriveStatus()) {
         //     this->sentryMoving = this->getDriveStatus();
+        // short standardX = 0;
 
-        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
+#ifdef TARGET_SENTRY
 
         PT_CALL(refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
@@ -34,8 +57,16 @@ bool CommunicationResponseSubsytem::run() {
             SENTRY_RESPONSE_MESSAGE_ID,
             drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SOLDIER_1),
             1));
-        // }
+// }
+#elif TARGET_STANDARD
+        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
 
+        PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
+            &this->robotToRobotMessage,
+            SENTRY_REQUEST_ROBOT_ID,
+            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
+            1));
+#endif
         PT_YIELD();
     }
 

@@ -18,9 +18,9 @@ public:
     void setIndivualRobotState(Robot robot);
     Robot getIndivualRobotState(int robotNumber, Team teamColor);
 
-    void updateRobotState(int robotNumber, Team teamColor, float x, float y, float z, int health);
+    void updateRobotState(int robotNumber, Team teamColor, short x, short y, short z, int health);
     void updateRobotStateHealth(int robotNumber, Team teamColor, int health);
-    void updateRobotStatePosition(int robotNumber, Team teamColor, float x, float y, float z);
+    void updateRobotStatePosition(int robotNumber, Team teamColor, short x, short y, short z);
 
     void updateRefSystem();
 
