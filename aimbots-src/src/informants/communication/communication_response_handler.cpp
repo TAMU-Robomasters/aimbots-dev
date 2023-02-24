@@ -13,7 +13,7 @@ void CommunicationResponseHandler::operator()(const tap::communication::serial::
         RAISE_ERROR((&drivers), "message length incorrect");
         return;
     }
-
+    
     // this->sentryMoving = static_cast<bool>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
 }
 
