@@ -1,9 +1,11 @@
 #pragma once
 
+#include "informants/communication/communication_message.hpp"
 #include "utils/common_types.hpp"
 
 #include "drivers.hpp"
 #include "robot_state.hpp"
+using namespace src::Communication;
 
 namespace src::RobotStates {
 class RobotStates {
@@ -22,11 +24,14 @@ public:
     void updateRobotStateHealth(int robotNumber, Team teamColor, int health);
     void updateRobotStatePosition(int robotNumber, Team teamColor, short x, short y, short z);
 
-    void updateRefSystem();
-
-
+    #ifdef TARGET_SENTRY
+    robot_state_message_team createMessage();
+    #else
+    robot_state_message createMesssage();
+    robot_state_message_enemy createMessageEnemy();
+    #endif
 };
-    void updateRobotStateHero();
-    void updateRobotStateStandard();
-    void updateRobotStateSentry();
-}  // namespace src::robotStates
+void updateRobotStateHero();
+void updateRobotStateStandard();
+void updateRobotStateSentry();
+}  // namespace src::RobotStates

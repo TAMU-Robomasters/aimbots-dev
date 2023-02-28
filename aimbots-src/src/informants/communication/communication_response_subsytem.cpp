@@ -17,6 +17,7 @@ void CommunicationResponseSubsytem::refresh() { this->run(); }
 
 bool CommunicationResponseSubsytem::run() {
 #ifdef TARGET_SENTRY
+    ms = states.createMessage();
     this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
     uint16_t sx = ms.standardX;
     this->robotToRobotMessage.dataAndCRC16[1] = static_cast<uint8_t>(sx);
@@ -27,7 +28,6 @@ bool CommunicationResponseSubsytem::run() {
     sy = sy >> 8;
     this->robotToRobotMessage.dataAndCRC16[4] = static_cast<uint8_t>(sy);
 
-    
 #endif
 
     // short standardY = 0;
