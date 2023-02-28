@@ -1,7 +1,10 @@
 #include "drivers.hpp"
 // #include "ref_serial.hpp"
+#include "informants/communication/communication_message.hpp"
+
 #include "robot_state.hpp"
 #include "robot_state_interface.hpp"
+using namespace src::Communication;
 
 namespace src::RobotStates {
 
@@ -46,16 +49,29 @@ void RobotStates::updateRobotStatePosition(int number, Team teamColor, short x, 
 
 void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health) { robotStates[teamColor][number - 1].setHealth(health); }
 
-void RobotStates::updateRefSystem() {
-    // if (driver->refSerial.getRefSerialReceivingData()) {
-    //     driver->refSerial.messageReceiveCallback();
-    //     uint8_t id = driver->refSerial.getRobotData().RobotData.robotId;
-    //     uint16_t hp = driver->refSerial.getRobotData().RobotData.currentHp;
-    // }
+#ifdef TARGET_SENTRY
+robot_state_message_team RobotStates::createMessage() {
+    // will update all of the struct messages for the coms
+    tap::communication::serial::RefSerial::RobotId id = drivers->refSerial.getRobotData().robotId;
+    Team color = tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : Team::RED;
+
+    robot_state_message_team message;
+
+    message.standardX = robotStates[color][2].getX();
+    message.standardY = robotStates[color][2].getY();
+    message.heroX = robotStates[color][0].getX();
+    message.heroY = robotStates[color][0].getY();
+    message.sentryX = robotStates[color][6].getX();
+    message.sentryY = robotStates[color][6].getY();
+
+    return message;
 }
+#else
+
+#endif
 
 void updateRobotStateHero() {}
 void updateRobotStateStandard() {}
 void updateRobotStateSentry() {}
 
-}  // namespace src::robotStates
+}  // namespace src::RobotStates
