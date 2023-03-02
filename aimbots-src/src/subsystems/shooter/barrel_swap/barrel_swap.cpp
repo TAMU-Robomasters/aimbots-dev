@@ -68,7 +68,6 @@ void BarrelSwapSubsytem::refresh() {
         if (heat >= MAX_HEAT) {
             // current_shooter.stopShooterCommand
             // swap barrels
-            // m2006 motor
             // swap_mechanism.cpp
             // SwapMechanismSubsystem
             // temp = other_shooter
