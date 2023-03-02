@@ -5,11 +5,14 @@ namespace src::Shooter{
     SwapMechanismSubsystem::SwapMechanismSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
     swapMotor(drivers, SWAP_MOTOR_ID, GIMBAL_BUS, SWAP_DIRECTION),
-    barrelMotor(drivers, SHOOTER_1_ID, SHOOTER_BUS, SHOOTER_1_DIRECTION, "Shooter 1 Motor")
+    currentSwapMotorRelativeAngle(0.0f, 0.0f, M_TWOPI)
 
     void SwapMechanismSubsystem::initialize() {
         swapMotor.initialize();
     }
+
+    float swapRelativeDisplay = 0.0f;
+    float swapOutputDisplay = 0.0f;
 
     void SwapMechanismSubsystem::refresh() {
         setDesiredOutput();
