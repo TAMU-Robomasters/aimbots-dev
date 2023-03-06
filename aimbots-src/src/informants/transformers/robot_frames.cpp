@@ -1,13 +1,13 @@
-#include "informants/RobotFrames.hpp"
+#include "informants/transformers/robot_frames.hpp"
 
-#include "informants/CoordinateFrame.hpp"
-#include "utils/common_types.hpp"
-#include "utils/math/matrix_helpers.hpp"
-#include "utils/math/transform_setup.hpp"
+#include "informants/transformers/coordinate_frame.hpp"
+#include "src/utils/common_types.hpp"
+#include "src/utils/math/matrix_helpers.hpp"
+#include "src/utils/math/transform_setup.hpp"
 
 namespace src::Informants {
 // Look sid Idk how to do this exactly
-Matrix<float, 3, 3> I = identityMatrix();
+Matrix3f I = identityMatrix();
 Vector3f O = {0, 0, 0};
 
 RobotFrames::RobotFrames(
@@ -28,7 +28,7 @@ RobotFrames::RobotFrames(
     // |______|__B|
     //
     //
-    Matrix<float, 3, 3> CHASSIS_ORIENTATION_RELATIVE_TO_WORLD_ORIENTATION =
+    Matrix3f CHASSIS_ORIENTATION_RELATIVE_TO_WORLD_ORIENTATION =
         src::Utils::MatrixHelper::rotationMatrix(AngleUnit::Degrees, CHASSIS_ANGLE_RELATIVE_TO_WORLD, 2);
     // Store here instead of in Robot Constants
     this->TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN = TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN;

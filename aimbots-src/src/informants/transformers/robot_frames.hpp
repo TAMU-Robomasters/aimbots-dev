@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Informants/CoordinateFrame.hpp"
+#include "informants/transformers/coordinate_frame.hpp"
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/math/transform_setup.hpp"
@@ -29,6 +29,6 @@ private:
     CoordinateFrame ballisticsFrame;  // THIS IS NOT A BARREL FRAME THIS IS DIFFERENT
 
     Vector3f CAMERA_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN;
-    Matrix<float, 3, 3> TURRET_ORIENTATION_RELATIVE_TO_CHASSIS_ORIENTATION;
+    Matrix3f TURRET_ORIENTATION_RELATIVE_TO_CHASSIS_ORIENTATION;
 };
 }  // namespace src::Informants

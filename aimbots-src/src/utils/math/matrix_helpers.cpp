@@ -18,7 +18,7 @@ float xy_angle_between_locations(AngleUnit unit, Matrix<float, 1, 3> v1, Matrix<
 }
 
 // Outdated use rotation_matix(~, ~, 2) instead
-Matrix<float, 3, 3> xy_rotation_matrix(AngleUnit unit, float angle) {
+Matrix3f xy_rotation_matrix(AngleUnit unit, float angle) {
     if (unit == AngleUnit::Degrees) {
         angle = modm::toRadian(angle);
     }
@@ -30,10 +30,10 @@ Matrix<float, 3, 3> xy_rotation_matrix(AngleUnit unit, float angle) {
         s,     c,   0.0f,
         0.0f, 0.0f, 1.0f};
     // clang-format on
-    return Matrix<float, 3, 3>(xy_rotation_array);
+    return Matrix3f(xy_rotation_array);
 }
 
-Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
+Matrix3f rotation_matrix(AngleUnit unit, float angle, int axis) {
     // Constructs a rotation matrix about an elementary (Robot's X, Y, Z Axis)
     // Rotation matricies are used to determine coordinates before / after a rotation
     // Takes input of angle unit (Degrees / Rads), Float angle, and axis
@@ -87,7 +87,7 @@ Matrix<float, 3, 3> rotation_matrix(AngleUnit unit, float angle, int axis) {
             break;
         }
     }
-    return Matrix<float, 3, 3>(rotation_array);
+    return Matrix3f(rotation_array);
 }
 
 }  // namespace src::Utils::MatrixHelper

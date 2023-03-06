@@ -37,23 +37,4 @@ RobotTransformer::RobotTransformer() {
 
 RobotTransformer::~RobotTransformer() {}
 
-Matrix<float, 4, 4> RobotTransformer::invertTransformation(Matrix<float, 4, 4> transform) {
-    Matrix<float, 4, 4> inverted_transform = Matrix<float, 4, 4>::zeroMatrix();
-
-    // Invert the rotation matrix
-    for (uint_fast8_t i = 0; i < 3; i++) {
-        for (uint_fast8_t j = 0; j < 3; j++) {
-            inverted_transform.element[j * 4 + i] = transform.element[i * 4 + j];
-        }
-    }
-
-    // Multiply the transposed rotation matrix by the negative translation vector
-
-    Matrix<float, 3, 3> rT = transform.subMatrix<3, 3>(3, 3).asTransposed();
-
-    Matrix<float, 3, 1> t = transform.subMatrix<3, 1>(3, 0);
-    Matrix<float, 3, 1> neg_tT = rT * t;
-    neg_tT *= -1;
-}
-
 }  // namespace src::Informants

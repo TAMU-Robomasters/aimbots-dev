@@ -1,24 +1,24 @@
 #pragma once
 #include <vector>
 
-#include "utils/common_types.hpp"
-#include "utils/math/transform_setup.hpp"
+#include "src/utils/common_types.hpp"
+#include "src/utils/math/transform_setup.hpp"
 
 namespace src::Informants {
 
 class CoordinateFrame {
 public:
-    CoordinateFrame(Vector3f origin, Matrix<float, 3, 3> orientation);
+    CoordinateFrame(Vector3f origin, Matrix3f orientation);
     ~CoordinateFrame() = default;
 
     void updateTransform();
-    void setOrientation(Matrix<float, 3, 3> R);
-    void rotateFrame(Matrix<float, 3, 3> R);
+    void setOrientation(Matrix3f R);
+    void rotateFrame(Matrix3f R);
     void moveOrigin(Vector3f r);
     void setOrigin(Vector3f r);
 
     Vector3f getOrigin();
-    Matrix<float, 3, 3> getOrientation();
+    Matrix3f getOrientation();
     Matrix<float, 4, 4> getTransformIn();
     Matrix<float, 4, 4> getTransformOut();
 
@@ -32,7 +32,7 @@ private:
 
     // Orientation with respect to chassis frame
     // !!! Y is forward / out X is to the right, Z is up !!!
-    Matrix<float, 3, 3> orientation;
+    Matrix3f orientation;
 
     std::vector<Vector3f> points;
 
