@@ -1,4 +1,4 @@
-#include "CoordinateFrame.hpp"
+#include "informants/transformers/coordinate_frame.hpp"
 
 #include "src/utils/robot_specific_inc.hpp"
 #include "utils/math/transform_setup.hpp"
@@ -6,7 +6,7 @@
 namespace src::Informants {
 
 // Constructor
-CoordinateFrame::CoordinateFrame(Matrix<float, 3, 3> orientation, Vector3f origin)
+CoordinateFrame::CoordinateFrame(Vector3f origin, Matrix<float, 3, 3> orientation)
     : origin(origin),
       orientation(orientation) {
     updateTransform();

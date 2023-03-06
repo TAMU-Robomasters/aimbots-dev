@@ -60,8 +60,8 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     // update matrices
     updateTransformations();
     // pull matricies
-    Matrix<float, 4, 4> T_cam2gimb = src::Utils::MatrixHelper::transform_matrix(R_cam2gimb, P_cam2gimb);
-    Matrix<float, 4, 4> T_gimb2chas = src::Utils::MatrixHelper::transform_matrix(R_gimb2chas, P_gimb2chas);
+    Matrix<float, 4, 4> T_cam2gimb = src::Utils::MatrixHelper::initTransform(R_cam2gimb, P_cam2gimb);
+    Matrix<float, 4, 4> T_gimb2chas = src::Utils::MatrixHelper::initTransform(R_gimb2chas, P_gimb2chas);
 
     // save transformed position to data point
     enemyPositionDisplay_gimbal = src::Utils::MatrixHelper::P_crop_extend(
