@@ -3,17 +3,20 @@
 #include <drivers.hpp>
 
 namespace src::Informants {
-EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers) : drivers(drivers),
-                                                                positionKalman({ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
-                                                                                ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
-                                                                                ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman)}),
-                                                                velocityKalman({ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
-                                                                                ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
-                                                                                ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman)}),
-                                                                accelKalman({ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
-                                                                             ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
-                                                                             ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)})
-{}
+EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
+    : drivers(drivers),
+      positionKalman(
+          {ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
+           ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
+           ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman)}),
+      velocityKalman(
+          {ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
+           ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
+           ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman)}),
+      accelKalman(
+          {ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
+           ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
+           ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)}) {}
 
 // watchable variables
 float targetXCoordDisplay_camera = 0;
@@ -60,8 +63,8 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     // update matrices
     updateTransformations();
     // pull matricies
-    Matrix<float, 4, 4> T_cam2gimb = src::Utils::MatrixHelper::initTransform(R_cam2gimb, P_cam2gimb);
-    Matrix<float, 4, 4> T_gimb2chas = src::Utils::MatrixHelper::initTransform(R_gimb2chas, P_gimb2chas);
+    Matrix4f T_cam2gimb = src::Utils::MatrixHelper::initTransform(R_cam2gimb, P_cam2gimb);
+    Matrix4f T_gimb2chas = src::Utils::MatrixHelper::initTransform(R_gimb2chas, P_gimb2chas);
 
     // save transformed position to data point
     enemyPositionDisplay_gimbal = src::Utils::MatrixHelper::P_crop_extend(
@@ -225,7 +228,7 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
                     dt_uS =
                         (validPoints[0].timestamp_uS - validPoints[3].timestamp_uS) / 3.0f / (float)MICROSECONDS_PER_SECOND;
                     dt_vel_watch = dt_uS;
-                    //order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
+                    // order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
                     guess_velocity.set(
                         (order1CoEffs[2][0] * validPoints[0].position.getX() +
                          order1CoEffs[2][1] * validPoints[1].position.getX() +
@@ -325,7 +328,6 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
     guess_velocity.setX(velocityKalman[0].filterData(guess_velocity.getX()));
     guess_velocity.setY(velocityKalman[1].filterData(guess_velocity.getY()));
     guess_velocity.setZ(velocityKalman[2].filterData(guess_velocity.getZ()));
-
 
     guess_acceleration.setX(accelKalman[0].filterData(guess_acceleration.getX()));
     guess_acceleration.setY(accelKalman[1].filterData(guess_acceleration.getY()));

@@ -1,9 +1,9 @@
 #include "informants/transformers/robot_frames.hpp"
 
 #include "informants/transformers/coordinate_frame.hpp"
-#include "src/utils/common_types.hpp"
-#include "src/utils/math/matrix_helpers.hpp"
-#include "src/utils/math/transform_setup.hpp"
+#include "utils/common_types.hpp"
+#include "utils/math/matrix_helpers.hpp"
+#include "utils/math/transform_setup.hpp"
 
 namespace src::Informants {
 // Look sid Idk how to do this exactly

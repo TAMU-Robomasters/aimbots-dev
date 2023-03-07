@@ -1,6 +1,6 @@
 #include "gimbal_chase_command.hpp"
 
-#include "src/utils/ballistics_solver.hpp"
+#include "utils/ballistics_solver.hpp"
 
 namespace src::Gimbal {
 // feed chassis relative controller for sentry, field relative for ground robots

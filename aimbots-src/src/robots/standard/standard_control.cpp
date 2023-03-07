@@ -29,7 +29,7 @@
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 //
-#include "src/utils/ballistics_solver.hpp"
+#include "utils/ballistics_solver.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"

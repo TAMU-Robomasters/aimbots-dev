@@ -1,6 +1,6 @@
 #include "robot_transformations.hpp"
 
-#include "src/utils/robot_specific_inc.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 namespace src::Informants {
 
@@ -30,9 +30,9 @@ RobotTransformer::RobotTransformer() {
     };
     // clang-format on
 
-    this->camera_to_gimbal = Matrix<float, 4, 4>(camera_to_gimbal_array);
-    this->gimbal_to_chassis = Matrix<float, 4, 4>(gimbal_to_chassis_array);
-    this->chassis_to_field = Matrix<float, 4, 4>(chassis_to_field_array);
+    this->camera_to_gimbal = Matrix4f(camera_to_gimbal_array);
+    this->gimbal_to_chassis = Matrix4f(gimbal_to_chassis_array);
+    this->chassis_to_field = Matrix4f(chassis_to_field_array);
 }
 
 RobotTransformer::~RobotTransformer() {}

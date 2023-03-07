@@ -1,14 +1,14 @@
 #include "informants/transformers/coordinate_frame.hpp"
 
-#include "src/utils/robot_specific_inc.hpp"
 #include "utils/math/transform_setup.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+using namespace src::Utils::MatrixHelper;
 
 namespace src::Informants {
 
 // Constructor
-CoordinateFrame::CoordinateFrame(Vector3f origin, Matrix<float, 3, 3> orientation)
-    : origin(origin),
-      orientation(orientation) {
+CoordinateFrame::CoordinateFrame(Vector3f origin, Matrix3f orientation) : origin(origin), orientation(orientation) {
     updateTransform();
 }
 
@@ -17,14 +17,14 @@ CoordinateFrame::~CoordinateFrame() {}
 
 // Update Transforms in/out
 void CoordinateFrame::updateTransform() {
-    this->transformOut = src::Utils::MatrixHelper::initTransform(this->orientation, this->origin);
-    this->transformIn = src::Utils::MatrixHelper::invertTransform(this->transformOut);
+    this->transformOut = initTransform(this->orientation, this->origin);
+    this->transformIn = invertTransform(this->transformOut);
 }
-void CoordinateFrame::setOrientation(Matrix<float, 3, 3> R) {
+void CoordinateFrame::setOrientation(Matrix3f R) {
     this->orientation = R;
     updateTransform();
 }
-void CoordinateFrame::rotateFrame(Matrix<float, 3, 3> R) {
+void CoordinateFrame::rotateFrame(Matrix3f R) {
     this->orientation = this->orientation * R;
     updateTransform();
 }
@@ -39,9 +39,9 @@ void CoordinateFrame::setOrigin(Vector3f r) {
 
 // Getters
 Vector3f CoordinateFrame::getOrigin() { return this->origin; }
-Matrix<float, 3, 3> CoordinateFrame::getOrientation() { return this->orientation; }
-Matrix<float, 4, 4> CoordinateFrame::getTransformIn() { return this->transformIn; }
-Matrix<float, 4, 4> CoordinateFrame::getTransformOut() { return this->transformOut; }
+Matrix3f CoordinateFrame::getOrientation() { return this->orientation; }
+Matrix4f CoordinateFrame::getTransformIn() { return this->transformIn; }
+Matrix4f CoordinateFrame::getTransformOut() { return this->transformOut; }
 
 // Returns a point in this frame
 Vector3f CoordinateFrame::getPoint(int n) { this->points.at(n); }
@@ -50,9 +50,8 @@ Vector3f CoordinateFrame::getPoint(int n) { this->points.at(n); }
 void CoordinateFrame::addPoint(Vector3f p) { this->points.push_back(p); }
 
 // Returns a point in the given frame that is stored in the current frame
-Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame* f, int n) {
-    src::Utils::MatrixHelper::cropCoords(
-        f->transformIn * this->transformOut * src::Utils::MatrixHelper::extendCoords(getPoint(n)));
+Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame& f, int n) {
+    return homogenousCoordinateCrop(f.transformIn * this->transformOut * homogenousCoordinateExtend(getPoint(n)).asMatrix());
 }
 
 }  // namespace src::Informants
