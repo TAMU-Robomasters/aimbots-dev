@@ -16,11 +16,11 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       nextByteIndex(0),
       jetsonOfflineTimeout(),
 #ifdef TARGET_SENTRY
-      fieldRelativeYawAngleAtVisionUpdate(modm::toRadian(YAW_START_ANGLE)),
+      fieldRelativeYawAngleAtVisionUpdate(modm::toRadian(YAW_OFFSET_ANGLE)),
 #else
       fieldRelativeYawAngleAtVisionUpdate(0.0f),
 #endif
-      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_START_ANGLE))  //
+      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_OFFSET_ANGLE))  //
 {
 }
 

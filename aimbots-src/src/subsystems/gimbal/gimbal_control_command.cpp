@@ -27,8 +27,8 @@ void GimbalControlCommand::execute() {
     targetYawAngle = gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 #else
-    // This just locks it to the the forward direction, specified by YAW_START_ANGLE
-    controller->runYawController(AngleUnit::Degrees, YAW_START_ANGLE);
+    // This just locks it to the the forward direction, specified by YAW_OFFSET_ANGLE
+    controller->runYawController(AngleUnit::Degrees, YAW_OFFSET_ANGLE);
 #endif
 
     float targetPitchAngle = 0.0f;

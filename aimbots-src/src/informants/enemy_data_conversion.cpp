@@ -357,8 +357,8 @@ float theta_display;
 float phi_display;
 
 void EnemyDataConversion::updateTransformations() {
-    float theta = gimbal->getCurrentChassisRelativeYawAngle(AngleUnit::Radians) - modm::toRadian(YAW_START_ANGLE);
-    float phi = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians) - modm::toRadian(PITCH_START_ANGLE);
+    float theta = gimbal->getCurrentChassisRelativeYawAngle(AngleUnit::Radians) - modm::toRadian(YAW_OFFSET_ANGLE);
+    float phi = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians) - modm::toRadian(PITCH_OFFSET_ANGLE);
     theta_display = theta;
     phi_display = phi;
     auto cph = cos(phi), sph = sin(phi);

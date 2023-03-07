@@ -46,8 +46,8 @@ void GimbalChaseCommand::execute() {
         targetPitchAngle = ballisticsSolution->pitchAngle;
 
         // ballistics returns angles between [0, 2PI), need to convert idk why
-        targetYawAngle = M_PI_2 + modm::toRadian(YAW_START_ANGLE) - targetYawAngle;
-        targetPitchAngle += modm::toRadian(PITCH_START_ANGLE);
+        targetYawAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAngle;
+        targetPitchAngle += modm::toRadian(PITCH_OFFSET_ANGLE);
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAngle);

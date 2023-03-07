@@ -183,8 +183,8 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 // field-relative math is based on
 
 // Values specific for Sentry hardware setup
-static constexpr float YAW_START_ANGLE = 61.0f;
-static constexpr float PITCH_START_ANGLE = 152.0f;
+static constexpr float YAW_OFFSET_ANGLE = 61.0f;
+static constexpr float PITCH_OFFSET_ANGLE = 152.0f;
 
 static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;

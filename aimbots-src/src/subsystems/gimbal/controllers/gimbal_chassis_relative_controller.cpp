@@ -45,7 +45,7 @@ void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float t
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
     float toHorizonError = gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                               .difference(modm::toRadian(PITCH_START_ANGLE + HORIZON_OFFSET));
+                               .difference(modm::toRadian(PITCH_OFFSET_ANGLE + HORIZON_OFFSET));
 
     float gravityCompensation = -cos(toHorizonError) * kGRAVITY;
     gravityCompensationDisplay = gravityCompensation;

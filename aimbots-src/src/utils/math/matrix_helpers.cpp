@@ -33,7 +33,7 @@ Matrix3f xy_rotation_matrix(AngleUnit unit, float angle) {
     return Matrix3f(xy_rotation_array);
 }
 
-Matrix3f rotation_matrix(AngleUnit unit, float angle, int axis) {
+Matrix3f rotationMatrix(AngleUnit unit, float angle, int axis) {
     // Constructs a rotation matrix about an elementary (Robot's X, Y, Z Axis)
     // Rotation matricies are used to determine coordinates before / after a rotation
     // Takes input of angle unit (Degrees / Rads), Float angle, and axis

@@ -8,19 +8,25 @@ namespace src::Informants {
 
 class CoordinateFrame {
 public:
-    CoordinateFrame(Vector3f origin, Matrix3f orientation);
+    CoordinateFrame();
+    CoordinateFrame(Matrix3f orientation, Vector3f origin);
     ~CoordinateFrame() = default;
-
+    
     void updateTransform();
+
+    void setOrigin(Vector3f r);
+    void displaceOrigin(Vector3f r);
+    
     void setOrientation(Matrix3f R);
     void rotateFrame(Matrix3f R);
-    void moveOrigin(Vector3f r);
-    void setOrigin(Vector3f r);
 
     Vector3f getOrigin();
     Matrix3f getOrientation();
+    
     Matrix4f getTransformIn();
     Matrix4f getTransformOut();
+    
+    Matrix4f getTransformToFrame(CoordinateFrame& f);
 
     void addPoint(Vector3f p);
     Vector3f getPoint(int n);
@@ -28,11 +34,11 @@ public:
 
 private:
     // Origin of the frame with respect to center of mass of the chassis
+    Matrix3f orientation;
     Vector3f origin;
 
     // Orientation with respect to chassis frame
     // !!! Y is forward / out X is to the right, Z is up !!!
-    Matrix3f orientation;
 
     std::vector<Vector3f> points;
 

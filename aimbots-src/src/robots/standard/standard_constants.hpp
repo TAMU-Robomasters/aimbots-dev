@@ -234,8 +234,11 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_START_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
-static constexpr float PITCH_START_ANGLE = 51.1f;
+static constexpr float YAW_OFFSET_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
+static constexpr float PITCH_OFFSET_ANGLE = 51.1f;
+
+static constexpr float YAW_START_ANGLE = 0.0f;
+static constexpr float PITCH_START_ANGLE = 0.0f;
 
 // static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
 // static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
@@ -312,21 +315,23 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  */
 
 // clang-format off
-static constexpr float CAMERA_POSITION_RELATIVE_TO_TURRET_ORIGIN[3]{ // in meters
+Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN { // in meters
     -0.085f, // x
     0.07f, // y
     0.0f,  // z
 };
 
-static constexpr float TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN[3]{
+Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
 
-static constexpr float CHASSIS_ORIGIN_RELATIVE_TO_WORLD_ORIGIN[4]{
+Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
     0.0f, // x
     0.0f, // y
     0.0f, // z
-    0.0f  // theta (about z axis)
 };
+// clang-format on
+
+static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
