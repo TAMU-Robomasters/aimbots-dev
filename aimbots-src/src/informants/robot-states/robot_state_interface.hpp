@@ -11,10 +11,10 @@ namespace src::RobotStates {
 class RobotStates {
 private:
     Matrix<Robot, 2, 9> robotStates;
-    src::Drivers* drivers;
+    // src::Drivers* drivers;
 
 public:
-    RobotStates(src::Drivers* drivers);
+    RobotStates();
     ~RobotStates();
 
     void setIndivualRobotState(Robot robot);
@@ -24,12 +24,12 @@ public:
     void updateRobotStateHealth(int robotNumber, Team teamColor, int health);
     void updateRobotStatePosition(int robotNumber, Team teamColor, short x, short y, short z);
 
-    #ifdef TARGET_SENTRY
+#ifdef TARGET_SENTRY
     robot_state_message_team createMessage();
-    #else
+#else
     robot_state_message createMesssage();
     robot_state_message_enemy createMessageEnemy();
-    #endif
+#endif
 };
 void updateRobotStateHero();
 void updateRobotStateStandard();
