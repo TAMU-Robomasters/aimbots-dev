@@ -8,7 +8,10 @@
 
 namespace src::Chassis {
 
-ChassisTokyoCommand::ChassisTokyoCommand(src::Drivers* drivers, ChassisSubsystem* chassis, src::Gimbal::GimbalSubsystem* gimbal)
+ChassisTokyoCommand::ChassisTokyoCommand(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    src::Gimbal::GimbalSubsystem* gimbal)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal)  //
@@ -33,7 +36,7 @@ void ChassisTokyoCommand::execute() {
     Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
     if (gimbal->isOnline()) {
-        float yawAngleFromChassisCenter = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
+        float yawAngleFromChassisCenter = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
         yawAngleFromChassisCenterDisplay = modm::toDegree(yawAngleFromChassisCenter);

@@ -2,9 +2,11 @@
 
 #include <optional>
 
+#include <drivers.hpp>
+
 #include "tap/algorithms/ballistics.hpp"
 
-#include "src/informants/vision/jetson_communicator.hpp"
+// #include "informants/vision/jetson_communicator.hpp"
 
 namespace src::Gimbal {
 class GimbalSubsystem;
@@ -18,9 +20,7 @@ namespace src::Utils {
 
 class BallisticsSolver {
 public:
-    BallisticsSolver(
-        const src::Gimbal::GimbalSubsystem &gimbalSubsystem,
-        const src::Informants::vision::JetsonCommunicator &jetsonCommunicator);
+    BallisticsSolver(src::Drivers *);
     ~BallisticsSolver() = default;
 
     struct AngularFilterConfig {
@@ -44,17 +44,11 @@ public:
     std::optional<BallisticsSolution> solve();
 
 private:
-    const src::Gimbal::GimbalSubsystem &gimbalSubsystem;
-    const src::Informants::vision::JetsonCommunicator &jetsonCommunicator;
+    src::Drivers *drivers;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
 
     uint32_t lastFoundTargetTime = 0;
-
-    AngularFilterConfig config;
-
-    tap::algorithms::ExtendedKalman pitchFilter;
-    tap::algorithms::ExtendedKalman yawFilter;
 
     std::optional<BallisticsSolution> lastBallisticsSolution = {};
 };

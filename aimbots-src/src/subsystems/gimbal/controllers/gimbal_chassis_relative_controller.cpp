@@ -16,12 +16,10 @@ void GimbalChassisRelativeController::initialize() {
 
 void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
     UNUSED(vision);
-    gimbal->setTargetChassisRelativeYawAngle(unit, targetChassisRelativeYawAngle);
+    gimbal->setTargetYawMotorAngle(unit, targetChassisRelativeYawAngle);
 
-    float positionControllerError =
-        modm::toDegree(
-            gimbal->getCurrentChassisRelativeYawAngleAsContiguousFloat()
-                .difference(gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(
+        gimbal->getCurrentYawMotorAngleAsContiguousFloat().difference(gimbal->getTargetYawMotorAngle(AngleUnit::Radians)));
 
     float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
 
@@ -30,22 +28,23 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
 
 float gravityCompensationDisplay = 0.0f;
 
-void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision) {
+void GimbalChassisRelativeController::runPitchController(
+    AngleUnit unit,
+    float targetChassisRelativePitchAngle,
+    bool vision) {
     UNUSED(vision);
-    gimbal->setTargetChassisRelativePitchAngle(unit, targetChassisRelativePitchAngle);
+    gimbal->setTargetPitchMotorAngle(unit, targetChassisRelativePitchAngle);
 
     // This gets converted to degrees so that we get a higher error. ig
     // we could also just boost our constants, but this takes minimal
     // calculation and seems simpler. subject to change I suppose...
-    float positionControllerError =
-        modm::toDegree(
-            gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                .difference(gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(
+        gimbal->getTargetPitchMotorAngle(AngleUnit::Radians)));
 
     float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
 
-    float toHorizonError = gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                               .difference(modm::toRadian(PITCH_OFFSET_ANGLE + HORIZON_OFFSET));
+    float toHorizonError =
+        gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(modm::toRadian(PITCH_OFFSET_ANGLE + HORIZON_OFFSET));
 
     float gravityCompensation = -cos(toHorizonError) * kGRAVITY;
     gravityCompensationDisplay = gravityCompensation;

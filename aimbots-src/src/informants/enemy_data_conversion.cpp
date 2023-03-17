@@ -1,6 +1,6 @@
 #include "enemy_data_conversion.hpp"
 
-#include <drivers.hpp>
+#include "drivers.hpp"
 
 namespace src::Informants {
 EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
@@ -357,8 +357,8 @@ float theta_display;
 float phi_display;
 
 void EnemyDataConversion::updateTransformations() {
-    float theta = gimbal->getCurrentChassisRelativeYawAngle(AngleUnit::Radians) - modm::toRadian(YAW_OFFSET_ANGLE);
-    float phi = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Radians) - modm::toRadian(PITCH_OFFSET_ANGLE);
+    float theta = gimbal->getCurrentYawMotorAngle(AngleUnit::Radians) - modm::toRadian(YAW_OFFSET_ANGLE);
+    float phi = gimbal->getCurrentPitchMotorAngle(AngleUnit::Radians) - modm::toRadian(PITCH_OFFSET_ANGLE);
     theta_display = theta;
     phi_display = phi;
     auto cph = cos(phi), sph = sin(phi);

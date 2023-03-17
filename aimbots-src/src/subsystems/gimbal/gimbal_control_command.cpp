@@ -10,7 +10,10 @@
 
 namespace src::Gimbal {
 
-GimbalControlCommand::GimbalControlCommand(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem, GimbalControllerInterface* gimbalController)
+GimbalControlCommand::GimbalControlCommand(
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbalSubsystem,
+    GimbalControllerInterface* gimbalController)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
@@ -24,7 +27,8 @@ void GimbalControlCommand::initialize() {}
 void GimbalControlCommand::execute() {
 #ifdef TARGET_SENTRY
     float targetYawAngle = 0.0f;
-    targetYawAngle = gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput();
+    targetYawAngle =
+        gimbal->getTargetYawMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 #else
     // This just locks it to the the forward direction, specified by YAW_OFFSET_ANGLE
@@ -32,7 +36,8 @@ void GimbalControlCommand::execute() {
 #endif
 
     float targetPitchAngle = 0.0f;
-    targetPitchAngle = gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
+    targetPitchAngle =
+        gimbal->getTargetPitchMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

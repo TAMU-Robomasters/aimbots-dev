@@ -1,7 +1,7 @@
 #include "utils/robot_specific_inc.hpp"
 #ifdef TOKYO_COMPATIBLE
 
-#include <subsystems/chassis/chassis_helper.hpp>
+#include "subsystems/chassis/chassis_helper.hpp"
 
 #include "chassis_follow_gimbal_command.hpp"
 
@@ -9,7 +9,10 @@
 
 namespace src::Chassis {
 
-ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(src::Drivers* drivers, ChassisSubsystem* chassis, src::Gimbal::GimbalSubsystem* gimbal)
+ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    src::Gimbal::GimbalSubsystem* gimbal)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
@@ -36,7 +39,7 @@ void ChassisFollowGimbalCommand::execute() {
     Chassis::Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
     if (gimbal->isOnline()) {  // if the gimbal is online, follow the gimbal's yaw
-        float yawAngleFromChassisCenter = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Radians);
+        float yawAngleFromChassisCenter = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians);
 
         // Find rotation correction power
         rotationController.runController(yawAngleFromChassisCenter, RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz());

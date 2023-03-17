@@ -6,6 +6,9 @@
 #include "drivers_singleton.hpp"
 
 //
+#include "informants/transformers/robot_frames.hpp"
+#include "utils/ballistics_solver.hpp"
+//
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
 #include "tap/control/hold_repeat_command_mapping.hpp"
@@ -28,8 +31,6 @@
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
-//
-#include "utils/ballistics_solver.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -74,7 +75,7 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::BallisticsSolver ballisticsSolver(gimbal, drivers()->cvCommunicator);
+src::Utils::BallisticsSolver ballisticsSolver(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);

@@ -54,11 +54,9 @@ void GimbalChaseCommand::execute() {
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
         targetYawAngle = modm::toRadian(
-            gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Degrees) +
-            drivers->controlOperatorInterface.getGimbalYawInput());
+            gimbal->getTargetYawMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
         targetPitchAngle = modm::toRadian(
-            gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) +
-            drivers->controlOperatorInterface.getGimbalPitchInput());
+            gimbal->getTargetPitchMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput());
     }
 
     targetYawAngleDisplay2 = modm::toDegree(targetYawAngle);
@@ -73,9 +71,9 @@ void GimbalChaseCommand::execute() {
     // pitchOffsetDisplay = modm::toDegree(drivers->cvCommunicator.getLastValidMessage().targetPitchOffset);
 
     // fieldRelativeYawAngleDisplay = gimbal->getCurrentFieldRelativeYawAngle(AngleUnit::Degrees);
-    // fieldRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
-    chassisRelativePitchAngleDisplay = gimbal->getCurrentChassisRelativePitchAngle(AngleUnit::Degrees);
-    chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAngleFromChassisCenter(AngleUnit::Degrees);
+    // fieldRelativeYawAngleDisplay = gimbal->getChassisRelativeYawAngle(AngleUnit::Degrees);
+    chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchMotorAngle(AngleUnit::Degrees);
+    chassisRelativeYawAngleDisplay = gimbal->getChassisRelativeYawAngle(AngleUnit::Degrees);
 
     controller->runYawController(AngleUnit::Radians, targetYawAngle, false);
     controller->runPitchController(AngleUnit::Radians, targetPitchAngle, false);

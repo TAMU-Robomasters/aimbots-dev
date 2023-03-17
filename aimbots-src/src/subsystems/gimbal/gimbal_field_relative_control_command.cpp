@@ -36,10 +36,12 @@ void GimbalFieldRelativeControlCommand::execute() {
         quickTurnOffset += 90.0f;
     }
 
-    float targetYawAngle = controller->getTargetYaw(AngleUnit::Degrees) + quickTurnOffset + drivers->controlOperatorInterface.getGimbalYawInput();
+    float targetYawAngle = controller->getTargetYaw(AngleUnit::Degrees) + quickTurnOffset +
+                           drivers->controlOperatorInterface.getGimbalYawInput();
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
-    float targetPitchAngle = gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
+    float targetPitchAngle =
+        gimbal->getTargetPitchMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

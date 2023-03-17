@@ -32,6 +32,7 @@ public:
     float getChassisPitch();
     float getChassisRoll();
     tap::communication::sensors::imu::ImuInterface::ImuState getImuState();
+
     float getGz();  // yaw axis
     float getGy();  // pitch axis
     float getGx();  // roll axis
@@ -46,12 +47,6 @@ public:
 
     float getXYAngleToFieldCoordinate(AngleUnit unit, Matrix<float, 1, 3> fieldCoordinate);
 
-#ifdef TARGET_SENTRY
-    void assignOdomRailMotor(DJIMotor* motor) { odomRailMotor = motor; }
-
-    Matrix<float, 1, 3> getRailRelativeRobotPosition() { return railRelativePosition; }
-#endif
-
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem const* gimbal;
@@ -59,13 +54,6 @@ private:
     Matrix<float, 1, 3> robotStartingPosition;
 
     Matrix<float, 1, 3> fieldRelativeRobotPosition;
-
-#ifdef TARGET_SENTRY
-    DJIMotor* odomRailMotor;
-    Matrix<float, 1, 3> railRelativePosition;
-
-    float wheelOffset;
-#endif
 };
 
 }  // namespace src::Informants

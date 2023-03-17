@@ -6,28 +6,22 @@ enum CVState;
 
 namespace src::Utils {
 
-BallisticsSolver::BallisticsSolver(
-    const src::Gimbal::GimbalSubsystem &gimbalSubsystem,
-    const src::Informants::vision::JetsonCommunicator &jetsonCommunicator)
-    : gimbalSubsystem(gimbalSubsystem),
-      jetsonCommunicator(jetsonCommunicator),
-      pitchFilter(config.tQProportionalKalman, config.tRProportionalKalman),
-      yawFilter(config.tQProportionalKalman, config.tRProportionalKalman) {}
+BallisticsSolver::BallisticsSolver(src::Drivers* drivers) : drivers(drivers) {}
 
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
-    if (!jetsonCommunicator.isJetsonOnline() ||
-        jetsonCommunicator.getLastValidMessage().cvState < src::Informants::vision::CVState::FOUND) {
+    if (!drivers->cvCommunicator.isJetsonOnline() ||
+        drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::vision::CVState::FOUND) {
         return std::nullopt;
     }
 
     // If we have already solved for this target, return the same solution
-    if (lastFoundTargetTime == jetsonCommunicator.getLastFoundTargetTime()) {
+    if (lastFoundTargetTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
         return lastBallisticsSolution;
     } else {
-        lastFoundTargetTime = jetsonCommunicator.getLastFoundTargetTime();
+        lastFoundTargetTime = drivers->cvCommunicator.getLastFoundTargetTime();
     }
 
-    auto plateKinematicState = jetsonCommunicator.getPlateKinematicState();
+    auto plateKinematicState = drivers->cvCommunicator.getPlateKinematicState();
 
     float projectileSpeed = defaultProjectileSpeed;
 
@@ -55,9 +49,6 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
             0.0f)) {
         lastBallisticsSolution = std::nullopt;
     }
-
-    //lastBallisticsSolution->pitchAngle = pitchFilter.filterData(lastBallisticsSolution->pitchAngle);
-    //lastBallisticsSolution->yawAngle = yawFilter.filterData(lastBallisticsSolution->yawAngle);
 
     return lastBallisticsSolution;
 }

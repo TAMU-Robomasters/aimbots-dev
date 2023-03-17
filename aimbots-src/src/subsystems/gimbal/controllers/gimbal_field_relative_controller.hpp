@@ -9,7 +9,7 @@
 namespace src::Gimbal {
 
 class GimbalFieldRelativeController : public GimbalControllerInterface {
-   public:
+public:
     GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*);
 
     void initialize() override;
@@ -19,9 +19,11 @@ class GimbalFieldRelativeController : public GimbalControllerInterface {
 
     bool isOnline() const;
 
-    float getTargetYaw(AngleUnit unit) const override { return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget); }
+    float getTargetYaw(AngleUnit unit) const override {
+        return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget);
+    }
 
-   private:
+private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 

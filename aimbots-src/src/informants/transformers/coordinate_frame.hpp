@@ -4,28 +4,28 @@
 #include "utils/common_types.hpp"
 #include "utils/math/transform_setup.hpp"
 
-namespace src::Informants {
+namespace src::Informants::Transformers {
 
 class CoordinateFrame {
 public:
     CoordinateFrame();
     CoordinateFrame(Matrix3f orientation, Vector3f origin);
     ~CoordinateFrame() = default;
-    
+
     void updateTransform();
 
     void setOrigin(Vector3f r);
     void displaceOrigin(Vector3f r);
-    
+
     void setOrientation(Matrix3f R);
     void rotateFrame(Matrix3f R);
 
     Vector3f getOrigin();
     Matrix3f getOrientation();
-    
+
     Matrix4f getTransformIn();
     Matrix4f getTransformOut();
-    
+
     Matrix4f getTransformToFrame(CoordinateFrame& f);
 
     void addPoint(Vector3f p);
@@ -48,4 +48,4 @@ private:
     Matrix4f transformOut;  // Returns inputs in ground frame
 };
 
-}  // namespace src::Informants
+}  // namespace src::Informants::Transformers

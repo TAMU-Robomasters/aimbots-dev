@@ -9,7 +9,7 @@
 namespace src::Gimbal {
 
 class GimbalChassisRelativeController : public GimbalControllerInterface {
-   public:
+public:
     GimbalChassisRelativeController(GimbalSubsystem*);
 
     void initialize() override;
@@ -22,9 +22,9 @@ class GimbalChassisRelativeController : public GimbalControllerInterface {
 
     bool isOnline() const;
 
-    float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetChassisRelativeYawAngle(unit); }
+    float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetYawMotorAngle(unit); }
 
-   private:
+private:
     GimbalSubsystem* gimbal;
 
     SmoothPID yawPositionPID;
