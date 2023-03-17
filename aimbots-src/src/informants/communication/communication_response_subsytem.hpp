@@ -13,19 +13,19 @@
 namespace src::Communication {
 class CommunicationResponseSubsytem : public tap::control::Subsystem, ::modm::pt::Protothread {
 public:
-    CommunicationResponseSubsytem(src::Drivers &drivers, RobotStates::RobotStates &states);
+    CommunicationResponseSubsytem(tap::Drivers &drivers);
 
     void refresh() override;
 
 private:
-    src::Drivers &drivers;
+    tap::Drivers &drivers;
 
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
     tap::communication::serial::RefSerialData::Tx::RobotToRobotMessage robotToRobotMessage;
 
-    RobotStates::RobotStates &states;
+    // RobotStates::RobotStates &states;
 
-    robot_state_message_team ms;
+    // robot_state_message_team ms;
 
     bool run();
 };

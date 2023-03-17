@@ -8,7 +8,7 @@ using namespace src::Communication;
 
 namespace src::RobotStates {
 
-RobotStates::RobotStates(src::Drivers* drivers) : drivers(drivers) {
+RobotStates::RobotStates() {
     robotStates = Matrix<Robot, 2, 9>().zeroMatrix();
     robotStates[Team::RED][0] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 1, 0, Team::RED);  // HERO
     robotStates[Team::RED][1] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 2, 0, Team::RED);  // ENGINEER
@@ -52,22 +52,22 @@ void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health)
 #ifdef TARGET_SENTRY
 robot_state_message_team RobotStates::createMessage() {
     // will update all of the struct messages for the coms
-    tap::communication::serial::RefSerial::RobotId id = drivers->refSerial.getRobotData().robotId;
-    Team color = tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : Team::RED;
+    // tap::communication::serial::RefSerial::RobotId id = drivers->refSerial.getRobotData().robotId;
+    // Team color = tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : Team::RED;
 
     robot_state_message_team message;
 
-    message.standardX = robotStates[color][2].getX();
-    message.standardY = robotStates[color][2].getY();
-    message.heroX = robotStates[color][0].getX();
-    message.heroY = robotStates[color][0].getY();
-    message.sentryX = robotStates[color][6].getX();
-    message.sentryY = robotStates[color][6].getY();
+    // message.standardX = robotStates[color][2].getX();
+    // message.standardY = robotStates[color][2].getY();
+    // message.heroX = robotStates[color][0].getX();
+    // message.heroY = robotStates[color][0].getY();
+    // message.sentryX = robotStates[color][6].getX();
+    // message.sentryY = robotStates[color][6].getY();
 
     return message;
 }
 #else
-
+void RobotStates::respond() {}
 #endif
 
 void updateRobotStateHero() {}
