@@ -27,12 +27,6 @@ namespace src::Shooter{
         swapMotor.setDesiredOutput(desiredSwapMotorOutput);
     }
 
-/*
-    void SwapMechanismSubsystem::setDesiredOutput() {
-
-    }
-*/
-
     void SwapMechanismSubsystem::setSwapMotorOutput(float output) {
         // m2006 motor
         // this function modified from gimbal.cpp:129
