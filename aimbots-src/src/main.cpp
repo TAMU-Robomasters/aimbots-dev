@@ -114,9 +114,9 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->remote.initialize();
 
-    drivers->fieldRelativeInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
 
-    drivers->fieldRelativeInformant.recalibrateIMU();
+    drivers->kinematicInformant.recalibrateIMU();
 
     drivers->refSerial.initialize();
     // drivers->terminalSerial.initialize();
@@ -144,22 +144,34 @@ static void updateIo(src::Drivers *drivers) {
 #ifdef TARGET_SENTRY
     drivers->railDistanceSensor.update();
 #endif
-    drivers->fieldRelativeInformant.updateFieldRelativeRobotPosition();
+    drivers->kinematicInformant.updateRobotFrames();
     drivers->cvCommunicator.updateSerial();
 
     // drivers->enemyDataConverter.updateEnemyInfo();
     // utils::Music::continuePlayingXPStartupTune(drivers);
     utils::Music::playPacMan(drivers);
 
-    imuStatus = drivers->fieldRelativeInformant.getImuState();
+    imuStatus = drivers->kinematicInformant.getIMUState();
 
-    float yaw = drivers->fieldRelativeInformant.getChassisYaw();
-    float pitch = drivers->fieldRelativeInformant.getChassisPitch();
-    float roll = drivers->fieldRelativeInformant.getChassisRoll();
+    // float yaw = drivers->fieldRelativeInformant.getChassisYaw();
+    // float pitch = drivers->fieldRelativeInformant.getChassisPitch();
+    // float roll = drivers->fieldRelativeInformant.getChassisRoll();
 
-    gZDisplay = drivers->fieldRelativeInformant.getGz();
-    gYDisplay = drivers->fieldRelativeInformant.getGy();
-    gXDisplay = drivers->fieldRelativeInformant.getGx();
+    // what does this mean
+    //  gZDisplay = drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+    //  AngleUnit::Radians); gYDisplay = drivers->fieldRelativeInformant.getGy(); gXDisplay =
+    //  drivers->fieldRelativeInformant.getGx();
+
+    float yaw = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    float pitch = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float roll = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+
+    gZDisplay =
+        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    gYDisplay =
+        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    gXDisplay =
+        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
 
     yawDisplay = modm::toDegree(yaw);
     pitchDisplay = modm::toDegree(pitch);

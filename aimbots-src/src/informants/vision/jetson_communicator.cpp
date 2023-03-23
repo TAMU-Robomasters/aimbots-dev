@@ -15,14 +15,9 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-#ifdef TARGET_SENTRY
-      fieldRelativeYawAngleAtVisionUpdate(modm::toRadian(YAW_OFFSET_ANGLE)),
-#else
       fieldRelativeYawAngleAtVisionUpdate(0.0f),
-#endif
       chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_OFFSET_ANGLE))  //
-{
-}
+{}
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);

@@ -42,7 +42,11 @@ void ChassisFollowGimbalCommand::execute() {
         float yawAngleFromChassisCenter = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians);
 
         // Find rotation correction power
-        rotationController.runController(yawAngleFromChassisCenter, RADPS_TO_RPM * drivers->fieldRelativeInformant.getGz());
+        rotationController.runController(
+            yawAngleFromChassisCenter,
+            RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
+                               src::Informants::AngularAxis::YAW_AXIS,
+                               AngleUnit::Radians));
         rotationControllerOutputDisplay = rotationController.getOutput();
 
         // overwrite desired rotation with rotation controller output, range [-1, 1]

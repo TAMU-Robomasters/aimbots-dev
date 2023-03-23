@@ -13,6 +13,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
+Vector3f IMU_MOUNT_POSITION{0, 0, 0};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,

@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
 
-#include <robots/robot-matricies/robot-matricies.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <utils/math/transform_setup.hpp>
 
 #include "tap/algorithms/extended_kalman.hpp"
+
 #include "modm/math/geometry/vector3.hpp"
 
-//using std::vector;
+// using std::vector;
 
 // don't need to include jetson communicator-- it's included in drivers!
 
@@ -83,17 +83,17 @@ public:
 
     struct DataFilterConfig {
         float tQPositionKalman = 1.5f;   /**< The system noise covariance for the kalman filter that
-                                            * is applied to the derivative of the error. */
+                                          * is applied to the derivative of the error. */
         float tRPositionKalman = 1.0f;   /**< The measurement noise covariance for the kalman filter
-                                            * that is applied to the derivative of the error. */ 
-        float tQVelocityKalman = 0.125f;   /**< The system noise covariance for the kalman filter that
-                                            * is applied to the derivative of the error. */
+                                          * that is applied to the derivative of the error. */
+        float tQVelocityKalman = 0.125f; /**< The system noise covariance for the kalman filter that
+                                          * is applied to the derivative of the error. */
         float tRVelocityKalman = 1.0f;   /**< The measurement noise covariance for the kalman filter
-                                            * that is applied to the derivative of the error. */
-        float tQAccelKalman = 0.0625f; /**< The system noise covariance for the kalman filter that
-                                            *  is applied to the proportional error. */
-        float tRAccelKalman = 1.0f; /**< The measurement noise covariance for the kalman filter
-                                            * that is applied to the proportional error. */
+                                          * that is applied to the derivative of the error. */
+        float tQAccelKalman = 0.0625f;   /**< The system noise covariance for the kalman filter that
+                                          *  is applied to the proportional error. */
+        float tRAccelKalman = 1.0f;      /**< The measurement noise covariance for the kalman filter
+                                          * that is applied to the proportional error. */
     };
 
 private:
@@ -112,6 +112,5 @@ private:
     modm::Vector<tap::algorithms::ExtendedKalman, 3> positionKalman;
     modm::Vector<tap::algorithms::ExtendedKalman, 3> velocityKalman;
     modm::Vector<tap::algorithms::ExtendedKalman, 3> accelKalman;
-
 };
 }  // namespace src::Informants

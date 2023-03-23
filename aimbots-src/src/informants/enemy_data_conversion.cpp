@@ -59,35 +59,31 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
         // Current time - (how long ago the frame was captured)
     };
 
-    // now that we have enemy position (in METERS), transform to chassis space ! ! !
-    // update matrices
-    updateTransformations();
-    // pull matricies
-    Matrix4f T_cam2gimb = src::Utils::MatrixHelper::initTransform(R_cam2gimb, P_cam2gimb);
-    Matrix4f T_gimb2chas = src::Utils::MatrixHelper::initTransform(R_gimb2chas, P_gimb2chas);
+    // watchable variables
+    targetXCoordDisplay_camera = currentData.position.getX();
+    targetYCoordDisplay_camera = currentData.position.getY();
+    targetZCoordDisplay_camera = currentData.position.getZ();
 
-    // save transformed position to data point
-    enemyPositionDisplay_gimbal = src::Utils::MatrixHelper::P_crop_extend(
-        T_cam2gimb * src::Utils::MatrixHelper::P_crop_extend(currentData.position.asMatrix()));
-    currentData.position = src::Utils::MatrixHelper::P_crop_extend(
-        T_gimb2chas * T_cam2gimb * src::Utils::MatrixHelper::P_crop_extend(currentData.position.asMatrix()));
+    // now that we have enemy position (in METERS), transform to chassis space ! ! !
+
+    drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME);
+
+    // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
+    currentData.position =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CAMERA_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
+                currentData.position);
 
     // save data point to buffer (at index 0-- index 0 is NEWEST, index size-1 is OLDEST.)
     // at max capacity, oldest data is overwritten first
     rawPositionBuffer.prependOverwrite(currentData);
 
-    // watchable variables
     buffer_size_watch = rawPositionBuffer.getSize();
     last_entry_timestamp_watch = rawPositionBuffer[0].timestamp_uS;
-    //
-    targetXCoordDisplay_camera = currentData.position.getX();
-    targetYCoordDisplay_camera = currentData.position.getY();
-    targetZCoordDisplay_camera = currentData.position.getZ();
-    //
-    targetXCoordDisplay_gimbal = enemyPositionDisplay_gimbal[X_AXIS][0];
-    targetYCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Y_AXIS][0];
-    targetZCoordDisplay_gimbal = enemyPositionDisplay_gimbal[Z_AXIS][0];
-    //
+
+    // watchable variables
     targetXCoordDisplay_chassis = currentData.position.getX();
     targetYCoordDisplay_chassis = currentData.position.getY();
     targetZCoordDisplay_chassis = currentData.position.getZ();

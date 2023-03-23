@@ -6,10 +6,29 @@
 #include "utils/math/transform_setup.hpp"
 
 namespace src::Informants::Transformers {
+
+enum FrameType { FIELD_FRAME = 0, CHASSIS_FRAME = 1, GIMBAL_FRAME = 2, CAMERA_FRAME = 3, BALLISTICS_FRAME = 4 };
 class RobotFrames {
 public:
     RobotFrames();
     ~RobotFrames() = default;
+
+    CoordinateFrame& getFrame(FrameType frame) {
+        switch (frame) {
+            case FIELD_FRAME:
+                return fieldFrame;
+            case CHASSIS_FRAME:
+                return chassisFrame;
+            case GIMBAL_FRAME:
+                return gimbalFrame;
+            case CAMERA_FRAME:
+                return cameraFrame;
+            case BALLISTICS_FRAME:
+                return ballisticsFrame;
+            default:
+                return chassisFrame;
+        }
+    }
 
     void updateFrames(
         float yawChassisRelative,

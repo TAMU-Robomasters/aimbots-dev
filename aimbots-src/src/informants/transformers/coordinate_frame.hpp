@@ -27,10 +27,7 @@ public:
     Matrix4f getTransformOut();
 
     Matrix4f getTransformToFrame(CoordinateFrame& f);
-
-    void addPoint(Vector3f p);
-    Vector3f getPoint(int n);
-    Vector3f getPointInFrame(CoordinateFrame& f, int n);
+    Vector3f getPointInFrame(CoordinateFrame& f, Vector3f v);
 
 private:
     // Origin of the frame with respect to center of mass of the chassis
@@ -39,8 +36,6 @@ private:
 
     // Orientation with respect to chassis frame
     // !!! Y is forward / out X is to the right, Z is up !!!
-
-    std::vector<Vector3f> points;
 
     // Transforms in and out of Ground Frame (CHASSIS FRAME IS GROUND FRAME!!!)
     //  !!! I REPEAT: CHASSIS IS GROUND FRAME DUE TO BEING THE MOST RELIABLE FRAME !!!

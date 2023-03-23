@@ -17,7 +17,7 @@ RobotFrames::RobotFrames() {
     gimbalFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
 
     // update frames to initial values
-    updateFrames(YAW_START_ANGLE, YAW_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0});
+    updateFrames(YAW_START_ANGLE, PITCH_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0});
 }
 
 void RobotFrames::updateFrames(
