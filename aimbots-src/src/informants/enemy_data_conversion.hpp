@@ -72,12 +72,6 @@ public:
      */
     std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
-    /**
-     * @brief should probably put this somewhere else but drivers is already here so it's convenient
-     *
-     */
-    void updateTransformations();
-
     // bruh
     void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 

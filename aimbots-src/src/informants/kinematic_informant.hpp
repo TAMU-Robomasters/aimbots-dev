@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tap/algorithms/contiguous_float.hpp>
+
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
 #include "transformers/robot_frames.hpp"
@@ -42,6 +44,8 @@ public:
     float getIMULinearAcceleration(LinearAxis axis);
 
     void updateRobotFrames();
+
+    tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
 
 private:
     src::Drivers* drivers;

@@ -13,7 +13,11 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
-Vector3f IMU_MOUNT_POSITION{0, 0, 0};
+
+// static constexpr float imu_mount_position[3] = {0.0f, 0.0f, 0.0f};
+// static constexpr Vector3f IMU_MOUNT_POSITION(imu_mount_position);
+
+static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
@@ -316,19 +320,19 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  */
 
 // clang-format off
-Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN { // in meters
+static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
     -0.085f, // x
     0.07f, // y
     0.0f,  // z
 };
 
-Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
+static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
 
-Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
+static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
     0.0f, // x
     0.0f, // y
     0.0f, // z

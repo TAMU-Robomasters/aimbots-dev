@@ -30,8 +30,9 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
         CHASSIS_VELOCITY_YAW_FEEDFORWARD *
         drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
 
-    float positionControllerError = modm::toDegree(
-        gimbal->getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(modm::toRadian(fieldRelativeYawTarget)));
+    float positionControllerError =
+        modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(
+            modm::toRadian(fieldRelativeYawTarget)));
     float yawPositionPIDOutput = 0.0f;
 
     if (!vision) {

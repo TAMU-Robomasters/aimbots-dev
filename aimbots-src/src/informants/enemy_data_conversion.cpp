@@ -349,25 +349,4 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
     return enemyGuess;
 }
 
-float theta_display;
-float phi_display;
-
-void EnemyDataConversion::updateTransformations() {
-    float theta = gimbal->getCurrentYawMotorAngle(AngleUnit::Radians) - modm::toRadian(YAW_OFFSET_ANGLE);
-    float phi = gimbal->getCurrentPitchMotorAngle(AngleUnit::Radians) - modm::toRadian(PITCH_OFFSET_ANGLE);
-    theta_display = theta;
-    phi_display = phi;
-    auto cph = cos(phi), sph = sin(phi);
-    auto cth = cos(theta), sth = sin(theta);
-    R_gimb2chas[0] = cth;
-    R_gimb2chas[1] = cph * sth;
-    R_gimb2chas[2] = sth * sph;
-    R_gimb2chas[3] = -sth;
-    R_gimb2chas[4] = cph * cth;
-    R_gimb2chas[5] = sph * cth;
-    R_gimb2chas[6] = 0;
-    R_gimb2chas[7] = -sph;
-    R_gimb2chas[8] = cph;
-}
-
 }  // namespace src::Informants

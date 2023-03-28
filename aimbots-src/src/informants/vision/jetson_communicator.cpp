@@ -11,10 +11,10 @@ namespace src::Informants::vision {
 
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
-      lastMessage(),
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
+      lastMessage(),
       fieldRelativeYawAngleAtVisionUpdate(0.0f),
       chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_OFFSET_ANGLE))  //
 {}

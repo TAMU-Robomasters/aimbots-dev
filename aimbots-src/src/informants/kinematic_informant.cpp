@@ -74,7 +74,11 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit
     return unit == AngleUnit::Degrees ? angularVelocity : modm::toRadian(angularVelocity);
 }
 
-float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) { return 0; }
+float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
+    UNUSED(axis);
+    UNUSED(unit);
+    return 0.0f;
+}
 
 float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {
     float wx = getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians);
@@ -97,7 +101,7 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {
 
     Vector3f linearChassisAcceleration = a - (alpha ^ IMU_MOUNT_POSITION) - (w ^ (w ^ IMU_MOUNT_POSITION));
 
-    float linearAcceleration;
+    float linearAcceleration = 0.0f;
     switch (axis) {
         case X_AXIS: {
             linearAcceleration = linearChassisAcceleration.getX();
@@ -112,7 +116,10 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {
             break;
         }
     }
+    return linearAcceleration;
 }
+
+ContiguousFloat KinematicInformant::getCurrentFieldRelativeYawAngleAsContiguousFloat() { return ContiguousFloat(0, -1, 1); }
 
 void KinematicInformant::updateRobotFrames() {
     robotFrames.updateFrames(
