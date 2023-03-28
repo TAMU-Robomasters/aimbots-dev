@@ -27,8 +27,9 @@ void RobotFrames::updateFrames(
     Vector3f robotPositionRelativeToStartPosition) {
     chassis_orientation_relative_to_world_orientation =
         rotationMatrix(AngleUnit::Degrees, chassisWorldRelativeAngle, Z_AXIS);
+        
     turret_orientation_relative_to_chassis_orientation = rotationMatrix(AngleUnit::Degrees, yawChassisRelative, Z_AXIS) *
-                                                         rotationMatrix(AngleUnit::Degrees, pitchChassisRelative, X);
+                                                         rotationMatrix(AngleUnit::Degrees, pitchChassisRelative, X_AXIS);
     camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
         turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;

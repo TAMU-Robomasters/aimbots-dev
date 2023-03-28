@@ -22,12 +22,6 @@ public:
         uint16_t currTime = tap::arch::clock::getTimeMilliseconds();
 
         // In this use case getPosition actually gets the last position
-        // This is for Sid
-        // getLastHumanInteraction()
-        // threw null pointer exception for Luke
-        // cout(getLastHumanInteraction(Luke))
-        // "True"
-        // and Based
         float v1 = calcDerivative(getPosition(), lastTime, x, currTime);
         float a1 = calcDerivative(getVelocity(), lastTime, v1, currTime);
 

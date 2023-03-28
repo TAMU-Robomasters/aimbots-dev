@@ -6,6 +6,7 @@
 
 #include "transformers/robot_frames.hpp"
 #include "utils/common_types.hpp"
+#include "utils/kinematic_state_vector.hpp"
 
 namespace src {
 
@@ -52,6 +53,21 @@ private:
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
+    
+    // src::Utils::KinematicStateVector imuLinearXState;
+    // src::Utils::KinematicStateVector imuLinearYState;
+    // src::Utils::KinematicStateVector imuLinearZState;
+
+    // src::Utils::KinematicStateVector imuAngularXState;
+    // src::Utils::KinematicStateVector imuAngularYState;
+    // src::Utils::KinematicStateVector imuAngularZState;
+
+    /*
+    Vector3<src::Utils::KinematicStateVector> imuLinearState = Vector3<src::Utils::KinematicStateVector>{imuLinearXState, imuLinearYState, imuLinearZState};
+    Vector3<src::Utils::KinematicStateVector> imuAngularState = Vector3<src::Utils::KinematicStateVector>{imuAngularXState, imuAngularYState, imuAngularZState};
+    */
+
+    
 };
 
 }  // namespace src::Informants

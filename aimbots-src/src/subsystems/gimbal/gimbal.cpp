@@ -24,6 +24,7 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
 void GimbalSubsystem::initialize() {
     drivers->cvCommunicator.setGimbalSubsystem(this);
     drivers->enemyDataConverter.setGimbalSubsystem(this);
+    drivers->kinematicInformant.attachGimbalSubsystem(this);
 
     yawMotor.initialize();
     yawMotor.setDesiredOutput(0);
@@ -122,8 +123,8 @@ void GimbalSubsystem::setPitchMotorOutput(float output) {
 float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees)
-                   ? modm::toDegree(currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE))
-                   : (currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)),
+                   ? -1 * (modm::toDegree(currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)))
+                   : -1 * (currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();
@@ -132,8 +133,8 @@ float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
 float GimbalSubsystem::getChassisRelativePitchAngle(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees)
-                   ? modm::toDegree(currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE))
-                   : (currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)),
+                   ? -1 * (modm::toDegree(currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)))
+                   : -1 * (currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();

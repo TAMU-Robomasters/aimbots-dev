@@ -19,18 +19,22 @@ EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
            ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)}) {}
 
 // watchable variables
-float targetXCoordDisplay_camera = 0;
-float targetYCoordDisplay_camera = 0;
-float targetZCoordDisplay_camera = 0;
+float targetXCoordDisplay_camera = 0.0f;
+float targetYCoordDisplay_camera = 0.0f;
+float targetZCoordDisplay_camera = 0.0f;
 //
 Matrix<float, 3, 1> enemyPositionDisplay_gimbal;
-float targetXCoordDisplay_gimbal = 0;
-float targetYCoordDisplay_gimbal = 0;
-float targetZCoordDisplay_gimbal = 0;
+float targetXCoordDisplay_gimbal = 0.0f;
+float targetYCoordDisplay_gimbal = 0.0f;
+float targetZCoordDisplay_gimbal = 0.0f;
 //
-float targetXCoordDisplay_chassis = 0;
-float targetYCoordDisplay_chassis = 0;
-float targetZCoordDisplay_chassis = 0;
+float targetXCoordDisplay_chassis = 0.0f;
+float targetYCoordDisplay_chassis = 0.0f;
+float targetZCoordDisplay_chassis = 0.0f;
+//
+float gimbalYXWatch = 0.0f;
+float gimbalYYWatch = 0.0f;
+float gimbalYZWatch = 0.0f;
 //
 int size_watch;
 float dt_vel_watch;
@@ -39,9 +43,9 @@ float watchVelX;
 int buffer_size_watch;
 float last_entry_timestamp_watch;
 
-float px, py, pz = 0;
-float vx, vy, vz = 0;
-float ax, ay, az = 0;
+float px, py, pz = 0.0f;
+float vx, vy, vz = 0.0f;
+float ax, ay, az = 0.0f;
 
 // gather data, transform data,
 void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptureDelay) {
@@ -64,12 +68,32 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     targetYCoordDisplay_camera = currentData.position.getY();
     targetZCoordDisplay_camera = currentData.position.getZ();
 
+    enemyTimedPosition transformedData = currentData;
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
-
-    drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME);
-
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
-    currentData.position =
+    /*currentData.position =
+         drivers->kinematicInformant.getRobotFrames()
+             .getFrame(Transformers::FrameType::CAMERA_FRAME)
+             .getPointInFrame(
+                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
+                 currentData.position);*/
+
+    enemyTimedPosition gimbalTransformedDataWatch = currentData;
+    gimbalTransformedDataWatch.position =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CAMERA_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                currentData.position);
+
+    Matrix3f gimbalOrientationWatch = drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME).getOrientation();
+    
+    gimbalYXWatch = gimbalOrientationWatch[0][0];
+    gimbalYYWatch = gimbalOrientationWatch[0][1];
+    gimbalYZWatch = gimbalOrientationWatch[0][2];
+
+
+    transformedData.position =
         drivers->kinematicInformant.getRobotFrames()
             .getFrame(Transformers::FrameType::CAMERA_FRAME)
             .getPointInFrame(
@@ -78,15 +102,19 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
 
     // save data point to buffer (at index 0-- index 0 is NEWEST, index size-1 is OLDEST.)
     // at max capacity, oldest data is overwritten first
-    rawPositionBuffer.prependOverwrite(currentData);
+    rawPositionBuffer.prependOverwrite(transformedData);
 
     buffer_size_watch = rawPositionBuffer.getSize();
     last_entry_timestamp_watch = rawPositionBuffer[0].timestamp_uS;
 
     // watchable variables
-    targetXCoordDisplay_chassis = currentData.position.getX();
-    targetYCoordDisplay_chassis = currentData.position.getY();
-    targetZCoordDisplay_chassis = currentData.position.getZ();
+    targetXCoordDisplay_chassis = transformedData.position.getX();
+    targetYCoordDisplay_chassis = transformedData.position.getY();
+    targetZCoordDisplay_chassis = transformedData.position.getZ();
+
+    targetXCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getX();
+    targetYCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getY();
+    targetZCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getZ();
 
     // else {
     //     prev_cv_valid = cv_valid;

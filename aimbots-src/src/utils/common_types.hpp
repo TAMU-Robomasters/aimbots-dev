@@ -89,6 +89,10 @@ using Matrix3f = modm::Matrix3f;
 using Matrix4f = modm::Matrix4f;
 using Vector3f = modm::Vector3f;
 using Vector4f = modm::Vector4f;
+/* pardon our dust  
+template <typename T>
+using Vector3 = Vector<T, 3>;
+*/
 
 template <typename T, std::size_t N>
 using Deque = modm::BoundedDeque<T, N>;
