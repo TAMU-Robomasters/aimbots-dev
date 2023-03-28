@@ -14,28 +14,13 @@ class ShooterSubsystem : public tap::control::Subsystem {
         src::Drivers* drivers);
 
     mockable void initialize() override;
-    // code below altered to follow shooter.hpp:56
-    void refresh() override;
+    mockable void refresh() override;
 
-    void updateMotorVelocityPID(MotorIndex motorIdx);
+    void updateMotorVelocityPID();
 
-    /**
-     * @brief Changes the target RPM for a single motor. Intended for use with ForAllShooterMotors(),
-     * and should be called from a command to declare intended RPM. Does not necessarily need to be called continuously
-     * 
-     * @param motorIdx index for DJIMotor matrix
-     * @param targetRPM intended target RPM
-     */
-    void setTargetRPM(MotorIndex MotorInde, float targetRPM);
+    mockable void setDesiredOutput();
 
-    /**
-     * @brief Updates the desiredOutputs matrix with the desired output of a single motor.
-     * Intended to be called from commands.
-     *
-     * @param motorIdx
-     * @param desiredOutput
-     */
-    void setDesiredOutput(MotorIndex motorIdx, float desiredOutput);
+    mockable float setTargetRPM(float rpm);
 
     float getTargetRPM() const {
         return targetRPM;
