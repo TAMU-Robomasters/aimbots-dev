@@ -95,6 +95,8 @@ RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
+CommunicationResponseHandler responseHandler(*drivers());
+
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -144,7 +146,9 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command

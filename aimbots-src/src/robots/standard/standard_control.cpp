@@ -44,20 +44,20 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 //
-#include "subsystems/gui/gui_display.hpp"
-#include "subsystems/gui/gui_display_command.hpp"
-//
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
+//
+#include "informants/communication/communication_response_handler.hpp"
+#include "informants/communication/communication_response_subsytem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::GUI;
 using namespace src::Barrel_Manager;
-
+using namespace src::Communication;
+using namespace src::RobotStates;
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -80,7 +80,6 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
-GUI_DisplaySubsystem gui(drivers());
 BarrelManagerSubsystem barrelManager(
     drivers(),
     HARD_STOP_OFFSET,
@@ -93,6 +92,10 @@ BarrelManagerSubsystem barrelManager(
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
+
+CommunicationResponseSubsytem response(*drivers());
+// CommunicationResponseHandler responseHandler(*drivers());
+// RobotStatesSubsytem robotStates(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -129,8 +132,7 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
-GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
-
+CommunicationResponseHandler responseHandler(*drivers());
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
@@ -187,7 +189,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&hopper);
 
     drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
-    drivers->commandScheduler.registerSubsystem(&gui);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
 }
 
@@ -198,7 +199,6 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
-    gui.initialize();
     barrelManager.initialize();
 }
 
@@ -209,12 +209,13 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    drivers->refSerial.attachRobotToRobotMessageHandler(STANDARD_RESPONSE_MESSAGE_ID, &responseHandler);
 }
 
 // Register IO mappings here -----------------------------------------------
