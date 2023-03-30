@@ -17,19 +17,21 @@ RobotFrames::RobotFrames() {
     gimbalFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
 
     // update frames to initial values
-    updateFrames(YAW_START_ANGLE, PITCH_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0});
+    updateFrames(YAW_START_ANGLE, PITCH_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);
 }
 
 void RobotFrames::updateFrames(
     float yawChassisRelative,
     float pitchChassisRelative,
     float chassisWorldRelativeAngle,
-    Vector3f robotPositionRelativeToStartPosition) {
+    Vector3f robotPositionRelativeToStartPosition,
+    AngleUnit angleUnit) {
+
     chassis_orientation_relative_to_world_orientation =
-        rotationMatrix(AngleUnit::Degrees, chassisWorldRelativeAngle, Z_AXIS);
+        rotationMatrix(angleUnit, chassisWorldRelativeAngle, Z_AXIS);
         
-    turret_orientation_relative_to_chassis_orientation = rotationMatrix(AngleUnit::Degrees, yawChassisRelative, Z_AXIS) *
-                                                         rotationMatrix(AngleUnit::Degrees, pitchChassisRelative, X_AXIS);
+    turret_orientation_relative_to_chassis_orientation = rotationMatrix(angleUnit, yawChassisRelative, Z_AXIS) *
+                                                         rotationMatrix(angleUnit, pitchChassisRelative, X_AXIS);
     camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
         turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;

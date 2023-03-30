@@ -100,7 +100,7 @@ void JetsonCommunicator::updateSerial() {
                 targetYDisplay = lastMessage.targetY;
                 cvStateDisplay = lastMessage.cvState;
 
-                if (true || lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
+                if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
                     // position is relative to camera
@@ -109,9 +109,9 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
                     //debug !!!
-                    visionTargetPosition.setX(0.0f);
-                    visionTargetPosition.setY(1.0f);
-                    visionTargetPosition.setZ(0.0f);
+                    // visionTargetPosition.setX(0.0f);
+                    // visionTargetPosition.setY(1.0f);
+                    // visionTargetPosition.setZ(0.0f);
 
                     drivers->enemyDataConverter.updateEnemyInfo(visionTargetPosition, lastMessage.delay);
                     lastPlateKinematicState = drivers->enemyDataConverter.calculateBestGuess(3);

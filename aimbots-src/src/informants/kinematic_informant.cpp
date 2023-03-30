@@ -125,10 +125,12 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativeYawAngleAsContiguousF
 
 void KinematicInformant::updateRobotFrames() {
     robotFrames.updateFrames(
+        
         gimbalSubsystem->getChassisRelativeYawAngle(AngleUnit::Radians),
         gimbalSubsystem->getChassisRelativePitchAngle(AngleUnit::Radians),
         getIMUAngle(YAW_AXIS, AngleUnit::Radians),
-        {0, 0, 0});
+        {0, 0, 0},
+        AngleUnit::Radians);
 }
 
 }  // namespace src::Informants

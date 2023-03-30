@@ -88,9 +88,9 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
 
     Matrix3f gimbalOrientationWatch = drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME).getOrientation();
     
-    gimbalYXWatch = gimbalOrientationWatch[0][0];
-    gimbalYYWatch = gimbalOrientationWatch[0][1];
-    gimbalYZWatch = gimbalOrientationWatch[0][2];
+    gimbalYXWatch = gimbalOrientationWatch[0][1];
+    gimbalYYWatch = gimbalOrientationWatch[1][1];
+    gimbalYZWatch = gimbalOrientationWatch[2][1];
 
 
     transformedData.position =

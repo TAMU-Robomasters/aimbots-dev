@@ -34,7 +34,8 @@ public:
         float yawChassisRelative,
         float pitchChassisRelative,
         float chassisWorldRelativeAngle,
-        Vector3f robotPositionRelativeToStartPosition);
+        Vector3f robotPositionRelativeToStartPosition,
+        AngleUnit angleUnit);
 
 private:
     CoordinateFrame fieldFrame;
