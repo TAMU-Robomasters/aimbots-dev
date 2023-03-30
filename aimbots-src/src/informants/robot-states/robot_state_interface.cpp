@@ -1,6 +1,7 @@
 #include "drivers.hpp"
 // #include "ref_serial.hpp"
 #include "informants/communication/communication_message.hpp"
+#include "informants/communication/communication_request_handler.hpp"
 
 #include "robot_state.hpp"
 #include "robot_state_interface.hpp"
@@ -8,7 +9,10 @@ using namespace src::Communication;
 
 namespace src::RobotStates {
 
-RobotStates::RobotStates() {
+RobotStates::RobotStates(tap::Drivers& drivers)
+    : tap::control::Subsystem(&drivers),
+      drivers(drivers),
+      messageHandler(drivers) {
     robotStates = Matrix<Robot, 2, 9>().zeroMatrix();
     robotStates[Team::RED][0] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 1, 0, Team::RED);  // HERO
     robotStates[Team::RED][1] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 2, 0, Team::RED);  // ENGINEER
@@ -67,11 +71,18 @@ robot_state_message_team RobotStates::createMessage() {
     return message;
 }
 #else
-void RobotStates::respond() {}
+
 #endif
 
-void updateRobotStateHero() {}
-void updateRobotStateStandard() {}
-void updateRobotStateSentry() {}
+void RobotStates::respond() {
+    // have it call the handler which will return the a struct for robot positions
+    // messageHandler;
+    // update the values in the robot states
+}
 
+// void updateRobotStateHero() {}
+// void updateRobotStateStandard() {}
+// void updateRobotStateSentry() {}
+
+void RobotStates::refresh() { this->respond(); }
 }  // namespace src::RobotStates

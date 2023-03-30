@@ -55,7 +55,7 @@ bool CommunicationResponseSubsytem::run() {
         PT_CALL(refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
             SENTRY_RESPONSE_MESSAGE_ID,
-            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_HERO),
+            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
             1));
 
         PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
@@ -67,8 +67,7 @@ bool CommunicationResponseSubsytem::run() {
 #elif TARGET_STANDARD
         this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
 
-        
-        PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
+                PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
             SENTRY_REQUEST_ROBOT_ID,
             drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),

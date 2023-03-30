@@ -20,21 +20,21 @@ void CommunicationRequestHandler::operator()(const tap::communication::serial::D
 
     switch (type) {
 #ifdef TARGET_SENTRY
-        case MessageType::TEAM_MESSAGE_STANDARD:
-            if (teamMesssageHandlerStandard != nullptr) {
-                updateRobotStateStandard();
-            }
-            break;
-        case MessageType::TEAM_MESSAGE_HERO:
-            if (teamMesssageHandlerHero != nullptr) {
-                updateRobotStateHero();
-            }
-            break;
-        case MessageType::TEAM_MESSAGE_SENTRY:
-            if (teamMessageHandlerSentry != nullptr) {
-                updateRobotStateSentry();
-            }
-            break;
+        // case MessageType::TEAM_MESSAGE_STANDARD:
+        //     if (teamMesssageHandlerStandard != nullptr) {
+        //         updateRobotStateStandard();
+        //     }
+        //     break;
+        // case MessageType::TEAM_MESSAGE_HERO:
+        //     if (teamMesssageHandlerHero != nullptr) {
+        //         updateRobotStateHero();
+        //     }
+        //     break;
+        // case MessageType::TEAM_MESSAGE_SENTRY:
+        //     if (teamMessageHandlerSentry != nullptr) {
+        //         updateRobotStateSentry();
+        //     }
+        //     break;
 
 #else
         case MessageType::ROBOT_STATE:

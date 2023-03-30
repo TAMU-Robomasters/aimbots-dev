@@ -1,8 +1,9 @@
 #ifdef TARGET_STANDARD
 
+#include "utils/common_types.hpp"
+
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-#include "utils/common_types.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -37,13 +38,17 @@
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
+//
+#include "informants/communication/communication_response_handler.hpp"
+#include "informants/communication/communication_response_subsytem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-
+using namespace src::Communication;
+using namespace src::RobotStates;
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -64,6 +69,9 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
+CommunicationResponseSubsytem response(*drivers());
+// CommunicationResponseHandler responseHandler(*drivers());
+// RobotStatesSubsytem robotStates(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -94,6 +102,7 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
+CommunicationResponseHandler responseHandler(*drivers());
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
@@ -107,10 +116,7 @@ HoldCommandMapping leftSwitchUp(
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&openHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+HoldCommandMapping rightSwitchDown(drivers(), {&openHopperCommand}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
@@ -125,10 +131,7 @@ HoldRepeatCommandMapping rightSwitchUp(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+HoldCommandMapping leftClickMouse(drivers(), {&runFeederCommandFromMouse}, RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
@@ -160,12 +163,13 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    drivers->refSerial.attachRobotToRobotMessageHandler(STANDARD_RESPONSE_MESSAGE_ID, &responseHandler);
 }
 
 // Register IO mappings here -----------------------------------------------
