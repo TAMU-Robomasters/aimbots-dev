@@ -8,6 +8,8 @@
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
 
+//#include "taproot\modm\src\modm\math\geometry\vector3.hpp"
+
 namespace src {
 
 class Drivers;
@@ -41,33 +43,36 @@ public:
     float getIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
     // Returns linear velocity in rad/s^2 or deg/s^2 if you are a loser
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
-    // Returns linear acceleration in m/s^2
-    float getIMULinearAcceleration(LinearAxis axis);
+    // Returns lnothing!!!
+    void updateChassisAcceleration();
 
     void updateRobotFrames();
 
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
+
 
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
+    src::Utils::KinematicStateVector imuLinearXState;
+    src::Utils::KinematicStateVector imuLinearYState;
+    src::Utils::KinematicStateVector imuLinearZState;
     
-    // src::Utils::KinematicStateVector imuLinearXState;
-    // src::Utils::KinematicStateVector imuLinearYState;
-    // src::Utils::KinematicStateVector imuLinearZState;
+    src::Utils::KinematicStateVector imuAngularXState;
+    src::Utils::KinematicStateVector imuAngularYState;
+    src::Utils::KinematicStateVector imuAngularZState;
 
-    // src::Utils::KinematicStateVector imuAngularXState;
-    // src::Utils::KinematicStateVector imuAngularYState;
-    // src::Utils::KinematicStateVector imuAngularZState;
+    src::Utils::KinematicStateVector chassisLinearXState;
+    src::Utils::KinematicStateVector chassisLinearYState;
+    src::Utils::KinematicStateVector chassisLinearZState;
 
-    /*
-    Vector3<src::Utils::KinematicStateVector> imuLinearState = Vector3<src::Utils::KinematicStateVector>{imuLinearXState, imuLinearYState, imuLinearZState};
-    Vector3<src::Utils::KinematicStateVector> imuAngularState = Vector3<src::Utils::KinematicStateVector>{imuAngularXState, imuAngularYState, imuAngularZState};
-    */
 
-    
+    modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
+    modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
+    modm::Vector<src::Utils::KinematicStateVector, 3> chassisLinearState = {chassisLinearXState,chassisLinearYState,chassisLinearZState};
+  
 };
 
 }  // namespace src::Informants

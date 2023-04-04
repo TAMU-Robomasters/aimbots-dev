@@ -5,8 +5,8 @@
 namespace src::Utils {
 class KinematicStateVector {
 public:
-    KinematicStateVector();
-    ~KinematicStateVector();
+    //KinematicStateVector();
+    //~KinematicStateVector();
 
     Vector3f getKinematicStateVector();
 

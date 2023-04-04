@@ -7,7 +7,7 @@
 
 namespace src::Informants::Transformers {
 
-enum FrameType { FIELD_FRAME = 0, CHASSIS_FRAME = 1, GIMBAL_FRAME = 2, CAMERA_FRAME = 3, BALLISTICS_FRAME = 4 };
+enum FrameType { FIELD_FRAME = 0, CHASSIS_FRAME = 1, GIMBAL_FRAME = 2, CAMERA_FRAME = 3, BALLISTICS_FRAME = 4, CHASSIS_IMU_FRAME =5 };
 class RobotFrames {
 public:
     RobotFrames();
@@ -25,6 +25,8 @@ public:
                 return cameraFrame;
             case BALLISTICS_FRAME:
                 return ballisticsFrame;
+            case CHASSIS_IMU_FRAME:
+                return chassisIMUFrame;
             default:
                 return chassisFrame;
         }
@@ -43,6 +45,7 @@ private:
     CoordinateFrame gimbalFrame;
     CoordinateFrame cameraFrame;
     CoordinateFrame ballisticsFrame;
+    CoordinateFrame chassisIMUFrame;
     // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
 
     Vector3f chassis_origin_relative_to_world_origin;

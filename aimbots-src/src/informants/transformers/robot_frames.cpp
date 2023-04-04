@@ -15,6 +15,8 @@ RobotFrames::RobotFrames() {
     // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
     ballisticsFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
     gimbalFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
+    Matrix3f chassisIMUOrientation = rotationMatrix(AngleUnit::Degrees, CIMU_X_EULER, X_AXIS) * rotationMatrix(AngleUnit::Degrees, CIMU_Y_EULER, Y_AXIS) * rotationMatrix(AngleUnit::Degrees, CIMU_Z_EULER, Z_AXIS);
+    chassisIMUFrame.setOrientation(chassisIMUOrientation);
 
     // update frames to initial values
     updateFrames(YAW_START_ANGLE, PITCH_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);

@@ -12,6 +12,7 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers) : drivers(drivers)
 
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
+
     
 }
 
@@ -23,6 +24,7 @@ tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::get
 
 float KinematicInformant::getIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = 0.0f;
+    /*
     switch (axis) {
         case YAW_AXIS: {
             // rotates by 180 degrees and negates the result, to force a 0 starting angle and postitive clockwise
@@ -43,7 +45,9 @@ float KinematicInformant::getIMUAngle(AngularAxis axis, AngleUnit unit) {
             tap::algorithms::rotateVector(&pitch, &angle, getIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
             break;
         }
-    }
+    }*/
+    
+    //chassisIMUFrame.getPointInFrame(chassisFrame,)
     return unit == AngleUnit::Degrees ? angle : modm::toRadian(angle);
 }
 
@@ -77,12 +81,11 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit
 }
 
 float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
-    UNUSED(axis);
-    UNUSED(unit);
-    return 0.0f;
+    UNUSED(unit); // fuck units always return in radians 
+    return imuAngularState[axis].getAcceleration();
 }
 
-float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {
+void KinematicInformant::updateChassisAcceleration() {
     float wx = getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians);
     float wy = getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians);
     float wz = getIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians);
@@ -102,23 +105,10 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {
     Vector3f a = {ax, ay, az};
 
     Vector3f linearChassisAcceleration = a - (alpha ^ IMU_MOUNT_POSITION) - (w ^ (w ^ IMU_MOUNT_POSITION));
+    chassisLinearState[1].updateFromAcceleration(linearChassisAcceleration.getX());
+    chassisLinearState[0].updateFromAcceleration(linearChassisAcceleration.getY());
+    chassisLinearState[2].updateFromAcceleration(linearChassisAcceleration.getZ());
 
-    float linearAcceleration = 0.0f;
-    switch (axis) {
-        case X_AXIS: {
-            linearAcceleration = linearChassisAcceleration.getX();
-            break;
-        }
-        case Y_AXIS: {
-            linearAcceleration = linearChassisAcceleration.getY();
-            break;
-        }
-        case Z_AXIS: {
-            linearAcceleration = linearChassisAcceleration.getZ();
-            break;
-        }
-    }
-    return linearAcceleration;
 }
 
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeYawAngleAsContiguousFloat() { return ContiguousFloat(0, -1, 1); }
@@ -131,6 +121,19 @@ void KinematicInformant::updateRobotFrames() {
         getIMUAngle(YAW_AXIS, AngleUnit::Radians),
         {0, 0, 0},
         AngleUnit::Radians);
+        
+    imuLinearState[X_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
+    imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
+    imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
+
+    imuAngularState[X_AXIS].updateFromPosition(getIMUAngularVelocity(PITCH_AXIS,AngleUnit::Radians));
+    imuAngularState[Y_AXIS].updateFromPosition(getIMUAngularVelocity(ROLL_AXIS,AngleUnit::Radians));
+    imuAngularState[Z_AXIS].updateFromPosition(getIMUAngularVelocity(YAW_AXIS,AngleUnit::Radians));
+    imuAngularState[X_AXIS].updateFromVelocity(getIMUAngle(PITCH_AXIS,AngleUnit::Radians),false);
+    imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngle(ROLL_AXIS,AngleUnit::Radians),false);
+    imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngle(YAW_AXIS,AngleUnit::Radians),false);
+
+    updateChassisAcceleration();
 }
 
 }  // namespace src::Informants
