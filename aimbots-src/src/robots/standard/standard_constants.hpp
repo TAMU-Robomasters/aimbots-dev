@@ -347,6 +347,6 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
 
-static float CIMU_X_EULER = 0.0f;
-static float CIMU_Y_EULER = 0.0f; // XYZ Euler Angles, All in Degrees!!! 
-static float CIMU_Z_EULER = 0.0f; 
+static constexpr float CIMU_X_EULER = 0.0f;
+static constexpr float CIMU_Y_EULER = 0.0f; // XYZ Euler Angles, All in Degrees!!! 
+static constexpr float CIMU_Z_EULER = 0.0f; 

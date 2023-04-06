@@ -47,7 +47,11 @@ float KinematicInformant::getIMUAngle(AngularAxis axis, AngleUnit unit) {
         }
     }*/
     
-    //chassisIMUFrame.getPointInFrame(chassisFrame,)
+    /*
+    drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+            .getPointInFrame(drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME),)*/
     return unit == AngleUnit::Degrees ? angle : modm::toRadian(angle);
 }
 
