@@ -6,8 +6,8 @@
 // #define TARGET_AERIAL
 // #define TARGET_SENTRY
 // #define TARGET_SWERVE_STANDARD
-#define TARGET_SWERVE_ENGINEER
+// #define TARGET_SWERVE_ENGINEER
 // #define TOKYO_COMPATIBLE
-#define SWERVE
+// #define SWERVE
 
 #endif

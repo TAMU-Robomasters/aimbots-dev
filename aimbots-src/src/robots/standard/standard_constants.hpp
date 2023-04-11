@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define TOKYO_COMPATIBLE
+#define BARREL_SWAP_COMPATIBLE
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -144,6 +145,7 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1; // TODO: check CAN ID for Barrel Swap
 
 static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
@@ -152,6 +154,8 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+//
+static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR8; // TODO: check motor ID for Barrel Swap
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
@@ -160,6 +164,8 @@ static constexpr bool FEEDER_DIRECTION = false;
 
 static constexpr bool YAW_DIRECTION = true;
 static constexpr bool PITCH_DIRECTION = true;
+
+static constexpr bool SWAP_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -272,3 +278,13 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
 static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
+
+
+//Barrel Manager Constants
+//These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
+//A positive increase provides a bigger gap between hard stop and barrel
+static float LEFT_STOP_OFFSET = 0; //In mm
+static float RIGHT_STOP_OFFSET = 0; //In mm
+
+//Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
+static float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
