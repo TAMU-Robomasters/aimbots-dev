@@ -1,5 +1,4 @@
 #pragma once
-#ifndef TARGET_ENGINEER
 
 #include <complex>
 #include <vector>
@@ -96,4 +95,3 @@ private:
 };
 
 }  // namespace src::Gimbal
-#endif

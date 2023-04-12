@@ -239,6 +239,9 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
+static constexpr float YAW_GIMBAL_RATIO = (1.0f / 2.0f);
+static constexpr float PITCH_GIMBAL_RATIO = (1.0f / 3.4f);
+
 static constexpr float YAW_OFFSET_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
 static constexpr float PITCH_OFFSET_ANGLE = 42.1f;
 

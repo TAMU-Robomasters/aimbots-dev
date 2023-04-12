@@ -8,8 +8,6 @@
 
 #include "drivers.hpp"
 
-//#ifndef TARGET_ENGINEER
-
 namespace src::Shooter {
 
 RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {

@@ -1,17 +1,17 @@
 #pragma once
 
-#include "drivers.hpp"
-#include "subsystems/shooter/shooter.hpp"
 #include "tap/control/subsystem.hpp"
+
+#include "subsystems/shooter/shooter.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
-//#ifndef TARGET_ENGINEER
+#include "drivers.hpp"
 
 namespace src::Shooter {
 
 class RunShooterCommand : public TapCommand {
-   public:
+public:
     RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
@@ -23,11 +23,9 @@ class RunShooterCommand : public TapCommand {
 
     const char* getName() const override { return "shooter subsystem"; }
 
-   private:
+private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
 };
 
 }  // namespace src::Shooter
-
-//#endif
