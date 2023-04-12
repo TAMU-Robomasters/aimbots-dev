@@ -40,7 +40,6 @@ private:
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     src::Informants::vision::plateKinematicState data;
-    GimbalSubsystem::aimAngles aimAtAngles;
 };
 
 }  // namespace src::Gimbal

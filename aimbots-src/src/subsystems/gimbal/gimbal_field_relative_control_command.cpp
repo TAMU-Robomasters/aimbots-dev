@@ -41,7 +41,7 @@ void GimbalFieldRelativeControlCommand::execute() {
     controller->runYawController(AngleUnit::Degrees, targetYawAngle);
 
     float targetPitchAngle =
-        gimbal->getTargetPitchMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
+        gimbal->getTargetPitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

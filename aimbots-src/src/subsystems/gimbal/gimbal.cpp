@@ -14,10 +14,10 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       drivers(drivers),
       yawMotor(drivers, YAW_MOTOR_ID, GIMBAL_BUS, YAW_DIRECTION, "Yaw Motor"),
       pitchMotor(drivers, PITCH_MOTOR_ID, GIMBAL_BUS, PITCH_DIRECTION, "Pitch Motor"),
-      currentYawMotorAngle(0.0f, 0.0f, M_TWOPI),
-      currentPitchMotorAngle(0.0f, 0.0f, M_TWOPI),
-      targetYawMotorAngle(0.0f, 0.0f, M_TWOPI),
-      targetPitchMotorAngle(0.0f, 0.0f, M_TWOPI) {}
+      currentYawAngle(0.0f, 0.0f, M_TWOPI),
+      currentPitchAngle(0.0f, 0.0f, M_TWOPI),
+      targetYawAngle(0.0f, 0.0f, M_TWOPI),
+      targetPitchAngle(0.0f, 0.0f, M_TWOPI) {}
 
 void GimbalSubsystem::initialize() {
     yawMotor.initialize();
@@ -46,8 +46,13 @@ float currentPitchAngleDisplay = 0.0f;
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
-        uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
-        currentYawMotorAngle.setValue(DJIEncoderValueToRadians(currentYawEncoderPosition) * GIMBAL_YAW_GEAR_RATIO);
+
+        uint16_t currentYawEncoderPosition = yawMotor.getEncoderUnwrapped();
+
+        float unwrappedYawAngle =
+            ((DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_OFFSET_ANGLE) * GIMBAL_YAW_GEAR_RATIO);
+
+        currentYawAngle.setValue(unwrappedYawAngle);
 
 #ifdef TARGET_HERO
         // This code just assumes that we're starting at our
@@ -65,14 +70,14 @@ void GimbalSubsystem::refresh() {
         float rawDelta = unwrappedEncoder - heroStartYawUnwrappedEncoder;
         float transformedDelta = rawDelta * GIMBAL_YAW_GEAR_RATIO;
         float angle = modm::toRadian(YAW_OFFSET_ANGLE) + (transformedDelta * (M_TWOPI / DJIMotor::ENC_RESOLUTION));
-        currentYawMotorAngle.setValue(angle);
+        currentYawAngle.setValue(angle);
 
         float startEncoderDelta = drivers->remote.keyPressed(Remote::Key::X) - drivers->remote.keyPressed(Remote::Key::Z);
         heroStartYawUnwrappedEncoder += startEncoderDelta;
 #endif
 
-        currentYawAngleDisplay = modm::toDegree(currentYawMotorAngle.getValue());
-        currentPitchAngleDisplay = modm::toDegree(currentPitchMotorAngle.getValue());
+        currentYawAngleDisplay = modm::toDegree(currentYawAngle.getValue());
+        currentPitchAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
@@ -80,16 +85,16 @@ void GimbalSubsystem::refresh() {
         ////////////////
         // DEBUG VARS //
         ////////////////
-        yawMotorAngleDisplay = modm::toDegree(currentYawMotorAngle.getValue());
+        yawMotorAngleDisplay = modm::toDegree(currentYawAngle.getValue());
         yawOutputDisplay = desiredYawMotorOutput;
     }
 
     if (pitchMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
-        currentPitchMotorAngle.setValue(DJIEncoderValueToRadians(currentPitchEncoderPosition) * GIMBAL_PITCH_GEAR_RATIO);
+        currentPitchAngle.setValue(DJIEncoderValueToRadians(currentPitchEncoderPosition) * GIMBAL_PITCH_GEAR_RATIO);
 
-        pitchMotorAngleDisplay = modm::toDegree(currentPitchMotorAngle.getValue());
+        pitchMotorAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
 
         pitchOutputDisplay = desiredPitchMotorOutput;
 
@@ -117,8 +122,8 @@ void GimbalSubsystem::setPitchMotorOutput(float output) {
 float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees)
-                   ? -1 * (modm::toDegree(currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)))
-                   : -1 * (currentYawMotorAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)),
+                   ? -1 * (modm::toDegree(currentYawAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)))
+                   : -1 * (currentYawAngle.getValue() - modm::toRadian(YAW_OFFSET_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();
@@ -127,8 +132,8 @@ float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
 float GimbalSubsystem::getChassisRelativePitchAngle(AngleUnit unit) const {
     return tap::algorithms::ContiguousFloat(
                (unit == AngleUnit::Degrees)
-                   ? -1 * (modm::toDegree(currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)))
-                   : -1 * (currentPitchMotorAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)),
+                   ? -1 * (modm::toDegree(currentPitchAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)))
+                   : -1 * (currentPitchAngle.getValue() - modm::toRadian(PITCH_OFFSET_ANGLE)),
                (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
                (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
         .getValue();

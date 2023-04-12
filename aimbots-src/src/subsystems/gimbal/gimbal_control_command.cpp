@@ -37,7 +37,7 @@ void GimbalControlCommand::execute() {
 
     float targetPitchAngle = 0.0f;
     targetPitchAngle =
-        gimbal->getTargetPitchMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
+        gimbal->getTargetPitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
     controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
 }
 

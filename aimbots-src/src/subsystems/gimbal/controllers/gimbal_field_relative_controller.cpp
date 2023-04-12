@@ -53,10 +53,10 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
 }
 
 void GimbalFieldRelativeController::runPitchController(AngleUnit unit, float desiredFieldRelativePitchAngle, bool vision) {
-    gimbal->setTargetPitchMotorAngle(unit, desiredFieldRelativePitchAngle);
+    gimbal->setTargetPitchAngle(unit, desiredFieldRelativePitchAngle);
 
-    float positionControllerError = modm::toDegree(gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(
-        gimbal->getTargetPitchMotorAngle(AngleUnit::Radians)));
+    float positionControllerError = modm::toDegree(
+        gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
     float pitchPositionPIDOutput = 0.0f;
 
     if (!vision) {
