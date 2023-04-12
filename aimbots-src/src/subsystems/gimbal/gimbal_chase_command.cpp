@@ -8,7 +8,7 @@ GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalControllerInterface* gimbalController,
-    src::Utils::BallisticsSolver* ballisticsSolver)
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
@@ -39,7 +39,8 @@ void GimbalChaseCommand::execute() {
     float targetYawAngle = 0.0f;
     float targetPitchAngle = 0.0f;
 
-    std::optional<src::Utils::BallisticsSolver::BallisticsSolution> ballisticsSolution = ballisticsSolver->solve();
+    std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
+        ballisticsSolver->solve();
 
     if (ballisticsSolution != std::nullopt) {
         targetYawAngle = ballisticsSolution->yawAngle;

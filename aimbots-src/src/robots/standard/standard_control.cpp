@@ -75,7 +75,7 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::BallisticsSolver ballisticsSolver(drivers());
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);

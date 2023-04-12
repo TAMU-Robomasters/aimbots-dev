@@ -9,14 +9,18 @@
 
 #include "drivers.hpp"
 
-namespace src::Utils {
+namespace src::Utils::Ballistics {
 class BallisticsSolver;
 }
 namespace src::Gimbal {
 
 class GimbalChaseCommand : public tap::control::Command {
 public:
-    GimbalChaseCommand(src::Drivers*, GimbalSubsystem*, GimbalControllerInterface*, src::Utils::BallisticsSolver*);
+    GimbalChaseCommand(
+        src::Drivers*,
+        GimbalSubsystem*,
+        GimbalControllerInterface*,
+        src::Utils::Ballistics::BallisticsSolver*);
 
     char const* getName() const override { return "Gimbal Chase Command"; }
 
@@ -33,7 +37,7 @@ private:
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
 
-    src::Utils::BallisticsSolver* ballisticsSolver;
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     src::Informants::vision::plateKinematicState data;
     GimbalSubsystem::aimAngles aimAtAngles;
