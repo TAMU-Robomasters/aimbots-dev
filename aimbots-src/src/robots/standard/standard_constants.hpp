@@ -239,10 +239,17 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float YAW_GIMBAL_RATIO = (1.0f / 2.0f);
-static constexpr float PITCH_GIMBAL_RATIO = (1.0f / 3.4f);
+static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f;  // (1.0f / 2.0f); for 2023 Standard
+/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
+ * every time. */
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = 1.0f;  // (1.0f / 3.4f); for 2023 Standard
+/*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
+ * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float YAW_OFFSET_ANGLE = 59.7f;  // original angles that should be zero when 6020 is mounted to chassis
+static constexpr float YAW_OFFSET_ANGLE = 59.7f;  // What motor angles ensures that the barrel is pointing straight forward
+                                                  // and level relative to the robot chassis?
 static constexpr float PITCH_OFFSET_ANGLE = 42.1f;
 
 static constexpr float YAW_START_ANGLE = 0.0f;

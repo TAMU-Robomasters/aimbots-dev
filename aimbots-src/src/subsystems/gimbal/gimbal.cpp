@@ -3,9 +3,7 @@
 #include <drivers.hpp>
 #include <utils/common_types.hpp>
 
-using std::vector, std::complex;
-
-static inline float wrappedEncoderValueToRadians(int64_t encoderValue) {
+static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
 
@@ -23,9 +21,9 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
 
 void GimbalSubsystem::initialize() {
     yawMotor.initialize();
-    yawMotor.setDesiredOutput(0);
-
     pitchMotor.initialize();
+
+    yawMotor.setDesiredOutput(0);
     pitchMotor.setDesiredOutput(0);
 }
 
@@ -49,7 +47,7 @@ void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderWrapped();
-        currentYawMotorAngle.setValue(wrappedEncoderValueToRadians(currentYawEncoderPosition));
+        currentYawMotorAngle.setValue(DJIEncoderValueToRadians(currentYawEncoderPosition) * GIMBAL_YAW_GEAR_RATIO);
 
 #ifdef TARGET_HERO
         // This code just assumes that we're starting at our
@@ -89,7 +87,7 @@ void GimbalSubsystem::refresh() {
     if (pitchMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
         uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
-        currentPitchMotorAngle.setValue(wrappedEncoderValueToRadians(currentPitchEncoderPosition));
+        currentPitchMotorAngle.setValue(DJIEncoderValueToRadians(currentPitchEncoderPosition) * GIMBAL_PITCH_GEAR_RATIO);
 
         pitchMotorAngleDisplay = modm::toDegree(currentPitchMotorAngle.getValue());
 
