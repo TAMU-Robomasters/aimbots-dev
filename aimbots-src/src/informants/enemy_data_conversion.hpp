@@ -73,7 +73,7 @@ public:
     std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
     // bruh
-    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
+    void registerGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
 
     struct DataFilterConfig {
         float tQPositionKalman = 1.5f;   /**< The system noise covariance for the kalman filter that

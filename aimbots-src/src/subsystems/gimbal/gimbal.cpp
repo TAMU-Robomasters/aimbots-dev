@@ -22,10 +22,6 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       targetPitchMotorAngle(0.0f, 0.0f, M_TWOPI) {}
 
 void GimbalSubsystem::initialize() {
-    drivers->cvCommunicator.setGimbalSubsystem(this);
-    drivers->enemyDataConverter.setGimbalSubsystem(this);
-    drivers->kinematicInformant.attachGimbalSubsystem(this);
-
     yawMotor.initialize();
     yawMotor.setDesiredOutput(0);
 

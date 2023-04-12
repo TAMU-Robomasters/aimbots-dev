@@ -8,7 +8,7 @@
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
 
-//#include "taproot\modm\src\modm\math\geometry\vector3.hpp"
+// #include "taproot\modm\src\modm\math\geometry\vector3.hpp"
 
 namespace src {
 
@@ -31,7 +31,7 @@ public:
 
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
-    void attachGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbalSubsystem) { this->gimbalSubsystem = gimbalSubsystem; }
+    void registerGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbalSubsystem) { this->gimbalSubsystem = gimbalSubsystem; }
 
     void initialize(float imuFrequency, float imukP, float imukI);
     void recalibrateIMU();
@@ -50,7 +50,6 @@ public:
 
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
 
-
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
@@ -59,7 +58,7 @@ private:
     src::Utils::KinematicStateVector imuLinearXState;
     src::Utils::KinematicStateVector imuLinearYState;
     src::Utils::KinematicStateVector imuLinearZState;
-    
+
     src::Utils::KinematicStateVector imuAngularXState;
     src::Utils::KinematicStateVector imuAngularYState;
     src::Utils::KinematicStateVector imuAngularZState;
@@ -68,11 +67,15 @@ private:
     src::Utils::KinematicStateVector chassisLinearYState;
     src::Utils::KinematicStateVector chassisLinearZState;
 
-
     modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> chassisLinearState = {chassisLinearXState,chassisLinearYState,chassisLinearZState};
-  
+    modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {
+        imuAngularXState,
+        imuAngularYState,
+        imuAngularZState};
+    modm::Vector<src::Utils::KinematicStateVector, 3> chassisLinearState = {
+        chassisLinearXState,
+        chassisLinearYState,
+        chassisLinearZState};
 };
 
 }  // namespace src::Informants
