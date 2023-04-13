@@ -248,9 +248,9 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = 1.0f;  // (1.0f / 3.4f); for 20
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float YAW_OFFSET_ANGLE = 59.7f;  // What motor angles ensures that the barrel is pointing straight forward
-                                                  // and level relative to the robot chassis?
-static constexpr float PITCH_OFFSET_ANGLE = 42.1f;
+static constexpr float YAW_OFFSET_ANGLE = modm::toRadian(59.7f);
+static constexpr float PITCH_OFFSET_ANGLE = modm::toRadian(42.1f);
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float YAW_START_ANGLE = 0.0f;
 static constexpr float PITCH_START_ANGLE = 0.0f;

@@ -119,7 +119,7 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     xy_angle -= modm::toRadian(45.0f);
 #endif
     // offset by the preset "front" angle of the robot
-    float robotRelativeAngle = modm::toRadian(YAW_OFFSET_ANGLE) + xy_angle;
+    float robotRelativeAngle = YAW_OFFSET_ANGLE + xy_angle;
 
     if (unit == AngleUnit::Degrees) {
         robotRelativeAngle = modm::toDegree(robotRelativeAngle);
