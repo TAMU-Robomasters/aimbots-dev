@@ -6,9 +6,13 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+#include "tap/communication/serial/ref_serial.hpp"
+
+#include "drivers.hpp"
+
 #ifdef BARREL_SWAP_COMPATIBLE
 
-enum location {
+enum barrelPosition {
     LEFT = 0,
     RIGHT = 1,
     CURRENT = -1,
@@ -16,9 +20,9 @@ enum location {
 
 namespace src::Barrel_Manager {
 
-class BarrelSwapSubsytem : public tap::control::Subsystem {
+class BarrelManagerSubsystem : public tap::control::Subsystem {
 public:
-    BarrelSwapSubsytem(tap::Drivers* drivers);
+    BarrelManagerSubsystem(tap::Drivers* drivers);
 
     mockable void initialize() override;
     void refresh() override;
@@ -27,10 +31,9 @@ public:
 
     inline bool isOnline() const { return swapMotor.isMotorOnline(); }
 
-    //Applies power to motor
-    void setMotorRPM(float rpm);
+    void setMotorOutput(float output);
 
-    float getMotorRPM();
+    float getMotorOutput();
 
     //Returns encoder value of motor
     float getMotorPosition();
@@ -39,22 +42,30 @@ public:
     bool findZeroPosition();
 
     //Finds which barrel is equipped
-    location getPosition();
+    barrelPosition getPosition();
 
     //Chooses to equip a specific barrel
-    void setPosition(location pos);
+    void setPosition(barrelPosition pos);
 
     //Will toggle which barrel is equipped
     void togglePosition();
 
     //If no position specified, defaults to -1, which means get currently equipped barrel
-    float getBarrelHeat(location pos = CURRENT);
+    float getBarrelHeat(barrelPosition pos);
+
+    //Returns true when barrel is aligned with the flywheels
+    bool isBarrelAligned();
 
 private:
     tap::Drivers* drivers;
-    location current_position;
+    barrelPosition currentBarrelPosition = LEFT;
 
     DJIMotor swapMotor;
+
+    int barrelState = 2;
+    //2 = Standard operation
+    //0 = finding Left Barrel Stop
+    //1 = finding Right Barrel Stop
 
     float targetSwapMotorPosition; //In mm
 
@@ -62,6 +73,7 @@ private:
 
     float desiredSwapMotorOutput;
 
+    float limitLRPositions[2] = {0,1000}; // {Left Pos, Right Pos} In mm, should be determined in the code at launch
 
 };
 

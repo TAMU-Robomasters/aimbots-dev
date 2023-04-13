@@ -1,6 +1,6 @@
 #pragma once
 #ifdef TARGET_STANDARD
-#include "subsystems/shooter/barrel_swap/barrel_swap.hpp"
+#include "barrel_manager.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
