@@ -43,17 +43,22 @@ void GimbalChaseCommand::execute() {
         ballisticsSolver->solve();
 
     if (ballisticsSolution != std::nullopt) {
+        // Should be chassis relative
         targetYawAngle = ballisticsSolution->yawAngle;
         targetPitchAngle = ballisticsSolution->pitchAngle;
 
         // ballistics returns angles between [0, 2PI), need to convert idk why
-        targetYawAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAngle;
+        // targetYawAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAngle;
+
+        // This is converting it to motor angles cause dumb shit
+        targetYawAngle += modm::toRadian(YAW_OFFSET_ANGLE);
         targetPitchAngle += modm::toRadian(PITCH_OFFSET_ANGLE);
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
+        // getTargetYawMotorAngle should be chassis relative
         targetYawAngle = modm::toRadian(
             gimbal->getTargetYawMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
         targetPitchAngle = modm::toRadian(

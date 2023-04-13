@@ -341,12 +341,12 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     0.0f, //x = 0.04498
     0.0f, //y - does not matter too much 
-    0.0f, //z = 0.01683
+    0.01683f, //z = 0.01683
 };
 // clang-format on
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
 
 static constexpr float CIMU_X_EULER = 0.0f;
-static constexpr float CIMU_Y_EULER = 0.0f; // XYZ Euler Angles, All in Degrees!!! 
-static constexpr float CIMU_Z_EULER = 0.0f; 
+static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
+static constexpr float CIMU_Z_EULER = 0.0f;
