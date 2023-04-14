@@ -29,15 +29,14 @@ void GimbalSubsystem::initialize() {
     pitchMotor.setDesiredOutput(0);
 }
 
-float yawMotorAngleDisplay = 0.0f;
-float yawFieldRelativeDisplay = 0.0f;
-float pitchMotorAngleDisplay = 0.0f;
-
 float pitchOutputDisplay = 0.0f;
 float yawOutputDisplay = 0.0f;
 
 float currentYawAngleDisplay = 0.0f;
 float currentPitchAngleDisplay = 0.0f;
+
+float currentYawMotorAngleDiplay = 0.0f;
+float currentPitchMotorAngleDisplay = 0.0f;
 
 void GimbalSubsystem::refresh() {
     if (yawMotor.isMotorOnline()) {
@@ -46,13 +45,9 @@ void GimbalSubsystem::refresh() {
         uint16_t currentYawEncoderPosition = yawMotor.getEncoderUnwrapped();
 
         float unwrappedYawAngle = wrapAngleToPiRange(
-            GIMBAL_YAW_GEAR_RATIO *
-            wrapAngleToPiRange(DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_OFFSET_ANGLE));
+            GIMBAL_YAW_GEAR_RATIO * DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_OFFSET_ANGLE);
 
         currentYawAngle.setValue(unwrappedYawAngle);
-
-        currentYawAngleDisplay = modm::toDegree(currentYawAngle.getValue());
-        currentPitchAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
 
         // Flush whatever our current output is to the motors
         yawMotor.setDesiredOutput(desiredYawMotorOutput);
@@ -60,21 +55,28 @@ void GimbalSubsystem::refresh() {
         ////////////////
         // DEBUG VARS //
         ////////////////
-        yawMotorAngleDisplay = modm::toDegree(currentYawAngle.getValue());
+        currentYawAngleDisplay = modm::toDegree(currentYawAngle.getValue());
         yawOutputDisplay = desiredYawMotorOutput;
     }
 
     if (pitchMotor.isMotorOnline()) {
         // Update subsystem state to stay up-to-date with reality
-        uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderWrapped();
-        currentPitchAngle.setValue(DJIEncoderValueToRadians(currentPitchEncoderPosition) * GIMBAL_PITCH_GEAR_RATIO);
+        uint16_t currentPitchEncoderPosition = pitchMotor.getEncoderUnwrapped();
 
-        pitchMotorAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
+        uint16_t unwrappedPitchAngle =
+            GIMBAL_PITCH_GEAR_RATIO *
+            wrapAngleToPiRange(DJIEncoderValueToRadians(currentPitchEncoderPosition) - PITCH_OFFSET_ANGLE);
 
-        pitchOutputDisplay = desiredPitchMotorOutput;
+        currentPitchAngle.setValue(unwrappedPitchAngle);
 
         // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
+
+        ////////////////
+        // DEBUG VARS //
+        ////////////////
+        currentPitchAngleDisplay = modm::toDegree(currentPitchAngle.getValue());
+        pitchOutputDisplay = desiredPitchMotorOutput;
     }
 }
 
@@ -95,21 +97,11 @@ void GimbalSubsystem::setPitchMotorOutput(float output) {
 }
 
 float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
-    return tap::algorithms::ContiguousFloat(
-               (unit == AngleUnit::Degrees) ? -1 * (modm::toDegree(currentYawAngle.getValue() - YAW_OFFSET_ANGLE))
-                                            : -1 * (currentYawAngle.getValue() - YAW_OFFSET_ANGLE),
-               (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
-               (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
-        .getValue();
+    return (unit == AngleUnit::Radians) ? currentYawAngle.getValue() : modm::toDegree(currentYawAngle.getValue());
 }
 
 float GimbalSubsystem::getChassisRelativePitchAngle(AngleUnit unit) const {
-    return tap::algorithms::ContiguousFloat(
-               (unit == AngleUnit::Degrees) ? -1 * (modm::toDegree(currentPitchAngle.getValue() - PITCH_OFFSET_ANGLE))
-                                            : -1 * (currentPitchAngle.getValue() - PITCH_OFFSET_ANGLE),
-               (unit == AngleUnit::Degrees) ? -180.0f : -M_PI,
-               (unit == AngleUnit::Degrees) ? 180.0f : M_PI)
-        .getValue();
+    return (unit == AngleUnit::Radians) ? currentPitchAngle.getValue() : modm::toDegree(currentPitchAngle.getValue());
 }
 
 }  // namespace src::Gimbal

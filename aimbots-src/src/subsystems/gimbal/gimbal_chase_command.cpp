@@ -55,7 +55,7 @@ void GimbalChaseCommand::execute() {
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
         targetYawAngle = modm::toRadian(
-            gimbal->getTargetYawMotorAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
+            gimbal->getTargetYawAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
         targetPitchAngle = modm::toRadian(
             gimbal->getTargetPitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput());
     }
