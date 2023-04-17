@@ -51,6 +51,20 @@ bool CommunicationResponseSubsytem::run() {
         // short standardX = 0;
 
 #ifdef TARGET_SENTRY
+        // ms = states.createMessage();
+        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(false);
+        // uint16_t sx = ms.standardX;
+        test = static_cast<unsigned char>(rand() % 0xff);
+        this->robotToRobotMessage.dataAndCRC16[1] = test;  // static_cast<uint8_t>(sx);
+        // sx = sx >> 8;
+        this->robotToRobotMessage.dataAndCRC16[2] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sx);
+        // uint16_t sy = ms.standardY;
+        this->robotToRobotMessage.dataAndCRC16[3] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+        // sy = sy >> 8;
+        this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+
+#endif
+#ifdef TARGET_SENTRY
 
         PT_CALL(refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
@@ -67,7 +81,7 @@ bool CommunicationResponseSubsytem::run() {
 #elif TARGET_STANDARD
         this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
 
-                PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
+        PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
             SENTRY_REQUEST_ROBOT_ID,
             drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
