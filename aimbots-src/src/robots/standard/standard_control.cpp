@@ -151,8 +151,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
 
-    drivers->cvCommunicator.registerGimbalSubsystem(&gimbal);
-    drivers->enemyDataConverter.registerGimbalSubsystem(&gimbal);
     drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
 }
 

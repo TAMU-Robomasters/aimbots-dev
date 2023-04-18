@@ -1,11 +1,10 @@
 #pragma once
 
-#include <tap/algorithms/contiguous_float.hpp>
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
 #include <utils/common_types.hpp>
 
-#include "subsystems/gimbal/gimbal.hpp"
+#include "informants/enemy_data_conversion.hpp"
 
 #include "jetson_protocol.hpp"
 
@@ -40,21 +39,16 @@ public:
 
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    void registerGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
-
     plateKinematicState getPlateKinematicState() const { return lastPlateKinematicState; }
 
     // What is this???
     Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
 
-    // Doesn't yet actually do anything...
-    Vector3f const& getVisionTargetPosition() { return visionTargetPosition; }
-
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
 private:
     src::Drivers* drivers;
-    src::Gimbal::GimbalSubsystem* gimbal;
+    src::Informants::EnemyDataConversion enemyDataConverter;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
 

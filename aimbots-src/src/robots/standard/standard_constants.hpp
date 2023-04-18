@@ -12,10 +12,46 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
+/**
+ * @brief GIMBAL SETUP
+ */
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 
-// static constexpr float imu_mount_position[3] = {0.0f, 0.0f, 0.0f};
-// static constexpr Vector3f IMU_MOUNT_POSITION(imu_mount_position);
+static constexpr uint8_t YAW_MOTOR_COUNT = 2;
+static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
+
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {true, true};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
+static const std::array<char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
+static constexpr float YAW_OFFSET_ANGLE = modm::toRadian(59.7f);
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static constexpr float YAW_START_ANGLE = 0.0f;
+
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
+/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
+ * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
+
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
+static const std::array<char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
+
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Standard
+/*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
+ * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
+
+static constexpr float PITCH_OFFSET_ANGLE = modm::toRadian(42.1f);
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static constexpr float PITCH_START_ANGLE = 0.0f;
+
+// static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
+// static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
+static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;  // chassis-relative angles
+static constexpr float PITCH_SOFTSTOP_HIGH = 90.0f;
+// -------------------------------------------------------------------------------------------------------------------------
+
+static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
 
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
@@ -173,12 +209,9 @@ static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
-static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
-static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
-static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
@@ -189,9 +222,6 @@ static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = false;
-
-static constexpr bool YAW_DIRECTION = true;
-static constexpr bool PITCH_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -238,28 +268,6 @@ static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Stand
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f;  // (1.0f / 2.0f); for 2023 Standard
-/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
- * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
- * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = 1.0f;  // (1.0f / 3.4f); for 2023 Standard
-/*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
- * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
- * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
-static constexpr float YAW_OFFSET_ANGLE = modm::toRadian(59.7f);
-static constexpr float PITCH_OFFSET_ANGLE = modm::toRadian(42.1f);
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-
-static constexpr float YAW_START_ANGLE = 0.0f;
-static constexpr float PITCH_START_ANGLE = 0.0f;
-
-// static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
-// static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
-
-static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 90.0f;
 
 static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
 

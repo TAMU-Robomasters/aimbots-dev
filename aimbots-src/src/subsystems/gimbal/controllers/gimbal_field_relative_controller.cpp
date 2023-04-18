@@ -38,15 +38,15 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
     if (!vision) {
         yawPositionPIDOutput = yawPositionPID.runController(
             positionControllerError,
-            gimbal->getYawMotorRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
-                                                           src::Informants::AngularAxis::YAW_AXIS,
-                                                           AngleUnit::Radians)));
+            gimbal->getYawAxisRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
+                                                          src::Informants::AngularAxis::YAW_AXIS,
+                                                          AngleUnit::Radians)));
     } else {
         yawPositionPIDOutput = yawVisionPID.runController(
             positionControllerError,
-            gimbal->getYawMotorRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
-                                                           src::Informants::AngularAxis::YAW_AXIS,
-                                                           AngleUnit::Radians)));
+            gimbal->getYawAxisRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
+                                                          src::Informants::AngularAxis::YAW_AXIS,
+                                                          AngleUnit::Radians)));
     }  // kD tuned for RPM, so we'll convert to RPM
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput + chassisInducedYawMotionCompensation);
@@ -60,9 +60,9 @@ void GimbalFieldRelativeController::runPitchController(AngleUnit unit, float des
     float pitchPositionPIDOutput = 0.0f;
 
     if (!vision) {
-        pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
+        pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchAxisRPM());
     } else {
-        pitchPositionPIDOutput = pitchVisionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
+        pitchPositionPIDOutput = pitchVisionPID.runController(positionControllerError, gimbal->getPitchAxisRPM());
     }
 
     gimbal->setPitchMotorOutput(pitchPositionPIDOutput);

@@ -1,17 +1,10 @@
 #pragma once
 
-#include <complex>
-#include <vector>
-
+#include <drivers.hpp>
 #include <tap/algorithms/contiguous_float.hpp>
-#include <tap/algorithms/math_user_utils.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
-
-namespace src {
-class Drivers;
-}
 
 namespace src::Gimbal {
 
@@ -22,21 +15,115 @@ public:
     GimbalSubsystem(src::Drivers*);
     ~GimbalSubsystem() = default;
 
-    void initialize() override;
+    void BuildYawMotors() {
+        for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+            yawMotors[i] = new DJIMotor(drivers, YAW_MOTOR_IDS[i], GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
+        }
+    }
+
+    void BuildPitchMotors() {
+        for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            pitchMotors[i] =
+                new DJIMotor(drivers, PITCH_MOTOR_IDS[i], GIMBAL_BUS, PITCH_MOTOR_DIRECTIONS[i], PITCH_MOTOR_NAMES[i]);
+        }
+    }
+
+    /**
+     * Allows user to call a DJIMotor member function on all gimbal motors
+     *
+     * @param function pointer to a member function of DJIMotor
+     * @param args arguments to pass to the member function
+     */
+    template <class... Args>
+    void ForAllYawMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto& yawMotor : yawMotors) {
+            (yawMotor->*func)(args...);
+        }
+    }
+
+    template <class... Args>
+    void ForAllPitchMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto& pitchMotor : pitchMotors) {
+            (pitchMotors->*func)(args...);
+        }
+    }
+
+    /**
+     * Allows user to call a GimbalSubsystem function on all gimbal motors.
+     *
+     * @param function pointer to a member function of GimbalSubsystem that takes a WheelIndex
+     * as its first argument and the motor-per-wheel index as the second argument
+     * @param args arguments to pass to the member function
+     */
+    template <class... Args>
+    void ForAllYawMotors(void (GimbalSubsystem::*func)(uint8_t YawIdx, Args...), Args... args) {
+        for (uint8_t i = 0; i < YAW_MOTOR_COUNT; i++) {
+            (this->*func)(i, args...);
+        }
+    }
+    template <class... Args>
+    void ForAllPitchMotors(void (GimbalSubsystem::*func)(uint8_t PitchIdx, Args...), Args... args) {
+        for (uint8_t i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            (this->*func)(i, args...);
+        }
+    }
+
+    mockable void initialize() override;
     void refresh() override;
 
     const char* getName() override { return "Gimbal Subsystem"; }
 
-    inline bool isOnline() const { return yawMotor.isMotorOnline() && pitchMotor.isMotorOnline(); }
+    inline bool isOnline() const {
+        for (auto& yawMotor : yawMotors) {
+            if (!yawMotor->isMotorOnline()) {
+                return false;
+            }
+        }
+        for (auto& pitchMotor : pitchMotors) {
+            if (!pitchMotor->isMotorOnline()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    void setYawMotorOutput(float output);
-    void setPitchMotorOutput(float output);
+    void setDesiredOutputToYawMotor(uint8_t YawIdx);
+    void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 
-    inline float GimbalSubsystem::getChassisRelativeYawAngle(AngleUnit unit) const {
+    void setDesiredYawOutput(uint8_t YawIdx, uint16_t output);
+    void setDesiredPitchOutput(uint8_t PitchIdx, uint16_t output);
+
+    void setAllYawOutputs(uint16_t output) { ForAllYawMotors(&GimbalSubsystem::setDesiredYawOutput, output); }
+    void setAllPitchOutputs(uint16_t output) { ForAllPitchMotors(&GimbalSubsystem::setDesiredPitchOutput, output); }
+
+    inline float getYawAxisRPM() const {
+        int16_t rpm = 0;
+        uint8_t onlineMotors = 0;
+        for (auto& yawMotor : yawMotors) {
+            if (yawMotor->isMotorOnline()) {
+                rpm += yawMotor->getShaftRPM();
+                onlineMotors++;
+            }
+        }
+        return (onlineMotors > 0) ? rpm / onlineMotors : 0.0f;
+    }
+    inline float getPitchAxisRPM() const {
+        int16_t rpm = 0;
+        uint8_t onlineMotors = 0;
+        for (auto& pitchMotor : pitchMotors) {
+            if (pitchMotor->isMotorOnline()) {
+                rpm += pitchMotor->getShaftRPM();
+                onlineMotors++;
+            }
+        }
+        return (onlineMotors > 0) ? rpm / onlineMotors : 0.0f;
+    }
+
+    inline float getChassisRelativeYawAngle(AngleUnit unit) const {
         return (unit == AngleUnit::Radians) ? currentYawAngle.getValue() : modm::toDegree(currentYawAngle.getValue());
     }
 
-    inline float GimbalSubsystem::getChassisRelativePitchAngle(AngleUnit unit) const {
+    inline float getChassisRelativePitchAngle(AngleUnit unit) const {
         return (unit == AngleUnit::Radians) ? currentPitchAngle.getValue() : modm::toDegree(currentPitchAngle.getValue());
     }
 
@@ -47,12 +134,11 @@ public:
         return currentPitchAngle;
     }
 
-    inline float getYawMotorRPM() const { return (yawMotor.isMotorOnline()) ? yawMotor.getShaftRPM() : 0.0f; }
-    inline float getPitchMotorRPM() const { return (pitchMotor.isMotorOnline()) ? pitchMotor.getShaftRPM() : 0.0f; }
-
-    inline float getYawMotorAngleWrapped() const { return (yawMotor.isMotorOnline()) ? yawMotor.getEncoderWrapped() : 0.0f; }
-    inline float getPitchMotorAngleWrapped() const {
-        return (pitchMotor.isMotorOnline()) ? pitchMotor.getEncoderWrapped() : 0.0f;
+    inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoderWrapped() : 0.0f;
+    }
+    inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
+        return (pitchMotors[PitchIdx]->isMotorOnline()) ? pitchMotors[PitchIdx]->getEncoderWrapped() : 0.0f;
     }
 
     inline float getTargetYawAngle(AngleUnit unit) const {
@@ -68,19 +154,14 @@ public:
     }
     inline void setTargetPitchAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        int status = 0;
-        targetPitchAngle.setValue(ContiguousFloat::limitValue(
-            ContiguousFloat(angle, 0, M_TWOPI),
-            modm::toRadian((!PITCH_DIRECTION) ? PITCH_SOFTSTOP_HIGH : PITCH_SOFTSTOP_LOW),
-            modm::toRadian((!PITCH_DIRECTION) ? PITCH_SOFTSTOP_LOW : PITCH_SOFTSTOP_HIGH),
-            &status));
+        targetPitchAngle.setValue(angle);
     }
+
+    float getYawSetpointError(uint8_t YawIdx, AngleUnit unit) const;
+    float getPitchSetpointError(uint8_t PitchIdx, AngleUnit unit) const;
 
 private:
     src::Drivers* drivers;
-
-    DJIMotor yawMotor;
-    DJIMotor pitchMotor;
 
     tap::algorithms::ContiguousFloat currentYawAngle;    // In radians
     tap::algorithms::ContiguousFloat currentPitchAngle;  // In radians
@@ -88,8 +169,11 @@ private:
     tap::algorithms::ContiguousFloat targetYawAngle;    // in Radians
     tap::algorithms::ContiguousFloat targetPitchAngle;  // in Radians
 
-    float desiredYawMotorOutput;
-    float desiredPitchMotorOutput;
+    std::array<float, YAW_MOTOR_COUNT> desiredYawMotorOutputs;
+    std::array<float, PITCH_MOTOR_COUNT> desiredPitchMotorOutputs;
+
+    std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
+    std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
 };
 
 }  // namespace src::Gimbal

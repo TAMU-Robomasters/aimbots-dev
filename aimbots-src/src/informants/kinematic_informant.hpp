@@ -8,17 +8,12 @@
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
 
-// #include "taproot\modm\src\modm\math\geometry\vector3.hpp"
-
 namespace src {
-
 class Drivers;
-
-namespace Gimbal {
+}  // namespace src
+namespace src::Gimbal {
 class GimbalSubsystem;
 }
-
-}  // namespace src
 
 namespace src::Informants {
 

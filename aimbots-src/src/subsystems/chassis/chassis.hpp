@@ -40,9 +40,9 @@ public:
     template <class... Args>
     void ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
         for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-            (motors[i][0]->*func)(args...);
+            (motors[i][DRIVER]->*func)(args...);
 #ifdef SWERVE
-            (motors[i][1]->*func)(args...);
+            (motors[i][YAW]->*func)(args...);
 #endif
         }
     }
@@ -146,19 +146,12 @@ public:
     src::Drivers* drivers;
     float desiredRotation = 0.0f;
 
-#ifdef TARGET_SENTRY
-    DJIMotor railWheel;
-    SmoothPID railWheelVelPID;
-
-#else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
     SmoothPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
     SmoothPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
 #endif
-#endif
-
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> desiredOutputs;
 
@@ -169,17 +162,10 @@ public:
     src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
 
 public:
-#ifdef TARGET_SENTRY
-    inline int16_t getLeftFrontRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getLeftBackRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getRightFrontRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getRightBackRpmActual() const override { return railWheel.getShaftRPM(); }
-#else
     inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }
     inline int16_t getLeftBackRpmActual() const override { return leftBackWheel.getShaftRPM(); }
     inline int16_t getRightFrontRpmActual() const override { return rightFrontWheel.getShaftRPM(); }
     inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
-#endif
 };
 
 };  // namespace src::Chassis

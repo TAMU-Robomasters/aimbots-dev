@@ -11,6 +11,7 @@ namespace src::Informants::vision {
 
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
+      enemyDataConverter(drivers),
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
@@ -108,13 +109,13 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setY(lastMessage.targetY);
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    //debug !!!
-                    // visionTargetPosition.setX(0.0f);
-                    // visionTargetPosition.setY(1.0f);
-                    // visionTargetPosition.setZ(0.0f);
+                    // debug !!!
+                    //  visionTargetPosition.setX(0.0f);
+                    //  visionTargetPosition.setY(1.0f);
+                    //  visionTargetPosition.setZ(0.0f);
 
-                    drivers->enemyDataConverter.updateEnemyInfo(visionTargetPosition, lastMessage.delay);
-                    lastPlateKinematicState = drivers->enemyDataConverter.calculateBestGuess(3);
+                    enemyDataConverter.updateEnemyInfo(visionTargetPosition, lastMessage.delay);
+                    lastPlateKinematicState = enemyDataConverter.calculateBestGuess(3);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 

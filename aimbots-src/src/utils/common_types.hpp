@@ -83,13 +83,15 @@ using MicroTimeout = tap::arch::MicroTimeout;
 using Servo = tap::motor::Servo;
 using InputPins = tap::gpio::Digital::InputPin;
 
-template <typename T, uint8_t ROWS, uint8_t COLUMNS>
+template <typename T, size_t ROWS, size_t COLUMNS>
 using Matrix = modm::Matrix<T, ROWS, COLUMNS>;
+template <typename T, std::uint8_t N>
+using Vector = modm::Vector<T, N>;
+
 using Matrix3f = modm::Matrix3f;
 using Matrix4f = modm::Matrix4f;
 using Vector3f = modm::Vector3f;
 using Vector4f = modm::Vector4f;
-
 template <typename T, std::size_t N>
 using Deque = modm::BoundedDeque<T, N>;
 

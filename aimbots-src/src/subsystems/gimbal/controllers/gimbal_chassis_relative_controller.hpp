@@ -14,11 +14,20 @@ public:
 
     void initialize() override;
 
+    void BuildPositionPIDs() {
+        for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+            yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
+        }
+        for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
+        }
+    }
+
     void runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision = false) override;
     void runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision = false) override;
 
-    inline SmoothPID* getYawPositionPID() { return &yawPositionPID; }
-    inline SmoothPID* getPitchPositionPID() { return &pitchPositionPID; }
+    inline SmoothPID* getYawPositionPID() { return yawPositionPIDs[0]; }
+    inline SmoothPID* getPitchPositionPID() { return pitchPositionPIDs[0]; }
 
     bool isOnline() const;
 
@@ -27,8 +36,8 @@ public:
 private:
     GimbalSubsystem* gimbal;
 
-    SmoothPID yawPositionPID;
-    SmoothPID pitchPositionPID;
+    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
+    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
 };
 
 }  // namespace src::Gimbal

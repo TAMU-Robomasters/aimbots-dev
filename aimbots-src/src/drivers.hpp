@@ -22,7 +22,6 @@
 
 #include "tap/drivers.hpp"
 
-#include "informants/enemy_data_conversion.hpp"
 #include "informants/kinematic_informant.hpp"
 #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/vision/jetson_communicator.hpp"
@@ -41,15 +40,13 @@ public:
           controlOperatorInterface(this),
           magnetometer(),
           cvCommunicator(this),
-          kinematicInformant(this),
-          enemyDataConverter(this) {}
+          kinematicInformant(this) {}
 
 public:
     Control::OperatorInterface controlOperatorInterface;
     utils::Ist8310 magnetometer;
     Informants::vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
-    Informants::EnemyDataConversion enemyDataConverter;
 };  // class Drivers
 
 }  // namespace src

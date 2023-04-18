@@ -1,17 +1,21 @@
 #include "gimbal_chassis_relative_controller.hpp"
 
-#include <utils/robot_specific_inc.hpp>
-
 namespace src::Gimbal {
 
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem),
-      yawPositionPID(YAW_POSITION_PID_CONFIG),
-      pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
+      yawPositionPIDs(std::array<SmoothPID*, YAW_MOTOR_COUNT>(nullptr)),
+      pitchPositionPIDs(std::array<SmoothPID*, PITCH_MOTOR_COUNT>(nullptr)) {
+    BuildPositionPIDs();
+}
 
 void GimbalChassisRelativeController::initialize() {
-    yawPositionPID.pid.reset();
-    pitchPositionPID.pid.reset();
+    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawPositionPIDs[i]->pid.reset();
+    }
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        pitchPositionPIDs[i]->pid.reset();
+    }
 }
 
 void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
@@ -21,7 +25,7 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
     float positionControllerError = modm::toDegree(
         gimbal->getCurrentYawMotorAngleAsContiguousFloat().difference(gimbal->getTargetYawAngle(AngleUnit::Radians)));
 
-    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
+    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawAxisRPM());
 
     gimbal->setYawMotorOutput(yawPositionPIDOutput);
 }
@@ -41,7 +45,7 @@ void GimbalChassisRelativeController::runPitchController(
     float positionControllerError = modm::toDegree(
         gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
 
-    float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
+    float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchAxisRPM());
 
     float toHorizonError =
         gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(modm::toRadian(PITCH_OFFSET_ANGLE + HORIZON_OFFSET));

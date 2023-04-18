@@ -1,16 +1,11 @@
 #pragma once
 #include <vector>
 
-#include <subsystems/gimbal/gimbal.hpp>
 #include <utils/math/transform_setup.hpp>
 
 #include "tap/algorithms/extended_kalman.hpp"
 
-#include "modm/math/geometry/vector3.hpp"
-
-// using std::vector;
-
-// don't need to include jetson communicator-- it's included in drivers!
+#include "utils/common_types.hpp"
 
 /*
 Convert enemy data (from CV) from camera space to chassis space (somehow)
@@ -29,11 +24,9 @@ This class should be producing position, velocity, and acceleration vectors for 
 SPACE) Additionally, this class should be producing position, velocity, and acceleration vectors for OUR ROBOT in FIELD SPACE
 (Though I'm not sure if this class should be called EnemyDataConversion then)
 */
-
 namespace src {
 class Drivers;
 }
-
 namespace src::Informants {
 
 namespace vision {
@@ -72,9 +65,6 @@ public:
      */
     std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
-    // bruh
-    void registerGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
-
     struct DataFilterConfig {
         float tQPositionKalman = 1.5f;   /**< The system noise covariance for the kalman filter that
                                           * is applied to the derivative of the error. */
@@ -98,9 +88,6 @@ private:
     // buffer for XYZ + timestamp
     Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
     bool prev_cv_valid, cv_valid;
-
-    src::Gimbal::GimbalSubsystem* gimbal;
-
     DataFilterConfig config;
 
     modm::Vector<tap::algorithms::ExtendedKalman, 3> positionKalman;
