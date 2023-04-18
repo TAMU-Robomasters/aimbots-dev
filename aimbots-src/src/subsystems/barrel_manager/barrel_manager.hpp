@@ -12,7 +12,7 @@
 
 #ifdef BARREL_SWAP_COMPATIBLE
 
-enum barrelPosition {
+enum barrelSide {
     LEFT = 0,
     RIGHT = 1,
     CURRENT = -1,
@@ -42,30 +42,35 @@ public:
     bool findZeroPosition();
 
     //Finds which barrel is equipped
-    barrelPosition getPosition();
+    barrelSide getSide();
 
     //Chooses to equip a specific barrel
-    void setPosition(barrelPosition pos);
+    void setSide(barrelSide side);
 
     //Will toggle which barrel is equipped
-    void togglePosition();
+    void toggleSide();
 
     //If no position specified, defaults to -1, which means get currently equipped barrel
-    float getBarrelHeat(barrelPosition pos);
+    float getBarrelHeat(barrelSide side);
 
     //Returns true when barrel is aligned with the flywheels
     bool isBarrelAligned();
 
+    //TODO: Make sure Left and Right offsets are added/subtracted correctly
+    float getSideInMM(barrelSide side) {(side == LEFT) ? limitLRPositions[LEFT] + LEFT_STOP_OFFSET : limitLRPositions[RIGHT] - RIGHT_STOP_OFFSET;}
+
+    
+
 private:
     tap::Drivers* drivers;
-    barrelPosition currentBarrelPosition = LEFT;
+    barrelSide currentBarrelSide = LEFT;
 
     DJIMotor swapMotor;
 
     int barrelState = 2;
-    //2 = Standard operation
     //0 = finding Left Barrel Stop
     //1 = finding Right Barrel Stop
+    //2 = Standard operation
 
     float targetSwapMotorPosition; //In mm
 
@@ -73,7 +78,7 @@ private:
 
     float desiredSwapMotorOutput;
 
-    float limitLRPositions[2] = {0,1000}; // {Left Pos, Right Pos} In mm, should be determined in the code at launch
+    float limitLRPositions[2] = {0,1000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
 
 };
 

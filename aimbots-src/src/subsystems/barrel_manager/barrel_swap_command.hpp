@@ -1,15 +1,21 @@
 #pragma once
-#ifdef TARGET_STANDARD
+
 #include "barrel_manager.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
 
+
 #include "drivers.hpp"
 
-namespace src::Shooter {
+#ifdef BARREL_SWAP_COMPATIBLE
+
+namespace src::Barrel_Manager {
+
 class BarrelSwapCommand : public TapCommand {
 public:
-    BarrelSwapCommand(src::Drivers* drivers, BarrelSwapSubsytem* barrelSwap);
+
+    //Add a pointer to a boolean flag that can be changed to alert the feeder that a transition is happening
+    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap);
 
     void initialize() override;
 
@@ -23,9 +29,14 @@ public:
 
 private:
     src::Drivers* drivers;
-    BarrelSwapSubsytem* barrelSwap;
+    BarrelManagerSubsystem* barrelManager;
+    SmoothPID swapMotorPID;
+
+    bool wasRPressed = false;
+
+
 };
 
-}  // namespace src::Shooter
+}  // namespace src::Barrel_Manager
 
 #endif

@@ -88,43 +88,43 @@ bool BarrelManagerSubsystem::findZeroPosition() {
     //TODO
 }
 
-barrelPosition BarrelManagerSubsystem::getPosition() {
-    return currentBarrelPosition; // LEFT or RIGHT
+barrelSide BarrelManagerSubsystem::getSide() {
+    return currentBarrelSide; // LEFT or RIGHT
 }
-void BarrelManagerSubsystem::setPosition(barrelPosition pos) {
-    switch (pos)
+void BarrelManagerSubsystem::setSide(barrelSide side) {
+    switch (side)
     {
     default:
-    case barrelPosition::CURRENT:
+    case barrelSide::CURRENT:
         /* do nothing */
-        // currentBarrelPosition = currentBarrelPosition;
+        // currentBarrelSide = currentBarrelSide;
         break;
     
-    case barrelPosition::LEFT:
-        currentBarrelPosition=LEFT;
+    case barrelSide::LEFT:
+        currentBarrelSide=LEFT;
         break;
     
-    case barrelPosition::RIGHT:
-        currentBarrelPosition=RIGHT;
+    case barrelSide::RIGHT:
+        currentBarrelSide=RIGHT;
         break;
     }
 }
 
-void BarrelManagerSubsystem::togglePosition() {
-    currentBarrelPosition = (currentBarrelPosition == LEFT) ? RIGHT : LEFT;
+void BarrelManagerSubsystem::toggleSide() {
+    currentBarrelSide = (currentBarrelSide == LEFT) ? RIGHT : LEFT;
 }
 
-float BarrelManagerSubsystem::getBarrelHeat(barrelPosition pos = CURRENT) {
+float BarrelManagerSubsystem::getBarrelHeat(barrelSide side = CURRENT) {
     auto turretData = drivers->refSerial.getRobotData().turret;
-    if (pos == CURRENT){
-        pos = currentBarrelPosition;
+    if (side == CURRENT){
+        side = currentBarrelSide;
     }
-    return(pos == LEFT) ? turretData.heat17ID1 /*LEFT*/ : turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
+    return(side == LEFT) ? turretData.heat17ID1 /*LEFT*/ : turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
 
 }
 
 bool BarrelManagerSubsystem::isBarrelAligned() {
-    return abs(currentSwapMotorPosition - limitLRPositions[currentBarrelPosition]) <= 1.0; //TODO: Find an actually useful constant number
+    return abs(currentSwapMotorPosition - getSideInMM(currentBarrelSide)) <= 1.0; //TODO: Find an actually useful constant number
 }
 
 }  // namespace src::Shooter

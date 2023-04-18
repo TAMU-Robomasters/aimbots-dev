@@ -288,3 +288,19 @@ static float RIGHT_STOP_OFFSET = 0; //In mm
 
 //Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
 static float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
+
+
+//TODO: Tune PID constants
+static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 1.0f,
+    .tQDerivativeKalman = 0.0f,
+    .tRDerivativeKalman = 0.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
