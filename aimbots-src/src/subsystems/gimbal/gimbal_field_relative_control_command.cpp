@@ -50,8 +50,8 @@ bool GimbalFieldRelativeControlCommand::isReady() { return true; }
 bool GimbalFieldRelativeControlCommand::isFinished() const { return false; }
 
 void GimbalFieldRelativeControlCommand::end(bool) {
-    gimbal->setAllYawOutputs(0);
-    gimbal->setAllPitchOutputs(0);
+    gimbal->setAllDesiredYawOutputs(0);
+    gimbal->setAllDesiredPitchOutputs(0);
 }
 
 }  // namespace src::Gimbal

@@ -16,21 +16,20 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       currentYawAngle(0.0f, -M_PI, M_PI),
       currentPitchAngle(0.0f, -M_PI, M_PI),
       targetYawAngle(0.0f, -M_PI, M_PI),
-      targetPitchAngle(0.0f, PITCH_SOFTSTOP_LOW, PITCH_SOFTSTOP_HIGH),  // bounds validated during construction
-      yawMotors(std::array<DJIMotor*, YAW_MOTOR_COUNT>({})),
-      pitchMotors(std::array<DJIMotor*, PITCH_MOTOR_COUNT>({})),
-      desiredYawMotorOutputs(std::array<float, YAW_MOTOR_COUNT>(0.0f)),
-      desiredPitchMotorOutputs(std::array<float, PITCH_MOTOR_COUNT>(0.0f)) {
+      targetPitchAngle(0.0f, PITCH_SOFTSTOP_LOW, PITCH_SOFTSTOP_HIGH)  // bounds validated during construction
+{
     BuildYawMotors();
     BuildPitchMotors();
 }
 
 void GimbalSubsystem::initialize() {
-    ForAllYawMotors(DJIMotor::initialize);
-    ForAllPitchMotors(DJIMotor::initialize);
+    ForAllYawMotors(&DJIMotor::initialize);
+    ForAllPitchMotors(&DJIMotor::initialize);
 
-    ForAllYawMotors(DJIMotor::setDesiredOutput, 0);
-    ForAllPitchMotors(DJIMotor::setDesiredOutput, 0);
+    setAllDesiredYawOutputs(0);
+    setAllDesiredPitchOutputs(0);
+    ForAllYawMotors(&GimbalSubsystem::setDesiredOutputToYawMotor);
+    ForAllPitchMotors(&GimbalSubsystem::setDesiredOutputToYawMotor);
 }
 
 float pitchOutputDisplay = 0.0f;
@@ -103,6 +102,14 @@ void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
         tap::algorithms::limitVal(desiredYawMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));
 }
 
-float GimbalSubsystem::getYawSetpointError(uint8_t YawIdx, AngleUnit unit) { return }
+float GimbalSubsystem::getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const {
+    // How much the motor has to turn to get to the desired target
+    float motorSetpointError = targetYawAngle.difference(currentYawAngle);
+
+    // How much the motor has actually turned
+    float motorAngleError = motorSetpointError - DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderWrapped());
+
+    return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
+}
 
 }  // namespace src::Gimbal

@@ -80,9 +80,10 @@ void ChassisSubsystem::initialize() {
 #ifdef TARGET_SENTRY
     drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
 #endif
-
     ForAllChassisMotors(&DJIMotor::initialize);
+
     setTargetRPMs(0, 0, 0);
+    ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
 }
 
 int refSerialWorkingDisplay = 0;

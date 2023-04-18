@@ -87,14 +87,11 @@ public:
         return true;
     }
 
-    void setDesiredOutputToYawMotor(uint8_t YawIdx);
-    void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
-
     void setDesiredYawOutput(uint8_t YawIdx, uint16_t output);
     void setDesiredPitchOutput(uint8_t PitchIdx, uint16_t output);
 
-    void setAllYawOutputs(uint16_t output) { ForAllYawMotors(&GimbalSubsystem::setDesiredYawOutput, output); }
-    void setAllPitchOutputs(uint16_t output) { ForAllPitchMotors(&GimbalSubsystem::setDesiredPitchOutput, output); }
+    void setAllDesiredYawOutputs(uint16_t output) { desiredYawMotorOutputs.fill(output); }
+    void setAllDesiredPitchOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline float getYawAxisRPM() const {
         int16_t rpm = 0;
@@ -157,8 +154,17 @@ public:
         targetPitchAngle.setValue(angle);
     }
 
-    float getYawSetpointError(uint8_t YawIdx, AngleUnit unit) const;
-    float getPitchSetpointError(uint8_t PitchIdx, AngleUnit unit) const;
+    float getYawSetpointError(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? targetYawAngle.difference(currentYawAngle)
+                                            : modm::toDegree(targetYawAngle.difference(currentYawAngle));
+    }
+    float getPitchSetpointError(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? targetPitchAngle.difference(currentPitchAngle)
+                                            : modm::toDegree(targetPitchAngle.difference(currentPitchAngle));
+    }
+
+    float getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const;
+    float getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit unit) const;
 
 private:
     src::Drivers* drivers;
@@ -174,6 +180,9 @@ private:
 
     std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
     std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
+
+    void setDesiredOutputToYawMotor(uint8_t YawIdx);
+    void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 };
 
 }  // namespace src::Gimbal

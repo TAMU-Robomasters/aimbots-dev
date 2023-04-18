@@ -75,7 +75,8 @@ bool GimbalChaseCommand::isReady() { return true; }
 bool GimbalChaseCommand::isFinished() const { return false; }
 
 void GimbalChaseCommand::end(bool) {
-    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) gimbal->desiredYawMotorOutputs[i] = 0;
-    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) gimbal->desiredPitchMotorOutputs[i] = 0;
+    gimbal->setAllDesiredYawOutputs(0);
+    gimbal->setAllDesiredPitchOutputs(0);
 }
+
 };  // namespace src::Gimbal

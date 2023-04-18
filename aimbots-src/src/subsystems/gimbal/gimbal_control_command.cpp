@@ -45,8 +45,8 @@ bool GimbalControlCommand::isReady() { return true; }
 bool GimbalControlCommand::isFinished() const { return false; }
 
 void GimbalControlCommand::end(bool) {
-    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) gimbal->desiredYawMotorOutputs[i] = 0;
-    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) gimbal->desiredPitchMotorOutputs[i] = 0;
+    gimbal->setAllDesiredYawOutputs(0);
+    gimbal->setAllDesiredPitchOutputs(0);
 }
 
 }  // namespace src::Gimbal
