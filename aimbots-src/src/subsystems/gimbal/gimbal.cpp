@@ -102,6 +102,13 @@ void GimbalSubsystem::refresh() {
         // Flush whatever our current output is to the motors
         pitchMotor.setDesiredOutput(desiredPitchMotorOutput);
     }
+
+    // update gimbal orientation buffer
+    std::pair<float, float> orientation;
+    orientation.first =  modm::toDegree(currentYawMotorAngle.getValue());
+    orientation.second = modm::toDegree(currentPitchMotorAngle.getValue());
+
+    gimbalOrientationBuffer.prependOverwrite(orientation);
 }
 
 void GimbalSubsystem::setYawMotorOutput(float output) {

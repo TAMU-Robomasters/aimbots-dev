@@ -43,7 +43,7 @@ public:
                                             : currentPitchMotorAngle.getValue();
     }
 
-    //get current?
+    // get current?
     float getChassisRelativeYawAngle(AngleUnit) const;
     float getChassisRelativePitchAngle(AngleUnit) const;
 
@@ -80,11 +80,28 @@ public:
             &status));
     }
 
+    //from the buffer. gimbal orientation from the buffer.
+    inline std::pair<float,float> getGimbalOrientation(int index)
+    {
+        return gimbalOrientationBuffer[index];
+    }
+
+    //just in case?
+    void clearGimbalOrientationBuffer()
+    {
+        gimbalOrientationBuffer.clear();
+    }
+
 private:
     src::Drivers* drivers;
 
     DJIMotor yawMotor;
     DJIMotor pitchMotor;
+    static const int GIMBAL_BUFFER_SIZE = 15;
+
+    // gimbal yaw / pitch buffer
+    // pitch, yaw is first, second, respectively in the pair
+    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;
 
     tap::algorithms::ContiguousFloat currentYawMotorAngle;    // In radians
     tap::algorithms::ContiguousFloat currentPitchMotorAngle;  // In radians
