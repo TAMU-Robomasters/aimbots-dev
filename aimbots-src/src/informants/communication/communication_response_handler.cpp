@@ -23,15 +23,15 @@ void CommunicationResponseHandler::operator()(const tap::communication::serial::
     error = false;
     messageLengthDisplay = message.header.dataLength;
     sizeInteractiveHeader = sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader) + 1;
-    if (message.header.dataLength != sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader) + 1) {
-        RAISE_ERROR((&drivers), "message length incorrect");
-        error = true;
-        return;
-    }
+    // if (message.header.dataLength != sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader) + 1) {
+    //     RAISE_ERROR((&drivers), "message length incorrect");
+    //     error = true;
+    //     return;
+    // }
 
     // message.CRC16[0];
 
-    messageTest = static_cast<int>(message.data[1]);
+    messageTest = static_cast<int>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
     messageType = message.messageType;
     CRC16 = message.CRC16;
 
