@@ -289,6 +289,8 @@ static float RIGHT_STOP_OFFSET = 0; //In mm
 //Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
 static float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
 
+//The value that the torque needs to be greater than to detect running into a wall
+static int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a useful value
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {

@@ -39,7 +39,7 @@ public:
     float getMotorPosition();
 
     //Runs into hard stops on both sides of lead screw to find their position
-    bool findZeroPosition();
+    bool findZeroPosition(barrelSide stopSideToFind);
 
     //Finds which barrel is equipped
     barrelSide getSide();

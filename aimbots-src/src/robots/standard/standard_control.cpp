@@ -40,6 +40,9 @@
 //
 #include "subsystems/gui/gui_display.hpp"
 #include "subsystems/gui/gui_display_command.hpp"
+//
+#include "subsystems/barrel_manager/barrel_manager.hpp"
+#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -47,6 +50,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
 using namespace src::GUI;
+using namespace src::Barrel_Manager;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -69,7 +73,11 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
 GUI_DisplaySubsystem gui(drivers());
+BarrelManagerSubsystem barrelManager(drivers());
 
+
+//Command Flags ----------------------------
+bool barrelMovingFlag = true;
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -86,13 +94,15 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
+BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, barrelMovingFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);
@@ -168,12 +178,14 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     gui.initialize();
+    barrelManager.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
 }
 
 // Set commands scheduled on startup

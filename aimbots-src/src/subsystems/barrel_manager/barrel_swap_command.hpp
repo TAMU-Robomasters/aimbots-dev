@@ -15,7 +15,7 @@ class BarrelSwapCommand : public TapCommand {
 public:
 
     //Add a pointer to a boolean flag that can be changed to alert the feeder that a transition is happening
-    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap);
+    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, bool &barrelMovingFlag);
 
     void initialize() override;
 
@@ -32,7 +32,12 @@ private:
     BarrelManagerSubsystem* barrelManager;
     SmoothPID swapMotorPID;
 
+    bool barrelMovingFlag = true;
+    bool barrelCalibratingFlag = true;
+
     bool wasRPressed = false;
+
+    barrelSide currentCalibratingBarrel = LEFT;
 
 
 };
