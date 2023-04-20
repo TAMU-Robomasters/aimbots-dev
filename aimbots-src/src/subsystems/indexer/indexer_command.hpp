@@ -2,22 +2,22 @@
 #ifndef ENGINEER
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
-#include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 #include "drivers.hpp"
 #include "informants/limit_switch.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
+#include "robots/hero/hero_constants.hpp"
 
-namespace src::Feeder {
+namespace src::Indexer {
 
-class BurstFeederCommand : public TapCommand {
+class BurstIndexerCommand : public TapCommand {
 public:
-    BurstFeederCommand(
+    BurstIndexerCommand(
         src::Drivers*,
-        FeederSubsystem*,
-        float speed = FEEDER_DEFAULT_RPM,
+        IndexerSubsystem*,
+        float speed = INDEXER_DEFAULT_RPM,
         float acceptableHeatThreshold = 0.90f,
         int burstLength = DEFAULT_BURST_LENGTH);
     void initialize() override;
@@ -28,16 +28,16 @@ public:
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "Burst Feeder Command"; }
+    const char* getName() const override { return "Burst Indexer Command"; }
 
     inline void setBurstLength(int newBurstLength) {
-        startingTotalBallCount = feeder->getTotalLimitCount();
+        startingTotalBallCount = indexer->getTotalLimitCount();
         burstLength = newBurstLength;
     }
 
 private:
     src::Drivers* drivers;
-    FeederSubsystem* feeder;
+    IndexerSubsystem* indexer;
 
     float speed;
     float acceptableHeatThreshold;
@@ -47,9 +47,9 @@ private:
     int burstLength;
 };
 
-class FeederSubsystem : public tap::control::Subsystem {
+class IndexerSubsystem : public tap::control::Subsystem {
    public:
-    FeederSubsystem(
+    IndexerSubsystem(
         src::Drivers* drivers);
 
     mockable void initialize() override;
@@ -66,7 +66,7 @@ class FeederSubsystem : public tap::control::Subsystem {
     }
 
     float getCurrentRPM() const {
-        return feederMotor.getShaftRPM();
+        return indexerMotor.getShaftRPM();
     }
 
     int getTotalLimitCount() const;
@@ -82,8 +82,8 @@ class FeederSubsystem : public tap::control::Subsystem {
     float targetRPM;
     float desiredOutput;
 
-    SmoothPID feederVelPID;
-    DJIMotor feederMotor;
+    SmoothPID indexerVelPID;
+    DJIMotor indexerMotor;
 
     src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
 #ifdef TARGET_SENTRY
@@ -93,9 +93,9 @@ class FeederSubsystem : public tap::control::Subsystem {
     // commands
 };
 
-class FullAutoFeederCommand : public TapCommand {
+class FullAutoIndexerCommand : public TapCommand {
 public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoIndexerCommand(src::Drivers*, IndexerSubsystem*, float speed = INDEXER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -106,11 +106,11 @@ public:
 
     void setSpeed(float speed) { this->speed = speed; }
 
-    const char* getName() const override { return "run feeder"; }
+    const char* getName() const override { return "run indexer"; }
 
 private:
     src::Drivers* drivers;
-    FeederSubsystem* feeder;
+    IndexerSubsystem* indexer;
 
     float speed;
     float acceptableHeatThreshold;
@@ -120,9 +120,9 @@ private:
     float unjamSpeed = 0.0f;
 };
 
-class StopFeederCommand : public TapCommand {
+class StopIndexerCommand : public TapCommand {
 public:
-    StopFeederCommand(src::Drivers*, FeederSubsystem*);
+    StopIndexerCommand(src::Drivers*, IndexerSubsystem*);
     void initialize() override;
 
     void execute() override;
@@ -131,14 +131,15 @@ public:
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "stop feeder"; }
+    const char* getName() const override { return "stop indexer"; }
 
 private:
     src::Drivers* drivers;
-    FeederSubsystem* feeder;
+    IndexerSubsystem* indexer;
+    
 };
 
-}  // namespace src::Feeder
+}  // namespace src::Indexer
 
 
 #endif

@@ -1,44 +1,44 @@
-#include "burst_feeder_command.hpp"
+#include "indexer_command.hpp"
 #ifndef ENGINEER
 
-namespace src::Feeder {
-BurstFeederCommand::BurstFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold, int burstLength)
+namespace src::Indexer {
+BurstIndexerCommand::BurstIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer, float speed, float acceptableHeatThreshold, int burstLength)
     : drivers(drivers),
-      feeder(feeder),
+      indexer(indexer),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
       startingTotalBallCount(0),
       burstLength(burstLength) {
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
-void BurstFeederCommand::initialize() {
-    startingTotalBallCount = feeder->getTotalLimitCount();
+void BurstIndexerCommand::initialize() {
+    startingTotalBallCount = indexer->getTotalLimitCount();
 }
 
-void BurstFeederCommand::execute() {
-    feeder->setTargetRPM(speed);
+void BurstIndexerCommand::execute() {
+    indexer->setTargetRPM(speed);
 }
 
-void BurstFeederCommand::end(bool) {
-    feeder->setTargetRPM(0);
+void BurstIndexerCommand::end(bool) {
+    indexer->setTargetRPM(0);
 }
 
-bool BurstFeederCommand::isReady() {
-    return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
+bool BurstIndexerCommand::isReady() {
+    return indexer->isBarrelHeatAcceptable(acceptableHeatThreshold);
 }
 
-bool BurstFeederCommand::isFinished() const {
-    int elapsedTotal = feeder->getTotalLimitCount() - startingTotalBallCount;
-    return (elapsedTotal >= burstLength) || !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold);
+bool BurstIndexerCommand::isFinished() const {
+    int elapsedTotal = indexer->getTotalLimitCount() - startingTotalBallCount;
+    return (elapsedTotal >= burstLength) || !indexer->isBarrelHeatAcceptable(acceptableHeatThreshold);
 }
 
-FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
+IndexerSubsystem::IndexerSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
       targetRPM(0),
       desiredOutput(0),
-      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
-      feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
+      indexerVelPID(INDEXER_VELOCITY_PID_CONFIG),
+      indexerMotor(drivers, INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, "Indexer Motor"),
       limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 #ifdef TARGET_SENTRY
       ,
@@ -47,8 +47,8 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
 {
 }
 
-void FeederSubsystem::initialize() {
-    feederMotor.initialize();
+void IndexerSubsystem::initialize() {
+    indexerMotor.initialize();
     limitSwitchLeft.initialize();
 #ifdef TARGET_SENTRY
     limitSwitchRight.initialize();
@@ -56,7 +56,7 @@ void FeederSubsystem::initialize() {
 }
 
 // refreshes the velocity PID given the target RPM and the current RPM
-void FeederSubsystem::refresh() {
+void IndexerSubsystem::refresh() {
     updateMotorVelocityPID();
     setDesiredOutput();
     limitSwitchLeft.refresh();
@@ -65,22 +65,22 @@ void FeederSubsystem::refresh() {
 #endif
 }
 
-void FeederSubsystem::updateMotorVelocityPID() {
-    float err = targetRPM - feederMotor.getShaftRPM();
-    feederVelPID.runControllerDerivateError(err);
-    desiredOutput = feederVelPID.getOutput();
+void IndexerSubsystem::updateMotorVelocityPID() {
+    float err = targetRPM - indexerMotor.getShaftRPM();
+    indexerVelPID.runControllerDerivateError(err);
+    desiredOutput = indexerVelPID.getOutput();
 }
 
-float FeederSubsystem::setTargetRPM(float rpm) {
+float IndexerSubsystem::setTargetRPM(float rpm) {
     this->targetRPM = rpm;
     return targetRPM;
 }
 
-void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity PID and sets the motor to that RPM
-    feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
+void IndexerSubsystem::setDesiredOutput() {  // takes the input from the velocity PID and sets the motor to that RPM
+    indexerMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
 }
 
-int FeederSubsystem::getTotalLimitCount() const {
+int IndexerSubsystem::getTotalLimitCount() const {
 #ifndef TARGET_SENTRY
     return limitSwitchLeft.getCurrentCount();
 #endif
@@ -89,7 +89,7 @@ int FeederSubsystem::getTotalLimitCount() const {
 #endif
 }
 
-bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
+bool IndexerSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
     using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
     auto turretData = drivers->refSerial.getRobotData().turret;
 
@@ -120,53 +120,53 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
     return (lastHeat <= (static_cast<float>(heatLimit) * maxPercentage));
 }
 
-FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold)
+FullAutoIndexerCommand::FullAutoIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer, float speed, float acceptableHeatThreshold)
     : drivers(drivers),
-      feeder(feeder),
+      indexer(indexer),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
       unjamSpeed(-3000.0f)  //
 {
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
-void FullAutoFeederCommand::initialize() {
-    feeder->setTargetRPM(0.0f);
+void FullAutoIndexerCommand::initialize() {
+    indexer->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
 
-void FullAutoFeederCommand::execute() {
-    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-        feeder->setTargetRPM(unjamSpeed);
+void FullAutoIndexerCommand::execute() {
+    if (fabs(indexer->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+        indexer->setTargetRPM(unjamSpeed);
         unjamTimer.restart(175);
     }
 
     if (unjamTimer.execute()) {
-        feeder->setTargetRPM(speed);
+        indexer->setTargetRPM(speed);
         startupThreshold.restart(500);
     }
 }
 
-void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void FullAutoIndexerCommand::end(bool) { indexer->setTargetRPM(0.0f); }
 
-bool FullAutoFeederCommand::isReady() { return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoIndexerCommand::isReady() { return indexer->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
-bool FullAutoFeederCommand::isFinished() const { return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoIndexerCommand::isFinished() const { return !indexer->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
-StopFeederCommand::StopFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder) : drivers(drivers), feeder(feeder) {
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+StopIndexerCommand::StopIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer) : drivers(drivers), indexer(indexer) {
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
-void StopFeederCommand::initialize() { feeder->setTargetRPM(0); }
+void StopIndexerCommand::initialize() { indexer->setTargetRPM(0); }
 
-void StopFeederCommand::execute() { feeder->setTargetRPM(0); }
+void StopIndexerCommand::execute() { indexer->setTargetRPM(0); }
 
-void StopFeederCommand::end(bool interrupted) { UNUSED(interrupted); }
+void StopIndexerCommand::end(bool interrupted) { UNUSED(interrupted); }
 
-bool StopFeederCommand::isReady() { return true; }
+bool StopIndexerCommand::isReady() { return true; }
 
-bool StopFeederCommand::isFinished() const { return false; }
+bool StopIndexerCommand::isFinished() const { return false; }
 
-}  // namespace src::Feeder
+}  // namespace src::Indexer
 #endif
