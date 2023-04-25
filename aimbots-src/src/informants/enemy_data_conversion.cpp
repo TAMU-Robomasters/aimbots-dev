@@ -78,6 +78,10 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
                  drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
                  currentData.position);*/
 
+    //grab past camera data
+    std::pair<float,float> gimbalAngles = gimbal->getGimbalOrientationAtTime(frameCaptureDelay);
+    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
+
     enemyTimedPosition gimbalTransformedDataWatch = currentData;
     gimbalTransformedDataWatch.position =
         drivers->kinematicInformant.getRobotFrames()
@@ -95,7 +99,7 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
 
     transformedData.position =
         drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CAMERA_FRAME)
+            .getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME)
             .getPointInFrame(
                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
                 currentData.position);

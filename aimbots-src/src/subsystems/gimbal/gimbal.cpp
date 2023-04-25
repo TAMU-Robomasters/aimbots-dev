@@ -105,8 +105,8 @@ void GimbalSubsystem::refresh() {
 
     // update gimbal orientation buffer
     std::pair<float, float> orientation;
-    orientation.first =  modm::toDegree(currentYawMotorAngle.getValue());
-    orientation.second = modm::toDegree(currentPitchMotorAngle.getValue());
+    orientation.first =  currentYawMotorAngle.getValue();
+    orientation.second = currentPitchMotorAngle.getValue();
 
     gimbalOrientationBuffer.prependOverwrite(orientation);
 }

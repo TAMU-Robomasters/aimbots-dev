@@ -48,6 +48,8 @@ public:
 
     void updateRobotFrames();
 
+    void mirrorPastRobotFrame(uint32_t frameDelay_ms);
+
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
 
 

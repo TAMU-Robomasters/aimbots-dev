@@ -7,7 +7,15 @@
 
 namespace src::Informants::Transformers {
 
-enum FrameType { FIELD_FRAME = 0, CHASSIS_FRAME = 1, GIMBAL_FRAME = 2, CAMERA_FRAME = 3, BALLISTICS_FRAME = 4, CHASSIS_IMU_FRAME =5 };
+enum FrameType {
+    FIELD_FRAME = 0,
+    CHASSIS_FRAME = 1,
+    GIMBAL_FRAME = 2,
+    CAMERA_FRAME = 3,
+    BALLISTICS_FRAME = 4,
+    CHASSIS_IMU_FRAME = 5,
+    CAMERA_AT_CV_UPDATE_FRAME = 6
+};
 class RobotFrames {
 public:
     RobotFrames();
@@ -27,6 +35,8 @@ public:
                 return ballisticsFrame;
             case CHASSIS_IMU_FRAME:
                 return chassisIMUFrame;
+            case CAMERA_AT_CV_UPDATE_FRAME:
+                return cameraAtCVUpdateFrame;
             default:
                 return chassisFrame;
         }
@@ -39,6 +49,11 @@ public:
         Vector3f robotPositionRelativeToStartPosition,
         AngleUnit angleUnit);
 
+    void mirrorPastCameraFrame(
+        float gimbalYawAngle,
+        float gimbalPitchAngle,
+        AngleUnit angleUnit
+    );
 private:
     CoordinateFrame fieldFrame;
     CoordinateFrame chassisFrame;  // "Ground Frame
@@ -46,6 +61,7 @@ private:
     CoordinateFrame cameraFrame;
     CoordinateFrame ballisticsFrame;
     CoordinateFrame chassisIMUFrame;
+    CoordinateFrame cameraAtCVUpdateFrame;
     // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
 
     Vector3f chassis_origin_relative_to_world_origin;
