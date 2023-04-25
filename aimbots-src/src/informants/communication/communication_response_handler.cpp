@@ -12,7 +12,7 @@
 namespace src::Communication {
 
 CommunicationResponseHandler::CommunicationResponseHandler(tap::Drivers &drivers) : drivers(drivers){};
-uint8_t messageTest;
+uint8_t messageTest, messageTest2, messageTest3, messageTest4;
 uint16_t messageType;
 uint16_t CRC16;
 uint16_t messageLengthDisplay;
