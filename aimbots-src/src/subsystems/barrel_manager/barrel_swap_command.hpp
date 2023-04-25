@@ -33,11 +33,11 @@ private:
     SmoothPID swapMotorPID;
 
     bool barrelMovingFlag = true;
-    bool barrelCalibratingFlag = true;
+    bool barrelCalibratingFlag = false;
 
     bool wasRPressed = false;
 
-    barrelSide currentCalibratingBarrel = LEFT;
+    barrelSide currentCalibratingBarrel = barrelSide::LEFT;
 
 
 };

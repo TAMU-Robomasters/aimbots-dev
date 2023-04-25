@@ -121,7 +121,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2, &barrelSwapDefaultCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
@@ -168,6 +168,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
     drivers->commandScheduler.registerSubsystem(&gui);
+    drivers->commandScheduler.registerSubsystem(&barrelManager);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -185,7 +186,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
+    //barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -201,9 +202,9 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
+    //drivers->commandMapper.addMap(&rightSwitchUp);
+    //drivers->commandMapper.addMap(&rightSwitchMid);
+    //drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
     //drivers->commandMapper.addMap(&ctrlC);
 }

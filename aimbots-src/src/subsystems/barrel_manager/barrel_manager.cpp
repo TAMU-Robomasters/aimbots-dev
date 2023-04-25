@@ -16,6 +16,14 @@ BarrelManagerSubsystem::BarrelManagerSubsystem(tap::Drivers* drivers) : tap::con
     
 }
 
+//DEBUG VARIABLES
+int16_t currentTorqueDisplay = 0;
+float swapMotorPositionDisplay = 0;
+bool isSwapOnlineDisplay = false;
+float swapOutputDisplay = 0;
+float currentSwapPositionDisplay = 0;
+
+//----------------------
 
 void BarrelManagerSubsystem::initialize() {
     swapMotor.initialize();
@@ -24,11 +32,17 @@ void BarrelManagerSubsystem::initialize() {
 }
 
 void BarrelManagerSubsystem::refresh() {
+    isSwapOnlineDisplay = swapMotor.isMotorOnline();
+
     if (swapMotor.isMotorOnline()) {
-        uint64_t swapMotorUnwrapedEncoder = swapMotor.getEncoderUnwrapped();
+        int64_t swapMotorUnwrapedEncoder = swapMotor.getEncoderUnwrapped();
         currentSwapMotorPosition = swapMotorUnwrapedEncoder / LEAD_SCREW_TICKS_PER_MM;
-        
+        currentSwapPositionDisplay = currentSwapMotorPosition;
         swapMotor.setDesiredOutput(desiredSwapMotorOutput);
+
+        currentTorqueDisplay = swapMotor.getTorque();
+        swapMotorPositionDisplay = swapMotor.getEncoderUnwrapped();
+        swapOutputDisplay = swapMotor.getShaftRPM();
     }
 }
 
@@ -49,7 +63,7 @@ float BarrelManagerSubsystem::getMotorPosition() {
 bool BarrelManagerSubsystem::findZeroPosition(barrelSide stopSideToFind) {
     //Slam into each wall and find current spike.  Save position at each wall to limitLRPositions
     //find limit
-    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -1 : 1);// TODO: Confirm direction of stop sides
+    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -10 : 10);// TODO: Confirm direction of stop sides
     
     if(abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE) {
         setMotorOutput(0);
@@ -74,25 +88,25 @@ void BarrelManagerSubsystem::setSide(barrelSide side) {
         break;
     
     case barrelSide::LEFT:
-        currentBarrelSide=LEFT;
+        currentBarrelSide=barrelSide::LEFT;
         break;
     
     case barrelSide::RIGHT:
-        currentBarrelSide=RIGHT;
+        currentBarrelSide=barrelSide::RIGHT;
         break;
     }
 }
 
 void BarrelManagerSubsystem::toggleSide() {
-    currentBarrelSide = (currentBarrelSide == LEFT) ? RIGHT : LEFT;
+    currentBarrelSide = (currentBarrelSide == barrelSide::LEFT) ? barrelSide::RIGHT : barrelSide::LEFT;
 }
 
 float BarrelManagerSubsystem::getBarrelHeat(barrelSide side = CURRENT) {
     auto turretData = drivers->refSerial.getRobotData().turret;
-    if (side == CURRENT){
+    if (side == barrelSide::CURRENT){
         side = currentBarrelSide;
     }
-    return(side == LEFT) ? turretData.heat17ID1 /*LEFT*/ : turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
+    return(side == barrelSide::LEFT) ? turretData.heat17ID1 /*LEFT*/ : turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
 
 }
 

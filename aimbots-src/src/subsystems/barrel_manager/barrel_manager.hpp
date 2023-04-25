@@ -12,13 +12,15 @@
 
 #ifdef BARREL_SWAP_COMPATIBLE
 
+
+
+namespace src::Barrel_Manager {
+
 enum barrelSide {
     LEFT = 0,
     RIGHT = 1,
     CURRENT = -1,
 };
-
-namespace src::Barrel_Manager {
 
 class BarrelManagerSubsystem : public tap::control::Subsystem {
 public:
@@ -57,13 +59,13 @@ public:
     bool isBarrelAligned();
 
     //TODO: Make sure Left and Right offsets are added/subtracted correctly
-    float getSideInMM(barrelSide side) {(side == LEFT) ? limitLRPositions[LEFT] + LEFT_STOP_OFFSET : limitLRPositions[RIGHT] - RIGHT_STOP_OFFSET;}
+    float getSideInMM(barrelSide side) {return (side == barrelSide::LEFT) ? (limitLRPositions[barrelSide::LEFT] + LEFT_STOP_OFFSET) : (limitLRPositions[barrelSide::RIGHT] - RIGHT_STOP_OFFSET);}
 
     
 
 private:
     tap::Drivers* drivers;
-    barrelSide currentBarrelSide = LEFT;
+    barrelSide currentBarrelSide = barrelSide::LEFT;
 
     DJIMotor swapMotor;
 
@@ -78,7 +80,9 @@ private:
 
     float desiredSwapMotorOutput;
 
-    float limitLRPositions[2] = {0,1000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
+    float limitLRPositions[2] = {0,1000000000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
+
+
 
 };
 

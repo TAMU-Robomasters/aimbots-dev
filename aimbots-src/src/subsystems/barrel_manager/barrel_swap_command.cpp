@@ -14,19 +14,36 @@ BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsyst
        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(barrelManager));
 }
 
+//DEBUG VARIABLES
+float PIDDisplay = 0;
+float positionErrorDisplay = 0;
+float sideInMMDisplay = 0;
+float motorPositionDisplay = 0;
+
+bool isCommandRunning = false;
+
+
+//-----------
+
 void BarrelSwapCommand::initialize() {
     barrelCalibratingFlag = true;
-    currentCalibratingBarrel = LEFT;
+    //currentCalibratingBarrel = barrelSide::LEFT;
     // barrelManager->findZeroPosition();
     //barrelManager->setMotorOutput(0);
 
 }
 
 void BarrelSwapCommand::execute() {
+    isCommandRunning = true;
     if (!barrelCalibratingFlag) {
+        sideInMMDisplay = barrelManager->getSideInMM(barrelManager->getSide());
+        motorPositionDisplay = barrelManager->getMotorPosition();
+        //float positionControllerError = barrelManager->getMotorPosition() - barrelManager->getSideInMM(barrelManager->getSide());
         float positionControllerError = barrelManager->getMotorPosition() - barrelManager->getSideInMM(barrelManager->getSide());
-
         float swapPositionPIDOutput = swapMotorPID.runController(positionControllerError, barrelManager->getMotorOutput());
+
+        PIDDisplay = swapPositionPIDOutput;
+        positionErrorDisplay = positionControllerError;
 
         barrelManager->setMotorOutput(swapPositionPIDOutput);
 
@@ -37,12 +54,19 @@ void BarrelSwapCommand::execute() {
             barrelManager->toggleSide();
         }
 
+        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+            barrelManager->setSide(barrelSide::LEFT);
+        }
+        else {
+            barrelManager->setSide(barrelSide::RIGHT);
+        }
+
         barrelMovingFlag = barrelManager->isBarrelAligned();
     }
     else {
         if (barrelManager->findZeroPosition(currentCalibratingBarrel)) {
-            if (currentCalibratingBarrel == LEFT) { // LEFT first
-                currentCalibratingBarrel = RIGHT;
+            if (currentCalibratingBarrel == barrelSide::LEFT) { // LEFT first
+                currentCalibratingBarrel = barrelSide::RIGHT;
             }
             else {
                 barrelCalibratingFlag = false; // done calibrating

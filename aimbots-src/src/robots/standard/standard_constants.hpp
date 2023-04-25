@@ -155,7 +155,7 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 //
-static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR8; // TODO: check motor ID for Barrel Swap
+static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1; // TODO: check motor ID for Barrel Swap
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
@@ -283,14 +283,14 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 //Barrel Manager Constants
 //These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
 //A positive increase provides a bigger gap between hard stop and barrel
-static float LEFT_STOP_OFFSET = 0; //In mm
-static float RIGHT_STOP_OFFSET = 0; //In mm
+static constexpr float LEFT_STOP_OFFSET = 0; //In mm
+static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
 //Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
-static float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
+static constexpr float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
 
 //The value that the torque needs to be greater than to detect running into a wall
-static int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a useful value
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a useful value
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
