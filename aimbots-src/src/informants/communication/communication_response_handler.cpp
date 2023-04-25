@@ -34,7 +34,9 @@ void CommunicationResponseHandler::operator()(const tap::communication::serial::
     messageTest = static_cast<int>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
     messageType = message.messageType;
     CRC16 = message.CRC16;
-
+    messageTest2 = static_cast<int>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader) + 1]);
+    messageTest3 = static_cast<int>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader) + 2]);
+    messageTest4 = static_cast<int>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)+3]);
     // this->sentryMoving = static_cast<bool>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
 }
 
