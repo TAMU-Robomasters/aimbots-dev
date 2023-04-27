@@ -52,38 +52,38 @@ bool CommunicationResponseSubsytem::run() {
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
     while (true) {
-        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(rand() % 0xff);  // static_cast<uint8_t>(false);
+        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(false);
+        this->robotToRobotMessage.dataAndCRC16[1] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(sx);
+        this->robotToRobotMessage.dataAndCRC16[2] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sx);
+        this->robotToRobotMessage.dataAndCRC16[3] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+        this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
 
         // if (this->sentryMoving != this->getDriveStatus()) {
         //     this->sentryMoving = this->getDriveStatus();
         // short standardX = 0;
 
-#ifdef TARGET_SENTRY
-        // static_cast<uint8_t>(sy);
+#ifdef TARGET_STANDARD
 
-#endif
-#ifdef TARGET_SENTRY
-
-        PT_CALL(refSerialTransmitter.sendRobotToRobotMsg(
-            &this->robotToRobotMessage,
-            SENTRY_RESPONSE_MESSAGE_ID,
-            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
-            4));
-
-        // PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
+        // PT_CALL(refSerialTransmitter.sendRobotToRobotMsg(
         //     &this->robotToRobotMessage,
         //     SENTRY_RESPONSE_MESSAGE_ID,
-        //     drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SOLDIER_1),
+        //     drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
         //     4));
-// }
-#elif TARGET_STANDARD
-        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
 
         PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
-            SENTRY_REQUEST_ROBOT_ID,
-            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
-            1));
+            SENTRY_RESPONSE_MESSAGE_ID,
+            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_HERO),
+            4));
+        // }
+        // #elif TARGET_HERO
+        // this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
+
+        // PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
+        //     &this->robotToRobotMessage,
+        //     SENTRY_REQUEST_ROBOT_ID,
+        //     drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
+        //     1));
 
 #endif
         PT_YIELD();
