@@ -21,7 +21,7 @@ int16_t currentTorqueDisplay = 0;
 float swapMotorPositionDisplay = 0;
 bool isSwapOnlineDisplay = false;
 float swapOutputDisplay = 0;
-float currentSwapPositionDisplay = 0;
+float currentSwapDesiredOutputDisplay = 0;
 
 //----------------------
 
@@ -37,16 +37,15 @@ void BarrelManagerSubsystem::refresh() {
     if (swapMotor.isMotorOnline()) {
         int64_t swapMotorUnwrapedEncoder = swapMotor.getEncoderUnwrapped();
         currentSwapMotorPosition = swapMotorUnwrapedEncoder / LEAD_SCREW_TICKS_PER_MM;
-        currentSwapPositionDisplay = currentSwapMotorPosition;
         swapMotor.setDesiredOutput(desiredSwapMotorOutput);
+
+        currentSwapDesiredOutputDisplay = desiredSwapMotorOutput;
 
         currentTorqueDisplay = swapMotor.getTorque();
         swapMotorPositionDisplay = swapMotor.getEncoderUnwrapped();
         swapOutputDisplay = swapMotor.getShaftRPM();
     }
 }
-
-    
 
 void BarrelManagerSubsystem::setMotorOutput(float output) {
     desiredSwapMotorOutput = output;
@@ -63,7 +62,7 @@ float BarrelManagerSubsystem::getMotorPosition() {
 bool BarrelManagerSubsystem::findZeroPosition(barrelSide stopSideToFind) {
     //Slam into each wall and find current spike.  Save position at each wall to limitLRPositions
     //find limit
-    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -10 : 10);// TODO: Confirm direction of stop sides
+    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -1 : 1);// TODO: Confirm direction of stop sides
     
     if(abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE) {
         setMotorOutput(0);

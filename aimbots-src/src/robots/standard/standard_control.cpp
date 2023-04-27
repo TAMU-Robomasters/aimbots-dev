@@ -186,7 +186,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    //barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
+    barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
 }
 
 // Set commands scheduled on startup

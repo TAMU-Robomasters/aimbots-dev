@@ -16,6 +16,8 @@
 
 namespace src::Barrel_Manager {
 
+//To the Left is negative encoder counts
+//To the Right is positive encoder counts
 enum barrelSide {
     LEFT = 0,
     RIGHT = 1,

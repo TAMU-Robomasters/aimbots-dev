@@ -21,12 +21,16 @@ float sideInMMDisplay = 0;
 float motorPositionDisplay = 0;
 
 bool isCommandRunning = false;
+bool calFlag = false;
 
+float errorDisplay = 0;
+float deriDisplay = 0;
 
 //-----------
 
 void BarrelSwapCommand::initialize() {
     barrelCalibratingFlag = true;
+
     //currentCalibratingBarrel = barrelSide::LEFT;
     // barrelManager->findZeroPosition();
     //barrelManager->setMotorOutput(0);
@@ -35,12 +39,16 @@ void BarrelSwapCommand::initialize() {
 
 void BarrelSwapCommand::execute() {
     isCommandRunning = true;
+    calFlag = barrelCalibratingFlag;
     if (!barrelCalibratingFlag) {
         sideInMMDisplay = barrelManager->getSideInMM(barrelManager->getSide());
         motorPositionDisplay = barrelManager->getMotorPosition();
-        //float positionControllerError = barrelManager->getMotorPosition() - barrelManager->getSideInMM(barrelManager->getSide());
-        float positionControllerError = barrelManager->getMotorPosition() - barrelManager->getSideInMM(barrelManager->getSide());
-        float swapPositionPIDOutput = swapMotorPID.runController(positionControllerError, barrelManager->getMotorOutput());
+        float positionControllerError = barrelManager->getSideInMM(barrelManager->getSide()) - barrelManager->getMotorPosition();
+        swapMotorPID.runController(positionControllerError, barrelManager->getMotorOutput());
+        float swapPositionPIDOutput = swapMotorPID.getOutput();
+
+        errorDisplay = swapMotorPID.getError();
+        deriDisplay = swapMotorPID.getDerivative();
 
         PIDDisplay = swapPositionPIDOutput;
         positionErrorDisplay = positionControllerError;
