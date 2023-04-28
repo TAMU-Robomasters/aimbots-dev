@@ -68,12 +68,12 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float    YAW_OFFSET_ANGLE = 90.0f;
+static constexpr float YAW_OFFSET_ANGLE = 90.0f;
 static constexpr uint16_t YAW_OFFSET_ANGLE = 2048;
-static constexpr float    PITCH_OFFSET_ANGLE = 30.0f;
+static constexpr float PITCH_OFFSET_ANGLE = 30.0f;
 #error "DM Richard on Discord if you see this (or just calculate the pitch stop limits yourself idc)"
-static constexpr float    PITCH_SOFTSTOP_LOW = 0.0f;
-static constexpr float    PITCH_SOFTSTOP_HIGH = 0.0f;
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = 0.0f;
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

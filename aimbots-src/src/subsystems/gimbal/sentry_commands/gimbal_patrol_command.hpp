@@ -11,10 +11,8 @@
 namespace src::Gimbal {
 
 class GimbalPatrolCommand : public tap::control::Command {
-   public:
-    GimbalPatrolCommand(src::Drivers*,
-                        GimbalSubsystem*,
-                        GimbalChassisRelativeController*);
+public:
+    GimbalPatrolCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
@@ -27,8 +25,10 @@ class GimbalPatrolCommand : public tap::control::Command {
 
     // implements sin function with current time (millis) as function input
     float getSinusoidalPitchPatrolAngle(AngleUnit unit) {
-        constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
-        float angle = modm::toRadian(PITCH_PATROL_AMPLITUDE) * sin(PITCH_PATROL_FREQUENCY * tap::arch::clock::getTimeMilliseconds() / 1000.0f) + modm::toRadian((intialDirection * PITCH_PATROL_OFFSET) + PITCH_OFFSET_ANGLE);
+        constexpr float intialDirection = (PITCH_AXIS_SOFTSTOP_HIGH < PITCH_AXIS_SOFTSTOP_LOW) ? 1.0f : -1.0f;
+        float angle = modm::toRadian(PITCH_PATROL_AMPLITUDE) *
+                          sin(PITCH_PATROL_FREQUENCY * tap::arch::clock::getTimeMilliseconds() / 1000.0f) +
+                      modm::toRadian((intialDirection * PITCH_PATROL_OFFSET) + PITCH_OFFSET_ANGLE);
         if (unit == AngleUnit::Radians) {
             return angle;
         }
@@ -40,7 +40,7 @@ class GimbalPatrolCommand : public tap::control::Command {
     // function assumes gimbal yaw is at 0 degrees (positive x axis)
     float getFieldRelativeYawPatrolAngle(AngleUnit unit);
 
-   private:
+private:
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;

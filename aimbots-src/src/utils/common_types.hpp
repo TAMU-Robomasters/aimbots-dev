@@ -23,6 +23,16 @@
 
 #include "tap/algorithms/math_user_utils.hpp"
 
+static inline float wrapTo0To2PIRange(float angle) {
+    if (angle < 0.0f) {
+        return angle + M_TWOPI;
+    } else if (angle > M_TWOPI) {
+        return angle - M_TWOPI;
+    } else {
+        return angle;
+    }
+}
+
 #define REMAP(x, in_min, in_max, out_min, out_max) ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
 #define RPM_TO_RADPS(x) (x * M_TWOPI / 60.0f)
@@ -42,8 +52,8 @@ enum class AngleUnit : uint8_t {
 
 // if this looks cursed, that's because it is.
 // currently, we're using a 1x3 matrix for X, Y, TIME patrol coordinates and also X, Y, Z location coordinates.
-// ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch patrol
-// becomes field-relative
+// ideally, we'd use a 1x4 matrix for patrol coordinates but we don't require Z right now. will change later if pitch
+// patrol becomes field-relative
 enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 
 // :)
@@ -99,15 +109,15 @@ using Deque = modm::BoundedDeque<T, N>;
 template <class... Args>
 using DJIMotorFunc = void (DJIMotor::*)(Args...);
 
-static inline void scheduleIfNotScheduled(tap::control::CommandScheduler &scheduler, tap::control::Command *cmd) {
+static inline void scheduleIfNotScheduled(tap::control::CommandScheduler& scheduler, tap::control::Command* cmd) {
     if (!scheduler.isCommandScheduled(cmd)) {
         scheduler.addCommand(cmd);
     }
 }
 
 static inline void descheduleIfScheduled(
-    tap::control::CommandScheduler &scheduler,
-    tap::control::Command *cmd,
+    tap::control::CommandScheduler& scheduler,
+    tap::control::Command* cmd,
     bool interrupted) {
     if (scheduler.isCommandScheduled(cmd)) {
         scheduler.removeCommand(cmd, interrupted);

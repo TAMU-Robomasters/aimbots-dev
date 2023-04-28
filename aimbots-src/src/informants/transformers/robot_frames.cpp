@@ -15,11 +15,13 @@ RobotFrames::RobotFrames() {
     // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
     ballisticsFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
     gimbalFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
-    Matrix3f chassisIMUOrientation = rotationMatrix(AngleUnit::Degrees, CIMU_X_EULER, X_AXIS) * rotationMatrix(AngleUnit::Degrees, CIMU_Y_EULER, Y_AXIS) * rotationMatrix(AngleUnit::Degrees, CIMU_Z_EULER, Z_AXIS);
+    Matrix3f chassisIMUOrientation = rotationMatrix(AngleUnit::Degrees, CIMU_X_EULER, X_AXIS) *
+                                     rotationMatrix(AngleUnit::Degrees, CIMU_Y_EULER, Y_AXIS) *
+                                     rotationMatrix(AngleUnit::Degrees, CIMU_Z_EULER, Z_AXIS);
     chassisIMUFrame.setOrientation(chassisIMUOrientation);
 
     // update frames to initial values
-    updateFrames(YAW_START_ANGLE, PITCH_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);
+    updateFrames(YAW_AXIS_START_ANGLE, PITCH_AXIS_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);
 }
 
 void RobotFrames::updateFrames(
@@ -28,12 +30,10 @@ void RobotFrames::updateFrames(
     float chassisWorldRelativeAngle,
     Vector3f robotPositionRelativeToStartPosition,
     AngleUnit angleUnit) {
+    chassis_orientation_relative_to_world_orientation = rotationMatrix(angleUnit, chassisWorldRelativeAngle, Z_AXIS);
 
-    chassis_orientation_relative_to_world_orientation =
-        rotationMatrix(angleUnit, chassisWorldRelativeAngle, Z_AXIS);
-        
-    turret_orientation_relative_to_chassis_orientation = rotationMatrix(angleUnit, yawChassisRelative, Z_AXIS) *
-                                                         rotationMatrix(angleUnit, pitchChassisRelative, X_AXIS);
+    turret_orientation_relative_to_chassis_orientation =
+        rotationMatrix(angleUnit, yawChassisRelative, Z_AXIS) * rotationMatrix(angleUnit, pitchChassisRelative, X_AXIS);
     camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
         turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;

@@ -186,8 +186,8 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 static constexpr float YAW_OFFSET_ANGLE = 61.0f;
 static constexpr float PITCH_OFFSET_ANGLE = 152.0f;
 
-static constexpr float PITCH_SOFTSTOP_LOW = 105.42f;
-static constexpr float PITCH_SOFTSTOP_HIGH = 218.84f;
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = 105.42f;
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 218.84f;
 
 // PITCH PATROL FUNCTION CONSTANTS
 static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees

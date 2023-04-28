@@ -19,7 +19,7 @@ public:
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawMotors[i] =
                 new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
-            currentYawMotorAngles[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_TWOPI, M_TWOPI);
+            currentYawMotorAngles[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
         }
     }
 
@@ -27,7 +27,7 @@ public:
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchMotors[i] =
                 new DJIMotor(drivers, PITCH_MOTOR_IDS[i], PITCH_GIMBAL_BUS, PITCH_MOTOR_DIRECTIONS[i], PITCH_MOTOR_NAMES[i]);
-            currentPitchMotorAngles[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_TWOPI, M_TWOPI);
+            currentPitchMotorAngles[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
         }
     }
 
@@ -165,7 +165,7 @@ public:
     }
     inline void setTargetPitchAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetPitchAxisAngle.setValue(angle);
+        targetPitchAxisAngle.setValue(tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
     }
 
     float getYawSetpointError(AngleUnit unit) const {

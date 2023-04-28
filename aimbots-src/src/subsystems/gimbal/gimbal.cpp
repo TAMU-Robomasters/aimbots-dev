@@ -7,7 +7,6 @@ static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
 }
 
 static inline float wrapAngleToPiRange(float angle) { return fmodf(angle + M_PI, M_TWOPI) - M_PI; }
-
 namespace src::Gimbal {
 
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
@@ -16,7 +15,7 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
       targetYawAxisAngle(0.0f, -M_PI, M_PI),
-      targetPitchAxisAngle(0.0f, PITCH_SOFTSTOP_LOW, PITCH_SOFTSTOP_HIGH)  // bounds validated during construction
+      targetPitchAxisAngle(0.0f, -M_PI, M_PI)  //
 {
     BuildYawMotors();
     BuildPitchMotors();
@@ -55,8 +54,8 @@ void GimbalSubsystem::refresh() {
         currentYawMotorAngles[i]->setValue(DJIEncoderValueToRadians(yawMotors[i]->getEncoderWrapped()));
 
         // https://www.desmos.com/calculator/bducsk7y6v
-        float wrappedYawAxisAngle = wrapAngleToPiRange(
-            GIMBAL_YAW_GEAR_RATIO * DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
+        float wrappedYawAxisAngle =
+            GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
 
         yawAxisAngleSum += wrappedYawAxisAngle;
         ////////////////

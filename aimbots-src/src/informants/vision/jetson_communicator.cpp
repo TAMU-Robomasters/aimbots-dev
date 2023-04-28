@@ -17,7 +17,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       jetsonOfflineTimeout(),
       lastMessage(),
       fieldRelativeYawAngleAtVisionUpdate(0.0f),
-      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_START_ANGLE))  //
+      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_AXIS_START_ANGLE))  //
 {}
 
 void JetsonCommunicator::initialize() {
