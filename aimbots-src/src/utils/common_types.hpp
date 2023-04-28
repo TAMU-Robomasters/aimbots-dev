@@ -25,6 +25,8 @@
 
 #define REMAP(x, in_min, in_max, out_min, out_max) ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
+#define RPM_TO_RADPS(x) (x * M_TWOPI / 60.0f)
+
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"
 using DJIMotor = tap::mock::DjiMotorMock;
@@ -36,7 +38,6 @@ using DJIMotor = tap::motor::DjiMotor;
 enum class AngleUnit : uint8_t {
     Degrees,
     Radians,
-    None,
 };
 
 // if this looks cursed, that's because it is.

@@ -25,19 +25,16 @@ GimbalControlCommand::GimbalControlCommand(
 void GimbalControlCommand::initialize() {}
 
 void GimbalControlCommand::execute() {
-#ifdef TARGET_SENTRY
-    float targetYawAngle = 0.0f;
-    targetYawAngle = gimbal->getTargetYawAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput();
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-#else
-    // This just locks it to the the forward direction, specified by YAW_OFFSET_ANGLE
-    controller->runYawController(AngleUnit::Degrees, YAW_OFFSET_ANGLE);
-#endif
+    float targetYawAxisAngle = 0.0f;
+    float targetPitchAxisAngle = 0.0f;
 
-    float targetPitchAngle = 0.0f;
-    targetPitchAngle =
-        gimbal->getTargetPitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
-    controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+    targetYawAxisAngle =
+        gimbal->getTargetYawAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput();
+    controller->runYawController(AngleUnit::Degrees, targetYawAxisAngle);
+
+    targetPitchAxisAngle =
+        gimbal->getTargetPitchAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput();
+    controller->runPitchController(AngleUnit::Degrees, targetPitchAxisAngle);
 }
 
 bool GimbalControlCommand::isReady() { return true; }
@@ -45,7 +42,7 @@ bool GimbalControlCommand::isReady() { return true; }
 bool GimbalControlCommand::isFinished() const { return false; }
 
 void GimbalControlCommand::end(bool) {
-    gimbal->setAllDesiredYawOutputs(0);
+    gimbal->setAllDesiredYawMotorOutputs(0);
     gimbal->setAllDesiredPitchOutputs(0);
 }
 

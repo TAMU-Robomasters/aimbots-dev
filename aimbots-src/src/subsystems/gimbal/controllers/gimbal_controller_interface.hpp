@@ -5,11 +5,11 @@
 namespace src::Gimbal {
 
 class GimbalControllerInterface {
-   public:
+public:
     virtual void initialize() = 0;
 
-    virtual void runYawController(AngleUnit unit, float targetYawAngle, bool vision = false) = 0;
-    virtual void runPitchController(AngleUnit unit, float targetPitchAngle, bool vision = false) = 0;
+    virtual void runYawController(AngleUnit unit, float targetYawAxisAngle, bool vision = false) = 0;
+    virtual void runPitchController(AngleUnit unit, float targetPitchAxisAngle, bool vision = false) = 0;
 
     virtual float getTargetYaw(AngleUnit unit) const = 0;
 

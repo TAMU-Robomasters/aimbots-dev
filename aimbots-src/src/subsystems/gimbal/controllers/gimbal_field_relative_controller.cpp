@@ -7,13 +7,12 @@
 
 namespace src::Gimbal {
 
-GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbal)
+GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem)
     : drivers(drivers),
-      gimbal(gimbal),
-      yawPositionPID(YAW_POSITION_PID_CONFIG),
-      pitchPositionPID(PITCH_POSITION_PID_CONFIG),
-      yawVisionPID(YAW_VISION_PID_CONFIG),
-      pitchVisionPID(PITCH_VISION_PID_CONFIG) {}
+      gimbal(gimbalSubsystem)  //
+{
+    BuildPositionPIDs();
+}
 
 void GimbalFieldRelativeController::initialize() { fieldRelativeYawTarget = 0.0f; }
 
@@ -21,51 +20,57 @@ float fieldRelativeYawTargetDisplay = 0.0f;
 float targetChassisRelativeYawAngleDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle, bool vision) {
+    UNUSED(vision);
     fieldRelativeYawTarget =
-        (unit == AngleUnit::Degrees) ? desiredFieldRelativeYawAngle : modm::toDegree(desiredFieldRelativeYawAngle);
-    // converts to degrees if necessary
+        (unit == AngleUnit::Radians) ? desiredFieldRelativeYawAngle : modm::toRadian(desiredFieldRelativeYawAngle);
+
     fieldRelativeYawTargetDisplay = fieldRelativeYawTarget;
 
     float chassisInducedYawMotionCompensation =
         CHASSIS_VELOCITY_YAW_FEEDFORWARD *
         drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
 
-    float positionControllerError =
-        modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(
-            modm::toRadian(fieldRelativeYawTarget)));
-    float yawPositionPIDOutput = 0.0f;
+    float yawAngularError =
+        drivers->kinematicInformant.getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(fieldRelativeYawTarget);
 
-    if (!vision) {
-        yawPositionPIDOutput = yawPositionPID.runController(
-            positionControllerError,
+    float chassisRelativeYawTarget = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians) + yawAngularError;
+
+    gimbal->setTargetYawAxisAngle(AngleUnit::Radians, chassisRelativeYawTarget);
+
+    float positionPIDOutput = 0.0f;
+    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        positionPIDOutput = yawPositionPIDs[i]->runController(
+            gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             gimbal->getYawAxisRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians)));
-    } else {
-        yawPositionPIDOutput = yawVisionPID.runController(
-            positionControllerError,
-            gimbal->getYawAxisRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
-                                                          src::Informants::AngularAxis::YAW_AXIS,
-                                                          AngleUnit::Radians)));
-    }  // kD tuned for RPM, so we'll convert to RPM
 
-    gimbal->setYawMotorOutput(yawPositionPIDOutput + chassisInducedYawMotionCompensation);
+        gimbal->setDesiredYawMotorOutput(i, positionPIDOutput + chassisInducedYawMotionCompensation);
+    }
 }
 
 void GimbalFieldRelativeController::runPitchController(AngleUnit unit, float desiredFieldRelativePitchAngle, bool vision) {
-    gimbal->setTargetPitchAngle(unit, desiredFieldRelativePitchAngle);
+    UNUSED(vision);
+    fieldRelativeYawTarget =
+        (unit == AngleUnit::Radians) ? desiredFieldRelativePitchAngle : modm::toRadian(desiredFieldRelativePitchAngle);
 
-    float positionControllerError = modm::toDegree(
-        gimbal->getCurrentPitchMotorAngleAsContiguousFloat().difference(gimbal->getTargetPitchAngle(AngleUnit::Radians)));
-    float pitchPositionPIDOutput = 0.0f;
+    float pitchAngularError = drivers->kinematicInformant.getCurrentFieldRelativePitchAngleAsContiguousFloat().difference(
+        desiredFieldRelativePitchAngle);
 
-    if (!vision) {
-        pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchAxisRPM());
-    } else {
-        pitchPositionPIDOutput = pitchVisionPID.runController(positionControllerError, gimbal->getPitchAxisRPM());
+    float chassisRelativePitchTarget = gimbal->getChassisRelativePitchAngle(AngleUnit::Radians) + pitchAngularError;
+
+    gimbal->setTargetPitchAxisAngle(unit, chassisRelativePitchTarget);
+
+    float positionPIDOutput = 0.0f;
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        positionPIDOutput = pitchPositionPIDs[i]->runController(
+            gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
+            gimbal->getPitchAxisRPM() + (RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
+                                                            src::Informants::AngularAxis::PITCH_AXIS,
+                                                            AngleUnit::Radians)));
+
+        gimbal->setDesiredPitchMotorOutput(i, positionPIDOutput);
     }
-
-    gimbal->setPitchMotorOutput(pitchPositionPIDOutput);
 }
 
 bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline(); }

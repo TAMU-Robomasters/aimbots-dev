@@ -114,6 +114,9 @@ void KinematicInformant::updateChassisAcceleration() {
 }
 
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeYawAngleAsContiguousFloat() { return ContiguousFloat(0, -1, 1); }
+ContiguousFloat KinematicInformant::getCurrentFieldRelativePitchAngleAsContiguousFloat() {
+    return ContiguousFloat(0, -1, 1);
+}
 
 void KinematicInformant::updateRobotFrames() {
     robotFrames.updateFrames(

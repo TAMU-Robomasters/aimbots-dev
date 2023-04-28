@@ -14,6 +14,17 @@ public:
 
     void initialize() override;
 
+    void BuildPositionPIDs() {
+        for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+            yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
+            yawVisionPositionPIDs[i] = new SmoothPID(YAW_VISION_PID_CONFIG);
+        }
+        for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
+            pitchVisionPositionPIDs[i] = new SmoothPID(PITCH_VISION_PID_CONFIG);
+        }
+    }
+
     void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle, bool vision = false) override;
     void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle, bool vision = false) override;
 
@@ -29,11 +40,11 @@ private:
 
     float fieldRelativeYawTarget = 0.0f;
 
-    SmoothPID yawPositionPID;
-    SmoothPID pitchPositionPID;
+    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
+    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
 
-    SmoothPID yawVisionPID;
-    SmoothPID pitchVisionPID;
+    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVisionPositionPIDs;
+    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVisionPositionPIDs;
 };
 
 }  // namespace src::Gimbal

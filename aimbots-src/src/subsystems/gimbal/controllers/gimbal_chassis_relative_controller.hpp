@@ -31,7 +31,7 @@ public:
 
     bool isOnline() const;
 
-    float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetYawAngle(unit); }
+    float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetYawAxisAngle(unit); }
 
 private:
     GimbalSubsystem* gimbal;

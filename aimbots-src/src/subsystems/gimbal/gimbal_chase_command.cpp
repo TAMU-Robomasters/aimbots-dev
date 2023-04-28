@@ -20,8 +20,8 @@ GimbalChaseCommand::GimbalChaseCommand(
 
 void GimbalChaseCommand::initialize() {}
 
-float targetPitchAngleDisplay2 = 0.0f;
-float targetYawAngleDisplay2 = 0.0f;
+float targetPitchAxisAngleDisplay2 = 0.0f;
+float targetYawAxisAngleDisplay2 = 0.0f;
 
 float yawOffsetDisplay = 0.0f;
 float pitchOffsetDisplay = 0.0f;
@@ -36,38 +36,38 @@ float bSolDistanceDisplay = 0.0f;
 float timestampDisplay;
 
 void GimbalChaseCommand::execute() {
-    float targetYawAngle = 0.0f;
-    float targetPitchAngle = 0.0f;
+    float targetYawAxisAngle = 0.0f;
+    float targetPitchAxisAngle = 0.0f;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve();
+        ballisticsSolver->solve();  // returns last solution if no new solution is available
 
     if (ballisticsSolution != std::nullopt) {
-        targetYawAngle = ballisticsSolution->yawAngle;
-        targetPitchAngle = ballisticsSolution->pitchAngle;
+        targetYawAxisAngle = ballisticsSolution->yawAngle;
+        targetPitchAxisAngle = ballisticsSolution->pitchAngle;
 
         // ballistics returns angles between [0, 2PI), need to convert idk why
-        targetYawAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAngle;
-        targetPitchAngle += modm::toRadian(PITCH_OFFSET_ANGLE);
+        // targetYawAxisAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAxisAngle;
+        // targetPitchAxisAngle += modm::toRadian(PITCH_OFFSET_ANGLE);
 
-        bSolTargetYawDisplay = modm::toDegree(targetYawAngle);
-        bSolTargetPitchDisplay = modm::toDegree(targetPitchAngle);
+        bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
+        bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
-        targetYawAngle = modm::toRadian(
-            gimbal->getTargetYawAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
-        targetPitchAngle = modm::toRadian(
-            gimbal->getTargetPitchAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput());
+        targetYawAxisAngle = modm::toRadian(
+            gimbal->getTargetYawAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
+        targetPitchAxisAngle = modm::toRadian(
+            gimbal->getTargetPitchAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput());
     }
 
-    targetYawAngleDisplay2 = modm::toDegree(targetYawAngle);
-    targetPitchAngleDisplay2 = modm::toDegree(targetPitchAngle);
+    targetYawAxisAngleDisplay2 = modm::toDegree(targetYawAxisAngle);
+    targetPitchAxisAngleDisplay2 = modm::toDegree(targetPitchAxisAngle);
 
     chassisRelativePitchAngleDisplay = gimbal->getChassisRelativePitchAngle(AngleUnit::Degrees);
     chassisRelativeYawAngleDisplay = gimbal->getChassisRelativeYawAngle(AngleUnit::Degrees);
 
-    controller->runYawController(AngleUnit::Radians, targetYawAngle, false);
-    controller->runPitchController(AngleUnit::Radians, targetPitchAngle, false);
+    controller->runYawController(AngleUnit::Radians, targetYawAxisAngle, false);
+    controller->runPitchController(AngleUnit::Radians, targetPitchAxisAngle, false);
 }
 
 bool GimbalChaseCommand::isReady() { return true; }
@@ -75,7 +75,7 @@ bool GimbalChaseCommand::isReady() { return true; }
 bool GimbalChaseCommand::isFinished() const { return false; }
 
 void GimbalChaseCommand::end(bool) {
-    gimbal->setAllDesiredYawOutputs(0);
+    gimbal->setAllDesiredYawMotorOutputs(0);
     gimbal->setAllDesiredPitchOutputs(0);
 }
 

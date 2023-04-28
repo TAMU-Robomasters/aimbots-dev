@@ -38,20 +38,20 @@ void GimbalPatrolCommand::initialize() {
 #endif
 }
 
-float targetYawAngleDisplay = 0.0f;
-float targetPitchAngleDisplay = 0.0f;
+float targetYawAxisAngleDisplay = 0.0f;
+float targetPitchAxisAngleDisplay = 0.0f;
 
 void GimbalPatrolCommand::execute() {
-    float targetYawAngle = 0.0f;
-    float targetPitchAngle = 0.0f;
+    float targetYawAxisAngle = 0.0f;
+    float targetPitchAxisAngle = 0.0f;
 
-    targetYawAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
-    targetYawAngleDisplay = targetYawAngle;
-    targetPitchAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Degrees);
-    targetPitchAngleDisplay = targetPitchAngle;
+    targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
+    targetYawAxisAngleDisplay = targetYawAxisAngle;
+    targetPitchAxisAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Degrees);
+    targetPitchAxisAngleDisplay = targetPitchAxisAngle;
 
-    controller->runYawController(AngleUnit::Degrees, targetYawAngle);
-    controller->runPitchController(AngleUnit::Degrees, targetPitchAngle);
+    controller->runYawController(AngleUnit::Degrees, targetYawAxisAngle);
+    controller->runPitchController(AngleUnit::Degrees, targetPitchAxisAngle);
 }
 
 bool GimbalPatrolCommand::isReady() { return true; }

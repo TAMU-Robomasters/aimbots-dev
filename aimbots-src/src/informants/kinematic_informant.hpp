@@ -44,6 +44,7 @@ public:
     void updateRobotFrames();
 
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
+    tap::algorithms::ContiguousFloat getCurrentFieldRelativePitchAngleAsContiguousFloat();
 
 private:
     src::Drivers* drivers;

@@ -15,7 +15,8 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 /**
  * @brief GIMBAL SETUP
  */
-static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
@@ -23,8 +24,8 @@ static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
-static constexpr float YAW_OFFSET_ANGLE = modm::toRadian(59.7f);
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(8.92f), modm::toRadian(252.82f)};
 static constexpr float YAW_START_ANGLE = 0.0f;
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -35,15 +36,14 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Stand
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(42.1f)};
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static constexpr float PITCH_START_ANGLE = 0.0f;
 
 static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Standard
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
-static constexpr float PITCH_OFFSET_ANGLE = modm::toRadian(42.1f);
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static constexpr float PITCH_START_ANGLE = 0.0f;
 
 // static constexpr float PITCH_SOFTSTOP_LOW = 346.0f;
 // static constexpr float PITCH_SOFTSTOP_HIGH = 44.75f;
