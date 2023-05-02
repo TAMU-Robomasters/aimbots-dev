@@ -40,6 +40,8 @@ float currentPitchAxisAngleDisplay = 0.0f;
 float currentYawMotorAngleDisplay = 0.0f;
 float currentPitchMotorAngleDisplay = 0.0f;
 
+float yawAxisMotorSpeedDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
     float yawAxisAngleSum = 0.0f;
@@ -51,18 +53,20 @@ void GimbalSubsystem::refresh() {
 
         int64_t currentYawEncoderPosition = yawMotors[i]->getEncoderUnwrapped();
 
-        currentYawMotorAngles[i]->setValue(DJIEncoderValueToRadians(yawMotors[i]->getEncoderWrapped()));
-
         // https://www.desmos.com/calculator/bducsk7y6v
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
+
+        currentYawAxisAnglesByMotor[i]->setValue(wrappedYawAxisAngle);
 
         yawAxisAngleSum += wrappedYawAxisAngle;
         ////////////////
         // DEBUG VARS //
         ////////////////
-        currentYawMotorAngleDisplay = modm::toDegree(currentYawMotorAngles[i]->getValue());
+        currentYawMotorAngleDisplay = modm::toDegree(currentYawAxisAnglesByMotor[i]->getValue());
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
+
+        yawAxisMotorSpeedDisplay = yawMotors[i]->getShaftRPM();
 
         // flush the desired output to the motor
         setDesiredOutputToYawMotor(i);
@@ -78,18 +82,18 @@ void GimbalSubsystem::refresh() {
 
         int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoderUnwrapped();
 
-        currentPitchMotorAngles[i]->setValue(DJIEncoderValueToRadians(pitchMotors[i]->getEncoderUnwrapped()));
-
         // https://www.desmos.com/calculator/fydwmos1xr
         float wrappedPitchAxisAngle =
             GIMBAL_PITCH_GEAR_RATIO *
             wrapAngleToPiRange(DJIEncoderValueToRadians(currentPitchEncoderPosition) - PITCH_MOTOR_OFFSET_ANGLES[i]);
 
+        currentPitchAxisAnglesByMotor[i]->setValue(wrappedPitchAxisAngle);
+
         pitchAxisAngleSum += wrappedPitchAxisAngle;
         ////////////////
         // DEBUG VARS //
         ////////////////
-        currentPitchMotorAngleDisplay = modm::toDegree(currentPitchMotorAngles[i]->getValue());
+        currentPitchMotorAngleDisplay = modm::toDegree(currentPitchAxisAnglesByMotor[i]->getValue());
         pitchOutputDisplay = pitchMotors[i]->getOutputDesired();
 
         // flush the desired output to the motor
@@ -113,18 +117,25 @@ void GimbalSubsystem::setDesiredOutputToYawMotor(uint8_t YawIdx) {
 void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
     // Clamp output to maximum value that the 6020 can handle
     pitchMotors[PitchIdx]->setDesiredOutput(
-        tap::algorithms::limitVal(desiredYawMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));
+        tap::algorithms::limitVal(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));
 }
 
 float GimbalSubsystem::getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
-    float motorAngleError = targetYawAxisAngle.difference(*currentYawMotorAngles[YawIdx]) / GIMBAL_YAW_GEAR_RATIO;
+    float motorAngleError = targetYawAxisAngle.difference(*currentYawAxisAnglesByMotor[YawIdx]) / GIMBAL_YAW_GEAR_RATIO;
+
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }
 
+float motorAngleErrorDisplay = 0.0f;
+
 float GimbalSubsystem::getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
-    float motorAngleError = targetPitchAxisAngle.difference(*currentPitchMotorAngles[PitchIdx]) / GIMBAL_PITCH_GEAR_RATIO;
+    float motorAngleError =
+        targetPitchAxisAngle.difference(*currentPitchAxisAnglesByMotor[PitchIdx]) / GIMBAL_PITCH_GEAR_RATIO;
+
+    motorAngleErrorDisplay = motorAngleError;
+
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }
 

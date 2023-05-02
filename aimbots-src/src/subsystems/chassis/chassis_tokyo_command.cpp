@@ -36,7 +36,7 @@ void ChassisTokyoCommand::execute() {
     Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
     if (gimbal->isOnline()) {
-        float yawAngleFromChassisCenter = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians);
+        float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
         yawAngleFromChassisCenterDisplay = modm::toDegree(yawAngleFromChassisCenter);

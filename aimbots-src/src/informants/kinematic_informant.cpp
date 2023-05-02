@@ -121,8 +121,8 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativePitchAngleAsContiguou
 void KinematicInformant::updateRobotFrames() {
     robotFrames.updateFrames(
 
-        gimbalSubsystem->getChassisRelativeYawAngle(AngleUnit::Radians),
-        gimbalSubsystem->getChassisRelativePitchAngle(AngleUnit::Radians),
+        gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
+        gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
         getIMUAngle(YAW_AXIS, AngleUnit::Radians),
         {0, 0, 0},
         AngleUnit::Radians);

@@ -23,8 +23,8 @@ public:
         }
     }
 
-    void runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision = false) override;
-    void runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision = false) override;
+    void runYawController(AngleUnit unit, float targetYawAxisAngle, bool vision = false) override;
+    void runPitchController(AngleUnit unit, float targetPitchAxisAngle, bool vision = false) override;
 
     inline SmoothPID* getYawPositionPID() { return yawPositionPIDs[0]; }
     inline SmoothPID* getPitchPositionPID() { return pitchPositionPIDs[0]; }

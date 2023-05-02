@@ -17,9 +17,11 @@ void GimbalChassisRelativeController::initialize() {
     }
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
+float positionPIDOutputDisplay = 0.0f;
+
+void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetYawAxisAngle, bool vision) {
     UNUSED(vision);
-    gimbal->setTargetYawAxisAngle(unit, targetChassisRelativeYawAngle);
+    gimbal->setTargetYawAxisAngle(unit, targetYawAxisAngle);
 
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
@@ -27,17 +29,16 @@ void GimbalChassisRelativeController::runYawController(AngleUnit unit, float tar
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
+        positionPIDOutputDisplay = positionPIDOutput;
+
         gimbal->setDesiredYawMotorOutput(i, positionPIDOutput);
     }
 }
 
-void GimbalChassisRelativeController::runPitchController(
-    AngleUnit unit,
-    float targetChassisRelativePitchAngle,
-    bool vision) {
+void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetPitchAxisAngle, bool vision) {
     UNUSED(vision);
 
-    gimbal->setTargetPitchAxisAngle(unit, targetChassisRelativePitchAngle);
+    gimbal->setTargetPitchAxisAngle(unit, targetPitchAxisAngle);
 
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {

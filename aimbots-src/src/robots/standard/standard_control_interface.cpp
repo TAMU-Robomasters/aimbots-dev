@@ -117,7 +117,8 @@ float OperatorInterface::getChassisRotationInput() {
 
     float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    float finalRotation =
+        limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
 
     chassisRotationRamp.setTarget(finalRotation);
@@ -128,19 +129,13 @@ float OperatorInterface::getChassisRotationInput() {
 
 float OperatorInterface::getGimbalYawInput() {
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               drivers->remote.getMouseX(),
-               -MOUSE_YAW_MAX,
-               MOUSE_YAW_MAX)) *
+           static_cast<float>(limitVal<int16_t>(drivers->remote.getMouseX(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
                YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               -drivers->remote.getMouseY(),
-               -MOUSE_PITCH_MAX,
-               MOUSE_PITCH_MAX)) *
+           static_cast<float>(limitVal<int16_t>(drivers->remote.getMouseY(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 

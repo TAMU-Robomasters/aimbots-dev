@@ -17,7 +17,7 @@ GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drive
 void GimbalFieldRelativeController::initialize() { fieldRelativeYawTarget = 0.0f; }
 
 float fieldRelativeYawTargetDisplay = 0.0f;
-float targetChassisRelativeYawAngleDisplay = 0.0f;
+float targetYawAxisAngleDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle, bool vision) {
     UNUSED(vision);
@@ -33,7 +33,7 @@ void GimbalFieldRelativeController::runYawController(AngleUnit unit, float desir
     float yawAngularError =
         drivers->kinematicInformant.getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(fieldRelativeYawTarget);
 
-    float chassisRelativeYawTarget = gimbal->getChassisRelativeYawAngle(AngleUnit::Radians) + yawAngularError;
+    float chassisRelativeYawTarget = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) + yawAngularError;
 
     gimbal->setTargetYawAxisAngle(AngleUnit::Radians, chassisRelativeYawTarget);
 
@@ -57,7 +57,7 @@ void GimbalFieldRelativeController::runPitchController(AngleUnit unit, float des
     float pitchAngularError = drivers->kinematicInformant.getCurrentFieldRelativePitchAngleAsContiguousFloat().difference(
         desiredFieldRelativePitchAngle);
 
-    float chassisRelativePitchTarget = gimbal->getChassisRelativePitchAngle(AngleUnit::Radians) + pitchAngularError;
+    float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
 
     gimbal->setTargetPitchAxisAngle(unit, chassisRelativePitchTarget);
 

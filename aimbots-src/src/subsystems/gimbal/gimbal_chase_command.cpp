@@ -33,6 +33,8 @@ float bSolTargetYawDisplay = 0.0f;
 float bSolTargetPitchDisplay = 0.0f;
 float bSolDistanceDisplay = 0.0f;
 
+float gimbalPitchInputDisplay = 0.0f;
+
 float timestampDisplay;
 
 void GimbalChaseCommand::execute() {
@@ -54,17 +56,19 @@ void GimbalChaseCommand::execute() {
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
-        targetYawAxisAngle = modm::toRadian(
-            gimbal->getTargetYawAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalYawInput());
-        targetPitchAxisAngle = modm::toRadian(
-            gimbal->getTargetPitchAxisAngle(AngleUnit::Degrees) + drivers->controlOperatorInterface.getGimbalPitchInput());
+        targetYawAxisAngle =
+            gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalYawInput();
+        targetPitchAxisAngle =
+            gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
+
+        gimbalPitchInputDisplay = drivers->controlOperatorInterface.getGimbalPitchInput();
     }
 
-    targetYawAxisAngleDisplay2 = modm::toDegree(targetYawAxisAngle);
-    targetPitchAxisAngleDisplay2 = modm::toDegree(targetPitchAxisAngle);
+    targetYawAxisAngleDisplay2 = gimbal->getTargetYawAxisAngle(AngleUnit::Degrees);
+    targetPitchAxisAngleDisplay2 = gimbal->getTargetPitchAxisAngle(AngleUnit::Degrees);
 
-    chassisRelativePitchAngleDisplay = gimbal->getChassisRelativePitchAngle(AngleUnit::Degrees);
-    chassisRelativeYawAngleDisplay = gimbal->getChassisRelativeYawAngle(AngleUnit::Degrees);
+    chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
+    chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
 
     controller->runYawController(AngleUnit::Radians, targetYawAxisAngle, false);
     controller->runPitchController(AngleUnit::Radians, targetPitchAxisAngle, false);

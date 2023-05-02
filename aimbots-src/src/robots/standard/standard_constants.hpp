@@ -50,61 +50,14 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-23.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
-// -------------------------------------------------------------------------------------------------------------------------
-
-static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
-
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
-
-static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
-    .ki = 0.0f,
-    .kd = 1.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
-static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
 
 /**
  * @brief Position PID constants
  */
-/*static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 600.0f,
-    .ki = 0.0f,
-    .kd = 500.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};*/
-
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 200.0f,
-    .ki = 3.0f,
-    .kd = 50.0f,
+    .kp = 35'000.0f,  // 600
+    .ki = 0.0f,
+    .kd = 0.0f,  // 500
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -115,25 +68,11 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-/*static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 1850.0f,
-    .ki = 0.0f,
-    .kd = 150.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};*/
-
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 100.0f,
+    .kp = 50'000.0f,
     .ki = 0.0f,
-    .kd = 50.0f,
-    .maxICumulative = 1000.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -174,6 +113,39 @@ static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
+// -------------------------------------------------------------------------------------------------------------------------
+
+static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
+
+static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 18.0f,
+    .ki = 0.0f,
+    .kd = 1.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 15.0f,
+    .ki = 0.0f,
+    .kd = 0.8f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 40.0f,
