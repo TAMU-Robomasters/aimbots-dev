@@ -34,7 +34,7 @@ bool CommunicationResponseSubsytem::run() {
     // uint16_t sy = ms.standardY;
     this->robotToRobotMessage.dataAndCRC16[3] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
     // sy = sy >> 8;
-    this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+    // this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
 
 #endif
 
@@ -76,6 +76,7 @@ bool CommunicationResponseSubsytem::run() {
             drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_HERO),
             4));
         // }
+
         // #elif TARGET_HERO
         // this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(false);
 

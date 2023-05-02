@@ -190,6 +190,7 @@ void registerSubsystems(src::Drivers *drivers) {
 
     drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
+    drivers->commandScheduler.registerSubsystem(&response);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -200,6 +201,7 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     barrelManager.initialize();
+    response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -215,7 +217,7 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
-    drivers->refSerial.attachRobotToRobotMessageHandler(STANDARD_RESPONSE_MESSAGE_ID, &responseHandler);
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
 }
 
 // Register IO mappings here -----------------------------------------------

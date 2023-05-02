@@ -136,12 +136,12 @@ void setDefaultCommands(src::Drivers *) {
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
     drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-
-    // no startup commands should be set
-    // yet...
-    // TODO: Possibly add some sort of hardware test command
-    //       that will move all the parts so we
-    //       can make sure they're fully operational.
+    // test
+    //  no startup commands should be set
+    //  yet...
+    //  TODO: Possibly add some sort of hardware test command
+    //        that will move all the parts so we
+    //        can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------
