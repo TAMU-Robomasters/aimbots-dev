@@ -52,6 +52,8 @@ bool CommunicationResponseSubsytem::run() {
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
     while (true) {
+        // rng wroks
+        // TDOD: fix this shit. make it not rng
         this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(false);
         this->robotToRobotMessage.dataAndCRC16[1] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(sx);
         this->robotToRobotMessage.dataAndCRC16[2] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sx);
