@@ -82,7 +82,7 @@ private:
 
     float desiredSwapMotorOutput;
 
-    float limitLRPositions[2] = {0,1000000000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
+    float limitLRPositions[2] = {0,500000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
 
 
 

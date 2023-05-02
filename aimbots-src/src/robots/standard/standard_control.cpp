@@ -121,7 +121,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2, &barrelSwapDefaultCommand},
+    {&barrelSwapDefaultCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
@@ -186,7 +186,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -201,7 +201,7 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     //drivers->commandMapper.addMap(&rightSwitchUp);
     //drivers->commandMapper.addMap(&rightSwitchMid);
     //drivers->commandMapper.addMap(&rightSwitchDown);

@@ -294,11 +294,11 @@ static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a use
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 0.05f,
     .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
+    .kd = 0.0f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT*0.2,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

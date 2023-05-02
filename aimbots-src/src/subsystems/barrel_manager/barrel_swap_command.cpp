@@ -29,7 +29,7 @@ float deriDisplay = 0;
 //-----------
 
 void BarrelSwapCommand::initialize() {
-    barrelCalibratingFlag = true;
+    // barrelCalibratingFlag = true;
 
     //currentCalibratingBarrel = barrelSide::LEFT;
     // barrelManager->findZeroPosition();
@@ -84,7 +84,9 @@ void BarrelSwapCommand::execute() {
     
 }
 
-void BarrelSwapCommand::end(bool) {}
+void BarrelSwapCommand::end(bool) {
+    barrelManager->setMotorOutput(0);
+}
 
 bool BarrelSwapCommand::isReady() { return true; }
 
