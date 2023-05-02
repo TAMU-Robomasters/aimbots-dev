@@ -56,10 +56,12 @@ void GimbalChaseCommand::execute() {
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
     } else {
+        // Yaw counterclockwise is positive angle
         targetYawAxisAngle =
-            gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalYawInput();
+            gimbal->getTargetYawAxisAngle(AngleUnit::Radians) - drivers->controlOperatorInterface.getGimbalYawInput();
+        // Pitch up is positive angle
         targetPitchAxisAngle =
-            gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
+            gimbal->getTargetPitchAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
         gimbalPitchInputDisplay = drivers->controlOperatorInterface.getGimbalPitchInput();
     }
@@ -67,8 +69,8 @@ void GimbalChaseCommand::execute() {
     targetYawAxisAngleDisplay2 = gimbal->getTargetYawAxisAngle(AngleUnit::Degrees);
     targetPitchAxisAngleDisplay2 = gimbal->getTargetPitchAxisAngle(AngleUnit::Degrees);
 
-    chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
     chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
+    chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
 
     controller->runYawController(AngleUnit::Radians, targetYawAxisAngle, false);
     controller->runPitchController(AngleUnit::Radians, targetPitchAxisAngle, false);

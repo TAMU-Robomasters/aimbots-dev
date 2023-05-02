@@ -14,8 +14,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       drivers(drivers),
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
-      targetYawAxisAngle(0.0f, -M_PI, M_PI),
-      targetPitchAxisAngle(0.0f, -M_PI, M_PI)  //
+      targetYawAxisAngle(YAW_AXIS_START_ANGLE, -M_PI, M_PI),
+      targetPitchAxisAngle(PITCH_AXIS_START_ANGLE, -M_PI, M_PI)  //
 {
     BuildYawMotors();
     BuildPitchMotors();
@@ -122,19 +122,16 @@ void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
 
 float GimbalSubsystem::getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
-    float motorAngleError = targetYawAxisAngle.difference(*currentYawAxisAnglesByMotor[YawIdx]) / GIMBAL_YAW_GEAR_RATIO;
+    float motorAngleError = currentYawAxisAnglesByMotor[YawIdx]->difference(targetYawAxisAngle) / GIMBAL_YAW_GEAR_RATIO;
+    // target - current
 
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }
 
-float motorAngleErrorDisplay = 0.0f;
-
 float GimbalSubsystem::getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
     float motorAngleError =
-        targetPitchAxisAngle.difference(*currentPitchAxisAnglesByMotor[PitchIdx]) / GIMBAL_PITCH_GEAR_RATIO;
-
-    motorAngleErrorDisplay = motorAngleError;
+        currentPitchAxisAnglesByMotor[PitchIdx]->difference(targetPitchAxisAngle) / GIMBAL_PITCH_GEAR_RATIO;
 
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }

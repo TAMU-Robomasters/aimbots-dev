@@ -28,7 +28,7 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(9.97f)),
     wrapTo0To2PIRange(modm::toRadian(-106.39f))};
-static constexpr float YAW_AXIS_START_ANGLE = 0.0f;
+static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
@@ -40,7 +40,7 @@ static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-144.88f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static constexpr float PITCH_AXIS_START_ANGLE = 0.0f;
+static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Standard
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
@@ -55,10 +55,10 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 35'000.0f,  // 600
+    .kp = 50'000.0f,  // 600
     .ki = 0.0f,
-    .kd = 0.0f,  // 500
-    .maxICumulative = 10.0f,
+    .kd = 1'000.0f,  // 500
+    .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -71,7 +71,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .kp = 50'000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 850.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
