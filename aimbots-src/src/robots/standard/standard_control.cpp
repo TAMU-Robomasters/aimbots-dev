@@ -145,6 +145,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
+    drivers->commandScheduler.registerSubsystem(&response);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -154,6 +155,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
+    response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -169,7 +171,7 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
-    drivers->refSerial.attachRobotToRobotMessageHandler(STANDARD_RESPONSE_MESSAGE_ID, &responseHandler);
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
 }
 
 // Register IO mappings here -----------------------------------------------
