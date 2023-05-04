@@ -14,7 +14,6 @@ namespace src::Barrel_Manager {
 class BarrelSwapCommand : public TapCommand {
 public:
 
-    //Add a pointer to a boolean flag that can be changed to alert the feeder that a transition is happening
     BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, bool &barrelMovingFlag);
 
     void initialize() override;

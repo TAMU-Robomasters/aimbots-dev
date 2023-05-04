@@ -286,19 +286,21 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 static constexpr float LEFT_STOP_OFFSET = 0; //In mm
 static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
+static constexpr float BARREL_SWAP_DISTANCE_MM = 45; //In mm // this is from edge to edge, aligned center to aligned center, 
+
 //Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
-static constexpr float LEAD_SCREW_TICKS_PER_MM = 1; // ticks/mm
+static constexpr float LEAD_SCREW_TICKS_PER_MM = tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 / 8.0;//  X econder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
 //The value that the torque needs to be greater than to detect running into a wall
 static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a useful value
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
-    .kp = 0.05f,
+    .kp = 1000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.5f,
     .maxICumulative = 5.0f,
-    .maxOutput = M2006_MAX_OUTPUT*0.2,
+    .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

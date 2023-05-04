@@ -82,8 +82,9 @@ private:
 
     float desiredSwapMotorOutput;
 
-    float limitLRPositions[2] = {0,500000}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
-
+                                // *** 0 to 45 mm goes from edge to edge if touching left side from VTM POV at initialization  
+    // float limitLRPositions[2] = {0,45}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
+    float limitLRPositions[2] = {0,10}; // 
 
 
 };
