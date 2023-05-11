@@ -26,8 +26,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(9.97f)),
-    wrapTo0To2PIRange(modm::toRadian(-106.39f))};
+    wrapTo0To2PIRange(modm::toRadian(321.90f)),
+    wrapTo0To2PIRange(modm::toRadian(320.712f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -120,9 +120,9 @@ static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
-    .kd = 1.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
