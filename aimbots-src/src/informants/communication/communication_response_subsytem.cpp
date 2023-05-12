@@ -23,6 +23,10 @@ uint8_t test = 0;
 uint16_t datalength;
 uint8_t subsytemCRC8;
 uint16_t healthCheck;
+uint8_t value1;
+uint8_t value2;
+uint8_t value3;
+uint8_t value4;
 bool CommunicationResponseSubsytem::run() {
 #ifdef TARGET_SENTRY
     // ms = states.createMessage();
@@ -54,11 +58,15 @@ bool CommunicationResponseSubsytem::run() {
     while (true) {
         // rng wroks
         // TDOD: fix this shit. make it not rng
-        this->robotToRobotMessage.dataAndCRC16[0] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(false);
-        this->robotToRobotMessage.dataAndCRC16[1] = static_cast<uint8_t>(rand() % 0xff);        // static_cast<uint8_t>(sx);
-        this->robotToRobotMessage.dataAndCRC16[2] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sx);
-        this->robotToRobotMessage.dataAndCRC16[3] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
-        this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+        value1 += 1;
+        value2 += 2;
+        value3 += 3;
+        value4 += 4;
+        this->robotToRobotMessage.dataAndCRC16[0] = value1;  // static_cast<uint8_t>(false);
+        this->robotToRobotMessage.dataAndCRC16[1] = value2;  // static_cast<uint8_t>(sx);
+        this->robotToRobotMessage.dataAndCRC16[2] = value3;  // static_cast<uint8_t>(sx);
+        this->robotToRobotMessage.dataAndCRC16[3] = value4;  // static_cast<uint8_t>(sy);
+        // this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
 
         // if (this->sentryMoving != this->getDriveStatus()) {
         //     this->sentryMoving = this->getDriveStatus();
