@@ -71,12 +71,9 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     enemyTimedPosition transformedData = currentData;
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
-    /*currentData.position =
-         drivers->kinematicInformant.getRobotFrames()
-             .getFrame(Transformers::FrameType::CAMERA_FRAME)
-             .getPointInFrame(
-                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
-                 currentData.position);*/
+
+    // std::pair<float, float> gimbalAngles = gimbal->getGimbalOrientationAtTime(frameCaptureDelay);
+    // drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
 
     enemyTimedPosition gimbalTransformedDataWatch = currentData;
     gimbalTransformedDataWatch.position =
@@ -95,7 +92,7 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
 
     transformedData.position =
         drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CAMERA_FRAME)
+            .getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME)
             .getPointInFrame(
                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
                 currentData.position);

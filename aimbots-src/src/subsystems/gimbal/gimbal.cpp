@@ -106,6 +106,13 @@ void GimbalSubsystem::refresh() {
 
     currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getValue());
     currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getValue());
+
+    // update gimbal orientation buffer
+    std::pair<float, float> orientation;
+    orientation.first = currentYawAxisAngle.getValue();
+    orientation.second = currentPitchAxisAngle.getValue();
+
+    gimbalOrientationBuffer.prependOverwrite(orientation);
 }
 
 void GimbalSubsystem::setDesiredOutputToYawMotor(uint8_t YawIdx) {

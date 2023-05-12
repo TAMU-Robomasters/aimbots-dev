@@ -20,38 +20,42 @@ tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::get
     return drivers->bmi088.getImuState();
 }
 
-float KinematicInformant::getIMUAngle(AngularAxis axis, AngleUnit unit) {
-    UNUSED(axis);
+void KinematicInformant::updateChassisIMUAngles() {
+    Vector3f imuAngles = {
+        drivers->bmi088.getRoll(),  // swaps roll and pitch axes
+        drivers->bmi088.getPitch(),
+        drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees off at calibration
+
+    // Gets chassis angles
+    Vector3f chassisAngles =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
+                imuAngles);
+
+    chassisIMUAngles = chassisAngles * (M_PI / 180.0f);  // convert to radians
+}
+
+float KinematicInformant::getChassisIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = 0.0f;
-    /*
+
     switch (axis) {
         case YAW_AXIS: {
-            // rotates by 180 degrees and negates the result, to force a 0 starting angle and postitive clockwise
-            angle = -(drivers->bmi088.getYaw() - 180.0f);
+            angle = chassisIMUAngles.getZ();
             break;
         }
         case PITCH_AXIS: {
-            // rotates pitch/roll vectors to account for yaw offset in dev board mounting
-            angle = drivers->bmi088.getPitch();
-            float roll = drivers->bmi088.getRoll();
-            tap::algorithms::rotateVector(&angle, &roll, getIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
+            angle = chassisIMUAngles.getX();
             break;
         }
         case ROLL_AXIS: {
-            // rotates pitch/roll vectors to account for yaw offset in dev board mounting
-            float pitch = drivers->bmi088.getPitch();
-            angle = drivers->bmi088.getRoll();
-            tap::algorithms::rotateVector(&pitch, &angle, getIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
+            angle = chassisIMUAngles.getY();
             break;
         }
-    }*/
+    }
 
-    /*
-    drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
-            .getPointInFrame(drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME),)*/
-    return unit == AngleUnit::Degrees ? angle : modm::toRadian(angle);
+    return unit == AngleUnit::Degrees ? angle * (180.0f / M_PI) : angle;
 }
 
 float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
@@ -67,7 +71,7 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit
             tap::algorithms::rotateVector(
                 &angularVelocity,
                 &roll,
-                getIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
+                getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
             break;
         }
         case ROLL_AXIS: {
@@ -76,7 +80,7 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit
             tap::algorithms::rotateVector(
                 &pitch,
                 &angularVelocity,
-                getIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
+                getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians) + DEV_BOARD_YAW_OFFSET);
             break;
         }
     }
@@ -119,26 +123,33 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativePitchAngleAsContiguou
 }
 
 void KinematicInformant::updateRobotFrames() {
-    robotFrames.updateFrames(
+    updateChassisIMUAngles();
 
+    robotFrames.updateFrames(
         gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
         gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
-        getIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
         {0, 0, 0},
         AngleUnit::Radians);
 
     imuLinearState[X_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
-    imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
-    imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
+    imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
+    imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
 
     imuAngularState[X_AXIS].updateFromPosition(getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians));
     imuAngularState[Y_AXIS].updateFromPosition(getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians));
     imuAngularState[Z_AXIS].updateFromPosition(getIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians));
-    imuAngularState[X_AXIS].updateFromVelocity(getIMUAngle(PITCH_AXIS, AngleUnit::Radians), false);
-    imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngle(ROLL_AXIS, AngleUnit::Radians), false);
-    imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngle(YAW_AXIS, AngleUnit::Radians), false);
+
+    imuAngularState[X_AXIS].updateFromVelocity(getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Y_AXIS].updateFromVelocity(getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Z_AXIS].updateFromVelocity(getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians), false);
 
     updateChassisAcceleration();
+}
+
+void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
+    std::pair<float, float> gimbalAngles = gimbalSubsystem->getGimbalOrientationAtTime(frameDelay_ms);
+    robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 }
 
 }  // namespace src::Informants

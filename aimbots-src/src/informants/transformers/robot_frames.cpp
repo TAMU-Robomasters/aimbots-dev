@@ -47,4 +47,15 @@ void RobotFrames::updateFrames(
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD);
     // TODO: Check if correct
 }
+
+void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
+    // how convert angle?? IDK
+
+    turret_orientation_relative_to_chassis_orientation =
+        rotationMatrix(angleUnit, gimbalYawAngle, Z_AXIS) * rotationMatrix(angleUnit, gimbalPitchAngle, X_AXIS);
+    camera_origin_relative_to_chassis_origin =
+        TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
+        turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
+    cameraAtCVUpdateFrame.setOrientation(turret_orientation_relative_to_chassis_orientation);
+}
 }  // namespace src::Informants::Transformers

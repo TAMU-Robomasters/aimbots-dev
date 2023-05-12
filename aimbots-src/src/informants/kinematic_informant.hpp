@@ -32,8 +32,11 @@ public:
     void recalibrateIMU();
     tap::communication::sensors::imu::ImuInterface::ImuState getIMUState();
 
+    void updateChassisIMUAngles();
+
     // Returns angle in rad or deg
-    float getIMUAngle(AngularAxis axis, AngleUnit unit);
+    float getChassisIMUAngle(AngularAxis axis, AngleUnit unit);
+
     // Returns angular velocity in rad/s or deg/s
     float getIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
     // Returns linear velocity in rad/s^2 or deg/s^2 if you are a loser
@@ -45,6 +48,7 @@ public:
 
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeYawAngleAsContiguousFloat();
     tap::algorithms::ContiguousFloat getCurrentFieldRelativePitchAngleAsContiguousFloat();
+    void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
 private:
     src::Drivers* drivers;
@@ -62,6 +66,8 @@ private:
     src::Utils::KinematicStateVector chassisLinearXState;
     src::Utils::KinematicStateVector chassisLinearYState;
     src::Utils::KinematicStateVector chassisLinearZState;
+
+    Vector3f chassisIMUAngles = {0.0f, 0.0f, 0.0f};
 
     modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
     modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {

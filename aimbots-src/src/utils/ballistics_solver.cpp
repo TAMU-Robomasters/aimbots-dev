@@ -61,9 +61,10 @@ bool BallisticsSolver::computeTravelTime(
     const float pitchAxisOffset) {
     float horizontalDist = hypot(targetPosition.x, targetPosition.y) + pitchAxisOffset;
     float bulletVelocitySquared = powf(bulletVelocity, 2);
-    float sqrtTerm = powf(bulletVelocitySquared, 2) -
-                     ACCELERATION_GRAVITY *
-                         (ACCELERATION_GRAVITY * powf(horizontalDist, 2) + 2 * targetPosition.z * bulletVelocitySquared);
+    float sqrtTerm =
+        powf(bulletVelocitySquared, 2) -
+        ACCELERATION_GRAVITY * (ACCELERATION_GRAVITY * powf(horizontalDist, 2) +
+                                2 * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ()) * bulletVelocitySquared);
 
     if (sqrtTerm < 0) {
         return false;
@@ -76,7 +77,8 @@ bool BallisticsSolver::computeTravelTime(
     // We use the negative root since the collision will happen on the first instance that the
     // trajectory reaches y_f
     if (compareFloatClose(*turretPitch, 0, 1E-2)) {
-        float sqrtTerm = powf(bulletVelocity, 2.0f) - 2 * ACCELERATION_GRAVITY * targetPosition.z;
+        float sqrtTerm = powf(bulletVelocity, 2.0f) -
+                         2 * ACCELERATION_GRAVITY * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ());
 
         // If there isn't a real-valued root, there is no time where we can reach the target with
         // the given assumptions
@@ -120,11 +122,19 @@ bool BallisticsSolver::findTargetProjectileIntersection(
 
     float squaredBarrelPositionX = BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX();
 
-    *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
-    // *turretYaw = acos(
-    //     (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
-    //      BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
-    //     (squaredTargetX + squaredTargetY));
+    // *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
+
+    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() >= 0) {
+        *turretYaw = acos(
+            (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
+             BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
+            (squaredTargetX + squaredTargetY));
+    } else {
+        *turretYaw = -1 * acos(
+                              (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
+                               BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
+                              (squaredTargetX + squaredTargetY));
+    }
 
     return !isnan(*turretPitch) && !isnan(*turretYaw);
 }

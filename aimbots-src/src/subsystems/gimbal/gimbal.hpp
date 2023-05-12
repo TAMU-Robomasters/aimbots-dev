@@ -180,6 +180,18 @@ public:
     float getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const;
     float getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit unit) const;
 
+    // from the buffer. gimbal orientation from the buffer.
+    inline std::pair<float, float>& getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
+
+    // put in your time, we get the closest orientation entry at that time.
+    inline std::pair<float, float>& getGimbalOrientationAtTime(uint8_t time_ms) {
+        // assume 2 ms delay between gimbal updates
+        int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
+        return gimbalOrientationBuffer[index];
+    }
+    // just in case?
+    inline void clearGimbalOrientationBuffer() { gimbalOrientationBuffer.clear(); }
+
 private:
     src::Drivers* drivers;
 
@@ -202,6 +214,12 @@ private:
 
     void setDesiredOutputToYawMotor(uint8_t YawIdx);
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
+
+    static const int GIMBAL_BUFFER_SIZE = 15;
+
+    // gimbal yaw / pitch buffer
+    // pitch, yaw is first, second, respectively in the pair
+    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;
 };
 
 }  // namespace src::Gimbal

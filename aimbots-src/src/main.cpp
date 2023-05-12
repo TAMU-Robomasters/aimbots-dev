@@ -162,9 +162,10 @@ static void updateIo(src::Drivers *drivers) {
     //  AngleUnit::Radians); gYDisplay = drivers->fieldRelativeInformant.getGy(); gXDisplay =
     //  drivers->fieldRelativeInformant.getGx();
 
-    float yaw = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-    float pitch = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    float roll = drivers->kinematicInformant.getIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    float yaw = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    float pitch =
+        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float roll = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
 
     gZDisplay =
         drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
