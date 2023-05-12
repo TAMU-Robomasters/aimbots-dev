@@ -57,7 +57,7 @@ bool CommunicationResponseSubsytem::run() {
 
     while (true) {
         // rng wroks
-        // TDOD: fix this shit. make it not rng
+        // TDOD: it works know make really messages
         value1 += 1;
         value2 += 2;
         value3 += 3;
