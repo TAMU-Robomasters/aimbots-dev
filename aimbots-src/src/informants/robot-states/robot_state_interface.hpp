@@ -34,10 +34,14 @@ public:
     void updateRobotStatePosition(int robotNumber, Team teamColor, short x, short y, short z);
 
 #ifdef TARGET_SENTRY
-    robot_state_message_team createMessage();
-#else
-    robot_state_message createMesssage();
-    robot_state_message_enemy createMessageEnemy();
+    void updateTeamMessage();
+    uint8_t teamMessage[115];
+#elif TARGET_STANDARD
+    void updateStandardMessage();
+    uint8_t standardMessage[115];
+#elif TARGET_HERO
+    void updateHeroMessage();
+    uint8_t heroMessage[115];
 #endif
     void respond();
 
