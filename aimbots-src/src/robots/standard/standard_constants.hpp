@@ -20,9 +20,9 @@ static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
+    .kp = 0.0f,  // 18.0
     .ki = 0.0f,
-    .kd = 1.0f,
+    .kd = 0.0f,  // 1.0
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -347,6 +347,6 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
 
-static constexpr float CIMU_X_EULER = 0.0f;
+static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 0.0f;
+static constexpr float CIMU_Z_EULER = 180.0f;

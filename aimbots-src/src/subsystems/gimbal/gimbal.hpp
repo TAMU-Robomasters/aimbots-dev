@@ -81,11 +81,11 @@ public:
     }
 
     // from the buffer. gimbal orientation from the buffer.
-    inline std::pair<float, float> getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
+    inline std::pair<float, float>& getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
-    inline std::pair<float, float> getGimbalOrientationAtTime(uint8_t time_ms) {
-        //assume 2 ms delay between gimbal updates
+    inline std::pair<float, float>& getGimbalOrientationAtTime(uint8_t time_ms) {
+        // assume 2 ms delay between gimbal updates
         int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
         return gimbalOrientationBuffer[index];
     }
