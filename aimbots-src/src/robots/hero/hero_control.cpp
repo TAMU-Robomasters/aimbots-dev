@@ -1,8 +1,9 @@
 #ifdef TARGET_HERO
 
+#include "utils/common_types.hpp"
+
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-#include "utils/common_types.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -31,11 +32,16 @@
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+//
+#include "informants/communication/communication_response_handler.hpp"
+#include "informants/communication/communication_response_subsytem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+using namespace src::Communication;
+using namespace src::RobotStates;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -56,6 +62,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+CommunicationResponseSubsytem response(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -77,6 +84,8 @@ RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
+CommunicationResponseHandler responseHandler(*drivers());
+
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
@@ -89,10 +98,7 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchMid(drivers(), {&runShooterCommand}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
@@ -101,10 +107,7 @@ HoldRepeatCommandMapping rightSwitchUp(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+HoldCommandMapping leftClickMouse(drivers(), {&runFeederCommandFromMouse}, RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -112,6 +115,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&response);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -120,6 +124,7 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -129,12 +134,14 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
-    // no startup commands should be set
-    // yet...
-    // TODO: Possibly add some sort of hardware test command
-    //       that will move all the parts so we
-    //       can make sure they're fully operational.
+void startupCommands(src::Drivers *drivers) {
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+    // test
+    //  no startup commands should be set
+    //  yet...
+    //  TODO: Possibly add some sort of hardware test command
+    //        that will move all the parts so we
+    //        can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------

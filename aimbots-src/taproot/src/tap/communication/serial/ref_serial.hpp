@@ -58,7 +58,7 @@ namespace tap::communication::serial
  * Receive information from the referee serial by continuously calling `messageReceiveCallback`.
  * Access data sent by the referee serial by calling `getRobotData` or `getGameData`.
  */
-class RefSerial : public DJISerial, public RefSerialData
+class  RefSerial : public DJISerial, public RefSerialData
 {
 private:
     /**

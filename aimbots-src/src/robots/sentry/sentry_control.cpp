@@ -37,12 +37,14 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
+#include "informants/communication/communication_response_handler.hpp"
+#include "informants/communication/communication_response_subsytem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-
+using namespace src::Communication;
 using namespace src::Control;
 
 /*
@@ -66,6 +68,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+CommunicationResponseSubsytem response(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -91,6 +94,8 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
+CommunicationResponseHandler responseHandler(*drivers());
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -119,6 +124,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&response);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -127,6 +133,7 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -139,7 +146,9 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
