@@ -57,16 +57,27 @@ float chassisPitchInGimbalDirectionDisplay = 0.0f;
 void GimbalFieldRelativeController::runPitchController(bool vision) {
     UNUSED(vision);
 
+    float chassisYaw =
+        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+
+    float sinYaw = sinf(chassisYaw);
+    float cosYaw = cosf(chassisYaw);
+
     float chassisRoll =
         drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+
+    float sinRoll = sinf(chassisRoll);
+    float cosRoll = cosf(chassisRoll);
 
     float chassisPitch =
         drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
+    float sinPitch = sinf(chassisPitch);
+    float cosPitch = cosf(chassisPitch);
+
     float chassisPitchInGimbalDirection = atan2f(
-        (sin(chassisPitch) * cos(chassisRoll) -
-         sin(chassisRoll) * cos(chassisPitch) * tanf(gimbal->getCurrentYawAxisAngle(AngleUnit::Radians))),
-        cos(chassisPitch) * cos(chassisRoll));
+        cosYaw * sinPitch + sinYaw * sinRoll,
+        sqrtf(sinYaw * sinYaw * cosRoll * cosRoll + cosYaw * cosYaw * cosPitch * cosPitch));
 
     chassisPitchInGimbalDirectionDisplay = modm::toDegree(chassisPitchInGimbalDirection);
 
