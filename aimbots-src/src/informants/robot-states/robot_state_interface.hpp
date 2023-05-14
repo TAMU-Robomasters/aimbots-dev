@@ -38,10 +38,10 @@ public:
     uint8_t teamMessage[115];
 #elif TARGET_STANDARD
     void updateStandardMessage();
-    uint8_t standardMessage[115];
+    // uint8_t standardMessage[115];
 #elif TARGET_HERO
     void updateHeroMessage();
-    uint8_t heroMessage[115];
+    // uint8_t heroMessage[115];
 #endif
     void respond();
 

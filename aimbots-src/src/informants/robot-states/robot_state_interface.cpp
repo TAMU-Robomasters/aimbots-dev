@@ -76,22 +76,22 @@ void RobotStates::updateTeamMessage() {
 #elif TARGET_STANDARD
 void updateStandardMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
-    standardMessage[0] = 1;
-    standardMessage[1] = robotStates[color][2].getX() >> 8;
-    standardMessage[2] = robotStates[color][2].getX();
-    standardMessage[3] = robotStates[color][2].getY() >> 8;
-    standardMessage[4] = robotStates[color][2].getY();
+    // standardMessage[0] = 1;
+    // standardMessage[1] = robotStates[color][2].getX() >> 8;
+    // standardMessage[2] = robotStates[color][2].getX();
+    // standardMessage[3] = robotStates[color][2].getY() >> 8;
+    // standardMessage[4] = robotStates[color][2].getY();
 }
 
 #elif TRAGET_HERO
 
 void updateHeroMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
-    heroMessage[0] = 1;
-    heroMessage[1] = robotStates[color][2].getX() >> 8;
-    heroMessage[2] = robotStates[color][2].getX();
-    heroMessage[3] = robotStates[color][2].getY() >> 8;
-    heroMessage[4] = robotStates[color][2].getY();
+    // heroMessage[0] = 1;
+    // heroMessage[1] = robotStates[color][2].getX() >> 8;
+    // heroMessage[2] = robotStates[color][2].getX();
+    // heroMessage[3] = robotStates[color][2].getY() >> 8;
+    // heroMessage[4] = robotStates[color][2].getY();
 }
 #endif
 
