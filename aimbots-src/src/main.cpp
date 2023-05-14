@@ -153,15 +153,6 @@ static void updateIo(src::Drivers *drivers) {
 
     imuStatus = drivers->kinematicInformant.getIMUState();
 
-    // float yaw = drivers->fieldRelativeInformant.getChassisYaw();
-    // float pitch = drivers->fieldRelativeInformant.getChassisPitch();
-    // float roll = drivers->fieldRelativeInformant.getChassisRoll();
-
-    // what does this mean
-    //  gZDisplay = drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
-    //  AngleUnit::Radians); gYDisplay = drivers->fieldRelativeInformant.getGy(); gXDisplay =
-    //  drivers->fieldRelativeInformant.getGx();
-
     float yaw = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
     float pitch =
         drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);

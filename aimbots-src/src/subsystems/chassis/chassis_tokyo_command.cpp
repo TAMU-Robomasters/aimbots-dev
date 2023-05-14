@@ -63,7 +63,7 @@ void ChassisTokyoCommand::execute() {
         rotationSpeedRamp.update(TOKYO_ROTATIONAL_SPEED_INCREMENT);
         desiredRotation = rotationSpeedRamp.getValue();
 
-        rotateVector(&desiredX, &desiredY, -yawAngleFromChassisCenter);
+        rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
 
     } else {
         Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);

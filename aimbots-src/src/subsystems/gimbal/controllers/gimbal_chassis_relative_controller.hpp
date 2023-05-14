@@ -23,15 +23,19 @@ public:
         }
     }
 
-    void runYawController(AngleUnit unit, float targetYawAxisAngle, bool vision = false) override;
-    void runPitchController(AngleUnit unit, float targetPitchAxisAngle, bool vision = false) override;
+    void runYawController(bool vision = false) override;
+    void runPitchController(bool vision = false) override;
 
     inline SmoothPID* getYawPositionPID() { return yawPositionPIDs[0]; }
     inline SmoothPID* getPitchPositionPID() { return pitchPositionPIDs[0]; }
 
     bool isOnline() const;
 
+    void setTargetYaw(AngleUnit unit, float targetYaw) override { gimbal->setTargetYawAxisAngle(unit, targetYaw); }
+    void setTargetPitch(AngleUnit unit, float targetPitch) override { gimbal->setTargetPitchAxisAngle(unit, targetPitch); }
+
     float getTargetYaw(AngleUnit unit) const override { return gimbal->getTargetYawAxisAngle(unit); }
+    float getTargetPitch(AngleUnit unit) const override { return gimbal->getTargetPitchAxisAngle(unit); }
 
 private:
     GimbalSubsystem* gimbal;

@@ -89,12 +89,16 @@ void ChassisSubsystem::initialize() {
 int refSerialWorkingDisplay = 0;
 uint16_t chassisPowerLimitDisplay = 0;
 
+float motorOutputDisplay = 0.0f;
+
 void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
 
     limitChassisPower();
+
+    motorOutputDisplay = motors[RB][0]->getOutputDesired();
 }
 
 void ChassisSubsystem::limitChassisPower() {

@@ -115,14 +115,12 @@ static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
 
-static constexpr float DEV_BOARD_YAW_OFFSET = M_PI_2;  // in radians
-
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 5.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.5f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

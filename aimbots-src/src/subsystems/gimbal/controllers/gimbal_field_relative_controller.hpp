@@ -25,13 +25,25 @@ public:
         }
     }
 
-    void runYawController(AngleUnit unit, float desiredFieldRelativeYawAngle, bool vision = false) override;
-    void runPitchController(AngleUnit unit, float desiredChassisRelativePitchAngle, bool vision = false) override;
+    void runYawController(bool vision = false) override;
+    void runPitchController(bool vision = false) override;
 
     bool isOnline() const;
 
+    void setTargetYaw(AngleUnit unit, float targetYaw) override {
+        fieldRelativeYawTarget = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
+    }
+
+    void setTargetPitch(AngleUnit unit, float targetPitch) override {
+        fieldRelativePitchTarget = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);
+    }
+
     float getTargetYaw(AngleUnit unit) const override {
-        return (unit == AngleUnit::Degrees) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget);
+        return (unit == AngleUnit::Radians) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget);
+    }
+
+    float getTargetPitch(AngleUnit unit) const override {
+        return (unit == AngleUnit::Radians) ? fieldRelativePitchTarget : modm::toDegree(fieldRelativePitchTarget);
     }
 
 private:
@@ -39,6 +51,7 @@ private:
     GimbalSubsystem* gimbal;
 
     float fieldRelativeYawTarget = 0.0f;
+    float fieldRelativePitchTarget = 0.0f;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;

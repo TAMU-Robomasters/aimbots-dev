@@ -68,6 +68,7 @@ private:
     src::Utils::KinematicStateVector chassisLinearZState;
 
     Vector3f chassisIMUAngles = {0.0f, 0.0f, 0.0f};
+    Vector3f chassisIMUAngularVelocities = {0.0f, 0.0f, 0.0f};
 
     modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
     modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {
