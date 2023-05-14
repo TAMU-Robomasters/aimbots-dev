@@ -156,7 +156,7 @@ public:
     }
     inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetYawAxisAngle = ContiguousFloat(angle, -M_PI, M_PI);
+        targetYawAxisAngle.setValue(angle);
     }
 
     inline float getTargetPitchAxisAngle(AngleUnit unit) const {

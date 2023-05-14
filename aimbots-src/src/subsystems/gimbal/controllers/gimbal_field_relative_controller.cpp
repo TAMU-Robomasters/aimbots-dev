@@ -9,12 +9,14 @@ namespace src::Gimbal {
 
 GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem)
     : drivers(drivers),
-      gimbal(gimbalSubsystem)  //
+      gimbal(gimbalSubsystem),
+      fieldRelativeYawTarget(0.0f, -M_PI, M_PI),
+      fieldRelativePitchTarget(0.0f, -M_PI, M_PI)  //
 {
     BuildPositionPIDs();
 }
 
-void GimbalFieldRelativeController::initialize() { fieldRelativeYawTarget = 0.0f; }
+void GimbalFieldRelativeController::initialize() {}
 
 float fieldRelativeYawTargetDisplay = 0.0f;
 float targetYawAxisAngleDisplay = 0.0f;
@@ -31,13 +33,15 @@ void GimbalFieldRelativeController::runYawController(bool vision) {
     float chassisInducedYawMotionCompensation =
         -CHASSIS_VELOCITY_YAW_FEEDFORWARD *
         drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    // scale rad/s to 16'000 power
 
     feedforwardDisplay = chassisInducedYawMotionCompensation;
 
-    // scale rad/s to 16'000 power
-
-    float yawAngularError = drivers->kinematicInformant.getCurrentFieldRelativeYawAngleAsContiguousFloat().difference(
+    float yawAngularError = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().difference(
         this->getTargetYaw(AngleUnit::Radians));
+
+    // limit error to -180 to 180 because we prefer the gimbal to lag behind the target rather than spin around
+    yawAngularError = tap::algorithms::limitVal(yawAngularError, -static_cast<float>(M_PI), static_cast<float>(M_PI));
 
     float chassisRelativeYawTarget = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) + yawAngularError;
 
@@ -63,32 +67,13 @@ float chassisPitchInGimbalDirectionDisplay = 0.0f;
 void GimbalFieldRelativeController::runPitchController(bool vision) {
     UNUSED(vision);
 
-    float chassisYaw =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-
-    float sinYaw = sinf(chassisYaw);
-    float cosYaw = cosf(chassisYaw);
-
-    float chassisRoll =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-
-    float sinRoll = sinf(chassisRoll);
-    float cosRoll = cosf(chassisRoll);
-
-    float chassisPitch =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-
-    float sinPitch = sinf(chassisPitch);
-    float cosPitch = cosf(chassisPitch);
-
-    float chassisPitchInGimbalDirection = atan2f(
-        cosYaw * sinPitch + sinYaw * sinRoll,
-        sqrtf(sinYaw * sinYaw * cosRoll * cosRoll + cosYaw * cosYaw * cosPitch * cosPitch));
+    float chassisPitchInGimbalDirection = drivers->kinematicInformant.getChassisPitchInGimbalDirection();
 
     chassisPitchInGimbalDirectionDisplay = modm::toDegree(chassisPitchInGimbalDirection);
 
-    float pitchAngularError = drivers->kinematicInformant.getCurrentFieldRelativePitchAngleAsContiguousFloat().difference(
-        this->getTargetPitch(AngleUnit::Radians));
+    float pitchAngularError =
+        drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().difference(
+            this->getTargetPitch(AngleUnit::Radians));
 
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
 
@@ -106,6 +91,9 @@ void GimbalFieldRelativeController::runPitchController(bool vision) {
         gimbal->setDesiredPitchMotorOutput(i, positionPIDOutput);
     }
 }
+
+float softHighDisplay = 0.0f;
+float softLowDisplay = 0.0f;
 
 bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline(); }
 

@@ -117,15 +117,36 @@ void KinematicInformant::updateChassisAcceleration() {
     chassisLinearState[2].updateFromAcceleration(linearChassisAcceleration.getZ());
 }
 
-ContiguousFloat KinematicInformant::getCurrentFieldRelativeYawAngleAsContiguousFloat() {
+ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     return ContiguousFloat(currGimbalAngle + currChassisAngle - modm::toRadian(YAW_AXIS_START_ANGLE), -M_PI, M_PI);
 }
-ContiguousFloat KinematicInformant::getCurrentFieldRelativePitchAngleAsContiguousFloat() {
+ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
-    float currChassisAngle = getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians);
+    float currChassisAngle = getChassisPitchInGimbalDirection();
     return ContiguousFloat(currGimbalAngle + currChassisAngle, -M_PI, M_PI);
+}
+
+float KinematicInformant::getChassisPitchInGimbalDirection() {
+    float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
+    float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
+
+    float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+
+    float sinChasRoll = sinf(chassisRoll);
+    float cosChasRoll = cosf(chassisRoll);
+
+    float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+
+    float sinChasPitch = sinf(chassisPitch);
+    float cosChasPitch = cosf(chassisPitch);
+
+    float chassisPitchInGimbalDirection = atan2f(
+        cosGimbYaw * sinChasPitch + sinGimbYaw * sinChasRoll,
+        sqrtf(sinGimbYaw * sinGimbYaw * cosChasRoll * cosChasRoll + cosGimbYaw * cosGimbYaw * cosChasPitch * cosChasPitch));
+
+    return chassisPitchInGimbalDirection;
 }
 
 void KinematicInformant::updateRobotFrames() {

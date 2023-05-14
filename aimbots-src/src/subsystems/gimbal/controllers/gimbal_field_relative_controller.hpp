@@ -7,7 +7,6 @@
 #include <utils/pid/smooth_pid_wrap.hpp>
 
 namespace src::Gimbal {
-
 class GimbalFieldRelativeController : public GimbalControllerInterface {
 public:
     GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*);
@@ -31,27 +30,42 @@ public:
     bool isOnline() const;
 
     void setTargetYaw(AngleUnit unit, float targetYaw) override {
-        fieldRelativeYawTarget = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
+        targetYaw = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
+        fieldRelativeYawTarget.setValue(targetYaw);
     }
 
     void setTargetPitch(AngleUnit unit, float targetPitch) override {
-        fieldRelativePitchTarget = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);
+        targetPitch = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);
+
+        // convert chassis-relative pitch soft stops to field-relative angles
+        float chassisPitchInGimbalDirection = drivers->kinematicInformant.getChassisPitchInGimbalDirection();
+        float softHigh = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_HIGH;
+        float softLow = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_LOW;
+
+        softHighDisplay = modm::toDegree(softHigh);
+        softLowDisplay = modm::toDegree(softLow);
+
+        targetPitch =
+            tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
+        fieldRelativePitchTarget.setValue(targetPitch);
     }
 
     float getTargetYaw(AngleUnit unit) const override {
-        return (unit == AngleUnit::Radians) ? fieldRelativeYawTarget : modm::toDegree(fieldRelativeYawTarget);
+        return (unit == AngleUnit::Radians) ? fieldRelativeYawTarget.getValue()
+                                            : modm::toDegree(fieldRelativeYawTarget.getValue());
     }
 
     float getTargetPitch(AngleUnit unit) const override {
-        return (unit == AngleUnit::Radians) ? fieldRelativePitchTarget : modm::toDegree(fieldRelativePitchTarget);
+        return (unit == AngleUnit::Radians) ? fieldRelativePitchTarget.getValue()
+                                            : modm::toDegree(fieldRelativePitchTarget.getValue());
     }
 
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    float fieldRelativeYawTarget = 0.0f;
-    float fieldRelativePitchTarget = 0.0f;
+    tap::algorithms::ContiguousFloat fieldRelativeYawTarget;
+    tap::algorithms::ContiguousFloat fieldRelativePitchTarget;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
