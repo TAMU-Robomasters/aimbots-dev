@@ -42,9 +42,6 @@ public:
         float softHigh = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_HIGH;
         float softLow = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_LOW;
 
-        softHighDisplay = modm::toDegree(softHigh);
-        softLowDisplay = modm::toDegree(softLow);
-
         targetPitch =
             tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
         fieldRelativePitchTarget.setValue(targetPitch);

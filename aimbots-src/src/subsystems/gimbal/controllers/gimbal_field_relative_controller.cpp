@@ -92,9 +92,6 @@ void GimbalFieldRelativeController::runPitchController(bool vision) {
     }
 }
 
-float softHighDisplay = 0.0f;
-float softLowDisplay = 0.0f;
-
 bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline(); }
 
 }  // namespace src::Gimbal
