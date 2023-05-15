@@ -22,8 +22,8 @@ tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::get
 
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f imuAngles = {
-        drivers->bmi088.getRoll(),  // swaps roll and pitch axes
-        drivers->bmi088.getPitch(),
+        -drivers->bmi088.getPitch(),  // inverts pitch
+        drivers->bmi088.getRoll(),
         drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees off at calibration
 
     Vector3f getIMUAngularVelocity = {drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
