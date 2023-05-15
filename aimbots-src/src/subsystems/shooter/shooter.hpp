@@ -3,8 +3,10 @@
 
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
+
 
 namespace src::Shooter {
 
@@ -20,7 +22,7 @@ enum MotorIndex {
 };
 
 class ShooterSubsystem : public tap::control::Subsystem {
-   public:
+public:
     ShooterSubsystem(tap::Drivers* drivers);
 
     /**
@@ -101,9 +103,9 @@ class ShooterSubsystem : public tap::control::Subsystem {
     }
 
 #ifndef ENV_UNIT_TESTS
-   private:
+private:
 #else
-   public:
+public:
 #endif
 
     DJIMotor flywheel1, flywheel2;

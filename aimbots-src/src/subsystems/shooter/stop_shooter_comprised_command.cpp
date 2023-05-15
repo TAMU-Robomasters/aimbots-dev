@@ -1,16 +1,20 @@
 #include "stop_shooter_comprised_command.hpp"
 
-#include "drivers.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
+
 
 namespace src::Shooter {
 
-StopShooterComprisedCommand::StopShooterComprisedCommand(src::Drivers* drivers, ShooterSubsystem* shooter) : TapComprisedCommand(drivers),
-                                                                                                             brake_command(drivers, shooter, 500.0f),
-                                                                                                             stop_command(drivers, shooter) {
+StopShooterComprisedCommand::StopShooterComprisedCommand(src::Drivers* drivers, ShooterSubsystem* shooter)
+    : TapComprisedCommand(drivers),
+      brake_command(drivers, shooter, 500.0f),
+      stop_command(drivers, shooter) {
     this->comprisedCommandScheduler.registerSubsystem(shooter);
     this->addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
@@ -47,16 +51,11 @@ void ExtendAndGrabCommand::refresh()                            |
 ----------------------------------------------------------------/
 */
 
-void StopShooterComprisedCommand::end(bool) {
-}
+void StopShooterComprisedCommand::end(bool) {}
 
-bool StopShooterComprisedCommand::isReady() {
-    return true;
-}
+bool StopShooterComprisedCommand::isReady() { return true; }
 
 // this command will auto-deschedule when we want to move
-bool StopShooterComprisedCommand::isFinished() const {
-    return false;
-}
+bool StopShooterComprisedCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter

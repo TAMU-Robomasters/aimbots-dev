@@ -1,5 +1,3 @@
-#ifdef TARGET_STANDARD
-
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 
 namespace src::Hopper {
@@ -19,19 +17,11 @@ void ToggleHopperCommand::initialize() {
     }
 }
 
-void ToggleHopperCommand::execute() {
-}
+void ToggleHopperCommand::execute() {}
 
-void ToggleHopperCommand::end(bool) {
-}
+void ToggleHopperCommand::end(bool) {}
 
-bool ToggleHopperCommand::isReady() {
-    return true;
-}
+bool ToggleHopperCommand::isReady() { return true; }
 
-bool ToggleHopperCommand::isFinished() const {
-    return hopper->isHopperReady();
-}
+bool ToggleHopperCommand::isFinished() const { return hopper->isHopperReady(); }
 };  // namespace src::Hopper
-
-#endif
