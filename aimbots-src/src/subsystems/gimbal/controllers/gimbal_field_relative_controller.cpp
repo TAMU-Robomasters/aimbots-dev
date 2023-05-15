@@ -30,10 +30,11 @@ void GimbalFieldRelativeController::runYawController(bool vision) {
 
     fieldRelativeYawTargetDisplay = this->getTargetYaw(AngleUnit::Degrees);
 
+    // Adds a feedforward term to the yaw controller to compensate for chassis induced yaw motion (based on chassis velocity)
     float chassisInducedYawMotionCompensation =
         -CHASSIS_VELOCITY_YAW_FEEDFORWARD *
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-    // scale rad/s to 16'000 power
+        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) /
+        GIMBAL_YAW_GEAR_RATIO;
 
     feedforwardDisplay = chassisInducedYawMotionCompensation;
 
