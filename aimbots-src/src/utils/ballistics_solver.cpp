@@ -71,7 +71,7 @@ bool BallisticsSolver::computeTravelTime(
     }
 
     // Equation obtained from the wikipedia page on projectile motion
-    *turretPitch = -atan2(bulletVelocitySquared - sqrt(sqrtTerm), (ACCELERATION_GRAVITY * horizontalDist));
+    *turretPitch = atan2(bulletVelocitySquared - sqrt(sqrtTerm), (ACCELERATION_GRAVITY * horizontalDist));
 
     // For vertical aiming, y_f = v_0*t - 0.5*g*t^2 -> t = (v_0 - sqrt((v_0)^2 - 2*g*y_f))/g
     // We use the negative root since the collision will happen on the first instance that the
@@ -117,23 +117,18 @@ bool BallisticsSolver::findTargetProjectileIntersection(
         projectedTargetPosition = targetInitialState.projectForward(*projectedTravelTime);
     }
 
-    float squaredTargetX = projectedTargetPosition.x * projectedTargetPosition.x;
-    float squaredTargetY = projectedTargetPosition.y * projectedTargetPosition.y;
-
-    float squaredBarrelPositionX = BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX();
+    float squaredTargetX = pow2(projectedTargetPosition.x);
+    float squaredTargetY = pow2(projectedTargetPosition.y);
+    float squaredBarrelPositionX = pow2(BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX());
 
     // *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
+    *turretYaw = acos(
+        (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
+         BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
+        (squaredTargetX + squaredTargetY));
 
-    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() >= 0) {
-        *turretYaw = acos(
-            (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
-             BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
-            (squaredTargetX + squaredTargetY));
-    } else {
-        *turretYaw = -1 * acos(
-                              (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
-                               BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
-                              (squaredTargetX + squaredTargetY));
+    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() > 0) {
+        *turretYaw *= -1;
     }
 
     return !isnan(*turretPitch) && !isnan(*turretYaw);

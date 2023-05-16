@@ -49,14 +49,14 @@ void CoordinateFrame::setOrigin(Vector3f r) {
 }
 
 // Getters
-Vector3f CoordinateFrame::getOrigin() { return this->origin; }
-Matrix3f CoordinateFrame::getOrientation() { return this->orientation; }
-Matrix4f CoordinateFrame::getTransformIn() { return this->transformIn; }
-Matrix4f CoordinateFrame::getTransformOut() { return this->transformOut; }
+Vector3f& CoordinateFrame::getOrigin() { return this->origin; }
+Matrix3f& CoordinateFrame::getOrientation() { return this->orientation; }
+const Matrix4f& CoordinateFrame::getTransformIn() { return this->transformIn; }
+const Matrix4f& CoordinateFrame::getTransformOut() { return this->transformOut; }
 Matrix4f CoordinateFrame::getTransformToFrame(CoordinateFrame& f) { return f.getTransformIn() * this->transformOut; }
 
 // Returns a point in the given frame that is stored in the current frame
-Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame& f, Vector3f v) {
+Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame& f, Vector3f& v) {
     return homogenousCoordinateCrop(getTransformToFrame(f) * homogenousCoordinateExtend(v).asMatrix());
 }
 

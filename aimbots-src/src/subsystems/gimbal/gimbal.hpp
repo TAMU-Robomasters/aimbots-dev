@@ -184,7 +184,7 @@ public:
     inline std::pair<float, float>& getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
-    inline std::pair<float, float>& getGimbalOrientationAtTime(uint8_t time_ms) {
+    inline std::pair<float, float>& getGimbalOrientationAtTime(uint32_t time_ms) {
         // assume 2 ms delay between gimbal updates
         int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
         return gimbalOrientationBuffer[index];
@@ -215,7 +215,7 @@ private:
     void setDesiredOutputToYawMotor(uint8_t YawIdx);
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 
-    static const int GIMBAL_BUFFER_SIZE = 15;
+    static const uint32_t GIMBAL_BUFFER_SIZE = 40;
 
     // gimbal yaw / pitch buffer
     // pitch, yaw is first, second, respectively in the pair

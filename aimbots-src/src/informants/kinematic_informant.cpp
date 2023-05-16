@@ -174,9 +174,17 @@ void KinematicInformant::updateRobotFrames() {
     updateChassisAcceleration();
 }
 
+float oldGimbalYawDisplay = 0.0f;
+float oldGimbalPitchDisplay = 0.0f;
+
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     std::pair<float, float> gimbalAngles = gimbalSubsystem->getGimbalOrientationAtTime(frameDelay_ms);
+
+    oldGimbalYawDisplay = modm::toDegree(gimbalAngles.first);
+    oldGimbalPitchDisplay = modm::toDegree(gimbalAngles.second);
+
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
+    // robotFrames.mirrorPastCameraFrame(modm::toRadian(0.0f), modm::toRadian(0.0f), AngleUnit::Radians);
 }
 
 }  // namespace src::Informants

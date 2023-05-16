@@ -308,7 +308,7 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.085f, // x
+    0.085f, // x
     0.07f, // y
     0.0f,  // z
 };
@@ -326,7 +326,7 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 };
 
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.0f, //x = 0.04498
+    0.04498f, //x = 0.04498
     0.0f, //y - does not matter too much 
     0.01683f, //z = 0.01683
 };

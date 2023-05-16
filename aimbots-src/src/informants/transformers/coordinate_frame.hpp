@@ -20,14 +20,14 @@ public:
     void setOrientation(Matrix3f R);
     void rotateFrame(Matrix3f R);
 
-    Vector3f getOrigin();
-    Matrix3f getOrientation();
+    Vector3f& getOrigin();
+    Matrix3f& getOrientation();
 
-    Matrix4f getTransformIn();
-    Matrix4f getTransformOut();
+    const Matrix4f& getTransformIn();
+    const Matrix4f& getTransformOut();
 
     Matrix4f getTransformToFrame(CoordinateFrame& f);
-    Vector3f getPointInFrame(CoordinateFrame& f, Vector3f v);
+    Vector3f getPointInFrame(CoordinateFrame& f, Vector3f& v);
 
 private:
     // Origin of the frame with respect to center of mass of the chassis

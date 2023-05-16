@@ -19,22 +19,17 @@ EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
            ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)}) {}
 
 // watchable variables
-float targetXCoordDisplay_camera = 0.0f;
-float targetYCoordDisplay_camera = 0.0f;
-float targetZCoordDisplay_camera = 0.0f;
-//
-Matrix<float, 3, 1> enemyPositionDisplay_gimbal;
-float targetXCoordDisplay_gimbal = 0.0f;
-float targetYCoordDisplay_gimbal = 0.0f;
-float targetZCoordDisplay_gimbal = 0.0f;
-//
-float targetXCoordDisplay_chassis = 0.0f;
-float targetYCoordDisplay_chassis = 0.0f;
-float targetZCoordDisplay_chassis = 0.0f;
-//
 float gimbalYXWatch = 0.0f;
 float gimbalYYWatch = 0.0f;
 float gimbalYZWatch = 0.0f;
+//
+float targetPositionXDisplayWithoutCompensation = 0.0f;
+float targetPositionYDisplayWithoutCompensation = 0.0f;
+float targetPositionZDisplayWithoutCompensation = 0.0f;
+
+float targetPositionXDiplay = 0.0f;
+float targetPositionYDiplay = 0.0f;
+float targetPositionZDiplay = 0.0f;
 //
 int size_watch;
 float dt_vel_watch;
@@ -47,55 +42,84 @@ float px, py, pz = 0.0f;
 float vx, vy, vz = 0.0f;
 float ax, ay, az = 0.0f;
 
+float cameraFrameTransformOutYYDisplay = 0.0f;
+
 // gather data, transform data,
 void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptureDelay) {
+    src::Informants::Transformers::CoordinateFrame gimbalFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame cameraFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame ballisticsFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame cameraAtCVUpdateFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame chassisFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
+
     // clear buffer if CV connection just turned back on
-    prev_cv_valid = cv_valid;
-    cv_valid = true;
-    if (cv_valid && !prev_cv_valid) {
+    prevCVValid = cvValid;
+    cvValid = true;
+    if (cvValid && !prevCVValid) {
         rawPositionBuffer.clear();
     }  // goodbye
 
-    enemyTimedPosition currentData{
+    EnemyTimedPosition currentData{
         .position = position,
         .timestamp_uS = static_cast<uint32_t>(tap::arch::clock::getTimeMicroseconds()) -
                         (static_cast<uint32_t>(frameCaptureDelay) * MICROSECONDS_PER_MS),
         // Current time - (how long ago the frame was captured)
     };
 
-    // watchable variables
-    targetXCoordDisplay_camera = currentData.position.getX();
-    targetYCoordDisplay_camera = currentData.position.getY();
-    targetZCoordDisplay_camera = currentData.position.getZ();
-
-    enemyTimedPosition transformedData = currentData;
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
 
     // std::pair<float, float> gimbalAngles = gimbal->getGimbalOrientationAtTime(frameCaptureDelay);
-    // drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
+    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
 
-    enemyTimedPosition gimbalTransformedDataWatch = currentData;
-    gimbalTransformedDataWatch.position =
-        drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CAMERA_FRAME)
-            .getPointInFrame(
-                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
-                currentData.position);
+    EnemyTimedPosition gimbalTransformedDataWatch{
+        .position = cameraFrame.getPointInFrame(gimbalFrame, currentData.position),
+        .timestamp_uS = currentData.timestamp_uS,
+    };
 
-    Matrix3f gimbalOrientationWatch =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME).getOrientation();
-
+    Matrix3f gimbalOrientationWatch = gimbalFrame.getOrientation();
     gimbalYXWatch = gimbalOrientationWatch[0][1];
     gimbalYYWatch = gimbalOrientationWatch[1][1];
     gimbalYZWatch = gimbalOrientationWatch[2][1];
 
-    transformedData.position =
-        drivers->kinematicInformant.getRobotFrames()
-            .getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME)
-            .getPointInFrame(
-                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME),
-                currentData.position);
+    // currentData.position = {0.0f, 1.0f, 0.0f};
+
+    Vector3f transformedPositionVector = src::Utils::MatrixHelper::homogenousCoordinateCrop(
+        cameraFrame.getTransformOut() *
+        src::Utils::MatrixHelper::homogenousCoordinateExtend(currentData.position).asMatrix());
+
+    EnemyTimedPosition targetPositionWithoutLagCompensation{
+        .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
+        .timestamp_uS = currentData.timestamp_uS,
+    };
+
+    cameraFrameTransformOutYYDisplay = cameraFrame.getTransformOut()[1][1];
+
+    EnemyTimedPosition transformedData{
+        .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
+        .timestamp_uS = currentData.timestamp_uS,
+    };
+
+    targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
+    targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
+    targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
+
+    targetPositionXDiplay = transformedData.position.getX();
+    targetPositionYDiplay = transformedData.position.getY();
+    targetPositionZDiplay = transformedData.position.getZ();
+
+    // targetPositionXDiplay = transformedPositionVector.getX();
+    // targetPositionYDiplay = transformedPositionVector.getY();
+    // targetPositionZDiplay = transformedPositionVector.getZ();
 
     // save data point to buffer (at index 0-- index 0 is NEWEST, index size-1 is OLDEST.)
     // at max capacity, oldest data is overwritten first
@@ -104,18 +128,9 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     buffer_size_watch = rawPositionBuffer.getSize();
     last_entry_timestamp_watch = rawPositionBuffer[0].timestamp_uS;
 
-    // watchable variables
-    targetXCoordDisplay_chassis = transformedData.position.getX();
-    targetYCoordDisplay_chassis = transformedData.position.getY();
-    targetZCoordDisplay_chassis = transformedData.position.getZ();
-
-    targetXCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getX();
-    targetYCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getY();
-    targetZCoordDisplay_gimbal = gimbalTransformedDataWatch.position.getZ();
-
     // else {
-    //     prev_cv_valid = cv_valid;
-    //     cv_valid = false;
+    //     prevCVValid = cvValid;
+    //     cvValid = false;
     //     rawPositionBuffer.clear();
     // }
 }
@@ -126,15 +141,15 @@ float raw_x_display;
 float raw_time_display;
 float raw_x_display2;
 
-std::vector<enemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
-    std::vector<enemyTimedPosition> validPositions;
+std::vector<EnemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
+    std::vector<EnemyTimedPosition> validPositions;
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     raw_x_display = rawPositionBuffer[0].position.getX();
     raw_time_display = rawPositionBuffer[0].timestamp_uS;
     raw_x_display2 = rawPositionBuffer[1].position.getX();
     // traverse bounded deque until invalid time found
     for (int index = 0; index < BUFFER_SIZE; index++) {
-        enemyTimedPosition pos = rawPositionBuffer[index];
+        EnemyTimedPosition pos = rawPositionBuffer[index];
         canSendData = (currentTime_uS - pos.timestamp_uS < time_seconds * (float)MICROSECONDS_PER_SECOND);
         if ((pow(pos.position.getX(), 2) + pow(pos.position.getY(), 2) + pow(pos.position.getZ(), 2)) > 0) {
             validPositions.push_back(pos);
@@ -166,7 +181,7 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
         {2, -5, 4, -1, 0},
         {(35.0f / 12.0f), (-26.0f / 3.0f), (19.0f / 2.0f), (-14.0f / 3.0f), (11.0f / 12.0f)}};
 
-    std::vector<enemyTimedPosition> validPoints;
+    std::vector<EnemyTimedPosition> validPoints;
     validPoints = this->getLastEntriesWithinTime(VALID_TIME);
     int size = validPoints.size();
     // DEBUG

@@ -17,31 +17,21 @@ float xy_angle_between_locations(AngleUnit unit, Matrix<float, 1, 3> v1, Matrix<
     return angle;
 }
 
-Matrix3f rotationMatrix(AngleUnit unit, float angle, int axis) {
-    // Constructs a rotation matrix about an elementary (Robot's X, Y, Z Axis)
-    // Rotation matricies are used to determine coordinates before / after a rotation
-    // Takes input of angle unit (Degrees / Rads), Float angle, and axis
-    //  0 = X - Axis
-    //  1 = Y - Axis
-    //  2 = Z - Axis
-    // Returns rotation matrix
-    // If axis is not recognized, returns Identity matrix = No Rotation
-    if (unit == AngleUnit::Degrees) {
-        angle = modm::toRadian(angle);
-    }
+Matrix3f rotationMatrix(float angle, LinearAxis axis, AngleUnit unit) {
+    angle = (unit == AngleUnit::Degrees) ? modm::toRadian(angle) : angle;
+
     float c = cosf(angle);
     float s = sinf(angle);
     // clang-format off
-            float rotation_array[9] = {
-                1.0f, 0.0f, 0.0f, 
-                0.0f, 1.0f, 0.0f, 
-                0.0f, 0.0f, 1.0f};
+    float rotation_array[9] = {
+        1.0f, 0.0f, 0.0f, 
+        0.0f, 1.0f, 0.0f, 
+        0.0f, 0.0f, 1.0f};
     // clang-format on
     switch (axis) {
         case X_AXIS: {
             // Create X-axis rotation matrix
             // In ground robots this is the "roll" and does not exist
-            // In Sentry this is the "pitch"
             // clang-format off
              rotation_array[0] = 1.0f; rotation_array[1] = 0.0f; rotation_array[2] = 0.0f;
              rotation_array[3] = 0.0f; rotation_array[4] = c; rotation_array[5] = -s;
@@ -50,13 +40,12 @@ Matrix3f rotationMatrix(AngleUnit unit, float angle, int axis) {
             break;
         }
         case Y_AXIS: {
-            // Create Y-Axis Rotation Matirx
-            // In ground rotbots this is the "pitch"
-            // In sentry this is the "roll" and does not exist
+            // Create Y-Axis Rotation Matrix
+            // In ground robots this is the "pitch"
             // clang-format off
-            rotation_array[0] = c; rotation_array[1] = 0.0f; rotation_array[2] = s;
-            rotation_array[3] = 0.0f; rotation_array[4] = 1.0; rotation_array[5] = 0.0f;
-            rotation_array[6] = -s; rotation_array[7] = 0.0f; rotation_array[8] = c;
+            rotation_array[0] = c;    rotation_array[1] = 0.0f; rotation_array[2] = s;
+            rotation_array[3] = 0.0f; rotation_array[4] = 1.0;  rotation_array[5] = 0.0f;
+            rotation_array[6] = -s;   rotation_array[7] = 0.0f; rotation_array[8] = c;
             // clang-format on
             break;
         }
@@ -64,8 +53,8 @@ Matrix3f rotationMatrix(AngleUnit unit, float angle, int axis) {
             // Creates a Z-Axis rotation matrix
             // In Ground robots and sentry this is "yaw"
             // clang-format off
-            rotation_array[0] = c; rotation_array[1] = -s; rotation_array[2] = 0.0f;
-            rotation_array[3] = s; rotation_array[4] = c; rotation_array[5] = 0.0f;
+            rotation_array[0] = c;    rotation_array[1] = -s;   rotation_array[2] = 0.0f;
+            rotation_array[3] = s;    rotation_array[4] = c;    rotation_array[5] = 0.0f;
             rotation_array[6] = 0.0f; rotation_array[7] = 0.0f; rotation_array[8] = 1.0f;
             // clang-format on
             break;

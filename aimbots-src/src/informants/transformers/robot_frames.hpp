@@ -25,21 +25,27 @@ public:
         switch (frame) {
             case FIELD_FRAME:
                 return fieldFrame;
+                break;
             case CHASSIS_FRAME:
                 return chassisFrame;
+                break;
             case GIMBAL_FRAME:
                 return gimbalFrame;
+                break;
             case CAMERA_FRAME:
                 return cameraFrame;
+                break;
             case BALLISTICS_FRAME:
                 return ballisticsFrame;
+                break;
             case CHASSIS_IMU_FRAME:
                 return chassisIMUFrame;
+                break;
             case CAMERA_AT_CV_UPDATE_FRAME:
                 return cameraAtCVUpdateFrame;
-            default:
-                return chassisFrame;
+                break;
         }
+        return chassisFrame;
     }
 
     void updateFrames(
@@ -49,26 +55,23 @@ public:
         Vector3f robotPositionRelativeToStartPosition,
         AngleUnit angleUnit);
 
-    void mirrorPastCameraFrame(
-        float gimbalYawAngle,
-        float gimbalPitchAngle,
-        AngleUnit angleUnit
-    );
+    void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
+
 private:
     CoordinateFrame fieldFrame;
     CoordinateFrame chassisFrame;  // "Ground Frame
     CoordinateFrame gimbalFrame;
     CoordinateFrame cameraFrame;
     CoordinateFrame ballisticsFrame;
+    // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
     CoordinateFrame chassisIMUFrame;
     CoordinateFrame cameraAtCVUpdateFrame;
-    // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
 
     Vector3f chassis_origin_relative_to_world_origin;
     Matrix3f chassis_orientation_relative_to_world_orientation;
 
     Vector3f camera_origin_relative_to_chassis_origin;
-    Matrix3f turret_orientation_relative_to_chassis_orientation;
+    Matrix3f gimbal_orientation_relative_to_chassis_orientation;
 };
 }  // namespace src::Informants::Transformers
 

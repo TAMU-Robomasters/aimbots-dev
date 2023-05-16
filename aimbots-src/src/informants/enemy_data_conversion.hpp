@@ -34,7 +34,7 @@ struct plateKinematicState;
 }
 
 // for internal use
-struct enemyTimedPosition {
+struct EnemyTimedPosition {
     Vector3f position;
     uint32_t timestamp_uS;
 };
@@ -63,7 +63,7 @@ public:
      * @param time the maximum elapsed time for an entry to be valid
      * @return vector with enemyTimedPositions
      */
-    std::vector<enemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
+    std::vector<EnemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
     struct DataFilterConfig {
         float tQPositionKalman = 1.5f;   /**< The system noise covariance for the kalman filter that
@@ -86,8 +86,8 @@ private:
     static constexpr float VALID_TIME = 5;  // max elapsed seconds before an enemy position entry is invalid
 
     // buffer for XYZ + timestamp
-    Deque<enemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
-    bool prev_cv_valid, cv_valid;
+    Deque<EnemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
+    bool prevCVValid, cvValid;
     DataFilterConfig config;
 
     modm::Vector<tap::algorithms::ExtendedKalman, 3> positionKalman;

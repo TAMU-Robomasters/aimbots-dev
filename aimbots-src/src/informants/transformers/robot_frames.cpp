@@ -13,16 +13,22 @@ namespace src::Informants::Transformers {
 
 RobotFrames::RobotFrames() {
     // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
-    ballisticsFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
-    gimbalFrame.setOrigin(-1 * TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
-    Matrix3f chassisIMUOrientation = rotationMatrix(AngleUnit::Degrees, CIMU_X_EULER, X_AXIS) *
-                                     rotationMatrix(AngleUnit::Degrees, CIMU_Y_EULER, Y_AXIS) *
-                                     rotationMatrix(AngleUnit::Degrees, CIMU_Z_EULER, Z_AXIS);
+    ballisticsFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
+    gimbalFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
+    Matrix3f chassisIMUOrientation = rotationMatrix(CIMU_X_EULER, X_AXIS, AngleUnit::Degrees) *
+                                     rotationMatrix(CIMU_Y_EULER, Y_AXIS, AngleUnit::Degrees) *
+                                     rotationMatrix(CIMU_Z_EULER, Z_AXIS, AngleUnit::Degrees);
     chassisIMUFrame.setOrientation(chassisIMUOrientation);
 
     // update frames to initial values
     updateFrames(YAW_AXIS_START_ANGLE, PITCH_AXIS_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);
+
+    cameraAtCVUpdateFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+    cameraAtCVUpdateFrame.setOrigin(camera_origin_relative_to_chassis_origin);
 }
+
+float gimbalOrientationYYDisplay = 0.0f;
+float gimbalFrameOrientationYYDisplay = 0.0f;
 
 void RobotFrames::updateFrames(
     float yawChassisRelative,
@@ -30,32 +36,46 @@ void RobotFrames::updateFrames(
     float chassisWorldRelativeAngle,
     Vector3f robotPositionRelativeToStartPosition,
     AngleUnit angleUnit) {
-    chassis_orientation_relative_to_world_orientation = rotationMatrix(angleUnit, chassisWorldRelativeAngle, Z_AXIS);
+    chassis_orientation_relative_to_world_orientation = rotationMatrix(chassisWorldRelativeAngle, Z_AXIS, angleUnit);
 
-    turret_orientation_relative_to_chassis_orientation =
-        rotationMatrix(angleUnit, yawChassisRelative, Z_AXIS) * rotationMatrix(angleUnit, pitchChassisRelative, X_AXIS);
-    camera_origin_relative_to_chassis_origin =
-        TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
-        turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
+    this->gimbal_orientation_relative_to_chassis_orientation =
+        rotationMatrix(yawChassisRelative, Z_AXIS, angleUnit) *
+        rotationMatrix(pitchChassisRelative, X_AXIS, angleUnit);  // gimbal 2 chassis rotation
 
-    gimbalFrame.setOrientation(turret_orientation_relative_to_chassis_orientation);
-    cameraFrame.setOrientation(turret_orientation_relative_to_chassis_orientation);
-    cameraFrame.setOrigin(-1 * camera_origin_relative_to_chassis_origin);
+    this->camera_origin_relative_to_chassis_origin =
+        TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN + this->gimbal_orientation_relative_to_chassis_orientation *
+                                                       CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;  // also gimbal to chassis
+
+    gimbalFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+
+    gimbalFrameOrientationYYDisplay = gimbalFrame.getOrientation()[1][1];
+
+    cameraFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+    cameraFrame.setOrigin(camera_origin_relative_to_chassis_origin);
+
     fieldFrame.setOrientation(chassis_orientation_relative_to_world_orientation);
     fieldFrame.setOrigin(
         chassis_orientation_relative_to_world_orientation * robotPositionRelativeToStartPosition +
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD);
+
+    // cameraAtCVUpdateFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+    // cameraAtCVUpdateFrame.setOrigin(-1 * camera_origin_relative_to_chassis_origin);
     // TODO: Check if correct
 }
 
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
     // how convert angle?? IDK
+    Matrix3f at_cv_update_gimbal_orientation_relative_to_chassis_orientation =
+        rotationMatrix(gimbalYawAngle, Z_AXIS, AngleUnit::Radians) *
+        rotationMatrix(gimbalPitchAngle, X_AXIS, AngleUnit::Radians);
 
-    turret_orientation_relative_to_chassis_orientation =
-        rotationMatrix(angleUnit, gimbalYawAngle, Z_AXIS) * rotationMatrix(angleUnit, gimbalPitchAngle, X_AXIS);
-    camera_origin_relative_to_chassis_origin =
+    gimbalOrientationYYDisplay = at_cv_update_gimbal_orientation_relative_to_chassis_orientation[1][1];
+
+    Vector3f at_cv_update_camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +
-        turret_orientation_relative_to_chassis_orientation.asTransposed() * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
-    cameraAtCVUpdateFrame.setOrientation(turret_orientation_relative_to_chassis_orientation);
+        at_cv_update_gimbal_orientation_relative_to_chassis_orientation * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
+
+    cameraAtCVUpdateFrame.setOrientation(at_cv_update_gimbal_orientation_relative_to_chassis_orientation);
+    cameraAtCVUpdateFrame.setOrigin(at_cv_update_camera_origin_relative_to_chassis_origin);
 }
 }  // namespace src::Informants::Transformers
