@@ -35,7 +35,7 @@ struct MeasuredKinematicState {
      * @return The future position of an object using a quadratic (constant acceleration) model.
      */
     inline static float quadraticKinematicProjection(float dt, float s, float v, float a) {
-        return s + v * dt + 0.5f * a * powf(dt, 2.0f);
+        return s + v * dt + 0.5f * a * pow2(dt);
     }
 
     /**

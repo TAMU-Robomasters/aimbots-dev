@@ -60,10 +60,10 @@ bool BallisticsSolver::computeTravelTime(
     float *turretPitch,
     const float pitchAxisOffset) {
     float horizontalDist = hypot(targetPosition.x, targetPosition.y) + pitchAxisOffset;
-    float bulletVelocitySquared = powf(bulletVelocity, 2);
+    float bulletVelocitySquared = pow2(bulletVelocity);
     float sqrtTerm =
-        powf(bulletVelocitySquared, 2) -
-        ACCELERATION_GRAVITY * (ACCELERATION_GRAVITY * powf(horizontalDist, 2) +
+        pow2(bulletVelocitySquared) -
+        ACCELERATION_GRAVITY * (ACCELERATION_GRAVITY * pow2(horizontalDist) +
                                 2 * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ()) * bulletVelocitySquared);
 
     if (sqrtTerm < 0) {
@@ -77,8 +77,8 @@ bool BallisticsSolver::computeTravelTime(
     // We use the negative root since the collision will happen on the first instance that the
     // trajectory reaches y_f
     if (compareFloatClose(*turretPitch, 0, 1E-2)) {
-        float sqrtTerm = powf(bulletVelocity, 2.0f) -
-                         2 * ACCELERATION_GRAVITY * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ());
+        float sqrtTerm =
+            pow2(bulletVelocity) - 2 * ACCELERATION_GRAVITY * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ());
 
         // If there isn't a real-valued root, there is no time where we can reach the target with
         // the given assumptions

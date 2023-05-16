@@ -42,7 +42,7 @@ void GimbalFieldRelativeController::runYawController(bool vision) {
         this->getTargetYaw(AngleUnit::Radians));
 
     // limit error to -180 to 180 because we prefer the gimbal to lag behind the target rather than spin around
-    yawAngularError = tap::algorithms::limitVal(yawAngularError, -static_cast<float>(M_PI), static_cast<float>(M_PI));
+    yawAngularError = tap::algorithms::limitVal<float>(yawAngularError, -M_PI, M_PI);
 
     float chassisRelativeYawTarget = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) + yawAngularError;
 

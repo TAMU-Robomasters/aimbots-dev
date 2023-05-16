@@ -166,7 +166,7 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
 
 void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
     // get distance from wheel to center of wheelbase
-    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
 
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
@@ -204,7 +204,7 @@ float ChassisSubsystem::calculateRotationLimitedTranslationalWheelspeed(
     // consumption when the wheel rotation speed for chassis rotation is greater than the MIN_ROTATION_THRESHOLD
     if (fabsf(chassisRotationDesiredWheelspeed) > MIN_ROTATION_THRESHOLD) {
         rTranslationalGain =
-            powf(maxWheelSpeed + MIN_ROTATION_THRESHOLD - fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed, 2.0f);
+            pow2(maxWheelSpeed + MIN_ROTATION_THRESHOLD - fabsf(chassisRotationDesiredWheelspeed) / maxWheelSpeed);
 
         rTranslationalGain = tap::algorithms::limitVal<float>(rTranslationalGain, 0.0f, 1.0f);
     }

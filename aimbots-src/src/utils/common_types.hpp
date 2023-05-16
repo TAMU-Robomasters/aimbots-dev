@@ -9,6 +9,7 @@
 #include <tap/control/command.hpp>
 #include <tap/control/comprised_command.hpp>
 
+#include "tap/algorithms/math_user_utils.hpp"
 #include "tap/communication/gpio/digital.hpp"  //maybe not
 #include "tap/communication/serial/remote.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
@@ -19,9 +20,7 @@
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
-// #include <bit_cast>
-
-#include "tap/algorithms/math_user_utils.hpp"
+inline float pow2(float x) { return x * x; }
 
 static inline float wrapTo0To2PIRange(float angle) {
     if (angle < 0.0f) {

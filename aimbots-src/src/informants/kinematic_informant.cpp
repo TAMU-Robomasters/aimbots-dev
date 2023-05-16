@@ -144,7 +144,7 @@ float KinematicInformant::getChassisPitchInGimbalDirection() {
 
     float chassisPitchInGimbalDirection = atan2f(
         cosGimbYaw * sinChasPitch + sinGimbYaw * sinChasRoll,
-        sqrtf(sinGimbYaw * sinGimbYaw * cosChasRoll * cosChasRoll + cosGimbYaw * cosGimbYaw * cosChasPitch * cosChasPitch));
+        sqrtf(pow2(sinGimbYaw) * pow2(cosChasRoll) + pow2(cosGimbYaw) * pow2(cosChasPitch)));
 
     return chassisPitchInGimbalDirection;
 }
