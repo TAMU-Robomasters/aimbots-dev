@@ -103,7 +103,8 @@
         "ios": "cpp",
         "locale": "cpp",
         "queue": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "__functional_base": "cpp"
     },
     "search.exclude": {
         "**/node_modules": true,

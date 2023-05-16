@@ -8,7 +8,7 @@ namespace src::utils::display {
 
 class ClientDisplaySubsystem : public tap::control::Subsystem {
 public:
-    ClientDisplaySubsystem(tap::Drivers* drivers);
+    ClientDisplaySubsystem(tap::Drivers& drivers);
     virtual ~ClientDisplaySubsystem(){};
 
     // void refresh() override;

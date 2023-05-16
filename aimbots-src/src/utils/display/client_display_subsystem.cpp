@@ -4,6 +4,6 @@
 
 namespace src::utils::display {
 
-ClientDisplaySubsystem::ClientDisplaySubsystem(tap::Drivers* drivers) : Subsystem(drivers) {}
+ClientDisplaySubsystem::ClientDisplaySubsystem(tap::Drivers& drivers) : Subsystem(&drivers) {}
 
 }  // namespace src::utils::display

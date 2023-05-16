@@ -1,45 +1,44 @@
-#include "tap/algorithms/math_user_utils.hpp"
-#include "tap/drivers.hpp"
-#include "tap/errors/create_errors.hpp"
 
-#include "client_display_command.hpp"
+#pragma once
+#include <array>
+#include <tuple>
+
+#include "tap/communication/referee/state_hud_indicator.hpp"
+#include "tap/communication/serial/ref_serial.hpp"
+#include "tap/communication/serial/ref_serial_transmitter.hpp"
+#include "tap/control/command.hpp"
+#include "tap/control/subsystem.hpp"
+#include "tap/drivers.hpp"
+//
+#include "modm/math/geometry/point_set_2d.hpp"
+#include "modm/math/utils/misc.hpp"
+#include "modm/processing/protothread.hpp"
+//
 #include "client_display_subsystem.hpp"
-#include "hud_indicator.hpp"
 
 namespace src::utils::display {
-ClientDisplayCommand::ClientDisplayCommand(
-    tap::Drivers &drivers,
-    tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay
-    // the rest of the commands
-    )
-    : Command(),
-      Protothread(),
-      drivers(drivers),
-      clientDisplay(clientDisplay),
-      addSubsystemsToScheduler(&clientDispaly)
-// the rest of the commands
-{}
 
-void ClientDisplayCommand::initialize() {
-    // the rest of the commands
-}
+class ClientDisplayCommand : public tap::control::Command, ::modm::pt::Protothread {
+public:
+    ClientDisplayCommand(tap::Drivers &drivers, tap::control::CommandScheduler &commandScheduler, ClientDisplaySubsystem &clientDisplay);
 
-void ClientDisplayCommand::execute() { run(); }
+    const char *getName() const override { return "client display"; }
 
-bool ClientDisplayCommand::run() {
-    PT_BEGIN();
+    void initialize() override;
 
-    PT_WAIT_UNTIL(drivers.refserial.getRefSerialRecivingState());
+    void execute() override;
 
-    // PT_CALL(someIndcator.sendInitialGraphics());
+    void end(bool) override {}
 
-    while (true) {
-        // PT_CALL(someIndcator.update());
+    bool isFinished() const override { return false; }
 
-        PT_YIELD();
-    }
-    PT_END();
-}
+private:
+    tap::Drivers &drivers;
+    tap::control::CommandScheduler &commandScheduler;
+    // ClientDisplaySubsystem &clientDisplay;
+    tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
+
+    bool run();
+};
 
 }  // namespace src::utils::display
