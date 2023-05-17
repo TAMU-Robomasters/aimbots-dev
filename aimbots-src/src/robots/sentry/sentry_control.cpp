@@ -39,6 +39,8 @@
 //
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"
+//
+#include "informants/robot-states/robot_state_interface.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -46,7 +48,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Communication;
 using namespace src::Control;
-
+using namespace src::RobotStates;
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -69,6 +71,7 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 CommunicationResponseSubsytem response(*drivers());
+RobotStates robotStates(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
@@ -125,6 +128,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&response);
+    drivers->commandScheduler.registerSubsystem(&robotStates);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -134,6 +138,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     response.initialize();
+    robotStates.initialize();
 }
 
 // Set default command here -----------------------------------------------
