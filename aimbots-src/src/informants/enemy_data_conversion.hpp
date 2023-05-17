@@ -3,9 +3,8 @@
 
 #include <utils/math/transform_setup.hpp>
 
-#include "tap/algorithms/extended_kalman.hpp"
-
 #include "utils/common_types.hpp"
+#include "utils/filters/ema.hpp"
 
 /*
 Convert enemy data (from CV) from camera space to chassis space (somehow)
@@ -65,21 +64,6 @@ public:
      */
     std::vector<EnemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
 
-    struct DataFilterConfig {
-        float tQPositionKalman = 1.5f;   /**< The system noise covariance for the kalman filter that
-                                          * is applied to the derivative of the error. */
-        float tRPositionKalman = 1.0f;   /**< The measurement noise covariance for the kalman filter
-                                          * that is applied to the derivative of the error. */
-        float tQVelocityKalman = 0.125f; /**< The system noise covariance for the kalman filter that
-                                          * is applied to the derivative of the error. */
-        float tRVelocityKalman = 1.0f;   /**< The measurement noise covariance for the kalman filter
-                                          * that is applied to the derivative of the error. */
-        float tQAccelKalman = 0.0625f;   /**< The system noise covariance for the kalman filter that
-                                          *  is applied to the proportional error. */
-        float tRAccelKalman = 1.0f;      /**< The measurement noise covariance for the kalman filter
-                                          * that is applied to the proportional error. */
-    };
-
 private:
     src::Drivers* drivers;
     static const int BUFFER_SIZE = 10;      // prolly move this to constants at some point or something IDK
@@ -88,10 +72,7 @@ private:
     // buffer for XYZ + timestamp
     Deque<EnemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
     bool prevCVValid, cvValid;
-    DataFilterConfig config;
 
-    modm::Vector<tap::algorithms::ExtendedKalman, 3> positionKalman;
-    modm::Vector<tap::algorithms::ExtendedKalman, 3> velocityKalman;
-    modm::Vector<tap::algorithms::ExtendedKalman, 3> accelKalman;
+    EMAFilter XPositionFilter, YPositionFilter, ZPositionFilter;
 };
 }  // namespace src::Informants

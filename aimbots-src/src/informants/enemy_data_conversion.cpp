@@ -5,18 +5,10 @@
 namespace src::Informants {
 EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      positionKalman(
-          {ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
-           ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman),
-           ExtendedKalman(config.tQPositionKalman, config.tRPositionKalman)}),
-      velocityKalman(
-          {ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
-           ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman),
-           ExtendedKalman(config.tQVelocityKalman, config.tRVelocityKalman)}),
-      accelKalman(
-          {ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
-           ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman),
-           ExtendedKalman(config.tQAccelKalman, config.tRAccelKalman)}) {}
+      XPositionFilter(EMAFilter(0.1f)),
+      YPositionFilter(EMAFilter(0.1f)),
+      ZPositionFilter(EMAFilter(0.1f))  //
+{}
 
 // watchable variables
 float gimbalYXWatch = 0.0f;
@@ -27,9 +19,13 @@ float targetPositionXDisplayWithoutCompensation = 0.0f;
 float targetPositionYDisplayWithoutCompensation = 0.0f;
 float targetPositionZDisplayWithoutCompensation = 0.0f;
 
-float targetPositionXDiplay = 0.0f;
-float targetPositionYDiplay = 0.0f;
-float targetPositionZDiplay = 0.0f;
+float targetPositionXUnfilteredDisplay = 0.0f;
+float targetPositionYUnfilteredDisplay = 0.0f;
+float targetPositionZUnfilteredDisplay = 0.0f;
+
+float targetPositionXDisplay = 0.0f;
+float targetPositionYDisplay = 0.0f;
+float targetPositionZDisplay = 0.0f;
 //
 int size_watch;
 float dt_vel_watch;
@@ -78,20 +74,13 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
 
-    // std::pair<float, float> gimbalAngles = gimbal->getGimbalOrientationAtTime(frameCaptureDelay);
     drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
+    // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
     EnemyTimedPosition gimbalTransformedDataWatch{
         .position = cameraFrame.getPointInFrame(gimbalFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
-
-    Matrix3f gimbalOrientationWatch = gimbalFrame.getOrientation();
-    gimbalYXWatch = gimbalOrientationWatch[0][1];
-    gimbalYYWatch = gimbalOrientationWatch[1][1];
-    gimbalYZWatch = gimbalOrientationWatch[2][1];
-
-    // currentData.position = {0.0f, 1.0f, 0.0f};
 
     Vector3f transformedPositionVector = src::Utils::MatrixHelper::homogenousCoordinateCrop(
         cameraFrame.getTransformOut() *
@@ -113,13 +102,17 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
-    targetPositionXDiplay = transformedData.position.getX();
-    targetPositionYDiplay = transformedData.position.getY();
-    targetPositionZDiplay = transformedData.position.getZ();
+    targetPositionXUnfilteredDisplay = transformedData.position.getX();
+    targetPositionYUnfilteredDisplay = transformedData.position.getY();
+    targetPositionZUnfilteredDisplay = transformedData.position.getZ();
 
-    // targetPositionXDiplay = transformedPositionVector.getX();
-    // targetPositionYDiplay = transformedPositionVector.getY();
-    // targetPositionZDiplay = transformedPositionVector.getZ();
+    transformedData.position.setX(XPositionFilter.update(transformedData.position.getX()));
+    transformedData.position.setY(YPositionFilter.update(transformedData.position.getY()));
+    transformedData.position.setZ(ZPositionFilter.update(transformedData.position.getZ()));
+
+    targetPositionXDisplay = transformedData.position.getX();
+    targetPositionYDisplay = transformedData.position.getY();
+    targetPositionZDisplay = transformedData.position.getZ();
 
     // save data point to buffer (at index 0-- index 0 is NEWEST, index size-1 is OLDEST.)
     // at max capacity, oldest data is overwritten first
@@ -208,11 +201,11 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
 
     if (size > 0) {
         // Position .. unfiltered!!!
-        // guess_position = validPoints[0].position;
+        guess_position = validPoints[0].position;
         // Position .. filtered!!
-        guess_position.setX(positionKalman[0].filterData(validPoints[0].position.getX()));
-        guess_position.setY(positionKalman[1].filterData(validPoints[0].position.getY()));
-        guess_position.setZ(positionKalman[2].filterData(validPoints[0].position.getZ()));
+        // guess_position.setX(positionKalman[0].filterData(validPoints[0].position.getX()));
+        // guess_position.setY(positionKalman[1].filterData(validPoints[0].position.getY()));
+        // guess_position.setZ(positionKalman[2].filterData(validPoints[0].position.getZ()));
 
         // check for Velocity (if-statement nested in Position if-statement)
         if (size > 1) {
@@ -221,7 +214,7 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
                 case 1:  // 2 points
                     dt_uS = (validPoints[0].timestamp_uS - validPoints[1].timestamp_uS) / (float)MICROSECONDS_PER_SECOND;
 
-                    //                   order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
+                    // order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
                     guess_velocity.set(
                         (order1CoEffs[0][0] * validPoints[0].position.getX() +
                          order1CoEffs[0][1] * validPoints[1].position.getX()) /
@@ -361,13 +354,13 @@ vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_
         }      // Velocity if-statement
     }          // Position if-statement
 
-    guess_velocity.setX(velocityKalman[0].filterData(guess_velocity.getX()));
-    guess_velocity.setY(velocityKalman[1].filterData(guess_velocity.getY()));
-    guess_velocity.setZ(velocityKalman[2].filterData(guess_velocity.getZ()));
+    // guess_velocity.setX(velocityKalman[0].filterData(guess_velocity.getX()));
+    // guess_velocity.setY(velocityKalman[1].filterData(guess_velocity.getY()));
+    // guess_velocity.setZ(velocityKalman[2].filterData(guess_velocity.getZ()));
 
-    guess_acceleration.setX(accelKalman[0].filterData(guess_acceleration.getX()));
-    guess_acceleration.setY(accelKalman[1].filterData(guess_acceleration.getY()));
-    guess_acceleration.setZ(accelKalman[2].filterData(guess_acceleration.getZ()));
+    // guess_acceleration.setX(accelKalman[0].filterData(guess_acceleration.getX()));
+    // guess_acceleration.setY(accelKalman[1].filterData(guess_acceleration.getY()));
+    // guess_acceleration.setZ(accelKalman[2].filterData(guess_acceleration.getZ()));
 
     enemyGuess.position = guess_position;
     enemyGuess.velocity = guess_velocity;
