@@ -2,13 +2,11 @@
 #include "utils/common_types.hpp"
 
 namespace src::Communication {
-#ifdef TARGET_SENTRY
 struct robot_state_message_team {
     /* data */
     uint16_t standardX, standardY, heroX, heroY, sentryX, sentryY;
 };
 
-#else
 struct robot_state_message {
     /* data */
     uint8_t robotID;
@@ -20,8 +18,6 @@ struct robot_state_message_enemy {
     uint16_t x, y;
     uint16_t timestamp;
 };
-
-#endif
 
 enum class MessageType : uint8_t {
 #ifdef TARGET_SENTRY

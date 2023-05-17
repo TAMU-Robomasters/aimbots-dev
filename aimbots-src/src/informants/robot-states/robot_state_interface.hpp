@@ -45,6 +45,10 @@ public:
 #endif
     void respond();
 
+    void updateStandard(robot_state_message message);
+    void updateHero(robot_state_message message);
+    void updateSentry(robot_state_message message);
+
     // void updateRobotStateHero();
     // void updateRobotStateStandard();
     // void updateRobotStateSentry();

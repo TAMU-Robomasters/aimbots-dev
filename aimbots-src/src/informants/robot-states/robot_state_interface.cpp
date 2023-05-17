@@ -73,8 +73,10 @@ void RobotStates::updateTeamMessage() {
     // message.sentryX = robotStates[color][6].getX();
     // message.sentryY = robotStates[color][6].getY();
 }
+
 #elif TARGET_STANDARD
-void updateStandardMessage() {
+//
+void RobotStates::updateStandardMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
     standardMessage[0] = 1;
     standardMessage[1] = robotStates[color][2].getX() >> 8;
@@ -85,7 +87,7 @@ void updateStandardMessage() {
 
 #elif TRAGET_HERO
 
-void updateHeroMessage() {
+void RobotStates::updateHeroMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
     heroMessage[0] = 1;
     heroMessage[1] = robotStates[color][2].getX() >> 8;
