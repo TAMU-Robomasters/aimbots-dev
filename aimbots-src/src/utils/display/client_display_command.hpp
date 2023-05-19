@@ -15,6 +15,7 @@
 #include "modm/processing/protothread.hpp"
 //
 #include "client_display_subsystem.hpp"
+#include "boolean_hud_indicators.hpp"
 
 namespace src::utils::display {
 
@@ -37,6 +38,7 @@ private:
     tap::control::CommandScheduler &commandScheduler;
     // ClientDisplaySubsystem &clientDisplay;
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
+    BooleanHudIndicator booleanHudIndicator;
 
     bool run();
 };

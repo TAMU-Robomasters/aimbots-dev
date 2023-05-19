@@ -15,7 +15,8 @@ ClientDisplayCommand::ClientDisplayCommand(
     : Command(),
       refSerialTransmitter(&drivers),
       drivers(drivers),
-      commandScheduler(commandScheduler) {
+      commandScheduler(commandScheduler),
+      booleanHudIndicator(commandScheduler, refSerialTransmitter) {
     addSubsystemRequirement(&clientDisplay);
 }
 
@@ -31,12 +32,11 @@ bool ClientDisplayCommand::run() {
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
-
     // PT_CALL(someIndcator.sendInitialGraphics());
-
+    PT_CALL(booleanHudIndicator.sendInitialGraphics());
     while (true) {
         // PT_CALL(someIndcator.update());
-
+        PT_CALL(booleanHudIndicator.update());
         PT_YIELD();
     }
     PT_END();
