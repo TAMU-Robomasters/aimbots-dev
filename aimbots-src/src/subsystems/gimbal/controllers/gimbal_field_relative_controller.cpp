@@ -16,7 +16,14 @@ GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drive
     BuildPositionPIDs();
 }
 
-void GimbalFieldRelativeController::initialize() {}
+void GimbalFieldRelativeController::initialize() {
+    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawPositionPIDs[i]->pid.reset();
+    }
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        pitchPositionPIDs[i]->pid.reset();
+    }
+}
 
 float fieldRelativeYawTargetDisplay = 0.0f;
 float targetYawAxisAngleDisplay = 0.0f;

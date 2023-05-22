@@ -18,7 +18,11 @@ GimbalChaseCommand::GimbalChaseCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalChaseCommand::initialize() {}
+void GimbalChaseCommand::initialize() {
+    // Set initial target angle to be the current angle for seamless switching between different gimbal commands
+    controller->setTargetYaw(AngleUnit::Radians, gimbal->getCurrentYawAxisAngle(AngleUnit::Radians));
+    controller->setTargetPitch(AngleUnit::Radians, gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians));
+}
 
 float targetPitchAxisAngleDisplay2 = 0.0f;
 float targetYawAxisAngleDisplay2 = 0.0f;
@@ -48,9 +52,6 @@ void GimbalChaseCommand::execute() {
         targetYawAxisAngle = ballisticsSolution->yawAngle;
         targetPitchAxisAngle = ballisticsSolution->pitchAngle;
 
-        // ballistics returns angles between [0, 2PI), need to convert idk why
-        // targetYawAxisAngle = M_PI_2 + modm::toRadian(YAW_OFFSET_ANGLE) - targetYawAxisAngle;
-        // targetPitchAxisAngle += modm::toRadian(PITCH_OFFSET_ANGLE);
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
