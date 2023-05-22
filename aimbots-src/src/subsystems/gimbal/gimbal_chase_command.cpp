@@ -19,9 +19,9 @@ GimbalChaseCommand::GimbalChaseCommand(
 }
 
 void GimbalChaseCommand::initialize() {
-    // Set initial target angle to be the current angle for seamless switching between different gimbal commands
-    controller->setTargetYaw(AngleUnit::Radians, gimbal->getCurrentYawAxisAngle(AngleUnit::Radians));
-    controller->setTargetPitch(AngleUnit::Radians, gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians));
+    // // Set initial target angle to be the current angle for seamless switching between different gimbal commands
+    // controller->setTargetYaw(AngleUnit::Radians, gimbal->getCurrentYawAxisAngle(AngleUnit::Radians));
+    // controller->setTargetPitch(AngleUnit::Radians, gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians));
 }
 
 float targetPitchAxisAngleDisplay2 = 0.0f;

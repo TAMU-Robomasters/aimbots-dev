@@ -18,8 +18,9 @@ GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
 }
 
 void GimbalFieldRelativeControlCommand::initialize() {
-    controller->setTargetYaw(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat());
-    controller->setTargetPitch(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat());
+    // // Set initial target angle to be the current angle for seamless switching between different gimbal commands
+    // controller->setTargetYaw(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat());
+    // controller->setTargetPitch(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat());
 }
 
 float gimbalYawInputDisplay = 0.0f;
