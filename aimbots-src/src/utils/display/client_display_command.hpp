@@ -14,8 +14,9 @@
 #include "modm/math/utils/misc.hpp"
 #include "modm/processing/protothread.hpp"
 //
-#include "client_display_subsystem.hpp"
 #include "boolean_hud_indicators.hpp"
+#include "client_display_subsystem.hpp"
+#include "reticle_indicator.hpp"
 
 namespace src::utils::display {
 
@@ -39,7 +40,7 @@ private:
     // ClientDisplaySubsystem &clientDisplay;
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
     BooleanHudIndicator booleanHudIndicator;
-
+    ReticleIndicator reticleIndicator;
     bool run();
 };
 
