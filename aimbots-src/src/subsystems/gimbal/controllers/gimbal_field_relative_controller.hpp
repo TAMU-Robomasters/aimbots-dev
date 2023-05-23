@@ -6,6 +6,9 @@
 #include <utils/common_types.hpp>
 #include <utils/pid/smooth_pid_wrap.hpp>
 
+#include "utils/filters/ema.hpp"
+#include "utils/kinematic_state_vector.hpp"
+
 namespace src::Gimbal {
 class GimbalFieldRelativeController : public GimbalControllerInterface {
 public:
@@ -13,14 +16,18 @@ public:
 
     void initialize() override;
 
-    void BuildPositionPIDs() {
+    void BuildPIDControllers() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
-            yawVisionPositionPIDs[i] = new SmoothPID(YAW_VISION_PID_CONFIG);
+            yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
+            yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
+
+            yawVelocityFilters[i] = new EMAFilter(0.1);  // smoothing yaw velocity heavily for use in velocity controller
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
-            pitchVisionPositionPIDs[i] = new SmoothPID(PITCH_VISION_PID_CONFIG);
+            pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
+            pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
         }
     }
 
@@ -67,8 +74,13 @@ private:
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
 
-    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVisionPositionPIDs;
-    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVisionPositionPIDs;
+    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionCascadePIDs;
+    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionCascadePIDs;
+
+    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVelocityPIDs;
+    std::array<EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
+
+    std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
 };
 
 }  // namespace src::Gimbal

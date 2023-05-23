@@ -14,7 +14,7 @@ public:
 
     void initialize() override;
 
-    void BuildPositionPIDs() {
+    void BuildPIDControllers() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
         }

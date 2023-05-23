@@ -16,4 +16,6 @@ public:
         lastValue = filteredValue;
         return filteredValue;
     }
+
+    float getValue() { return lastValue; }
 };

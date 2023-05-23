@@ -83,7 +83,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 // VISION PID CONSTANTS
-static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
+static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 600.0f,
     .ki = 0.0f,
     .kd = 500.0f,
@@ -97,7 +97,7 @@ static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
+static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .kp = 1000.0f,
     .ki = 0.0f,
     .kd = 150.0f,

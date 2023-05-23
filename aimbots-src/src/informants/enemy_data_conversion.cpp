@@ -77,14 +77,10 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
-    EnemyTimedPosition gimbalTransformedDataWatch{
-        .position = cameraFrame.getPointInFrame(gimbalFrame, currentData.position),
-        .timestamp_uS = currentData.timestamp_uS,
-    };
-
-    Vector3f transformedPositionVector = src::Utils::MatrixHelper::homogenousCoordinateCrop(
-        cameraFrame.getTransformOut() *
-        src::Utils::MatrixHelper::homogenousCoordinateExtend(currentData.position).asMatrix());
+    // EnemyTimedPosition gimbalTransformedDataWatch{
+    //     .position = cameraFrame.getPointInFrame(gimbalFrame, currentData.position),
+    //     .timestamp_uS = currentData.timestamp_uS,
+    // };
 
     EnemyTimedPosition targetPositionWithoutLagCompensation{
         .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),

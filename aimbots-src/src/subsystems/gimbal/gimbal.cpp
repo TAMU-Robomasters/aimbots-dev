@@ -2,10 +2,6 @@
 
 #include <utils/common_types.hpp>
 
-static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
-}
-
 static inline float wrapAngleToPiRange(float angle) { return fmodf(angle + M_PI, M_TWOPI) - M_PI; }
 namespace src::Gimbal {
 

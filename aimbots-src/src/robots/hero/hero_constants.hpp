@@ -73,7 +73,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
+static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 800.0f,
     .ki = 0.0f,
     .kd = 150.0f,
@@ -87,7 +87,7 @@ static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
+static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .kp = 1850.0f,
     .ki = 0.0f,
     .kd = 150.0f,

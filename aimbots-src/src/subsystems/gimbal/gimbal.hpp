@@ -6,6 +6,10 @@
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
 
+static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+}
+
 namespace src::Gimbal {
 
 enum GimbalAxis { YAW_AXIS = 0, PITCH_AXIS = 1 };
@@ -104,6 +108,10 @@ public:
         return (pitchMotors[PitchIdx]->isMotorOnline()) ? pitchMotors[PitchIdx]->getShaftRPM() : 0;
     }
 
+    inline int16_t getYawMotorTorque(uint8_t yawIdx) const {
+        return yawMotors[yawIdx]->isMotorOnline() ? yawMotors[yawIdx]->getTorque() : 0;
+    }
+
     inline float getYawAxisRPM() const {
         int16_t rpm = 0;
         uint8_t onlineMotors = 0;
@@ -144,11 +152,19 @@ public:
         return currentPitchAxisAngle;
     }
 
+    inline float getYawMotorAngleUnwrapped(uint8_t YawIdx) const {
+        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderUnwrapped())
+                                                    : 0.0f;
+    }
+
     inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoderWrapped() : 0.0f;
+        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderWrapped())
+                                                    : 0.0f;
     }
     inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
-        return (pitchMotors[PitchIdx]->isMotorOnline()) ? pitchMotors[PitchIdx]->getEncoderWrapped() : 0.0f;
+        return (pitchMotors[PitchIdx]->isMotorOnline())
+                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoderWrapped())
+                   : 0.0f;
     }
 
     inline float getTargetYawAxisAngle(AngleUnit unit) const {

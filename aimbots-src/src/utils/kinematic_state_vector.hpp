@@ -5,7 +5,7 @@
 namespace src::Utils {
 class KinematicStateVector {
 public:
-    //KinematicStateVector();
+    // KinematicStateVector();
     //~KinematicStateVector();
 
     Vector3f getKinematicStateVector();
@@ -19,7 +19,7 @@ public:
     inline void setAcceleration(float a) { kinematicStateVector.setZ(a); }
 
     void updateFromPosition(float x) {
-        uint16_t currTime = tap::arch::clock::getTimeMilliseconds();
+        float currTime = tap::arch::clock::getTimeMilliseconds();
 
         // In this use case getPosition actually gets the last position
         float v1 = calcDerivative(getPosition(), lastTime, x, currTime);
@@ -33,7 +33,7 @@ public:
     }
 
     void updateFromVelocity(float v, bool updateLowerOrderTerms = true) {
-        uint16_t currTime = tap::arch::clock::getTimeMilliseconds();
+        float currTime = tap::arch::clock::getTimeMilliseconds();
 
         float x1 = calcIntegral(getPosition(), lastTime, v, currTime);
         float a1 = calcDerivative(getVelocity(), lastTime, v, currTime);
@@ -48,7 +48,7 @@ public:
     }
 
     void updateFromAcceleration(float a) {
-        uint16_t currTime = tap::arch::clock::getTimeMilliseconds();
+        float currTime = tap::arch::clock::getTimeMilliseconds();
 
         float v1 = calcIntegral(getVelocity(), lastTime, a, currTime);
         float x1 = calcIntegral(getPosition(), lastTime, v1, currTime);
@@ -61,10 +61,10 @@ public:
     }
 
 private:
-    float calcIntegral(float x0, uint16_t t0, float v1, uint16_t t1) { return x0 + v1 * static_cast<float>(t1 - t0); }
-    float calcDerivative(float x0, uint16_t t0, float x1, uint16_t t1) { return (x1 - x0) / static_cast<float>(t1 - t0); }
+    float calcIntegral(float x0, float t0, float v1, float t1) { return x0 + v1 * (t1 - t0); }
+    float calcDerivative(float x0, float t0, float x1, float t1) { return (x1 - x0) / (t1 - t0); }
 
     Vector3f kinematicStateVector;
-    uint16_t lastTime;
+    float lastTime;
 };
 }  // namespace src::Utils

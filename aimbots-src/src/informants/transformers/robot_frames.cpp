@@ -66,8 +66,7 @@ void RobotFrames::updateFrames(
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
     // how convert angle?? IDK
     Matrix3f at_cv_update_gimbal_orientation_relative_to_chassis_orientation =
-        rotationMatrix(gimbalYawAngle, Z_AXIS, AngleUnit::Radians) *
-        rotationMatrix(gimbalPitchAngle, X_AXIS, AngleUnit::Radians);
+        rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit);
 
     gimbalOrientationYYDisplay = at_cv_update_gimbal_orientation_relative_to_chassis_orientation[1][1];
 

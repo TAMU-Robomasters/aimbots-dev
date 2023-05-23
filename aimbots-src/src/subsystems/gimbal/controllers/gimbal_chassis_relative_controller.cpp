@@ -5,7 +5,7 @@ namespace src::Gimbal {
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
     : gimbal(gimbalSubsystem)  //
 {
-    BuildPositionPIDs();
+    BuildPIDControllers();
 }
 
 void GimbalChassisRelativeController::initialize() {

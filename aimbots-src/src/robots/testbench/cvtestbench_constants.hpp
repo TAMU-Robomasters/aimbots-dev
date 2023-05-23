@@ -56,7 +56,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 20'000.0f,
     .ki = 0.0f,
     .kd = 100.0f,
-    .maxICumulative = 0.0f,
+    .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -67,7 +67,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 15'000.0f,
+    .kp = 35'000.0f,
     .ki = 0.0f,
     .kd = 85.0f,
     .maxICumulative = 10.0f,
@@ -81,10 +81,24 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 // VISION PID CONSTANTS
-static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
-    .kp = 600.0f,
+static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 45.0f,
+    .ki = 4.0f,
+    .kd = 0.5f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 35.0f,  // 35 rad/s is maximum speed of 6020
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 1000.0f,
     .ki = 0.0f,
-    .kd = 500.0f,
+    .kd = 150.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -95,10 +109,25 @@ static constexpr SmoothPIDConfig YAW_VISION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig PITCH_VISION_PID_CONFIG = {
-    .kp = 1000.0f,
+// VELOCITY PID CONSTANTS
+static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
+    .kp = 1'000.0f,
     .ki = 0.0f,
-    .kd = 150.0f,
+    .kd = 2.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
+    .kp = 0.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -148,7 +177,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .ki = 0.10f,
     .kd = 0.00f,
     .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -238,7 +267,7 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 50'000.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 800.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
