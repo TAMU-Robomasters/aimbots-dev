@@ -85,8 +85,8 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);

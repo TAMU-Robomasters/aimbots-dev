@@ -29,13 +29,14 @@ void GimbalControlCommand::execute() {
     float targetPitchAxisAngle = 0.0f;
 
     targetYawAxisAngle =
-        gimbal->getTargetYawAxisAngle(AngleUnit::Radians) - drivers->controlOperatorInterface.getGimbalYawInput();
+        controller->getTargetYaw(AngleUnit::Radians) - drivers->controlOperatorInterface.getGimbalYawInput();
 
     targetPitchAxisAngle =
-        gimbal->getTargetPitchAxisAngle(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
+        controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
-    controller->setTargetYaw(AngleUnit::Degrees, targetYawAxisAngle);
-    controller->setTargetPitch(AngleUnit::Degrees, targetPitchAxisAngle);
+    controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
+    controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+
     controller->runYawController();
     controller->runPitchController();
 }

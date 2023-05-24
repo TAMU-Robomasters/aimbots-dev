@@ -31,8 +31,8 @@ public:
         }
     }
 
-    void runYawController(bool vision = false) override;
-    void runPitchController(bool vision = false) override;
+    void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
+    void runPitchController() override;
 
     bool isOnline() const;
 

@@ -5,6 +5,7 @@
 
 #include "informants/enemy_data_conversion.hpp"
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
 #include "drivers.hpp"
@@ -40,6 +41,9 @@ private:
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     src::Informants::vision::plateKinematicState data;
+
+    bool wasQPressed = false;
+    bool wasEPressed = false;
 };
 
 }  // namespace src::Gimbal

@@ -34,7 +34,7 @@ float fieldRelativeYawOutputDisplay = 0.0f;
 
 float feedforwardDisplay = 0.0f;
 
-float positionPIDOutputDisplay = 0.0f;
+float fieldRelativeVelocityTargetDisplay = 0.0f;
 float velocityFeedforwardOutputDisplay = 0.0f;
 float velocityPIDOutputDisplay = 0.0f;
 
@@ -46,8 +46,8 @@ float yawGimbalMotorPositionTargetDisplay = 0.0f;
 
 float speedTarget = 0.0f;
 
-void GimbalFieldRelativeController::runYawController(bool vision) {  // using cascade controller for yaw
-    UNUSED(vision);
+void GimbalFieldRelativeController::runYawController(
+    std::optional<float> velocityLimit) {  // using cascade controller for yaw
 
     fieldRelativeYawTargetDisplay = this->getTargetYaw(AngleUnit::Degrees);
 
@@ -65,7 +65,7 @@ void GimbalFieldRelativeController::runYawController(bool vision) {  // using ca
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
         yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
-        float positionPIDOutput = yawPositionCascadePIDs[i]->runController(
+        float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
@@ -74,8 +74,13 @@ void GimbalFieldRelativeController::runYawController(bool vision) {  // using ca
 
         // float chassisRelativeVelocityTarget = sinf(speedTarget) * 2.0f;
 
+        if (velocityLimit.has_value()) {
+            fieldRelativeVelocityTarget =
+                tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
+        }
+
         float chassisRelativeVelocityTarget =
-            positionPIDOutput -
+            fieldRelativeVelocityTarget -
             (drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)) /
                 GIMBAL_YAW_GEAR_RATIO;
 
@@ -87,10 +92,10 @@ void GimbalFieldRelativeController::runYawController(bool vision) {  // using ca
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
         float velocityControllerOutput = yawVelocityPIDs[i]->runController(
-            chassisRelativeVelocityTarget - yawVelocityFilters[i]->getValue(),
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
 
-        positionPIDOutputDisplay = positionPIDOutput;
+        fieldRelativeVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityFeedforwardOutputDisplay = velocityFeedforward;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
@@ -98,9 +103,7 @@ void GimbalFieldRelativeController::runYawController(bool vision) {  // using ca
     }
 }
 
-void GimbalFieldRelativeController::runPitchController(bool vision) {
-    UNUSED(vision);
-
+void GimbalFieldRelativeController::runPitchController() {
     float pitchAngularError =
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().difference(
             this->getTargetPitch(AngleUnit::Radians));
