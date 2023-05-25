@@ -18,7 +18,9 @@
 
 #include "boolean_hud_indicators.hpp"
 #include "client_display_subsystem.hpp"
+#include "cv_display.hpp"
 #include "reticle_indicator.hpp"
+
 using namespace src::Hopper;
 
 namespace src::utils::display {
@@ -46,8 +48,12 @@ private:
     tap::control::CommandScheduler &commandScheduler;
     // ClientDisplaySubsystem &clientDisplay;
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
+
+    // hud elements
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
+    CVDisplay cvDisplay;
+
     bool run();
 
     HopperSubsystem *hopper;
