@@ -20,6 +20,7 @@
 #include "client_display_subsystem.hpp"
 #include "cv_display.hpp"
 #include "reticle_indicator.hpp"
+#include "robot_orientation.hpp"
 
 using namespace src::Hopper;
 
@@ -31,7 +32,8 @@ public:
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
-        HopperSubsystem *hopper);
+        HopperSubsystem *hopper,
+        GimbalSubsystem *gimbal);
 
     const char *getName() const override { return "client display"; }
 
@@ -53,6 +55,7 @@ private:
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
     CVDisplay cvDisplay;
+    RobotOrientation robotOrientation;
 
     bool run();
 

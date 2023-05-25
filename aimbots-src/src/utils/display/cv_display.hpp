@@ -1,3 +1,4 @@
+#pragma once
 #include "tap/communication/referee/state_hud_indicator.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
