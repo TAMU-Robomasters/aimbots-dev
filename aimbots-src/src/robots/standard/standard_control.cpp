@@ -140,7 +140,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, &hopper);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -261,6 +261,6 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
 }
 }  // namespace src::Control
 
-//temp
+// temp
 
 #endif  // TARGET_STANDARD

@@ -4,20 +4,25 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
+#include "subsystems/hopper/hopper.hpp"
+
 #include "client_display_subsystem.hpp"
 #include "hud_indicator.hpp"
 #include "reticle_indicator.hpp"
+
+using namespace src::Hopper;
 
 namespace src::utils::display {
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay)
+    ClientDisplaySubsystem &clientDisplay,
+    HopperSubsystem *hopper)
     : tap::control::Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicator(commandScheduler, refSerialTransmitter),
+      booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper),
       reticleIndicator(drivers, refSerialTransmitter) {
     addSubsystemRequirement(&clientDisplay);
 }

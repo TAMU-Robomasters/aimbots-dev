@@ -9,6 +9,7 @@
 using namespace tap::communication::serial;
 using namespace tap::communication::referee;
 using namespace std;
+using namespace src::Hopper;
 
 namespace src::utils::display {
 template <RefSerial::Tx::GraphicColor ON_COLOR, RefSerial::Tx::GraphicColor OFF_COLOR>
@@ -18,16 +19,18 @@ static inline void updateGraphicColor(bool indicatorStatus, RefSerialData::Tx::G
 
 BooleanHudIndicator::BooleanHudIndicator(
     tap::control::CommandScheduler &commandScheduler,
-    tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
+    tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
+    HopperSubsystem *hopper)
     : HudIndicator(refSerialTransmitter),
       commandScheduler(commandScheduler),
+      hopper(hopper),
       booleanHudIndicatorDrawers{
           BooleanHUDIndicator(
               refSerialTransmitter,
-              &booleanHudIndicatorGraphics[SYSTEMS_CALIBRATING],
+              &booleanHudIndicatorGraphics[HOPPER_STATUS],
               updateGraphicColor<
-                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SYSTEMS_CALIBRATING]),
-                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SYSTEMS_CALIBRATING])>,
+                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS]),
+                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS])>,
               0),
           BooleanHUDIndicator(
               refSerialTransmitter,
@@ -38,10 +41,10 @@ BooleanHudIndicator::BooleanHudIndicator(
               0),
           BooleanHUDIndicator(
               refSerialTransmitter,
-              &booleanHudIndicatorGraphics[SENTRY_DRIVE_STAUS],
+              &booleanHudIndicatorGraphics[SPIN_TO_WIN],
               updateGraphicColor<
-                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SENTRY_DRIVE_STAUS]),
-                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SENTRY_DRIVE_STAUS])>,
+                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SPIN_TO_WIN]),
+                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[SPIN_TO_WIN])>,
               0),
       } {}
 
@@ -61,9 +64,9 @@ modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
 modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
-    booleanHudIndicatorDrawers[SYSTEMS_CALIBRATING].setIndicatorState(false);
+    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper->getHopperState() ? true : false);
     booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
-    booleanHudIndicatorDrawers[SENTRY_DRIVE_STAUS].setIndicatorState(false);
+    booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(false);
 
     // draw all the booleanHudIndicatorDrawers (only actually sends data if graphic changed)
     for (booleanHudIndicatorIndexUpdate = 0; booleanHudIndicatorIndexUpdate < NUM_BOOLEAN_HUD_INDICATORS; booleanHudIndicatorIndexUpdate++) {
