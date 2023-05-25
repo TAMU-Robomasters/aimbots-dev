@@ -187,7 +187,7 @@ HoldCommandMapping leftClickMouse(
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
@@ -260,5 +260,7 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
     StandardControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
+
+//temp
 
 #endif  // TARGET_STANDARD
