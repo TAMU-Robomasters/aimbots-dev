@@ -54,6 +54,7 @@ private:
         HOPPER_STATUS = 0,
         AGITATOR_STATUS_HEALTHY,
         SPIN_TO_WIN,
+        BOOST_ACTIVE,
         NUM_BOOLEAN_HUD_INDICATORS,
     };
 
@@ -61,6 +62,8 @@ private:
         BooleanHUDIndicatorTuple("HOPPER STATUS", Tx::GraphicColor::WHITE, Tx::GraphicColor::BLACK),
         BooleanHUDIndicatorTuple("AGITATOR STATUS HEALTHY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("SENTRY DRIVE STATUS", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("BOOST ACTIVE", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+
     };
 
     Tx::Graphic1Message booleanHudIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
