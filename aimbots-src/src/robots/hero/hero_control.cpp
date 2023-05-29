@@ -124,7 +124,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay)
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -134,7 +134,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     response.initialize();
-    clientDisplay.initzalize();
+    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
