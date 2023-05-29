@@ -20,7 +20,7 @@ public:
     BooleanHudIndicator(
         tap::control::CommandScheduler &commandScheduler,
         tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-        HopperSubsystem *hopper);
+        const HopperSubsystem &hopper);
 
     modm::ResumableResult<bool> sendInitialGraphics() override;
 
@@ -77,7 +77,7 @@ private:
     Tx::Graphic1Message booleanHudIndicatorStaticGraphics[NUM_BOOLEAN_HUD_INDICATORS];
     Tx::GraphicCharacterMessage booleanHudIndicatorStaticLabelGraphics[NUM_BOOLEAN_HUD_INDICATORS];
 
-    HopperSubsystem *hopper;
+    const HopperSubsystem &hopper;
 };
 
 }  // namespace src::utils::display

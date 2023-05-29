@@ -32,8 +32,8 @@ public:
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
-        HopperSubsystem *hopper,
-        GimbalSubsystem *gimbal);
+        const HopperSubsystem &hopper,
+        const GimbalSubsystem &gimbal);
 
     const char *getName() const override { return "client display"; }
 

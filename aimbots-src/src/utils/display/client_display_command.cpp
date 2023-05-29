@@ -18,8 +18,8 @@ ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
     ClientDisplaySubsystem &clientDisplay,
-    HopperSubsystem *hopper,
-    GimbalSubsystem *gimbal)
+    const HopperSubsystem &hopper,
+    const GimbalSubsystem &gimbal)
     : tap::control::Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
@@ -27,7 +27,7 @@ ClientDisplayCommand::ClientDisplayCommand(
       booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper),
       reticleIndicator(drivers, refSerialTransmitter),
       cvDisplay(commandScheduler, refSerialTransmitter),
-      robotOrientation(commandScheduler, refSerialTransmitter, gimbal) {
+      robotOrientation(drivers, refSerialTransmitter, gimbal) {
     addSubsystemRequirement(&clientDisplay);
 }
 

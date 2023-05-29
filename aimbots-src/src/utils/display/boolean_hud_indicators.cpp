@@ -20,7 +20,7 @@ static inline void updateGraphicColor(bool indicatorStatus, RefSerialData::Tx::G
 BooleanHudIndicator::BooleanHudIndicator(
     tap::control::CommandScheduler &commandScheduler,
     tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-    HopperSubsystem *hopper)
+    const HopperSubsystem &hopper)
     : HudIndicator(refSerialTransmitter),
       commandScheduler(commandScheduler),
       hopper(hopper),
@@ -71,7 +71,7 @@ modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
 modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
-    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper->getHopperState() ? true : false);
+    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.getHopperState() ? true : false);
     booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
     booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(false);
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);
