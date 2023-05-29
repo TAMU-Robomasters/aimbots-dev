@@ -35,6 +35,10 @@
 //
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"
+//
+#include "utils/display/client_display_command.hpp"
+#include "utils/display/client_display_subsystem.hpp"
+//
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -42,7 +46,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Communication;
 using namespace src::RobotStates;
-
+using namespace src::utils::display;
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -63,6 +67,7 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 CommunicationResponseSubsytem response(*drivers());
+ClientDisplaySubsystem clientDisplay(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -85,6 +90,7 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 CommunicationResponseHandler responseHandler(*drivers());
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, hopper, gimbal);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -109,6 +115,8 @@ HoldRepeatCommandMapping rightSwitchUp(
 
 HoldCommandMapping leftClickMouse(drivers(), {&runFeederCommandFromMouse}, RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -116,6 +124,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&response);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay)
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -125,6 +134,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     response.initialize();
+    clientDisplay.initzalize();
 }
 
 // Set default command here -----------------------------------------------
@@ -136,6 +146,8 @@ void setDefaultCommands(src::Drivers *) {
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
     drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+
     // test
     //  no startup commands should be set
     //  yet...
@@ -151,6 +163,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
 }  // namespace HeroControl
