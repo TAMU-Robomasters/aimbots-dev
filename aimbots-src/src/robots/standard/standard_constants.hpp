@@ -161,14 +161,14 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 
 // clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {
-    15, 3900,  // {ball m/s, flywheel rpm}
-    18, 4500,
-    30, 9000};
+    15, 4200,  // {ball m/s, flywheel rpm}
+    18, 5000,
+    30, 8300};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 2750.0f;
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
