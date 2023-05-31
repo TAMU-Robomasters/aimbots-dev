@@ -54,7 +54,7 @@ private:
     // hud elements
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
-    CVDisplay cvDisplay;
+    // CVDisplay cvDisplay;
     RobotOrientation robotOrientation;
 
     bool run();
