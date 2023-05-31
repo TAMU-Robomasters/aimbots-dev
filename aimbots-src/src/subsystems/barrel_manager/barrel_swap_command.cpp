@@ -29,8 +29,9 @@ float deriDisplay = 0;
 //-----------
 
 void BarrelSwapCommand::initialize() {
-    // barrelCalibratingFlag = true;
-
+    if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
+        barrelCalibratingFlag = true;
+    }
     //currentCalibratingBarrel = barrelSide::LEFT;
     // barrelManager->findZeroPosition();
     //barrelManager->setMotorOutput(0);
@@ -62,7 +63,7 @@ void BarrelSwapCommand::execute() {
             barrelManager->toggleSide();
         }
 
-        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
             barrelManager->setSide(barrelSide::LEFT);
         }
         else {
@@ -72,14 +73,15 @@ void BarrelSwapCommand::execute() {
         barrelMovingFlag = barrelManager->isBarrelAligned();
     }
     else {
-        if (barrelManager->findZeroPosition(currentCalibratingBarrel)) {
+        barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);
+        /*if (barrelManager->findZeroPosition(currentCalibratingBarrel)) {
             if (currentCalibratingBarrel == barrelSide::LEFT) { // LEFT first
                 currentCalibratingBarrel = barrelSide::RIGHT;
             }
             else {
                 barrelCalibratingFlag = false; // done calibrating
             }
-        } 
+        }*/ 
     }
     
 }

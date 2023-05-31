@@ -22,13 +22,15 @@ float swapMotorPositionDisplay = 0;
 bool isSwapOnlineDisplay = false;
 float swapOutputDisplay = 0;
 float currentSwapDesiredOutputDisplay = 0;
+int calStepProg = 0;
+bool currentTimer = 0;
 
 //----------------------
 
 void BarrelManagerSubsystem::initialize() {
     swapMotor.initialize();
     swapMotor.setDesiredOutput(0);
-
+    currentSpikeTimer.execute();
 }
 
 void BarrelManagerSubsystem::refresh() {
@@ -60,15 +62,34 @@ float BarrelManagerSubsystem::getMotorPosition() {
 }
 
 bool BarrelManagerSubsystem::findZeroPosition(barrelSide stopSideToFind) {
+    /*if (currentSpikeTimer.isStopped()) {
+        currentSpikeTimer.restart(0);
+        currentSpikeTimer.execute();
+    }*/
+    currentTimer = currentSpikeTimer.isExpired();
     //Slam into each wall and find current spike.  Save position at each wall to limitLRPositions
     //find limit
-    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -1 : 1);// TODO: Confirm direction of stop sides
-    
-    if(abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE) {
-        setMotorOutput(0);
-        //when finished
-        limitLRPositions[stopSideToFind] = currentSwapMotorPosition;
-        return true; //Return true if current spikes
+    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -500 : 500);// TODO: Confirm direction of stop sides
+    calStepProg = 0;
+
+    if (currentSpikeTimer.execute() && abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE) {
+            setMotorOutput(0);
+
+            //when finished
+            //This just determines whether values needed to be added or subtracted based on the direction of calibration
+            float addSubDirection = (stopSideToFind == barrelSide::LEFT ? 1:-1);
+
+            limitLRPositions[stopSideToFind] = getMotorPosition() + (addSubDirection*HARD_STOP_OFFSET);
+            limitLRPositions[1-stopSideToFind] = getMotorPosition() + (addSubDirection*HARD_STOP_OFFSET) +(addSubDirection*BARREL_SWAP_DISTANCE_MM);
+
+            calStepProg = 10;
+
+            return true; //Return true if current spikes
+    } 
+
+    if(abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE && (currentSpikeTimer.isExpired() || currentSpikeTimer.isStopped())) {
+        currentSpikeTimer.restart(500);
+        calStepProg = 5;
     }
     
     return false;

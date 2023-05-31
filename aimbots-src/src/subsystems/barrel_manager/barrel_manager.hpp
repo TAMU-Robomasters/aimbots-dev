@@ -61,13 +61,15 @@ public:
     bool isBarrelAligned();
 
     //TODO: Make sure Left and Right offsets are added/subtracted correctly
-    float getSideInMM(barrelSide side) {return (side == barrelSide::LEFT) ? (limitLRPositions[barrelSide::LEFT] + LEFT_STOP_OFFSET) : (limitLRPositions[barrelSide::RIGHT] - RIGHT_STOP_OFFSET);}
+    float getSideInMM(barrelSide side) {return (side == barrelSide::LEFT) ? (limitLRPositions[barrelSide::LEFT]) : (limitLRPositions[barrelSide::RIGHT]);}
 
     
 
 private:
     tap::Drivers* drivers;
     barrelSide currentBarrelSide = barrelSide::LEFT;
+
+    MilliTimeout currentSpikeTimer;
 
     DJIMotor swapMotor;
 
@@ -81,10 +83,9 @@ private:
     float currentSwapMotorPosition; //In mm
 
     float desiredSwapMotorOutput;
-
                                 // *** 0 to 45 mm goes from edge to edge if touching left side from VTM POV at initialization  
     // float limitLRPositions[2] = {0,45}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
-    float limitLRPositions[2] = {0,10}; // 
+    float limitLRPositions[2] = {0,BARREL_SWAP_DISTANCE_MM}; // 
 
 
 };

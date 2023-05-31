@@ -283,16 +283,17 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 //Barrel Manager Constants
 //These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
 //A positive increase provides a bigger gap between hard stop and barrel
-static constexpr float LEFT_STOP_OFFSET = 0; //In mm
-static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
+static constexpr float HARD_STOP_OFFSET = 0.5; //In mm
+//static constexpr float LEFT_STOP_OFFSET = 0; //In mm
+//static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
-static constexpr float BARREL_SWAP_DISTANCE_MM = 45; //In mm // this is from edge to edge, aligned center to aligned center, 
+static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5; //In mm // this is from edge to edge, aligned center to aligned center, 
 
 //Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
 static constexpr float LEAD_SCREW_TICKS_PER_MM = tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 / 8.0;//  X econder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
 //The value that the torque needs to be greater than to detect running into a wall
-static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 1; //TODO: Find a useful value
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450; //TODO: Find a useful value
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
