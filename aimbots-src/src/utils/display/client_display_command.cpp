@@ -37,6 +37,7 @@ void ClientDisplayCommand::initialize() {
     restart();
     booleanHudIndicator.initialize();
     reticleIndicator.initialize();
+    robotOrientation.initialize();
     // cvDisplay.initialize();
 }
 

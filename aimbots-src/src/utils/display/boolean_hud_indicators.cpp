@@ -27,13 +27,6 @@ BooleanHudIndicator::BooleanHudIndicator(
       booleanHudIndicatorDrawers{
           BooleanHUDIndicator(
               refSerialTransmitter,
-              &booleanHudIndicatorGraphics[HOPPER_STATUS],
-              updateGraphicColor<
-                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS]),
-                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS])>,
-              0),
-          BooleanHUDIndicator(
-              refSerialTransmitter,
               &booleanHudIndicatorGraphics[AGITATOR_STATUS_HEALTHY],
               updateGraphicColor<
                   get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY]),
@@ -53,6 +46,13 @@ BooleanHudIndicator::BooleanHudIndicator(
                   get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[BOOST_ACTIVE]),
                   get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[BOOST_ACTIVE])>,
               0),
+                        BooleanHUDIndicator(
+              refSerialTransmitter,
+              &booleanHudIndicatorGraphics[HOPPER_STATUS],
+              updateGraphicColor<
+                  get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS]),
+                  get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[HOPPER_STATUS])>,
+              0),
       } {}
 
 modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
@@ -71,7 +71,7 @@ modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
 modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
-    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.getHopperState() ? true : false);
+    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.isHopperOpen());
     booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
     booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(false);
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);

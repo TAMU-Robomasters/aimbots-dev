@@ -31,7 +31,7 @@ public:
 private:
     tap::control::CommandScheduler &commandScheduler;
 
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 100;
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 760;
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_DIST_BETWEEN_BULLETS = 50;
 
@@ -59,10 +59,10 @@ private:
     };
 
     static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
-        BooleanHUDIndicatorTuple("HOPPER STATUS", Tx::GraphicColor::WHITE, Tx::GraphicColor::BLACK),
         BooleanHUDIndicatorTuple("AGITATOR STATUS HEALTHY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("SENTRY DRIVE STATUS", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("SPIN TO WIN", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("BOOST ACTIVE", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+                BooleanHUDIndicatorTuple("HOPPER STATUS", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
 
     };
 

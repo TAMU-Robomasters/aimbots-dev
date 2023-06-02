@@ -48,6 +48,8 @@ class HopperSubsystem : public tap::control::Subsystem {
      */
     void setHopperState(uint8_t new_state);
 
+    bool isHopperOpen() const;
+
    private:
     tap::Drivers* drivers;
 

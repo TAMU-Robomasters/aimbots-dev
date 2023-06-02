@@ -19,7 +19,7 @@ using namespace src::Gimbal;
 namespace src::utils::display {
 RobotOrientation::RobotOrientation(
     tap::Drivers &drivers,
-    tap::communication::serial::RefSerialTransmitter &RefSerialTransmitterm,
+    tap::communication::serial::RefSerialTransmitter &refSerialTransmitterm,
     const GimbalSubsystem &gimbal)
     : HudIndicator(refSerialTransmitter),
       drivers(drivers),
@@ -43,12 +43,19 @@ modm::ResumableResult<bool> RobotOrientation::update() {
     if (chassisOrientation != chassisOrientationPrev) {
         // since chassisOrientation is a pixel coordinate centered around
         // `CHASSIS_CENTER_X/Y`, center the line about these coordinates during configuration
-        RefSerialTransmitter::configLine(
+        // RefSerialTransmitter::configLine(
+        //     CHASSIS_WIDTH,
+        //     CHASSIS_CENTER_X + chassisOrientation.x,
+        //     CHASSIS_CENTER_Y + chassisOrientation.y,
+        //     CHASSIS_CENTER_X - chassisOrientation.x,
+        //     CHASSIS_CENTER_Y - chassisOrientation.y,
+        //     &chassisOrientationGraphics.graphicData[0]);
+         RefSerialTransmitter::configLine(
             CHASSIS_WIDTH,
-            CHASSIS_CENTER_X + chassisOrientation.x,
-            CHASSIS_CENTER_Y + chassisOrientation.y,
-            CHASSIS_CENTER_X - chassisOrientation.x,
-            CHASSIS_CENTER_Y - chassisOrientation.y,
+            CHASSIS_CENTER_X + 100,
+            CHASSIS_CENTER_Y + 100,
+            CHASSIS_CENTER_X - 100,
+            CHASSIS_CENTER_Y - 100,
             &chassisOrientationGraphics.graphicData[0]);
         RF_CALL(refSerialTransmitter.sendGraphic(&chassisOrientationGraphics));
 
@@ -76,13 +83,20 @@ void RobotOrientation::initialize() {  // chassis orientation starts forward fac
         DEFAULT_GRAPHIC_LAYER,
         CHASSIS_ORIENTATION_COLOR);
 
+    // RefSerialTransmitter::configLine(
+    //     CHASSIS_WIDTH,
+    //     CHASSIS_CENTER_X + chassisOrientation.x,
+    //     CHASSIS_CENTER_Y + chassisOrientation.y,
+    //     CHASSIS_CENTER_X - chassisOrientation.x,
+    //     CHASSIS_CENTER_Y - chassisOrientation.y,
+    //     &chassisOrientationGraphics.graphicData[0]);
     RefSerialTransmitter::configLine(
-        CHASSIS_WIDTH,
-        CHASSIS_CENTER_X + chassisOrientation.x,
-        CHASSIS_CENTER_Y + chassisOrientation.y,
-        CHASSIS_CENTER_X - chassisOrientation.x,
-        CHASSIS_CENTER_Y - chassisOrientation.y,
-        &chassisOrientationGraphics.graphicData[0]);
+            CHASSIS_WIDTH,
+            CHASSIS_CENTER_X + 100,
+            CHASSIS_CENTER_Y + 100,
+            CHASSIS_CENTER_X - 100,
+            CHASSIS_CENTER_Y - 100,
+            &chassisOrientationGraphics.graphicData[0]);
 
     getUnusedGraphicName(chassisOrientationName);
 
