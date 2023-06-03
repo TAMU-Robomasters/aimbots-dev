@@ -59,7 +59,7 @@ void HopperSubsystem::setHopperState(uint8_t new_state) {
 }
 
 bool HopperSubsystem::isHopperOpen() const {
-    if (hopper_state == 1) {
+    if (hopper_state == OPEN) {
         return true;
     } else {
         return false;
