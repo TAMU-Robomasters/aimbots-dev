@@ -13,7 +13,7 @@ void ToggleHopperCommand::initialize() {
         hopper->setHopperState(CLOSED);
     } else {
         hopper->setHopperAngle(state ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
-        hopper->setHopperState(!state);
+        hopper->setHopperState(state ? CLOSED : OPEN);
     }
 }
 
