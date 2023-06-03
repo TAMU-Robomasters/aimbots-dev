@@ -10,4 +10,6 @@ void playWeAreNumberOne(src::Drivers* drivers);
 
 void playChainSawMan(src::Drivers* drivers);
 
+void playMystery(src::Drivers* drivers);
+
 }

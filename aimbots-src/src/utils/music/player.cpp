@@ -167,4 +167,47 @@ void playChainSawMan(src::Drivers* drivers) {
     }
 }
 
+
+// Mystery Song
+
+static bool isMysteryDone = false;
+
+static constexpr uint32_t MYST_BPM = 114;
+static constexpr uint32_t MYST_MS_PER_16th = (uint32_t)(((1.0f / MYST_BPM) * 60.0f * 1000.0f) / 4.0f);
+
+static uint32_t lastMYSTTime = 0;
+static uint32_t currentMYSTNote = 0;
+static uint32_t lastMYSTFreq = 0;
+
+static MusicNote mysteryNotes[] = {
+                    {NOTE_G4},{NOTE_A4},{NOTE_C5},{NOTE_A4},
+                    {NOTE_E5},{NOTE_E5},{NOTE_E5},{NOTE_E5},{NOTE_E6},{NOTE_E6},{NOTE_D5},{NOTE_D5},
+                    {NOTE_D5},{NOTE_D5},
+                    {NOTE_G4},{NOTE_A4},{NOTE_C5},{NOTE_A4},
+                    {NOTE_D6},{NOTE_D6},{NOTE_D6},{NOTE_D5},{NOTE_D5},{NOTE_D5},{NOTE_C5},{NOTE_C5},
+                    {NOTE_C5},{NOTE_B4},{NOTE_A4},{NOTE_A4},{NOTE_G4},{NOTE_A4},{NOTE_C5},{NOTE_A4},
+                    {NOTE_C5},{NOTE_C5},{NOTE_C5},{NOTE_C5},{NOTE_D5},{NOTE_D5},{NOTE_B4},{NOTE_B4},
+                    {NOTE_B4},{NOTE_A4},{NOTE_G4},{NOTE_G4},{NOTE_G4},{NOTE_G4},{NOTE_G5},{NOTE_G5},
+                    {NOTE_D5},{NOTE_D5},{NOTE_D5},{NOTE_D5},{NOTE_C5},{NOTE_C5},{NOTE_C5},{NOTE_C5},
+                    {NOTE_C5},{NOTE_C5},{NOTE_C5},{NOTE_C5},{0}
+};
+
+static constexpr size_t MYST_NOTE_COUNT = sizeof(mysteryNotes) / sizeof(MusicNote);
+
+void playMystery(src::Drivers* drivers) {
+    if (isMysteryDone) return;
+    if (lastMYSTTime == 0) lastMYSTTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t timeSinceLast = currentTime - lastMYSTTime;
+
+    if (timeSinceLast >= MYST_MS_PER_16th) {
+        lastMYSTTime = tap::arch::clock::getTimeMilliseconds();
+        if (lastMYSTFreq != mysteryNotes[currentMYSTNote].frequency) tap::buzzer::playNote(&drivers->pwm, mysteryNotes[currentMYSTNote].frequency);
+        lastMYSTFreq = mysteryNotes[currentMYSTNote].frequency;
+        currentMYSTNote++;
+        isMysteryDone = currentMYSTNote == MYST_NOTE_COUNT;
+    }
+}
+
+
 }  // namespace utils::Music
