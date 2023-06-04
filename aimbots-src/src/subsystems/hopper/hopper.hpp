@@ -8,6 +8,7 @@ namespace src::Hopper {
 enum HopperState : uint8_t {
     CLOSED = 0,
     OPEN = 1,
+//  UNKNOWN = 2
 };
 
 class HopperSubsystem : public tap::control::Subsystem {
