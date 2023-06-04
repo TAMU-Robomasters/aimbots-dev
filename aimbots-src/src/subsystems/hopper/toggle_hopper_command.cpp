@@ -8,13 +8,13 @@ ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem*
 
 void ToggleHopperCommand::initialize() {
     uint8_t state = hopper->getHopperState();
-    if (state == UNKNOWN) {  // default 'unknown' action can be open/closed
-        hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
-        hopper->setHopperState(CLOSED);
-    } else {
+    // if (state == UNKNOWN) {  // default 'unknown' action can be open/closed
+    //     hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
+    //     hopper->setHopperState(CLOSED);
+    // } else {
         hopper->setHopperAngle(state ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
         hopper->setHopperState(state ? CLOSED : OPEN);
-    }
+    // }
 }
 
 void ToggleHopperCommand::execute() {}

@@ -2,7 +2,7 @@
 
 #include "tap/communication/referee/state_hud_indicator.hpp"
 #include "tap/communication/serial/ref_serial.hpp"
-// #include "tap/drivers.hpp"
+#include "tap/drivers.hpp"
 #include <tuple>
 
 #include "tap/control/command.hpp"
@@ -31,8 +31,8 @@ public:
 private:
     tap::control::CommandScheduler &commandScheduler;
 
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 760;
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;  //500
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 720; // 760
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_DIST_BETWEEN_BULLETS = 50;
 
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_WIDTH = 17;
@@ -45,25 +45,24 @@ private:
 
     static constexpr Tx::GraphicColor BOOLEAN_HUD_INDICATOR_LABEL_COLOR = Tx::GraphicColor::ORANGE;
 
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LABEL_FONT_SIZE = 15;
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LABEL_FONT_SIZE = 20;
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LABEL_CHAR_LINE_WIDTH = 3;
 
     using BooleanHUDIndicatorTuple = std::tuple<const char *, Tx::GraphicColor, Tx::GraphicColor>;
 
     enum BooleanHUDIndicatorIndex {
-        HOPPER_STATUS = 0,
-        AGITATOR_STATUS_HEALTHY,
-        SPIN_TO_WIN,
+        // AGITATOR_STATUS_HEALTHY,
+        HOPPER_STATUS,
         BOOST_ACTIVE,
+        SPIN_TO_WIN,
         NUM_BOOLEAN_HUD_INDICATORS,
     };
 
     static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
-        BooleanHUDIndicatorTuple("AGITATOR STATUS HEALTHY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("SPIN TO WIN", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("BOOST ACTIVE", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-                BooleanHUDIndicatorTuple("HOPPER STATUS", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-
+       // BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("BOOST", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)
     };
 
     Tx::Graphic1Message booleanHudIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
