@@ -55,7 +55,8 @@ public:
     void toggleSide();
 
     //If no position specified, defaults to -1, which means get currently equipped barrel
-    float getBarrelHeat(barrelSide side);
+    //Returns the (max heat - current heat), to find out how many more shots can be made with the specified barrel
+    int16_t getRemainingBarrelHeat(barrelSide side);
 
     //Returns true when barrel is aligned with the flywheels
     bool isBarrelAligned();

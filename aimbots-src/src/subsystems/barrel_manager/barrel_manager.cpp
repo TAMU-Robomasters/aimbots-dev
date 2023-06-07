@@ -22,8 +22,12 @@ float swapMotorPositionDisplay = 0;
 bool isSwapOnlineDisplay = false;
 float swapOutputDisplay = 0;
 float currentSwapDesiredOutputDisplay = 0;
-int calStepProg = 0;
+int calStepProgressDisplay = 0;
 bool currentTimer = 0;
+
+int16_t barrelHeat = 0;
+int16_t barrelMax = 0;
+float barrelID = 0;
 
 //----------------------
 
@@ -62,15 +66,11 @@ float BarrelManagerSubsystem::getMotorPosition() {
 }
 
 bool BarrelManagerSubsystem::findZeroPosition(barrelSide stopSideToFind) {
-    /*if (currentSpikeTimer.isStopped()) {
-        currentSpikeTimer.restart(0);
-        currentSpikeTimer.execute();
-    }*/
     currentTimer = currentSpikeTimer.isExpired();
     //Slam into each wall and find current spike.  Save position at each wall to limitLRPositions
     //find limit
-    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -500 : 500);// TODO: Confirm direction of stop sides
-    calStepProg = 0;
+    setMotorOutput((stopSideToFind == barrelSide::LEFT) ? -LEAD_SCREW_CALI_OUTPUT : LEAD_SCREW_CALI_OUTPUT);
+    calStepProgressDisplay = 0;
 
     if (currentSpikeTimer.execute() && abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE) {
             setMotorOutput(0);
@@ -82,14 +82,14 @@ bool BarrelManagerSubsystem::findZeroPosition(barrelSide stopSideToFind) {
             limitLRPositions[stopSideToFind] = getMotorPosition() + (addSubDirection*HARD_STOP_OFFSET);
             limitLRPositions[1-stopSideToFind] = getMotorPosition() + (addSubDirection*HARD_STOP_OFFSET) +(addSubDirection*BARREL_SWAP_DISTANCE_MM);
 
-            calStepProg = 10;
+            calStepProgressDisplay = 10;
 
             return true; //Return true if current spikes
     } 
 
     if(abs(swapMotor.getTorque()) >= LEAD_SCREW_CURRENT_SPIKE_TORQUE && (currentSpikeTimer.isExpired() || currentSpikeTimer.isStopped())) {
         currentSpikeTimer.restart(500);
-        calStepProg = 5;
+        calStepProgressDisplay = 5;
     }
     
     return false;
@@ -121,12 +121,50 @@ void BarrelManagerSubsystem::toggleSide() {
     currentBarrelSide = (currentBarrelSide == barrelSide::LEFT) ? barrelSide::RIGHT : barrelSide::LEFT;
 }
 
-float BarrelManagerSubsystem::getBarrelHeat(barrelSide side = CURRENT) {
+int16_t BarrelManagerSubsystem::getRemainingBarrelHeat(barrelSide side = CURRENT) {
+    using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
     auto turretData = drivers->refSerial.getRobotData().turret;
-    if (side == barrelSide::CURRENT){
+    if (side == barrelSide::CURRENT) {
         side = currentBarrelSide;
     }
-    return(side == barrelSide::LEFT) ? turretData.heat17ID1 /*LEFT*/ : turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
+
+    int16_t lastHeat = 0;
+    int16_t heatLimit = 0;
+    barrelID = 0;
+
+    auto launcherID = turretData.launchMechanismID;
+    switch (launcherID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            lastHeat = turretData.heat17ID1;
+            heatLimit = turretData.heatLimit17ID1;
+            barrelID = 1;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
+            barrelID = 2;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
+            barrelID = 3;
+            break;
+        }
+        default:
+            break;
+    }
+
+
+    //barrelHeat = (side == barrelSide::RIGHT) ? turretData.heat17ID1 : turretData.heat17ID2;
+    //barrelMax = (side == barrelSide::RIGHT) ? turretData.heatLimit17ID1 : turretData.heatLimit17ID2;
+    //barrelHeat = lastHeat;
+    //barrelMax = heatLimit;
+    barrelHeat = turretData.heat17ID1;
+    barrelHeat = turretData.heat17ID2;
+    return heatLimit - lastHeat;
+    //return(side == barrelSide::RIGHT) ? turretData.heatLimit17ID1 - turretData.heat17ID1 /*LEFT*/ : turretData.heatLimit17ID2 - turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
 
 }
 

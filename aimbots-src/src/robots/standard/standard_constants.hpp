@@ -122,11 +122,11 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 
 static constexpr uint16_t shooter_speed_array[6] = {
     15,
-    3900,  // {ball m/s, flywheel rpm}
+    4200,  // {ball m/s, flywheel rpm}
     18,
-    4500,
+    5000,
     30,
-    9000};
+    7700};
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -293,7 +293,11 @@ static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5; //In mm // this is from e
 static constexpr float LEAD_SCREW_TICKS_PER_MM = tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 / 8.0;//  X econder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
 //The value that the torque needs to be greater than to detect running into a wall
-static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450; //TODO: Find a useful value
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
+
+//The output to the motor while in calibration mode.  
+//When adjusting, also change the constant above to find an appropriate match between the two
+static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
 
 //TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {

@@ -34,7 +34,7 @@ private:
     float speed;
     float acceptableHeatThreshold;
     
-    bool barrelMovingFlag;
+    bool &barrelMovingFlag;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;

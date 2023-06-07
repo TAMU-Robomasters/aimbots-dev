@@ -31,11 +31,12 @@ private:
     BarrelManagerSubsystem* barrelManager;
     SmoothPID swapMotorPID;
 
-    bool barrelMovingFlag = true;
+    bool &barrelMovingFlag;
     bool barrelCalibratingFlag = false;
 
     bool wasRPressed = false;
-
+    bool wasLogicSwitchRequested = false;
+    
     barrelSide currentCalibratingBarrel = barrelSide::LEFT;
 
 

@@ -202,8 +202,8 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     // drivers->commandMapper.addMap(&leftSwitchMid);
-    //drivers->commandMapper.addMap(&rightSwitchUp);
-    //drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
     //drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
     //drivers->commandMapper.addMap(&ctrlC);

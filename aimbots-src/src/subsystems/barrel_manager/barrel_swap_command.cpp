@@ -22,25 +22,29 @@ float motorPositionDisplay = 0;
 
 bool isCommandRunning = false;
 bool calFlag = false;
+bool isBarAlignedDisplay = false;
+bool wasSwapDisplay = false;
 
 float errorDisplay = 0;
 float deriDisplay = 0;
 
+int16_t heatRemainDisplay = 0;
+
 //-----------
 
 void BarrelSwapCommand::initialize() {
-    if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
-        barrelCalibratingFlag = true;
-    }
-    //currentCalibratingBarrel = barrelSide::LEFT;
-    // barrelManager->findZeroPosition();
-    //barrelManager->setMotorOutput(0);
+    barrelCalibratingFlag = true;
 
 }
 
 void BarrelSwapCommand::execute() {
     isCommandRunning = true;
     calFlag = barrelCalibratingFlag;
+
+    barrelMovingFlag = barrelCalibratingFlag || !barrelManager->isBarrelAligned();
+
+    isBarAlignedDisplay = barrelManager->isBarrelAligned();
+
     if (!barrelCalibratingFlag) {
         sideInMMDisplay = barrelManager->getSideInMM(barrelManager->getSide());
         motorPositionDisplay = barrelManager->getMotorPosition();
@@ -56,21 +60,35 @@ void BarrelSwapCommand::execute() {
 
         barrelManager->setMotorOutput(swapPositionPIDOutput);
 
+        //---------------------- LOGIC FOR BARREL SWAPPING GOES HERE --------------------------------------------------------
+
         if (drivers->remote.keyPressed(Remote::Key::R)) wasRPressed = true;
 
         if (wasRPressed && !drivers->remote.keyPressed(Remote::Key::R)) {
             wasRPressed = false;
             barrelManager->toggleSide();
         }
-
-        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
+        //
+        //drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID
+        float stickSwitchThres = 0.1;
+        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
             barrelManager->setSide(barrelSide::LEFT);
         }
-        else {
+        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
             barrelManager->setSide(barrelSide::RIGHT);
         }
 
-        barrelMovingFlag = barrelManager->isBarrelAligned();
+        //if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
+        wasSwapDisplay = wasLogicSwitchRequested;
+        heatRemainDisplay = barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT);
+        if (barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT) <= 10 && !wasLogicSwitchRequested) {
+            barrelManager->toggleSide();
+            //barrelManager->setSide(barrelSide::RIGHT);
+            wasLogicSwitchRequested = true;
+        }
+        
+
+
     }
     else {
         barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);
