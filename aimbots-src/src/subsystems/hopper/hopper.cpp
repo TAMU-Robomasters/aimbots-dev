@@ -46,13 +46,13 @@ bool HopperSubsystem::isHopperReady() const {
     // finishing
 }
 
-uint8_t state = 0;
+uint8_t state;
 uint8_t HopperSubsystem::getHopperState() const {
     state = hopper_state;
     return hopper_state;
 }
 
-uint8_t new_state_display = 0;
+uint8_t new_state_display;
 void HopperSubsystem::setHopperState(uint8_t new_state) {
     new_state_display = new_state;
     hopper_state = new_state;
