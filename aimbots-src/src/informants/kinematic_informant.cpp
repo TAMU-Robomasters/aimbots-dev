@@ -88,8 +88,9 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit
 }
 
 float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
-    UNUSED(unit);  // fuck units always return in radians
-    return imuAngularState[axis].getAcceleration();
+    float angularAcceleration = imuAngularState[axis].getAcceleration();
+
+    return unit == AngleUnit::Degrees ? angularAcceleration : modm::toRadian(angularAcceleration);
 }
 
 void KinematicInformant::updateChassisAcceleration() {
@@ -166,6 +167,12 @@ float KinematicInformant::getChassisPitchVelocityInGimbalDirection() {
     return chassisPitchVelocityInGimbalDirection;
 }
 
+float KinematicInformant::getChassisLinearAccelerationInGimbalDirection() {
+    // remember to convert linear accel from in/s^2 to m/s^2
+    // @luke help pwease 🥺👉👈
+    return 0.0f;
+}
+
 void KinematicInformant::updateRobotFrames() {
     updateChassisIMUAngles();
 
@@ -180,13 +187,13 @@ void KinematicInformant::updateRobotFrames() {
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
 
-    imuAngularState[X_AXIS].updateFromPosition(getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians));
-    imuAngularState[Y_AXIS].updateFromPosition(getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians));
-    imuAngularState[Z_AXIS].updateFromPosition(getIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians));
+    imuAngularState[X_AXIS].updateFromPosition(getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians));
+    imuAngularState[Y_AXIS].updateFromPosition(getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians));
+    imuAngularState[Z_AXIS].updateFromPosition(getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians));
 
-    imuAngularState[X_AXIS].updateFromVelocity(getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians), false);
-    imuAngularState[Y_AXIS].updateFromVelocity(getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians), false);
-    imuAngularState[Z_AXIS].updateFromVelocity(getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians), false);
+    imuAngularState[X_AXIS].updateFromVelocity(getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians), false);
 
     updateChassisAcceleration();
 }

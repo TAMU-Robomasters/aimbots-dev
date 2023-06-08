@@ -258,8 +258,10 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+
+static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

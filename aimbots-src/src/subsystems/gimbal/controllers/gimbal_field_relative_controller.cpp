@@ -85,8 +85,9 @@ void GimbalFieldRelativeController::runYawController(
              GIMBAL_YAW_GEAR_RATIO);
 
         float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_YAW_FEEDFORWARD + sgn(chassisRelativeVelocityTarget) * GM6020_VELOCITY_FEEDFORWARD.interpolate(
-                                                                                        fabs(chassisRelativeVelocityTarget)),
+            CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD +
+                sgn(chassisRelativeVelocityTarget) *
+                    GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
 
@@ -129,8 +130,14 @@ void GimbalFieldRelativeController::runPitchController() {
             fieldRelativeVelocityTarget -
             (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_YAW_GEAR_RATIO);
 
+        float velocityFeedforward = CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD +
+                                    sgn(chassisRelativeVelocityTarget) *
+                                        GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) +
+                                    CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
+                                        drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection();
+
         float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_PITCH_FEEDFORWARD +
+            CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD +
                 sgn(chassisRelativeVelocityTarget) *
                     GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
             -GM6020_MAX_OUTPUT,

@@ -182,7 +182,7 @@ static constexpr float PITCH_OFFSET_ANGLE = 270.45f;
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = 249.5f;
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 305.0f;
 
-static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

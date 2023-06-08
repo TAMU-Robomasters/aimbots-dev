@@ -39,7 +39,7 @@ public:
 
     // Returns angular velocity in rad/s or deg/s
     float getIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
-    // Returns linear velocity in rad/s^2 or deg/s^2 if you are a loser
+
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
     void updateChassisAcceleration();
@@ -49,8 +49,12 @@ public:
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
 
+    // rad
     float getChassisPitchAngleInGimbalDirection();
+    // rad/s
     float getChassisPitchVelocityInGimbalDirection();
+    // m/s
+    float getChassisLinearAccelerationInGimbalDirection();
 
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
