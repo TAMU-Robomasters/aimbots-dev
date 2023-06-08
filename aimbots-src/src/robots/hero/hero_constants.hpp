@@ -156,15 +156,6 @@ static constexpr bool FEEDER_DIRECTION = true;
 static constexpr bool YAW_DIRECTION = false;
 static constexpr bool PITCH_DIRECTION = true;
 
-/**
- * This max output is measured in the c620 robomaster translated current.
- * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
- * The corresponding speed controller output torque current range is
- * -20 ~ 0 ~ 20 A.
- */
-static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
-
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).

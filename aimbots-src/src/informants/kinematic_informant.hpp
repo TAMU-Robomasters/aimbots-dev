@@ -49,7 +49,8 @@ public:
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
     tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
 
-    float getChassisPitchInGimbalDirection();
+    float getChassisPitchAngleInGimbalDirection();
+    float getChassisPitchVelocityInGimbalDirection();
 
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 

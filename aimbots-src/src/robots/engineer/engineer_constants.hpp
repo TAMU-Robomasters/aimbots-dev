@@ -20,15 +20,6 @@ static constexpr float POSITION_PID_KI = 0.2f;
 static constexpr float POSITION_PID_KD = 0.0f;
 static constexpr float POSITION_PID_MAX_ERROR_SUM = 5000.0f;
 
-/**
- * This max output is measured in the c620 robomaster translated current.
- * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
- * The corresponding speed controller output torque current range is
- * -20 ~ 0 ~ 20 A.
- */
-static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
-
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).

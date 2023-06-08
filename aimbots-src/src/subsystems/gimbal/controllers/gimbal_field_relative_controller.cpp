@@ -81,12 +81,12 @@ void GimbalFieldRelativeController::runYawController(
 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget -
-            (drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)) /
-                GIMBAL_YAW_GEAR_RATIO;
+            (drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) /
+             GIMBAL_YAW_GEAR_RATIO);
 
         float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_YAW_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-                GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+            CHASSIS_VELOCITY_YAW_FEEDFORWARD + sgn(chassisRelativeVelocityTarget) * GM6020_VELOCITY_FEEDFORWARD.interpolate(
+                                                                                        fabs(chassisRelativeVelocityTarget)),
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
 
@@ -117,23 +117,30 @@ void GimbalFieldRelativeController::runPitchController() {
 
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
 
-    float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
-        // float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
-        //     gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
-        //     RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
-        //                                                   src::Informants::AngularAxis::YAW_AXIS,
-        //                                                   AngleUnit::Radians) /
-        //                                                   GIMBAL_YAW_GEAR_RATIO);
-
-        positionPIDOutput = pitchPositionPIDs[i]->runController(
+        float fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
                                                             src::Informants::AngularAxis::PITCH_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_PITCH_GEAR_RATIO);
 
-        gimbal->setDesiredPitchMotorOutput(i, positionPIDOutput);
+        float chassisRelativeVelocityTarget =
+            fieldRelativeVelocityTarget -
+            (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_YAW_GEAR_RATIO);
+
+        float velocityFeedforward = tap::algorithms::limitVal(
+            CHASSIS_VELOCITY_PITCH_FEEDFORWARD +
+                sgn(chassisRelativeVelocityTarget) *
+                    GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+            -GM6020_MAX_OUTPUT,
+            GM6020_MAX_OUTPUT);
+
+        float velocityControllerOutput = pitchVelocityPIDs[i]->runController(
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)),
+            gimbal->getPitchMotorTorque(i));
+
+        gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     }
 }
 

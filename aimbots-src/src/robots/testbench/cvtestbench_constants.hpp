@@ -86,7 +86,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
-    .maxOutput = 35.0f,  // 35 rad/s is maximum speed of 6020
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -96,11 +96,11 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 50.0f,
     .ki = 0.0f,
-    .kd = 150.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .kd = 0.0f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 40.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -125,10 +125,10 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 500.0f,
+    .ki = 25.0f,
     .kd = 0.0f,
-    .maxICumulative = 10.0f,
+    .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -237,15 +237,6 @@ static constexpr float HOPPER_CLOSED_ANGLE = 155.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
-/**
- * This max output is measured in the c620 robomaster translated current.
- * Per the datasheet, the controllable current range is -16384 ~ 0 ~ 16384.
- * The corresponding speed controller output torque current range is
- * -20 ~ 0 ~ 20 A.
- */
-static constexpr float VELOCITY_PID_MAX_OUTPUT = 16000.0f;
-static constexpr float POSITION_PID_MAX_OUTPUT = 16000.0f;
-
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
@@ -267,7 +258,8 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_FEEDFORWARD = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.

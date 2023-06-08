@@ -124,29 +124,46 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsConti
 }
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
-    float currChassisAngle = getChassisPitchInGimbalDirection();
+    float currChassisAngle = getChassisPitchAngleInGimbalDirection();
     return ContiguousFloat(currGimbalAngle + currChassisAngle, -M_PI, M_PI);
 }
 
-float KinematicInformant::getChassisPitchInGimbalDirection() {
+float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
-    float chassisPitchInGimbalDirection = atan2f(
+    float chassisPitchAngleInGimbalDirection = atan2f(
         cosGimbYaw * sinChasPitch + sinGimbYaw * sinChasRoll,
         sqrtf(pow2(sinGimbYaw) * pow2(cosChasRoll) + pow2(cosGimbYaw) * pow2(cosChasPitch)));
 
-    return chassisPitchInGimbalDirection;
+    return chassisPitchAngleInGimbalDirection;
+}
+
+float KinematicInformant::getChassisPitchVelocityInGimbalDirection() {
+    float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
+    float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
+
+    float chassisRollVelocity = getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    float sinChasRollVelocity = sinf(chassisRollVelocity);
+    float cosChasRollVelocity = cosf(chassisRollVelocity);
+
+    float chassisPitchVelocity = getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float sinChasPitchVelocity = sinf(chassisPitchVelocity);
+    float cosChasPitchVelocity = cosf(chassisPitchVelocity);
+
+    float chassisPitchVelocityInGimbalDirection = atan2f(
+        cosGimbYaw * sinChasPitchVelocity + sinGimbYaw * sinChasRollVelocity,
+        sqrtf(pow2(sinGimbYaw) * pow2(cosChasRollVelocity) + pow2(cosGimbYaw) * pow2(cosChasPitchVelocity)));
+
+    return chassisPitchVelocityInGimbalDirection;
 }
 
 void KinematicInformant::updateRobotFrames() {

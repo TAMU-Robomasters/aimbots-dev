@@ -112,6 +112,10 @@ public:
         return yawMotors[yawIdx]->isMotorOnline() ? yawMotors[yawIdx]->getTorque() : 0;
     }
 
+    inline int16_t getPitchMotorTorque(uint8_t pitchIdx) const {
+        return pitchMotors[pitchIdx]->isMotorOnline() ? pitchMotors[pitchIdx]->getTorque() : 0;
+    }
+
     inline float getYawAxisRPM() const {
         int16_t rpm = 0;
         uint8_t onlineMotors = 0;
