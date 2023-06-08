@@ -120,17 +120,17 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr uint16_t shooter_speed_array[6] = {
+static constexpr uint16_t shooter_speed_array[6] = { // ONLY TUNE WITH FULL BATTERY
     15,
-    4200,  // {ball m/s, flywheel rpm}
+    4500,  // {ball m/s, flywheel rpm}
     18,
-    5000,
+    4850,
     30,
-    7700};
+    7200};
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;            //FEEDER RPM: 3000.0f
+static constexpr float FEEDER_DEFAULT_RPM = 4500.0f;            //FEEDER RPM: 3000.0f
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
