@@ -84,10 +84,15 @@ void GimbalFieldRelativeController::runYawController(
             (drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)) /
                 GIMBAL_YAW_GEAR_RATIO;
 
-        float velocityFeedforward = CHASSIS_VELOCITY_YAW_FEEDFORWARD * chassisRelativeVelocityTarget;
+        float velocityFeedforward = tap::algorithms::limitVal(
+            CHASSIS_VELOCITY_YAW_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+                GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+            -GM6020_MAX_OUTPUT,
+            GM6020_MAX_OUTPUT);
 
         chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
+        // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[i]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
@@ -114,6 +119,13 @@ void GimbalFieldRelativeController::runPitchController() {
 
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        // float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
+        //     gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
+        //     RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
+        //                                                   src::Informants::AngularAxis::YAW_AXIS,
+        //                                                   AngleUnit::Radians) /
+        //                                                   GIMBAL_YAW_GEAR_RATIO);
+
         positionPIDOutput = pitchPositionPIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(

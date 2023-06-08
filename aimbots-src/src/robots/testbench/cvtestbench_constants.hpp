@@ -82,7 +82,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 70.0f,
+    .kp = 50.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -111,8 +111,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1500.0f,
-    .ki = 15.0f,
+    .kp = 500.0f,
+    .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -267,7 +267,7 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 800.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_FEEDFORWARD = 1.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
@@ -337,9 +337,9 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.085f, // x
-    0.07f, // y
-    0.007f,  // z
+    0.062f, // x
+    0.055f, // y
+    -0.009f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
@@ -355,7 +355,7 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 };
 
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.053f, //x = 0.04498
+    0.045f, //x = 0.04498
     0.0f, //y - does not matter too much 
     0.01683f, //z = 0.01683
 };

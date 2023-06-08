@@ -17,6 +17,7 @@
 
 #include "modm/container/deque.hpp"
 #include "modm/math/geometry/vector.hpp"
+#include "modm/math/interpolation/linear.hpp"
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
@@ -30,6 +31,11 @@ static inline float wrapTo0To2PIRange(float angle) {
     } else {
         return angle;
     }
+}
+
+template <typename T>
+int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
 }
 
 #define REMAP(x, in_min, in_max, out_min, out_max) ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
@@ -61,9 +67,9 @@ enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;
 
-static constexpr float M3508_MAX_OUTPUT = 30000.0f;
-static constexpr float M2006_MAX_OUTPUT = 10000.0f;
-static constexpr float GM6020_MAX_OUTPUT = 16000.0f;
+static constexpr float M3508_MAX_OUTPUT = 16'384.0f;
+static constexpr float M2006_MAX_OUTPUT = 10'000.0f;
+static constexpr float GM6020_MAX_OUTPUT = 30'000.0f;
 
 static constexpr float GM6020_VELOCITY_FILTER_ALPHA = 1.0f;
 
@@ -124,3 +130,21 @@ static inline void descheduleIfScheduled(
         scheduler.removeCommand(cmd, interrupted);
     }
 }
+
+// clang-format off
+const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
+                                                                    {0.0f, 0.0f},
+                                                                    {3.75f, 3'000.0f},
+                                                                    {8.5f, 6'000.0f},
+                                                                    {12.75f, 9'000.0f},
+                                                                    {17.67f, 12'000.0f},
+                                                                    {22.5f, 15'000.0f},
+                                                                    {26.75f, 18'000.0f},
+                                                                    {31.5f, 21'000.0f},
+                                                                    {35.5f, 24'000.0f},
+                                                                    {36.15f, 27'000.0f},
+                                                                    {36.35f, 30'000.0f}
+                                                                    };
+// clang-format on
+
+const modm::interpolation::Linear<modm::Pair<float, float>> GM6020_VELOCITY_FEEDFORWARD(GM6020_FEEDFORWARD_VELOCITIES, 11);

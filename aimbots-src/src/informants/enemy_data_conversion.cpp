@@ -102,9 +102,9 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     targetPositionYUnfilteredDisplay = transformedData.position.getY();
     targetPositionZUnfilteredDisplay = transformedData.position.getZ();
 
-    transformedData.position.setX(XPositionFilter.update(transformedData.position.getX()));
-    transformedData.position.setY(YPositionFilter.update(transformedData.position.getY()));
-    transformedData.position.setZ(ZPositionFilter.update(transformedData.position.getZ()));
+    // transformedData.position.setX(XPositionFilter.update(transformedData.position.getX()));
+    // transformedData.position.setY(YPositionFilter.update(transformedData.position.getY()));
+    // transformedData.position.setZ(ZPositionFilter.update(transformedData.position.getZ()));
 
     targetPositionXDisplay = transformedData.position.getX();
     targetPositionYDisplay = transformedData.position.getY();

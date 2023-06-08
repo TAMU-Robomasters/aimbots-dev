@@ -22,7 +22,7 @@ public:
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
             yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] = new EMAFilter(0.1);  // smoothing yaw velocity heavily for use in velocity controller
+            yawVelocityFilters[i] = new EMAFilter(0.02);  // smoothing yaw velocity heavily for use in velocity controller
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);

@@ -66,7 +66,7 @@ public:
 
 private:
     src::Drivers* drivers;
-    static const int BUFFER_SIZE = 10;      // prolly move this to constants at some point or something IDK
+    static const int BUFFER_SIZE = 1;       // prolly move this to constants at some point or something IDK
     static constexpr float VALID_TIME = 5;  // max elapsed seconds before an enemy position entry is invalid
 
     // buffer for XYZ + timestamp
