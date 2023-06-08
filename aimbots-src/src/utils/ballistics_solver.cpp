@@ -6,7 +6,10 @@ enum CVState;
 
 namespace src::Utils::Ballistics {
 
-BallisticsSolver::BallisticsSolver(src::Drivers *drivers) : drivers(drivers) {}
+BallisticsSolver::BallisticsSolver(src::Drivers *drivers, src::Utils::RefereeHelper *refHelper)
+    : drivers(drivers),
+      refHelper(refHelper)  //
+{}
 
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
     if (!drivers->cvCommunicator.isJetsonOnline() ||
@@ -23,7 +26,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
 
     auto plateKinematicState = drivers->cvCommunicator.getPlateKinematicState();
 
-    float projectileSpeed = defaultProjectileSpeed;
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed();
 
     MeasuredKinematicState targetKinematicState = {
         .position = plateKinematicState.position,

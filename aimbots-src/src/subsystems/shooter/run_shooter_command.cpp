@@ -10,9 +10,10 @@
 
 namespace src::Shooter {
 
-RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
-    this->drivers = drivers;
-    this->shooter = shooter;
+RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, src::Utils::RefereeHelper* refHelper)
+    : drivers(drivers),
+      shooter(shooter),
+      refHelper(refHelper) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
@@ -23,34 +24,9 @@ void RunShooterCommand::initialize() {
 tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataDisplay;
 
 void RunShooterCommand::execute() {
-    using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
-
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
-    uint16_t refSpeedLimit = 0;
-
-    auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
-    refSysRobotTurretDataDisplay = refSysRobotTurretData;
-
-    auto launcherID = refSysRobotTurretData.launchMechanismID;
-    switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
-                           // #if defined(TARGET_STANDARD) || defined(TARGET_SENTRY)
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
-            break;
-        }
-            // #endif
-        case RefSerialRxData::MechanismID::TURRET_42MM: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit42;
-            break;
-        }
-        default:
-            break;
-    }
+    uint16_t refSpeedLimit = refHelper->getProjectileSpeedLimit();
 
     for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
         if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {

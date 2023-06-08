@@ -8,6 +8,7 @@
 //
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
+#include "utils/ref_helper.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -61,7 +62,9 @@ using namespace tap;
 using namespace tap::control;
 using namespace tap::communication::serial;
 
-namespace StandardControl {
+namespace CVTestbenchControl {
+
+src::Utils::RefereeHelper refHelper(drivers());
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
@@ -75,7 +78,7 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -88,12 +91,12 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
-RunShooterCommand runShooterCommand(drivers(), &shooter);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
+RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
@@ -188,16 +191,16 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftClickMouse);
 }
 
-}  // namespace StandardControl
+}  // namespace CVTestbenchControl
 
 namespace src::Control {
 // Initialize subsystems ---------------------------------------------------
 void initializeSubsystemCommands(src::Drivers *drivers) {
-    StandardControl::initializeSubsystems();
-    StandardControl::registerSubsystems(drivers);
-    StandardControl::setDefaultCommands(drivers);
-    StandardControl::startupCommands(drivers);
-    StandardControl::registerIOMappings(drivers);
+    CVTestbenchControl::initializeSubsystems();
+    CVTestbenchControl::registerSubsystems(drivers);
+    CVTestbenchControl::setDefaultCommands(drivers);
+    CVTestbenchControl::startupCommands(drivers);
+    CVTestbenchControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
 

@@ -1,17 +1,25 @@
 #pragma once
 
-#include "drivers.hpp"
-#include "subsystems/feeder/feeder.hpp"
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
+
+#include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
+#include "utils/ref_helper.hpp"
 #include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
-   public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+public:
+    FullAutoFeederCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        src::Utils::RefereeHelper*,
+        float speed = FEEDER_DEFAULT_RPM,
+        float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -24,9 +32,10 @@ class FullAutoFeederCommand : public TapCommand {
 
     const char* getName() const override { return "run feeder"; }
 
-   private:
+private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+    src::Utils::RefereeHelper* refHelper;
 
     float speed;
     float acceptableHeatThreshold;

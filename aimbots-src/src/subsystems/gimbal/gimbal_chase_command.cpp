@@ -81,7 +81,8 @@ void GimbalChaseCommand::execute() {
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-        controller->runYawController(3.0f);
+        controller->runYawController(
+            src::Utils::Ballistics::TARGET_DISTANCE_TO_YAW_VELOCITY_LIMIT.interpolate(ballisticsSolution->distanceToTarget));
         controller->runPitchController();
     } else {
         // Yaw counterclockwise is positive angle

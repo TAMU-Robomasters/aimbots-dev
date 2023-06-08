@@ -2,7 +2,9 @@
 
 #include <optional>
 
-#include <drivers.hpp>
+#include "utils/ref_helper.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Gimbal {
 class GimbalSubsystem;
@@ -54,7 +56,7 @@ struct MeasuredKinematicState {
 
 class BallisticsSolver {
 public:
-    BallisticsSolver(src::Drivers *);
+    BallisticsSolver(src::Drivers *, src::Utils::RefereeHelper *refHelper);
     ~BallisticsSolver() = default;
 
     struct AngularFilterConfig {
@@ -134,6 +136,7 @@ public:
 
 private:
     src::Drivers *drivers;
+    src::Utils::RefereeHelper *refHelper;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
 

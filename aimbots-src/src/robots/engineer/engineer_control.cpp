@@ -1,8 +1,9 @@
 #ifdef TARGET_ENGINEER
 
+#include "utils/common_types.hpp"
+
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-#include "utils/common_types.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -42,14 +43,10 @@ HoldCommandMapping leftSwitchUp(
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
-void registerSubsystems(src::Drivers *drivers) {
-    drivers->commandScheduler.registerSubsystem(&chassis);
-}
+void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&chassis); }
 
 // Initialize subsystems here ---------------------------------------------
-void initializeSubsystems() {
-    chassis.initialize();
-}
+void initializeSubsystems() { chassis.initialize(); }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
@@ -66,21 +63,19 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-}
+void registerIOMappings(src::Drivers *drivers) { drivers->commandMapper.addMap(&leftSwitchUp); }
 
-}  // namespace StandardControl
+}  // namespace EngineerControl
 
 namespace src::Control {
-    // Initialize subsystems ---------------------------------------------------
-    void initializeSubsystemCommands(src::Drivers * drivers) {
-        EngineerControl::initializeSubsystems();
-        EngineerControl::registerSubsystems(drivers);
-        EngineerControl::setDefaultCommands(drivers);
-        EngineerControl::startupCommands(drivers);
-        EngineerControl::registerIOMappings(drivers);
-    }
+// Initialize subsystems ---------------------------------------------------
+void initializeSubsystemCommands(src::Drivers *drivers) {
+    EngineerControl::initializeSubsystems();
+    EngineerControl::registerSubsystems(drivers);
+    EngineerControl::setDefaultCommands(drivers);
+    EngineerControl::startupCommands(drivers);
+    EngineerControl::registerIOMappings(drivers);
+}
 }  // namespace src::Control
 
-#endif  //TARGET_ENGINEER
+#endif  // TARGET_ENGINEER
