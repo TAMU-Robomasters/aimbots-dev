@@ -1,5 +1,4 @@
 #include "barrel_swap_command.hpp"
-#include "utils/robot_constants.hpp"
 
 #ifdef BARREL_SWAP_COMPATIBLE
 

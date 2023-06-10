@@ -1,5 +1,4 @@
 #include "burst_feeder_command.hpp"
-#ifndef ENGINEER
 
 namespace src::Feeder {
 BurstFeederCommand::BurstFeederCommand(
@@ -33,4 +32,3 @@ bool BurstFeederCommand::isFinished() const {
 }
 
 }  // namespace src::Feeder
-#endif

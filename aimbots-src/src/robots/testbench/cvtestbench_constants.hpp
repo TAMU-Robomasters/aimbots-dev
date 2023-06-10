@@ -138,6 +138,11 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+
+static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
@@ -257,11 +262,6 @@ static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Stand
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
-
-static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
