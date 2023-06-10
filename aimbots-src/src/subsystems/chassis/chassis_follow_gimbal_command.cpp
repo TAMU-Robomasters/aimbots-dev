@@ -1,11 +1,9 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TOKYO_COMPATIBLE
+#ifdef GIMBAL_UNTETHERED
 
 #include "subsystems/chassis/chassis_helper.hpp"
 
 #include "chassis_follow_gimbal_command.hpp"
-
-#define RADPS_TO_RPM 9.549297f
 
 namespace src::Chassis {
 
@@ -44,9 +42,9 @@ void ChassisFollowGimbalCommand::execute() {
         // Find rotation correction power
         rotationController.runController(
             -yawAngleFromChassisCenter,
-            RADPS_TO_RPM * drivers->kinematicInformant.getIMUAngularVelocity(
-                               src::Informants::AngularAxis::YAW_AXIS,
-                               AngleUnit::Radians));
+            RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                src::Informants::AngularAxis::YAW_AXIS,
+                AngleUnit::Radians)));
         rotationControllerOutputDisplay = rotationController.getOutput();
 
         // overwrite desired rotation with rotation controller output, range [-1, 1]

@@ -1,9 +1,8 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TOKYO_COMPATIBLE
+
+#ifdef GIMBAL_UNTETHERED
 
 #include "gimbal_field_relative_controller.hpp"
-
-#define RADPS_TO_RPM 9.549297f
 
 namespace src::Gimbal {
 
@@ -136,12 +135,7 @@ void GimbalFieldRelativeController::runPitchController() {
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection();
 
-        float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD +
-                sgn(chassisRelativeVelocityTarget) *
-                    GM6020_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
-            -GM6020_MAX_OUTPUT,
-            GM6020_MAX_OUTPUT);
+        velocityFeedforward = tap::algorithms::limitVal(velocityFeedforward, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
 
         float velocityControllerOutput = pitchVelocityPIDs[i]->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)),
@@ -155,4 +149,4 @@ bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline()
 
 }  // namespace src::Gimbal
 
-#endif  // TOKYO_COMPATIBLE
+#endif  // GIMBAL_UNTETHERED

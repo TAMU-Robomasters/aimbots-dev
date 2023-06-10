@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include <drivers.hpp>
 #include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
@@ -22,7 +24,7 @@ public:
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
             yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] = new EMAFilter(0.02);  // smoothing yaw velocity heavily for use in velocity controller
+            yawVelocityFilters[i] = new EMAFilter(0.02);  // smoothing yaw velocity heavily for display purposes
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);

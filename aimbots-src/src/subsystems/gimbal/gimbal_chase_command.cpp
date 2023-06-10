@@ -18,11 +18,7 @@ GimbalChaseCommand::GimbalChaseCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalChaseCommand::initialize() {
-    // // Set initial target angle to be the current angle for seamless switching between different gimbal commands
-    // controller->setTargetYaw(AngleUnit::Radians, gimbal->getCurrentYawAxisAngle(AngleUnit::Radians));
-    // controller->setTargetPitch(AngleUnit::Radians, gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians));
-}
+void GimbalChaseCommand::initialize() {}
 
 float targetPitchAxisAngleDisplay2 = 0.0f;
 float targetYawAxisAngleDisplay2 = 0.0f;

@@ -1,17 +1,18 @@
 #pragma once
 
-#include "drivers.hpp"
+#include "tap/algorithms/ramp.hpp"
+
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
-//
-#include "tap/algorithms/ramp.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Chassis {
 
 class ChassisTokyoCommand : public TapCommand {
-   public:
+public:
     ChassisTokyoCommand(src::Drivers*, ChassisSubsystem*, src::Gimbal::GimbalSubsystem*);
     void initialize() override;
 
@@ -23,7 +24,7 @@ class ChassisTokyoCommand : public TapCommand {
 
     const char* getName() const override { return "Chassis Follow Gimbal"; }
 
-   private:
+private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;

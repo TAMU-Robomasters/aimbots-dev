@@ -1,5 +1,5 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TOKYO_COMPATIBLE
+#ifdef GIMBAL_UNTETHERED
 
 #include <subsystems/chassis/chassis_helper.hpp>
 

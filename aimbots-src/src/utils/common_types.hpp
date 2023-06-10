@@ -41,6 +41,7 @@ int sgn(T val) {
 #define REMAP(x, in_min, in_max, out_min, out_max) ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
 #define RPM_TO_RADPS(x) (x * M_TWOPI / 60.0f)
+#define RADPS_TO_RPM(x) (x * 60.0f / M_TWOPI)
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 #include "tap/mock/dji_motor_mock.hpp"

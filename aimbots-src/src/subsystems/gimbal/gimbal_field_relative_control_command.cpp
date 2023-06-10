@@ -17,11 +17,7 @@ GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalFieldRelativeControlCommand::initialize() {
-    // // Set initial target angle to be the current angle for seamless switching between different gimbal commands
-    // controller->setTargetYaw(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat());
-    // controller->setTargetPitch(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat());
-}
+void GimbalFieldRelativeControlCommand::initialize() {}
 
 float gimbalYawInputDisplay = 0.0f;
 
