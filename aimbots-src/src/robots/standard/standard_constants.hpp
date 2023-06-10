@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_UNTETHERED
+#define BARREL_SWAP_COMPATIBLE
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -82,13 +83,14 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 600.0f,
+    .kp = 50.0f,
     .ki = 0.0f,
-    .kd = 500.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .kd = 0.0f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -98,10 +100,25 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 50.0f,
     .ki = 0.0f,
-    .kd = 150.0f,
-    .maxICumulative = 10.0f,
+    .kd = 0.0f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 40.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// VELOCITY PID CONSTANTS
+static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
+    .kp = 500.0f,
+    .ki = 25.0f,
+    .kd = 0.0f,
+    .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -110,6 +127,25 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
+    .kp = 500.0f,
+    .ki = 25.0f,
+    .kd = 0.0f,
+    .maxICumulative = 2000.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+
+static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
@@ -160,15 +196,15 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {
-    15, 4200,  // {ball m/s, flywheel rpm}
-    18, 5000,
-    30, 8300};
+static constexpr uint16_t shooter_speed_array[6] = { // ONLY TUNE WITH FULL BATTERY
+    15, 4500,  // {ball m/s, flywheel rpm}
+    18, 4850,
+    30, 7200};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 2750.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 4500.0f;
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
 // CAN Bus 2
@@ -182,17 +218,23 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1; // TODO: check CAN ID for Barrel Swap
 
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+//
+static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1; // TODO: check motor ID for Barrel Swap
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = false;
+
+static constexpr bool SWAP_DIRECTION = true;
+
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -230,8 +272,6 @@ static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Stand
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 125'000.0f;
 
 /**
  * Max wheel speed, measured in RPM of the 3508 motor shaft.
@@ -330,3 +370,41 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 180.0f;
+
+//Barrel Manager Constants
+//These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
+//A positive increase provides a bigger gap between hard stop and barrel
+static constexpr float HARD_STOP_OFFSET = 0.5; //In mm
+//static constexpr float LEFT_STOP_OFFSET = 0; //In mm
+//static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
+
+// this is from edge to edge, aligned center to aligned center, 
+static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5; //In mm 
+
+//If the barrel is this close to the flywheel chamber, it is considered aligned
+static constexpr float BARRELS_ALIGNED_TOLERANCE = 1.0; //In mm
+
+//Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
+static constexpr float LEAD_SCREW_TICKS_PER_MM = tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 / 8.0;//  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
+
+//The value that the torque needs to be greater than to detect running into a wall
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
+
+//The output to the motor while in calibration mode.  
+//When adjusting, also change the constant above to find an appropriate match between the two
+static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
+
+//TODO: Tune PID constants
+static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};

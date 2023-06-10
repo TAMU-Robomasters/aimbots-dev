@@ -1,5 +1,4 @@
 #include "subsystems/shooter/brake_shooter_command.hpp"
-
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
 

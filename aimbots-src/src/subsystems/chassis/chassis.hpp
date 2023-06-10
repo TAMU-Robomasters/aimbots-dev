@@ -85,9 +85,13 @@ public:
     // Uses the desiredOutputs matrix to set the desired power of the motors
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
+#ifndef SWERVE
     void calculateMecanum(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
-    void calculateSwerve(float x, float y, float r, float maxWheelSpeed);   // swerve drive robots
-    void calculateRail(float x, float maxWheelSpeed);                       // sentry rail robots
+#endif
+#ifdef SWERVE
+    void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
+#endif
+    void calculateRail(float x, float maxWheelSpeed);  // sentry rail robots
 
     inline int getNumChassisMotors() const override { return DRIVEN_WHEEL_COUNT * MOTORS_PER_WHEEL; }
 

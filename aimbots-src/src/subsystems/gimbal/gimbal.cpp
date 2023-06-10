@@ -3,6 +3,7 @@
 #include <utils/common_types.hpp>
 
 static inline float wrapAngleToPiRange(float angle) { return fmodf(angle + M_PI, M_TWOPI) - M_PI; }
+
 namespace src::Gimbal {
 
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)

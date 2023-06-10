@@ -1,4 +1,5 @@
 #pragma once
+#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
@@ -14,12 +15,7 @@ namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
 public:
-    FullAutoFeederCommand(
-        src::Drivers*,
-        FeederSubsystem*,
-        src::Utils::RefereeHelper*,
-        float speed = FEEDER_DEFAULT_RPM,
-        float acceptableHeatThreshold = 0.90f);
+    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, src::Utils::RefereeHelper*, bool &barrelMovingFlag, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -39,6 +35,7 @@ private:
 
     float speed;
     float acceptableHeatThreshold;
+    bool &barrelMovingFlag;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
@@ -46,3 +43,5 @@ private:
 };
 
 }  // namespace src::Feeder
+
+#endif

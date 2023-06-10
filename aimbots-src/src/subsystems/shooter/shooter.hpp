@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#ifndef ENGINEER
+
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
 
@@ -123,3 +125,5 @@ public:
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
 };
 };  // namespace src::Shooter
+
+#endif

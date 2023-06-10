@@ -15,6 +15,7 @@ namespace src::Shooter {
 class StopShooterComprisedCommand : public TapComprisedCommand {
 public:
     StopShooterComprisedCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
+
     void initialize() override;
 
     void execute() override;

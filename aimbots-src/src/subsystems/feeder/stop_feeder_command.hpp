@@ -1,15 +1,18 @@
 #pragma once
 
-#include "drivers.hpp"
-#include "subsystems/feeder/feeder.hpp"
+#ifndef ENGINEER
 #include "tap/control/command.hpp"
+
+#include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
 
 namespace src::Feeder {
 
 class StopFeederCommand : public TapCommand {
-   public:
+public:
     StopFeederCommand(src::Drivers*, FeederSubsystem*);
     void initialize() override;
 
@@ -21,9 +24,11 @@ class StopFeederCommand : public TapCommand {
 
     const char* getName() const override { return "stop feeder"; }
 
-   private:
+private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
 };
 
 }  // namespace src::Feeder
+
+#endif

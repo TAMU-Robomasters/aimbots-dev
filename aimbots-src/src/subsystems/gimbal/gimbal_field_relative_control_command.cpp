@@ -1,4 +1,5 @@
 #include "gimbal_field_relative_control_command.hpp"
+#ifndef ENGINEER
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
@@ -64,3 +65,4 @@ void GimbalFieldRelativeControlCommand::end(bool) {
 }
 
 }  // namespace src::Gimbal
+#endif

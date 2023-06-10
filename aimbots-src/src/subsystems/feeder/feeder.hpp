@@ -1,5 +1,4 @@
 #pragma once
-
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
 

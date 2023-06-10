@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef ENGINEER
+
 #include "drivers.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -31,3 +33,5 @@ class ChassisFollowGimbalCommand : public TapCommand {
 };
 
 }  // namespace src::Chassis
+
+#endif

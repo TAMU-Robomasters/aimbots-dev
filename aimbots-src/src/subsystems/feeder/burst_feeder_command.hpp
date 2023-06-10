@@ -1,5 +1,4 @@
 #pragma once
-
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 

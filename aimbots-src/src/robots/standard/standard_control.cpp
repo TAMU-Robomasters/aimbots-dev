@@ -8,6 +8,7 @@
 //
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
+#include "utils/ref_helper.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -42,12 +43,20 @@
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
+//
+#include "subsystems/gui/gui_display.hpp"
+#include "subsystems/gui/gui_display_command.hpp"
+//
+#include "subsystems/barrel_manager/barrel_manager.hpp"
+#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
+using namespace src::GUI;
+using namespace src::Barrel_Manager;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -63,19 +72,27 @@ using namespace tap::communication::serial;
 
 namespace StandardControl {
 
+src::Utils::RefereeHelper refHelper(drivers());
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
+GUI_DisplaySubsystem gui(drivers());
+BarrelManagerSubsystem barrelManager(drivers());
+
+
+//Command Flags ----------------------------
+bool barrelMovingFlag = true;
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -88,19 +105,23 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
-RunShooterCommand runShooterCommand(drivers(), &shooter);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
+RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
+BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, barrelMovingFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
+
+GUI_DisplayCommand guiDisplayCommand(drivers(),&gui);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -138,6 +159,13 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
+
+//This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
+/*PressCommandMapping ctrlC(
+    drivers(), 
+    {&guiDisplayCommand},
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
+
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
 //     {&},
@@ -152,6 +180,8 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&hopper);
 
     drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
+    drivers->commandScheduler.registerSubsystem(&gui);
+    drivers->commandScheduler.registerSubsystem(&barrelManager);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -161,12 +191,15 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
+    gui.initialize();
+    barrelManager.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
 }
 
 // Set commands scheduled on startup
@@ -181,11 +214,12 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
+    //drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
+    //drivers->commandMapper.addMap(&ctrlC);
 }
 
 }  // namespace StandardControl
