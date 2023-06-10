@@ -7,7 +7,10 @@ OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hop
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 
-void OpenHopperCommand::initialize() { hopper->setHopperAngle(HOPPER_OPEN_ANGLE); }
+void OpenHopperCommand::initialize() {
+    hopper->setHopperAngle(HOPPER_OPEN_ANGLE);
+    hopper->setHopperState(OPEN);
+}
 
 void OpenHopperCommand::execute() {}
 
