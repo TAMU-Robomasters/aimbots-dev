@@ -110,9 +110,9 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+// ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+// ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
+// ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -163,13 +163,15 @@ HoldCommandMapping rightSwitchDown(
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &closeHopperCommand},
+    // {&runShooterCommand, &closeHopperCommand},
+    {&closeHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    // {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&openHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
