@@ -17,11 +17,10 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
 }
 
 //Watch Variables
-int16_t heat1 = 0;
-int16_t heat2 = 0;
+int16_t heatCurrentDisplay = 0;
+int16_t barrelDDisplay = 0;
 
-int16_t heatmax1 = 0;
-int16_t heatmax2 = 0;
+int16_t heatMaxDisplay = 0;
 
 void FeederSubsystem::initialize() {
     feederMotor.initialize();
@@ -72,34 +71,34 @@ bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
 
-    heat2 = 0;
+    barrelDDisplay = 0;
 
     auto launcherID = turretData.launchMechanismID;
     switch (launcherID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
             heatLimit = turretData.heatLimit17ID1;
-            heat2 = 1;
+            barrelDDisplay = 1;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
             heatLimit = turretData.heatLimit17ID2;
-            heat2 = 2;
+            barrelDDisplay = 2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
             heatLimit = turretData.heatLimit42;
-            heat2 = 3;
+            barrelDDisplay = 3;
             break;
         }
         default:
             break;
     }
 
-    heat1 = lastHeat;
-    heatmax1 = heatLimit;
+    heatCurrentDisplay = lastHeat;
+    heatMaxDisplay = heatLimit;
 
     return (lastHeat <= (static_cast<float>(heatLimit) * maxPercentage));
 }

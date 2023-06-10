@@ -78,10 +78,10 @@ void BarrelSwapCommand::execute() {
             barrelManager->setSide(barrelSide::RIGHT);
         }
 
-        //if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
+        if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
         wasSwapDisplay = wasLogicSwitchRequested;
         heatRemainDisplay = barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT);
-        if (barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT) <= 10 && !wasLogicSwitchRequested) {
+        if (barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT) <= 5 && !wasLogicSwitchRequested) {
             barrelManager->toggleSide();
             //barrelManager->setSide(barrelSide::RIGHT);
             wasLogicSwitchRequested = true;

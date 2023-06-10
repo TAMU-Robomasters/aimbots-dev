@@ -25,6 +25,8 @@ float currentSwapDesiredOutputDisplay = 0;
 int calStepProgressDisplay = 0;
 bool currentTimer = 0;
 
+tap::communication::serial::RefSerialData::Rx::RobotData structDisplay;
+
 int16_t barrelHeat = 0;
 int16_t barrelMax = 0;
 float barrelID = 0;
@@ -35,6 +37,7 @@ void BarrelManagerSubsystem::initialize() {
     swapMotor.initialize();
     swapMotor.setDesiredOutput(0);
     currentSpikeTimer.execute();
+    fakeHeatGainTimer.restart(500);
 }
 
 void BarrelManagerSubsystem::refresh() {
@@ -124,6 +127,7 @@ void BarrelManagerSubsystem::toggleSide() {
 int16_t BarrelManagerSubsystem::getRemainingBarrelHeat(barrelSide side = CURRENT) {
     using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
     auto turretData = drivers->refSerial.getRobotData().turret;
+    structDisplay = drivers->refSerial.getRobotData();
     if (side == barrelSide::CURRENT) {
         side = currentBarrelSide;
     }
@@ -159,17 +163,30 @@ int16_t BarrelManagerSubsystem::getRemainingBarrelHeat(barrelSide side = CURRENT
 
     //barrelHeat = (side == barrelSide::RIGHT) ? turretData.heat17ID1 : turretData.heat17ID2;
     //barrelMax = (side == barrelSide::RIGHT) ? turretData.heatLimit17ID1 : turretData.heatLimit17ID2;
+    heatLimit = 100; //TODO: Remove this while using the server
+    /*if (fakeHeatGainTimer.isExpired()) {
+        barrel1_fakeHeat += (side == barrelSide::RIGHT) ? 10 : -10;
+        barrel2_fakeHeat += (side == barrelSide::RIGHT) ? -10 : 10;
+        fakeHeatGainTimer.restart(500);
+    }*/
+
+    //if (barrel1_fakeHeat < 0) {barrel1_fakeHeat = 0;}
+    //if (barrel2_fakeHeat < 0) {barrel2_fakeHeat = 0;}
+
+    //lastHeat = (side == barrelSide::RIGHT) ? barrel1_fakeHeat : barrel2_fakeHeat;
+    barrelHeat = lastHeat;
+
     //barrelHeat = lastHeat;
     //barrelMax = heatLimit;
-    barrelHeat = turretData.heat17ID1;
-    barrelHeat = turretData.heat17ID2;
+    //barrelHeat = turretData.heat17ID1;
+    //barrelHeat = turretData.heat17ID2;
     return heatLimit - lastHeat;
     //return(side == barrelSide::RIGHT) ? turretData.heatLimit17ID1 - turretData.heat17ID1 /*LEFT*/ : turretData.heatLimit17ID2 - turretData.heat17ID2; //TODO: Check that left is ID1 and right is ID2  
 
 }
 
 bool BarrelManagerSubsystem::isBarrelAligned() {
-    return abs(currentSwapMotorPosition - getSideInMM(currentBarrelSide)) <= 1.0; //TODO: Find an actually useful constant number
+    return abs(currentSwapMotorPosition - getSideInMM(currentBarrelSide)) <= BARRELS_ALIGNED_TOLERANCE; //TODO: Find an actually useful constant number
 }
 
 }  // namespace src::Shooter

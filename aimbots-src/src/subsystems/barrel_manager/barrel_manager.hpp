@@ -5,6 +5,7 @@
 
 #include "utils/common_types.hpp"
 #include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "tap/communication/serial/ref_serial.hpp"
 
@@ -71,6 +72,11 @@ private:
     barrelSide currentBarrelSide = barrelSide::LEFT;
 
     MilliTimeout currentSpikeTimer;
+
+    //This is just for testing without the ref system
+    MilliTimeout fakeHeatGainTimer;
+    int16_t barrel1_fakeHeat = 0;
+    int16_t barrel2_fakeHeat = 0;
 
     DJIMotor swapMotor;
 
