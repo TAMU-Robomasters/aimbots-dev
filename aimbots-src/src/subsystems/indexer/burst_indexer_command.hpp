@@ -1,21 +1,17 @@
 #pragma once
-#ifndef ENGINEER
-#include "tap/communication/gpio/leds.hpp"
-#include "tap/control/command.hpp"
 
-#include "subsystems/feeder/feeder.hpp"
-#include "utils/common_types.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "subsystems/indexer/indexer.hpp"
 
 #include "drivers.hpp"
 
-namespace src::Feeder {
-class BurstFeederCommand : public TapCommand {
+#ifndef ENGINEER
+namespace src::Indexer {
+class BurstIndexerCommand : public TapCommand {
 public:
-    BurstFeederCommand(
+    BurstIndexerCommand(
         src::Drivers*,
-        FeederSubsystem*,
-        float speed = FEEDER_DEFAULT_RPM,
+        IndexerSubsystem*,
+        float speed = INDEXER_DEFAULT_RPM,
         float acceptableHeatThreshold = 0.90f,
         int burstLength = DEFAULT_BURST_LENGTH);
     void initialize() override;
@@ -26,16 +22,16 @@ public:
 
     bool isFinished() const override;
 
-    const char* getName() const override { return "Burst Feeder Command"; }
+    const char* getName() const override { return "Burst Indexer Command"; }
 
     inline void setBurstLength(int newBurstLength) {
-        startingTotalBallCount = feeder->getTotalLimitCount();
+        startingTotalBallCount = indexer->getTotalLimitCount();
         burstLength = newBurstLength;
     }
 
 private:
     src::Drivers* drivers;
-    FeederSubsystem* feeder;
+    IndexerSubsystem* indexer;
 
     float speed;
     float acceptableHeatThreshold;
@@ -45,6 +41,5 @@ private:
     int burstLength;
 };
 
-}  // namespace src::Feeder
-
+}  // namespace src::Indexer
 #endif

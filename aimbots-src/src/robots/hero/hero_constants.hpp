@@ -160,7 +160,7 @@ static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
-static constexpr MotorID INDEXER_ID = MotorID::MOTOR7;  // need to confirm
+static constexpr MotorID INDEXER_ID = MotorID::MOTOR2;  // need to confirm
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;

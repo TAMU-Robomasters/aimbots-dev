@@ -1,18 +1,23 @@
 #pragma once
 #ifndef ENGINEER
+#include "tap/communication/gpio/leds.hpp"
+#include "tap/control/command.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
 
 #include "informants/limit_switch.hpp"
+#include "robots/hero/hero_constants.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 
-namespace src::Feeder {
-class FeederSubsystem : public tap::control::Subsystem {
+namespace src::Indexer {
+
+// this contains the subsystem AND commands
+class IndexerSubsystem : public tap::control::Subsystem {
 public:
-    FeederSubsystem(src::Drivers* drivers);
+    IndexerSubsystem(src::Drivers* drivers);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -25,7 +30,7 @@ public:
 
     float getTargetRPM() const { return targetRPM; }
 
-    float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
+    float getCurrentRPM() const { return indexerMotor.getShaftRPM(); }
 
     int getTotalLimitCount() const;
 
@@ -40,8 +45,8 @@ public:
     float targetRPM;
     float desiredOutput;
 
-    SmoothPID feederVelPID;
-    DJIMotor feederMotor;
+    SmoothPID indexerVelPID;
+    DJIMotor indexerMotor;
 
     src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
 #ifdef TARGET_SENTRY
@@ -51,6 +56,6 @@ public:
     // commands
 };
 
-}  // namespace src::Feeder
+}  // namespace src::Indexer
 
 #endif
