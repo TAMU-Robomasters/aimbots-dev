@@ -142,6 +142,9 @@ public:
         return Matrix<float, 3, 1>::zeroMatrix();
     }
 
+    bool getTokyoDrift() const;
+    void setTokyoDrift(bool drift) { tokyoDrift = drift; }
+
 #ifndef ENV_UNIT_TESTS
 private:
 #else
@@ -164,6 +167,8 @@ public:
     Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
     src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
+
+    bool tokyoDrift;
 
 public:
     inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }

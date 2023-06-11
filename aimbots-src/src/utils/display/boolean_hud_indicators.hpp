@@ -1,18 +1,21 @@
 #pragma once
 
-#include "tap/communication/referee/state_hud_indicator.hpp"
-#include "tap/communication/serial/ref_serial.hpp"
-#include "tap/drivers.hpp"
 #include <tuple>
 
+#include "tap/communication/referee/state_hud_indicator.hpp"
+#include "tap/communication/serial/ref_serial.hpp"
 #include "tap/control/command.hpp"
 #include "tap/control/command_scheduler.hpp"
+#include "tap/drivers.hpp"
 
 #include "modm/processing/resumable.hpp"
+#include "subsystems/chassis/chassis.hpp"
 #include "subsystems/hopper/hopper.hpp"
 
 #include "hud_indicator.hpp"
 using namespace src::Hopper;
+using namespace src::Chassis;
+
 
 namespace src::utils::display {
 class BooleanHudIndicator : public HudIndicator, protected modm::Resumable<2> {
@@ -20,7 +23,8 @@ public:
     BooleanHudIndicator(
         tap::control::CommandScheduler &commandScheduler,
         tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-        const HopperSubsystem &hopper);
+        const HopperSubsystem &hopper,
+        const ChassisSubsystem &chassis);
 
     modm::ResumableResult<bool> sendInitialGraphics() override;
 
@@ -31,8 +35,8 @@ public:
 private:
     tap::control::CommandScheduler &commandScheduler;
 
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;  //500
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 720; // 760
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;  // 500
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 720;   // 760
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_DIST_BETWEEN_BULLETS = 50;
 
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_WIDTH = 17;
@@ -51,7 +55,7 @@ private:
     using BooleanHUDIndicatorTuple = std::tuple<const char *, Tx::GraphicColor, Tx::GraphicColor>;
 
     enum BooleanHUDIndicatorIndex {
-        // AGITATOR_STATUS_HEALTHY,
+        AGITATOR_STATUS_HEALTHY,
         HOPPER_STATUS,
         BOOST_ACTIVE,
         SPIN_TO_WIN,
@@ -59,11 +63,10 @@ private:
     };
 
     static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
-       // BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("BOOST", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)
-    };
+        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)};
 
     Tx::Graphic1Message booleanHudIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
 
@@ -76,6 +79,7 @@ private:
     Tx::Graphic1Message booleanHudIndicatorStaticGraphics[NUM_BOOLEAN_HUD_INDICATORS];
     Tx::GraphicCharacterMessage booleanHudIndicatorStaticLabelGraphics[NUM_BOOLEAN_HUD_INDICATORS];
 
+    const ChassisSubsystem &chassis;
     const HopperSubsystem &hopper;
 };
 

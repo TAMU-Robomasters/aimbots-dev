@@ -23,6 +23,7 @@ void ChassisTokyoCommand::initialize() {
     // picks a random direction to begin rotation
     rotationDirection = (rand() - RAND_MAX / 2) < 0 ? 1 : -1;
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
+    chassis->setTokyoDrift(true);
 }
 
 float yawAngleFromChassisCenterDisplay = 0.0f;

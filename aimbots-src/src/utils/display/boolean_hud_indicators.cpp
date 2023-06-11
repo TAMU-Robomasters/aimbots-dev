@@ -6,10 +6,14 @@
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 #include "tap/control/command_scheduler.hpp"
 
+#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/hopper/hopper.hpp"
+
 using namespace tap::communication::serial;
 using namespace tap::communication::referee;
 using namespace std;
 using namespace src::Hopper;
+using namespace src::Chassis;
 
 namespace src::utils::display {
 template <RefSerial::Tx::GraphicColor ON_COLOR, RefSerial::Tx::GraphicColor OFF_COLOR>
@@ -20,18 +24,20 @@ static inline void updateGraphicColor(bool indicatorStatus, RefSerialData::Tx::G
 BooleanHudIndicator::BooleanHudIndicator(
     tap::control::CommandScheduler &commandScheduler,
     tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-    const HopperSubsystem &hopper)
+    const HopperSubsystem &hopper,
+    const ChassisSubsystem &chassis)
     : HudIndicator(refSerialTransmitter),
       commandScheduler(commandScheduler),
       hopper(hopper),
+      chassis(chassis),
       booleanHudIndicatorDrawers{
-        //   BooleanHUDIndicator(
-        //       refSerialTransmitter,
-        //       &booleanHudIndicatorGraphics[AGITATOR_STATUS_HEALTHY],
-        //       updateGraphicColor<
-        //           get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY]),
-        //           get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY])>,
-        //       0),
+            BooleanHUDIndicator(
+                refSerialTransmitter,
+                &booleanHudIndicatorGraphics[AGITATOR_STATUS_HEALTHY],
+                updateGraphicColor<
+                    get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY]),
+                    get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY])>,
+                0),
           BooleanHUDIndicator(
               refSerialTransmitter,
               &booleanHudIndicatorGraphics[SPIN_TO_WIN],
@@ -46,7 +52,7 @@ BooleanHudIndicator::BooleanHudIndicator(
                   get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[BOOST_ACTIVE]),
                   get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[BOOST_ACTIVE])>,
               0),
-            BooleanHUDIndicator(
+          BooleanHUDIndicator(
               refSerialTransmitter,
               &booleanHudIndicatorGraphics[HOPPER_STATUS],
               updateGraphicColor<
@@ -72,8 +78,8 @@ modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
     booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.isHopperOpen());
-    //booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
-    booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(false);
+    booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
+    booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(this->chassis.getTokyoDrift());
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);
 
     // draw all the booleanHudIndicatorDrawers (only actually sends data if graphic changed)

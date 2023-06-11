@@ -14,6 +14,8 @@
 #include "modm/math/utils/misc.hpp"
 #include "modm/processing/protothread.hpp"
 //
+#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/hopper/hopper.hpp"
 
 #include "boolean_hud_indicators.hpp"
@@ -23,6 +25,8 @@
 #include "robot_orientation.hpp"
 
 using namespace src::Hopper;
+using namespace src::Chassis;
+using namespace src::Gimbal;
 
 namespace src::utils::display {
 
@@ -33,7 +37,8 @@ public:
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
         const HopperSubsystem &hopper,
-        const GimbalSubsystem &gimbal);
+        const GimbalSubsystem &gimbal,
+        const ChassisSubsystem &chassis);
 
     const char *getName() const override { return "client display"; }
 

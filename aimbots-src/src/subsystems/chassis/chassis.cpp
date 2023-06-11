@@ -287,4 +287,6 @@ float ChassisSubsystem::calculateRotationLimitedTranslationalWheelspeed(
     }
     return rTranslationalGain * maxWheelSpeed;
 }
+
+bool ChassisSubsystem::getTokyoDrift() const { return tokyoDrift; }
 };  // namespace src::Chassis

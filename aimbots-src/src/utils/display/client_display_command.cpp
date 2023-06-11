@@ -4,6 +4,7 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
+#include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/hopper/hopper.hpp"
 
@@ -12,6 +13,8 @@
 #include "reticle_indicator.hpp"
 
 using namespace src::Hopper;
+using namespace src::Chassis;
+using namespace src::Gimbal;
 
 namespace src::utils::display {
 ClientDisplayCommand::ClientDisplayCommand(
@@ -19,12 +22,13 @@ ClientDisplayCommand::ClientDisplayCommand(
     tap::control::CommandScheduler &commandScheduler,
     ClientDisplaySubsystem &clientDisplay,
     const HopperSubsystem &hopper,
-    const GimbalSubsystem &gimbal)
+    const GimbalSubsystem &gimbal,
+    const ChassisSubsystem &chassis)
     : tap::control::Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper),
+      booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper, chassis),
       reticleIndicator(drivers, refSerialTransmitter),
       robotOrientation(drivers, refSerialTransmitter, gimbal) {
     addSubsystemRequirement(&clientDisplay);
