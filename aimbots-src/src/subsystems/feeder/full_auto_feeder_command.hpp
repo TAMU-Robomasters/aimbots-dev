@@ -15,7 +15,13 @@ namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
 public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, src::Utils::RefereeHelper*, bool &barrelMovingFlag, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoFeederCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        src::Utils::RefereeHelper*,
+        bool& barrelMovingFlag,
+        float speed = FEEDER_DEFAULT_RPM,
+        float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -33,9 +39,9 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelper* refHelper;
 
+    bool& barrelMovingFlag;
     float speed;
     float acceptableHeatThreshold;
-    bool &barrelMovingFlag;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;

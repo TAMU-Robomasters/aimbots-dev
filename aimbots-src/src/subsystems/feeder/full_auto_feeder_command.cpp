@@ -1,9 +1,14 @@
 #include "full_auto_feeder_command.hpp"
-#ifndef ENGINEER
 
 namespace src::Feeder {
 
-FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, src::Utils::RefereeHelper* refHelper, bool &barrelMovingFlag, float speed, float acceptableHeatThreshold)
+FullAutoFeederCommand::FullAutoFeederCommand(
+    src::Drivers* drivers,
+    FeederSubsystem* feeder,
+    src::Utils::RefereeHelper* refHelper,
+    bool& barrelMovingFlag,
+    float speed,
+    float acceptableHeatThreshold)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
@@ -35,9 +40,12 @@ void FullAutoFeederCommand::execute() {
 
 void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool FullAutoFeederCommand::isReady() { return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag); }
+bool FullAutoFeederCommand::isReady() {
+    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
+}
 
-bool FullAutoFeederCommand::isFinished() const { return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag); }
+bool FullAutoFeederCommand::isFinished() const {
+    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+}
 
 }  // namespace src::Feeder
-#endif

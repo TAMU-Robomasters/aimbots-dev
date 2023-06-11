@@ -83,8 +83,7 @@ HopperSubsystem hopper(drivers());
 GUI_DisplaySubsystem gui(drivers());
 BarrelManagerSubsystem barrelManager(drivers());
 
-
-//Command Flags ----------------------------
+// Command Flags ----------------------------
 bool barrelMovingFlag = true;
 
 // Robot Specific Controllers ------------------------------------------------
@@ -121,7 +120,7 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 
-GUI_DisplayCommand guiDisplayCommand(drivers(),&gui);
+GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -159,10 +158,9 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-
-//This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
+// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
-    drivers(), 
+    drivers(),
     {&guiDisplayCommand},
     RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
 
@@ -217,9 +215,9 @@ void registerIOMappings(src::Drivers *drivers) {
     // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    //drivers->commandMapper.addMap(&rightSwitchDown);
+    // drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    //drivers->commandMapper.addMap(&ctrlC);
+    // drivers->commandMapper.addMap(&ctrlC);
 }
 
 }  // namespace StandardControl
