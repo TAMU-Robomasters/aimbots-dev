@@ -27,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(321.90f)),
-    wrapTo0To2PIRange(modm::toRadian(320.71f))};
+    wrapTo0To2PIRange(modm::toRadian(184.01f)),
+    wrapTo0To2PIRange(modm::toRadian(195.38f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -83,10 +83,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 50.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -100,7 +99,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 50.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -115,8 +114,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
-    .ki = 25.0f,
+    .kp = 0.0f,
+    .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -129,8 +128,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
-    .ki = 25.0f,
+    .kp = 0.0f,
+    .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -142,10 +141,28 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+
+// clang-format off
+const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
+                                                                    {0.0f, 0.0f},
+                                                                    {1.0f, 3'000.0f},
+                                                                    {4.5f, 6'000.0f},
+                                                                    {8.5f, 9'000.0f},
+                                                                    {12.75f, 12'000.0f},
+                                                                    {16.75f, 15'000.0f},
+                                                                    {20.6f, 18'000.0f},
+                                                                    {24.5f, 21'000.0f},
+                                                                    {28.4f, 24'000.0f},
+                                                                    {29.5f, 27'000.0f},
+                                                                    {29.75f, 30'000.0f}
+                                                                    };
+// clang-format on
+
+const modm::interpolation::Linear<modm::Pair<float, float>> GM6020_VELOCITY_FEEDFORWARD(GM6020_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
@@ -218,7 +235,7 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1; // TODO: check CAN ID for Barrel Swap
+static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID for Barrel Swap
 
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
@@ -226,7 +243,7 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 //
-static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1; // TODO: check motor ID for Barrel Swap
+static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1;  // TODO: check motor ID for Barrel Swap
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
@@ -234,7 +251,6 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool FEEDER_DIRECTION = false;
 
 static constexpr bool SWAP_DIRECTION = true;
-
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -371,30 +387,32 @@ static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 180.0f;
 
-//Barrel Manager Constants
-//These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
-//A positive increase provides a bigger gap between hard stop and barrel
-static constexpr float HARD_STOP_OFFSET = 0.5; //In mm
-//static constexpr float LEFT_STOP_OFFSET = 0; //In mm
-//static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
+// Barrel Manager Constants
+// These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
+// A positive increase provides a bigger gap between hard stop and barrel
+static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
+// static constexpr float LEFT_STOP_OFFSET = 0; //In mm
+// static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
-// this is from edge to edge, aligned center to aligned center, 
-static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5; //In mm 
+// this is from edge to edge, aligned center to aligned center,
+static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm
 
-//If the barrel is this close to the flywheel chamber, it is considered aligned
-static constexpr float BARRELS_ALIGNED_TOLERANCE = 1.0; //In mm
+// If the barrel is this close to the flywheel chamber, it is considered aligned
+static constexpr float BARRELS_ALIGNED_TOLERANCE = 1.0;  // In mm
 
-//Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
-static constexpr float LEAD_SCREW_TICKS_PER_MM = tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 / 8.0;//  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
+// Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
+static constexpr float LEAD_SCREW_TICKS_PER_MM =
+    tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 /
+    8.0;  //  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
-//The value that the torque needs to be greater than to detect running into a wall
+// The value that the torque needs to be greater than to detect running into a wall
 static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
 
-//The output to the motor while in calibration mode.  
-//When adjusting, also change the constant above to find an appropriate match between the two
+// The output to the motor while in calibration mode.
+// When adjusting, also change the constant above to find an appropriate match between the two
 static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
 
-//TODO: Tune PID constants
+// TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .kp = 1000.0f,
     .ki = 0.0f,

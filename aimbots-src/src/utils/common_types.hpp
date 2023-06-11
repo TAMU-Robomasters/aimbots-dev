@@ -131,21 +131,3 @@ static inline void descheduleIfScheduled(
         scheduler.removeCommand(cmd, interrupted);
     }
 }
-
-// clang-format off
-const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
-                                                                    {0.0f, 0.0f},
-                                                                    {3.75f, 3'000.0f},
-                                                                    {8.5f, 6'000.0f},
-                                                                    {12.75f, 9'000.0f},
-                                                                    {17.67f, 12'000.0f},
-                                                                    {22.5f, 15'000.0f},
-                                                                    {26.75f, 18'000.0f},
-                                                                    {31.5f, 21'000.0f},
-                                                                    {35.5f, 24'000.0f},
-                                                                    {36.15f, 27'000.0f},
-                                                                    {36.35f, 30'000.0f}
-                                                                    };
-// clang-format on
-
-const modm::interpolation::Linear<modm::Pair<float, float>> GM6020_VELOCITY_FEEDFORWARD(GM6020_FEEDFORWARD_VELOCITIES, 11);
