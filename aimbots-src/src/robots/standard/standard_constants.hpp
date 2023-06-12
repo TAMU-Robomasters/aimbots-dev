@@ -27,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(184.01f)),
-    wrapTo0To2PIRange(modm::toRadian(195.38f))};
+    wrapTo0To2PIRange(modm::toRadian(186.15f)),
+    wrapTo0To2PIRange(modm::toRadian(196.21f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -99,11 +99,11 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 20.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,
+    .maxOutput = 35.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -114,8 +114,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 3250.0f,  // 1650
+    .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -128,10 +128,10 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 1500.0f,
+    .ki = 7.0f,
     .kd = 0.0f,
-    .maxICumulative = 2000.0f,
+    .maxICumulative = 1500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -147,22 +147,39 @@ static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 // clang-format off
-const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
+const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
-                                                                    {1.0f, 3'000.0f},
-                                                                    {4.5f, 6'000.0f},
-                                                                    {8.5f, 9'000.0f},
-                                                                    {12.75f, 12'000.0f},
-                                                                    {16.75f, 15'000.0f},
-                                                                    {20.6f, 18'000.0f},
-                                                                    {24.5f, 21'000.0f},
-                                                                    {28.4f, 24'000.0f},
-                                                                    {29.5f, 27'000.0f},
-                                                                    {29.75f, 30'000.0f}
+                                                                    {1.5f, 3'000.0f},
+                                                                    {5.25f, 6'000.0f},
+                                                                    {9.0f, 9'000.0f},
+                                                                    {13.2f, 12'000.0f},
+                                                                    {17.2f, 15'000.0f},
+                                                                    {21.0f, 18'000.0f},
+                                                                    {24.85f, 21'000.0f},
+                                                                    {28.6f, 24'000.0f},
+                                                                    {29.75f, 27'000.0f},
+                                                                    {29.9f, 30'000.0f}
                                                                     };
+
+
+const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
+                                                                    {0.0f, 0.0f},
+                                                                    {3.75f, 3'000.0f},
+                                                                    {8.5f, 6'000.0f},
+                                                                    {12.75f, 9'000.0f},
+                                                                    {17.67f, 12'000.0f},
+                                                                    {22.5f, 15'000.0f},
+                                                                    {26.75f, 18'000.0f},
+                                                                    {31.5f, 21'000.0f},
+                                                                    {35.5f, 24'000.0f},
+                                                                    {36.15f, 27'000.0f},
+                                                                    {36.35f, 30'000.0f}
+                                                                    };
+
 // clang-format on
 
-const modm::interpolation::Linear<modm::Pair<float, float>> GM6020_VELOCITY_FEEDFORWARD(GM6020_FEEDFORWARD_VELOCITIES, 11);
+const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
+const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
@@ -185,9 +202,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 5.0f,
     .ki = 0.0f,
-    .kd = 0.8f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

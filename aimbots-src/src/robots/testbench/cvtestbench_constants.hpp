@@ -144,7 +144,7 @@ static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 // clang-format off
-const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
+const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
                                                                     {3.75f, 3'000.0f},
                                                                     {8.5f, 6'000.0f},
@@ -159,7 +159,7 @@ const modm::Pair<float, float> GM6020_FEEDFORWARD_VELOCITIES[11] = {
                                                                     };
 // clang-format on
 
-const modm::interpolation::Linear<modm::Pair<float, float>> GM6020_VELOCITY_FEEDFORWARD(GM6020_FEEDFORWARD_VELOCITIES, 11);
+const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;

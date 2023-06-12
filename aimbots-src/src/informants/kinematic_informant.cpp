@@ -123,10 +123,13 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsConti
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     return ContiguousFloat(currGimbalAngle + currChassisAngle - modm::toRadian(YAW_AXIS_START_ANGLE), -M_PI, M_PI);
 }
+
+float pitchGimbalDirectionDisplay = 0.0f;
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisPitchAngleInGimbalDirection();
-    return ContiguousFloat(currGimbalAngle + currChassisAngle, -M_PI, M_PI);
+    pitchGimbalDirectionDisplay = currChassisAngle;
+    return ContiguousFloat(currGimbalAngle + currChassisAngle - modm::toRadian(PITCH_AXIS_START_ANGLE), -M_PI, M_PI);
 }
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
