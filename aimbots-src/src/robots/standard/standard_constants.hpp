@@ -402,7 +402,7 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis
 
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 180.0f;
+static constexpr float CIMU_Z_EULER = 90.0f;
 
 // Barrel Manager Constants
 // These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
