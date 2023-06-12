@@ -36,7 +36,7 @@ private:
     tap::control::CommandScheduler &commandScheduler;
 
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_CENTER_X = 500;  // 500
-    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 720;   // 760
+    static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_START_Y = 850;   // 760
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_LIST_DIST_BETWEEN_BULLETS = 50;
 
     static constexpr uint16_t BOOLEAN_HUD_INDICATOR_WIDTH = 17;
