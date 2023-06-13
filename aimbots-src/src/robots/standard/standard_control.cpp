@@ -101,8 +101,8 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalChassisRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
@@ -212,7 +212,7 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    // drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&rightSwitchDown);
