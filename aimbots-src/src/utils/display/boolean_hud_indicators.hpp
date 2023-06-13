@@ -55,7 +55,7 @@ private:
     using BooleanHUDIndicatorTuple = std::tuple<const char *, Tx::GraphicColor, Tx::GraphicColor>;
 
     enum BooleanHUDIndicatorIndex {
-        AGITATOR_STATUS_HEALTHY,
+        // AGITATOR_STATUS_HEALTHY,
         HOPPER_STATUS,
         BOOST_ACTIVE,
         SPIN_TO_WIN,
@@ -63,7 +63,7 @@ private:
     };
 
     static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
-        BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        // BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("BOOST", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)};

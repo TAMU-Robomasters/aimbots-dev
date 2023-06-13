@@ -31,13 +31,13 @@ BooleanHudIndicator::BooleanHudIndicator(
       hopper(hopper),
       chassis(chassis),
       booleanHudIndicatorDrawers{
-            BooleanHUDIndicator(
-                refSerialTransmitter,
-                &booleanHudIndicatorGraphics[AGITATOR_STATUS_HEALTHY],
-                updateGraphicColor<
-                    get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY]),
-                    get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY])>,
-                0),
+            // BooleanHUDIndicator(
+            //     refSerialTransmitter,
+            //     &booleanHudIndicatorGraphics[AGITATOR_STATUS_HEALTHY],
+            //     updateGraphicColor<
+            //         get<1>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY]),
+            //         get<2>(BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[AGITATOR_STATUS_HEALTHY])>,
+            //     0),
           BooleanHUDIndicator(
               refSerialTransmitter,
               &booleanHudIndicatorGraphics[SPIN_TO_WIN],
@@ -78,8 +78,8 @@ modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
     booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.isHopperOpen());
-    booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
-    booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(this->chassis.getTokyoDrift());
+    // booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
+    booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(!this->chassis.getTokyoDrift());
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);
 
     // draw all the booleanHudIndicatorDrawers (only actually sends data if graphic changed)
