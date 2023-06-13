@@ -12,4 +12,6 @@ void playChainSawMan(src::Drivers* drivers);
 
 void playMystery(src::Drivers* drivers);
 
+void playCrabRave(src::Drivers* drivers);
+
 }
