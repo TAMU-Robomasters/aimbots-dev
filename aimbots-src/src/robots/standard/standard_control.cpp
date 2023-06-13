@@ -81,7 +81,13 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
 GUI_DisplaySubsystem gui(drivers());
-BarrelManagerSubsystem barrelManager(drivers());
+BarrelManagerSubsystem barrelManager(drivers(), HARD_STOP_OFFSET,
+    BARREL_SWAP_DISTANCE_MM,
+    BARRELS_ALIGNED_TOLERANCE,
+    LEAD_SCREW_TICKS_PER_MM,
+    LEAD_SCREW_CURRENT_SPIKE_TORQUE,
+    LEAD_SCREW_CALI_OUTPUT,
+    BARREL_SWAP_POSITION_PID_CONFIG);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -112,7 +118,7 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, barrelMovingFlag);
+BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);

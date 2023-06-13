@@ -3,7 +3,7 @@
 #include "barrel_manager.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-
+#include "utils/ref_helper.hpp"
 
 #include "drivers.hpp"
 
@@ -14,7 +14,7 @@ namespace src::Barrel_Manager {
 class BarrelSwapCommand : public TapCommand {
 public:
 
-    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, bool &barrelMovingFlag);
+    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag);
 
     void initialize() override;
 
@@ -29,6 +29,7 @@ public:
 private:
     src::Drivers* drivers;
     BarrelManagerSubsystem* barrelManager;
+    src::Utils::RefereeHelper* refHelper;
     SmoothPID swapMotorPID;
 
     bool &barrelMovingFlag;

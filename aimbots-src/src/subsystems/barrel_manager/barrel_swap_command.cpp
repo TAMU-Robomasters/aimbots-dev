@@ -4,8 +4,9 @@
 
 namespace src::Barrel_Manager {
 
-BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, bool &barrelMovingFlag) : drivers(drivers),
+BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag) : drivers(drivers),
     barrelManager(barrelManager),
+    refHelper(RefHelper),
     swapMotorPID(BARREL_SWAP_POSITION_PID_CONFIG),
     barrelMovingFlag(barrelMovingFlag) 
     {
@@ -19,8 +20,8 @@ float positionErrorDisplay = 0;
 float sideInMMDisplay = 0;
 float motorPositionDisplay = 0;
 
-bool isCommandRunning = false;
-bool calFlag = false;
+bool isCommandRunningDisplay = false;
+bool calFlagDisplay = false;
 bool isBarAlignedDisplay = false;
 bool wasSwapDisplay = false;
 
@@ -37,8 +38,8 @@ void BarrelSwapCommand::initialize() {
 }
 
 void BarrelSwapCommand::execute() {
-    isCommandRunning = true;
-    calFlag = barrelCalibratingFlag;
+    isCommandRunningDisplay = true;
+    calFlagDisplay = barrelCalibratingFlag;
 
     barrelMovingFlag = barrelCalibratingFlag || !barrelManager->isBarrelAligned();
 
@@ -67,22 +68,21 @@ void BarrelSwapCommand::execute() {
             wasRPressed = false;
             barrelManager->toggleSide();
         }
-        //
-        //drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID
+
+
         float stickSwitchThres = 0.1;
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
-            barrelManager->setSide(barrelSide::LEFT);
+            barrelManager->setSide(barrelSide::RIGHT);
         }
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
-            barrelManager->setSide(barrelSide::RIGHT);
+            barrelManager->setSide(barrelSide::LEFT);
         }
 
         if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT);
-        if (barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT) <= 5 && !wasLogicSwitchRequested) {
+        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(0.9);
+        if (!refHelper->isBarrelHeatUnderLimit(0.9) && !wasLogicSwitchRequested) {
             barrelManager->toggleSide();
-            //barrelManager->setSide(barrelSide::RIGHT);
             wasLogicSwitchRequested = true;
         }
         
@@ -91,14 +91,6 @@ void BarrelSwapCommand::execute() {
     }
     else {
         barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);
-        /*if (barrelManager->findZeroPosition(currentCalibratingBarrel)) {
-            if (currentCalibratingBarrel == barrelSide::LEFT) { // LEFT first
-                currentCalibratingBarrel = barrelSide::RIGHT;
-            }
-            else {
-                barrelCalibratingFlag = false; // done calibrating
-            }
-        }*/ 
     }
     
 }

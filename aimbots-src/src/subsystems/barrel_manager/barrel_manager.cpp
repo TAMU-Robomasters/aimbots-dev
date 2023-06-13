@@ -8,11 +8,22 @@ namespace tap::communication::serial {
 
 namespace src::Barrel_Manager {
 
-BarrelManagerSubsystem::BarrelManagerSubsystem(tap::Drivers* drivers) : tap::control::Subsystem(drivers), swapMotor(drivers,
-                   SWAP_MOTOR_ID,
-                   BARREL_BUS,
-                   SWAP_DIRECTION,
-                   "Swap Motor") {
+BarrelManagerSubsystem::BarrelManagerSubsystem(tap::Drivers* drivers,
+    float HARD_STOP_OFFSET,
+    float BARREL_SWAP_DISTANCE_MM,
+    float BARRELS_ALIGNED_TOLERANCE,
+    float LEAD_SCREW_TICKS_PER_MM,
+    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
+    int16_t LEAD_SCREW_CALI_OUTPUT,
+    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG) : tap::control::Subsystem(drivers), 
+                swapMotor(drivers, SWAP_MOTOR_ID, BARREL_BUS, SWAP_DIRECTION, "Swap Motor"),
+                HARD_STOP_OFFSET(HARD_STOP_OFFSET),
+                BARREL_SWAP_DISTANCE_MM(BARREL_SWAP_DISTANCE_MM),
+                BARRELS_ALIGNED_TOLERANCE(BARRELS_ALIGNED_TOLERANCE),
+                LEAD_SCREW_TICKS_PER_MM(LEAD_SCREW_TICKS_PER_MM),
+                LEAD_SCREW_CURRENT_SPIKE_TORQUE(LEAD_SCREW_CURRENT_SPIKE_TORQUE),
+                LEAD_SCREW_CALI_OUTPUT(LEAD_SCREW_CALI_OUTPUT),
+                BARREL_SWAP_POSITION_PID_CONFIG(BARREL_SWAP_POSITION_PID_CONFIG) {
     
 }
 

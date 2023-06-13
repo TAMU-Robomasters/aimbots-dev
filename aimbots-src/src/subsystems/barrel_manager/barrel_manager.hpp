@@ -26,7 +26,14 @@ enum barrelSide {
 
 class BarrelManagerSubsystem : public tap::control::Subsystem {
 public:
-    BarrelManagerSubsystem(tap::Drivers* drivers);
+    BarrelManagerSubsystem(tap::Drivers* drivers,
+    float HARD_STOP_OFFSET,
+    float BARREL_SWAP_DISTANCE_MM,
+    float BARRELS_ALIGNED_TOLERANCE,
+    float LEAD_SCREW_TICKS_PER_MM,
+    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
+    int16_t LEAD_SCREW_CALI_OUTPUT,
+    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG);
 
     mockable void initialize() override;
     void refresh() override;
@@ -92,6 +99,15 @@ private:
                                 // *** 0 to 45 mm goes from edge to edge if touching left side from VTM POV at initialization  
     // float limitLRPositions[2] = {0,45}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
     float limitLRPositions[2] = {0,BARREL_SWAP_DISTANCE_MM}; // 
+
+    //Constants to be set by at the construction of a new barrel manager instance
+    float HARD_STOP_OFFSET;
+    float BARREL_SWAP_DISTANCE_MM;
+    float BARRELS_ALIGNED_TOLERANCE;
+    float LEAD_SCREW_TICKS_PER_MM;
+    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE;
+    int16_t LEAD_SCREW_CALI_OUTPUT;
+    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG;
 
 
 };
