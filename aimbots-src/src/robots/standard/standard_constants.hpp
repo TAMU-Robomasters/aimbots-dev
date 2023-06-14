@@ -190,7 +190,7 @@ static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 5.0f,
     .ki = 0.0f,
-    .kd = 0.5f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -289,7 +289,7 @@ static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.076;
+static constexpr float WHEEL_RADIUS = 0.076f;
 
 static constexpr float WHEELBASE_WIDTH = 0.366f;
 

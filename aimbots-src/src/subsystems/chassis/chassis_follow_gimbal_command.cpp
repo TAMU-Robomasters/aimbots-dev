@@ -53,7 +53,6 @@ void ChassisFollowGimbalCommand::execute() {
         Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
         tap::algorithms::rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
-
     } else {  // if the gimbal is offline, run the normal manual drive command
         Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }

@@ -130,29 +130,30 @@ void ChassisSubsystem::limitChassisPower() {
     }
 }
 
+float targetRpmDisplay = 0.0f;
+float motorRpmDisplay = 0.0f;
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = 0;
+    err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
     if (MotorPerWheelIdx == DRIVER) {
         err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
     } else if (MotorPerWheelIdx == YAW) {
         err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getEncoderWrapped();
         if (abs(err) > 4096) {
-            int err_int = (((-1 * static_cast<int>(err)) / (abs(static_cast<int>(err)))) * (8192 - static_cast<int>(err))) % 8192;
+            int err_int =
+                (((-1 * static_cast<int>(err)) / (abs(static_cast<int>(err)))) * (8192 - static_cast<int>(err))) % 8192;
             err = err_int * 1.0f;
         }
     }
-    velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(err);
+
+    targetRpmDisplay = targetRPMs[LF][MotorPerWheelIdx];
+    motorRpmDisplay = motors[LF][MotorPerWheelIdx]->getShaftRPM();
+
+    velocityPIDs[WheelIdx][MotorPerWheelIdx]->runController(err, motors[WheelIdx][MotorPerWheelIdx]->getTorque());
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
-#if defined(TARGET_SENTRY)
-void ChassisSubsystem::setTargetRPMs(float x, float, float) {
-    calculateRail(
-        x,
-        ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
-#elif defined(SWERVE)
+#if defined(SWERVE)
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateSwerve(
         x,
@@ -178,9 +179,15 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
 }
 
 #ifndef SWERVE
+float xInputDisplay = 0.0f;
+float yInputDisplay = 0.0f;
+float rInputDisplay = 0.0f;
 void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
+    xInputDisplay = x;
+    yInputDisplay = y;
+    rInputDisplay = r;
     // get distance from wheel to center of wheelbase
-    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
+    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
@@ -201,7 +208,6 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
 
     desiredRotation = r;
 }
-
 #endif
 
 #ifdef SWERVE
