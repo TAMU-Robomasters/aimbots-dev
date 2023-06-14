@@ -32,6 +32,8 @@ private:
     src::Utils::RefereeHelper* refHelper;
     SmoothPID swapMotorPID;
 
+    MilliTimeout logicSwapTimeout;
+
     bool &barrelMovingFlag;
     bool barrelCalibratingFlag = false;
 

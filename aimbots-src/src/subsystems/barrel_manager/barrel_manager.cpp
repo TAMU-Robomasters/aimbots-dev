@@ -152,13 +152,13 @@ int16_t BarrelManagerSubsystem::getRemainingBarrelHeat(barrelSide side = CURRENT
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
             heatLimit = turretData.heatLimit17ID1;
-            barrelID = 1;
+            barrelID = 2;  //Don't worry about it
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
             heatLimit = turretData.heatLimit17ID2;
-            barrelID = 2;
+            barrelID = 1;  //Don't worry about it
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {

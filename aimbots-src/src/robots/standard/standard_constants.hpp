@@ -415,7 +415,7 @@ static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
 static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm
 
 // If the barrel is this close to the flywheel chamber, it is considered aligned
-static constexpr float BARRELS_ALIGNED_TOLERANCE = 1.0;  // In mm
+static constexpr float BARRELS_ALIGNED_TOLERANCE = 2.0;  // In mm
 
 // Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
 static constexpr float LEAD_SCREW_TICKS_PER_MM =

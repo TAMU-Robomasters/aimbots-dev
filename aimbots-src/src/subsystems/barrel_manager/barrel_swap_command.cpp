@@ -29,11 +29,13 @@ float errorDisplay = 0;
 float deriDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
+int16_t currentBarrelDisplay = 0;
 
 //-----------
 
 void BarrelSwapCommand::initialize() {
     barrelCalibratingFlag = true;
+    logicSwapTimeout.restart(0);
 
 }
 
@@ -72,18 +74,30 @@ void BarrelSwapCommand::execute() {
 
         float stickSwitchThres = 0.1;
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
-            barrelManager->setSide(barrelSide::RIGHT);
+            //barrelManager->setSide(barrelSide::RIGHT);
         }
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
-            barrelManager->setSide(barrelSide::LEFT);
+            //barrelManager->setSide(barrelSide::LEFT);
         }
 
-        if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
+        if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {
+            wasLogicSwitchRequested = false;
+            /*logicSwapTimeout.restart(300);*/
+        }
+
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(0.9);
-        if (!refHelper->isBarrelHeatUnderLimit(0.9) && !wasLogicSwitchRequested) {
-            barrelManager->toggleSide();
+        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(0.80f);
+        currentBarrelDisplay = refHelper->getCurrentBarrel();
+
+        if (/*logicSwapTimeout.isExpired() && */!refHelper->isBarrelHeatUnderLimit(0.80f) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
+            if (refHelper->getCurrentBarrel() == barrelSide::LEFT) {
+                barrelManager->setSide(barrelSide::RIGHT);
+            }
+            else {
+                barrelManager->setSide(barrelSide::LEFT);
+            }
+           
         }
         
 

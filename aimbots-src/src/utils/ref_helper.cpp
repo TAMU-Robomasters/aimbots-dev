@@ -87,4 +87,30 @@ RefSerialRxData::GameStage RefereeHelper::getGameStage() {
     return gameData.gameStage;
 }
 
+//Returns 0 for LEFT, 1 for RIGHT, -1 as an error
+int16_t RefereeHelper::getCurrentBarrel() {
+    auto turretData = drivers->refSerial.getRobotData().turret;
+    auto launcherID = turretData.launchMechanismID;
+
+    int16_t barrelID = -1;
+
+    switch (launcherID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            barrelID = 1;  //Don't worry about it
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            barrelID = 0;  //Don't worry about it
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            barrelID = -1; //Don't really expect this to happen
+            break;
+        }
+        default:
+            break;
+    }
+    return barrelID;
+}
+
 }  // namespace src::Utils
