@@ -14,7 +14,7 @@ namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
 public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f, int UNJAM_TIMER_MS = 175);
     void initialize() override;
 
     void execute() override;
@@ -33,6 +33,8 @@ private:
 
     float speed;
     float acceptableHeatThreshold;
+
+    int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;

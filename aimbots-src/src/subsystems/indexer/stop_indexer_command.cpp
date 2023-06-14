@@ -1,5 +1,3 @@
-#pragma once
-
 #include "stop_indexer_command.hpp"
 
 #ifndef ENGINEER
