@@ -14,7 +14,7 @@ namespace src::Barrel_Manager {
 class BarrelSwapCommand : public TapCommand {
 public:
 
-    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag);
+    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, float ACCEPTABLE_HEAT_PERCENTAGE);
 
     void initialize() override;
 
@@ -39,6 +39,8 @@ private:
 
     bool wasRPressed = false;
     bool wasLogicSwitchRequested = false;
+
+    float ACCEPTABLE_HEAT_PERCENTAGE;
     
     barrelSide currentCalibratingBarrel = barrelSide::LEFT;
 

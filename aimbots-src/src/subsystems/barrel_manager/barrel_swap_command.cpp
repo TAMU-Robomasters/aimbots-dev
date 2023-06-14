@@ -4,11 +4,12 @@
 
 namespace src::Barrel_Manager {
 
-BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag) : drivers(drivers),
+BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, float ACCEPTABLE_HEAT_PERCENTAGE) : drivers(drivers),
     barrelManager(barrelManager),
     refHelper(RefHelper),
     swapMotorPID(BARREL_SWAP_POSITION_PID_CONFIG),
-    barrelMovingFlag(barrelMovingFlag) 
+    barrelMovingFlag(barrelMovingFlag),
+    ACCEPTABLE_HEAT_PERCENTAGE(ACCEPTABLE_HEAT_PERCENTAGE)
     {
     
        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(barrelManager));
@@ -86,10 +87,10 @@ void BarrelSwapCommand::execute() {
         }
 
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(0.80f);
+        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE);
         currentBarrelDisplay = refHelper->getCurrentBarrel();
 
-        if (/*logicSwapTimeout.isExpired() && */!refHelper->isBarrelHeatUnderLimit(0.80f) && !wasLogicSwitchRequested) {
+        if (/*logicSwapTimeout.isExpired() && */!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
             if (refHelper->getCurrentBarrel() == barrelSide::LEFT) {
                 barrelManager->setSide(barrelSide::RIGHT);

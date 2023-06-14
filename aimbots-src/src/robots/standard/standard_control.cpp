@@ -110,6 +110,7 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
+//Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -118,7 +119,7 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag);
+BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, 0.80f);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);
