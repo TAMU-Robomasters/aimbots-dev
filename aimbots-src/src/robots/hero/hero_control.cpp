@@ -101,7 +101,10 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping rightSwitchMid(drivers(), {&runShooterCommand}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchMid(
+    drivers(), 
+    {&runShooterCommand}, 
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
@@ -121,6 +124,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&indexer);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -150,11 +154,11 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
+    //drivers->commandMapper.addMap(&leftSwitchMid);
+    //drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&leftClickMouse);
+    //drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl
