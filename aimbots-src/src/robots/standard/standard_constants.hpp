@@ -202,7 +202,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 5.0f,
+    .kp = 2.5f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -216,8 +216,8 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 40.0f,
-    .ki = 0.10f,
+    .kp = 10.0f,
+    .ki = 0.00f,  // 0.10f;
     .kd = 0.00f,
     .maxICumulative = 10.0f,
     .maxOutput = 30000.0f,
@@ -374,9 +374,9 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.085f, // x
-    0.07f, // y
-    0.0f,  // z
+    -0.002201f, // x
+    0.1348f, // y
+    -0.0498f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
@@ -392,9 +392,9 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 };
 
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.0f, //x = 0.04498
-    0.0f, //y - does not matter too much 
-    0.01683f, //z = 0.01683
+    -0.001727f, //x = 0.04498
+    0.0f, //y - does not matter too much because projectile comes out this axis
+    -0.00587f, //z = 0.01683
 };
 // clang-format on
 

@@ -24,10 +24,15 @@ void RunShooterCommand::initialize() {
 
 tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataDisplay;
 
+uint16_t flywheelRPMDisplay = 0;
+uint16_t flywheelCurrentRPMDisplay = 0;
 void RunShooterCommand::execute() {
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
     uint16_t refSpeedLimit = refHelper->getProjectileSpeedLimit();
+
+    flywheelRPMDisplay = flywheelRPM;
+    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
 
     for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
         if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
@@ -46,10 +51,7 @@ void RunShooterCommand::end(bool) {
 
 bool RunShooterCommand::isReady() { return true; }
 
-bool RunShooterCommand::isFinished() const {
-    return false;
-}
+bool RunShooterCommand::isFinished() const { return false; }
 }  // namespace src::Shooter
 
 #endif
-

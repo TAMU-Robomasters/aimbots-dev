@@ -26,7 +26,8 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
 
     auto plateKinematicState = drivers->cvCommunicator.getPlateKinematicState();
 
-    float projectileSpeed = refHelper->getPredictedProjectileSpeed();
+    // float projectileSpeed = refHelper->getPredictedProjectileSpeed();
+    float projectileSpeed = defaultProjectileSpeed;
 
     MeasuredKinematicState targetKinematicState = {
         .position = plateKinematicState.position,
