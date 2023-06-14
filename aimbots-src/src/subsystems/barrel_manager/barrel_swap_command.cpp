@@ -4,10 +4,12 @@
 
 namespace src::Barrel_Manager {
 
-BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, bool &barrelMovingFlag) : drivers(drivers),
+BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, float ACCEPTABLE_HEAT_PERCENTAGE) : drivers(drivers),
     barrelManager(barrelManager),
+    refHelper(RefHelper),
     swapMotorPID(BARREL_SWAP_POSITION_PID_CONFIG),
-    barrelMovingFlag(barrelMovingFlag) 
+    barrelMovingFlag(barrelMovingFlag),
+    ACCEPTABLE_HEAT_PERCENTAGE(ACCEPTABLE_HEAT_PERCENTAGE)
     {
     
        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(barrelManager));
@@ -19,8 +21,8 @@ float positionErrorDisplay = 0;
 float sideInMMDisplay = 0;
 float motorPositionDisplay = 0;
 
-bool isCommandRunning = false;
-bool calFlag = false;
+bool isCommandRunningDisplay = false;
+bool calFlagDisplay = false;
 bool isBarAlignedDisplay = false;
 bool wasSwapDisplay = false;
 
@@ -28,17 +30,19 @@ float errorDisplay = 0;
 float deriDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
+int16_t currentBarrelDisplay = 0;
 
 //-----------
 
 void BarrelSwapCommand::initialize() {
     barrelCalibratingFlag = true;
+    logicSwapTimeout.restart(0);
 
 }
 
 void BarrelSwapCommand::execute() {
-    isCommandRunning = true;
-    calFlag = barrelCalibratingFlag;
+    isCommandRunningDisplay = true;
+    calFlagDisplay = barrelCalibratingFlag;
 
     barrelMovingFlag = barrelCalibratingFlag || !barrelManager->isBarrelAligned();
 
@@ -67,23 +71,34 @@ void BarrelSwapCommand::execute() {
             wasRPressed = false;
             barrelManager->toggleSide();
         }
-        //
-        //drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID
+
+
         float stickSwitchThres = 0.1;
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
-            barrelManager->setSide(barrelSide::LEFT);
+            //barrelManager->setSide(barrelSide::RIGHT);
         }
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
-            barrelManager->setSide(barrelSide::RIGHT);
+            //barrelManager->setSide(barrelSide::LEFT);
         }
 
-        if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {wasLogicSwitchRequested = false;}
+        if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {
+            wasLogicSwitchRequested = false;
+            /*logicSwapTimeout.restart(300);*/
+        }
+
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT);
-        if (barrelManager->getRemainingBarrelHeat(barrelSide::CURRENT) <= 5 && !wasLogicSwitchRequested) {
-            barrelManager->toggleSide();
-            //barrelManager->setSide(barrelSide::RIGHT);
+        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE);
+        currentBarrelDisplay = refHelper->getCurrentBarrel();
+
+        if (/*logicSwapTimeout.isExpired() && */!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
+            if (refHelper->getCurrentBarrel() == barrelSide::LEFT) {
+                barrelManager->setSide(barrelSide::RIGHT);
+            }
+            else {
+                barrelManager->setSide(barrelSide::LEFT);
+            }
+           
         }
         
 
@@ -91,14 +106,6 @@ void BarrelSwapCommand::execute() {
     }
     else {
         barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);
-        /*if (barrelManager->findZeroPosition(currentCalibratingBarrel)) {
-            if (currentCalibratingBarrel == barrelSide::LEFT) { // LEFT first
-                currentCalibratingBarrel = barrelSide::RIGHT;
-            }
-            else {
-                barrelCalibratingFlag = false; // done calibrating
-            }
-        }*/ 
     }
     
 }

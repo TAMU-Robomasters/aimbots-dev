@@ -20,6 +20,8 @@ public:
 
     bool isBarrelHeatUnderLimit(float percentageOfLimit);
 
+    int16_t getCurrentBarrel();
+
     RefSerialRxData::GameStage getGameStage();
 
 private:

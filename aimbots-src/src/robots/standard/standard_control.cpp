@@ -81,7 +81,15 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(drivers());
 GUI_DisplaySubsystem gui(drivers());
-BarrelManagerSubsystem barrelManager(drivers());
+BarrelManagerSubsystem barrelManager(
+    drivers(),
+    HARD_STOP_OFFSET,
+    BARREL_SWAP_DISTANCE_MM,
+    BARRELS_ALIGNED_TOLERANCE,
+    LEAD_SCREW_TICKS_PER_MM,
+    LEAD_SCREW_CURRENT_SPIKE_TORQUE,
+    LEAD_SCREW_CALI_OUTPUT,
+    BARREL_SWAP_POSITION_PID_CONFIG);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -104,15 +112,16 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.80f);
+// Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapDefaultCommand(drivers(), &barrelManager, barrelMovingFlag);
+BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, 0.80f);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);
@@ -125,7 +134,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveCommand, &gimbalChaseCommand, &barrelSwapperCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -197,7 +206,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    // barrelManager.setDefaultCommand(&barrelSwapDefaultCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
@@ -215,7 +224,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
     // drivers->commandMapper.addMap(&ctrlC);
 }

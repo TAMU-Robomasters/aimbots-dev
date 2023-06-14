@@ -8,11 +8,22 @@ namespace tap::communication::serial {
 
 namespace src::Barrel_Manager {
 
-BarrelManagerSubsystem::BarrelManagerSubsystem(tap::Drivers* drivers) : tap::control::Subsystem(drivers), swapMotor(drivers,
-                   SWAP_MOTOR_ID,
-                   BARREL_BUS,
-                   SWAP_DIRECTION,
-                   "Swap Motor") {
+BarrelManagerSubsystem::BarrelManagerSubsystem(tap::Drivers* drivers,
+    float HARD_STOP_OFFSET,
+    float BARREL_SWAP_DISTANCE_MM,
+    float BARRELS_ALIGNED_TOLERANCE,
+    float LEAD_SCREW_TICKS_PER_MM,
+    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
+    int16_t LEAD_SCREW_CALI_OUTPUT,
+    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG) : tap::control::Subsystem(drivers), 
+                swapMotor(drivers, SWAP_MOTOR_ID, BARREL_BUS, SWAP_DIRECTION, "Swap Motor"),
+                HARD_STOP_OFFSET(HARD_STOP_OFFSET),
+                BARREL_SWAP_DISTANCE_MM(BARREL_SWAP_DISTANCE_MM),
+                BARRELS_ALIGNED_TOLERANCE(BARRELS_ALIGNED_TOLERANCE),
+                LEAD_SCREW_TICKS_PER_MM(LEAD_SCREW_TICKS_PER_MM),
+                LEAD_SCREW_CURRENT_SPIKE_TORQUE(LEAD_SCREW_CURRENT_SPIKE_TORQUE),
+                LEAD_SCREW_CALI_OUTPUT(LEAD_SCREW_CALI_OUTPUT),
+                BARREL_SWAP_POSITION_PID_CONFIG(BARREL_SWAP_POSITION_PID_CONFIG) {
     
 }
 
@@ -141,13 +152,13 @@ int16_t BarrelManagerSubsystem::getRemainingBarrelHeat(barrelSide side = CURRENT
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
             heatLimit = turretData.heatLimit17ID1;
-            barrelID = 1;
+            barrelID = 2;  //Don't worry about it
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
             heatLimit = turretData.heatLimit17ID2;
-            barrelID = 2;
+            barrelID = 1;  //Don't worry about it
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
