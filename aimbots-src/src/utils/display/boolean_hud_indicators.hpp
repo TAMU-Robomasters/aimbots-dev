@@ -16,7 +16,6 @@
 using namespace src::Hopper;
 using namespace src::Chassis;
 
-
 namespace src::utils::display {
 class BooleanHudIndicator : public HudIndicator, protected modm::Resumable<2> {
 public:
@@ -56,17 +55,17 @@ private:
 
     enum BooleanHUDIndicatorIndex {
         // AGITATOR_STATUS_HEALTHY,
-        HOPPER_STATUS,
-        BOOST_ACTIVE,
+        BOOST_ACTIVE =0,
         SPIN_TO_WIN,
+        HOPPER_STATUS,
         NUM_BOOLEAN_HUD_INDICATORS,
     };
 
     static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
         // BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
         BooleanHUDIndicatorTuple("BOOST", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
-        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)};
+        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED),
+        BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PURPLISH_RED)};
 
     Tx::Graphic1Message booleanHudIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
 
