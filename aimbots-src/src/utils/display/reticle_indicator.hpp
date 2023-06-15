@@ -31,27 +31,21 @@ private:
     using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
 
     static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{
-        ReticleTuple(50, 435, Tx::GraphicColor::YELLOW),  // 1 m
-        ReticleTuple(50, 430, Tx::GraphicColor::YELLOW),
-        ReticleTuple(70, 425, Tx::GraphicColor::YELLOW),
-        ReticleTuple(50, 420, Tx::GraphicColor::YELLOW),
-        ReticleTuple(50, 415, Tx::GraphicColor::YELLOW),
-        ReticleTuple(40, 410, Tx::GraphicColor::ORANGE),  // 3 m
-        ReticleTuple(40, 405, Tx::GraphicColor::ORANGE),
-        ReticleTuple(60, 400, Tx::GraphicColor::ORANGE),
-        ReticleTuple(40, 395, Tx::GraphicColor::ORANGE),
-        ReticleTuple(40, 390, Tx::GraphicColor::ORANGE),
-        ReticleTuple(10, 370, Tx::GraphicColor::YELLOW),  // 5 m
-        ReticleTuple(10, 365, Tx::GraphicColor::YELLOW),
-        ReticleTuple(30, 360, Tx::GraphicColor::YELLOW),
-        ReticleTuple(10, 355, Tx::GraphicColor::YELLOW),
-        ReticleTuple(10, 350, Tx::GraphicColor::YELLOW),
+        ReticleTuple(40, 500, Tx::GraphicColor::CYAN), // 2 m
+        ReticleTuple(60, 495, Tx::GraphicColor::CYAN),
+        ReticleTuple(40, 490, Tx::GraphicColor::CYAN),
+        ReticleTuple(10, 455, Tx::GraphicColor::CYAN), // 4 m
+        ReticleTuple(30, 450, Tx::GraphicColor::CYAN),
+        ReticleTuple(10, 445, Tx::GraphicColor::CYAN),
+        ReticleTuple(10, 485, Tx::GraphicColor::ORANGE),  // 8 m
+        ReticleTuple(30, 480, Tx::GraphicColor::ORANGE),
+        ReticleTuple(10, 475, Tx::GraphicColor::ORANGE),
     };
     /** Size of TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES (so its easier to understand when used
      * in context). */
     static constexpr size_t NUM_RETICLE_COORDINATES = MODM_ARRAY_SIZE(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES);
     /** The color of the verticle line that connects the horizontal reticle lines. */
-    static constexpr Tx::GraphicColor RETICLE_VERTICAL_COLOR = Tx::GraphicColor::YELLOW;
+    static constexpr Tx::GraphicColor RETICLE_VERTICAL_COLOR = Tx::GraphicColor::CYAN;
 
     tap::Drivers &drivers;
 
