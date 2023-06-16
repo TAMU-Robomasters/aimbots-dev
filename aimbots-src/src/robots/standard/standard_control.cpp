@@ -180,11 +180,7 @@ HoldCommandMapping leftClickMouse(
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
-/*PressCommandMapping ctrlC(
-    drivers(),
-    {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
+
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
