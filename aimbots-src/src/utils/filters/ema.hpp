@@ -1,5 +1,7 @@
 #pragma once
 
+namespace src::Utils::Filters {
+
 class EMAFilter {
 private:
     float alpha;
@@ -19,3 +21,5 @@ public:
 
     float getValue() { return lastValue; }
 };
+
+}  // namespace src::Utils::Filters

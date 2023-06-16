@@ -11,14 +11,13 @@ static constexpr int ANNOYED_BURST_LENGTH = 10;
 static constexpr float MAX_FEEDER_SPEED = 500.0f;
 static constexpr float MIN_FEEDER_SPEED = 70.0f;
 
-float percentageToSpeed(float percentage) {
-    return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED;
-}
+float percentageToSpeed(float percentage) { return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED; }
 
-SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(src::Drivers* drivers,
-                                                                 FeederSubsystem* feeder,
-                                                                 ShooterSubsystem* shooter,
-                                                                 src::Chassis::ChassisMatchStates& chassisState)
+SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
+    src::Drivers* drivers,
+    FeederSubsystem* feeder,
+    ShooterSubsystem* shooter,
+    src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
@@ -46,7 +45,8 @@ void SentryMatchFiringControlCommand::execute() {
 
     // if (1) {
     if (drivers->cvCommunicator.isJetsonOnline()) {
-        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::CVState::FIRE) {
+        if (chassisState != src::Chassis::ChassisMatchStates::EVADE &&
+            drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FIRE) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
             float targetDepth = drivers->cvCommunicator.getLastValidMessage().depth;  // in meters

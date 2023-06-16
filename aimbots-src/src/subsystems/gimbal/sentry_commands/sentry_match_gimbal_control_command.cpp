@@ -5,7 +5,11 @@
 
 namespace src::Gimbal {
 
-SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(src::Drivers* drivers, GimbalSubsystem* gimbal, GimbalChassisRelativeController* gimbalController, int chaseTimeoutMillis)
+SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbal,
+    GimbalChassisRelativeController* gimbalController,
+    int chaseTimeoutMillis)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
@@ -32,8 +36,8 @@ void SentryMatchGimbalControlCommand::execute() {
         return;
     }
 
-    if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::FOUND ||
-        drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::FIRE) {
+    if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
+        drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
         chaseTimeout.restart(chaseTimeoutMillis);
     }

@@ -9,7 +9,6 @@
 #include <utils/pid/smooth_pid_wrap.hpp>
 
 #include "utils/filters/ema.hpp"
-#include "utils/kinematic_state_vector.hpp"
 
 namespace src::Gimbal {
 class GimbalFieldRelativeController : public GimbalControllerInterface {
@@ -24,7 +23,8 @@ public:
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
             yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] = new EMAFilter(0.02);  // smoothing yaw velocity heavily for display purposes
+            yawVelocityFilters[i] =
+                new src::Utils::Filters::EMAFilter(0.02);  // smoothing yaw velocity heavily for display purposes
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
@@ -80,7 +80,7 @@ private:
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionCascadePIDs;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVelocityPIDs;
-    std::array<EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
+    std::array<src::Utils::Filters::EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
 
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
 };

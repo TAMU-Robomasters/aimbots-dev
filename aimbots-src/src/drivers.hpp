@@ -45,7 +45,7 @@ public:
 public:
     Control::OperatorInterface controlOperatorInterface;
     utils::Ist8310 magnetometer;
-    Informants::vision::JetsonCommunicator cvCommunicator;
+    Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
 };  // class Drivers
 

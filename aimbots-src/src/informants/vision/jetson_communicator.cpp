@@ -7,11 +7,11 @@
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
 
-namespace src::Informants::vision {
+namespace src::Informants::Vision {
 
 JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
     : drivers(drivers),
-      enemyDataConverter(drivers),
+      visionDataConverter(drivers),
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
@@ -109,13 +109,7 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setY(lastMessage.targetY);
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    // debug !!!
-                    //  visionTargetPosition.setX(0.0f);
-                    //  visionTargetPosition.setY(1.0f);
-                    //  visionTargetPosition.setZ(0.0f);
-
-                    enemyDataConverter.updateEnemyInfo(visionTargetPosition, lastMessage.delay);
-                    lastPlateKinematicState = enemyDataConverter.calculateBestGuess(3);
+                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
@@ -142,4 +136,10 @@ void JetsonCommunicator::updateSerial() {
     // }
 }
 
-}  // namespace src::Informants::vision
+PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
+    return visionDataConverter.getPlatePrediction(dt);
+}
+
+bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
+
+}  // namespace src::Informants::Vision

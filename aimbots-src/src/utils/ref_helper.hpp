@@ -26,7 +26,7 @@ public:
 
 private:
     src::Drivers* drivers;
-    EMAFilter bulletSpeedFilter;
+    src::Utils::Filters::EMAFilter bulletSpeedFilter;
 };
 
 }  // namespace src::Utils
