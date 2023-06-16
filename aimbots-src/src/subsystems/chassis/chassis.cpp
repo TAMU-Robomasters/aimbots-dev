@@ -189,7 +189,7 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     yInputDisplay = y;
     rInputDisplay = r;
     // get distance from wheel to center of wheelbase
-    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH) + pow2(WHEELBASE_LENGTH));
 
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);

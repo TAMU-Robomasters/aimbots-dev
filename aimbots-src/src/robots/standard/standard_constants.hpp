@@ -175,7 +175,6 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {36.15f, 27'000.0f},
                                                                     {36.35f, 30'000.0f}
                                                                     };
-
 // clang-format on
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
@@ -185,7 +184,7 @@ static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
 
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+static Vector3f IMU_MOUNT_POSITION{0.0992f, 0.0f, 0.0534f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
@@ -291,9 +290,9 @@ static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms
  */
 static constexpr float WHEEL_RADIUS = 0.076f;
 
-static constexpr float WHEELBASE_WIDTH = 0.366f;
+static constexpr float WHEELBASE_WIDTH = 0.3849f;
 
-static constexpr float WHEELBASE_LENGTH = 0.366f;
+static constexpr float WHEELBASE_LENGTH = 0.3284f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
