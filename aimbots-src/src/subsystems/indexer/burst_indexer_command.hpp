@@ -4,14 +4,13 @@
 
 #include "drivers.hpp"
 
-#ifndef ENGINEER
 namespace src::Indexer {
 class BurstIndexerCommand : public TapCommand {
 public:
     BurstIndexerCommand(
         src::Drivers*,
         IndexerSubsystem*,
-        float speed = INDEXER_DEFAULT_RPM,
+        float speed,
         float acceptableHeatThreshold = 0.90f,
         int burstLength = DEFAULT_BURST_LENGTH);
     void initialize() override;
@@ -42,4 +41,3 @@ private:
 };
 
 }  // namespace src::Indexer
-#endif

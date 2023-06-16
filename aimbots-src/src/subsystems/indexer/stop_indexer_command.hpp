@@ -3,7 +3,6 @@
 #include "subsystems/indexer/indexer.hpp"
 #include "drivers.hpp"
 
-#ifndef ENGINEER
 namespace src::Indexer {
 class StopIndexerCommand : public TapCommand {
 public:
@@ -24,4 +23,3 @@ private:
 };
 
 }
-#endif

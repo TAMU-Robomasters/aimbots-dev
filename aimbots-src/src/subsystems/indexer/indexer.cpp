@@ -1,9 +1,8 @@
 #include "indexer.hpp"
-#ifndef ENGINEER
 
 namespace src::Indexer {
 
-IndexerSubsystem::IndexerSubsystem(src::Drivers* drivers)
+IndexerSubsystem::IndexerSubsystem(src::Drivers* drivers, MotorID INDEXER_ID, CANBus INDEX_BUS, bool INDEXER_DIRECTION, SmoothPidConfig INDEXER_VELOCITY_PID_CONFIG)
     : Subsystem(drivers),
       targetRPM(0),
       desiredOutput(0),
@@ -91,4 +90,3 @@ bool IndexerSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
 }
 
 }  // namespace src::Indexer
-#endif

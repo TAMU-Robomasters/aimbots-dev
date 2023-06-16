@@ -58,12 +58,17 @@ using namespace tap::communication::serial;
 
 namespace HeroControl {
 
+src::Utils::RefereeHelper refHelper(drivers());
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
-IndexerSubsystem indexer(drivers());
+IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
+
+//TODO: Remove this later
+bool barrelMovingFlag = false;
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -77,16 +82,16 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.50f); //UNJAM_TIMER_MS
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.50f); //UNJAM_TIMER_MS
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
 FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
 StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
-RunShooterCommand runShooterCommand(drivers(), &shooter);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
+RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------

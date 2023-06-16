@@ -1,9 +1,11 @@
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 
 namespace src::Hopper {
-ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
+ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE, float HOPPER_OPEN_ANGLE) {
     this->drivers = drivers;
     this->hopper = hopper;
+    this->HOPPER_CLOSED_ANGLE = HOPPER_CLOSED_ANGLE;
+    this->HOPPER_OPEN_ANGLE = HOPPER_OPEN_ANGLE;
 }
 
 void ToggleHopperCommand::initialize() {

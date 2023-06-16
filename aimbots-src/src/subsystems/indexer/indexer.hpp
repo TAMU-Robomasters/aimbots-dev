@@ -1,12 +1,11 @@
 #pragma once
-#ifndef ENGINEER
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/m3508_constants.hpp"
 
 #include "informants/limit_switch.hpp"
-#include "robots/hero/hero_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -17,7 +16,7 @@ namespace src::Indexer {
 // this contains the subsystem AND commands
 class IndexerSubsystem : public tap::control::Subsystem {
 public:
-    IndexerSubsystem(src::Drivers* drivers);
+    IndexerSubsystem(src::Drivers* drivers, MotorID INDEXER_ID, CANBus INDEX_BUS, bool INDEXER_DIRECTION, SmoothPidConfig INDEXER_VELOCITY_PID_CONFIG);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -57,5 +56,3 @@ public:
 };
 
 }  // namespace src::Indexer
-
-#endif

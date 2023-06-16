@@ -11,11 +11,18 @@
 
 namespace src::Hopper {
 
-HopperSubsystem::HopperSubsystem(tap::Drivers* drivers)
+HopperSubsystem::HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin HOPPER_PIN, float HOPPER_MAX_PWM, float HOPPER_MIN_PWM, float HOPPER_PWM_RAMP_SPEED, float HOPPER_MIN_ANGLE, float HOPPER_MAX_ANGLE, uint32_t HOPPER_MIN_ACTION_DELAY)
     : Subsystem(drivers),
       drivers(drivers),
       hopperMotor(drivers, HOPPER_PIN, HOPPER_MAX_PWM, HOPPER_MIN_PWM, HOPPER_PWM_RAMP_SPEED),
-      hopper_state(2) {}
+      hopper_state(2),
+      HOPPER_PIN(HOPPER_PIN),
+      HOPPER_MAX_PWM(HOPPER_MAX_PWM),
+      HOPPER_MIN_PWM(HOPPER_MIN_PWM),
+      HOPPER_PWM_RAMP_SPEED(HOPPER_PWM_RAMP_SPEED),
+      HOPPER_MIN_ANGLE(HOPPER_MIN_ANGLE),
+      HOPPER_MAX_ANGLE(HOPPER_MAX_ANGLE),
+      HOPPER_MIN_ACTION_DELAY(HOPPER_MIN_ACTION_DELAY) {}
 
 void HopperSubsystem::initialize() {
     drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1, 330);  // Timer 1 for C1 Pin

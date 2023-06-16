@@ -1,5 +1,5 @@
 #include "full_auto_indexer_command.hpp"
-#ifndef ENGINEER
+
 namespace src::Indexer {
 FullAutoIndexerCommand::FullAutoIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer, float speed, float acceptableHeatThreshold)
     : drivers(drivers),
@@ -36,5 +36,3 @@ bool FullAutoIndexerCommand::isReady() { return indexer->isBarrelHeatAcceptable(
 bool FullAutoIndexerCommand::isFinished() const { return !indexer->isBarrelHeatAcceptable(acceptableHeatThreshold); }
 
 }  // namespace src::Indexer
-
-#endif

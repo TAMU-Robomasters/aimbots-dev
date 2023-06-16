@@ -1,0 +1,53 @@
+#pragma once
+#ifndef ENGINEER
+
+#include "tap/communication/gpio/leds.hpp"
+#include "tap/control/command.hpp"
+
+#include "subsystems/feeder/feeder.hpp"
+#include "utils/common_types.hpp"
+#include "utils/ref_helper.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
+
+namespace src::Feeder {
+
+class AutoAgitatorIndexerCommand : public TapCommand {
+public:
+    AutoAgitatorIndexerCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        src::Utils::RefereeHelper*,
+        float speed = FEEDER_DEFAULT_RPM,
+        float acceptableHeatThreshold = 0.90f);
+    void initialize() override;
+
+    void execute() override;
+    void end(bool interrupted) override;
+    bool isReady() override;
+
+    bool isFinished() const override;
+
+    void setSpeed(float speed) { this->speed = speed; }
+
+    const char* getName() const override { return "run agitator and indexer"; }
+
+private:
+    src::Drivers* drivers;
+    FeederSubsystem* feeder;
+    src::Utils::RefereeHelper* refHelper;
+
+    float speed;
+    float acceptableHeatThreshold;
+
+    int UNJAM_TIMER_MS;
+
+    MilliTimeout startupThreshold;
+    MilliTimeout unjamTimer;
+    float unjamSpeed = 0.0f;
+};
+
+}  // namespace src::Feeder
+
+#endif

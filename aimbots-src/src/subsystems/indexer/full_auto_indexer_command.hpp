@@ -8,7 +8,7 @@
 namespace src::Indexer {
 class FullAutoIndexerCommand : public TapCommand {
 public:
-    FullAutoIndexerCommand(src::Drivers*, IndexerSubsystem*, float speed = INDEXER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoIndexerCommand(src::Drivers*, IndexerSubsystem*, float speed, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;

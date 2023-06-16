@@ -1,9 +1,10 @@
 #include "subsystems/hopper/close_hopper_command.hpp"
 
 namespace src::Hopper {
-CloseHopperCommand::CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
+CloseHopperCommand::CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE) {
     this->drivers = drivers;
     this->hopper = hopper;
+    this->HOPPER_CLOSED_ANGLE = HOPPER_CLOSED_ANGLE;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 

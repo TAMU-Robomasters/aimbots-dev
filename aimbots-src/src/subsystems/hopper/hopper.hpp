@@ -13,7 +13,7 @@ enum HopperState : uint8_t {
 
 class HopperSubsystem : public tap::control::Subsystem {
    public:
-    HopperSubsystem(tap::Drivers* drivers);
+    HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin HOPPER_PIN, float HOPPER_MAX_PWM, float HOPPER_MIN_PWM, float HOPPER_PWM_RAMP_SPEED, float HOPPER_MIN_ANGLE, float HOPPER_MAX_ANGLE, uint32_t HOPPER_MIN_ACTION_DELAY);
 
     mockable void initialize() override;
     void refresh() override;
@@ -54,5 +54,13 @@ class HopperSubsystem : public tap::control::Subsystem {
     Servo hopperMotor;
     uint8_t hopper_state;
     uint32_t actionStartTime;  // milliseconds
+
+    tap::gpio::Pwm::Pin HOPPER_PIN;
+    float HOPPER_MAX_PWM; 
+    float HOPPER_MIN_PWM;
+    float HOPPER_PWM_RAMP_SPEED;
+    float HOPPER_MIN_ANGLE;
+    float HOPPER_MAX_ANGLE;
+    uint32_t HOPPER_MIN_ACTION_DELAY;
 };
 };  // namespace src::Hopper

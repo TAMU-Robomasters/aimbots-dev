@@ -79,7 +79,15 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
-HopperSubsystem hopper(drivers());
+HopperSubsystem hopper(
+    drivers(),
+    HOPPER_PIN, 
+    HOPPER_MAX_PWM,
+    HOPPER_MIN_PWM,
+    HOPPER_PWM_RAMP_SPEED,
+    HOPPER_MIN_ANGLE,
+    HOPPER_MAX_ANGLE,
+    HOPPER_MIN_ACTION_DELAY);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -119,11 +127,11 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-OpenHopperCommand openHopperCommand(drivers(), &hopper);
-OpenHopperCommand openHopperCommand2(drivers(), &hopper);
-CloseHopperCommand closeHopperCommand(drivers(), &hopper);
-CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
-ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
+OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(

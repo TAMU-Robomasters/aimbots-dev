@@ -11,7 +11,7 @@ namespace src::Hopper {
 
 class ToggleHopperCommand : public TapCommand {
 public:
-    ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper);
+    ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE, float HOPPER_OPEN_ANGLE);
 
     void initialize() override;
     void execute() override;
@@ -24,5 +24,8 @@ public:
 private:
     src::Drivers* drivers;
     HopperSubsystem* hopper;
+
+    float HOPPER_CLOSED_ANGLE;
+    float HOPPER_OPEN_ANGLE;
 };
 };  // namespace src::Hopper

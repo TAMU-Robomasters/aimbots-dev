@@ -12,7 +12,7 @@ namespace src::Hopper {
 
 class CloseHopperCommand : public TapCommand {
 public:
-    CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper);
+    CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE);
 
     void initialize() override;
     void execute() override;
@@ -25,5 +25,6 @@ public:
 private:
     src::Drivers* drivers;
     HopperSubsystem* hopper;
+    float HOPPER_CLOSED_ANGLE;
 };
 };  // namespace src::Hopper
