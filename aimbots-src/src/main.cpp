@@ -62,6 +62,8 @@ static void updateIo(src::Drivers *drivers);
 // bmi088 is at 1000Hz.. coincidence? I think not!!11!
 static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
+uint32_t loopTimeDisplay = 0;
+
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -88,6 +90,7 @@ int main() {
 #endif
 
     while (1) {
+        uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
@@ -95,12 +98,14 @@ int main() {
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
             drivers->kinematicInformant.updateRobotFrames();
+            utils::Music::playPacMan(drivers);
         }
         if (sendMotorTimeout.execute()) {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
+        loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         modm::delay_us(10);
     }
     return 0;
@@ -148,23 +153,23 @@ static void updateIo(src::Drivers *drivers) {
     drivers->cvCommunicator.updateSerial();
 
     // utils::Music::continuePlayingXPStartupTune(drivers);
-    utils::Music::playPacMan(drivers);
 
-    imuStatus = drivers->kinematicInformant.getIMUState();
+    // imuStatus = drivers->kinematicInformant.getIMUState();
 
-    float yaw = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-    float pitch =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    float roll = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    // float yaw = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
+    // AngleUnit::Radians); float pitch =
+    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    // float roll = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS,
+    // AngleUnit::Radians);
 
-    gZDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-    gYDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    gXDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    // gZDisplay =
+    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    // gYDisplay =
+    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    // gXDisplay =
+    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
 
-    yawDisplay = modm::toDegree(yaw);
-    pitchDisplay = modm::toDegree(pitch);
-    rollDisplay = modm::toDegree(roll);
+    // yawDisplay = modm::toDegree(yaw);
+    // pitchDisplay = modm::toDegree(pitch);
+    // rollDisplay = modm::toDegree(roll);
 }

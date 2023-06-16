@@ -110,7 +110,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(
     drivers(),
-    HOPPER_PIN, 
+    HOPPER_PIN,
     HOPPER_MAX_PWM,
     HOPPER_MIN_PWM,
     HOPPER_PWM_RAMP_SPEED,
@@ -178,7 +178,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
