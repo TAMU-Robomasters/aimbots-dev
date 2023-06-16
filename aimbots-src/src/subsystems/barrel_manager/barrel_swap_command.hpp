@@ -14,7 +14,7 @@ namespace src::Barrel_Manager {
 class BarrelSwapCommand : public TapCommand {
 public:
 
-    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, float ACCEPTABLE_HEAT_PERCENTAGE);
+    BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelSwap, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, bool &barrelCaliDoneFlag, float ACCEPTABLE_HEAT_PERCENTAGE);
 
     void initialize() override;
 
@@ -32,10 +32,12 @@ private:
     src::Utils::RefereeHelper* refHelper;
     SmoothPID swapMotorPID;
 
-    MilliTimeout logicSwapTimeout;
+    MilliTimeout gPressedTimeout;
+    bool isGPressed = false;
 
     bool &barrelMovingFlag;
-    bool barrelCalibratingFlag = false;
+    bool &barrelCaliDoneFlag;
+    bool barrelCalibratingFlag = true;
 
     bool wasRPressed = false;
     bool wasLogicSwitchRequested = false;

@@ -44,14 +44,14 @@ void GimbalChaseCommand::execute() {
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset -= M_PI_2;
+        quickTurnOffset += M_PI_2;
     }
 
     if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
-        quickTurnOffset += M_PI_2;
+        quickTurnOffset -= M_PI_2;
     }
 
     float targetYawAxisAngle = 0.0f;
@@ -60,7 +60,7 @@ void GimbalChaseCommand::execute() {
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
         ballisticsSolver->solve();  // returns nullopt if no solution is available
 
-    if (ballisticsSolution != std::nullopt) {
+    if (drivers->remote.getMouseR() && ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
         targetYawAxisAngle =
             drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +

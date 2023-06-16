@@ -58,6 +58,35 @@ using namespace src::Hopper;
 using namespace src::GUI;
 using namespace src::Barrel_Manager;
 
+//For reference, all possible keyboard inputs:
+//W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
+/*  Standard Control Scheme:
+
+    Chassis -----------------------------------------------------------
+    Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
+    Quick 90-deg Turn Gimbal Yaw (Left): Q
+    Quick 90-deg Turn Gimbal Yaw (Right): E
+
+    Increase Chassis Ground Speed: Shift
+    Increase Chassis Ground Speed (larger): Ctrl
+
+    Gimbal ------------------------------------------------------------
+    Aim Using CV: Right Mouse Button
+
+    Shooter -----------------------------------------------------------
+
+    Feeder ------------------------------------------------------------
+    Full Auto Shooting: Left Mouse Button
+
+    Barrel Manager ----------------------------------------------------
+    Manually Switch Barrel: R
+    Recalibrate: Hold G for 1 second
+
+    UI ----------------------------------------------------------------
+
+
+*/
+
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -93,6 +122,7 @@ BarrelManagerSubsystem barrelManager(
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
+bool barrelCaliDoneFlag = false;
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -121,7 +151,7 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, 0.80f);
+BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag, 0.80f);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper);
@@ -134,7 +164,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalChaseCommand, &barrelSwapperCommand},
+    {&chassisToggleDriveCommand/*, &gimbalChaseCommand, &barrelSwapperCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -206,6 +236,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
