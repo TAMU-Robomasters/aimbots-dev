@@ -29,8 +29,8 @@ ClientDisplayCommand::ClientDisplayCommand(
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
       booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper, chassis),
-      reticleIndicator(drivers, refSerialTransmitter),
-      addSubsystemRequirement(&clientDisplay);
+      reticleIndicator(drivers, refSerialTransmitter) {
+    addSubsystemRequirement(&clientDisplay);
 }
 
 void ClientDisplayCommand::initialize() {
@@ -59,4 +59,5 @@ bool ClientDisplayCommand::run() {
         PT_YIELD();
     }
     PT_END();
+}
 }  // namespace src::utils::display
