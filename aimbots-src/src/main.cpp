@@ -94,6 +94,7 @@ int main() {
         // every 1ms...
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
+            drivers->kinematicInformant.updateRobotFrames();
         }
         if (sendMotorTimeout.execute()) {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
@@ -144,7 +145,6 @@ static void updateIo(src::Drivers *drivers) {
 #ifdef TARGET_SENTRY
     drivers->railDistanceSensor.update();
 #endif
-    drivers->kinematicInformant.updateRobotFrames();
     drivers->cvCommunicator.updateSerial();
 
     // utils::Music::continuePlayingXPStartupTune(drivers);
