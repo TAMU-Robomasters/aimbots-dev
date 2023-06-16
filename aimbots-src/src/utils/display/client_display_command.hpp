@@ -22,7 +22,6 @@
 #include "client_display_subsystem.hpp"
 #include "cv_display.hpp"
 #include "reticle_indicator.hpp"
-#include "robot_orientation.hpp"
 
 using namespace src::Hopper;
 using namespace src::Chassis;
@@ -60,7 +59,6 @@ private:
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
     // CVDisplay cvDisplay;
-    RobotOrientation robotOrientation;
 
     bool run();
 

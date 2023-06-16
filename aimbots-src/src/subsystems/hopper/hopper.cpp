@@ -65,6 +65,4 @@ bool HopperSubsystem::isHopperOpen() const {
         return false;
     }
 }
-
-void HopperSubsystem::setHopperState(uint8_t new_state) { hopper_state = new_state; }
 };  // namespace src::Hopper
