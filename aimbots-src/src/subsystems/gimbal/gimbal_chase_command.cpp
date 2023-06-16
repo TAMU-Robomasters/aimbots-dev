@@ -60,7 +60,7 @@ void GimbalChaseCommand::execute() {
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
         ballisticsSolver->solve();  // returns nullopt if no solution is available
 
-    if (drivers->remote.getMouseR() && ballisticsSolution != std::nullopt) {
+    if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
         targetYawAxisAngle =
             drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
@@ -77,8 +77,8 @@ void GimbalChaseCommand::execute() {
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-        controller->runYawController(
-            src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
+        // controller->runYawController(
+        //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
         controller->runYawController(3.0f);
         controller->runPitchController();
     } else {

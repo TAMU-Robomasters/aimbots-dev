@@ -29,14 +29,14 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset -= M_PI_2;
+        quickTurnOffset += M_PI_2;
     }
 
     if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
-        quickTurnOffset += M_PI_2;
+        quickTurnOffset -= M_PI_2;
     }
 
     gimbalYawInputDisplay =

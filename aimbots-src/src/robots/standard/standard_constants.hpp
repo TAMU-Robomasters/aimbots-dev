@@ -114,7 +114,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 3250.0f,  // 1650
+    .kp = 3000.0f,  // 1650
     .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -188,9 +188,9 @@ static constexpr float HORIZON_OFFSET = -0.0f;
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 5.0f,
+    .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 1.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

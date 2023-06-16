@@ -58,8 +58,8 @@ using namespace src::Hopper;
 using namespace src::GUI;
 using namespace src::Barrel_Manager;
 
-//For reference, all possible keyboard inputs:
-//W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
+// For reference, all possible keyboard inputs:
+// W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
 /*  Standard Control Scheme:
 
     Chassis -----------------------------------------------------------
@@ -172,7 +172,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand/*, &gimbalChaseCommand, &barrelSwapperCommand*/},
+    {&chassisToggleDriveCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -210,7 +210,6 @@ HoldCommandMapping leftClickMouse(
     drivers(),
     {&guiDisplayCommand},
     RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
-
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
 //     {&},

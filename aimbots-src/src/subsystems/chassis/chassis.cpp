@@ -149,7 +149,9 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
     targetRpmDisplay = targetRPMs[LF][MotorPerWheelIdx];
     motorRpmDisplay = motors[LF][MotorPerWheelIdx]->getShaftRPM();
 
-    velocityPIDs[WheelIdx][MotorPerWheelIdx]->runController(err, motors[WheelIdx][MotorPerWheelIdx]->getTorque());
+    velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(
+        err/*,
+        motors[WheelIdx][MotorPerWheelIdx]->getTorque()*/);
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
