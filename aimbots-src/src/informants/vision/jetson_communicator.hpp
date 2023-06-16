@@ -12,18 +12,11 @@ namespace src {
 class Drivers;
 }
 
-namespace src::Informants::vision {
+namespace src::Informants::Vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
     AssemblingMessage,
-};
-
-struct plateKinematicState {
-    Vector3f position;
-    Vector3f velocity;
-    Vector3f acceleration;
-    float timestamp_uS;  // time that 'best guess' was made
 };
 
 class JetsonCommunicator {
@@ -39,16 +32,15 @@ public:
 
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    plateKinematicState getPlateKinematicState() const { return lastPlateKinematicState; }
-
-    // What is this???
-    Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
+    PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
+    bool isLastFrameStale() const;
+
 private:
     src::Drivers* drivers;
-    src::Informants::EnemyDataConversion enemyDataConverter;
+    src::Informants::Vision::VisionDataConversion visionDataConverter;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
 
@@ -67,9 +59,9 @@ private:
     float fieldRelativeYawAngleAtVisionUpdate;
     float chassisRelativePitchAngleAtVisionUpdate;
 
-    plateKinematicState lastPlateKinematicState;
+    PlateKinematicState lastPlateKinematicState;
 
     Matrix<float, 1, 2> visionTargetAngles;
     Vector3f visionTargetPosition;
 };
-}  // namespace src::Informants::vision
+}  // namespace src::Informants::Vision

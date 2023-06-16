@@ -4,75 +4,74 @@
 #include <utils/math/transform_setup.hpp>
 
 #include "utils/common_types.hpp"
-#include "utils/filters/ema.hpp"
+#include "utils/filters/kinematic_kalman.hpp"
 
-/*
-Convert enemy data (from CV) from camera space to chassis space (somehow)
-
-CV gives us gimbal-relative angles and depth.
-    Angles can be accessed from drivers->cvCommunicator.getVisionTargetAngles()
-        For pitch, it would be drivers->cvCommunicator.getVisionTargetAngles()[0][src::Informants::vision::pitch];
-        For yaw, it would be drivers->cvCommunicator.getVisionTargetAngles()[0][src::Informants::vision::yaw];
-    Depth must be accessed directly from the Jetson messages as follows:
-        drivers->cvCommunicator.getLastValidMessage().depth;
-*/
-
-/*
-CV will be giving us (at the very least) an XYZ position vector in CAMERA SPACE
-This class should be producing position, velocity, and acceleration vectors for the ENEMY in CHASSIS SPACE (and/or FIELD
-SPACE) Additionally, this class should be producing position, velocity, and acceleration vectors for OUR ROBOT in FIELD SPACE
-(Though I'm not sure if this class should be called EnemyDataConversion then)
-*/
 namespace src {
 class Drivers;
 }
-namespace src::Informants {
+namespace src::Informants::Vision {
 
-namespace vision {
-struct plateKinematicState;
-}
-
-// for internal use
-struct EnemyTimedPosition {
+struct VisionTimedPosition {
     Vector3f position;
     uint32_t timestamp_uS;
 };
+struct PlateKinematicState {
+    Vector3f position;
+    Vector3f velocity;
+    Vector3f acceleration;
+    uint32_t timestamp_uS;  // time that 'best guess' was made
+};
 
-class EnemyDataConversion {
+class VisionDataConversion {
 public:
-    EnemyDataConversion(src::Drivers* drivers);
-    ~EnemyDataConversion() = default;
-    /**
-     * @brief Gets latest valid enemy target data from CV and stores it in a circular/ring buffer.
-     * Should be called continuously.
-     *
-     */
-    void updateEnemyInfo(Vector3f position, uint32_t frameCaptureDelay);
+    VisionDataConversion(src::Drivers* drivers);
+    ~VisionDataConversion() = default;
 
     /**
-     * @brief Calculates best guess of current enemy position, velocity, and acceleration. Does not need to be called
-     * continuously.
+     * @brief Gets latest valid enemy target data from CV, converts it to a chassis-relative kinematic state, and filters it.
+     * Should be called on every CV update.
      */
-    vision::plateKinematicState calculateBestGuess(int desired_finite_diff_accuracy = 3);
+    void updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay);
 
-    /**
-     * @brief Returns all of the enemy position entries within a certain amount of time (from the internal bounded deque)
-     * Does not account for 'skips' in data...(ex: on-and-off jetson connection, robot on fire, etc..)
-     *
-     * @param time the maximum elapsed time for an entry to be valid
-     * @return vector with enemyTimedPositions
-     */
-    std::vector<EnemyTimedPosition> getLastEntriesWithinTime(float time_seconds);
+    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+
+    bool isLastFrameStale() const;
 
 private:
     src::Drivers* drivers;
-    static const int BUFFER_SIZE = 1;       // prolly move this to constants at some point or something IDK
-    static constexpr float VALID_TIME = 5;  // max elapsed seconds before an enemy position entry is invalid
 
-    // buffer for XYZ + timestamp
-    Deque<EnemyTimedPosition, BUFFER_SIZE> rawPositionBuffer;
-    bool prevCVValid, cvValid;
+    static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
 
-    EMAFilter XPositionFilter, YPositionFilter, ZPositionFilter;
+    src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
+
+    uint32_t lastUpdateTimestamp_uS = 0;
+    uint32_t lastFrameCaptureTimestamp_uS = 0;
 };
-}  // namespace src::Informants
+
+// clang-format off
+static constexpr float KF_P[9] = { // Covariance Matrix
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1,
+};
+
+static constexpr float KF_H[9] = { // Observation Matrix
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1,
+};
+
+static constexpr float KF_Q[9] = { // Environment Noise Covariance Matrix
+    1E-1, 0,   0,
+    0,    1E0, 0,
+    0,    0,   1E1,
+};
+
+static constexpr float KF_R[9] = { // Measurement Noise Covariance Matrix
+    1E0, 0,   0,
+    0,    1E2, 0,
+    0,    0,   1E4,
+};
+// clang-format on
+
+}  // namespace src::Informants::Vision

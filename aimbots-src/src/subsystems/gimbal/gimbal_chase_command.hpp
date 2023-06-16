@@ -44,7 +44,7 @@ private:
 
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
-    src::Informants::vision::plateKinematicState data;
+    src::Informants::Vision::PlateKinematicState data;
 
     bool wasQPressed = false;
     bool wasEPressed = false;

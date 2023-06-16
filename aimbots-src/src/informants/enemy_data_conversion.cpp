@@ -2,19 +2,15 @@
 
 #include "drivers.hpp"
 
-namespace src::Informants {
-EnemyDataConversion::EnemyDataConversion(src::Drivers* drivers)
+namespace src::Informants::Vision {
+VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      XPositionFilter(EMAFilter(0.1f)),
-      YPositionFilter(EMAFilter(0.1f)),
-      ZPositionFilter(EMAFilter(0.1f))  //
+      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R),
+      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R),
+      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R)  //
 {}
 
 // watchable variables
-float gimbalYXWatch = 0.0f;
-float gimbalYYWatch = 0.0f;
-float gimbalYZWatch = 0.0f;
-//
 float targetPositionXDisplayWithoutCompensation = 0.0f;
 float targetPositionYDisplayWithoutCompensation = 0.0f;
 float targetPositionZDisplayWithoutCompensation = 0.0f;
@@ -26,22 +22,15 @@ float targetPositionZUnfilteredDisplay = 0.0f;
 float targetPositionXDisplay = 0.0f;
 float targetPositionYDisplay = 0.0f;
 float targetPositionZDisplay = 0.0f;
-//
-int size_watch;
-float dt_vel_watch;
-int accuracy_watch;
-float watchVelX;
-int buffer_size_watch;
-float last_entry_timestamp_watch;
 
-float px, py, pz = 0.0f;
-float vx, vy, vz = 0.0f;
-float ax, ay, az = 0.0f;
-
-float cameraFrameTransformOutYYDisplay = 0.0f;
+uint32_t currentTimeDisplay = 0;
+uint32_t lastFrameCaptureDisplay = 0;
 
 // gather data, transform data,
-void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptureDelay) {
+void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
+    uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
+    currentTimeDisplay = currentTime_uS;
+
     src::Informants::Transformers::CoordinateFrame gimbalFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
 
@@ -57,17 +46,11 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     src::Informants::Transformers::CoordinateFrame chassisFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
 
-    // clear buffer if CV connection just turned back on
-    prevCVValid = cvValid;
-    cvValid = true;
-    if (cvValid && !prevCVValid) {
-        rawPositionBuffer.clear();
-    }  // goodbye
+    lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
-    EnemyTimedPosition currentData{
+    VisionTimedPosition currentData{
         .position = position,
-        .timestamp_uS = static_cast<uint32_t>(tap::arch::clock::getTimeMicroseconds()) -
-                        (static_cast<uint32_t>(frameCaptureDelay) * MICROSECONDS_PER_MS),
+        .timestamp_uS = lastFrameCaptureTimestamp_uS,
         // Current time - (how long ago the frame was captured)
     };
 
@@ -77,19 +60,12 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
-    // EnemyTimedPosition gimbalTransformedDataWatch{
-    //     .position = cameraFrame.getPointInFrame(gimbalFrame, currentData.position),
-    //     .timestamp_uS = currentData.timestamp_uS,
-    // };
-
-    EnemyTimedPosition targetPositionWithoutLagCompensation{
+    VisionTimedPosition targetPositionWithoutLagCompensation{
         .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 
-    cameraFrameTransformOutYYDisplay = cameraFrame.getTransformOut()[1][1];
-
-    EnemyTimedPosition transformedData{
+    VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
@@ -102,280 +78,62 @@ void EnemyDataConversion::updateEnemyInfo(Vector3f position, uint32_t frameCaptu
     targetPositionYUnfilteredDisplay = transformedData.position.getY();
     targetPositionZUnfilteredDisplay = transformedData.position.getZ();
 
-    // transformedData.position.setX(XPositionFilter.update(transformedData.position.getX()));
-    // transformedData.position.setY(YPositionFilter.update(transformedData.position.getY()));
-    // transformedData.position.setZ(ZPositionFilter.update(transformedData.position.getZ()));
-
     targetPositionXDisplay = transformedData.position.getX();
     targetPositionYDisplay = transformedData.position.getY();
     targetPositionZDisplay = transformedData.position.getZ();
 
-    // save data point to buffer (at index 0-- index 0 is NEWEST, index size-1 is OLDEST.)
-    // at max capacity, oldest data is overwritten first
-    rawPositionBuffer.prependOverwrite(transformedData);
+    float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
+    XPositionFilter.update(dt, transformedData.position.getX());
+    YPositionFilter.update(dt, transformedData.position.getY());
+    ZPositionFilter.update(dt, transformedData.position.getZ());
 
-    buffer_size_watch = rawPositionBuffer.getSize();
-    last_entry_timestamp_watch = rawPositionBuffer[0].timestamp_uS;
-
-    // else {
-    //     prevCVValid = cvValid;
-    //     cvValid = false;
-    //     rawPositionBuffer.clear();
-    // }
+    lastUpdateTimestamp_uS = currentTime_uS;
 }
 
-bool canSendData;
+float targetPositionXFutureDisplay = 0.0f;
+float targetVelocityXFutureDisplay = 0.0f;
+float targetAccelerationXFutureDisplay = 0.0f;
 
-float raw_x_display;
-float raw_time_display;
-float raw_x_display2;
+float targetPositionZFutureDisplay = 0.0f;
+float targetVelocityZFutureDisplay = 0.0f;
+float targetAccelerationZFutureDisplay = 0.0f;
 
-std::vector<EnemyTimedPosition> EnemyDataConversion::getLastEntriesWithinTime(float time_seconds) {
-    std::vector<EnemyTimedPosition> validPositions;
-    uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
-    raw_x_display = rawPositionBuffer[0].position.getX();
-    raw_time_display = rawPositionBuffer[0].timestamp_uS;
-    raw_x_display2 = rawPositionBuffer[1].position.getX();
-    // traverse bounded deque until invalid time found
-    for (int index = 0; index < BUFFER_SIZE; index++) {
-        EnemyTimedPosition pos = rawPositionBuffer[index];
-        canSendData = (currentTime_uS - pos.timestamp_uS < time_seconds * (float)MICROSECONDS_PER_SECOND);
-        if ((pow(pos.position.getX(), 2) + pow(pos.position.getY(), 2) + pow(pos.position.getZ(), 2)) > 0) {
-            validPositions.push_back(pos);
-        } else {
-            break;
-        }
-    }
-    return validPositions;
+float predictiondTDisplay = 0.0f;
+
+PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const {
+    lastFrameCaptureDisplay = lastFrameCaptureTimestamp_uS;
+
+    float totalForwardProjectionTime =
+        static_cast<float>(dt + (tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS)) /
+        MICROSECONDS_PER_SECOND;
+
+    predictiondTDisplay = totalForwardProjectionTime;
+
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
+
+    targetPositionXFutureDisplay = xPlate.getX();
+    targetVelocityXFutureDisplay = xPlate.getY();
+    targetAccelerationXFutureDisplay = xPlate.getZ();
+
+    targetPositionZFutureDisplay = zPlate.getX();
+    targetVelocityZFutureDisplay = zPlate.getY();
+    targetAccelerationZFutureDisplay = zPlate.getZ();
+
+    return PlateKinematicState{
+        .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
+        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
+        .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
+    };
 }
 
-// !!! note from future self: stop taking so many damn derivatives
-// What are we doing here? even our latest position may be microseconds out of date :( so do some finite difference BS to get
-// position at our CURRENT time. With n valid datapoints, we can only go up to the (n-1)th derivative. shame.
-vision::plateKinematicState EnemyDataConversion::calculateBestGuess(int desired_finite_diff_accuracy) {
-    // for the sake of memory, calculating to the nth order derivative will be an in-place destructive algorithm.
-    // we'll make an array with [position, velocity, acceleration, jerk, snap, crackle, pop, lock, drop] where each entry is
-    // the value at latest time (which is not necessarily current time)
-
-    // Sets the finite difference accuracy
-    int finite_diff_accuracy = 1;  // 5 position points for accuracy of 3
-                                   // 4 position points for accuracy of 2
-                                   // 3 position points for accuracy of 1
-
-    // The first index is for the most recent data set
-    float order1CoEffs[3][4] = {{1, -1, 0, 0}, {1.5, -2, 0.5, 0}, {(11.0f / 6.0f), (-3), (3.0f / 2.0f), (-1.0f / 3.0f)}};
-
-    float order2CoEffs[3][5] = {
-        {1, -2, 1, 0, 0},
-        {2, -5, 4, -1, 0},
-        {(35.0f / 12.0f), (-26.0f / 3.0f), (19.0f / 2.0f), (-14.0f / 3.0f), (11.0f / 12.0f)}};
-
-    std::vector<EnemyTimedPosition> validPoints;
-    validPoints = this->getLastEntriesWithinTime(VALID_TIME);
-    int size = validPoints.size();
-    // DEBUG
-    size_watch = size;
-
-    finite_diff_accuracy = size - 2;
-    finite_diff_accuracy = std::min(finite_diff_accuracy, 3);
-    finite_diff_accuracy = std::max(finite_diff_accuracy, 1);
-
-    // adjust for desired parameter in function call
-    if (desired_finite_diff_accuracy < finite_diff_accuracy) {
-        finite_diff_accuracy = desired_finite_diff_accuracy;
-    }
-
-    vision::plateKinematicState enemyGuess;
-
-    Vector3f guess_position = {0, 0, 0};
-    Vector3f guess_velocity = {0, 0, 0};
-    Vector3f guess_acceleration = {0, 0, 0};
-
-    float dt_uS = 0;
-
-    accuracy_watch = finite_diff_accuracy;
-
-    if (size > 0) {
-        // Position .. unfiltered!!!
-        guess_position = validPoints[0].position;
-        // Position .. filtered!!
-        // guess_position.setX(positionKalman[0].filterData(validPoints[0].position.getX()));
-        // guess_position.setY(positionKalman[1].filterData(validPoints[0].position.getY()));
-        // guess_position.setZ(positionKalman[2].filterData(validPoints[0].position.getZ()));
-
-        // check for Velocity (if-statement nested in Position if-statement)
-        if (size > 1) {
-            // Velocity
-            switch (finite_diff_accuracy) {
-                case 1:  // 2 points
-                    dt_uS = (validPoints[0].timestamp_uS - validPoints[1].timestamp_uS) / (float)MICROSECONDS_PER_SECOND;
-
-                    // order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
-                    guess_velocity.set(
-                        (order1CoEffs[0][0] * validPoints[0].position.getX() +
-                         order1CoEffs[0][1] * validPoints[1].position.getX()) /
-                            (dt_uS),
-                        (order1CoEffs[0][0] * validPoints[0].position.getY() +
-                         order1CoEffs[0][1] * validPoints[1].position.getY()) /
-                            (dt_uS),
-                        (order1CoEffs[0][0] * validPoints[0].position.getZ() +
-                         order1CoEffs[0][1] * validPoints[1].position.getZ()) /
-                            (dt_uS));
-                    watchVelX = (order1CoEffs[0][0] * validPoints[0].position.getX() +
-                                 order1CoEffs[0][1] * validPoints[1].position.getX()) /
-                                (dt_uS);
-                    break;
-
-                case 2:  // 3 points
-                    dt_uS =
-                        (validPoints[0].timestamp_uS - validPoints[2].timestamp_uS) / 2.0f / (float)MICROSECONDS_PER_SECOND;
-                    // DEBUG
-                    dt_vel_watch = dt_uS;
-                    guess_velocity.set(
-                        (order1CoEffs[1][0] * validPoints[0].position.getX() +
-                         order1CoEffs[1][1] * validPoints[1].position.getX() +
-                         order1CoEffs[1][2] * validPoints[2].position.getX()) /
-                            (dt_uS),
-                        (order1CoEffs[1][0] * validPoints[0].position.getY() +
-                         order1CoEffs[1][1] * validPoints[1].position.getY() +
-                         order1CoEffs[1][2] * validPoints[2].position.getY()) /
-                            (dt_uS),
-                        (order1CoEffs[1][0] * validPoints[0].position.getZ() +
-                         order1CoEffs[1][1] * validPoints[1].position.getZ() +
-                         order1CoEffs[1][2] * validPoints[2].position.getZ()) /
-                            (dt_uS));
-                    watchVelX = (order1CoEffs[1][0] * validPoints[0].position.getX() +
-                                 order1CoEffs[1][1] * validPoints[1].position.getX() +
-                                 order1CoEffs[1][2] * validPoints[2].position.getX()) /
-                                (dt_uS);
-                    break;
-                case 3:  // 4 points
-                    dt_uS =
-                        (validPoints[0].timestamp_uS - validPoints[3].timestamp_uS) / 3.0f / (float)MICROSECONDS_PER_SECOND;
-                    dt_vel_watch = dt_uS;
-                    // order1CoEffs[Accuracy index][coeff index]*validPoints[point index].position.getX()
-                    guess_velocity.set(
-                        (order1CoEffs[2][0] * validPoints[0].position.getX() +
-                         order1CoEffs[2][1] * validPoints[1].position.getX() +
-                         order1CoEffs[2][2] * validPoints[2].position.getX() +
-                         order1CoEffs[2][3] * validPoints[3].position.getX()) /
-                            (dt_uS),
-                        (order1CoEffs[2][0] * validPoints[0].position.getY() +
-                         order1CoEffs[2][1] * validPoints[1].position.getY() +
-                         order1CoEffs[2][2] * validPoints[2].position.getY() +
-                         order1CoEffs[2][3] * validPoints[3].position.getY()) /
-                            (dt_uS),
-                        (order1CoEffs[2][0] * validPoints[0].position.getZ() +
-                         order1CoEffs[2][1] * validPoints[1].position.getZ() +
-                         order1CoEffs[2][2] * validPoints[2].position.getZ() +
-                         order1CoEffs[2][3] * validPoints[3].position.getZ()) /
-                            (dt_uS));
-
-                    break;
-            }
-            // check for Acceleration (if-statement nested in Position if-Acceleration)
-            if (size > 2) {
-                // Acceleration
-
-                switch (finite_diff_accuracy) {
-                    case 1:  // 3 points
-                        dt_uS = (validPoints[0].timestamp_uS - validPoints[2].timestamp_uS) / 2.0f /
-                                (float)MICROSECONDS_PER_SECOND;
-                        dt_uS *= dt_uS;  // Squaring the value for acceleration
-                        guess_acceleration.set(
-                            (order2CoEffs[0][0] * validPoints[0].position.getX() +
-                             order2CoEffs[0][1] * validPoints[1].position.getX() +
-                             order2CoEffs[0][2] * validPoints[2].position.getX()) /
-                                dt_uS,
-                            (order2CoEffs[0][0] * validPoints[0].position.getY() +
-                             order2CoEffs[0][1] * validPoints[1].position.getY() +
-                             order2CoEffs[0][2] * validPoints[2].position.getY()) /
-                                dt_uS,
-                            (order2CoEffs[0][0] * validPoints[0].position.getZ() +
-                             order2CoEffs[0][1] * validPoints[1].position.getZ() +
-                             order2CoEffs[0][2] * validPoints[2].position.getZ()) /
-                                dt_uS);
-
-                        break;
-                    case 2:  // 4 points
-                        dt_uS = (validPoints[0].timestamp_uS - validPoints[3].timestamp_uS) / 3.0f /
-                                (float)MICROSECONDS_PER_SECOND;
-                        dt_uS *= dt_uS;  // Squaring the value for acceleration
-                        guess_acceleration.set(
-                            (order2CoEffs[1][0] * validPoints[0].position.getX() +
-                             order2CoEffs[1][1] * validPoints[1].position.getX() +
-                             order2CoEffs[1][2] * validPoints[2].position.getX() +
-                             order2CoEffs[1][3] * validPoints[3].position.getX()) /
-                                dt_uS,
-                            (order2CoEffs[1][0] * validPoints[0].position.getY() +
-                             order2CoEffs[1][1] * validPoints[1].position.getY() +
-                             order2CoEffs[1][2] * validPoints[2].position.getY() +
-                             order2CoEffs[1][3] * validPoints[3].position.getY()) /
-                                dt_uS,
-                            (order2CoEffs[1][0] * validPoints[0].position.getZ() +
-                             order2CoEffs[1][1] * validPoints[1].position.getZ() +
-                             order2CoEffs[1][2] * validPoints[2].position.getZ() +
-                             order2CoEffs[1][3] * validPoints[3].position.getZ()) /
-                                dt_uS);
-
-                        break;
-                    case 3:  // 5 points
-                        dt_uS = (validPoints[0].timestamp_uS - validPoints[4].timestamp_uS) / 4.0f /
-                                (float)MICROSECONDS_PER_SECOND;
-                        dt_uS *= dt_uS;  // Squaring the value for acceleration
-                        guess_acceleration.set(
-                            (order2CoEffs[2][0] * validPoints[0].position.getX() +
-                             order2CoEffs[2][1] * validPoints[1].position.getX() +
-                             order2CoEffs[2][2] * validPoints[2].position.getX() +
-                             order2CoEffs[2][3] * validPoints[3].position.getX() +
-                             order2CoEffs[2][4] * validPoints[4].position.getX()) /
-                                dt_uS,
-                            (order2CoEffs[2][0] * validPoints[0].position.getY() +
-                             order2CoEffs[2][1] * validPoints[1].position.getY() +
-                             order2CoEffs[2][2] * validPoints[2].position.getY() +
-                             order2CoEffs[2][3] * validPoints[3].position.getY() +
-                             order2CoEffs[2][4] * validPoints[4].position.getY()) /
-                                dt_uS,
-                            (order2CoEffs[2][0] * validPoints[0].position.getZ() +
-                             order2CoEffs[2][1] * validPoints[1].position.getZ() +
-                             order2CoEffs[2][2] * validPoints[2].position.getZ() +
-                             order2CoEffs[2][3] * validPoints[3].position.getZ() +
-                             order2CoEffs[2][4] * validPoints[4].position.getZ()) /
-                                dt_uS);
-
-                        break;
-                }
-
-            }  // Acceleration if-statement
-        }      // Velocity if-statement
-    }          // Position if-statement
-
-    // guess_velocity.setX(velocityKalman[0].filterData(guess_velocity.getX()));
-    // guess_velocity.setY(velocityKalman[1].filterData(guess_velocity.getY()));
-    // guess_velocity.setZ(velocityKalman[2].filterData(guess_velocity.getZ()));
-
-    // guess_acceleration.setX(accelKalman[0].filterData(guess_acceleration.getX()));
-    // guess_acceleration.setY(accelKalman[1].filterData(guess_acceleration.getY()));
-    // guess_acceleration.setZ(accelKalman[2].filterData(guess_acceleration.getZ()));
-
-    enemyGuess.position = guess_position;
-    enemyGuess.velocity = guess_velocity;
-    enemyGuess.acceleration = guess_acceleration;
-    enemyGuess.timestamp_uS = validPoints[0].timestamp_uS;
-
-    px = guess_position.getX();
-    py = guess_position.getY();
-    pz = guess_position.getZ();
-
-    vx = guess_velocity.getX();
-    vy = guess_velocity.getY();
-    vz = guess_velocity.getZ();
-
-    ax = guess_acceleration.getX();
-    ay = guess_acceleration.getY();
-    az = guess_acceleration.getZ();
-
-    return enemyGuess;
+bool frameStaleDisplay = false;
+bool VisionDataConversion::isLastFrameStale() const {
+    frameStaleDisplay =
+        (tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS) > (VALID_TIME * MICROSECONDS_PER_SECOND);
+    return (tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS) > (VALID_TIME * MICROSECONDS_PER_SECOND);
 }
 
-}  // namespace src::Informants
+}  // namespace src::Informants::Vision

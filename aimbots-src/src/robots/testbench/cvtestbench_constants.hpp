@@ -96,7 +96,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 50.0f,
+    .kp = 25.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -125,7 +125,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
+    .kp = 750.0f,
     .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -138,8 +138,8 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
@@ -157,9 +157,24 @@ const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {36.15f, 27'000.0f},
                                                                     {36.35f, 30'000.0f}
                                                                     };
+
+const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
+                                                                    {0.0f, 0.0f},
+                                                                    {3.75f, 3'000.0f},
+                                                                    {8.5f, 6'000.0f},
+                                                                    {12.75f, 9'000.0f},
+                                                                    {17.67f, 12'000.0f},
+                                                                    {22.5f, 15'000.0f},
+                                                                    {26.75f, 18'000.0f},
+                                                                    {31.5f, 21'000.0f},
+                                                                    {35.5f, 24'000.0f},
+                                                                    {36.15f, 27'000.0f},
+                                                                    {36.35f, 30'000.0f}
+                                                                    };
 // clang-format on
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
+const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;

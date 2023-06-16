@@ -147,7 +147,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->kinematicInformant.updateRobotFrames();
     drivers->cvCommunicator.updateSerial();
 
-    // drivers->enemyDataConverter.updateEnemyInfo();
     // utils::Music::continuePlayingXPStartupTune(drivers);
     utils::Music::playPacMan(drivers);
 
