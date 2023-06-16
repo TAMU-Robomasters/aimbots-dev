@@ -19,14 +19,15 @@
 #include "subsystems/hopper/hopper.hpp"
 
 #include "boolean_hud_indicators.hpp"
-#include "client_display_subsystem.hpp"
-#include "cv_display.hpp"
-#include "reticle_indicator.hpp"
 #include "chassis_orientation.hpp"
+#include "client_display_subsystem.hpp"
+#include "computer_vision_display.hpp"
+#include "reticle_indicator.hpp"
 
 using namespace src::Hopper;
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Utils::Ballistics;
 
 namespace src::utils::display {
 
@@ -38,7 +39,8 @@ public:
         ClientDisplaySubsystem &clientDisplay,
         const HopperSubsystem &hopper,
         const GimbalSubsystem &gimbal,
-        const ChassisSubsystem &chassis);
+        const ChassisSubsystem &chassis,
+       BallisticsSolver &ballisticsSolver);
 
     const char *getName() const override { return "client display"; }
 
@@ -60,7 +62,7 @@ private:
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
     ChassisOrientation chassisOrientation;
-    // CVDisplay cvDisplay;
+    CVDisplay cvDisplay;
 
     bool run();
 

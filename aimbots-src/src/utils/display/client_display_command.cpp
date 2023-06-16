@@ -15,6 +15,7 @@
 using namespace src::Hopper;
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Utils::Ballistics;
 
 namespace src::utils::display {
 ClientDisplayCommand::ClientDisplayCommand(
@@ -23,14 +24,16 @@ ClientDisplayCommand::ClientDisplayCommand(
     ClientDisplaySubsystem &clientDisplay,
     const HopperSubsystem &hopper,
     const GimbalSubsystem &gimbal,
-    const ChassisSubsystem &chassis)
+    const ChassisSubsystem &chassis,
+    BallisticsSolver &ballisticsSolver)
     : tap::control::Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
       booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper, chassis),
       reticleIndicator(drivers, refSerialTransmitter),
-      chassisOrientation(drivers, refSerialTransmitter, gimbal) {
+      chassisOrientation(drivers, refSerialTransmitter, gimbal),
+      cvDisplay(refSerialTransmitter, ballisticsSolver) {
     addSubsystemRequirement(&clientDisplay);
 }
 
@@ -39,9 +42,11 @@ void ClientDisplayCommand::initialize() {
     // initalize each of display commands
     HudIndicator::resetGraphicNameGenerator();
     restart();
+    chassisOrientation.initialize();
+    cvDisplay.initialize();
     booleanHudIndicator.initialize();
     reticleIndicator.initialize();
-    chassisOrientation.initialize();
+
     // cvDisplay.initialize();
 }
 
@@ -53,11 +58,13 @@ bool ClientDisplayCommand::run() {
 
     // PT_CALL(someIndcator.sendInitialGraphics());
     PT_CALL(chassisOrientation.sendInitialGraphics());
+    PT_CALL(cvDisplay.sendInitialGraphics());
     PT_CALL(booleanHudIndicator.sendInitialGraphics());
     PT_CALL(reticleIndicator.sendInitialGraphics());
     while (true) {
         // PT_CALL(someIndcator.update());
         PT_CALL(chassisOrientation.update());
+        PT_CALL(cvDisplay.update());
         PT_CALL(booleanHudIndicator.update());
         PT_CALL(reticleIndicator.update());
         PT_YIELD();

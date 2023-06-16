@@ -140,7 +140,14 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, hopper, gimbal, chassis);
+ClientDisplayCommand clientDisplayCommand(
+    *drivers(),
+    drivers()->commandScheduler,
+    clientDisplay,
+    hopper,
+    gimbal,
+    chassis,
+    ballisticsSolver);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -179,8 +186,6 @@ HoldCommandMapping leftClickMouse(
     drivers(),
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
@@ -237,12 +242,12 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    //drivers->commandMapper.addMap(&leftSwitchUp);
-    //drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
-    //drivers->commandMapper.addMap(&leftClickMouse);
+    // drivers->commandMapper.addMap(&leftClickMouse);
     drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
