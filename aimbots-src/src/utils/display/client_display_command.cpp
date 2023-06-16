@@ -29,7 +29,8 @@ ClientDisplayCommand::ClientDisplayCommand(
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
       booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper, chassis),
-      reticleIndicator(drivers, refSerialTransmitter) {
+      reticleIndicator(drivers, refSerialTransmitter),
+      chassisOrientation(drivers, refSerialTransmitter, gimbal) {
     addSubsystemRequirement(&clientDisplay);
 }
 
@@ -40,6 +41,7 @@ void ClientDisplayCommand::initialize() {
     restart();
     booleanHudIndicator.initialize();
     reticleIndicator.initialize();
+    chassisOrientation.initialize();
     // cvDisplay.initialize();
 }
 
@@ -50,10 +52,12 @@ bool ClientDisplayCommand::run() {
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
     // PT_CALL(someIndcator.sendInitialGraphics());
+    PT_CALL(chassisOrientation.sendInitialGraphics());
     PT_CALL(booleanHudIndicator.sendInitialGraphics());
     PT_CALL(reticleIndicator.sendInitialGraphics());
     while (true) {
         // PT_CALL(someIndcator.update());
+        PT_CALL(chassisOrientation.update());
         PT_CALL(booleanHudIndicator.update());
         PT_CALL(reticleIndicator.update());
         PT_YIELD();

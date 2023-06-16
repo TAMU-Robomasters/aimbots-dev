@@ -22,6 +22,7 @@
 #include "client_display_subsystem.hpp"
 #include "cv_display.hpp"
 #include "reticle_indicator.hpp"
+#include "chassis_orientation.hpp"
 
 using namespace src::Hopper;
 using namespace src::Chassis;
@@ -58,6 +59,7 @@ private:
     // hud elements
     BooleanHudIndicator booleanHudIndicator;
     ReticleIndicator reticleIndicator;
+    ChassisOrientation chassisOrientation;
     // CVDisplay cvDisplay;
 
     bool run();
