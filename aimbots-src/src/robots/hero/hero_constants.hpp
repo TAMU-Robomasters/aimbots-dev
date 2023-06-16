@@ -42,6 +42,22 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr int UNJAM_TIMER_MS = 300;
+
+static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
+    .kp = 15.0f,
+    .ki = 0.0f,
+    .kd = 0.8f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 /**
  * @brief Position PID constants
  */
@@ -124,6 +140,7 @@ static constexpr uint16_t shooter_speed_array[4] = {10, 3900, 16, 6500};
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
+static constexpr float INDEXER_DEFAULT_RPM = 2000.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
@@ -139,19 +156,22 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static constexpr MotorID INDEXER_ID = MotorID::MOTOR2;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
-static constexpr bool SHOOTER_1_DIRECTION = true;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_1_DIRECTION = false;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = true;
+static constexpr bool FEEDER_DIRECTION = false;
+static constexpr bool INDEXER_DIRECTION = false;
 
 static constexpr bool YAW_DIRECTION = false;
 static constexpr bool PITCH_DIRECTION = true;

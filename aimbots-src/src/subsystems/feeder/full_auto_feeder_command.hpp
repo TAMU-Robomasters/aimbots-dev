@@ -43,6 +43,8 @@ private:
     float speed;
     float acceptableHeatThreshold;
 
+    int UNJAM_TIMER_MS;
+
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
     float unjamSpeed = 0.0f;
