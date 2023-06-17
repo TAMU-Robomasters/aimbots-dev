@@ -6,29 +6,34 @@ ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem*
     this->hopper = hopper;
     this->HOPPER_CLOSED_ANGLE = HOPPER_CLOSED_ANGLE;
     this->HOPPER_OPEN_ANGLE = HOPPER_OPEN_ANGLE;
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 
+bool cPressedDisplay;
+bool hopperStateDisplay;
+bool commandIsRunning = false;
+
 void ToggleHopperCommand::initialize() {
-    uint8_t state = hopper->getHopperState();
-    if (state == UNKNOWN) {  // default 'unknown' action can be open/closed
-        hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
-        hopper->setHopperState(CLOSED);
-    } else {
-        hopper->setHopperAngle(state ? HOPPER_OPEN_ANGLE : HOPPER_CLOSED_ANGLE);
-        hopper->setHopperState(!state);
-    }
+    hopper->setHopperAngle(hopperClosed ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
+    commandIsRunning = true;
 }
 
 void ToggleHopperCommand::execute() {
+
+    commandIsRunning = false;
+    commandIsRunning = true;
+
+    cPressedDisplay = wasCPressed;
+    hopperStateDisplay = hopperClosed;
 
     if (drivers->remote.keyPressed(Remote::Key::C)) {
         wasCPressed = true;
     }
 
     if (wasCPressed && !drivers->remote.keyPressed(Remote::Key::C)) {
-        uint8_t state = hopper->getHopperState();
-        hopper->setHopperAngle(state ? HOPPER_OPEN_ANGLE : HOPPER_CLOSED_ANGLE);
-        hopper->setHopperState(!state);
+        hopper->setHopperAngle(hopperClosed ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
+        hopperClosed = !hopperClosed;
+        wasCPressed = false;
     }
 
 }

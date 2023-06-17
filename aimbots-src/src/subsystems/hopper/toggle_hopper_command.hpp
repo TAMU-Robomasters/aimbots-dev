@@ -1,5 +1,4 @@
 #pragma once
-#include "tap/control/subsystem.hpp"
 
 #include "subsystems/hopper/hopper.hpp"
 #include "utils/common_types.hpp"
@@ -26,8 +25,9 @@ private:
     HopperSubsystem* hopper;
 
     bool wasCPressed = false;
+    bool hopperClosed = true;
 
     float HOPPER_CLOSED_ANGLE;
     float HOPPER_OPEN_ANGLE;
 };
-};  // namespace src::Hopper
+}  // namespace src::Hopper

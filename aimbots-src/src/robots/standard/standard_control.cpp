@@ -80,6 +80,9 @@ using namespace src::Barrel_Manager;
     Feeder ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
 
+    Hopper ------------------------------------------------------------
+    Toggle Hopper Position: C
+
     Barrel Manager ----------------------------------------------------
     Manually Switch Barrel: R
     Recalibrate: Hold G for 1 second
@@ -209,7 +212,7 @@ HoldCommandMapping rightSwitchDown(
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &closeHopperCommand},
+    {&runShooterCommand, &toggleHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
