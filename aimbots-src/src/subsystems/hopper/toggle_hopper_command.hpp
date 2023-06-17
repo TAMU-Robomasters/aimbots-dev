@@ -25,6 +25,8 @@ private:
     src::Drivers* drivers;
     HopperSubsystem* hopper;
 
+    bool wasCPressed = false;
+
     float HOPPER_CLOSED_ANGLE;
     float HOPPER_OPEN_ANGLE;
 };
