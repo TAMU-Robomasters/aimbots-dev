@@ -14,16 +14,28 @@ void ToggleHopperCommand::initialize() {
         hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
         hopper->setHopperState(CLOSED);
     } else {
-        hopper->setHopperAngle(state ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
+        hopper->setHopperAngle(state ? HOPPER_OPEN_ANGLE : HOPPER_CLOSED_ANGLE);
         hopper->setHopperState(!state);
     }
 }
 
-void ToggleHopperCommand::execute() {}
+void ToggleHopperCommand::execute() {
+
+    if (drivers->remote.keyPressed(Remote::Key::C)) {
+        wasCPressed = true;
+    }
+
+    if (wasCPressed && !drivers->remote.keyPressed(Remote::Key::C)) {
+        uint8_t state = hopper->getHopperState();
+        hopper->setHopperAngle(state ? HOPPER_OPEN_ANGLE : HOPPER_CLOSED_ANGLE);
+        hopper->setHopperState(!state);
+    }
+
+}
 
 void ToggleHopperCommand::end(bool) {}
 
 bool ToggleHopperCommand::isReady() { return true; }
 
-bool ToggleHopperCommand::isFinished() const { return hopper->isHopperReady(); }
+bool ToggleHopperCommand::isFinished() const { return false; }
 };  // namespace src::Hopper

@@ -51,11 +51,12 @@ void AutoAgitatorIndexerCommand::initialize() {
 void AutoAgitatorIndexerCommand::execute() {
 
     if (drivers->remote.getMouseL()) {
-        comprisedCommandScheduler.addCommand(&runIndexerCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler,&runIndexerCommand);
         unjamming_count = 0;
+        fullyLoaded = false;
     }
     else {
-        comprisedCommandScheduler.addCommand(&stopIndexerCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);
     }
 
     if (abs(feeder->getCurrentRPM()) <= 10.0f && !jamDetected && startupTimeout.execute()) {
@@ -73,10 +74,10 @@ void AutoAgitatorIndexerCommand::execute() {
     }
 
     if (fullyLoaded) {
-        comprisedCommandScheduler.addCommand(&stopFeederCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }
-    else if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand)) {
-        comprisedCommandScheduler.addCommand(&runFeederCommand);
+    else {
+        scheduleIfNotScheduled(this->comprisedCommandScheduler,&runFeederCommand);
     }
     
     comprisedCommandScheduler.run();
