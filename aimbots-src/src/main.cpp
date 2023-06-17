@@ -101,7 +101,7 @@ int main() {
 
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
 
             uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
             drivers->kinematicInformant.updateRobotFrames();
