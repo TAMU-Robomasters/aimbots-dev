@@ -68,8 +68,8 @@ using namespace src::Barrel_Manager;
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
 
-    Increase Chassis Ground Speed: Shift
-    Increase Chassis Ground Speed (larger): Ctrl
+    Decrease Chassis Ground Speed: Shift
+    Decrease Chassis Ground Speed (larger): Ctrl
 
     Gimbal ------------------------------------------------------------
     Aim Using CV: Right Mouse Button

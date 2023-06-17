@@ -9,7 +9,7 @@ DualBarrelFeederCommand::DualBarrelFeederCommand(
     bool& barrelMovingFlag,
     float speed,
     float acceptableHeatThreshold,
-    int UMJAM_TIMER_MS)
+    int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),

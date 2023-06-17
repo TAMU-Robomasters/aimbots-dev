@@ -1,10 +1,11 @@
 #pragma once
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 
 #include "subsystems/feeder/feeder.hpp"
+#include "subsystems/indexer/indexer.hpp"
+
 #include "utils/common_types.hpp"
 #include "utils/ref_helper.hpp"
 #include "utils/robot_specific_inc.hpp"
@@ -18,10 +19,13 @@ public:
     AutoAgitatorIndexerCommand(
         src::Drivers*,
         FeederSubsystem*,
+        src::Indexer::IndexerSubsystem*,
         src::Utils::RefereeHelper*,
-        float speed = FEEDER_DEFAULT_RPM,
+        float feederSpeed,
+        float indexerSpeed,
         float acceptableHeatThreshold = 0.90f,
-        int UNJAM_TIMER_MS = 300);
+        int UNJAM_TIMER_MS = 300,
+        int MAX_UNJAM_COUNT = 3);
     void initialize() override;
 
     void execute() override;
@@ -30,19 +34,24 @@ public:
 
     bool isFinished() const override;
 
-    void setSpeed(float speed) { this->speed = speed; }
+    void setSpeed(float speed) { this->feederSpeed = speed; }
 
     const char* getName() const override { return "run agitator and indexer"; }
 
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+    src::Indexer::IndexerSubsystem* indexer;
+    
     src::Utils::RefereeHelper* refHelper;
 
-    float speed;
+    float feederSpeed;
+    float indexerSpeed;
     float acceptableHeatThreshold;
+    int unjamming_count = 0;
 
     int UNJAM_TIMER_MS;
+    int MAX_UNJAM_COUNT;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
@@ -50,5 +59,3 @@ private:
 };
 
 }  // namespace src::Feeder
-
-#endif
