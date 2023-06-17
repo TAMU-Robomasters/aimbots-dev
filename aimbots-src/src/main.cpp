@@ -60,7 +60,7 @@ static void initializeIo(src::Drivers *drivers);
 static void updateIo(src::Drivers *drivers);
 
 // bmi088 is at 1000Hz.. coincidence? I think not!!11!
-static constexpr float SAMPLE_FREQUENCY = 1000.0f;
+static constexpr float SAMPLE_FREQUENCY = 500.0f;
 
 uint32_t loopTimeDisplay = 0;
 
@@ -90,22 +90,24 @@ int main() {
 #endif
 
     while (1) {
-        uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
-        // every 1ms...
+        // every 2ms...
         if (mainLoopTimeout.execute()) {
+            // }
+            // if (sendMotorTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
-            drivers->kinematicInformant.updateRobotFrames();
-            utils::Music::playPacMan(drivers);
-        }
-        if (sendMotorTimeout.execute()) {
+
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+
+            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
+            drivers->kinematicInformant.updateRobotFrames();
+            loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
+            utils::Music::playPacMan(drivers);
         }
-        loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         modm::delay_us(10);
     }
     return 0;
@@ -147,9 +149,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-#ifdef TARGET_SENTRY
-    drivers->railDistanceSensor.update();
-#endif
+
     drivers->cvCommunicator.updateSerial();
 
     // utils::Music::continuePlayingXPStartupTune(drivers);

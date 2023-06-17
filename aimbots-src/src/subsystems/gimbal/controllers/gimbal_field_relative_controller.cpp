@@ -94,8 +94,8 @@ void GimbalFieldRelativeController::runYawController(
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
-        // chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        // chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
+        chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
+        chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
         // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[i]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
@@ -105,7 +105,6 @@ void GimbalFieldRelativeController::runYawController(
             gimbal->getYawMotorTorque(i));
 
         fieldRelativeVelocityTargetDisplay = fieldRelativeVelocityTarget;
-        velocityFeedforwardOutputDisplay = velocityFeedforward;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
         gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
@@ -113,6 +112,7 @@ void GimbalFieldRelativeController::runYawController(
 }
 
 float pitchAngularErrorDisplay = 0.0f;
+float gravComp = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController() {
     float pitchAngularError =
@@ -137,17 +137,23 @@ void GimbalFieldRelativeController::runPitchController() {
             fieldRelativeVelocityTarget -
             (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_YAW_GEAR_RATIO);
 
-        float velocityFeedforward = CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+        float gravityCompensationFeedforward =
+            -kGRAVITY *
+            cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue());
+
+        float velocityFeedforward = gravityCompensationFeedforward +
+                                    CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
                                         PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) +
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection();
 
         velocityFeedforward = tap::algorithms::limitVal(velocityFeedforward, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
 
-        chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getPitchMotorRPM(i));
+        // chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
+        // chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getPitchMotorRPM(i));
         pitchGimbalMotorPositionDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
         pitchGimbalMotorPositionTargetDisplay = gimbal->getTargetPitchAxisAngle(AngleUnit::Radians);
+        velocityFeedforwardOutputDisplay = velocityFeedforward;
 
         float velocityControllerOutput = pitchVelocityPIDs[i]->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)),

@@ -99,7 +99,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 25.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -114,7 +114,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 3000.0f,  // 1650
+    .kp = 2200.0f,  // 3000
     .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -128,8 +128,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 950.0f,
-    .ki = 60.0f,
+    .kp = 700.0f,
+    .ki = 15.0f,
     .kd = 0.0f,
     .maxICumulative = 3000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -142,9 +142,11 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.8f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+static constexpr float kGRAVITY = 1500.0f;
+static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
@@ -180,8 +182,6 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
-static constexpr float kGRAVITY = 0.0f;
-static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
 
 static Vector3f IMU_MOUNT_POSITION{0.0992f, 0.0f, 0.0534f};
