@@ -22,10 +22,10 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
+#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
@@ -153,12 +153,25 @@ GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeCo
 GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 GimbalToggleAimCommand gimbalToggleAimCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
 
-
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-DualBarrelFeederCommand runDoubleBarrelFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f, UNJAM_TIMER_MS);
-DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f, UNJAM_TIMER_MS);
+DualBarrelFeederCommand runDoubleBarrelFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    0.90f,
+    UNJAM_TIMER_MS);
+DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    0.90f,
+    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);

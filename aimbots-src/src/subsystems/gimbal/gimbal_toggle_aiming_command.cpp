@@ -3,10 +3,10 @@
 namespace src::Gimbal {
 
 GimbalToggleAimCommand::GimbalToggleAimCommand(
-                            src::Drivers* drivers, 
-                            GimbalSubsystem* gimbal, 
-                            GimbalControllerInterface* controller,
-                            src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbal,
+    GimbalControllerInterface* controller,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
@@ -17,18 +17,17 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
 }
 
 void GimbalToggleAimCommand::initialize() {
-    if (comprisedCommandScheduler.isCommandScheduled(&gimbalCVCommand)) comprisedCommandScheduler.removeCommand(&gimbalCVCommand, true);
-    if (!comprisedCommandScheduler.isCommandScheduled(&gimbalFreeAimCommand)) comprisedCommandScheduler.addCommand(&gimbalFreeAimCommand);
+    if (!comprisedCommandScheduler.isCommandScheduled(&gimbalCVCommand))
+        comprisedCommandScheduler.removeCommand(&gimbalCVCommand, true);
+    if (!comprisedCommandScheduler.isCommandScheduled(&gimbalFreeAimCommand))
+        comprisedCommandScheduler.addCommand(&gimbalFreeAimCommand);
 }
 
 void GimbalToggleAimCommand::execute() {
     if (drivers->remote.getMouseR()) {
-        descheduleIfScheduled(this->comprisedCommandScheduler, &gimbalFreeAimCommand, true);
-        comprisedCommandScheduler.addCommand(&gimbalCVCommand);
-    }
-    else if (!comprisedCommandScheduler.isCommandScheduled(&gimbalFreeAimCommand)) {
-        descheduleIfScheduled(this->comprisedCommandScheduler, &gimbalCVCommand, true);
-        comprisedCommandScheduler.addCommand(&gimbalFreeAimCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &gimbalCVCommand);
+    } else {
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &gimbalFreeAimCommand);
     }
     comprisedCommandScheduler.run();
 }
