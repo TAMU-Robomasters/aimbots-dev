@@ -1,17 +1,19 @@
-#include "auto_agitator_indexer_command.hpp"
+#include "dual_barrel_feeder_command.hpp"
 
 namespace src::Feeder {
 
-AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
+DualBarrelFeederCommand::DualBarrelFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     src::Utils::RefereeHelper* refHelper,
+    bool& barrelMovingFlag,
     float speed,
     float acceptableHeatThreshold,
-    int UNJAM_TIMER_MS)
+    int UMJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
+      barrelMovingFlag(barrelMovingFlag),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
@@ -20,13 +22,13 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void AutoAgitatorIndexerCommand::initialize() {
+void DualBarrelFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
 
-void AutoAgitatorIndexerCommand::execute() {
+void DualBarrelFeederCommand::execute() {
     if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
         unjamTimer.restart(UNJAM_TIMER_MS);
@@ -38,14 +40,14 @@ void AutoAgitatorIndexerCommand::execute() {
     }
 }
 
-void AutoAgitatorIndexerCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool AutoAgitatorIndexerCommand::isReady() {
-    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold));
+bool DualBarrelFeederCommand::isReady() {
+    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
 }
 
-bool AutoAgitatorIndexerCommand::isFinished() const {
-    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold));
+bool DualBarrelFeederCommand::isFinished() const {
+    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
 }
 
 }  // namespace src::Feeder

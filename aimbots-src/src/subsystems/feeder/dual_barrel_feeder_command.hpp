@@ -13,15 +13,16 @@
 
 namespace src::Feeder {
 
-class AutoAgitatorIndexerCommand : public TapCommand {
+class DualBarrelFeederCommand : public TapCommand {
 public:
-    AutoAgitatorIndexerCommand(
+    DualBarrelFeederCommand(
         src::Drivers*,
         FeederSubsystem*,
         src::Utils::RefereeHelper*,
+        bool& barrelMovingFlag,
         float speed = FEEDER_DEFAULT_RPM,
         float acceptableHeatThreshold = 0.90f,
-        int UNJAM_TIMER_MS = 300);
+        int UMJAM_TIMER_MS = 300);
     void initialize() override;
 
     void execute() override;
@@ -32,13 +33,14 @@ public:
 
     void setSpeed(float speed) { this->speed = speed; }
 
-    const char* getName() const override { return "run agitator and indexer"; }
+    const char* getName() const override { return "run feeder"; }
 
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     src::Utils::RefereeHelper* refHelper;
 
+    bool& barrelMovingFlag;
     float speed;
     float acceptableHeatThreshold;
 

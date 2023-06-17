@@ -67,8 +67,6 @@ IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, IN
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 
-//TODO: Remove this later
-bool barrelMovingFlag = false;
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -82,8 +80,8 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.50f); //UNJAM_TIMER_MS
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.50f); //UNJAM_TIMER_MS
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);

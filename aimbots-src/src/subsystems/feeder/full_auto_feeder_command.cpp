@@ -6,13 +6,12 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     src::Utils::RefereeHelper* refHelper,
-    bool& barrelMovingFlag,
     float speed,
-    float acceptableHeatThreshold)
+    float acceptableHeatThreshold,
+    int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
-      barrelMovingFlag(barrelMovingFlag),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
@@ -42,11 +41,11 @@ void FullAutoFeederCommand::execute() {
 void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
 bool FullAutoFeederCommand::isReady() {
-    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
+    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold));
 }
 
 bool FullAutoFeederCommand::isFinished() const {
-    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold));
 }
 
 }  // namespace src::Feeder

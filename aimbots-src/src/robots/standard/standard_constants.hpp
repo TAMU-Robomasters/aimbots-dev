@@ -214,6 +214,8 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr int UNJAM_TIMER_MS = 300;
+
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 40.0f,
     .ki = 0.10f,  // 0.10f;
