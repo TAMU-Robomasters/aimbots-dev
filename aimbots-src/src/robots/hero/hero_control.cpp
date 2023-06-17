@@ -44,6 +44,32 @@ using namespace src::Indexer;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 
+// For reference, all possible keyboard inputs:
+// W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
+/*  Standard Control Scheme:
+
+    Chassis -----------------------------------------------------------
+    Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
+    Quick 90-deg Turn Gimbal Yaw (Left): Q
+    Quick 90-deg Turn Gimbal Yaw (Right): E
+
+    Decrease Chassis Ground Speed: Shift
+    Decrease Chassis Ground Speed (larger): Ctrl
+
+    Gimbal ------------------------------------------------------------
+    Aim Using CV: Right Mouse Button
+
+    Shooter -----------------------------------------------------------
+
+    Feeder/Indexer ------------------------------------------------------------
+    Full Auto Shooting: Left Mouse Button
+    Force Reload: R
+
+    UI ----------------------------------------------------------------
+
+
+*/
+
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command

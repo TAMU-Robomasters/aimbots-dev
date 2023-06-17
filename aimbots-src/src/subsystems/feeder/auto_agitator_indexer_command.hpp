@@ -1,10 +1,12 @@
 #pragma once
 
-#include "tap/communication/gpio/leds.hpp"
-#include "tap/control/command.hpp"
-
 #include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/stop_feeder_command.hpp"
+
 #include "subsystems/indexer/indexer.hpp"
+#include "subsystems/indexer/full_auto_indexer_command.hpp"
+#include "subsystems/indexer/stop_indexer_command.hpp"
 
 #include "utils/common_types.hpp"
 #include "utils/ref_helper.hpp"
@@ -12,50 +14,52 @@
 
 #include "drivers.hpp"
 
-namespace src::Feeder {
+using namespace src::Feeder;
+using namespace src::Indexer;
 
-class AutoAgitatorIndexerCommand : public TapCommand {
+class AutoAgitatorIndexerCommand : public TapComprisedCommand {
 public:
     AutoAgitatorIndexerCommand(
         src::Drivers*,
         FeederSubsystem*,
-        src::Indexer::IndexerSubsystem*,
+        IndexerSubsystem*,
         src::Utils::RefereeHelper*,
         float feederSpeed,
         float indexerSpeed,
-        float acceptableHeatThreshold = 0.90f,
+        float acceptableHeatThreshold = 0.80f,
         int UNJAM_TIMER_MS = 300,
         int MAX_UNJAM_COUNT = 3);
-    void initialize() override;
 
+    void initialize() override;
     void execute() override;
+
     void end(bool interrupted) override;
     bool isReady() override;
-
     bool isFinished() const override;
 
-    void setSpeed(float speed) { this->feederSpeed = speed; }
-
-    const char* getName() const override { return "run agitator and indexer"; }
+    const char* getName() const override { return "run agitator and indexer comprised command"; }
 
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
-    src::Indexer::IndexerSubsystem* indexer;
+    IndexerSubsystem* indexer;
     
     src::Utils::RefereeHelper* refHelper;
-
-    float feederSpeed;
-    float indexerSpeed;
-    float acceptableHeatThreshold;
-    int unjamming_count = 0;
 
     int UNJAM_TIMER_MS;
     int MAX_UNJAM_COUNT;
 
-    MilliTimeout startupThreshold;
-    MilliTimeout unjamTimer;
-    float unjamSpeed = 0.0f;
-};
+    bool jamDetected = false;
+    bool fullyLoaded = false;
 
-}  // namespace src::Feeder
+    FullAutoFeederCommand runFeederCommand;
+    StopFeederCommand stopFeederCommand;
+
+    FullAutoIndexerCommand runIndexerCommand;
+    StopIndexerCommand stopIndexerCommand;
+
+    MilliTimeout startupTimeout;
+
+    int unjamming_count = 0;
+
+};

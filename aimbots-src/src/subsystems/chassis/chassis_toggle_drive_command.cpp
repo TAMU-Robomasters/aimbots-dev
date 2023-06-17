@@ -13,6 +13,7 @@ ChassisToggleDriveCommand::ChassisToggleDriveCommand(src::Drivers* drivers, Chas
 }
 
 void ChassisToggleDriveCommand::initialize() {
+    //TODO: Logic is backwards maybe?
     if (!comprisedCommandScheduler.isCommandScheduled(&tokyoCommand)) comprisedCommandScheduler.removeCommand(&tokyoCommand, true);
     if (!comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand)) comprisedCommandScheduler.addCommand(&followGimbalCommand);
 }

@@ -1,6 +1,7 @@
 #include "auto_agitator_indexer_command.hpp"
 
-namespace src::Feeder {
+using namespace src::Feeder;
+using namespace src::Indexer;
 
 AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     src::Drivers* drivers,
@@ -12,28 +13,32 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     float acceptableHeatThreshold,
     int UNJAM_TIMER_MS,
     int MAX_UNJAM_COUNT)
-    : drivers(drivers),
+    : TapComprisedCommand(drivers),
       feeder(feeder),
       indexer(indexer),
       refHelper(refHelper),
-      feederSpeed(feederSpeed),
-      indexerSpeed(indexerSpeed),
-      acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       MAX_UNJAM_COUNT(MAX_UNJAM_COUNT),
-      unjamSpeed(-3000.0f)  //
+      runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1.0f, UNJAM_TIMER_MS),
+      stopFeederCommand(drivers,feeder),
+      runIndexerCommand(drivers,indexer,indexerSpeed, acceptableHeatThreshold),
+      stopIndexerCommand(drivers,indexer) 
 {
+    this->comprisedCommandScheduler.registerSubsystem(feeder);
+    this->comprisedCommandScheduler.registerSubsystem(indexer);
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
 void AutoAgitatorIndexerCommand::initialize() {
-    feeder->setTargetRPM(0.0f);
-    startupThreshold.restart(500);  // delay to wait before attempting unjam
-    unjamTimer.restart(0);
+    if (comprisedCommandScheduler.isCommandScheduled(&runIndexerCommand)) comprisedCommandScheduler.removeCommand(&runIndexerCommand, true);
+    if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand)) comprisedCommandScheduler.addCommand(&runFeederCommand);
+
+    startupTimeout.restart(500);
 }
 
 //The plan
-//Run this either as a default command, or paired to a remote switch that should be "always on" (like how shooter flywheels are)
+//Run this either as a default command, or paired to a remote switch that should be "always on"
 //Read from an additional remote input within this command, as the "shoot" trigger
 
 //While command is running, run agitator at full power
@@ -44,39 +49,44 @@ void AutoAgitatorIndexerCommand::initialize() {
 
 
 void AutoAgitatorIndexerCommand::execute() {
-    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-        feeder->setTargetRPM(unjamSpeed);
-        unjamTimer.restart(UNJAM_TIMER_MS);
-    }
 
-    if (unjamTimer.execute() && unjamming_count < MAX_UNJAM_COUNT) {
-        feeder->setTargetRPM(feederSpeed);
-        startupThreshold.restart(500);
-        unjamming_count++;
-    }
-
-    if (unjamming_count >= MAX_UNJAM_COUNT) {
-        feeder->setTargetRPM(0.0f);
-    }
-
-    if (drivers->remote.getMouseL() && refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold)) {
-        indexer->setTargetRPM(indexerSpeed);
+    if (drivers->remote.getMouseL()) {
+        comprisedCommandScheduler.addCommand(&runIndexerCommand);
         unjamming_count = 0;
     }
     else {
-        indexer->setTargetRPM(0.0f);
+        comprisedCommandScheduler.addCommand(&stopIndexerCommand);
+    }
+
+    if (abs(feeder->getCurrentRPM()) <= 10.0f && !jamDetected && startupTimeout.execute()) {
+        jamDetected = true;
+        unjamming_count++;
+    }
+
+    if (unjamming_count >= MAX_UNJAM_COUNT && !fullyLoaded) {
+        fullyLoaded = true;
     }
 
     if (drivers->remote.keyPressed(Remote::Key::R)) {
         unjamming_count = 0;
+        fullyLoaded = false;
+    }
+
+    if (fullyLoaded) {
+        comprisedCommandScheduler.addCommand(&stopFeederCommand);
+    }
+    else if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand)) {
+        comprisedCommandScheduler.addCommand(&runFeederCommand);
     }
     
-
-
-
+    comprisedCommandScheduler.run();
 }
 
-void AutoAgitatorIndexerCommand::end(bool) { feeder->setTargetRPM(0.0f); indexer->setTargetRPM(0.0f); }
+void AutoAgitatorIndexerCommand::end(bool interrupted) {
+    descheduleIfScheduled(this->comprisedCommandScheduler, &runIndexerCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
+    feeder->setTargetRPM(0.0f); 
+    indexer->setTargetRPM(0.0f); }
 
 bool AutoAgitatorIndexerCommand::isReady() {
     return true;
@@ -85,5 +95,3 @@ bool AutoAgitatorIndexerCommand::isReady() {
 bool AutoAgitatorIndexerCommand::isFinished() const {
     return false;
 }
-
-}  // namespace src::Feeder
