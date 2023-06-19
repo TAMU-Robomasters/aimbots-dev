@@ -2,10 +2,12 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define GIMBAL_UNTETHERED
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */
-static constexpr uint8_t DRIVEN_WHEEL_COUNT = 1;
+static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
@@ -31,7 +33,7 @@ static constexpr float SHIFT_SCALAR = (1.0f / 2);
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 2.0f,
+    .kd = 1.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -43,7 +45,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 35.0f,
     .ki = 0.10f,
     .kd = 0.00f,
     .maxICumulative = 10.0f,
@@ -57,9 +59,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
-    .ki = 0.01f,
-    .kd = 0.0f,
+    .kp = 30.0f,
+    .ki = 0.0f,
+    .kd = 0.15f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -117,24 +119,31 @@ static constexpr int MAX_BURST_LENGTH = 20;
 static constexpr int MIN_BURST_LENGTH = 4;
 
 // CAN Bus 1
-static constexpr MotorID RAIL_WHEEL_ID = MotorID::MOTOR3;
-static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
-static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
 
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
-
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
-
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-
-// CAN Bus 2
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
 
+// static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6; // TODO: update Sentry constants for flex-gimbal
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
+
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+
+// CAN Bus 2
+// Relative to placement of RoboMaster Light Bar (for now)
+
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS2;
+
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+// static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5; // TODO: update Sentry constants for flex-gimbal
+
+// Motor Directions
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
@@ -174,9 +183,9 @@ static constexpr float FULL_RAIL_LENGTH = 2.130f;     // meters, pole center to 
 static constexpr float FULL_RAIL_LENGTH_CM = 213.0f;  // cm
 static constexpr float USABLE_RAIL_LENGTH = FULL_RAIL_LENGTH - (WHEELBASE_WIDTH + RAIL_POLE_DIAMETER);  // in meters
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION =
-    left_sentry_rail_pole_location_matrix +
-    robot_starting_rail_location * src::Utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2);
+static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float,1,3>::zeroMatrix(); // TODO: update world-relative location?
+    // left_sentry_rail_pole_location_matrix +
+    // robot_starting_rail_location * src::Utils::MatrixHelper::rotation_matrix(AngleUnit::Degrees, 45.0f, 2);
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f) * (44.0f / 18.0f);
 
