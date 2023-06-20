@@ -282,11 +282,11 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.076;
+static constexpr float WHEEL_RADIUS = 0.076f;
 
-static constexpr float WHEELBASE_WIDTH = 0.366f;
+static constexpr float WHEELBASE_WIDTH = 0.357f;
 
-static constexpr float WHEELBASE_LENGTH = 0.366f;
+static constexpr float WHEELBASE_LENGTH = 0.357f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;

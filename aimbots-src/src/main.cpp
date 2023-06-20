@@ -131,7 +131,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
 #ifdef TARGET_SENTRY
-    drivers->railDistanceSensor.initialize();
+    // drivers->railDistanceSensor.initialize();
 #endif
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
