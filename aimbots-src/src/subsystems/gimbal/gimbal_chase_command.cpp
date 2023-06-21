@@ -40,14 +40,14 @@ float timestampDisplay;
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q)) wasQPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
         quickTurnOffset += M_PI_2;
     }
 
-    if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;

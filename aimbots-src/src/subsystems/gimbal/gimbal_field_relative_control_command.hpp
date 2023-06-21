@@ -16,6 +16,8 @@ public:
     void initialize() override;
     void execute() override;
 
+    void setIgnoreQuickTurn(bool ignore) {ignoreQuickTurns = ignore;}
+
     bool isReady() override;
     bool isFinished() const override;
     void end(bool interrupted) override;
@@ -28,6 +30,8 @@ private:
 
     bool wasQPressed = false;
     bool wasEPressed = false;
+
+    bool ignoreQuickTurns = false;
 };
 
 }  // namespace src::Gimbal

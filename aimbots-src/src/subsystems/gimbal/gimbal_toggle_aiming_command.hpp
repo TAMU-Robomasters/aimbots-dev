@@ -36,6 +36,8 @@ private:
 
     GimbalChaseCommand gimbalCVCommand;
     GimbalFieldRelativeControlCommand gimbalFreeAimCommand;
+
+    MilliTimeout ignoreQuickTurn;
 };
 
 }  // namespace src::Gimbal

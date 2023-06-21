@@ -20,9 +20,6 @@ void ToggleHopperCommand::initialize() {
 
 void ToggleHopperCommand::execute() {
 
-    commandIsRunning = false;
-    commandIsRunning = true;
-
     cPressedDisplay = wasCPressed;
     hopperStateDisplay = hopperClosed;
 
@@ -33,6 +30,7 @@ void ToggleHopperCommand::execute() {
     if (wasCPressed && !drivers->remote.keyPressed(Remote::Key::C)) {
         hopper->setHopperAngle(hopperClosed ? HOPPER_CLOSED_ANGLE : HOPPER_OPEN_ANGLE);
         hopperClosed = !hopperClosed;
+        hopper->setHopperState(hopperClosed ? CLOSED : OPEN);
         wasCPressed = false;
     }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#ifndef ENGINEER
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
@@ -28,13 +27,17 @@ private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 
-#ifndef ENGINEER
     ChassisFollowGimbalCommand followGimbalCommand;
     ChassisTokyoCommand tokyoCommand;
-#endif
+    ChassisTokyoCommand tokyoLeftCommand;
+    ChassisTokyoCommand tokyoRightCommand;
     bool wasFPressed = false;
+
+    bool preferSpecificSpin = false;
+
+    MilliTimeout qPressed;
+    MilliTimeout ePressed;
+
 };
 
 }  // namespace src::Chassis
-
-#endif

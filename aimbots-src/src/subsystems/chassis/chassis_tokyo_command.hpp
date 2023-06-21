@@ -13,7 +13,7 @@ namespace src::Chassis {
 
 class ChassisTokyoCommand : public TapCommand {
 public:
-    ChassisTokyoCommand(src::Drivers*, ChassisSubsystem*, src::Gimbal::GimbalSubsystem*);
+    ChassisTokyoCommand(src::Drivers*, ChassisSubsystem*, src::Gimbal::GimbalSubsystem*, int spinDirectionOverride = 0);
     void initialize() override;
 
     void execute() override;
@@ -22,12 +22,15 @@ public:
 
     bool isFinished() const override;
 
+    void setRotationDirection(bool rotateLeft) {rotationDirection = (rotateLeft ? 1 : -1);}
+
     const char* getName() const override { return "Chassis Follow Gimbal"; }
 
 private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;
+    int spinDirectionOverride;
 
     float rotationDirection;
 

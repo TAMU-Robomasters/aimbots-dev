@@ -11,26 +11,40 @@ namespace src::Chassis {
 ChassisTokyoCommand::ChassisTokyoCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
-    src::Gimbal::GimbalSubsystem* gimbal)
+    src::Gimbal::GimbalSubsystem* gimbal, int spinDirectionOverride)
     : drivers(drivers),
       chassis(chassis),
-      gimbal(gimbal)  //
+      gimbal(gimbal),
+      spinDirectionOverride(spinDirectionOverride)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
 void ChassisTokyoCommand::initialize() {
     // picks a random direction to begin rotation
-    rotationDirection = (rand() - RAND_MAX / 2) < 0 ? 1 : -1;
+    if (spinDirectionOverride != 0) {
+        rotationDirection = spinDirectionOverride > 0 ? 1 : -1;
+    }
+    else {
+        rotationDirection = (rand() - RAND_MAX / 2) < 0 ? 1 : -1;
+    }
+    
+
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
 }
 
+float rotationDirectionDisplay = 0;
+int overrideValueDisplay;
 float yawAngleFromChassisCenterDisplay = 0.0f;
 
 void ChassisTokyoCommand::execute() {
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;
+
+    rotationDirectionDisplay = rotationDirection;
+    //overrideEnabledDisplay = spinLeftOverride.has_value();
+    overrideValueDisplay = spinDirectionOverride;
 
     // we overwrite desiredRotation later if tokyo drifting
     Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
@@ -75,6 +89,8 @@ void ChassisTokyoCommand::execute() {
 void ChassisTokyoCommand::end(bool interrupted) {
     UNUSED(interrupted);
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
+    rotationDirectionDisplay = 0;
+    overrideValueDisplay = -2;
 }
 
 bool ChassisTokyoCommand::isReady() { return true; }
