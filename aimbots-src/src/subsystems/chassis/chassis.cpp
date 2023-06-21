@@ -13,10 +13,7 @@ namespace src::Chassis {
 ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     : ChassisSubsystemInterface(drivers),
       drivers(drivers),
-#ifdef TARGET_SENTRY
-      railWheel(drivers, RAIL_WHEEL_ID, CHASSIS_BUS, false, "Rail Motor"),
-      railWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-#else
+
       leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
       leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
       rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
@@ -38,7 +35,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
 
 #endif
-#endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -51,10 +47,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
           POWER_LIMIT_SAFETY_FACTOR)
 //
 {
-#ifdef TARGET_SENTRY
-    motors[RAIL][0] = &railWheel;
-    velocityPIDs[RAIL][0] = &railWheelVelPID;
-#else
     motors[LB][0] = &leftBackWheel;
     motors[LF][0] = &leftFrontWheel;
     motors[RF][0] = &rightFrontWheel;
@@ -78,13 +70,12 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     velocityPIDs[RF][1] = &rightFrontYawPosPID;
     velocityPIDs[RB][1] = &rightBackYawPosPID;
 #endif
-#endif
 }
 
 void ChassisSubsystem::initialize() {
-#ifdef TARGET_SENTRY
-    drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
-#endif
+// #ifdef TARGET_SENTRY
+//     drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
+// #endif
     ForAllChassisMotors(&DJIMotor::initialize);
 
     setTargetRPMs(0, 0, 0);

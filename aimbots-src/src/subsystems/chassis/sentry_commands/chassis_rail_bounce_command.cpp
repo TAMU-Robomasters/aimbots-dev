@@ -1,5 +1,5 @@
 #include "chassis_rail_bounce_command.hpp"
-#ifdef TARGET_SENTRY
+#ifdef ULTRASONIC
 
 namespace src::Chassis {
 
@@ -118,4 +118,4 @@ bool ChassisRailBounceCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
-#endif
+#endif // ULTRASONIC

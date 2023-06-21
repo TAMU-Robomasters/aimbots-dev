@@ -1,5 +1,5 @@
 #pragma once
-#ifdef TARGET_SENTRY
+#ifdef ULTRASONIC
 
 #include "tap/control/command.hpp"
 
@@ -48,4 +48,4 @@ private:
 
 }  // namespace src::Chassis
 
-#endif
+#endif // ULTRASONIC

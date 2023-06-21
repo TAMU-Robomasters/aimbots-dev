@@ -1,5 +1,5 @@
 #include "chassis_rail_evade_command.hpp"
-#ifdef TARGET_SENTRY
+#ifdef ULTRASONIC
 
 #include "modm/platform/random/random_number_generator.hpp"
 #include "utils/robot_specific_inc.hpp"
@@ -107,4 +107,4 @@ int32_t ChassisRailEvadeCommand::getNewRPM() {
 
 }  // namespace src::Chassis
 
-#endif
+#endif // ULTRASONIC

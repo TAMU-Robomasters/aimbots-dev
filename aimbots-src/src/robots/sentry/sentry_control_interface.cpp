@@ -12,6 +12,9 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
+static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float SHIFT_SCALAR = 0.6f;
+
 namespace src::Control {
 /**
  * @brief Gets the current X input from the operator.

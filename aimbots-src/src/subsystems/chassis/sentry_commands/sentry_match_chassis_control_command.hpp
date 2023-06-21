@@ -1,9 +1,8 @@
 #pragma once
-#ifdef TARGET_SENTRY
+#ifdef ULTRASONIC
 
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/sentry_commands/chassis_rail_bounce_command.hpp"
-#include "subsystems/chassis/sentry_commands/chassis_rail_evade_command.hpp"
+
 #include "utils/common_types.hpp"
 
 #include "drivers.hpp"
@@ -43,4 +42,4 @@ private:
 
 }  // namespace src::Chassis
 
-#endif
+#endif // ULTRASONIC
