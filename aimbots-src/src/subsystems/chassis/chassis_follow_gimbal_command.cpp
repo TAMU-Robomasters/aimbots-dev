@@ -20,7 +20,7 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
 }
 
 void ChassisFollowGimbalCommand::initialize() {
-    chassis->setTokyoDrift(false);
+    
 }
 
 // Debug variables
@@ -31,6 +31,7 @@ float rotationControllerOutputDisplay = 0.0f;
 float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
 
 void ChassisFollowGimbalCommand::execute() {
+    chassis->setTokyoDrift(false);
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;

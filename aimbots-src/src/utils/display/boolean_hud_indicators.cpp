@@ -77,7 +77,7 @@ modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
 modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
-    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper.isHopperOpen());
+    booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(!hopper.isHopperOpen());
     // booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
     booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(!this->chassis.getTokyoDrift());
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);
