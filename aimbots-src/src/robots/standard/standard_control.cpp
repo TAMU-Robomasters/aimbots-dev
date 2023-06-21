@@ -69,6 +69,9 @@ using namespace src::Barrel_Manager;
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
 
+    Manually Choose Tokyo Direction (Left): F+Q
+    Manually Choose Tokyo Direction (Right): E+Q
+
     Decrease Chassis Ground Speed: Shift
     Decrease Chassis Ground Speed (larger): Ctrl
 

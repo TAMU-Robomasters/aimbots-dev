@@ -14,6 +14,7 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     int UNJAM_TIMER_MS,
     int MAX_UNJAM_COUNT)
     : TapComprisedCommand(drivers),
+      drivers(drivers),
       feeder(feeder),
       indexer(indexer),
       refHelper(refHelper),
@@ -30,10 +31,21 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
+//DEBUG VARIABLES --------------------------------
+
+bool commandIsRunning = false;
+bool unjamDisplay = false;
+bool isLoadedDisplay = false;
+int unjamCountDisplay = 0;
+
+//------------------------------------------------
+
+
 void AutoAgitatorIndexerCommand::initialize() {
     if (comprisedCommandScheduler.isCommandScheduled(&runIndexerCommand)) comprisedCommandScheduler.removeCommand(&runIndexerCommand, true);
     if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand)) comprisedCommandScheduler.addCommand(&runFeederCommand);
 
+    unjamTimer.restart(0);
     startupTimeout.restart(500);
 }
 
@@ -50,7 +62,13 @@ void AutoAgitatorIndexerCommand::initialize() {
 
 void AutoAgitatorIndexerCommand::execute() {
 
-    if (drivers->remote.getMouseL()) {
+    commandIsRunning = true;
+    unjamDisplay = jamDetected;
+    isLoadedDisplay = fullyLoaded;
+    unjamCountDisplay = unjamming_count;
+
+
+    if (drivers->remote.getMouseL() || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler,&runIndexerCommand);
         unjamming_count = 0;
         fullyLoaded = false;
@@ -59,9 +77,15 @@ void AutoAgitatorIndexerCommand::execute() {
         scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);
     }
 
-    if (abs(feeder->getCurrentRPM()) <= 10.0f && !jamDetected && startupTimeout.execute()) {
-        jamDetected = true;
+    if (unjamTimer.execute()) {
+        jamDetected = false;
         unjamming_count++;
+        startupTimeout.restart(500);
+    }
+
+    if (abs(feeder->getCurrentRPM()) <= 10.0f && !jamDetected && startupTimeout.isExpired()) {
+        jamDetected = true;
+        unjamTimer.restart(UNJAM_TIMER_MS);
     }
 
     if (unjamming_count >= MAX_UNJAM_COUNT && !fullyLoaded) {
@@ -87,7 +111,8 @@ void AutoAgitatorIndexerCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &runIndexerCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
     feeder->setTargetRPM(0.0f); 
-    indexer->setTargetRPM(0.0f); }
+    indexer->setTargetRPM(0.0f);
+    commandIsRunning = false; }
 
 bool AutoAgitatorIndexerCommand::isReady() {
     return true;

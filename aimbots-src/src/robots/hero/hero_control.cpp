@@ -20,6 +20,7 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/auto_agitator_indexer_command.hpp"
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -114,6 +115,8 @@ FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, INDEXER_DEFAULT_RP
 FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
 StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
+AutoAgitatorIndexerCommand feederIndexerCommand(drivers(), &feeder, &indexer, &refHelper, FEEDER_DEFAULT_RPM, INDEXER_DEFAULT_RPM, 0.8, UNJAM_TIMER_MS, 3);
+
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
@@ -121,7 +124,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand, &feederIndexerCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -138,7 +141,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand},
+    {/*&runFeederCommand, &runIndexerCommand,*/ &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -183,7 +186,7 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    //drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     //drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);

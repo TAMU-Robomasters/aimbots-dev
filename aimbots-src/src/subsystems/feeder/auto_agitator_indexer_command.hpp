@@ -59,6 +59,7 @@ private:
     StopIndexerCommand stopIndexerCommand;
 
     MilliTimeout startupTimeout;
+    MilliTimeout unjamTimer;
 
     int unjamming_count = 0;
 
