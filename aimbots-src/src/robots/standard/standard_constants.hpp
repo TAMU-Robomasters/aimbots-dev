@@ -230,7 +230,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// clang-format off
+// clang-format on
 static constexpr uint16_t shooter_speed_array[6] = { // ONLY TUNE WITH FULL BATTERY
     15, 4500,  // {ball m/s, flywheel rpm}
     18, 4850,
@@ -268,7 +268,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = false;
 
-static constexpr bool SWAP_DIRECTION = true;
+static constexpr bool BARREL_SWAP_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -299,18 +299,9 @@ static constexpr float WHEELBASE_LENGTH = 0.3284f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
-// 0.205f normally
-
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -409,8 +400,6 @@ static constexpr float CIMU_Z_EULER = 90.0f;
 // These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
 // A positive increase provides a bigger gap between hard stop and barrel
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
-// static constexpr float LEFT_STOP_OFFSET = 0; //In mm
-// static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
 // this is from edge to edge, aligned center to aligned center,
 static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm

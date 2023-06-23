@@ -290,10 +290,7 @@ static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
+
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;

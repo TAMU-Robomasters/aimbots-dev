@@ -12,53 +12,45 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-static constexpr float DEV_BOARD_YAW_OFFSET = M_PI;  // in radians
+/**
+ * @brief GIMBAL SETUP
+ */
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+static constexpr uint8_t YAW_MOTOR_COUNT = 2;
+static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
-    .ki = 0.0f,
-    .kd = 1.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
+    wrapTo0To2PIRange(modm::toRadian(177.80f)),
+    wrapTo0To2PIRange(modm::toRadian(198.50f))};
+static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 20.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
+static constexpr float GIMBAL_YAW_GEAR_RATIO = 36.0f / 80.0f;  // for 2023 Hero
+/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
+ * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
-static constexpr int UNJAM_TIMER_MS = 300;
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
+static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(335.12f))};
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
-static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
+static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
+
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Hero
+/*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
+ * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
+ * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
+
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW =  modm::toRadian(-22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH =  modm::toRadian(22.0f);
+// LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
  * @brief Position PID constants
@@ -91,6 +83,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 0.0f,
     .ki = 0.0f,
@@ -148,25 +141,12 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
-static constexpr float kGRAVITY = 0.0f;
-static constexpr float HORIZON_OFFSET = -0.0f;
-
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 30.0f,
-    .ki = 0.10f,
-    .kd = 0.0f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+static constexpr float kGRAVITY = 0.0f;
+static constexpr float HORIZON_OFFSET = -0.0f;
 
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
@@ -203,8 +183,75 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
-// hero stuff, just saving here until we regenerate hero code from standards lol
-static constexpr uint16_t shooter_speed_array[4] = {10, 3900, 16, 6500};
+// --------------------------------------------------------------------------------------------------------------------------
+
+static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+
+static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
+    .kp = 18.0f,
+    .ki = 0.0f,
+    .kd = 1.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 20.0f,
+    .ki = 0.0f,
+    .kd = 0.8f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr int UNJAM_TIMER_MS = 300;
+
+static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
+    .kp = 15.0f,
+    .ki = 0.0f,
+    .kd = 0.8f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 30.0f,
+    .ki = 0.10f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+
+// clang-format on
+static constexpr uint16_t shooter_speed_array[4] = {
+    10, 3900,  // {ball m/s, flywheel rpm}
+    16, 6500};
+
+// clang-format on
 
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
@@ -239,45 +286,6 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool FEEDER_DIRECTION = false;
 static constexpr bool INDEXER_DIRECTION = false;
 
-static constexpr bool YAW_DIRECTION = false;
-static constexpr bool PITCH_DIRECTION = true;
-
-/**
- * @brief GIMBAL SETUP
- */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
-static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
-
-static constexpr uint8_t YAW_MOTOR_COUNT = 2;
-static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
-
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(0.0f)),
-    wrapTo0To2PIRange(modm::toRadian(0.0f))};
-static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
-
-static constexpr float GIMBAL_YAW_GEAR_RATIO = 36.0f / 80.0f;  // for 2023 Hero
-/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
- * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
- * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
-
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
-static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-144.88f))};
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-
-static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
-
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Hero
-/*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
- * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
- * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
@@ -291,26 +299,10 @@ static constexpr float WHEELBASE_LENGTH = 0.357f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static constexpr float GIMBAL_BARREL_LENGTH = 0.13f;
-
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-static constexpr float YAW_OFFSET_ANGLE = 67.5f;
-static constexpr float PITCH_OFFSET_ANGLE = 270.45f;
-
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = 249.5f;
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 305.0f;
-
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
-
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -368,10 +360,14 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f
 // Rotational speed increment per iteration to apply until rotation setpoint is reached
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
+/**
+ * @brief Transformation Matrices, specific to robot
+ */
+
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
     -0.002201f, // x
     0.1348f, // y
-    -0.0498f,  // z
+    -0.0498f, // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
