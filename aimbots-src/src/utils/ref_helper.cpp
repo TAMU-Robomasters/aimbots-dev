@@ -7,11 +7,12 @@ RefereeHelper::RefereeHelper(src::Drivers* drivers, float bulletSpeedFilterAlpha
       bulletSpeedFilter(src::Utils::Filters::EMAFilter(bulletSpeedFilterAlpha))  //
 {}
 
+uint16_t projectileLimitDisplay = 0;
 uint16_t RefereeHelper::getProjectileSpeedLimit() {
     auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
     auto launcherID = refSysRobotTurretData.launchMechanismID;
 
-    float refSpeedLimit = 0;
+    uint16_t refSpeedLimit = 0;
 
     switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
@@ -29,6 +30,8 @@ uint16_t RefereeHelper::getProjectileSpeedLimit() {
         default:
             break;
     }
+
+    projectileLimitDisplay = refSpeedLimit;
 
     return refSpeedLimit;
 }

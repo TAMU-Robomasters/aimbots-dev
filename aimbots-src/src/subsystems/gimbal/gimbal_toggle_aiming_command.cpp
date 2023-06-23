@@ -26,17 +26,15 @@ void GimbalToggleAimCommand::initialize() {
 }
 
 void GimbalToggleAimCommand::execute() {
-    //This needs to match the button in Chassis Toggle Drive!
+    // This needs to match the button in Chassis Toggle Drive!
     if (drivers->remote.keyPressed(Remote::Key::F)) {
         gimbalCVCommand.setIgnoreQuickTurn(true);
         gimbalFreeAimCommand.setIgnoreQuickTurn(true);
         ignoreQuickTurn.restart(500);
-    }
-    else if (ignoreQuickTurn.execute()) {
+    } else if (ignoreQuickTurn.execute()) {
         gimbalCVCommand.setIgnoreQuickTurn(false);
         gimbalFreeAimCommand.setIgnoreQuickTurn(false);
     }
-
 
     if (drivers->remote.getMouseR()) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &gimbalCVCommand);

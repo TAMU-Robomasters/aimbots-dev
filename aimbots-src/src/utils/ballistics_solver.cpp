@@ -30,7 +30,15 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
     auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
 
     // float projectileSpeed = refHelper->getPredictedProjectileSpeed();
-    float projectileSpeed = defaultProjectileSpeed;
+
+    uint16_t projectileSpeed = 15.0f;
+
+    // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
+    //     if (SHOOTER_SPEED_MATRIX[i][0] == refHelper->getProjectileSpeedLimit()) {
+    //         projectileSpeed = SHOOTER_SPEED_MATRIX[i][1];
+    //         break;
+    //     }
+    // }
 
     MeasuredKinematicState targetKinematicState = {
         .position = plateKinematicState.position,
@@ -43,7 +51,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
 
     if (!findTargetProjectileIntersection(
             targetKinematicState,
-            projectileSpeed,
+            static_cast<float>(projectileSpeed),
             3,
             &lastBallisticsSolution->pitchAngle,
             &lastBallisticsSolution->yawAngle,

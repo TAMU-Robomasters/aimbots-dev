@@ -24,7 +24,7 @@ public:
     }
 
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
-    void runPitchController() override;
+    void runPitchController(std::optional<float> velocityLimit) override;
 
     inline SmoothPID* getYawPositionPID() { return yawPositionPIDs[0]; }
     inline SmoothPID* getPitchPositionPID() { return pitchPositionPIDs[0]; }
