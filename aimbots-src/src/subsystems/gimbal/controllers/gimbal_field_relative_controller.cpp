@@ -116,7 +116,7 @@ void GimbalFieldRelativeController::runYawController(
 float pitchAngularErrorDisplay = 0.0f;
 float gravComp = 0.0f;
 
-void GimbalFieldRelativeController::runPitchController() {
+void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
     float pitchAngularError =
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().difference(
             this->getTargetPitch(AngleUnit::Radians));
@@ -134,6 +134,11 @@ void GimbalFieldRelativeController::runPitchController() {
                                                             src::Informants::AngularAxis::PITCH_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_PITCH_GEAR_RATIO);
+
+        if (velocityLimit.has_value()) {
+            fieldRelativeVelocityTarget =
+                tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
+        }
 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget -

@@ -2,6 +2,8 @@
 
 #include <utils/common_types.hpp>
 
+#include "tap/communication/sensors/buzzer/buzzer.hpp"
+
 static inline float wrapAngleToPiRange(float angle) { return fmodf(angle + M_PI, M_TWOPI) - M_PI; }
 
 namespace src::Gimbal {
@@ -56,8 +58,10 @@ void GimbalSubsystem::refresh() {
 
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
         if (!yawMotors[i]->isMotorOnline()) {
+            // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
         }
+        // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
         
 

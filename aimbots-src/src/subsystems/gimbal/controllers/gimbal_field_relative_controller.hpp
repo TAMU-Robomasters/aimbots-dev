@@ -34,7 +34,7 @@ public:
     }
 
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
-    void runPitchController() override;
+    void runPitchController(std::optional<float> velocityLimit) override;
 
     bool isOnline() const;
 

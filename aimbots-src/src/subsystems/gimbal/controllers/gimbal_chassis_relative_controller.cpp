@@ -38,7 +38,9 @@ void GimbalChassisRelativeController::runYawController(std::optional<float> velo
     }
 }
 
-void GimbalChassisRelativeController::runPitchController() {
+void GimbalChassisRelativeController::runPitchController(std::optional<float> velocityLimit) {
+    UNUSED(velocityLimit);
+
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         pitchMotorSetpointErrorDisplay = gimbal->getPitchMotorSetpointError(i, AngleUnit::Degrees);
