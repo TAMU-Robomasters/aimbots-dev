@@ -17,13 +17,13 @@ static constexpr float INPUT_Y_INC = 0.003f;
 static constexpr float INPUT_XY_STOP_INC = 0.03f;
 static constexpr float INPUT_R_INC = 0.003f;
 
-static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.3f;
-static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.15f;
+static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
+static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
 static constexpr int16_t MOUSE_YAW_MAX = 1000;
 static constexpr int16_t MOUSE_PITCH_MAX = 1000;
-static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_YAW_MAX);
-static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (5.0f / MOUSE_PITCH_MAX);
+static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (0.15f / MOUSE_YAW_MAX);
+static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (0.1f / MOUSE_PITCH_MAX);
 
 static constexpr float CTRL_SCALAR = (1.0f / 4);
 static constexpr float SHIFT_SCALAR = 0.6f;

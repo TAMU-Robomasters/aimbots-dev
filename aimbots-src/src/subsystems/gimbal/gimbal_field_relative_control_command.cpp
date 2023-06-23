@@ -51,8 +51,8 @@ void GimbalFieldRelativeControlCommand::execute() {
         AngleUnit::Radians,
         controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput());
 
-    //controller->runYawController();
-    //controller->runPitchController();
+    controller->runYawController();
+    controller->runPitchController();
 }
 
 bool GimbalFieldRelativeControlCommand::isReady() { return true; }

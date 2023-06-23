@@ -100,6 +100,8 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Define commands here ---------------------------------------------------
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 

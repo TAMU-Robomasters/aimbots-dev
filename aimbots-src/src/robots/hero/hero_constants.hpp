@@ -85,11 +85,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 5000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -99,11 +99,11 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = 35,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -290,7 +290,7 @@ static constexpr bool INDEXER_DIRECTION = false;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.076f;
+static constexpr float WHEEL_RADIUS = 0.07663f;
 
 static constexpr float WHEELBASE_WIDTH = 0.357f;
 
