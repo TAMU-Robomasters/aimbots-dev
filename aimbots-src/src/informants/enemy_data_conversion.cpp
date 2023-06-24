@@ -94,6 +94,10 @@ float targetPositionXFutureDisplay = 0.0f;
 float targetVelocityXFutureDisplay = 0.0f;
 float targetAccelerationXFutureDisplay = 0.0f;
 
+float targetPositionYFutureDisplay = 0.0f;
+float targetVelocityYFutureDisplay = 0.0f;
+float targetAccelerationYFutureDisplay = 0.0f;
+
 float targetPositionZFutureDisplay = 0.0f;
 float targetVelocityZFutureDisplay = 0.0f;
 float targetAccelerationZFutureDisplay = 0.0f;
@@ -116,6 +120,10 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
     targetAccelerationXFutureDisplay = xPlate.getZ();
+
+    targetPositionYFutureDisplay = yPlate.getX();
+    targetVelocityYFutureDisplay = yPlate.getY();
+    targetAccelerationYFutureDisplay = yPlate.getZ();
 
     targetPositionZFutureDisplay = zPlate.getX();
     targetVelocityZFutureDisplay = zPlate.getY();
