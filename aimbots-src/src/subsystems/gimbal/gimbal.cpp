@@ -34,6 +34,7 @@ float pitchOutputDisplay = 0.0f;
 float yawOutputDisplay = 0.0f;
 
 float currentYawAxisAngleDisplay = 0.0f;
+float currByFuncYawAngleDisplay = 0;
 float currentPitchAxisAngleDisplay = 0.0f;
 
 float currentYawMotorAngleDisplay = 0.0f;
@@ -134,6 +135,7 @@ void GimbalSubsystem::refresh() {
     }
 
     currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getValue());
+    currByFuncYawAngleDisplay = modm::toDegree(this->getCurrentYawAxisAngle(AngleUnit::Radians));
     currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getValue());
 
     // update gimbal orientation buffer

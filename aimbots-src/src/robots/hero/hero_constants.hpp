@@ -85,9 +85,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 21.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.125f,
     .maxICumulative = 5000.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
     .tQDerivativeKalman = 1.0f,
@@ -99,10 +99,10 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
     .kd = 0.0f,
-    .maxICumulative = 10.0f,
+    .maxICumulative = 1000.0f,
     .maxOutput = 35,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -114,8 +114,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 1500.0f,
+    .ki = 20.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -128,8 +128,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 500.0f,
+    .ki = 17.0f,
     .kd = 0.0f,
     .maxICumulative = 1500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -145,22 +145,22 @@ static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
-static constexpr float kGRAVITY = 0.0f;
+static constexpr float kGRAVITY = 4500.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
-                                                                    {1.5f, 3'000.0f},
-                                                                    {5.25f, 6'000.0f},
-                                                                    {9.0f, 9'000.0f},
-                                                                    {13.2f, 12'000.0f},
-                                                                    {17.2f, 15'000.0f},
-                                                                    {21.0f, 18'000.0f},
-                                                                    {24.85f, 21'000.0f},
-                                                                    {28.6f, 24'000.0f},
-                                                                    {29.75f, 27'000.0f},
-                                                                    {29.9f, 30'000.0f}
+                                                                    {1.75f, 3'000.0f},
+                                                                    {6.0f, 6'000.0f},
+                                                                    {10.2f, 9'000.0f},
+                                                                    {14.4f, 12'000.0f},
+                                                                    {18.8f, 15'000.0f},
+                                                                    {23.05f, 18'000.0f},
+                                                                    {27.30f, 21'000.0f},
+                                                                    {31.5f, 24'000.0f},
+                                                                    {32.71f, 27'000.0f},
+                                                                    {32.72f, 30'000.0f}
                                                                     };
 
 
@@ -185,7 +185,7 @@ const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDF
 
 // --------------------------------------------------------------------------------------------------------------------------
 
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+static Vector3f IMU_MOUNT_POSITION{-0.0035f, 0.101f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
@@ -335,7 +335,7 @@ static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .kp = 1.25f,
     .ki = 0.0f,
-    .kd = 0.00625f,
+    .kd = 0.03f,
     .maxICumulative = 10.0f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -392,4 +392,4 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis
 
 static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 0.0f;
+static constexpr float CIMU_Z_EULER = 90.0f;

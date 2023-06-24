@@ -247,10 +247,10 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-
-    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&gui);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
+
+    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
 }
 
 // Initialize subsystems here ---------------------------------------------

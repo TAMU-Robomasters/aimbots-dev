@@ -39,8 +39,7 @@ void GimbalFieldRelativeControlCommand::execute() {
         quickTurnOffset -= M_PI_2;
     }
 
-    gimbalYawInputDisplay =
-        controller->getTargetYaw(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalYawInput();
+    gimbalYawInputDisplay = drivers->controlOperatorInterface.getGimbalYawInput();
 
     controller->setTargetYaw(
         AngleUnit::Radians,

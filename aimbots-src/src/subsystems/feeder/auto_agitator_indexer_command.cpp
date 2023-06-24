@@ -112,6 +112,8 @@ void AutoAgitatorIndexerCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
     feeder->setTargetRPM(0.0f); 
     indexer->setTargetRPM(0.0f);
+    unjamming_count = 0;
+    fullyLoaded = false;
     commandIsRunning = false; }
 
 bool AutoAgitatorIndexerCommand::isReady() {
