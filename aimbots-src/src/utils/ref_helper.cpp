@@ -85,35 +85,40 @@ bool RefereeHelper::isBarrelHeatUnderLimit(float percentageOfLimit) {
     return (lastHeat <= (static_cast<float>(heatLimit) * percentageOfLimit));
 }
 
-RefSerialRxData::GameStage RefereeHelper::getGameStage() {
-    auto gameData = drivers->refSerial.getGameData();
-    return gameData.gameStage;
-}
-
-// Returns 0 for LEFT, 1 for RIGHT, -1 as an error
-int16_t RefereeHelper::getCurrentBarrel() {
+bool RefereeHelper::isSpecificBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID) {
     auto turretData = drivers->refSerial.getRobotData().turret;
-    auto launcherID = turretData.launchMechanismID;
 
-    int16_t barrelID = -1;
+    uint16_t lastHeat = 0;
+    uint16_t heatLimit = 0;
 
+    auto launcherID = barrelID;
     switch (launcherID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            barrelID = 1;  // Don't worry about it
+            lastHeat = turretData.heat17ID1;
+            heatLimit = turretData.heatLimit17ID1;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            barrelID = 0;  // Don't worry about it
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
-            barrelID = -1;  // Don't really expect this to happen
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
             break;
         }
         default:
+            return true;
             break;
     }
-    return barrelID;
+
+    return (lastHeat <= (static_cast<float>(heatLimit) * percentageOfLimit));
+}
+
+RefSerialRxData::GameStage RefereeHelper::getGameStage() {
+    auto gameData = drivers->refSerial.getGameData();
+    return gameData.gameStage;
 }
 
 }  // namespace src::Utils

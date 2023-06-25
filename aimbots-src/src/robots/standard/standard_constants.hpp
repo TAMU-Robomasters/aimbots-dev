@@ -396,7 +396,12 @@ static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 90.0f;
 
-// Barrel Manager Constants
+//This array holds the IDs of all speed monitor barrels on the robot
+static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+
+/**
+ * @brief Barrel Manager Constants
+ */
 // These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
 // A positive increase provides a bigger gap between hard stop and barrel
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
@@ -419,7 +424,6 @@ static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
 // When adjusting, also change the constant above to find an appropriate match between the two
 static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
 
-// TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .kp = 1000.0f,
     .ki = 0.0f,

@@ -9,7 +9,7 @@
 
 #ifdef BARREL_SWAP_COMPATIBLE
 
-namespace src::Barrel_Manager {
+namespace src::BarrelManager {
 
 class BarrelSwapCommand : public TapCommand {
 public:
@@ -49,6 +49,6 @@ private:
 
 };
 
-}  // namespace src::Barrel_Manager
+}  // namespace src::BarrelManager
 
 #endif

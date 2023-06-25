@@ -48,7 +48,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(0.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(360.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -84,10 +84,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.0f,
-    .maxICumulative = 1.0f,
+    .maxICumulative = 5000.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -98,11 +98,11 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.0f,
-    .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,
+    .maxICumulative = 1000.0f,
+    .maxOutput = 35.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -113,7 +113,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 0.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -185,9 +185,9 @@ const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDF
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 1.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -212,7 +212,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 500;
+static constexpr int UNJAM_TIMER_MS = 300;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 40.0f,
@@ -230,7 +230,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 
 // clang-format off
 // Sentry shoots at the speed of death
-static constexpr uint16_t shooter_speed_array[2] = {30, 7000};  // {m/s, rpm}
+static constexpr uint16_t shooter_speed_array[2] = {30, 7050};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -238,10 +238,6 @@ static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
-
-static constexpr int MAX_BURST_LENGTH = 20;
-static constexpr int MIN_BURST_LENGTH = 4;
-
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -256,7 +252,7 @@ static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
@@ -274,7 +270,7 @@ static constexpr bool FEEDER_DIRECTION = false;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.076f;
+static constexpr float WHEEL_RADIUS = 0.07663f;
 
 static constexpr float WHEELBASE_WIDTH = 0.357f; // updated for 2023
 
@@ -282,9 +278,6 @@ static constexpr float WHEELBASE_LENGTH = 0.357f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
-
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.0f;
 
 static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
@@ -384,7 +377,12 @@ static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 0.0f;
 
-// // PITCH PATROL FUNCTION CONSTANTS
-// static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
-// static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
-// static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
+//This array holds the IDs of all speed monitor barrels on the robot
+static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+
+// PITCH PATROL FUNCTION CONSTANTS
+//TODO: Gimbal Control Command needs to be modified to work in radians, and then convert these constants.
+static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
+static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
+static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
+static constexpr float PITCH_OFFSET_ANGLE = 0; // In degrees currently

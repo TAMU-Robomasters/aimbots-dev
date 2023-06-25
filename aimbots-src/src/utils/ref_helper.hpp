@@ -20,6 +20,8 @@ public:
 
     bool isBarrelHeatUnderLimit(float percentageOfLimit);
 
+    bool isSpecificBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
+
     int16_t getCurrentBarrel();
 
     RefSerialRxData::GameStage getGameStage();

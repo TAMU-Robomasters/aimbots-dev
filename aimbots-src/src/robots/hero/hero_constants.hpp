@@ -393,3 +393,6 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis
 static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 90.0f;
+
+//This array holds the IDs of all speed monitor barrels on the robot
+static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};

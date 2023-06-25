@@ -2,7 +2,7 @@
 
 #ifdef BARREL_SWAP_COMPATIBLE
 
-namespace src::Barrel_Manager {
+namespace src::BarrelManager {
 
 BarrelSwapCommand::BarrelSwapCommand(src::Drivers* drivers, BarrelManagerSubsystem* barrelManager, src::Utils::RefereeHelper* RefHelper, bool &barrelMovingFlag, bool &barrelCaliDoneFlag, float ACCEPTABLE_HEAT_PERCENTAGE) : drivers(drivers),
     barrelManager(barrelManager),
@@ -28,7 +28,6 @@ bool isBarAlignedDisplay = false;
 bool wasSwapDisplay = false;
 
 float errorDisplay = 0;
-float deriDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
 int16_t currentBarrelDisplay = 0;
@@ -71,7 +70,6 @@ void BarrelSwapCommand::execute() {
         float swapPositionPIDOutput = swapMotorPID.getOutput();
 
         errorDisplay = swapMotorPID.getError();
-        deriDisplay = swapMotorPID.getDerivative();
 
         PIDDisplay = swapPositionPIDOutput;
         positionErrorDisplay = positionControllerError;
@@ -88,13 +86,13 @@ void BarrelSwapCommand::execute() {
         }
 
 
-        float stickSwitchThres = 0.1;
+        /*float stickSwitchThres = 0.1;
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
             //barrelManager->setSide(barrelSide::RIGHT);
         }
         if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres && drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
             //barrelManager->setSide(barrelSide::LEFT);
-        }
+        }*/
 
         if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {
             wasLogicSwitchRequested = false;
@@ -102,11 +100,21 @@ void BarrelSwapCommand::execute() {
 
         wasSwapDisplay = wasLogicSwitchRequested;
         heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE);
-        currentBarrelDisplay = refHelper->getCurrentBarrel();
 
-        if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
+        /*if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
-            if (refHelper->getCurrentBarrel() == barrelSide::LEFT) {
+            if (barrelManager->getSide() == barrelSide::LEFT) {
+                barrelManager->setSide(barrelSide::RIGHT);
+            }
+            else {
+                barrelManager->setSide(barrelSide::LEFT);
+            }
+           
+        }*/
+        
+        if (!refHelper->isSpecificBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE, barrelManager->getBarrelSideID()) && !wasLogicSwitchRequested) {
+            wasLogicSwitchRequested = true;
+            if (barrelManager->getSide() == barrelSide::LEFT) {
                 barrelManager->setSide(barrelSide::RIGHT);
             }
             else {
@@ -114,8 +122,6 @@ void BarrelSwapCommand::execute() {
             }
            
         }
-        
-
 
     }
     else {
@@ -135,6 +141,6 @@ bool BarrelSwapCommand::isReady() { return true; }
 
 bool BarrelSwapCommand::isFinished() const { return false; }
 
-}  // namespace src::Barrel_Manager
+}  // namespace src::BarrelManager
 
 #endif

@@ -93,10 +93,10 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &g
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
-// ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  Likely to be changed to different evasion
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  //Likely to be changed to different evasion
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController);
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController, 0.0f, 0.0f, 0.0f, 0.0f); //TODO: Add constants to the sentry file and place them here
+GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController, PITCH_PATROL_AMPLITUDE, PITCH_PATROL_FREQUENCY, PITCH_PATROL_OFFSET, PITCH_OFFSET_ANGLE); //TODO: Add constants to the sentry file and place them here
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -112,20 +112,23 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {&matchChassisControlCommand, &matchFiringControlCommand, &matchGimbalControlCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand, /*gimbalControlCommand*/},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
 // Runs shooter only
-HoldCommandMapping rightSwitchMid(drivers(), {&runShooterCommand}, 
-RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchMid(
+    drivers(), 
+    {&runShooterCommand}, 
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
@@ -171,10 +174,12 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchUp);
+    
     drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    
 }
 
 }  // namespace SentryControl

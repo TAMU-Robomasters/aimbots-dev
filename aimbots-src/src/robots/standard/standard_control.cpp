@@ -58,7 +58,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
 using namespace src::GUI;
-using namespace src::Barrel_Manager;
+using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -111,6 +111,8 @@ namespace StandardControl {
 
 src::Utils::RefereeHelper refHelper(drivers());
 
+BarrelID currentBarrel = BARREL_IDS[0]; //This is technically a command flag, but it needs to be defined before the barrel manager subsystem
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
@@ -134,7 +136,9 @@ BarrelManagerSubsystem barrelManager(
     LEAD_SCREW_TICKS_PER_MM,
     LEAD_SCREW_CURRENT_SPIKE_TORQUE,
     LEAD_SCREW_CALI_OUTPUT,
-    BARREL_SWAP_POSITION_PID_CONFIG);
+    BARREL_SWAP_POSITION_PID_CONFIG,
+    BARREL_IDS,
+    currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
