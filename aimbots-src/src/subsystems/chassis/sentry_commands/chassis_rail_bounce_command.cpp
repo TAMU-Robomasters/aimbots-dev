@@ -1,5 +1,4 @@
 #include "chassis_rail_bounce_command.hpp"
-#ifdef ULTRASONIC
 
 namespace src::Chassis {
 
@@ -14,7 +13,7 @@ ChassisRailBounceCommand::ChassisRailBounceCommand(src::Drivers* drivers, Chassi
       railTraverseProfile(nullptr) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 
-    static constexpr float railTargetsArray[2] = {leftRailBound, rightRailBound};
+    static constexpr float railTargetsArray[2] = {0, 1};
     railTargets = Matrix<float, 2, 1>(railTargetsArray);
 }
 
@@ -24,10 +23,7 @@ float rightRailBoundDisplay = 0.0f;
 float displacementTargetDisplay = 0.0f;
 
 void ChassisRailBounceCommand::initialize() {
-    leftRailBoundDisplay = leftRailBound;
-    rightRailBoundDisplay = rightRailBound;
-
-    float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
+    float currRailPosition = 0/*drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X]*/;
 
     float displacementTarget = railTargets[railTargetIndex][X] - currRailPosition;
 
@@ -60,8 +56,9 @@ float currTimeDisplay = 0.0f;
 
 void ChassisRailBounceCommand::execute() {
     float currTime = tap::arch::clock::getTimeMilliseconds();
-    float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
-    currRailPositionDisplay = currRailPosition;
+    //Gets current location
+    //float currRailPosition = drivers->fieldRelativeInformant.getRailRelativeRobotPosition()[0][X];
+    //currRailPositionDisplay = currRailPosition;
     railTargetDisplay = railTargets[railTargetIndex][X];
     railTargetIndexDisplay = railTargetIndex;
 
@@ -78,7 +75,7 @@ void ChassisRailBounceCommand::execute() {
         railTargetIndex = (railTargetIndex + 1) % railTargets.getNumberOfRows();
 
         // float displacementTarget = railTargets[railTargetIndex][X] - railTargets[(railTargetIndex + 1) % 2][X];
-        float displacementTarget = railTargets[railTargetIndex][X] - currRailPosition;
+        float displacementTarget = railTargets[railTargetIndex][X] - 0/*currRailPosition*/;
 
         if (displacementTarget < 0.0f) {
             profilerDirection = -1;
@@ -117,5 +114,3 @@ bool ChassisRailBounceCommand::isReady() { return true; }
 bool ChassisRailBounceCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
-
-#endif // ULTRASONIC

@@ -10,7 +10,7 @@ namespace src::Gimbal {
 
 class SentryMatchGimbalControlCommand : public TapComprisedCommand {
    public:
-    SentryMatchGimbalControlCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*, int chaseTimeoutMillis);
+    SentryMatchGimbalControlCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*, src::Utils::Ballistics::BallisticsSolver*, int chaseTimeoutMillis);
 
     void initialize() override;
     void execute() override;
@@ -26,6 +26,8 @@ class SentryMatchGimbalControlCommand : public TapComprisedCommand {
     GimbalSubsystem* gimbal;
 
     GimbalChassisRelativeController* controller;
+
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     GimbalPatrolCommand patrolCommand;
     GimbalChaseCommand chaseCommand;

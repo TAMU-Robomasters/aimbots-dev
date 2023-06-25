@@ -1,7 +1,9 @@
 #pragma once
-#ifdef ULTRASONIC
 
 #include "subsystems/chassis/chassis.hpp"
+
+#include "chassis_rail_bounce_command.hpp"
+#include "chassis_rail_evade_command.hpp"
 
 #include "utils/common_types.hpp"
 
@@ -41,5 +43,3 @@ private:
 };
 
 }  // namespace src::Chassis
-
-#endif // ULTRASONIC

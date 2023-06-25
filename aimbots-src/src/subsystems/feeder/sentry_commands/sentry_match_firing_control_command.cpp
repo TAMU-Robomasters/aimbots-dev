@@ -17,17 +17,19 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     ShooterSubsystem* shooter,
+    src::Utils::RefereeHelper* refHelper,
     src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
       shooter(shooter),
+      refHelper(refHelper),
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
-      burstFeederCommand(drivers, feeder, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder),
+      burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
+      fullAutoFeederCommand(drivers, feeder, refHelper),
       stopShooterCommand(drivers, shooter),
-      runShooterCommand(drivers, shooter)  //
+      runShooterCommand(drivers, shooter, refHelper)  //
 {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
     this->comprisedCommandScheduler.registerSubsystem(shooter);
@@ -49,7 +51,7 @@ void SentryMatchFiringControlCommand::execute() {
             drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FIRE) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
-            float targetDepth = drivers->cvCommunicator.getLastValidMessage().depth;  // in meters
+            float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetZ;  //TODO: Replace this this the appropriate kinematic informant function
 
             float feederSpeed = MAX_FEEDER_SPEED;
             float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage

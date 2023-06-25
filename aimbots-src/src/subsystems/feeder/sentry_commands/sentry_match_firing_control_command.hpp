@@ -28,7 +28,7 @@ static constexpr float SENTRY_SHOOTER_MAX_ACCEL = 2.5f;
 
 class SentryMatchFiringControlCommand : public TapComprisedCommand {
    public:
-    SentryMatchFiringControlCommand(src::Drivers*, FeederSubsystem*, ShooterSubsystem*, src::Chassis::ChassisMatchStates& chassisState);
+    SentryMatchFiringControlCommand(src::Drivers*, FeederSubsystem*, ShooterSubsystem*, src::Utils::RefereeHelper*, src::Chassis::ChassisMatchStates& chassisState);
 
     void initialize() override;
     void execute() override;
@@ -43,6 +43,7 @@ class SentryMatchFiringControlCommand : public TapComprisedCommand {
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     ShooterSubsystem* shooter;
+    src::Utils::RefereeHelper* refHelper;
 
     src::Chassis::ChassisMatchStates& chassisState;
 

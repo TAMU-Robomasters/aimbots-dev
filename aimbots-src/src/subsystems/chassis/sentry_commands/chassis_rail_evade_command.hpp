@@ -1,5 +1,4 @@
 #pragma once
-#ifdef ULTRASONIC
 
 #include "tap/control/command.hpp"
 
@@ -47,5 +46,3 @@ private:
 };
 
 }  // namespace src::Chassis
-
-#endif // ULTRASONIC
