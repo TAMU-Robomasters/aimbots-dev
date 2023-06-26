@@ -4,6 +4,7 @@
 
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
+#include "informants/odometry/chassis_kf_odometry.hpp"
 #include "transformers/robot_frames.hpp"
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
@@ -13,6 +14,10 @@ class Drivers;
 }  // namespace src
 namespace src::Gimbal {
 class GimbalSubsystem;
+}
+
+namespace src::Chassis {
+class ChassisSubsystem;
 }
 
 namespace src::Informants {
@@ -26,7 +31,12 @@ public:
 
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
-    void registerGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbalSubsystem) { this->gimbalSubsystem = gimbalSubsystem; }
+    void registerSubsystems(
+        src::Gimbal::GimbalSubsystem* gimbalSubsystem,
+        src::Chassis::ChassisSubsystem* chassisSubsystem) {
+        this->gimbalSubsystem = gimbalSubsystem;
+        this->chassisSubsystem = chassisSubsystem;
+    }
 
     void initialize(float imuFrequency, float imukP, float imukI);
     void recalibrateIMU();
@@ -61,8 +71,10 @@ public:
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
+    src::Chassis::ChassisSubsystem* chassisSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
+
     src::Utils::KinematicStateVector imuLinearXState;
     src::Utils::KinematicStateVector imuLinearYState;
     src::Utils::KinematicStateVector imuLinearZState;
@@ -87,6 +99,8 @@ private:
         chassisLinearXState,
         chassisLinearYState,
         chassisLinearZState};
+
+    src::Informants::Odometry::ChassisKFOdometry chassisKFOdometry;
 };
 
 }  // namespace src::Informants

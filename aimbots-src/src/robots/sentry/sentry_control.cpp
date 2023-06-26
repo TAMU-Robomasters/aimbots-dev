@@ -1,13 +1,13 @@
 #ifdef TARGET_SENTRY
 
+#include "informants/transformers/robot_frames.hpp"
+#include "utils/ballistics_solver.hpp"
 #include "utils/common_types.hpp"
+#include "utils/ref_helper.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
 
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
-#include "utils/ref_helper.hpp"
 
 //
 #include "tap/control/command_mapper.hpp"
@@ -93,10 +93,17 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &g
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
-ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  //Likely to be changed to different evasion
+ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController);
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalController, PITCH_PATROL_AMPLITUDE, PITCH_PATROL_FREQUENCY, PITCH_PATROL_OFFSET, PITCH_OFFSET_ANGLE); //TODO: Add constants to the sentry file and place them here
+GimbalPatrolCommand gimbalPatrolCommand(
+    drivers(),
+    &gimbal,
+    &gimbalController,
+    PITCH_PATROL_AMPLITUDE,
+    PITCH_PATROL_FREQUENCY,
+    PITCH_PATROL_OFFSET,
+    PITCH_OFFSET_ANGLE);  // TODO: Add constants to the sentry file and place them here
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -126,8 +133,8 @@ HoldCommandMapping leftSwitchUp(
 
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
-    drivers(), 
-    {&runShooterCommand}, 
+    drivers(),
+    {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
@@ -143,7 +150,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
 
-    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -176,10 +183,9 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
-    
+
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
-    
 }
 
 }  // namespace SentryControl

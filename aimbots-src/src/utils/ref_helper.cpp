@@ -114,7 +114,6 @@ bool RefereeHelper::isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID bar
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
 
-    auto launcherID = barrelID;
     switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;

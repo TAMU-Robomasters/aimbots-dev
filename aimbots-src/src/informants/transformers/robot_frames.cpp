@@ -57,10 +57,6 @@ void RobotFrames::updateFrames(
     fieldFrame.setOrigin(
         chassis_orientation_relative_to_world_orientation * robotPositionRelativeToStartPosition +
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD);
-
-    // cameraAtCVUpdateFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
-    // cameraAtCVUpdateFrame.setOrigin(-1 * camera_origin_relative_to_chassis_origin);
-    // TODO: Check if correct
 }
 
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {

@@ -111,7 +111,8 @@ namespace StandardControl {
 
 src::Utils::RefereeHelper refHelper(drivers());
 
-BarrelID currentBarrel = BARREL_IDS[0]; //This is technically a command flag, but it needs to be defined before the barrel manager subsystem
+BarrelID currentBarrel =
+    BARREL_IDS[0];  // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
@@ -254,7 +255,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gui);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
 
-    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------

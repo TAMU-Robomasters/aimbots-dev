@@ -81,7 +81,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
 HopperSubsystem hopper(
     drivers(),
-    HOPPER_PIN, 
+    HOPPER_PIN,
     HOPPER_MAX_PWM,
     HOPPER_MIN_PWM,
     HOPPER_PWM_RAMP_SPEED,
@@ -180,7 +180,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
 
-    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal);
 }
 
 // Initialize subsystems here ---------------------------------------------

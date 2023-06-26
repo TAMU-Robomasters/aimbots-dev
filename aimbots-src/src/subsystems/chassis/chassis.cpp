@@ -23,7 +23,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
       rightFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
       rightBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
-
 #ifdef SWERVE
       leftBackYaw(drivers, LEFT_BACK_YAW_ID, CHASSIS_BUS, false, "Left Back Yaw Motor"),
       leftFrontYaw(drivers, LEFT_FRONT_YAW_ID, CHASSIS_BUS, false, "Left Front Yaw Motor"),
@@ -33,7 +32,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       leftFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
       rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
-
 #endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -57,7 +55,25 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     velocityPIDs[RF][0] = &rightFrontWheelVelPID;
     velocityPIDs[RB][0] = &rightBackWheelVelPID;
 
-// NON SWERVE ROBOTS
+    static constexpr float WHEELBASE_HYPOTENUSE = 2 / (WHEELBASE_WIDTH + WHEELBASE_LENGTH);
+
+    wheelVelToChassisVelMat[X][LF] = 1;
+    wheelVelToChassisVelMat[X][RF] = 1;
+    wheelVelToChassisVelMat[X][LB] = -1;
+    wheelVelToChassisVelMat[X][RB] = -1;
+
+    wheelVelToChassisVelMat[Y][LF] = 1;
+    wheelVelToChassisVelMat[Y][RF] = -1;
+    wheelVelToChassisVelMat[Y][LB] = 1;
+    wheelVelToChassisVelMat[Y][RB] = -1;
+
+    wheelVelToChassisVelMat[R][LF] = 1.0f / WHEELBASE_HYPOTENUSE;
+    wheelVelToChassisVelMat[R][RF] = 1.0f / WHEELBASE_HYPOTENUSE;
+    wheelVelToChassisVelMat[R][LB] = 1.0f / WHEELBASE_HYPOTENUSE;
+    wheelVelToChassisVelMat[R][RB] = 1.0f / WHEELBASE_HYPOTENUSE;
+
+    wheelVelToChassisVelMat *= (WHEEL_RADIUS / 4);
+
 #ifdef SWERVE
     // SWERVE ROBOTS
     motors[LB][1] = &leftBackYaw;
@@ -73,9 +89,6 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
 }
 
 void ChassisSubsystem::initialize() {
-// #ifdef TARGET_SENTRY
-//     drivers->fieldRelativeInformant.assignOdomRailMotor(motors[RAIL][0]);
-// #endif
     ForAllChassisMotors(&DJIMotor::initialize);
 
     setTargetRPMs(0, 0, 0);
@@ -180,7 +193,7 @@ void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWhee
     yInputDisplay = y;
     rInputDisplay = r;
     // get distance from wheel to center of wheelbase
-    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH) + pow2(WHEELBASE_LENGTH));
+    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
 
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
