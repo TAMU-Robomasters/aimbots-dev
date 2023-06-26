@@ -6,13 +6,13 @@ ChassisKFOdometry::ChassisKFOdometry(
     const tap::control::chassis::ChassisSubsystemInterface& chassis,
     float initialXPos,
     float initialYPos)
-    : chassis(chassis),
+    : initialXPos(initialXPos),
+      initialYPos(initialYPos),
+      chassis(chassis),
       kf(KF_A, KF_C, KF_Q, KF_R, KF_P0),
       chassisAccelerationToMeasurementCovarianceInterpolator(
           CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT,
-          MODM_ARRAY_SIZE(CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT)),
-      initialXPos(initialXPos),
-      initialYPos(initialYPos)  //
+          MODM_ARRAY_SIZE(CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT))  //
 {
     float initialX[static_cast<int>(OdomState::NUM_STATES)] = {initialXPos, 0.0f, 0.0f, initialYPos, 0.0f, 0.0f};
     kf.init(initialX);
