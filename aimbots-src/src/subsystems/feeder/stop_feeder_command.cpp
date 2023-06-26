@@ -1,5 +1,4 @@
 #include "stop_feeder_command.hpp"
-#ifndef ENGINEER
 
 namespace src::Feeder {
 
@@ -18,4 +17,3 @@ bool StopFeederCommand::isReady() { return true; }
 bool StopFeederCommand::isFinished() const { return false; }
 
 }  // namespace src::Feeder
-#endif

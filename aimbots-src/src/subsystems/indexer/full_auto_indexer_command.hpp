@@ -4,7 +4,6 @@
 
 #include "drivers.hpp"
 
-#ifndef ENGINEER
 namespace src::Indexer {
 class FullAutoIndexerCommand : public TapCommand {
 public:
@@ -33,5 +32,3 @@ private:
     float unjamSpeed = 0.0f;
 };
 }  // namespace src::Indexer
-
-#endif

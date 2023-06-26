@@ -1,5 +1,4 @@
 #include "burst_indexer_command.hpp"
-#ifndef ENGINEER
 
 namespace src::Indexer {
 BurstIndexerCommand::BurstIndexerCommand(
@@ -31,4 +30,3 @@ bool BurstIndexerCommand::isFinished() const {
 }
 
 }  // namespace src::Indexer
-#endif

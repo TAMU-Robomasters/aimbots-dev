@@ -1,5 +1,4 @@
 #include "stop_shooter_comprised_command.hpp"
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
@@ -9,8 +8,6 @@
 
 #include "drivers.hpp"
 
-
-#include "drivers.hpp"
 
 namespace src::Shooter {
 
@@ -62,4 +59,3 @@ bool StopShooterComprisedCommand::isReady() { return true; }
 bool StopShooterComprisedCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter
-#endif

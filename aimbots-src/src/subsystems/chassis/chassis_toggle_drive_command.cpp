@@ -1,8 +1,11 @@
 #include "chassis_toggle_drive_command.hpp"
-#ifndef ENGINEER
+
 namespace src::Chassis {
 
-ChassisToggleDriveCommand::ChassisToggleDriveCommand(src::Drivers* drivers, ChassisSubsystem* chassis, Gimbal::GimbalSubsystem* gimbal)
+ChassisToggleDriveCommand::ChassisToggleDriveCommand(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    Gimbal::GimbalSubsystem* gimbal)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       chassis(chassis),
@@ -15,10 +18,12 @@ ChassisToggleDriveCommand::ChassisToggleDriveCommand(src::Drivers* drivers, Chas
 }
 
 void ChassisToggleDriveCommand::initialize() {
-    //TODO: Logic is backwards maybe?
-    //if (!comprisedCommandScheduler.isCommandScheduled(&tokyoCommand)) comprisedCommandScheduler.removeCommand(&tokyoCommand, true);
-    scheduleIfNotScheduled(this->comprisedCommandScheduler,&followGimbalCommand);
-    //if (!comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand)) comprisedCommandScheduler.addCommand(&followGimbalCommand);
+    // TODO: Logic is backwards maybe?
+    // if (!comprisedCommandScheduler.isCommandScheduled(&tokyoCommand))
+    // comprisedCommandScheduler.removeCommand(&tokyoCommand, true);
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, &followGimbalCommand);
+    // if (!comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand))
+    // comprisedCommandScheduler.addCommand(&followGimbalCommand);
     qPressed.restart(0);
     ePressed.restart(0);
 }
@@ -27,7 +32,7 @@ bool isQDone = false;
 bool isEDone = false;
 
 void ChassisToggleDriveCommand::execute() {
-    //This needs to match the button in Gimbal Toggle Aiming!
+    // This needs to match the button in Gimbal Toggle Aiming!
     if (drivers->remote.keyPressed(Remote::Key::F)) wasFPressed = true;
 
     if (drivers->remote.keyPressed(Remote::Key::E)) {
@@ -45,25 +50,24 @@ void ChassisToggleDriveCommand::execute() {
         preferSpecificSpin = !ePressed.isExpired() || !qPressed.isExpired();
 
         if (comprisedCommandScheduler.isCommandScheduled(&followGimbalCommand)) {
-            
             if (preferSpecificSpin) {
                 if (!ePressed.isExpired()) {
                     scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoRightCommand);
-                    //qPressed.stop();
-                    //ePressed.stop();
+                    // qPressed.stop();
+                    // ePressed.stop();
                 }
                 if (!qPressed.isExpired()) {
                     scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoLeftCommand);
-                    //qPressed.stop();
-                    //ePressed.stop();
+                    // qPressed.stop();
+                    // ePressed.stop();
                 }
-            }
-            else {
+            } else {
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
             }
-        } else if (comprisedCommandScheduler.isCommandScheduled(&tokyoCommand) ||
-                    comprisedCommandScheduler.isCommandScheduled(&tokyoLeftCommand) ||
-                    comprisedCommandScheduler.isCommandScheduled(&tokyoRightCommand)) {
+        } else if (
+            comprisedCommandScheduler.isCommandScheduled(&tokyoCommand) ||
+            comprisedCommandScheduler.isCommandScheduled(&tokyoLeftCommand) ||
+            comprisedCommandScheduler.isCommandScheduled(&tokyoRightCommand)) {
             comprisedCommandScheduler.addCommand(&followGimbalCommand);
         }
     }
@@ -83,4 +87,3 @@ bool ChassisToggleDriveCommand::isReady() { return true; }
 bool ChassisToggleDriveCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
-#endif

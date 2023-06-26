@@ -7,7 +7,6 @@ RefereeHelper::RefereeHelper(src::Drivers* drivers, float bulletSpeedFilterAlpha
       bulletSpeedFilter(src::Utils::Filters::EMAFilter(bulletSpeedFilterAlpha))  //
 {}
 
-uint16_t projectileLimitDisplay = 0;
 uint16_t RefereeHelper::getProjectileSpeedLimit() {
     auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
     auto launcherID = refSysRobotTurretData.launchMechanismID;
@@ -31,7 +30,31 @@ uint16_t RefereeHelper::getProjectileSpeedLimit() {
             break;
     }
 
-    projectileLimitDisplay = refSpeedLimit;
+    return refSpeedLimit;
+}
+
+uint16_t RefereeHelper::getProjectileSpeedLimit(BarrelID barrelID) {
+    auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
+    auto launcherID = barrelID;
+
+    uint16_t refSpeedLimit = 0;
+
+    switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit42;
+            break;
+        }
+        default:
+            break;
+    }
 
     return refSpeedLimit;
 }
@@ -85,14 +108,14 @@ bool RefereeHelper::isBarrelHeatUnderLimit(float percentageOfLimit) {
     return (lastHeat <= (static_cast<float>(heatLimit) * percentageOfLimit));
 }
 
-bool RefereeHelper::isSpecificBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID) {
+bool RefereeHelper::isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID) {
     auto turretData = drivers->refSerial.getRobotData().turret;
 
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
 
     auto launcherID = barrelID;
-    switch (launcherID) {
+    switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
             heatLimit = turretData.heatLimit17ID1;

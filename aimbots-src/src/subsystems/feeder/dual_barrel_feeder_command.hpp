@@ -1,5 +1,4 @@
 #pragma once
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
@@ -52,5 +51,3 @@ private:
 };
 
 }  // namespace src::Feeder
-
-#endif

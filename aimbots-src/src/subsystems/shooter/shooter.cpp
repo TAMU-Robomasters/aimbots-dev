@@ -1,7 +1,5 @@
 #include "subsystems/shooter/shooter.hpp"
 
-#ifndef ENGINEER
-
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
@@ -124,5 +122,3 @@ void ShooterSubsystem::setDesiredOutputToMotor(MotorIndex motorIdx) {
     }
 }
 };  // namespace src::Shooter
-
-#endif

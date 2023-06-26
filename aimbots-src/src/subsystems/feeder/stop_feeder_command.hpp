@@ -1,6 +1,5 @@
 #pragma once
 
-#ifndef ENGINEER
 #include "tap/control/command.hpp"
 
 #include "subsystems/feeder/feeder.hpp"
@@ -30,5 +29,3 @@ private:
 };
 
 }  // namespace src::Feeder
-
-#endif

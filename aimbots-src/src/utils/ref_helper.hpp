@@ -15,12 +15,13 @@ public:
     ~RefereeHelper() = default;
 
     uint16_t getProjectileSpeedLimit();
+    uint16_t getProjectileSpeedLimit(BarrelID barrelID);
+
     float getLastProjectileSpeed();
     float getPredictedProjectileSpeed();
 
     bool isBarrelHeatUnderLimit(float percentageOfLimit);
-
-    bool isSpecificBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
+    bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
 
     int16_t getCurrentBarrel();
 

@@ -1,5 +1,4 @@
 #include "gimbal_chassis_relative_controller.hpp"
-#ifndef ENGINEER
 
 namespace src::Gimbal {
 
@@ -56,4 +55,3 @@ void GimbalChassisRelativeController::runPitchController(std::optional<float> ve
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
 
 }  // namespace src::Gimbal
-#endif
