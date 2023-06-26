@@ -152,7 +152,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget -
-            (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_YAW_GEAR_RATIO);
+            (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_PITCH_GEAR_RATIO);
 
         //Gravity compensation should be positive if the gimbal tips forward, negative if it tips backwards
         float gravityCompensationFeedforward =

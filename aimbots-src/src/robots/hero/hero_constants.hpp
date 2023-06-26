@@ -26,11 +26,11 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(177.80f)),
-    wrapTo0To2PIRange(modm::toRadian(198.50f))};
+    wrapTo0To2PIRange(modm::toRadian(188.20f)), //177.8
+    wrapTo0To2PIRange(modm::toRadian(199.60f))}; //198.5
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = 36.0f / 80.0f;  // for 2023 Hero
+static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -38,7 +38,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 36.0f / 80.0f;  // for 2023 Hero
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(335.12f))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(215.12f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -333,10 +333,10 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.25f,
+    .kp = 0.45f,
     .ki = 0.0f,
-    .kd = 0.03f,
-    .maxICumulative = 10.0f,
+    .kd = 0.05f,
+    .maxICumulative = 0.9f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -345,6 +345,7 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
 
 /**
  * @brief TOKYO CONSTANTS
