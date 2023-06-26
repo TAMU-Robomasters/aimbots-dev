@@ -26,8 +26,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.20f)), //177.8
-    wrapTo0To2PIRange(modm::toRadian(199.60f))}; //198.5
+    wrapTo0To2PIRange(modm::toRadian(188.20f)),   // 177.8
+    wrapTo0To2PIRange(modm::toRadian(199.60f))};  // 198.5
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -48,8 +48,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW =  modm::toRadian(-22.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH =  modm::toRadian(22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -245,11 +245,12 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
 // clang-format on
 static constexpr uint16_t shooter_speed_array[4] = {
-    10, 3900,  // {ball m/s, flywheel rpm}
-    16, 6500};
+    10,
+    3900,  // {ball m/s, flywheel rpm}
+    16,
+    6500};
 
 // clang-format on
 
@@ -299,9 +300,6 @@ static constexpr float WHEELBASE_LENGTH = 0.357f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // Power limiting constants, will explain later
@@ -346,7 +344,6 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
 /**
  * @brief TOKYO CONSTANTS
  */
@@ -365,35 +362,36 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  * @brief Transformation Matrices, specific to robot
  */
 
-static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.002201f, // x
-    0.1348f, // y
-    -0.0498f, // z
+static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{
+    // in meters
+    -0.002201f,  // x
+    0.1348f,     // y
+    -0.0498f,    // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
-    0.0f, // x
-    0.0f, // y
-    0.0f  // z
+    0.0f,  // x
+    0.0f,  // y
+    0.0f   // z
 };
 
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
-    0.0f, // x
-    0.0f, // y
-    0.0f, // z
+    0.0f,  // x
+    0.0f,  // y
+    0.0f,  // z
 };
 
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    -0.001727f, //x = 0.04498
-    0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00587f, //z = 0.01683
+    -0.001727f,  // x = 0.04498
+    0.0f,        // y - does not matter too much because projectile comes out this axis
+    -0.00587f,   // z = 0.01683
 };
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 90.0f;
 
-//This array holds the IDs of all speed monitor barrels on the robot
+// This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};

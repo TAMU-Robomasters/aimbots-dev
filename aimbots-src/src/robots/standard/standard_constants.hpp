@@ -145,7 +145,7 @@ static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
-static constexpr float kGRAVITY = -1500.0f;  //Negative because weight is behind pitch motor
+static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
@@ -231,10 +231,13 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // clang-format on
-static constexpr uint16_t shooter_speed_array[6] = { // ONLY TUNE WITH FULL BATTERY
-    15, 4300,  // {ball m/s, flywheel rpm}
-    18, 4850,
-    30, 7050};
+static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
+    15,
+    4300,  // {ball m/s, flywheel rpm}
+    18,
+    4850,
+    30,
+    7050};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -298,8 +301,6 @@ static constexpr float WHEELBASE_LENGTH = 0.3284f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
-
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
@@ -390,13 +391,13 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 90.0f;
 
-//This array holds the IDs of all speed monitor barrels on the robot
+// This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
 
 /**

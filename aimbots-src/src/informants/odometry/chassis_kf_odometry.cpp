@@ -2,34 +2,41 @@
 
 namespace src::Informants::Odometry {
 
-ChassisKFOdometry::ChassisKFOdometry(const tap::control::chassis::ChassisSubsystemInterface& chassis)
+ChassisKFOdometry::ChassisKFOdometry(
+    const tap::control::chassis::ChassisSubsystemInterface& chassis,
+    float initialXPos,
+    float initialYPos)
     : chassis(chassis),
       kf(KF_A, KF_C, KF_Q, KF_R, KF_P0),
       chassisAccelerationToMeasurementCovarianceInterpolator(
           CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT,
-          MODM_ARRAY_SIZE(CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT)) {
-    float initialX[static_cast<int>(OdomState::NUM_STATES)] = {};
+          MODM_ARRAY_SIZE(CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT)),
+      initialXPos(initialXPos),
+      initialYPos(initialYPos)  //
+{
+    float initialX[static_cast<int>(OdomState::NUM_STATES)] = {initialXPos, 0.0f, 0.0f, initialYPos, 0.0f, 0.0f};
     kf.init(initialX);
 }
 
 void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yChassisAccel) {
     this->chassisYaw = chassisYaw;
 
-    auto chassisVelocity = chassis.getActualVelocityChassisRelative();
+    auto chassisVelocity = chassis.getActualVelocityChassisRelative();  // get chassis-relative velocity
 
-    tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(chassisVelocity, chassisYaw);
+    tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
+        chassisVelocity,
+        chassisYaw);  // convert to world-relative velocity using chassis orientation
 
     updateMeasurementCovariance(chassisVelocity);
+
+    // rotate chassis-relative linear accelerations to world-relative
+    tap::algorithms::rotateVector(&xChassisAccel, &yChassisAccel, chassisYaw);
 
     // Assume 0 velocity/acceleration in z direction
     float y[static_cast<int>(OdomInput::NUM_INPUTS)] = {};
 
     y[static_cast<int>(OdomInput::VEL_X)] = chassisVelocity[0][0];
     y[static_cast<int>(OdomInput::VEL_Y)] = chassisVelocity[1][0];
-
-    // rotate chassis linear accelerations to field relative
-    tap::algorithms::rotateVector(&xChassisAccel, &yChassisAccel, chassisYaw);
-
     y[static_cast<int>(OdomInput::ACC_X)] = xChassisAccel;
     y[static_cast<int>(OdomInput::ACC_Y)] = yChassisAccel;
 
@@ -79,6 +86,11 @@ void ChassisKFOdometry::updateMeasurementCovariance(const modm::Matrix<float, 3,
 
     kf.getMeasurementCovariance()[0] = velocityCovariance;
     kf.getMeasurementCovariance()[2 * static_cast<int>(OdomInput::NUM_INPUTS) + 2] = velocityCovariance;
+}
+
+void ChassisKFOdometry::reset() {
+    float initialX[int(OdomState::NUM_STATES)] = {initialXPos, 0.0f, 0.0f, initialYPos, 0.0f, 0.0f};
+    kf.init(initialX);
 }
 
 }  // namespace src::Informants::Odometry

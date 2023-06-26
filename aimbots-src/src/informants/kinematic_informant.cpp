@@ -9,7 +9,12 @@
 
 namespace src::Informants {
 
-KinematicInformant::KinematicInformant(src::Drivers* drivers) : drivers(drivers), chassisKFOdometry(*chassisSubsystem) {}
+KinematicInformant::KinematicInformant(src::Drivers* drivers)
+    : drivers(drivers),
+      chassisKFOdometry(
+          *chassisSubsystem,
+          CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getX(),
+          CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getY()) {}
 
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
@@ -122,7 +127,7 @@ void KinematicInformant::updateChassisAcceleration() {
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
-    return ContiguousFloat(currGimbalAngle + currChassisAngle - modm::toRadian(YAW_AXIS_START_ANGLE), -M_PI, M_PI);
+    return ContiguousFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
 float pitchGimbalDirectionDisplay = 0.0f;
@@ -130,7 +135,7 @@ ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsCon
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisPitchAngleInGimbalDirection();
     pitchGimbalDirectionDisplay = currChassisAngle;
-    return ContiguousFloat(currGimbalAngle + currChassisAngle - modm::toRadian(PITCH_AXIS_START_ANGLE), -M_PI, M_PI);
+    return ContiguousFloat(currGimbalAngle + currChassisAngle - PITCH_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
@@ -180,13 +185,6 @@ float KinematicInformant::getChassisLinearAccelerationInGimbalDirection() {
 void KinematicInformant::updateRobotFrames() {
     updateChassisIMUAngles();
 
-    robotFrames.updateFrames(
-        gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
-        gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
-        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
-        {0, 0, 0},
-        AngleUnit::Radians);
-
     imuLinearState[X_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
@@ -201,20 +199,21 @@ void KinematicInformant::updateRobotFrames() {
 
     updateChassisAcceleration();
 
+    robotFrames.updateFrames(
+        gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
+        gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
+        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        {0, 0, 0},
+        AngleUnit::Radians);
+
     chassisKFOdometry.update(
         getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
         chassisLinearXState.getAcceleration(),
         chassisLinearYState.getAcceleration());
 }
 
-float oldGimbalYawDisplay = 0.0f;
-float oldGimbalPitchDisplay = 0.0f;
-
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     std::pair<float, float> gimbalAngles = gimbalSubsystem->getGimbalOrientationAtTime(frameDelay_ms);
-
-    oldGimbalYawDisplay = modm::toDegree(gimbalAngles.first);
-    oldGimbalPitchDisplay = modm::toDegree(gimbalAngles.second);
 
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
     // robotFrames.mirrorPastCameraFrame(modm::toRadian(0.0f), modm::toRadian(0.0f), AngleUnit::Radians);

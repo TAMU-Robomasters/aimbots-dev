@@ -27,9 +27,6 @@ RobotFrames::RobotFrames() {
     cameraAtCVUpdateFrame.setOrigin(camera_origin_relative_to_chassis_origin);
 }
 
-float gimbalOrientationYYDisplay = 0.0f;
-float gimbalFrameOrientationYYDisplay = 0.0f;
-
 void RobotFrames::updateFrames(
     float yawChassisRelative,
     float pitchChassisRelative,
@@ -40,7 +37,7 @@ void RobotFrames::updateFrames(
 
     this->gimbal_orientation_relative_to_chassis_orientation =
         rotationMatrix(yawChassisRelative, Z_AXIS, angleUnit) *
-        rotationMatrix(pitchChassisRelative, X_AXIS, angleUnit);  // gimbal 2 chassis rotation
+        rotationMatrix(pitchChassisRelative, X_AXIS, angleUnit);  // gimbal to chassis rotation
 
     this->camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN + this->gimbal_orientation_relative_to_chassis_orientation *
@@ -48,23 +45,17 @@ void RobotFrames::updateFrames(
 
     gimbalFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
 
-    gimbalFrameOrientationYYDisplay = gimbalFrame.getOrientation()[1][1];
-
-    cameraFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
-    cameraFrame.setOrigin(camera_origin_relative_to_chassis_origin);
+    // disabling this for performance, we're using the cameraAtCVUpdateFrame for all ballistics math
+    // cameraFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+    // cameraFrame.setOrigin(camera_origin_relative_to_chassis_origin);
 
     fieldFrame.setOrientation(chassis_orientation_relative_to_world_orientation);
-    fieldFrame.setOrigin(
-        chassis_orientation_relative_to_world_orientation * robotPositionRelativeToStartPosition +
-        CHASSIS_START_POSITION_RELATIVE_TO_WORLD);
+    fieldFrame.setOrigin(robotPositionRelativeToStartPosition);
 }
 
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
-    // how convert angle?? IDK
     Matrix3f at_cv_update_gimbal_orientation_relative_to_chassis_orientation =
         rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit);
-
-    gimbalOrientationYYDisplay = at_cv_update_gimbal_orientation_relative_to_chassis_orientation[1][1];
 
     Vector3f at_cv_update_camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +

@@ -68,6 +68,8 @@ public:
 
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
+    modm::Location2D<float> getRobotLocation() { return chassisKFOdometry.getCurrentLocation2D(); }
+
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;

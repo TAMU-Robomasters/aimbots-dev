@@ -26,7 +26,7 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(0.0f)), 
+    wrapTo0To2PIRange(modm::toRadian(0.0f)),
     wrapTo0To2PIRange(modm::toRadian(0.0f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -272,18 +272,14 @@ static constexpr bool FEEDER_DIRECTION = false;
  */
 static constexpr float WHEEL_RADIUS = 0.07663f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f; // updated for 2023
+static constexpr float WHEELBASE_WIDTH = 0.357f;  // updated for 2023
 
 static constexpr float WHEELBASE_LENGTH = 0.357f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -371,18 +367,18 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 0.0f;
 
-//This array holds the IDs of all speed monitor barrels on the robot
+// This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
 
 // PITCH PATROL FUNCTION CONSTANTS
-//TODO: Gimbal Control Command needs to be modified to work in radians, and then convert these constants.
+// TODO: Gimbal Control Command needs to be modified to work in radians, and then convert these constants.
 static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
-static constexpr float PITCH_OFFSET_ANGLE = 0; // In degrees currently
+static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently

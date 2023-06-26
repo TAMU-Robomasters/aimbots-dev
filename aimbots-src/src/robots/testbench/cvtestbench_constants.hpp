@@ -292,11 +292,7 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
 // 0.205f normally
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -385,7 +381,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!

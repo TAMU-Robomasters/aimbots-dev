@@ -11,7 +11,7 @@ namespace src::Informants::Odometry {
 
 class ChassisKFOdometry : public tap::algorithms::odometry::Odometry2DInterface {
 public:
-    ChassisKFOdometry(const tap::control::chassis::ChassisSubsystemInterface& chassis);
+    ChassisKFOdometry(const tap::control::chassis::ChassisSubsystemInterface& chassis, float initialXPos, float initialYPos);
 
     inline modm::Location2D<float> getCurrentLocation2D() const final { return location; }
 
@@ -23,7 +23,12 @@ public:
 
     void update(float chassisYaw, float xChassisAccel, float yChassisAccel);
 
+    void reset();
+
 private:
+    float initialXPos;
+    float initialYPos;
+
     enum class OdomState {
         POS_X = 0,
         VEL_X,
@@ -89,7 +94,7 @@ private:
     };
     // clang-format on
 
-    static constexpr float MAX_ACCELERATION = 8.0f;
+    static constexpr float MAX_ACCELERATION = 8.0f;  // m/s^2
 
     static constexpr modm::Pair<float, float> CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT[] = {
         {0, 1E0},
