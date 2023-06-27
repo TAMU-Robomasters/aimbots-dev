@@ -198,19 +198,21 @@ void KinematicInformant::updateRobotFrames() {
 
     updateChassisAcceleration();
 
-    robotFrames.updateFrames(
-        gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
-        gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
-        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
-        {0, 0, 0},
-        AngleUnit::Radians);
-
     chassisKFOdometry.update(
         getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
         chassisLinearXState.getAcceleration(),
         chassisLinearYState.getAcceleration());
 
-    robotLocationDisplay = chassisKFOdometry.getCurrentLocation2D();
+    modm::Location2D<float> robotLocation = chassisKFOdometry.getCurrentLocation2D();
+
+    robotFrames.updateFrames(
+        gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
+        gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
+        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        {robotLocation.getX(), robotLocation.getY(), 0},
+        AngleUnit::Radians);
+
+    robotLocationDisplay = robotLocation;
 }
 
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {

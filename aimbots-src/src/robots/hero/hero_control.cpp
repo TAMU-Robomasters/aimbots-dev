@@ -169,7 +169,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&indexer);
 
-    drivers->kinematicInformant.registerSubsystems(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------
