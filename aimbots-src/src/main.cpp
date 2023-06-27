@@ -95,18 +95,19 @@ int main() {
 
         // every 2ms...
         if (mainLoopTimeout.execute()) {
+            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
             // }
             // if (sendMotorTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
 
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
+            // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
+            // comms
 
-            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
             drivers->kinematicInformant.updateRobotFrames();
-            loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
             utils::Music::playPacMan(drivers);
+            loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
         modm::delay_us(10);
     }

@@ -2,13 +2,9 @@
 
 namespace src::Informants::Odometry {
 
-ChassisKFOdometry::ChassisKFOdometry(
-    const tap::control::chassis::ChassisSubsystemInterface& chassis,
-    float initialXPos,
-    float initialYPos)
+ChassisKFOdometry::ChassisKFOdometry(float initialXPos, float initialYPos)
     : initialXPos(initialXPos),
       initialYPos(initialYPos),
-      chassis(chassis),
       kf(KF_A, KF_C, KF_Q, KF_R, KF_P0),
       chassisAccelerationToMeasurementCovarianceInterpolator(
           CHASSIS_ACCELERATION_TO_MEASUREMENT_COVARIANCE_LUT,
@@ -19,9 +15,11 @@ ChassisKFOdometry::ChassisKFOdometry(
 }
 
 void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yChassisAccel) {
+    if (chassis == nullptr) return;
+
     this->chassisYaw = chassisYaw;
 
-    auto chassisVelocity = chassis.getActualVelocityChassisRelative();  // get chassis-relative velocity
+    auto chassisVelocity = chassis->getActualVelocityChassisRelative();  // get chassis-relative velocity
 
     tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
         chassisVelocity,

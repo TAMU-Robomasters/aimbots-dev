@@ -11,10 +11,7 @@ namespace src::Informants {
 
 KinematicInformant::KinematicInformant(src::Drivers* drivers)
     : drivers(drivers),
-      chassisKFOdometry(
-          *chassisSubsystem,
-          CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getX(),
-          CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getY()) {}
+      chassisKFOdometry(CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getX(), CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getY()) {}
 
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
@@ -182,6 +179,8 @@ float KinematicInformant::getChassisLinearAccelerationInGimbalDirection() {
     return 0.0f;
 }
 
+modm::Location2D<float> robotLocationDisplay;
+
 void KinematicInformant::updateRobotFrames() {
     updateChassisIMUAngles();
 
@@ -210,6 +209,8 @@ void KinematicInformant::updateRobotFrames() {
         getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
         chassisLinearXState.getAcceleration(),
         chassisLinearYState.getAcceleration());
+
+    robotLocationDisplay = chassisKFOdometry.getCurrentLocation2D();
 }
 
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {

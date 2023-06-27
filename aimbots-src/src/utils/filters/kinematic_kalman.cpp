@@ -17,11 +17,6 @@ KinematicKalman::KinematicKalman(
       R(R0)  //
 {}
 
-float zPosDisplay = 0;
-float zVelDisplay = 0;
-float zAccDisplay = 0;
-
-float dtDisplay = 0;
 void KinematicKalman::update(float dt, float zPos, std::optional<float> zVel, std::optional<float> zAcc) {
     predict(dt);
 
@@ -32,9 +27,6 @@ void KinematicKalman::update(float dt, float zPos, std::optional<float> zVel, st
     if (zAcc.has_value()) {
         z.updateFromAcceleration(zAcc.value(), false, dt);
     }
-    zPosDisplay = z.getStateVector().getX();
-    zVelDisplay = z.getStateVector().getY();
-    zAccDisplay = z.getStateVector().getZ();
 
     Matrix3f PHt = P * H.asTransposed();
 

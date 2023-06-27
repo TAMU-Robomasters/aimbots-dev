@@ -33,9 +33,11 @@ public:
 
     void registerSubsystems(
         src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-        src::Chassis::ChassisSubsystem* chassisSubsystem) {
+        tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) {
         this->gimbalSubsystem = gimbalSubsystem;
         this->chassisSubsystem = chassisSubsystem;
+
+        chassisKFOdometry.registerChassisSubsystem(chassisSubsystem);
     }
 
     void initialize(float imuFrequency, float imukP, float imukI);
@@ -73,7 +75,7 @@ public:
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
-    src::Chassis::ChassisSubsystem* chassisSubsystem;
+    tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
 

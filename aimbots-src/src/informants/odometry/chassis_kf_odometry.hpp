@@ -11,7 +11,9 @@ namespace src::Informants::Odometry {
 
 class ChassisKFOdometry : public tap::algorithms::odometry::Odometry2DInterface {
 public:
-    ChassisKFOdometry(const tap::control::chassis::ChassisSubsystemInterface& chassis, float initialXPos, float initialYPos);
+    ChassisKFOdometry(float initialXPos, float initialYPos);
+
+    void registerChassisSubsystem(tap::control::chassis::ChassisSubsystemInterface* chassis) { this->chassis = chassis; }
 
     inline modm::Location2D<float> getCurrentLocation2D() const final { return location; }
 
@@ -103,7 +105,7 @@ private:
 
     static constexpr float CHASSIS_WHEEL_ACCELERATION_LOW_PASS_ALPHA = 0.01f;
 
-    const tap::control::chassis::ChassisSubsystemInterface& chassis;
+    tap::control::chassis::ChassisSubsystemInterface* chassis;
 
     tap::algorithms::KalmanFilter<int(OdomState::NUM_STATES), int(OdomInput::NUM_INPUTS)> kf;
 
