@@ -77,7 +77,7 @@ public:
         float timeToTarget;  // in seconds
     };
 
-    std::optional<BallisticsSolution> solve();
+    std::optional<BallisticsSolution> solve(std::optional<float> projectileSpeed = std::nullopt);
 
     /**
      * @param[in] targetInitialState: The initial 3D kinematic state of a target. Frame requirements:

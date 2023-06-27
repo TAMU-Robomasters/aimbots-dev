@@ -11,7 +11,9 @@ BallisticsSolver::BallisticsSolver(src::Drivers *drivers, src::Utils::RefereeHel
       refHelper(refHelper)  //
 {}
 
-std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
+BallisticsSolver::BallisticsSolution solutionDisplay;
+MeasuredKinematicState plateKinematicStateDisplay;
+std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
     if (!drivers->cvCommunicator.isJetsonOnline() ||
         drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
         return std::nullopt;
@@ -29,10 +31,6 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
 
     auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
 
-    // float projectileSpeed = refHelper->getPredictedProjectileSpeed();
-
-    uint16_t projectileSpeed = 15.0f;
-
     // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
     //     if (SHOOTER_SPEED_MATRIX[i][0] == refHelper->getProjectileSpeedLimit()) {
     //         projectileSpeed = SHOOTER_SPEED_MATRIX[i][1];
@@ -46,12 +44,14 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
         .acceleration = plateKinematicState.acceleration,
     };
 
+    plateKinematicStateDisplay = targetKinematicState;
+
     lastBallisticsSolution = BallisticsSolution();
     lastBallisticsSolution->distanceToTarget = targetKinematicState.position.getLength();
 
     if (!findTargetProjectileIntersection(
             targetKinematicState,
-            static_cast<float>(projectileSpeed),
+            projectileSpeed.value_or(defaultProjectileSpeed),
             3,
             &lastBallisticsSolution->pitchAngle,
             &lastBallisticsSolution->yawAngle,
@@ -59,6 +59,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
             0.0f)) {
         lastBallisticsSolution = std::nullopt;
     }
+    solutionDisplay = *lastBallisticsSolution;
 
     return lastBallisticsSolution;
 }

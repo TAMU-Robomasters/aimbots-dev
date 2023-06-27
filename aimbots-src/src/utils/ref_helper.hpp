@@ -20,6 +20,8 @@ public:
     float getLastProjectileSpeed();
     float getPredictedProjectileSpeed();
 
+    float getPredictedProjectileSpeed(BarrelID barrelID);
+
     bool isBarrelHeatUnderLimit(float percentageOfLimit);
     bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
 

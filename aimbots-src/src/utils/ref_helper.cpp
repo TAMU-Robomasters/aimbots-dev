@@ -73,7 +73,18 @@ float RefereeHelper::getPredictedProjectileSpeed() {
         tap::arch::clock::getTimeMilliseconds() > refSysRobotTurretData.lastReceivedLaunchingInfoTimestamp + 5'000) {
         return static_cast<float>(getProjectileSpeedLimit());
     }
+    return getLastProjectileSpeed();  // for now, just send the last projectile speed
+}
 
+float RefereeHelper::getPredictedProjectileSpeed(BarrelID barrelID) {
+    auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
+
+    // if it's been more than 5 seconds since the last projectile launch or last projectile launch hasn't been updated,
+    // assume the next one will be at the speed limit
+    if (refSysRobotTurretData.lastReceivedLaunchingInfoTimestamp == 0 ||
+        tap::arch::clock::getTimeMilliseconds() > refSysRobotTurretData.lastReceivedLaunchingInfoTimestamp + 5'000) {
+        return static_cast<float>(getProjectileSpeedLimit(barrelID));
+    }
     return getLastProjectileSpeed();  // for now, just send the last projectile speed
 }
 

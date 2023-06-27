@@ -6,6 +6,8 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
     GimbalChassisRelativeController* gimbalController,
+    src::Utils::RefereeHelper* refHelper,
+    BarrelID& barrelID,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     int chaseTimeoutMillis)
     : TapComprisedCommand(drivers),
@@ -13,8 +15,8 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
       gimbal(gimbal),
       controller(gimbalController),
       ballisticsSolver(ballisticsSolver),
-      patrolCommand(drivers, gimbal, controller,0,0,0,0),
-      chaseCommand(drivers, gimbal, controller, ballisticsSolver),
+      patrolCommand(drivers, gimbal, controller, 0, 0, 0, 0),
+      chaseCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
       chaseTimeout(0),
       chaseTimeoutMillis(chaseTimeoutMillis)  //
 {

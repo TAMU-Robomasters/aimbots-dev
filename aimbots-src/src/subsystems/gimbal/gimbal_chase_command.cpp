@@ -8,11 +8,15 @@ GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalControllerInterface* gimbalController,
+    src::Utils::RefereeHelper* refHelper,
+    BarrelID& barrelID,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
+      refHelper(refHelper),
+      barrelID(barrelID),
       ballisticsSolver(ballisticsSolver)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -37,6 +41,8 @@ float gimbalPitchInputDisplay = 0.0f;
 
 float timestampDisplay;
 
+float predictedProjectileSpeed = 0.0f;
+
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
 
@@ -57,8 +63,11 @@ void GimbalChaseCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed(barrelID);
+    predictedProjectileSpeed = projectileSpeed;
+
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve();  // returns nullopt if no solution is available
+        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
