@@ -63,8 +63,8 @@ void ChassisShakiraCommand::execute() {
                 Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, numSnapPositions, starterAngle);
 
             rotationController.runController(
-                -chassisErrorAngle,
-                RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                chassisErrorAngle,
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
@@ -80,8 +80,8 @@ void ChassisShakiraCommand::execute() {
             tap::algorithms::rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
         } else {
             rotationController.runController(
-                -yawAngleFromChassisCenter,
-                RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                yawAngleFromChassisCenter,
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 

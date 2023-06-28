@@ -47,27 +47,29 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
 }
 
-// float findNearestChassisErrorTo(float targetAngle, float numSnapPositions, float starterAngle) {
+// float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
 //     float angleBetweenCorners = M_TWOPI / numSnapPositions;
-//     float nearestCornerAngle = starterAngle;
+//     ContiguousFloat nearestCornerAngle(starterAngle, 0, M_TWOPI);
 
 //     for (int i = 0; i < numSnapPositions; i++) {
-//         float currentCornerAngle = starterAngle + i * angleBetweenCorners;
+//         ContiguousFloat currentCornerAngle(starterAngle + i * angleBetweenCorners, 0, M_TWOPI);
 
-//         if (fabsf(targetAngle - currentCornerAngle) < fabsf(targetAngle - nearestCornerAngle)) {
+//         if (fabsf(currentCornerAngle.difference(targetAngle)) < fabsf(nearestCornerAngle.difference(targetAngle))) {
 //             nearestCornerAngle = currentCornerAngle;
 //         }
 //     }
 
-//     return targetAngle - nearestCornerAngle;
+//     return /*targetAngle - */ nearestCornerAngle.getValue();
 // }
 
 float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
     float angleBetweenCorners = M_TWOPI / static_cast<float>(numSnapPositions);
-    float nearestCornerError = targetAngle - starterAngle;
+    ContiguousFloat targetContiguousAngle(targetAngle, 0, M_TWOPI);
+
+    float nearestCornerError = targetContiguousAngle.difference(starterAngle);
 
     for (int i = 0; i < numSnapPositions; i++) {
-        float currentCornerError = targetAngle - (starterAngle + i * angleBetweenCorners);
+        float currentCornerError = targetContiguousAngle.difference(starterAngle + i * angleBetweenCorners);
 
         if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {
             nearestCornerError = currentCornerError;

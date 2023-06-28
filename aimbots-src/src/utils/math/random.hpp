@@ -3,7 +3,13 @@
 
 namespace src::Utils::Random {
 
+bool rngEnabled = false;
+
 uint32_t getRandomInteger() {
+    if (!rngEnabled) {
+        modm::platform::RandomNumberGenerator::enable();
+        rngEnabled = true;
+    }
     if (modm::platform::RandomNumberGenerator::isReady()) return modm::platform::RandomNumberGenerator::getValue();
     return 0;
 }
@@ -23,5 +29,4 @@ float getRandomFloatInBounds(float min, float max) {
 
     return base + min;
 }
-
 };  // namespace src::Utils::Random

@@ -5,14 +5,19 @@ namespace src::Chassis {
 ChassisToggleDriveCommand::ChassisToggleDriveCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
-    Gimbal::GimbalSubsystem* gimbal)
+    Gimbal::GimbalSubsystem* gimbal,
+    uint8_t numSnapPositions,
+    float starterAngle,
+    bool randomizeSpinRate,
+    const ToykoRandomizerConfig& randomizerConfig)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       chassis(chassis),
-      followGimbalCommand(drivers, chassis, gimbal),
-      tokyoCommand(drivers, chassis, gimbal),
-      tokyoLeftCommand(drivers, chassis, gimbal, -1),
-      tokyoRightCommand(drivers, chassis, gimbal, 1) {
+      followGimbalCommand(drivers, chassis, gimbal, numSnapPositions, starterAngle),
+      tokyoCommand(drivers, chassis, gimbal, 0, randomizeSpinRate, randomizerConfig),
+      tokyoLeftCommand(drivers, chassis, gimbal, -1, randomizeSpinRate, randomizerConfig),
+      tokyoRightCommand(drivers, chassis, gimbal, 1, randomizeSpinRate, randomizerConfig)  //
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
     comprisedCommandScheduler.registerSubsystem(dynamic_cast<tap::control::Subsystem*>(chassis));
 }

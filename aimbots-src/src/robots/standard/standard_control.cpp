@@ -162,8 +162,15 @@ ToykoRandomizerConfig randomizerConfig = {
 };
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, true, randomizerConfig);
+ChassisToggleDriveCommand chassisToggleDriveCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    2,
+    modm::toRadian(0.0f),
+    false,
+    randomizerConfig);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, false, randomizerConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -234,7 +241,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand,*/ &gimbalChaseCommand},
+    {&chassisTokyoCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper

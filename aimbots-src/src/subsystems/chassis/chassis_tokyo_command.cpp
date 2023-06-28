@@ -37,6 +37,10 @@ void ChassisTokyoCommand::initialize() {
     }
 
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
+
+    if (randomizeSpinRate) {
+        spinRateModifierTimer.restart(0);
+    }
 }
 
 void ChassisTokyoCommand::execute() {
@@ -65,12 +69,11 @@ void ChassisTokyoCommand::execute() {
         float rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX;
 
         if (randomizeSpinRate) {
-            if (spinRateModifierTimer.execute() || spinRateModifierTimer.isExpired() || spinRateModifierTimer.isStopped()) {
+            if (spinRateModifierTimer.isExpired() || spinRateModifierTimer.isStopped()) {
                 randomizeSpinCharacteristics();
                 spinRateModifierTimer.restart(spinRateModifierDuration);
-            } else {
-                rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX * spinRateModifier;
             }
+            rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX * spinRateModifier;
         }
 
         // reduces rotation speed when translation speed is high

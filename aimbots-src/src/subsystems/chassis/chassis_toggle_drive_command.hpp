@@ -12,7 +12,14 @@ namespace src::Chassis {
 
 class ChassisToggleDriveCommand : public TapComprisedCommand {
 public:
-    ChassisToggleDriveCommand(src::Drivers*, ChassisSubsystem*, Gimbal::GimbalSubsystem*);
+    ChassisToggleDriveCommand(
+        src::Drivers*,
+        ChassisSubsystem*,
+        Gimbal::GimbalSubsystem*,
+        uint8_t numSnapPositions = 1,
+        float starterAngle = 0.0f,
+        bool randomizeSpinRate = false,
+        const ToykoRandomizerConfig& randomizerConfig = ToykoRandomizerConfig());
 
     void initialize() override;
     void execute() override;
@@ -37,7 +44,6 @@ private:
 
     MilliTimeout qPressed;
     MilliTimeout ePressed;
-
 };
 
 }  // namespace src::Chassis

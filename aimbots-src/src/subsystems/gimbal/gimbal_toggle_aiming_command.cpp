@@ -13,7 +13,8 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
       drivers(drivers),
       gimbal(gimbal),
       gimbalCVCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
-      gimbalFreeAimCommand(drivers, gimbal, controller) {
+      gimbalFreeAimCommand(drivers, gimbal, controller)  //
+{
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
     comprisedCommandScheduler.registerSubsystem(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }

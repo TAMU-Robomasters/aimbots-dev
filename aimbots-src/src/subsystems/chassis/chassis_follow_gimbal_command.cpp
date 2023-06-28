@@ -36,6 +36,8 @@ bool isChassisRunning = false;
 
 bool gimbalOnlineDisplay = false;
 
+float chassisErrorAngleDisplay = 0.0f;
+
 void ChassisFollowGimbalCommand::execute() {
     float desiredX = 0.0f;
     float desiredY = 0.0f;
@@ -51,13 +53,17 @@ void ChassisFollowGimbalCommand::execute() {
 
         float chassisErrorAngle =
             Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, numSnapPositions, starterAngle);
+        // float chassisErrorAngle = yawAngleFromChassisCenter;
+
+        chassisErrorAngleDisplay = chassisErrorAngle;
 
         // Find rotation correction power
         rotationController.runController(
-            -chassisErrorAngle,
-            RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+            chassisErrorAngle,
+            -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)));
+        // rotationController.runControllerDerivateError(chassisErrorAngle);
         rotationControllerOutputDisplay = rotationController.getOutput();
 
         // overwrite desired rotation with rotation controller output, range [-1, 1]
