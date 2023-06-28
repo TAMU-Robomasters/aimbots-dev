@@ -7,8 +7,14 @@ int8_t chassisXDesiredWheelspeedWatch = 0;
 
 namespace src::Chassis::Helper {
 
-void getUserDesiredInput(src::Drivers* drivers, ChassisSubsystem* chassis, float* desiredXInput, float* desiredYInput, float* desiredRotationInput) {
-    if (drivers == nullptr || chassis == nullptr || desiredXInput == nullptr || desiredYInput == nullptr || desiredRotationInput == nullptr) {
+void getUserDesiredInput(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredXInput,
+    float* desiredYInput,
+    float* desiredRotationInput) {
+    if (drivers == nullptr || chassis == nullptr || desiredXInput == nullptr || desiredYInput == nullptr ||
+        desiredRotationInput == nullptr) {
         return;
     }
 
@@ -39,6 +45,36 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
 
     *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
     *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
+}
+
+// float findNearestChassisErrorTo(float targetAngle, float numSnapPositions, float starterAngle) {
+//     float angleBetweenCorners = M_TWOPI / numSnapPositions;
+//     float nearestCornerAngle = starterAngle;
+
+//     for (int i = 0; i < numSnapPositions; i++) {
+//         float currentCornerAngle = starterAngle + i * angleBetweenCorners;
+
+//         if (fabsf(targetAngle - currentCornerAngle) < fabsf(targetAngle - nearestCornerAngle)) {
+//             nearestCornerAngle = currentCornerAngle;
+//         }
+//     }
+
+//     return targetAngle - nearestCornerAngle;
+// }
+
+float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
+    float angleBetweenCorners = M_TWOPI / static_cast<float>(numSnapPositions);
+    float nearestCornerError = targetAngle - starterAngle;
+
+    for (int i = 0; i < numSnapPositions; i++) {
+        float currentCornerError = targetAngle - (starterAngle + i * angleBetweenCorners);
+
+        if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {
+            nearestCornerError = currentCornerError;
+        }
+    }
+
+    return nearestCornerError;
 }
 
 }  // namespace src::Chassis::Helper

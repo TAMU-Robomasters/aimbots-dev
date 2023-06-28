@@ -10,10 +10,14 @@ namespace src::Chassis {
 ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
-    src::Gimbal::GimbalSubsystem* gimbal)
+    src::Gimbal::GimbalSubsystem* gimbal,
+    uint8_t numSnapPositions,
+    float starterAngle)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
+      numSnapPositions(numSnapPositions),
+      starterAngle(starterAngle),
       rotationController(ROTATION_POSITION_PID_CONFIG)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
@@ -22,7 +26,6 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
 void ChassisFollowGimbalCommand::initialize() {}
 
 // Debug variables
-float gimbalYawFieldRelativeDisplay = 0.0f;
 float yawAngleFromChassisCenterDisplay2 = 0.0f;
 float chassisYawDisplay = 0.0f;
 float rotationControllerOutputDisplay = 0.0f;
@@ -45,10 +48,13 @@ void ChassisFollowGimbalCommand::execute() {
 
     if (gimbal->isOnline()) {  // if the gimbal is online, follow the gimbal's yaw
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
-        gimbalYawFieldRelativeDisplay = yawAngleFromChassisCenter;
+
+        float chassisErrorAngle =
+            Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, numSnapPositions, starterAngle);
+
         // Find rotation correction power
         rotationController.runController(
-            -yawAngleFromChassisCenter,
+            -chassisErrorAngle,
             RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)));

@@ -51,10 +51,11 @@ private:
     tap::algorithms::Ramp rotationSpeedRamp;
 
     bool randomizeSpinRate;
+    const ToykoRandomizerConfig& randomizerConfig;
+
     float spinRateModifier;
     uint32_t spinRateModifierDuration;
     MilliTimeout spinRateModifierTimer;
-    const ToykoRandomizerConfig& randomizerConfig;
 };
 
 }  // namespace src::Chassis

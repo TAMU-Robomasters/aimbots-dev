@@ -230,6 +230,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
+
 // clang-format on
 static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
     15,

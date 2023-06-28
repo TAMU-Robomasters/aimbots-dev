@@ -9,12 +9,16 @@
 
 #include "drivers.hpp"
 
-
 namespace src::Chassis {
 
 class ChassisFollowGimbalCommand : public TapCommand {
 public:
-    ChassisFollowGimbalCommand(src::Drivers*, ChassisSubsystem*, src::Gimbal::GimbalSubsystem*);
+    ChassisFollowGimbalCommand(
+        src::Drivers*,
+        ChassisSubsystem*,
+        src::Gimbal::GimbalSubsystem*,
+        uint8_t numSnapPositions = 1,
+        float starterAngle = 0.0f);
     void initialize() override;
 
     void execute() override;
@@ -29,6 +33,9 @@ private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;
+
+    uint8_t numSnapPositions;
+    float starterAngle;  // rad
 
     SmoothPID rotationController;
 };

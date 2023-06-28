@@ -153,9 +153,17 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
+
+ToykoRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
+
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, true, randomizerConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -220,7 +228,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalToggleAimCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
