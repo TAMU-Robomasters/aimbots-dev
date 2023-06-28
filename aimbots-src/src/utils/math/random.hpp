@@ -5,6 +5,7 @@ namespace src::Utils::Random {
 
 uint32_t getRandomInteger() {
     if (modm::platform::RandomNumberGenerator::isReady()) return modm::platform::RandomNumberGenerator::getValue();
+    return 0;
 }
 
 int32_t getRandomIntegerInBounds(int32_t min, int32_t max) {
