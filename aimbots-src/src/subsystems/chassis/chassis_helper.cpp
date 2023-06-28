@@ -7,8 +7,14 @@ int8_t chassisXDesiredWheelspeedWatch = 0;
 
 namespace src::Chassis::Helper {
 
-void getUserDesiredInput(src::Drivers* drivers, ChassisSubsystem* chassis, float* desiredXInput, float* desiredYInput, float* desiredRotationInput) {
-    if (drivers == nullptr || chassis == nullptr || desiredXInput == nullptr || desiredYInput == nullptr || desiredRotationInput == nullptr) {
+void getUserDesiredInput(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredXInput,
+    float* desiredYInput,
+    float* desiredRotationInput) {
+    if (drivers == nullptr || chassis == nullptr || desiredXInput == nullptr || desiredYInput == nullptr ||
+        desiredRotationInput == nullptr) {
         return;
     }
 
@@ -39,6 +45,38 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
 
     *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
     *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
+}
+
+// float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
+//     float angleBetweenCorners = M_TWOPI / numSnapPositions;
+//     ContiguousFloat nearestCornerAngle(starterAngle, 0, M_TWOPI);
+
+//     for (int i = 0; i < numSnapPositions; i++) {
+//         ContiguousFloat currentCornerAngle(starterAngle + i * angleBetweenCorners, 0, M_TWOPI);
+
+//         if (fabsf(currentCornerAngle.difference(targetAngle)) < fabsf(nearestCornerAngle.difference(targetAngle))) {
+//             nearestCornerAngle = currentCornerAngle;
+//         }
+//     }
+
+//     return /*targetAngle - */ nearestCornerAngle.getValue();
+// }
+
+float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
+    float angleBetweenCorners = M_TWOPI / static_cast<float>(numSnapPositions);
+    ContiguousFloat targetContiguousAngle(targetAngle, 0, M_TWOPI);
+
+    float nearestCornerError = targetContiguousAngle.difference(starterAngle);
+
+    for (int i = 0; i < numSnapPositions; i++) {
+        float currentCornerError = targetContiguousAngle.difference(starterAngle + i * angleBetweenCorners);
+
+        if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {
+            nearestCornerError = currentCornerError;
+        }
+    }
+
+    return nearestCornerError;
 }
 
 }  // namespace src::Chassis::Helper

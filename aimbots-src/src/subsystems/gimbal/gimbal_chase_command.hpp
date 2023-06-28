@@ -7,6 +7,7 @@
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
+#include "utils/ref_helper.hpp"
 
 #include "drivers.hpp"
 
@@ -25,12 +26,16 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalControllerInterface*,
+        src::Utils::RefereeHelper*,
+        BarrelID& barrelID,
         src::Utils::Ballistics::BallisticsSolver*);
 
     char const* getName() const override { return "Gimbal Chase Command"; }
 
     void initialize() override;
     void execute() override;
+
+    void setIgnoreQuickTurn(bool ignore) { ignoreQuickTurns = ignore; }
 
     bool isReady() override;
     bool isFinished() const override;
@@ -42,12 +47,17 @@ private:
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
 
+    src::Utils::RefereeHelper* refHelper;
+    BarrelID& barrelID;
+
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
-    src::Informants::vision::plateKinematicState data;
+    src::Informants::Vision::PlateKinematicState data;
 
     bool wasQPressed = false;
     bool wasEPressed = false;
+
+    bool ignoreQuickTurns = false;
 };
 
 }  // namespace src::Gimbal

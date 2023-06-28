@@ -96,7 +96,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 50.0f,
+    .kp = 25.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -125,7 +125,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
+    .kp = 750.0f,
     .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -138,8 +138,8 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 0.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 0.0f;
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
@@ -157,9 +157,24 @@ const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {36.15f, 27'000.0f},
                                                                     {36.35f, 30'000.0f}
                                                                     };
+
+const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
+                                                                    {0.0f, 0.0f},
+                                                                    {3.75f, 3'000.0f},
+                                                                    {8.5f, 6'000.0f},
+                                                                    {12.75f, 9'000.0f},
+                                                                    {17.67f, 12'000.0f},
+                                                                    {22.5f, 15'000.0f},
+                                                                    {26.75f, 18'000.0f},
+                                                                    {31.5f, 21'000.0f},
+                                                                    {35.5f, 24'000.0f},
+                                                                    {36.15f, 27'000.0f},
+                                                                    {36.35f, 30'000.0f}
+                                                                    };
 // clang-format on
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
+const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
@@ -277,14 +292,7 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
 // 0.205f normally
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -373,7 +381,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!

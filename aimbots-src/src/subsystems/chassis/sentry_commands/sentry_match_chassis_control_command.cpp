@@ -1,5 +1,4 @@
 #include "sentry_match_chassis_control_command.hpp"
-#ifdef TARGET_SENTRY
 
 namespace src::Chassis {
 
@@ -70,5 +69,3 @@ bool SentryMatchChassisControlCommand::isReady() { return true; }
 bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
-
-#endif

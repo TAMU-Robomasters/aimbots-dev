@@ -1,6 +1,6 @@
 #pragma once
 
-namespace src::Informants::vision {
+namespace src::Informants::Vision {
 
 enum CVState : uint8_t {
     NOT_FOUND = 0,
@@ -22,4 +22,4 @@ struct JetsonMessage {
 static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
-}  // namespace src::Informants::vision
+}  // namespace src::Informants::Vision

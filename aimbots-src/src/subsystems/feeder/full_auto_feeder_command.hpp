@@ -1,5 +1,4 @@
 #pragma once
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
@@ -19,9 +18,9 @@ public:
         src::Drivers*,
         FeederSubsystem*,
         src::Utils::RefereeHelper*,
-        bool& barrelMovingFlag,
         float speed = FEEDER_DEFAULT_RPM,
-        float acceptableHeatThreshold = 0.90f);
+        float acceptableHeatThreshold = 0.90f,
+        int UNJAM_TIMER_MS = 300);
     void initialize() override;
 
     void execute() override;
@@ -39,9 +38,10 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelper* refHelper;
 
-    bool& barrelMovingFlag;
     float speed;
     float acceptableHeatThreshold;
+
+    int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
@@ -49,5 +49,3 @@ private:
 };
 
 }  // namespace src::Feeder
-
-#endif

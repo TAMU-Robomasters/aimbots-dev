@@ -8,11 +8,15 @@ GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalControllerInterface* gimbalController,
+    src::Utils::RefereeHelper* refHelper,
+    BarrelID& barrelID,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
+      refHelper(refHelper),
+      barrelID(barrelID),
       ballisticsSolver(ballisticsSolver)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -37,28 +41,33 @@ float gimbalPitchInputDisplay = 0.0f;
 
 float timestampDisplay;
 
+float predictedProjectileSpeed = 0.0f;
+
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q)) wasQPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset -= M_PI_2;
+        quickTurnOffset += M_PI_2;
     }
 
-    if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
-        quickTurnOffset += M_PI_2;
+        quickTurnOffset -= M_PI_2;
     }
 
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed(barrelID);
+    predictedProjectileSpeed = projectileSpeed;
+
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve();  // returns nullopt if no solution is available
+        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
@@ -79,8 +88,8 @@ void GimbalChaseCommand::execute() {
 
         // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
-        controller->runYawController(3.0f);
-        controller->runPitchController();
+        controller->runYawController(5.0f);
+        controller->runPitchController(5.0f);
     } else {
         // Yaw counterclockwise is positive angle
         targetYawAxisAngle = controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -

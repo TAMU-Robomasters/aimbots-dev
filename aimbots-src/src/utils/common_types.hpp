@@ -21,6 +21,8 @@
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
+#include "tap/communication/serial/ref_serial_data.hpp"
+
 inline float pow2(float x) { return x * x; }
 
 static inline float wrapTo0To2PIRange(float angle) {
@@ -93,6 +95,8 @@ using CANBus = tap::can::CanBus;
 using UartPort = tap::communication::serial::Uart::UartPort;
 
 using Remote = tap::communication::serial::Remote;
+
+using BarrelID = tap::communication::serial::RefSerialData::Rx::MechanismID;
 
 using PeriodicMilliTimer = tap::arch::PeriodicMilliTimer;
 using PeriodicMicroTimer = tap::arch::PeriodicMicroTimer;

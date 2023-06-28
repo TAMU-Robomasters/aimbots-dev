@@ -21,7 +21,7 @@ public:
         src::Gimbal::GimbalSubsystem* gimbal,
         SmoothPIDConfig* rotationControllerConfig,
         BallisticsSolver* ballisticsSolver,
-        int numCorners = 4,
+        int numSnapPositions = 4,
         float starterAngle = modm::toRadian(45.0f),
         float angularMagnitude = modm::toRadian(10.0f),
         uint32_t timePeriod = 3000);
@@ -30,8 +30,6 @@ public:
     void initialize() override;
 
     void execute() override;
-
-    float findNearestCornerAngle(float targetAngle);
 
     bool isReady() override;
     bool isFinished() const override;
@@ -49,7 +47,7 @@ private:
 
     uint16_t startingTimestamp = 0.0f;
 
-    int numCorners;
+    int numSnapPositions;
     float starterAngle;  // rad
 
     float angularMagnitude;  // rad

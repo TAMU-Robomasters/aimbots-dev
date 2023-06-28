@@ -22,6 +22,7 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
+#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
@@ -32,6 +33,7 @@
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -63,6 +65,42 @@ using namespace src::Barrel_Manager;
 using namespace src::Communication;
 using namespace src::RobotStates;
 using namespace src::utils::display;
+using namespace src::BarrelManager;
+
+// For reference, all possible keyboard inputs:
+// W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
+/*  Standard Control Scheme:
+
+    Chassis -----------------------------------------------------------
+    Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
+    Quick 90-deg Turn Gimbal Yaw (Left): Q
+    Quick 90-deg Turn Gimbal Yaw (Right): E
+
+    Manually Choose Tokyo Direction (Left): F+Q
+    Manually Choose Tokyo Direction (Right): E+Q
+
+    Decrease Chassis Ground Speed: Shift
+    Decrease Chassis Ground Speed (larger): Ctrl
+
+    Gimbal ------------------------------------------------------------
+    Aim Using CV: Right Mouse Button
+
+    Shooter -----------------------------------------------------------
+
+    Feeder ------------------------------------------------------------
+    Full Auto Shooting: Left Mouse Button
+
+    Hopper ------------------------------------------------------------
+    Toggle Hopper Position: C
+
+    Barrel Manager ----------------------------------------------------
+    Manually Switch Barrel: R
+    Recalibrate: Hold G for 1 second
+
+    UI ----------------------------------------------------------------
+
+
+*/
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -80,12 +118,24 @@ namespace StandardControl {
 
 src::Utils::RefereeHelper refHelper(drivers());
 
+BarrelID currentBarrel =
+    BARREL_IDS[0];  // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers());
-HopperSubsystem hopper(drivers());
+HopperSubsystem hopper(
+    drivers(),
+    HOPPER_PIN,
+    HOPPER_MAX_PWM,
+    HOPPER_MIN_PWM,
+    HOPPER_PWM_RAMP_SPEED,
+    HOPPER_MIN_ANGLE,
+    HOPPER_MAX_ANGLE,
+    HOPPER_MIN_ACTION_DELAY);
+
 BarrelManagerSubsystem barrelManager(
     drivers(),
     HARD_STOP_OFFSET,
@@ -94,10 +144,13 @@ BarrelManagerSubsystem barrelManager(
     LEAD_SCREW_TICKS_PER_MM,
     LEAD_SCREW_CURRENT_SPIKE_TORQUE,
     LEAD_SCREW_CALI_OUTPUT,
-    BARREL_SWAP_POSITION_PID_CONFIG);
+    BARREL_SWAP_POSITION_PID_CONFIG,
+    BARREL_IDS,
+    currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
+bool barrelCaliDoneFlag = false;
 
 CommunicationResponseSubsytem response(*drivers());
 ClientDisplaySubsystem clientDisplay(*drivers());
@@ -110,32 +163,83 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
-// ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-// ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-// ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+
+
+ToykoRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
+
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+ChassisToggleDriveCommand chassisToggleDriveCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    2,
+    modm::toRadian(0.0f),
+    false,
+    randomizerConfig);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, false, randomizerConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver);
+GimbalToggleAimCommand gimbalToggleAimCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver);
 
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, barrelMovingFlag, FEEDER_DEFAULT_RPM, 0.90f);
+DualBarrelFeederCommand runDoubleBarrelFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    0.90f,
+    UNJAM_TIMER_MS);
+DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    0.90f,
+    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, 0.80f);
+BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag, 0.80f);
 
-OpenHopperCommand openHopperCommand(drivers(), &hopper);
-OpenHopperCommand openHopperCommand2(drivers(), &hopper);
-CloseHopperCommand closeHopperCommand(drivers(), &hopper);
-CloseHopperCommand closeHopperCommand2(drivers(), &hopper);
-ToggleHopperCommand toggleHopperCommand(drivers(), &hopper);
+OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // CommunicationResponseHandler responseHandler(*drivers());
 
@@ -152,13 +256,13 @@ ClientDisplayCommand clientDisplayCommand(
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalChaseCommand, &barrelSwapperCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
@@ -170,21 +274,19 @@ HoldCommandMapping rightSwitchDown(
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    // {&runShooterCommand, &closeHopperCommand},
-    {&closeHopperCommand},
+    {&runShooterCommand, &toggleHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    // {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
-    {&openHopperCommand},
+    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runFeederCommandFromMouse},
+    {&runDoubleBarrelFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
@@ -192,6 +294,12 @@ HoldCommandMapping leftClickMouse(
 // server and thus don't know when to start sending the initial HUD graphics.
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
+
+// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
+/*PressCommandMapping ctrlC(
+    drivers(),
+    {&guiDisplayCommand},
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
 // HoldCommandMapping rightClickMouse(
 //     drivers(),
 //     {&},
@@ -204,11 +312,10 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-
-    drivers->kinematicInformant.registerGimbalSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
     drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -227,6 +334,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup

@@ -81,17 +81,20 @@ public:
     const char* getName() override { return "Gimbal Subsystem"; }
 
     inline bool isOnline() const {
+        bool pitchOnline = false;
+        bool yawOnline = false;
+
         for (auto& yawMotor : yawMotors) {
-            if (!yawMotor->isMotorOnline()) {
-                return false;
+            if (yawMotor->isMotorOnline()) {
+                yawOnline = true;
             }
         }
         for (auto& pitchMotor : pitchMotors) {
-            if (!pitchMotor->isMotorOnline()) {
-                return false;
+            if (pitchMotor->isMotorOnline()) {
+                pitchOnline = true;
             }
         }
-        return true;
+        return yawOnline && pitchOnline;
     }
 
     void setDesiredYawMotorOutput(uint8_t YawIdx, float output) { desiredYawMotorOutputs[YawIdx] = output; }

@@ -1,5 +1,5 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TARGET_SENTRY
+#ifdef ULTRASONIC
 
 #include "drivers.hpp"
 #include "ultrasonic_distance_sensor.hpp"
@@ -141,4 +141,4 @@ float UltrasonicDistanceSensor::getRightDistance() {
 
 }  // namespace src::Informants
 
-#endif
+#endif // ULTRASONIC

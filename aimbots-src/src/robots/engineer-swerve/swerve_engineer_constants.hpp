@@ -126,8 +126,6 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // static constexpr float YAW_START_ANGLE = M_PI_2;
@@ -177,11 +175,6 @@ static constexpr float YAW_START_ANGLE = 163.0f;
 static constexpr float PITCH_START_ANGLE = 117.0f;
 static constexpr float PITCH_SOFTSTOP_LOW = 134.0f;
 static constexpr float PITCH_SOFTSTOP_HIGH = 74.0f;
-
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
 static constexpr float MAX_ENERGY_BUFFER = 60.0f;

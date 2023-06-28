@@ -1,5 +1,4 @@
 #include "gimbal_field_relative_control_command.hpp"
-#ifndef ENGINEER
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
@@ -25,22 +24,21 @@ float gimbalYawInputDisplay = 0.0f;
 void GimbalFieldRelativeControlCommand::execute() {
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q)) wasQPressed = true;
+    if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset -= M_PI_2;
-    }
-
-    if (drivers->remote.keyPressed(Remote::Key::E)) wasEPressed = true;
-
-    if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
-        wasEPressed = false;
         quickTurnOffset += M_PI_2;
     }
 
-    gimbalYawInputDisplay =
-        controller->getTargetYaw(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalYawInput();
+    if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
+
+    if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
+        wasEPressed = false;
+        quickTurnOffset -= M_PI_2;
+    }
+
+    gimbalYawInputDisplay = drivers->controlOperatorInterface.getGimbalYawInput();
 
     controller->setTargetYaw(
         AngleUnit::Radians,
@@ -65,4 +63,3 @@ void GimbalFieldRelativeControlCommand::end(bool) {
 }
 
 }  // namespace src::Gimbal
-#endif

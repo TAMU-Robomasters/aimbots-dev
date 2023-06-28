@@ -1,17 +1,22 @@
-#include "utils/robot_specific_inc.hpp"
-#ifdef TARGET_SENTRY
-
 #include "sentry_match_gimbal_control_command.hpp"
 
 namespace src::Gimbal {
 
-SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(src::Drivers* drivers, GimbalSubsystem* gimbal, GimbalChassisRelativeController* gimbalController, int chaseTimeoutMillis)
+SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
+    src::Drivers* drivers,
+    GimbalSubsystem* gimbal,
+    GimbalChassisRelativeController* gimbalController,
+    src::Utils::RefereeHelper* refHelper,
+    BarrelID& barrelID,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    int chaseTimeoutMillis)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       controller(gimbalController),
-      patrolCommand(drivers, gimbal, controller),
-      chaseCommand(drivers, gimbal, controller),
+      ballisticsSolver(ballisticsSolver),
+      patrolCommand(drivers, gimbal, controller, 0, 0, 0, 0),
+      chaseCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
       chaseTimeout(0),
       chaseTimeoutMillis(chaseTimeoutMillis)  //
 {
@@ -32,8 +37,8 @@ void SentryMatchGimbalControlCommand::execute() {
         return;
     }
 
-    if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::FOUND ||
-        drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::vision::FIRE) {
+    if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
+        drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
         chaseTimeout.restart(chaseTimeoutMillis);
     }
@@ -54,5 +59,3 @@ bool SentryMatchGimbalControlCommand::isReady() { return true; }
 bool SentryMatchGimbalControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Gimbal
-
-#endif  // TARGET_SENTRY

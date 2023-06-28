@@ -10,8 +10,8 @@ namespace src::Gimbal {
 class GimbalSubsystem;
 }
 
-namespace src::Informants::vision {
-struct plateKinematicState;
+namespace src::Informants::Vision {
+struct PlateKinematicState;
 }
 
 namespace src::Utils::Ballistics {
@@ -77,31 +77,7 @@ public:
         float timeToTarget;  // in seconds
     };
 
-    std::optional<BallisticsSolution> solve();
-
-    /**
-     * Computes an iterative numerical approximation of the pitch angle to aim the turret in order to
-     * hit a given target and the time it will take for that target to be hit, given the velocity of a
-     * bullet out of the turret and the position of the target relative to the turret.
-     *
-     * @param[in] targetPosition: The 3D position of a target in m. Frame requirements: RELATIVE TO
-     * PROJECTILE RELEASE POSITION, Z IS OPPOSITE TO GRAVITY.
-     * @param[in] bulletVelocity: The velocity of the projectile to be fired in m/s.
-     * @param[out] travelTime: The expected travel time of a turret shot to hit a target from this
-     * object's position.
-     * @param[out] turretPitch: The pitch angle of the turret to hit the target at the given travel
-     * time.
-     * @param[in] pitchAxisOffset: The distance between the pitch and yaw axes (in meters)
-     * as seen from a plane parallel to the ground. A positive offset indicates that
-     * the pitch axis is located behind the yaw axis.
-     * @return Whether or not a valid travel time was found.
-     */
-    bool computeTravelTime(
-        const modm::Vector3f &targetPosition,
-        float bulletVelocity,
-        float *travelTime,
-        float *turretPitch,
-        const float pitchAxisOffset = 0);
+    std::optional<BallisticsSolution> solve(std::optional<float> projectileSpeed = std::nullopt);
 
     /**
      * @param[in] targetInitialState: The initial 3D kinematic state of a target. Frame requirements:
@@ -134,13 +110,37 @@ public:
         float *projectedTravelTime,
         const float pitchAxisOffset = 0);
 
+    /**
+     * Computes an iterative numerical approximation of the pitch angle to aim the turret in order to
+     * hit a given target and the time it will take for that target to be hit, given the velocity of a
+     * bullet out of the turret and the position of the target relative to the turret.
+     *
+     * @param[in] targetPosition: The 3D position of a target in m. Frame requirements: RELATIVE TO
+     * PROJECTILE RELEASE POSITION, Z IS OPPOSITE TO GRAVITY.
+     * @param[in] bulletVelocity: The velocity of the projectile to be fired in m/s.
+     * @param[out] travelTime: The expected travel time of a turret shot to hit a target from this
+     * object's position.
+     * @param[out] turretPitch: The pitch angle of the turret to hit the target at the given travel
+     * time.
+     * @param[in] pitchAxisOffset: The distance between the pitch and yaw axes (in meters)
+     * as seen from a plane parallel to the ground. A positive offset indicates that
+     * the pitch axis is located behind the yaw axis.
+     * @return Whether or not a valid travel time was found.
+     */
+    bool computeTravelTime(
+        const modm::Vector3f &targetPosition,
+        float bulletVelocity,
+        float *travelTime,
+        float *turretPitch,
+        const float pitchAxisOffset = 0);
+
 private:
     src::Drivers *drivers;
     src::Utils::RefereeHelper *refHelper;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
 
-    uint32_t lastFoundTargetTime = 0;
+    uint32_t lastPlatePredictionTime = 0;
 
     std::optional<BallisticsSolution> lastBallisticsSolution = {};
 };

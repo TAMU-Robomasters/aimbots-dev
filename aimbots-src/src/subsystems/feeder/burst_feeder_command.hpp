@@ -10,7 +10,6 @@
 #include "drivers.hpp"
 
 namespace src::Feeder {
-
 class BurstFeederCommand : public TapCommand {
 public:
     BurstFeederCommand(

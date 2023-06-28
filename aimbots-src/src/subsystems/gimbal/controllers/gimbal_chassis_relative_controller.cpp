@@ -1,5 +1,4 @@
 #include "gimbal_chassis_relative_controller.hpp"
-#ifndef ENGINEER
 
 namespace src::Gimbal {
 
@@ -38,7 +37,9 @@ void GimbalChassisRelativeController::runYawController(std::optional<float> velo
     }
 }
 
-void GimbalChassisRelativeController::runPitchController() {
+void GimbalChassisRelativeController::runPitchController(std::optional<float> velocityLimit) {
+    UNUSED(velocityLimit);
+
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         pitchMotorSetpointErrorDisplay = gimbal->getPitchMotorSetpointError(i, AngleUnit::Degrees);
@@ -54,4 +55,3 @@ void GimbalChassisRelativeController::runPitchController() {
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
 
 }  // namespace src::Gimbal
-#endif

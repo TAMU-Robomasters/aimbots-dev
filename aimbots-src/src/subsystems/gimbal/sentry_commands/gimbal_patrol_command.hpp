@@ -1,5 +1,4 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TARGET_SENTRY
 
 #pragma once
 
@@ -12,9 +11,9 @@ namespace src::Gimbal {
 
 class GimbalPatrolCommand : public tap::control::Command {
 public:
-    GimbalPatrolCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*);
+    GimbalPatrolCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*, float, float, float, float);
 
-    char const* getName() const override { return "Gimbal Control Command"; }
+    char const* getName() const override { return "Gimbal Patrol Command"; }
 
     void initialize() override;
     void execute() override;
@@ -46,6 +45,11 @@ private:
     GimbalSubsystem* gimbal;
     GimbalChassisRelativeController* controller;
 
+    float PITCH_PATROL_AMPLITUDE;
+    float PITCH_PATROL_FREQUENCY;
+    float PITCH_PATROL_OFFSET;
+    float PITCH_OFFSET_ANGLE;
+
     MilliTimeout patrolTimer;
     Matrix<float, 3, 3> patrolCoordinates;
     int patrolCoordinateIndex;
@@ -53,5 +57,3 @@ private:
 };
 
 }  // namespace src::Gimbal
-
-#endif

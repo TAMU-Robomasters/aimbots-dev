@@ -12,9 +12,7 @@
 
 #ifdef BARREL_SWAP_COMPATIBLE
 
-
-
-namespace src::Barrel_Manager {
+namespace src::BarrelManager {
 
 //To the Left is negative encoder counts
 //To the Right is positive encoder counts
@@ -33,7 +31,9 @@ public:
     float LEAD_SCREW_TICKS_PER_MM,
     int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
     int16_t LEAD_SCREW_CALI_OUTPUT,
-    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG);
+    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG,
+    std::array<BarrelID, 2> BARREL_ARRAY,
+    BarrelID &currentBarrel);
 
     mockable void initialize() override;
     void refresh() override;
@@ -61,28 +61,26 @@ public:
     //Will toggle which barrel is equipped
     void toggleSide();
 
-    //If no position specified, defaults to -1, which means get currently equipped barrel
-    //Returns the (max heat - current heat), to find out how many more shots can be made with the specified barrel
-    int16_t getRemainingBarrelHeat(barrelSide side);
-
-    //Returns true when barrel is aligned with the flywheels
+    //Returns true when barrel is aligned with the flywheels (with a tolerance)
     bool isBarrelAligned();
 
-    //TODO: Make sure Left and Right offsets are added/subtracted correctly
+    //Give a barrel side, and in return get the mm position that side corresponds to
     float getSideInMM(barrelSide side) {return (side == barrelSide::LEFT) ? (limitLRPositions[barrelSide::LEFT]) : (limitLRPositions[barrelSide::RIGHT]);}
 
-    
+    //Returns the ID of the barrel corresponding to the side
+    BarrelID getBarrelSideID(barrelSide side = barrelSide::CURRENT) {
+        barrelSide actualSide = side;
+        if (actualSide == barrelSide::CURRENT) {
+            actualSide = getSide();
+        }
+        return BARREL_ARRAY[actualSide];
+    }
 
 private:
     tap::Drivers* drivers;
     barrelSide currentBarrelSide = barrelSide::LEFT;
 
     MilliTimeout currentSpikeTimer;
-
-    //This is just for testing without the ref system
-    MilliTimeout fakeHeatGainTimer;
-    int16_t barrel1_fakeHeat = 0;
-    int16_t barrel2_fakeHeat = 0;
 
     DJIMotor swapMotor;
 
@@ -96,8 +94,8 @@ private:
     float currentSwapMotorPosition; //In mm
 
     float desiredSwapMotorOutput;
-                                // *** 0 to 45 mm goes from edge to edge if touching left side from VTM POV at initialization  
-    // float limitLRPositions[2] = {0,45}; // {Left side, Right side} In mm, TODO: should be determined in the code at launch
+
+    // {Left side, Right side} In mm
     float limitLRPositions[2] = {0,BARREL_SWAP_DISTANCE_MM}; // 
 
     //Constants to be set by at the construction of a new barrel manager instance
@@ -109,7 +107,8 @@ private:
     int16_t LEAD_SCREW_CALI_OUTPUT;
     SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG;
 
-
+    std::array<BarrelID, 2> BARREL_ARRAY;
+    BarrelID &currentBarrel;
 };
 
 }  // namespace src::Shooter

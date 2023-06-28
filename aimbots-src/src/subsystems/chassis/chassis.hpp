@@ -26,6 +26,15 @@ enum MotorOnWheelIndex {
     YAW = 1
 };
 
+/**
+ * Used to index into matrices returned by functions of the form get*Velocity*().
+ */
+enum ChassisVelIndex {
+    X = 0,
+    Y = 1,
+    R = 2,
+};
+
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
 public:
     ChassisSubsystem(  // Default chassis constructor
@@ -85,9 +94,7 @@ public:
     // Uses the desiredOutputs matrix to set the desired power of the motors
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
-#ifndef SWERVE
-    void calculateMecanum(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
-#endif
+    void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 #ifdef SWERVE
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
 #endif
@@ -137,9 +144,23 @@ public:
         return true;
     }
 
+    /**
+     * Converts the velocity matrix from raw RPM to wheel velocity in m/s.
+     */
+    inline modm::Matrix<float, 4, 1> convertRawRPM(const modm::Matrix<float, 4, 1>& mat) const {
+        static constexpr float ratio = 2.0f * M_PI * CHASSIS_GEARBOX_RATIO / 60.0f;
+        return mat * ratio;
+    }
+
     Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
-        // no proper override because we don't have a need for this function yet
-        return Matrix<float, 3, 1>::zeroMatrix();
+        Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
+
+        wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
+        wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
+        wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
+        wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+
+        return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
     }
 
     bool getTokyoDrift() const;
@@ -169,6 +190,9 @@ public:
     src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
 
     bool tokyoDrift;
+
+protected:
+    Matrix<float, 3, 4> wheelVelToChassisVelMat;
 
 public:
     inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }

@@ -14,7 +14,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
     src::Gimbal::GimbalSubsystem* gimbal,
     SmoothPIDConfig* rotationControllerConfig,
     BallisticsSolver* ballisticsSolver,
-    int numCorners,
+    int numSnapPositions,
     float starterAngle,
     float angularMagnitude,
     uint32_t timePeriod)
@@ -23,7 +23,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
       gimbal(gimbal),
       rotationController(*rotationControllerConfig),
       ballisticsSolver(ballisticsSolver),
-      numCorners(numCorners),
+      numSnapPositions(numSnapPositions),
       starterAngle(starterAngle),
       angularMagnitude(angularMagnitude),
       timePeriod(timePeriod)  //
@@ -48,7 +48,7 @@ void ChassisShakiraCommand::execute() {
         std::optional<BallisticsSolver::BallisticsSolution> ballisticsSolution = ballisticsSolver->solve();
 
         if (ballisticsSolution != std::nullopt) {
-            float targetYawAngle = ballisticsSolution->yawAngle;
+            float targetYawAngle = ballisticsSolution->yawAngle;  // chassis relative gimbal target
 
             if (fabsf(desiredX) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED ||
                 fabsf(desiredY) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED) {
@@ -59,12 +59,12 @@ void ChassisShakiraCommand::execute() {
                 angularMagnitude * angularMagnitudeMultiplier *
                 sinf(M_TWOPI * (tap::arch::clock::getTimeMilliseconds() - startingTimestamp) / timePeriod);
 
-            float targetChassisAngle =
-                ballisticsSolution->yawAngle + findNearestCornerAngle(targetYawAngle) + offsetFromTarget;
+            float chassisErrorAngle =
+                Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, numSnapPositions, starterAngle);
 
             rotationController.runController(
-                -targetChassisAngle,
-                RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                chassisErrorAngle,
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
@@ -80,8 +80,8 @@ void ChassisShakiraCommand::execute() {
             tap::algorithms::rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
         } else {
             rotationController.runController(
-                -yawAngleFromChassisCenter,
-                RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                yawAngleFromChassisCenter,
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
@@ -100,21 +100,6 @@ void ChassisShakiraCommand::execute() {
         Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
-}
-
-float ChassisShakiraCommand::findNearestCornerAngle(float targetAngle) {
-    float angleBetweenCorners = M_TWOPI / numCorners;
-    float nearestCornerAngle = starterAngle;
-
-    for (int i = 0; i < numCorners; i++) {
-        float currentCornerAngle = starterAngle + i * angleBetweenCorners;
-
-        if (fabsf(targetAngle - currentCornerAngle) < fabsf(targetAngle - nearestCornerAngle)) {
-            nearestCornerAngle = currentCornerAngle;
-        }
-    }
-
-    return nearestCornerAngle;
 }
 
 bool ChassisShakiraCommand::isReady() { return true; }

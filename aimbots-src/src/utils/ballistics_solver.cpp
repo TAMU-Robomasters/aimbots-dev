@@ -1,6 +1,6 @@
 #include "ballistics_solver.hpp"
 
-namespace src::Informants::vision {
+namespace src::Informants::Vision {
 enum CVState;
 }
 
@@ -11,23 +11,32 @@ BallisticsSolver::BallisticsSolver(src::Drivers *drivers, src::Utils::RefereeHel
       refHelper(refHelper)  //
 {}
 
-std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
+BallisticsSolver::BallisticsSolution solutionDisplay;
+MeasuredKinematicState plateKinematicStateDisplay;
+std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
     if (!drivers->cvCommunicator.isJetsonOnline() ||
-        drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::vision::CVState::FOUND) {
+        drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
         return std::nullopt;
     }
 
     // If we have already solved for this target, return the same solution
-    if (lastFoundTargetTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
+    if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
         return lastBallisticsSolution;
     } else {
-        lastFoundTargetTime = drivers->cvCommunicator.getLastFoundTargetTime();
+        lastPlatePredictionTime = drivers->cvCommunicator.getLastFoundTargetTime();
     }
 
-    auto plateKinematicState = drivers->cvCommunicator.getPlateKinematicState();
+    // How far from now you want to predict? (in us)
+    uint32_t forwardProjectionTime = 0 * 1000;
 
-    // float projectileSpeed = refHelper->getPredictedProjectileSpeed();
-    float projectileSpeed = defaultProjectileSpeed;
+    auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
+
+    // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
+    //     if (SHOOTER_SPEED_MATRIX[i][0] == refHelper->getProjectileSpeedLimit()) {
+    //         projectileSpeed = SHOOTER_SPEED_MATRIX[i][1];
+    //         break;
+    //     }
+    // }
 
     MeasuredKinematicState targetKinematicState = {
         .position = plateKinematicState.position,
@@ -35,17 +44,14 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
         .acceleration = plateKinematicState.acceleration,
     };
 
-    // Current time - Time the target was seen
-    int64_t forwardProjectionTime = static_cast<int64_t>(tap::arch::clock::getTimeMicroseconds()) -
-                                    static_cast<int64_t>(plateKinematicState.timestamp_uS);
-    targetKinematicState.position = targetKinematicState.projectForward(forwardProjectionTime / MICROSECONDS_PER_SECOND);
+    plateKinematicStateDisplay = targetKinematicState;
 
     lastBallisticsSolution = BallisticsSolution();
     lastBallisticsSolution->distanceToTarget = targetKinematicState.position.getLength();
 
     if (!findTargetProjectileIntersection(
             targetKinematicState,
-            projectileSpeed,
+            projectileSpeed.value_or(defaultProjectileSpeed),
             3,
             &lastBallisticsSolution->pitchAngle,
             &lastBallisticsSolution->yawAngle,
@@ -53,8 +59,47 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve() {
             0.0f)) {
         lastBallisticsSolution = std::nullopt;
     }
+    solutionDisplay = *lastBallisticsSolution;
 
     return lastBallisticsSolution;
+}
+
+bool BallisticsSolver::findTargetProjectileIntersection(
+    MeasuredKinematicState targetInitialState,
+    float bulletVelocity,
+    uint8_t numIterations,
+    float *turretPitch,
+    float *turretYaw,
+    float *projectedTravelTime,
+    const float pitchAxisOffset) {
+    modm::Vector3f projectedTargetPosition = targetInitialState.position;
+
+    if (projectedTargetPosition.x == 0 && projectedTargetPosition.y == 0 && projectedTargetPosition.z == 0) {
+        return false;
+    }
+
+    for (int i = 0; i < numIterations; i++) {
+        if (!computeTravelTime(projectedTargetPosition, bulletVelocity, projectedTravelTime, turretPitch, pitchAxisOffset)) {
+            return false;
+        }
+        projectedTargetPosition = targetInitialState.projectForward(*projectedTravelTime);
+    }
+
+    float squaredTargetX = pow2(projectedTargetPosition.x);
+    float squaredTargetY = pow2(projectedTargetPosition.y);
+    float squaredBarrelPositionX = pow2(BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX());
+
+    // *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
+    *turretYaw = acos(
+        (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
+         BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
+        (squaredTargetX + squaredTargetY));
+
+    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() > 0) {
+        *turretYaw *= -1;
+    }
+
+    return !isnan(*turretPitch) && !isnan(*turretYaw);
 }
 
 bool BallisticsSolver::computeTravelTime(
@@ -98,44 +143,6 @@ bool BallisticsSolver::computeTravelTime(
     *travelTime = horizontalDist / (bulletVelocity * cos(*turretPitch));
 
     return !isnan(*turretPitch) && !isnan(*travelTime);
-}
-
-bool BallisticsSolver::findTargetProjectileIntersection(
-    MeasuredKinematicState targetInitialState,
-    float bulletVelocity,
-    uint8_t numIterations,
-    float *turretPitch,
-    float *turretYaw,
-    float *projectedTravelTime,
-    const float pitchAxisOffset) {
-    modm::Vector3f projectedTargetPosition = targetInitialState.position;
-
-    if (projectedTargetPosition.x == 0 && projectedTargetPosition.y == 0 && projectedTargetPosition.z == 0) {
-        return false;
-    }
-
-    for (int i = 0; i < numIterations; i++) {
-        if (!computeTravelTime(projectedTargetPosition, bulletVelocity, projectedTravelTime, turretPitch, pitchAxisOffset)) {
-            return false;
-        }
-        projectedTargetPosition = targetInitialState.projectForward(*projectedTravelTime);
-    }
-
-    float squaredTargetX = pow2(projectedTargetPosition.x);
-    float squaredTargetY = pow2(projectedTargetPosition.y);
-    float squaredBarrelPositionX = pow2(BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX());
-
-    // *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
-    *turretYaw = acos(
-        (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
-         BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
-        (squaredTargetX + squaredTargetY));
-
-    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() > 0) {
-        *turretYaw *= -1;
-    }
-
-    return !isnan(*turretPitch) && !isnan(*turretYaw);
 }
 
 }  // namespace src::Utils::Ballistics

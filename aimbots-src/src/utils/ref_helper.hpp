@@ -15,10 +15,15 @@ public:
     ~RefereeHelper() = default;
 
     uint16_t getProjectileSpeedLimit();
+    uint16_t getProjectileSpeedLimit(BarrelID barrelID);
+
     float getLastProjectileSpeed();
     float getPredictedProjectileSpeed();
 
+    float getPredictedProjectileSpeed(BarrelID barrelID);
+
     bool isBarrelHeatUnderLimit(float percentageOfLimit);
+    bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
 
     int16_t getCurrentBarrel();
 
@@ -26,7 +31,7 @@ public:
 
 private:
     src::Drivers* drivers;
-    EMAFilter bulletSpeedFilter;
+    src::Utils::Filters::EMAFilter bulletSpeedFilter;
 };
 
 }  // namespace src::Utils

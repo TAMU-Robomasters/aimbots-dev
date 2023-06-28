@@ -58,10 +58,7 @@ enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     RB = 3,
 };
 
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
+
 
 // Power limiting constants, will explain later
 static constexpr float MAX_ENERGY_BUFFER = 60.0f;

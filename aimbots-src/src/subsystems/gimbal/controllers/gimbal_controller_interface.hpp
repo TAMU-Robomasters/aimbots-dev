@@ -9,7 +9,7 @@ public:
     virtual void initialize() = 0;
 
     virtual void runYawController(std::optional<float> velocityLimit = std::nullopt) = 0;
-    virtual void runPitchController() = 0;
+    virtual void runPitchController(std::optional<float> velocityLimit = std::nullopt) = 0;
 
     virtual void setTargetYaw(AngleUnit unit, float targetYaw) = 0;
     void setTargetYaw(ContiguousFloat targetYaw) { setTargetYaw(AngleUnit::Radians, targetYaw.getValue()); }

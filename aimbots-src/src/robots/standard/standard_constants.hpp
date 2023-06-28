@@ -48,7 +48,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-23.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -85,7 +85,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -99,7 +99,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 25.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -114,7 +114,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 3250.0f,  // 1650
+    .kp = 2200.0f,  // 3000
     .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -128,10 +128,10 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 1500.0f,
-    .ki = 7.0f,
+    .kp = 700.0f,
+    .ki = 15.0f,
     .kd = 0.0f,
-    .maxICumulative = 1500.0f,
+    .maxICumulative = 3000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -145,6 +145,8 @@ static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
+static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
@@ -175,22 +177,19 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {36.15f, 27'000.0f},
                                                                     {36.35f, 30'000.0f}
                                                                     };
-
 // clang-format on
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
-static constexpr float kGRAVITY = 0.0f;
-static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
 
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+static Vector3f IMU_MOUNT_POSITION{0.0992f, 0.0f, 0.0534f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 5.0f,
+    .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 1.5f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -202,9 +201,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 2.5f,
+    .kp = 15.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.8f,
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -215,9 +214,11 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr int UNJAM_TIMER_MS = 300;
+
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 10.0f,
-    .ki = 0.00f,  // 0.10f;
+    .kp = 40.0f,
+    .ki = 0.10f,  // 0.10f;
     .kd = 0.00f,
     .maxICumulative = 10.0f,
     .maxOutput = 30000.0f,
@@ -229,11 +230,17 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// clang-format off
-static constexpr uint16_t shooter_speed_array[6] = { // ONLY TUNE WITH FULL BATTERY
-    15, 4500,  // {ball m/s, flywheel rpm}
-    18, 4850,
-    30, 7200};
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
+
+// clang-format on
+static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
+    15,
+    4300,  // {ball m/s, flywheel rpm}
+    18,
+    4850,
+    30,
+    7050};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -267,7 +274,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = false;
 
-static constexpr bool SWAP_DIRECTION = true;
+static constexpr bool BARREL_SWAP_DIRECTION = true;
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -291,25 +298,14 @@ static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms
  */
 static constexpr float WHEEL_RADIUS = 0.076f;
 
-static constexpr float WHEELBASE_WIDTH = 0.366f;
+static constexpr float WHEELBASE_WIDTH = 0.3849f;
 
-static constexpr float WHEELBASE_LENGTH = 0.366f;
+static constexpr float WHEELBASE_LENGTH = 0.3284f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
-// 0.205f normally
-
-static const Matrix<float, 1, 3> ROBOT_STARTING_POSITION = Matrix<float, 1, 3>::zeroMatrix();
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
-
-/**
- * Max wheel speed, measured in RPM of the 3508 motor shaft.
- */
-static constexpr int MAX_3508_ENC_RPM = 7000;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -341,10 +337,10 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.25f,
+    .kp = 1.25f,  // 1.25f
     .ki = 0.0f,
-    .kd = 0.00625f,
-    .maxICumulative = 10.0f,
+    .kd = 0.25f,  // 0.03f
+    .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -398,18 +394,21 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
-static constexpr float CHASSIS_START_ANGLE_WORLD = 0.0f;  // theta (about z axis) IN DEGREES
+static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
 static constexpr float CIMU_X_EULER = 180.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 90.0f;
 
-// Barrel Manager Constants
+// This array holds the IDs of all speed monitor barrels on the robot
+static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+
+/**
+ * @brief Barrel Manager Constants
+ */
 // These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
 // A positive increase provides a bigger gap between hard stop and barrel
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
-// static constexpr float LEFT_STOP_OFFSET = 0; //In mm
-// static constexpr float RIGHT_STOP_OFFSET = 0; //In mm
 
 // this is from edge to edge, aligned center to aligned center,
 static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm
@@ -429,7 +428,6 @@ static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
 // When adjusting, also change the constant above to find an appropriate match between the two
 static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
 
-// TODO: Tune PID constants
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .kp = 1000.0f,
     .ki = 0.0f,

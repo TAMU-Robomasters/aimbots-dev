@@ -1,9 +1,10 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 
 namespace src::Hopper {
-OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper) {
+OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_OPEN_ANGLE) {
     this->drivers = drivers;
     this->hopper = hopper;
+    this->HOPPER_OPEN_ANGLE = HOPPER_OPEN_ANGLE;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 
