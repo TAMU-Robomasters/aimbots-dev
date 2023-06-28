@@ -170,7 +170,7 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #else
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateMecanum(
+    calculateHolonomic(
         x,
         y,
         r,
@@ -188,7 +188,7 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
 float xInputDisplay = 0.0f;
 float yInputDisplay = 0.0f;
 float rInputDisplay = 0.0f;
-void ChassisSubsystem::calculateMecanum(float x, float y, float r, float maxWheelSpeed) {
+void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWheelSpeed) {
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;

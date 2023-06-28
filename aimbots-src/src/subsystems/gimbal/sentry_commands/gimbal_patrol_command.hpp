@@ -54,9 +54,6 @@ private:
     Matrix<float, 3, 3> patrolCoordinates;
     int patrolCoordinateIndex;
     int patrolCoordinateIncrement;
-
-
-
 };
 
 }  // namespace src::Gimbal

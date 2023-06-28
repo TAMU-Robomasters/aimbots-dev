@@ -94,7 +94,7 @@ public:
     // Uses the desiredOutputs matrix to set the desired power of the motors
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
-    void calculateMecanum(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
+    void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 #ifdef SWERVE
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
 #endif
