@@ -106,7 +106,12 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 
-ToykoRandomizerConfig randomizerConfig = {
+SnapSymmetryConfig defaultSnapConfig = {
+    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
+    .snapAngle = modm::toRadian(0.0f),
+};
+
+SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifier = 0.75f,
     .maxSpinRateModifier = 1.0f,
     .minSpinRateModifierDuration = 500,
@@ -116,8 +121,7 @@ ToykoRandomizerConfig randomizerConfig = {
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
     &chassis, 
     &gimbal, 
-    CHASSIS_SNAP_POSITIONS,
-    modm::toRadian(0.0f),
+    defaultSnapConfig,
     false,
     randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
