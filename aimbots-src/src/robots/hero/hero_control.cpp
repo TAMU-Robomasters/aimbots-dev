@@ -102,13 +102,19 @@ ShooterSubsystem shooter(drivers());
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
-// Define commands here ---------------------------------------------------
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
+//Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
     .numSnapPositions = CHASSIS_SNAP_POSITIONS,
     .snapAngle = modm::toRadian(0.0f),
+};
+
+TokyoConfig defaultTokyoConfig = {
+    .translationalSpeedMultiplier = 0.6f,
+    .translationThresholdToDecreaseRotationSpeed = 0.5f,
+    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedIncrement = 50.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
@@ -118,13 +124,18 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+// Define commands here ---------------------------------------------------
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
+
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
     &chassis, 
     &gimbal, 
     defaultSnapConfig,
+    defaultTokyoConfig,
     false,
     randomizerConfig);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
