@@ -7,6 +7,7 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#include "chassis_helper.hpp"
 #include "drivers.hpp"
 
 namespace src::Chassis {
@@ -17,8 +18,7 @@ public:
         src::Drivers*,
         ChassisSubsystem*,
         src::Gimbal::GimbalSubsystem*,
-        uint8_t numSnapPositions = 1,
-        float starterAngle = 0.0f);
+        const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig());
     void initialize() override;
 
     void execute() override;
@@ -34,8 +34,7 @@ private:
     ChassisSubsystem* chassis;
     src::Gimbal::GimbalSubsystem* gimbal;
 
-    uint8_t numSnapPositions;
-    float starterAngle;  // rad
+    const SnapSymmetryConfig& snapSymmetryConfig;
 
     SmoothPID rotationController;
 };

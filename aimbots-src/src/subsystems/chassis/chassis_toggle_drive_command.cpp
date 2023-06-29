@@ -6,14 +6,13 @@ ChassisToggleDriveCommand::ChassisToggleDriveCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
     Gimbal::GimbalSubsystem* gimbal,
-    uint8_t numSnapPositions,
-    float starterAngle,
+    const SnapSymmetryConfig& snapSymmetryConfig,
     bool randomizeSpinRate,
-    const ToykoRandomizerConfig& randomizerConfig)
+    const SpinRandomizerConfig& randomizerConfig)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       chassis(chassis),
-      followGimbalCommand(drivers, chassis, gimbal, numSnapPositions, starterAngle),
+      followGimbalCommand(drivers, chassis, gimbal, snapSymmetryConfig),
       tokyoCommand(drivers, chassis, gimbal, 0, randomizeSpinRate, randomizerConfig),
       tokyoLeftCommand(drivers, chassis, gimbal, -1, randomizeSpinRate, randomizerConfig),
       tokyoRightCommand(drivers, chassis, gimbal, 1, randomizeSpinRate, randomizerConfig)  //

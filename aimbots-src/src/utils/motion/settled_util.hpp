@@ -1,37 +1,51 @@
 #pragma once
 
+#include <optional>
+
 #include "tap/architecture/timeout.hpp"
 
 namespace src::Utils::motion {
 
 class SettledUtil {
-private:
-    tap::arch::MilliTimeout errorTimeout;
-    tap::arch::MilliTimeout derivativeTimeout;
-
 public:
-    SettledUtil() {}
+    SettledUtil() = default;
+    ~SettledUtil() = default;
 
-    static bool isSettled(float error, float errorTolerance) { return static_cast<float>(fabs(error)) < errorTolerance; }
-
-    bool isSettled(float error, float errTolerance, float derivative, float derivTolerance, float derivToleranceTime) {
-        if (static_cast<float>(fabs(error)) < errTolerance) {
-            if (static_cast<float>(fabs(derivative)) < derivTolerance) {
-                // if timeout has expired and it's still running, then it's settled
-                if (derivativeTimeout.isExpired()) {
-                    return true;
-                } else if (derivativeTimeout.isStopped()) {
-                    // otherwise if the timeout has been stopped, then it must've previously left the settled range and needs
-                    // restarting
-                    derivativeTimeout.restart(derivToleranceTime);
-                }
-            } else {
-                // if the derivative is out of the tolerance range, then stop the timeout
-                derivativeTimeout.stop();
+    bool isSettled(
+        float error,
+        float errTolerance,
+        std::optional<uint32_t> errorTimeout = std::nullopt,
+        std::optional<float> derivative = std::nullopt,
+        std::optional<float> derivTolerance = std::nullopt,
+        std::optional<uint32_t> derivTimeout = std::nullopt) {
+        // Sets both flags to false
+        bool errorFlag = false;
+        bool derivativeFlag = !derivative.has_value();
+        if (fabs(error) < errTolerance) {
+            if (errorTimer.isExpired()) {
+                errorFlag = true;
+            } else if (errorTimer.isStopped()) {  // if timer has been stopped, restart it
+                errorTimer.restart(errorTimeout.value_or(0));
             }
+        } else {
+            errorTimer.stop();  // if error is not within tolerance, stop timer
         }
-        return false;
+        // if derivative is not provided, derivativeFlag is true
+        if (fabs(derivative.value_or(0.0f)) < derivTolerance.value_or(0.0f)) {
+            if (derivativeTimer.isExpired()) {
+                derivativeFlag = true;
+            } else if (derivativeTimer.isStopped()) {
+                derivativeTimer.restart(derivTimeout.value_or(0));
+            }
+        } else {
+            derivativeTimer.stop();
+        }
+        return errorFlag && derivativeFlag;
     }
+
+private:
+    tap::arch::MilliTimeout errorTimer;
+    tap::arch::MilliTimeout derivativeTimer;
 };
 
 }  // namespace src::Utils::motion

@@ -3,8 +3,19 @@
 #include <drivers.hpp>
 #include <subsystems/chassis/chassis.hpp>
 
-namespace src::Chassis::Helper {
+namespace src::Chassis {
+struct SpinRandomizerConfig {
+    float minSpinRateModifier = 0.75f;
+    float maxSpinRateModifier = 1.0f;
+    uint32_t minSpinRateModifierDuration = 500;
+    uint32_t maxSpinRateModifierDuration = 3000;
+};
 
+struct SnapSymmetryConfig {
+    uint8_t numSnapPositions = 1;
+    float snapAngle = 0.0f;
+};
+namespace Helper {
 /**
  * @brief Gets the user's desired movement from the control operator interface from [-1, 1]
  */
@@ -27,6 +38,7 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     float* desiredY,
     float* desiredRotation);
 
-float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle = 0.0f);
+float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmetryConfig);
+}  // namespace Helper
 
-}  // namespace src::Chassis::Helper
+}  // namespace src::Chassis

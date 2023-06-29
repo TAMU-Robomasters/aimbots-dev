@@ -17,7 +17,7 @@ ChassisTokyoCommand::ChassisTokyoCommand(
     src::Gimbal::GimbalSubsystem* gimbal,
     int spinDirectionOverride,
     bool randomizeSpinRate,
-    const ToykoRandomizerConfig& randomizerConfig)
+    const SpinRandomizerConfig& randomizerConfig)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
