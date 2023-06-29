@@ -71,6 +71,8 @@ src::Utils::RefereeHelper refHelper(drivers());
 src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
 src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
+BarrelID currentBarrel = BARREL_IDS[0];
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
@@ -87,7 +89,7 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper)
 // Match Controllers ------------------------------------------------
 SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
 SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
-SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &gimbalController, &ballisticsSolver, 500.0f);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &gimbalController, &refHelper, currentBarrel, &ballisticsSolver, 500.0f);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -108,8 +110,8 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 // pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &refHelper, currentBarrel, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &refHelper, currentBarrel, &ballisticsSolver);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0.80f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -123,12 +125,12 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only
@@ -150,7 +152,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
 
-    drivers->kinematicInformant.registerSubsystems(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -184,8 +186,8 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
 
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    //drivers->commandMapper.addMap(&rightSwitchMid);
+    //drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace SentryControl
