@@ -18,6 +18,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
@@ -175,6 +176,12 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     false,
     randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, false, randomizerConfig);
+ChassisAutoNavCommand chassisAutoNavCommand(
+    drivers(),
+    &chassis,
+    defaultLinearConfig,
+    defaultRotationConfig,
+    defaultSnapConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);

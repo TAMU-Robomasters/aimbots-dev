@@ -9,38 +9,23 @@ namespace src::Chassis::AutoNav {
 
 class AutoNavigatorHolonomic {
 public:
-    AutoNavigatorHolonomic(
-        src::Drivers* drivers,
-        SmoothPIDConfig linearPIDConfig,
-        SmoothPIDConfig rotationPIDConfig,
-        const src::Informants::Odometry::ChassisKFOdometry& odometry,
-        const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
-        float linearTolerance = 0.1,  // meters
-        float angularTolerance = modm::toRadian(2.0f));
+    AutoNavigatorHolonomic();
     ~AutoNavigatorHolonomic() = default;
 
     void setTargetLocation(const modm::Location2D<float>& targetLocation) { this->targetLocation = targetLocation; }
 
-    void update();
+    void update(modm::Location2D<float> currentWorldLocation);
 
-    float getXOutput() { return xController.getOutput(); }
-    float getYOutput() { return yController.getOutput(); }
-    float getRotationOutput() { return rotationController.getOutput(); }
-
-    bool isSettled();
+    void getDesiredInput(float* worldXError, float* worldYError, float* worldRotationError);
 
 private:
     src::Drivers* drivers;
 
     modm::Location2D<float> targetLocation;
 
-    SmoothPID xController;
-    SmoothPID yController;
-    SmoothPID rotationController;
-
-    const SnapSymmetryConfig& snapSymmetryConfig;
-
-    const src::Informants::Odometry::ChassisKFOdometry& odometry;
+    float worldXError;
+    float worldYError;
+    float worldRotationError;
 
     float linearTolerance;
     float angularTolerance;

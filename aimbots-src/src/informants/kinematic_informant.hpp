@@ -70,7 +70,9 @@ public:
 
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
-    modm::Location2D<float> getRobotLocation() { return chassisKFOdometry.getCurrentLocation2D(); }
+    modm::Location2D<float> getRobotLocation2D() { return chassisKFOdometry.getCurrentLocation2D(); }
+
+    modm::Vector2f getRobotVelocity2D() { return chassisKFOdometry.getCurrentVelocity2D(); }
 
 private:
     src::Drivers* drivers;

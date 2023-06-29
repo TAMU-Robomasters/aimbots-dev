@@ -29,18 +29,13 @@ float chassisYawDisplay = 0.0f;
 float rotationControllerOutputDisplay = 0.0f;
 float rotationLimitedMaxTranslationalSpeedDisplay = 0.0f;
 
-bool isChassisScheduled = false;
-bool isChassisRunning = false;
-
 bool gimbalOnlineDisplay = false;
-
 float chassisErrorAngleDisplay = 0.0f;
 
 void ChassisFollowGimbalCommand::execute() {
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;
-    isChassisScheduled = true;
     // gets desired user input from operator interface
     Chassis::Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
@@ -73,16 +68,12 @@ void ChassisFollowGimbalCommand::execute() {
         Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
 
-    isChassisRunning = true;
-
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
 void ChassisFollowGimbalCommand::end(bool interrupted) {
     UNUSED(interrupted);
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
-    isChassisScheduled = false;
-    isChassisRunning = false;
 }
 
 bool ChassisFollowGimbalCommand::isReady() { return true; }
