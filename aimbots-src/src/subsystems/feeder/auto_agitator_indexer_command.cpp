@@ -23,7 +23,8 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
       runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1.0f, UNJAM_TIMER_MS),
       stopFeederCommand(drivers,feeder),
       runIndexerCommand(drivers,indexer,indexerSpeed, acceptableHeatThreshold),
-      stopIndexerCommand(drivers,indexer) 
+      reverseIndexerCommand(drivers,indexer,-indexerSpeed*0.5,1.0f),
+      stopIndexerCommand(drivers,indexer)
 {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
     this->comprisedCommandScheduler.registerSubsystem(indexer);
@@ -47,6 +48,7 @@ void AutoAgitatorIndexerCommand::initialize() {
 
     unjamTimer.restart(0);
     startupTimeout.restart(500);
+    reverseTimer.restart(0);
 }
 
 //The plan
@@ -72,9 +74,17 @@ void AutoAgitatorIndexerCommand::execute() {
         scheduleIfNotScheduled(this->comprisedCommandScheduler,&runIndexerCommand);
         unjamming_count = 0;
         fullyLoaded = false;
+        //reverseTimer.restart(100);
     }
     else {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);
+        //This might actually break the feeder, don't uncomment for now
+        /*if (reverseTimer.isExpired()) {
+            scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);
+        }
+        else {
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand);
+        }*/
+        scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);  
     }
 
     if (unjamTimer.execute()) {
@@ -109,11 +119,11 @@ void AutoAgitatorIndexerCommand::execute() {
 
 void AutoAgitatorIndexerCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &runIndexerCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
-    feeder->setTargetRPM(0.0f); 
+    feeder->setTargetRPM(0.0f);
     indexer->setTargetRPM(0.0f);
     unjamming_count = 0;
-    fullyLoaded = false;
     commandIsRunning = false; }
 
 bool AutoAgitatorIndexerCommand::isReady() {

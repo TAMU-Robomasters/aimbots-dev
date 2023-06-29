@@ -55,8 +55,11 @@ using namespace src::Shooter;
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
 
-    Decrease Chassis Ground Speed: Shift
-    Decrease Chassis Ground Speed (larger): Ctrl
+    Manually Choose Tokyo Direction (Left): F+Q
+    Manually Choose Tokyo Direction (Right): F+E
+
+    Decrease Chassis Ground Speed (60%): Shift
+    Decrease Chassis Ground Speed (25%): Ctrl
 
     Gimbal ------------------------------------------------------------
     Aim Using CV: Right Mouse Button
@@ -102,7 +105,21 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
+
+ToykoRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
+
+ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
+    &chassis, 
+    &gimbal, 
+    CHASSIS_SNAP_POSITIONS,
+    modm::toRadian(0.0f),
+    false,
+    randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);

@@ -215,7 +215,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 300;
+static constexpr int UNJAM_TIMER_MS = 600;
 
 static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
@@ -245,12 +245,15 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+
 // clang-format on
 static constexpr uint16_t shooter_speed_array[4] = {
     10,
-    3900,  // {ball m/s, flywheel rpm}
+    3900,  // {ball m/s, flywheel rpm} //3900
     16,
-    6500};
+    6100}; //6500
 
 // clang-format on
 
@@ -331,9 +334,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 0.45f,
+    .kp = 1.25f, //0.45
     .ki = 0.0f,
-    .kd = 0.05f,
+    .kd = 0.25f, //0.05
     .maxICumulative = 0.9f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,

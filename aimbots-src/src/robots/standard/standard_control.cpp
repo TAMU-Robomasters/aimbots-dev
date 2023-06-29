@@ -70,10 +70,10 @@ using namespace src::BarrelManager;
     Quick 90-deg Turn Gimbal Yaw (Right): E
 
     Manually Choose Tokyo Direction (Left): F+Q
-    Manually Choose Tokyo Direction (Right): E+Q
+    Manually Choose Tokyo Direction (Right): F+E
 
-    Decrease Chassis Ground Speed: Shift
-    Decrease Chassis Ground Speed (larger): Ctrl
+    Decrease Chassis Ground Speed (60%): Shift
+    Decrease Chassis Ground Speed (25%): Ctrl
 
     Gimbal ------------------------------------------------------------
     Aim Using CV: Right Mouse Button
@@ -166,7 +166,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
     &gimbal,
-    2,
+    CHASSIS_SNAP_POSITIONS,
     modm::toRadian(0.0f),
     false,
     randomizerConfig);

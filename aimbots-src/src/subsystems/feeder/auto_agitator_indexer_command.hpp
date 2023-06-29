@@ -56,10 +56,12 @@ private:
     StopFeederCommand stopFeederCommand;
 
     FullAutoIndexerCommand runIndexerCommand;
+    FullAutoIndexerCommand reverseIndexerCommand;
     StopIndexerCommand stopIndexerCommand;
 
     MilliTimeout startupTimeout;
     MilliTimeout unjamTimer;
+    MilliTimeout reverseTimer;
 
     int unjamming_count = 0;
 
