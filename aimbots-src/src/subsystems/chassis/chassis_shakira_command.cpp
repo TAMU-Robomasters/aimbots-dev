@@ -14,6 +14,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
     src::Gimbal::GimbalSubsystem* gimbal,
     SmoothPIDConfig* rotationControllerConfig,
     BallisticsSolver* ballisticsSolver,
+    const TokyoConfig& tokyoConfig,
     const SnapSymmetryConfig& snapSymmetryConfig,
     float angularMagnitude,
     uint32_t timePeriod)
@@ -23,6 +24,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
       rotationController(*rotationControllerConfig),
       ballisticsSolver(ballisticsSolver),
       snapSymmetryConfig(snapSymmetryConfig),
+      tokyoConfig(tokyoConfig),
       angularMagnitude(angularMagnitude),
       timePeriod(timePeriod)  //
 {
@@ -48,9 +50,9 @@ void ChassisShakiraCommand::execute() {
         if (ballisticsSolution != std::nullopt) {
             float targetYawAngle = ballisticsSolution->yawAngle;  // chassis relative gimbal target
 
-            if (fabsf(desiredX) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED ||
-                fabsf(desiredY) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED) {
-                angularMagnitudeMultiplier = TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING;
+            if (fabsf(desiredX) > tokyoConfig.translationThresholdToDecreaseRotationSpeed ||
+                fabsf(desiredY) > tokyoConfig.translationThresholdToDecreaseRotationSpeed) {
+                angularMagnitudeMultiplier = tokyoConfig.rotationalSpeedMultiplierWhenTranslating;
             }
 
             float offsetFromTarget =

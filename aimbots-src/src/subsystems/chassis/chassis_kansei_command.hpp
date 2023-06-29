@@ -12,9 +12,9 @@
 
 namespace src::Chassis {
 
-class ChassisTokyoCommand : public TapCommand {
+class ChassisKanseiCommand : public TapCommand {
 public:
-    ChassisTokyoCommand(
+    ChassisKanseiCommand(
         src::Drivers*,
         ChassisSubsystem*,
         src::Gimbal::GimbalSubsystem*,

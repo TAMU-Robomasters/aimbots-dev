@@ -18,6 +18,7 @@ public:
         ChassisSubsystem*,
         Gimbal::GimbalSubsystem*,
         const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
+        const TokyoConfig& tokyoConfig = TokyoConfig(),
         bool randomizeSpinRate = false,
         const SpinRandomizerConfig& randomizerConfig = SpinRandomizerConfig());
 

@@ -4,13 +4,13 @@
 #include <subsystems/chassis/chassis_helper.hpp>
 
 #include "chassis_helper.hpp"
-#include "chassis_tokyo_command.hpp"
+#include "chassis_kansei_command.hpp"
 
 #warning "tokyo compatible"
 
 namespace src::Chassis {
 
-ChassisTokyoCommand::ChassisTokyoCommand(
+ChassisKanseiCommand::ChassisKanseiCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
     src::Gimbal::GimbalSubsystem* gimbal,
@@ -29,7 +29,7 @@ ChassisTokyoCommand::ChassisTokyoCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisTokyoCommand::initialize() {
+void ChassisKanseiCommand::initialize() {
     // picks a random direction to begin rotation
     if (spinDirectionOverride != 0) {
         rotationDirection = spinDirectionOverride > 0 ? 1 : -1;
@@ -44,7 +44,7 @@ void ChassisTokyoCommand::initialize() {
     }
 }
 
-void ChassisTokyoCommand::execute() {
+void ChassisKanseiCommand::execute() {
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;
@@ -98,14 +98,14 @@ void ChassisTokyoCommand::execute() {
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
-void ChassisTokyoCommand::end(bool interrupted) {
+void ChassisKanseiCommand::end(bool interrupted) {
     UNUSED(interrupted);
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
-bool ChassisTokyoCommand::isReady() { return true; }
+bool ChassisKanseiCommand::isReady() { return true; }
 
-bool ChassisTokyoCommand::isFinished() const { return false; }
+bool ChassisKanseiCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 

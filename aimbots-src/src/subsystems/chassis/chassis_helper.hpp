@@ -4,6 +4,19 @@
 #include <subsystems/chassis/chassis.hpp>
 
 namespace src::Chassis {
+
+struct TokyoConfig {
+    // Fraction that user input is multiplied by when "drifting"
+    float translationalSpeedMultiplier = 0.6f;
+    // Fraction of the maximum translation speed for when rotation speed should be reduced
+    float translationThresholdToDecreaseRotationSpeed = 0.5f;
+    // Fraction of max chassis speed applied to rotation speed
+    float rotationalSpeedFractionOfMax = 0.75f;
+    // Fraction to cut rotation speed by when the robot is "drifting"
+    float rotationalSpeedMultiplierWhenTranslating = 0.7f;
+    // Rotational speed increment per iteration to apply until rotation setpoint is reached
+    float rotationalSpeedIncrement = 0.1f;
+};
 struct SpinRandomizerConfig {
     float minSpinRateModifier = 0.75f;
     float maxSpinRateModifier = 1.0f;
@@ -37,6 +50,11 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     float* desiredX,
     float* desiredY,
     float* desiredRotation);
+
+void randomizeSpinCharacteristics(
+    float* spinRateModifier,
+    uint32_t* spinRateModifierDuration,
+    SpinRandomizerConfig randomizerConfig);
 
 float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmetryConfig);
 }  // namespace Helper

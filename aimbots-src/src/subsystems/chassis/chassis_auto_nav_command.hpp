@@ -15,7 +15,9 @@ public:
         ChassisSubsystem* chassis,
         SmoothPIDConfig linearPIDConfig,
         SmoothPIDConfig rotationPIDConfig,
-        const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig());
+        const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
+        float linearSettledThreshold = 0.05f,
+        float angularSettledThreshold = modm::toRadian(0.5f));
     ~ChassisAutoNavCommand() = default;
 
     void initialize() override;
@@ -23,6 +25,11 @@ public:
 
     void setTargetLocation(const modm::Location2D<float>& targetLocation) {
         autoNavigator.setTargetLocation(targetLocation);
+    }
+
+    bool isSettled() {
+        return xController.isSettled(linearSettledThreshold) && yController.isSettled(linearSettledThreshold) &&
+               rotationController.isSettled(angularSettledThreshold);
     }
 
     bool isReady() override;
@@ -49,10 +56,13 @@ private:
 
     float linearVelocityRampValue = 1.0f;
     float rotationVelocityRampValue = modm::toRadian(1.0f / 500);
+
+    float linearSettledThreshold;
+    float angularSettledThreshold;
 };
 
 static constexpr SmoothPIDConfig defaultLinearConfig = {
-    .kp = 0.5f,
+    .kp = 2.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 0.1f,

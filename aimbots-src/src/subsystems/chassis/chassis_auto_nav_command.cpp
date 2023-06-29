@@ -7,14 +7,18 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
     ChassisSubsystem* chassis,
     SmoothPIDConfig linearPIDConfig,
     SmoothPIDConfig rotationPIDConfig,
-    const SnapSymmetryConfig& snapSymmetryConfig)
+    const SnapSymmetryConfig& snapSymmetryConfig,
+    float linearSettledThreshold,
+    float angularSettledThreshold)
     : drivers(drivers),
       chassis(chassis),
       snapSymmetryConfig(snapSymmetryConfig),
       autoNavigator(),
       xController(linearPIDConfig),
       yController(linearPIDConfig),
-      rotationController(rotationPIDConfig)  //
+      rotationController(rotationPIDConfig),
+      linearSettledThreshold(linearSettledThreshold),
+      angularSettledThreshold(angularSettledThreshold)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }

@@ -3,18 +3,14 @@
 
 namespace src::Utils::Random {
 
-bool rngEnabled = false;
+// modm::platform::RandomNumberGenerator::enable() called in main.cpp's initializeIO()
 
-uint32_t getRandomInteger() {
-    if (!rngEnabled) {
-        modm::platform::RandomNumberGenerator::enable();
-        rngEnabled = true;
-    }
+static uint32_t getRandomInteger() {
     if (modm::platform::RandomNumberGenerator::isReady()) return modm::platform::RandomNumberGenerator::getValue();
     return 0;
 }
 
-int32_t getRandomIntegerInBounds(int32_t min, int32_t max) {
+static int32_t getRandomIntegerInBounds(int32_t min, int32_t max) {
     uint32_t range = max - min;
     uint32_t random = getRandomInteger();
     uint32_t base = random % range;
@@ -22,7 +18,7 @@ int32_t getRandomIntegerInBounds(int32_t min, int32_t max) {
     return static_cast<int32_t>(base) + min;
 }
 
-float getRandomFloatInBounds(float min, float max) {
+static float getRandomFloatInBounds(float min, float max) {
     float range = max - min;
     float random = getRandomInteger() / static_cast<float>(UINT32_MAX);
     float base = random * range;

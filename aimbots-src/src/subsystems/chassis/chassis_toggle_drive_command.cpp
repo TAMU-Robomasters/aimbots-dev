@@ -7,15 +7,16 @@ ChassisToggleDriveCommand::ChassisToggleDriveCommand(
     ChassisSubsystem* chassis,
     Gimbal::GimbalSubsystem* gimbal,
     const SnapSymmetryConfig& snapSymmetryConfig,
+    const TokyoConfig& tokyoConfig,
     bool randomizeSpinRate,
     const SpinRandomizerConfig& randomizerConfig)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       chassis(chassis),
       followGimbalCommand(drivers, chassis, gimbal, snapSymmetryConfig),
-      tokyoCommand(drivers, chassis, gimbal, 0, randomizeSpinRate, randomizerConfig),
-      tokyoLeftCommand(drivers, chassis, gimbal, -1, randomizeSpinRate, randomizerConfig),
-      tokyoRightCommand(drivers, chassis, gimbal, 1, randomizeSpinRate, randomizerConfig)  //
+      tokyoCommand(drivers, chassis, gimbal, tokyoConfig, 0, randomizeSpinRate, randomizerConfig),
+      tokyoLeftCommand(drivers, chassis, gimbal, tokyoConfig, -1, randomizeSpinRate, randomizerConfig),
+      tokyoRightCommand(drivers, chassis, gimbal, tokyoConfig, 1, randomizeSpinRate, randomizerConfig)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
     comprisedCommandScheduler.registerSubsystem(dynamic_cast<tap::control::Subsystem*>(chassis));

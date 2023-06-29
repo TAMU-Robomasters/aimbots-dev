@@ -21,6 +21,7 @@ public:
         src::Gimbal::GimbalSubsystem* gimbal,
         SmoothPIDConfig* rotationControllerConfig,
         BallisticsSolver* ballisticsSolver,
+        const TokyoConfig& tokyoConfig,
         const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
         float angularMagnitude = modm::toRadian(10.0f),
         uint32_t timePeriod = 3000);
@@ -47,6 +48,8 @@ private:
     uint16_t startingTimestamp = 0.0f;
 
     const SnapSymmetryConfig& snapSymmetryConfig;
+
+    const TokyoConfig& tokyoConfig;
 
     float angularMagnitude;  // rad
     uint32_t timePeriod;     // in ms

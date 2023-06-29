@@ -115,6 +115,7 @@ int main() {
 }
 
 static void initializeIo(src::Drivers *drivers) {
+    modm::platform::RandomNumberGenerator::enable();
     drivers->analog.init();
     drivers->pwm.init();
     drivers->digital.init();

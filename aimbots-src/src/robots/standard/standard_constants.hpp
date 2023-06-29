@@ -351,20 +351,6 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
 };
 
 /**
- * @brief TOKYO CONSTANTS
- */
-// Fraction that user input is multiplied by when "drifting"
-static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
-// Fraction of the maximum translation speed for when rotation speed should be reduced
-static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
-// Fraction of max chassis speed applied to rotation speed
-static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
-// Fraction to cut rotation speed by when the robot is "drifting"
-static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
-// Rotational speed increment per iteration to apply until rotation setpoint is reached
-static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
-
-/**
  * @brief Transformation Matrices, specific to robot
  */
 

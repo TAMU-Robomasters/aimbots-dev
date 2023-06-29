@@ -19,6 +19,7 @@
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
+#include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
@@ -160,6 +161,14 @@ SnapSymmetryConfig defaultSnapConfig = {
     .snapAngle = modm::toRadian(0.0f),
 };
 
+TokyoConfig defaultTokyoConfig = {
+    .translationalSpeedMultiplier = 0.6f,
+    .translationThresholdToDecreaseRotationSpeed = 0.5f,
+    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedIncrement = 30.0f,
+};
+
 SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifier = 0.75f,
     .maxSpinRateModifier = 1.0f,
@@ -173,15 +182,24 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     &chassis,
     &gimbal,
     defaultSnapConfig,
+    defaultTokyoConfig,
     false,
     randomizerConfig);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, false, randomizerConfig);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(
     drivers(),
     &chassis,
     defaultLinearConfig,
     defaultRotationConfig,
     defaultSnapConfig);
+
+ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
+    drivers(),
+    &chassis,
+    defaultLinearConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -252,7 +270,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisAutoNavCommand, &gimbalChaseCommand},
+    {&chassisAutoNavTokyoCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper

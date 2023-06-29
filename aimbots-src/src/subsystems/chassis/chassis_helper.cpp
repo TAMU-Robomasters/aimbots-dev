@@ -1,5 +1,6 @@
 #include "chassis_helper.hpp"
 
+#include "utils/math/random.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 int8_t chassisYDesiredWheelspeedWatch = 0;
@@ -45,6 +46,19 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
 
     *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
     *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
+}
+
+void randomizeSpinCharacteristics(
+    float* spinRateModifier,
+    uint32_t* spinRateModifierDuration,
+    SpinRandomizerConfig randomizerConfig) {
+    *spinRateModifier = src::Utils::Random::getRandomFloatInBounds(
+        randomizerConfig.minSpinRateModifier,
+        randomizerConfig.maxSpinRateModifier);
+
+    *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
+        randomizerConfig.minSpinRateModifierDuration,
+        randomizerConfig.maxSpinRateModifierDuration);
 }
 
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
