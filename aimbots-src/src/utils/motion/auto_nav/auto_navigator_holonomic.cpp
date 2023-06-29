@@ -4,46 +4,20 @@
 
 namespace src::Chassis::AutoNav {
 
-AutoNavigatorHolonomic::AutoNavigatorHolonomic(
-    src::Drivers* drivers,
-    SmoothPIDConfig linearPIDConfig,
-    SmoothPIDConfig rotationPIDConfig,
-    const src::Informants::Odometry::ChassisKFOdometry& odometry,
-    const SnapSymmetryConfig& snapSymmetryConfig,
-    float linearTolerance,
-    float angularTolerance)
-    : drivers(drivers),
-      xController(linearPIDConfig),
-      yController(linearPIDConfig),
-      rotationController(rotationPIDConfig),
-      snapSymmetryConfig(snapSymmetryConfig),
-      odometry(odometry),
-      linearTolerance(linearTolerance),
-      angularTolerance(angularTolerance)  //
-{}
+AutoNavigatorHolonomic::AutoNavigatorHolonomic() {}
 
-void AutoNavigatorHolonomic::update() {
-    modm::Location2D<float> currentWorldLocation = odometry.getCurrentLocation2D();
-    modm::Vector2f currentWorldVelocity = odometry.getCurrentVelocity2D();
-
-    float worldXError = targetLocation.getX() - currentWorldLocation.getX();
-    float worldYError = targetLocation.getY() - currentWorldLocation.getY();
-    float worldRotationError = targetLocation.getOrientation() - currentWorldLocation.getOrientation();
-
-    // For Chassis, WorldRelative error is the same as ChassisRelative error
-    worldRotationError = Helper::findNearestChassisErrorTo(worldRotationError, snapSymmetryConfig);
-
-    xController.runController(worldXError, currentWorldVelocity.getX());
-    yController.runController(worldYError, currentWorldVelocity.getY());
-    rotationController.runController(
-        worldRotationError,
-        -RADPS_TO_RPM(
-            drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)));
+void AutoNavigatorHolonomic::update(modm::Location2D<float> currentWorldLocation) {
+    this->worldXError = targetLocation.getX() - currentWorldLocation.getX();
+    this->worldYError = targetLocation.getY() - currentWorldLocation.getY();
+    this->worldRotationError = targetLocation.getOrientation() - currentWorldLocation.getOrientation();
 }
 
-bool AutoNavigatorHolonomic::isSettled() {
-    return xController.isSettled(linearTolerance) && yController.isSettled(linearTolerance) &&
-           rotationController.isSettled(angularTolerance);
+void AutoNavigatorHolonomic::getDesiredInput(float* worldXError, float* worldYError, float* worldRotationError) {
+    if (worldXError == nullptr || worldYError == nullptr || worldRotationError == nullptr) return;
+
+    *worldXError = this->worldXError;
+    *worldYError = this->worldYError;
+    *worldRotationError = this->worldRotationError;
 }
 
 };  // namespace src::Chassis::AutoNav
