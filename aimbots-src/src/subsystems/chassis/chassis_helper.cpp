@@ -47,29 +47,15 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     *desiredY = limitVal<float>(*desiredY * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
 }
 
-// float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
-//     float angleBetweenCorners = M_TWOPI / numSnapPositions;
-//     ContiguousFloat nearestCornerAngle(starterAngle, 0, M_TWOPI);
-
-//     for (int i = 0; i < numSnapPositions; i++) {
-//         ContiguousFloat currentCornerAngle(starterAngle + i * angleBetweenCorners, 0, M_TWOPI);
-
-//         if (fabsf(currentCornerAngle.difference(targetAngle)) < fabsf(nearestCornerAngle.difference(targetAngle))) {
-//             nearestCornerAngle = currentCornerAngle;
-//         }
-//     }
-
-//     return /*targetAngle - */ nearestCornerAngle.getValue();
-// }
-
-float findNearestChassisErrorTo(float targetAngle, uint8_t numSnapPositions, float starterAngle) {
-    float angleBetweenCorners = M_TWOPI / static_cast<float>(numSnapPositions);
+// Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
+float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmetryConfig) {
+    float angleBetweenCorners = M_TWOPI / static_cast<float>(snapSymmetryConfig.numSnapPositions);
     ContiguousFloat targetContiguousAngle(targetAngle, 0, M_TWOPI);
 
-    float nearestCornerError = targetContiguousAngle.difference(starterAngle);
+    float nearestCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle);
 
-    for (int i = 0; i < numSnapPositions; i++) {
-        float currentCornerError = targetContiguousAngle.difference(starterAngle + i * angleBetweenCorners);
+    for (int i = 0; i < snapSymmetryConfig.numSnapPositions; i++) {
+        float currentCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle + i * angleBetweenCorners);
 
         if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {
             nearestCornerError = currentCornerError;

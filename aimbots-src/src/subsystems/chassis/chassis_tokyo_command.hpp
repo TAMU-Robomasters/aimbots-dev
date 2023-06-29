@@ -7,16 +7,10 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#include "chassis_helper.hpp"
 #include "drivers.hpp"
 
 namespace src::Chassis {
-
-struct ToykoRandomizerConfig {
-    float minSpinRateModifier = 0.75f;
-    float maxSpinRateModifier = 1.0f;
-    uint32_t minSpinRateModifierDuration = 500;
-    uint32_t maxSpinRateModifierDuration = 3000;
-};
 
 class ChassisTokyoCommand : public TapCommand {
 public:
@@ -26,7 +20,7 @@ public:
         src::Gimbal::GimbalSubsystem*,
         int spinDirectionOverride = 0,
         bool randomizeSpinRate = false,
-        const ToykoRandomizerConfig& randomizerConfig = ToykoRandomizerConfig());
+        const SpinRandomizerConfig& randomizerConfig = SpinRandomizerConfig());
     void initialize() override;
 
     void execute() override;
@@ -51,7 +45,7 @@ private:
     tap::algorithms::Ramp rotationSpeedRamp;
 
     bool randomizeSpinRate;
-    const ToykoRandomizerConfig& randomizerConfig;
+    const SpinRandomizerConfig& randomizerConfig;
 
     float spinRateModifier;
     uint32_t spinRateModifierDuration;

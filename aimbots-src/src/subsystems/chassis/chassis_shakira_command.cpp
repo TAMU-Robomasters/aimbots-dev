@@ -14,8 +14,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
     src::Gimbal::GimbalSubsystem* gimbal,
     SmoothPIDConfig* rotationControllerConfig,
     BallisticsSolver* ballisticsSolver,
-    int numSnapPositions,
-    float starterAngle,
+    const SnapSymmetryConfig& snapSymmetryConfig,
     float angularMagnitude,
     uint32_t timePeriod)
     : drivers(drivers),
@@ -23,8 +22,7 @@ ChassisShakiraCommand::ChassisShakiraCommand(
       gimbal(gimbal),
       rotationController(*rotationControllerConfig),
       ballisticsSolver(ballisticsSolver),
-      numSnapPositions(numSnapPositions),
-      starterAngle(starterAngle),
+      snapSymmetryConfig(snapSymmetryConfig),
       angularMagnitude(angularMagnitude),
       timePeriod(timePeriod)  //
 {
@@ -60,7 +58,7 @@ void ChassisShakiraCommand::execute() {
                 sinf(M_TWOPI * (tap::arch::clock::getTimeMilliseconds() - startingTimestamp) / timePeriod);
 
             float chassisErrorAngle =
-                Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, numSnapPositions, starterAngle);
+                Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, snapSymmetryConfig);
 
             rotationController.runController(
                 chassisErrorAngle,

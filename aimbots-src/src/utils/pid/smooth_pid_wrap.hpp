@@ -12,7 +12,7 @@ struct SmoothPIDWrapper {
     float prevError;
     float errorDerivative;
 
-    src::Utils::motion::SettledUtil settledUtil;
+    motion::SettledUtil settledUtil;
     tap::algorithms::SmoothPid pid;
 
     SmoothPIDWrapper(const tap::algorithms::SmoothPidConfig &config) : pid(config) {}
@@ -39,8 +39,9 @@ struct SmoothPIDWrapper {
 
     bool isSettled(float errTolerance) { return settledUtil.isSettled(this->error, errTolerance); }
 
-    bool isSettled(float errTolerance, float derivTolerance, float derivToleranceTime) {
-        return settledUtil.isSettled(this->error, errTolerance, this->errorDerivative, derivTolerance, derivToleranceTime);
+    bool isSettled(float errTolerance, uint32_t errorTimeout, float derivTolerance, uint32_t derivativeTimeout) {
+        return settledUtil
+            .isSettled(this->error, errTolerance, errorTimeout, this->errorDerivative, derivTolerance, derivativeTimeout);
     }
 
     float getError() { return this->error; }

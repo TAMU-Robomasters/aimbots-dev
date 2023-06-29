@@ -11,13 +11,11 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
     src::Gimbal::GimbalSubsystem* gimbal,
-    uint8_t numSnapPositions,
-    float starterAngle)
+    const SnapSymmetryConfig& snapSymmetryConfig)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
-      numSnapPositions(numSnapPositions),
-      starterAngle(starterAngle),
+      snapSymmetryConfig(snapSymmetryConfig),
       rotationController(ROTATION_POSITION_PID_CONFIG)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
@@ -51,8 +49,7 @@ void ChassisFollowGimbalCommand::execute() {
     if (gimbal->isOnline()) {  // if the gimbal is online, follow the gimbal's yaw
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
 
-        float chassisErrorAngle =
-            Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, numSnapPositions, starterAngle);
+        float chassisErrorAngle = Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, snapSymmetryConfig);
         // float chassisErrorAngle = yawAngleFromChassisCenter;
 
         chassisErrorAngleDisplay = chassisErrorAngle;

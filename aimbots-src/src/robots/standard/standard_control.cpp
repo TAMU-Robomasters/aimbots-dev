@@ -154,7 +154,12 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper)
 
 // Define commands here ---------------------------------------------------
 
-ToykoRandomizerConfig randomizerConfig = {
+SnapSymmetryConfig defaultSnapConfig = {
+    .numSnapPositions = 2,
+    .snapAngle = modm::toRadian(0.0f),
+};
+
+SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifier = 0.75f,
     .maxSpinRateModifier = 1.0f,
     .minSpinRateModifierDuration = 500,
@@ -166,8 +171,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
     &gimbal,
-    2,
-    modm::toRadian(0.0f),
+    defaultSnapConfig,
     false,
     randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, 0, false, randomizerConfig);
