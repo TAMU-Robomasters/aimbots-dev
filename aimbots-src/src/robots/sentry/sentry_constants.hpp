@@ -144,7 +144,7 @@ static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
-static constexpr float kGRAVITY = 1000.0f;
+static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
@@ -201,7 +201,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 40.0f,
     .ki = 0.0f,
-    .kd = 0.8f,
+    .kd = 0.01f,
     .maxICumulative = 1.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -227,6 +227,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
 // clang-format off
 // Sentry shoots at the speed of death

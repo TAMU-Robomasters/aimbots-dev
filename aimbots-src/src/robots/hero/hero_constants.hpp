@@ -215,7 +215,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 600;
+static constexpr int UNJAM_TIMER_MS = 300;
 
 static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
