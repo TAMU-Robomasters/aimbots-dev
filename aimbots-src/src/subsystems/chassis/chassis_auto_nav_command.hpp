@@ -42,10 +42,17 @@ private:
     SmoothPID xController;
     SmoothPID yController;
     SmoothPID rotationController;
+
+    tap::algorithms::Ramp xRamp;
+    tap::algorithms::Ramp yRamp;
+    tap::algorithms::Ramp rotationRamp;
+
+    float linearVelocityRampValue = 1.0f;
+    float rotationVelocityRampValue = modm::toRadian(1.0f / 500);
 };
 
 static constexpr SmoothPIDConfig defaultLinearConfig = {
-    .kp = 0.0f,
+    .kp = 0.5f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 0.1f,

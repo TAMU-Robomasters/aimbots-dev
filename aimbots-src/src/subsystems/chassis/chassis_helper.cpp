@@ -48,13 +48,13 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
 }
 
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
-float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmetryConfig) {
+float findNearestChassisErrorTo(float chassisRelativeTargetAngle, SnapSymmetryConfig snapSymmetryConfig) {
     float angleBetweenCorners = M_TWOPI / static_cast<float>(snapSymmetryConfig.numSnapPositions);
-    ContiguousFloat targetContiguousAngle(targetAngle, 0, M_TWOPI);
+    ContiguousFloat targetContiguousAngle(chassisRelativeTargetAngle, 0, M_TWOPI);
 
     float nearestCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle);
 
-    for (int i = 0; i < snapSymmetryConfig.numSnapPositions; i++) {
+    for (int i = 1; i < snapSymmetryConfig.numSnapPositions; i++) {
         float currentCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle + i * angleBetweenCorners);
 
         if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {

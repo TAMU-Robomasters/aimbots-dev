@@ -20,9 +20,11 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
 }
 
 void ChassisAutoNavCommand::initialize() {
-    modm::Location2D<float> targetLocation({0.0f, 0.0f}, 0.0f);  // test
+    modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
     autoNavigator.setTargetLocation(targetLocation);
 }
+
+float rotationErrorDisplay = 0.0f;
 
 void ChassisAutoNavCommand::execute() {
     float xError = 0.0f;
@@ -33,11 +35,24 @@ void ChassisAutoNavCommand::execute() {
     modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getRobotVelocity2D();
 
     autoNavigator.update(currentWorldLocation);
-
     autoNavigator.getDesiredInput(&xError, &yError, &rotationError);
 
-    // For Chassis, WorldRelative error is the same as ChassisRelative error
-    rotationError = Helper::findNearestChassisErrorTo(rotationError, snapSymmetryConfig);
+    rotationErrorDisplay = rotationError;
+
+    // findNearestChassisErrorTo expects a chassis-relative target angle, not an error, so we negate the error to get target
+    rotationError = Helper::findNearestChassisErrorTo(-rotationError, snapSymmetryConfig);
+
+    // xRamp.setTarget(xError);
+    // yRamp.setTarget(yError);
+    // rotationRamp.setTarget(rotationError);
+
+    // xRamp.update(linearVelocityRampValue);
+    // yRamp.update(linearVelocityRampValue);
+    // rotationRamp.update(rotationVelocityRampValue);
+
+    // xError = xRamp.getValue();
+    // yError = yRamp.getValue();
+    // rotationError = rotationRamp.getValue();
 
     float desiredX = xController.runController(xError, currentWorldVelocity.getX());
     float desiredY = yController.runController(yError, currentWorldVelocity.getY());
@@ -45,6 +60,9 @@ void ChassisAutoNavCommand::execute() {
         rotationError,
         -RADPS_TO_RPM(
             drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)));
+
+    // Rotate world-relative desired input to chassis-relative desired input
+    tap::algorithms::rotateVector(&desiredX, &desiredY, -currentWorldLocation.getOrientation());
 
     Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredR);
 

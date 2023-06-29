@@ -45,7 +45,6 @@ void ChassisFollowGimbalCommand::execute() {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
 
         float chassisErrorAngle = Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, snapSymmetryConfig);
-        // float chassisErrorAngle = yawAngleFromChassisCenter;
 
         chassisErrorAngleDisplay = chassisErrorAngle;
 
