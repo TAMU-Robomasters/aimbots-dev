@@ -9,6 +9,12 @@ using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
 namespace src::Utils {
 
+enum BarrelSpeeds : uint8_t {
+    SPEED15_MS = 0,
+    SPEED18_MS = 1,
+    SPEED30_MS = 2,
+};
+
 class RefereeHelperTurreted : public RefereeHelperInterface {
 public:
     RefereeHelperTurreted(src::Drivers*, BarrelID& barrelID);
@@ -27,6 +33,7 @@ public:
 
     bool isCurrBarrelHeatUnderLimit(float percentageOfLimit);
     bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
+    bool canCurrBarrelShootSafely();
 
     BarrelID getCurrentBarrel() { return currBarrelID; }
     void setCurrentBarrel(BarrelID barrelID) { currBarrelID = barrelID; }
@@ -35,6 +42,8 @@ private:
     BarrelID& currBarrelID;
 
     src::Utils::ProjectileLaunchSpeedPredictor<PROJECTILE_SPEED_QUEUE_SIZE> projectileLaunchSpeedPredictor;
+
+    int heatGainedPerProjectile[2] = {10,100}; //{17mm, 42mm}
 };
 
 }  // namespace src::Utils

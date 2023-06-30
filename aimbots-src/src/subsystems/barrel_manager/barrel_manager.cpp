@@ -69,6 +69,7 @@ void BarrelManagerSubsystem::refresh() {
         swapMotorPositionDisplay = swapMotor.getEncoderUnwrapped();
         swapOutputDisplay = swapMotor.getShaftRPM();
     }
+
 }
 
 void BarrelManagerSubsystem::setMotorOutput(float output) { desiredSwapMotorOutput = output; }

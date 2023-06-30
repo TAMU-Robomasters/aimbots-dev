@@ -35,8 +35,10 @@ bool wasSwapDisplay = false;
 float errorDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
-int16_t currentBarrelDisplay = 0;
 
+
+bool currBHeatDisplay = false;
+BarrelID currentBarrelDisplay;
 //-----------
 
 void BarrelSwapCommand::initialize() {}
@@ -115,13 +117,14 @@ void BarrelSwapCommand::execute() {
 
         }*/
 
-        if (!refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
+        if (!refHelper->/*isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE)*/canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
-            if (barrelManager->getSide() == barrelSide::LEFT) {
+            /*if (barrelManager->getSide() == barrelSide::LEFT) {
                 barrelManager->setSide(barrelSide::RIGHT);
             } else {
                 barrelManager->setSide(barrelSide::LEFT);
-            }
+            }*/
+            barrelManager->toggleSide();
         }
 
     } else {
@@ -130,6 +133,10 @@ void BarrelSwapCommand::execute() {
 
     // Check this at the very end of the loop, after barrelCalibratingFlag has been updated
     barrelCaliDoneFlag = !barrelCalibratingFlag;
+
+
+    currBHeatDisplay = refHelper->isCurrBarrelHeatUnderLimit(0.5f);
+    currentBarrelDisplay = refHelper->getCurrentBarrel();
 }
 
 void BarrelSwapCommand::end(bool) { barrelManager->setMotorOutput(0); }

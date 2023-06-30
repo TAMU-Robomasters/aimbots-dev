@@ -233,7 +233,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
-// clang-format on
+// clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
     15,
     4300,  // {ball m/s, flywheel rpm}
@@ -241,6 +241,16 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
     4850,
     30,
     7050};
+// clang-format on
+
+// clang-format off
+static constexpr float heat_tolerance_array[6] = {  // ONLY TUNE WITH FULL BATTERY
+    15,
+    0.9,  // {ball m/s, heat tolerance}
+    18,
+    0.7,
+    30,
+    0.8};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);

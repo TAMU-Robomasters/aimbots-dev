@@ -29,25 +29,33 @@ void DualBarrelFeederCommand::initialize() {
 }
 
 void DualBarrelFeederCommand::execute() {
-    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-        feeder->setTargetRPM(unjamSpeed);
-        unjamTimer.restart(UNJAM_TIMER_MS);
-    }
+    if (refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely() && !barrelMovingFlag){
+        if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+            feeder->setTargetRPM(unjamSpeed);
+            unjamTimer.restart(UNJAM_TIMER_MS);
+        }
 
-    if (unjamTimer.execute()) {
-        feeder->setTargetRPM(speed);
-        startupThreshold.restart(500);
+        if (unjamTimer.execute()) {
+            feeder->setTargetRPM(speed);
+            startupThreshold.restart(500);
+        }
+    }
+    else {
+        feeder->setTargetRPM(0.0f);
+        unjamTimer.restart(0);
     }
 }
 
 void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
 bool DualBarrelFeederCommand::isReady() {
-    return (refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
+    return (refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely() && !barrelMovingFlag);
 }
 
 bool DualBarrelFeederCommand::isFinished() const {
-    return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    // return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    return false;
 }
+
 
 }  // namespace src::Feeder

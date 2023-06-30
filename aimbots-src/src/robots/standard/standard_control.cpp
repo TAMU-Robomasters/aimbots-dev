@@ -237,7 +237,7 @@ DualBarrelFeederCommand runDoubleBarrelFeederCommand(
     &refHelper,
     barrelMovingFlag,
     FEEDER_DEFAULT_RPM,
-    0.90f,
+    0.80f,
     UNJAM_TIMER_MS);
 DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
     drivers(),
@@ -245,7 +245,7 @@ DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
     &refHelper,
     barrelMovingFlag,
     FEEDER_DEFAULT_RPM,
-    0.90f,
+    0.80f,
     UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
@@ -272,7 +272,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisAutoNavTokyoCommand, &gimbalChaseCommand},
+    {&chassisTokyoCommand,/*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper

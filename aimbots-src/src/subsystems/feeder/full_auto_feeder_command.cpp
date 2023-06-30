@@ -40,8 +40,8 @@ void FullAutoFeederCommand::execute() {
 
 void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool FullAutoFeederCommand::isReady() { return (refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)); }
+bool FullAutoFeederCommand::isReady() { return (refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely()); }
 
-bool FullAutoFeederCommand::isFinished() const { return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)); }
+bool FullAutoFeederCommand::isFinished() const { return (!refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely()); }
 
 }  // namespace src::Feeder

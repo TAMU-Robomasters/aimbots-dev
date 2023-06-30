@@ -24,11 +24,11 @@ void BurstFeederCommand::execute() { feeder->setTargetRPM(speed); }
 
 void BurstFeederCommand::end(bool) { feeder->setTargetRPM(0); }
 
-bool BurstFeederCommand::isReady() { return refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold); }
+bool BurstFeederCommand::isReady() { return refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely(); }
 
 bool BurstFeederCommand::isFinished() const {
     int elapsedTotal = feeder->getTotalLimitCount() - startingTotalBallCount;
-    return (elapsedTotal >= burstLength) || !refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold);
+    return (elapsedTotal >= burstLength) || !refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely();
 }
 
 }  // namespace src::Feeder
