@@ -154,7 +154,7 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
 
-// Define commands here ---------------------------------------------------
+// Define behavior configs here --------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
     .numSnapPositions = 2,
@@ -175,6 +175,8 @@ SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };
+
+// Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(
