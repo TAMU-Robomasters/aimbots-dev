@@ -15,8 +15,7 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalChassisRelativeController*,
-        src::Utils::RefereeHelper*,
-        BarrelID&,
+        src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         int chaseTimeoutMillis);
 

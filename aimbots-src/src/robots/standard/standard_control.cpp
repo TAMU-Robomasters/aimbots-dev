@@ -8,7 +8,7 @@
 //
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -111,10 +111,10 @@ using namespace tap::communication::serial;
 
 namespace StandardControl {
 
-src::Utils::RefereeHelper refHelper(drivers());
+// This is technically a command flag, but it needs to be defined before the barrel manager subsystem
+BarrelID currentBarrel = BARREL_IDS[0];
 
-BarrelID currentBarrel =
-    BARREL_IDS[0];  // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
@@ -152,7 +152,7 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
 
 // Define commands here ---------------------------------------------------
 
@@ -209,22 +209,22 @@ GimbalChaseCommand gimbalChaseCommand(
     &gimbal,
     &gimbalFieldRelativeController,
     &refHelper,
-    currentBarrel,
-    &ballisticsSolver);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 GimbalChaseCommand gimbalChaseCommand2(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
     &refHelper,
-    currentBarrel,
-    &ballisticsSolver);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
     &refHelper,
-    currentBarrel,
-    &ballisticsSolver);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);

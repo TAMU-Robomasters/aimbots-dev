@@ -8,16 +8,16 @@ GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalControllerInterface* gimbalController,
-    src::Utils::RefereeHelper* refHelper,
-    BarrelID& barrelID,
-    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
+    src::Utils::RefereeHelperTurreted* refHelper,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    float defaultLaunchSpeed)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       refHelper(refHelper),
-      barrelID(barrelID),
-      ballisticsSolver(ballisticsSolver)  //
+      ballisticsSolver(ballisticsSolver),
+      defaultLaunchSpeed(defaultLaunchSpeed)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
@@ -63,7 +63,7 @@ void GimbalChaseCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
-    float projectileSpeed = refHelper->getPredictedProjectileSpeed(barrelID);
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
     predictedProjectileSpeed = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =

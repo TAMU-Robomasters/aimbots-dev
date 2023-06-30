@@ -46,18 +46,6 @@ void ChassisAutoNavCommand::execute() {
     // findNearestChassisErrorTo expects a chassis-relative target angle, not an error, so we negate the error to get target
     rotationError = Helper::findNearestChassisErrorTo(-rotationError, snapSymmetryConfig);
 
-    // xRamp.setTarget(xError);
-    // yRamp.setTarget(yError);
-    // rotationRamp.setTarget(rotationError);
-
-    // xRamp.update(linearVelocityRampValue);
-    // yRamp.update(linearVelocityRampValue);
-    // rotationRamp.update(rotationVelocityRampValue);
-
-    // xError = xRamp.getValue();
-    // yError = yRamp.getValue();
-    // rotationError = rotationRamp.getValue();
-
     float desiredX = xController.runController(xError, currentWorldVelocity.getX());
     float desiredY = yController.runController(yError, currentWorldVelocity.getY());
     float desiredR = rotationController.runController(

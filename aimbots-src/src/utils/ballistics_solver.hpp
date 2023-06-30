@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 
 #include "drivers.hpp"
 
@@ -56,7 +56,7 @@ struct MeasuredKinematicState {
 
 class BallisticsSolver {
 public:
-    BallisticsSolver(src::Drivers *, src::Utils::RefereeHelper *refHelper);
+    BallisticsSolver(src::Drivers *);
     ~BallisticsSolver() = default;
 
     struct AngularFilterConfig {
@@ -136,7 +136,6 @@ public:
 
 private:
     src::Drivers *drivers;
-    src::Utils::RefereeHelper *refHelper;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
 

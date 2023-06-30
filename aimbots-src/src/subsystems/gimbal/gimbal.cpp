@@ -66,8 +66,6 @@ void GimbalSubsystem::refresh() {
         }
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
-        
-
 
         int64_t currentYawEncoderPosition = yawMotors[i]->getEncoderUnwrapped();
 
@@ -97,15 +95,12 @@ void GimbalSubsystem::refresh() {
 
     int pitchOnlineCount = 0;
 
-
     float pitchAxisAngleSum = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         if (!pitchMotors[i]->isMotorOnline()) {
             continue;
         }
         pitchOnlineCount++;
-
-        
 
         int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoderUnwrapped();
 
@@ -157,7 +152,8 @@ void GimbalSubsystem::setDesiredOutputToYawMotor(uint8_t YawIdx) {
 
 void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
     pitchDesiredOutputDisplay = desiredPitchMotorOutputs[pitchDisplayMotorIdx];
-    pitchLimitedOutputDisplay = tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
+    pitchLimitedOutputDisplay =
+        tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
     // Clamp output to maximum value that the 6020 can handle
     pitchMotors[PitchIdx]->setDesiredOutput(
         tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));

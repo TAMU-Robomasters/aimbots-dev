@@ -7,7 +7,7 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     src::Indexer::IndexerSubsystem* indexer,
-    src::Utils::RefereeHelper* refHelper,
+    src::Utils::RefereeHelperTurreted* refHelper,
     float feederSpeed,
     float indexerSpeed,
     float acceptableHeatThreshold,
@@ -21,18 +21,17 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       MAX_UNJAM_COUNT(MAX_UNJAM_COUNT),
       runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1.0f, UNJAM_TIMER_MS),
-      stopFeederCommand(drivers,feeder),
-      runIndexerCommand(drivers,indexer,indexerSpeed, acceptableHeatThreshold),
-      reverseIndexerCommand(drivers,indexer,-indexerSpeed*0.5,1.0f),
-      stopIndexerCommand(drivers,indexer)
-{
+      stopFeederCommand(drivers, feeder),
+      runIndexerCommand(drivers, indexer, indexerSpeed, acceptableHeatThreshold),
+      reverseIndexerCommand(drivers, indexer, -indexerSpeed * 0.5, 1.0f),
+      stopIndexerCommand(drivers, indexer) {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
     this->comprisedCommandScheduler.registerSubsystem(indexer);
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(indexer));
 }
 
-//DEBUG VARIABLES --------------------------------
+// DEBUG VARIABLES --------------------------------
 
 bool commandIsRunning = false;
 bool unjamDisplay = false;
@@ -41,50 +40,47 @@ int unjamCountDisplay = 0;
 
 //------------------------------------------------
 
-
 void AutoAgitatorIndexerCommand::initialize() {
-    if (comprisedCommandScheduler.isCommandScheduled(&runIndexerCommand)) comprisedCommandScheduler.removeCommand(&runIndexerCommand, true);
-    if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand)) comprisedCommandScheduler.addCommand(&runFeederCommand);
+    if (comprisedCommandScheduler.isCommandScheduled(&runIndexerCommand))
+        comprisedCommandScheduler.removeCommand(&runIndexerCommand, true);
+    if (!comprisedCommandScheduler.isCommandScheduled(&runFeederCommand))
+        comprisedCommandScheduler.addCommand(&runFeederCommand);
 
     unjamTimer.restart(0);
     startupTimeout.restart(500);
     reverseTimer.restart(0);
 }
 
-//The plan
-//Run this either as a default command, or paired to a remote switch that should be "always on"
-//Read from an additional remote input within this command, as the "shoot" trigger
+// The plan
+// Run this either as a default command, or paired to a remote switch that should be "always on"
+// Read from an additional remote input within this command, as the "shoot" trigger
 
-//While command is running, run agitator at full power
-//After reaching an unjam, count it.
-//After attempting unjam 3 times, if problem persists, halt (assume fully loaded)
-//Read a different remote input to reset the unjam counter (force reload, essentially)
-//Once the "shoot" trigger is pressed, start moving the indexer, and reset the unjam counter
-
+// While command is running, run agitator at full power
+// After reaching an unjam, count it.
+// After attempting unjam 3 times, if problem persists, halt (assume fully loaded)
+// Read a different remote input to reset the unjam counter (force reload, essentially)
+// Once the "shoot" trigger is pressed, start moving the indexer, and reset the unjam counter
 
 void AutoAgitatorIndexerCommand::execute() {
-
     commandIsRunning = true;
     unjamDisplay = jamDetected;
     isLoadedDisplay = fullyLoaded;
     unjamCountDisplay = unjamming_count;
 
-
     if (drivers->remote.getMouseL() || drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler,&runIndexerCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &runIndexerCommand);
         unjamming_count = 0;
         fullyLoaded = false;
-        //reverseTimer.restart(100);
-    }
-    else {
-        //This might actually break the feeder, don't uncomment for now
+        // reverseTimer.restart(100);
+    } else {
+        // This might actually break the feeder, don't uncomment for now
         /*if (reverseTimer.isExpired()) {
             scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);
         }
         else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand);
         }*/
-        scheduleIfNotScheduled(this->comprisedCommandScheduler,&stopIndexerCommand);  
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopIndexerCommand);
     }
 
     if (unjamTimer.execute()) {
@@ -109,11 +105,10 @@ void AutoAgitatorIndexerCommand::execute() {
 
     if (fullyLoaded) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
+    } else {
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &runFeederCommand);
     }
-    else {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler,&runFeederCommand);
-    }
-    
+
     comprisedCommandScheduler.run();
 }
 
@@ -124,12 +119,9 @@ void AutoAgitatorIndexerCommand::end(bool interrupted) {
     feeder->setTargetRPM(0.0f);
     indexer->setTargetRPM(0.0f);
     unjamming_count = 0;
-    commandIsRunning = false; }
-
-bool AutoAgitatorIndexerCommand::isReady() {
-    return true;
+    commandIsRunning = false;
 }
 
-bool AutoAgitatorIndexerCommand::isFinished() const {
-    return false;
-}
+bool AutoAgitatorIndexerCommand::isReady() { return true; }
+
+bool AutoAgitatorIndexerCommand::isFinished() const { return false; }

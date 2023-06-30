@@ -6,13 +6,13 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
     GimbalControllerInterface* controller,
-    src::Utils::RefereeHelper* refHelper,
-    BarrelID& barrelID,
-    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
+    src::Utils::RefereeHelperTurreted* refHelper,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    float defaultLaunchSpeed)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
-      gimbalCVCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
+      gimbalCVCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, defaultLaunchSpeed),
       gimbalFreeAimCommand(drivers, gimbal, controller)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));

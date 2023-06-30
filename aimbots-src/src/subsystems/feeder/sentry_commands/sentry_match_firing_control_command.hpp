@@ -1,7 +1,9 @@
 #pragma once
 
-#include "drivers.hpp"
 #include "utils/common_types.hpp"
+
+#include "drivers.hpp"
+
 //
 #include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/feeder/burst_feeder_command.hpp"
@@ -27,8 +29,13 @@ using namespace src::Shooter;
 static constexpr float SENTRY_SHOOTER_MAX_ACCEL = 2.5f;
 
 class SentryMatchFiringControlCommand : public TapComprisedCommand {
-   public:
-    SentryMatchFiringControlCommand(src::Drivers*, FeederSubsystem*, ShooterSubsystem*, src::Utils::RefereeHelper*, src::Chassis::ChassisMatchStates& chassisState);
+public:
+    SentryMatchFiringControlCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        ShooterSubsystem*,
+        src::Utils::RefereeHelperTurreted*,
+        src::Chassis::ChassisMatchStates& chassisState);
 
     void initialize() override;
     void execute() override;
@@ -39,11 +46,11 @@ class SentryMatchFiringControlCommand : public TapComprisedCommand {
 
     const char* getName() const override { return "Sentry Match Firing Control Command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     ShooterSubsystem* shooter;
-    src::Utils::RefereeHelper* refHelper;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     src::Chassis::ChassisMatchStates& chassisState;
 

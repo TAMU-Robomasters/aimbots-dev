@@ -10,7 +10,10 @@
 
 namespace src::Shooter {
 
-RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, src::Utils::RefereeHelper* refHelper)
+RunShooterCommand::RunShooterCommand(
+    src::Drivers* drivers,
+    ShooterSubsystem* shooter,
+    src::Utils::RefereeHelperTurreted* refHelper)
     : drivers(drivers),
       shooter(shooter),
       refHelper(refHelper) {
@@ -28,7 +31,7 @@ uint16_t flywheelCurrentRPMDisplay = 0;
 void RunShooterCommand::execute() {
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
-    uint16_t refSpeedLimit = refHelper->getProjectileSpeedLimit();
+    uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(SHOOTER_SPEED_MATRIX[0][0]);
 
     flywheelRPMDisplay = flywheelRPM;
     flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);

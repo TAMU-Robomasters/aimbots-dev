@@ -389,6 +389,8 @@ static constexpr float CIMU_Z_EULER = 90.0f;
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
 
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
 /**
  * @brief Barrel Manager Constants
  */

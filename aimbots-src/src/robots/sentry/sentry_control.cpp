@@ -3,11 +3,10 @@
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
 #include "utils/common_types.hpp"
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
-
 
 //
 #include "tap/control/command_mapper.hpp"
@@ -89,7 +88,14 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper)
 // Match Controllers ------------------------------------------------
 SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
 SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
-SentryMatchGimbalControlCommand matchGimbalControlCommand(drivers(), &gimbal, &gimbalController, &refHelper, currentBarrel, &ballisticsSolver, 500.0f);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
+    drivers(),
+    &gimbal,
+    &gimbalController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver,
+    500.0f);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -110,8 +116,20 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 // pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &refHelper, currentBarrel, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &refHelper, currentBarrel, &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver);
+GimbalChaseCommand gimbalChaseCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    currentBarrel,
+    &ballisticsSolver);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0.80f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -186,8 +204,8 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
 
-    //drivers->commandMapper.addMap(&rightSwitchMid);
-    //drivers->commandMapper.addMap(&rightSwitchUp);
+    // drivers->commandMapper.addMap(&rightSwitchMid);
+    // drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace SentryControl

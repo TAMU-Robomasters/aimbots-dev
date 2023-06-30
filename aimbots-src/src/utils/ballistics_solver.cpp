@@ -6,10 +6,7 @@ enum CVState;
 
 namespace src::Utils::Ballistics {
 
-BallisticsSolver::BallisticsSolver(src::Drivers *drivers, src::Utils::RefereeHelper *refHelper)
-    : drivers(drivers),
-      refHelper(refHelper)  //
-{}
+BallisticsSolver::BallisticsSolver(src::Drivers *drivers) : drivers(drivers) {}
 
 BallisticsSolver::BallisticsSolution solutionDisplay;
 MeasuredKinematicState plateKinematicStateDisplay;
@@ -30,13 +27,6 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     uint32_t forwardProjectionTime = 0 * 1000;
 
     auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
-
-    // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
-    //     if (SHOOTER_SPEED_MATRIX[i][0] == refHelper->getProjectileSpeedLimit()) {
-    //         projectileSpeed = SHOOTER_SPEED_MATRIX[i][1];
-    //         break;
-    //     }
-    // }
 
     MeasuredKinematicState targetKinematicState = {
         .position = plateKinematicState.position,
@@ -89,7 +79,6 @@ bool BallisticsSolver::findTargetProjectileIntersection(
     float squaredTargetY = pow2(projectedTargetPosition.y);
     float squaredBarrelPositionX = pow2(BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX());
 
-    // *turretYaw = atan2f(projectedTargetPosition.y, projectedTargetPosition.x);
     *turretYaw = acos(
         (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
          BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /

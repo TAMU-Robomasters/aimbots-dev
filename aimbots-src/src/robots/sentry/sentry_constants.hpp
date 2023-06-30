@@ -376,6 +376,8 @@ static constexpr float CIMU_X_EULER = 0.0f;
 static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
 static constexpr float CIMU_Z_EULER = 0.0f;
 
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
 

@@ -4,7 +4,7 @@
 
 #include "subsystems/shooter/shooter.hpp"
 #include "utils/common_types.hpp"
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
@@ -13,7 +13,7 @@ namespace src::Shooter {
 
 class RunShooterCommand : public TapCommand {
 public:
-    RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, src::Utils::RefereeHelper* refHelper);
+    RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, src::Utils::RefereeHelperTurreted* refHelper);
     void initialize() override;
 
     void execute() override;
@@ -28,7 +28,7 @@ private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
 
-    src::Utils::RefereeHelper* refHelper;
+    src::Utils::RefereeHelperTurreted* refHelper;
 };
 
 }  // namespace src::Shooter

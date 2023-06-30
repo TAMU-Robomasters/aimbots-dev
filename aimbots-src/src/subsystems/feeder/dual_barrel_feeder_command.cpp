@@ -5,7 +5,7 @@ namespace src::Feeder {
 DualBarrelFeederCommand::DualBarrelFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
-    src::Utils::RefereeHelper* refHelper,
+    src::Utils::RefereeHelperTurreted* refHelper,
     bool& barrelMovingFlag,
     float speed,
     float acceptableHeatThreshold,
@@ -43,11 +43,11 @@ void DualBarrelFeederCommand::execute() {
 void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
 bool DualBarrelFeederCommand::isReady() {
-    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
+    return (refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
 }
 
 bool DualBarrelFeederCommand::isFinished() const {
-    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
 }
 
 }  // namespace src::Feeder

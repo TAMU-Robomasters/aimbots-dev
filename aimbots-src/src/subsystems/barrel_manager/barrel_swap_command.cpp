@@ -7,7 +7,7 @@ namespace src::BarrelManager {
 BarrelSwapCommand::BarrelSwapCommand(
     src::Drivers* drivers,
     BarrelManagerSubsystem* barrelManager,
-    src::Utils::RefereeHelper* RefHelper,
+    src::Utils::RefereeHelperTurreted* RefHelper,
     bool& barrelMovingFlag,
     bool& barrelCaliDoneFlag,
     float ACCEPTABLE_HEAT_PERCENTAGE)
@@ -102,9 +102,9 @@ void BarrelSwapCommand::execute() {
         }
 
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE, barrelManager->getBarrelSideID());
+        heatRemainDisplay = refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE);
 
-        /*if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
+        /*if (!refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
             if (barrelManager->getSide() == barrelSide::LEFT) {
                 barrelManager->setSide(barrelSide::RIGHT);
@@ -115,8 +115,7 @@ void BarrelSwapCommand::execute() {
 
         }*/
 
-        if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE, barrelManager->getBarrelSideID()) &&
-            !wasLogicSwitchRequested) {
+        if (!refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
             if (barrelManager->getSide() == barrelSide::LEFT) {
                 barrelManager->setSide(barrelSide::RIGHT);

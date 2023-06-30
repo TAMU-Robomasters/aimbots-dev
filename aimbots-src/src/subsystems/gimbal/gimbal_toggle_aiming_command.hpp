@@ -17,9 +17,9 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalControllerInterface*,
-        src::Utils::RefereeHelper*,
-        BarrelID&,
-        src::Utils::Ballistics::BallisticsSolver*);
+        src::Utils::RefereeHelperTurreted*,
+        src::Utils::Ballistics::BallisticsSolver*,
+        float defaultLaunchSpeed);
 
     void initialize() override;
     void execute() override;
