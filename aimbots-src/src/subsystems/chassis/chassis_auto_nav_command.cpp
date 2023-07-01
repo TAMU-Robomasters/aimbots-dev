@@ -24,8 +24,8 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
 }
 
 void ChassisAutoNavCommand::initialize() {
-    modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
-    autoNavigator.setTargetLocation(targetLocation);
+    // modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
+    // autoNavigator.setTargetLocation(targetLocation);
 }
 
 float rotationErrorDisplay = 0.0f;

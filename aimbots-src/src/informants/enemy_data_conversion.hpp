@@ -5,6 +5,7 @@
 
 #include "utils/common_types.hpp"
 #include "utils/filters/kinematic_kalman.hpp"
+#include "utils/math/sliding_dft.hpp"
 
 namespace src {
 class Drivers;
@@ -43,6 +44,10 @@ private:
     static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
+
+    // 1s sample, 30ms per sample = 33 samples
+    SlidingDFT<float, 30> xDFT;
+    bool xDFTValid = false;
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;

@@ -26,6 +26,8 @@ float targetPositionZDisplay = 0.0f;
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
+std::complex<float> DC_binDisplay = 0.0f;
+
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
@@ -86,6 +88,13 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     XPositionFilter.update(dt, transformedData.position.getX());
     YPositionFilter.update(dt, transformedData.position.getY());
     ZPositionFilter.update(dt, transformedData.position.getZ());
+
+    xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+
+    if (xDFTValid) {
+        std::complex<float> DC_bin = xDFT.dft[0];
+        DC_binDisplay = DC_bin;
+    }
 
     lastUpdateTimestamp_uS = currentTime_uS;
 }

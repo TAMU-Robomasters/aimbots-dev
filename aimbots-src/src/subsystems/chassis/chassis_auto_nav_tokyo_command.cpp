@@ -34,8 +34,8 @@ void ChassisAutoNavTokyoCommand::initialize() {
         spinRateModifierTimer.restart(0);
     }
 
-    modm::Location2D<float> targetLocation({1.5f, 1.5f}, modm::toRadian(90.0f));  // test
-    autoNavigator.setTargetLocation(targetLocation);
+    // modm::Location2D<float> targetLocation({1.5f, 1.5f}, modm::toRadian(90.0f));  // test
+    // autoNavigator.setTargetLocation(targetLocation);
 }
 
 void ChassisAutoNavTokyoCommand::execute() {
