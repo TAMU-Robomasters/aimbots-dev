@@ -8,16 +8,15 @@ DualBarrelFeederCommand::DualBarrelFeederCommand(
     src::Utils::RefereeHelperTurreted* refHelper,
     bool& barrelMovingFlag,
     float speed,
-    float acceptableHeatThreshold,
+    float unjamSpeed,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       barrelMovingFlag(barrelMovingFlag),
       speed(speed),
-      acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      unjamSpeed(-3000.0f)  //
+      unjamSpeed(-unjamSpeed)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }

@@ -19,9 +19,9 @@ public:
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
         bool& barrelMovingFlag,
-        float speed = FEEDER_DEFAULT_RPM,
-        float acceptableHeatThreshold = 0.90f,
-        int UMJAM_TIMER_MS = 300);
+        float speed,
+        float unjamSpeed,
+        int UMJAM_TIMER_MS);
     void initialize() override;
 
     void execute() override;
@@ -41,7 +41,6 @@ private:
 
     bool& barrelMovingFlag;
     float speed;
-    float acceptableHeatThreshold;
 
     int UNJAM_TIMER_MS;
 

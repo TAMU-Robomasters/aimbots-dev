@@ -228,8 +228,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
 DualBarrelFeederCommand runDoubleBarrelFeederCommand(
     drivers(),
@@ -237,7 +237,7 @@ DualBarrelFeederCommand runDoubleBarrelFeederCommand(
     &refHelper,
     barrelMovingFlag,
     FEEDER_DEFAULT_RPM,
-    0.80f,
+    3000.0f,
     UNJAM_TIMER_MS);
 DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
     drivers(),
@@ -245,7 +245,7 @@ DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
     &refHelper,
     barrelMovingFlag,
     FEEDER_DEFAULT_RPM,
-    0.80f,
+    3000.0f,
     UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 

@@ -24,9 +24,9 @@ public:
         src::Utils::RefereeHelperTurreted*,
         float feederSpeed,
         float indexerSpeed,
-        float acceptableHeatThreshold = 0.80f,
-        int UNJAM_TIMER_MS = 300,
-        int MAX_UNJAM_COUNT = 3);
+        float acceptableHeatThreshold,
+        int UNJAM_TIMER_MS,
+        int MAX_UNJAM_COUNT);
 
     void initialize() override;
     void execute() override;
@@ -54,7 +54,7 @@ private:
     StopFeederCommand stopFeederCommand;
 
     FullAutoIndexerCommand runIndexerCommand;
-    FullAutoIndexerCommand reverseIndexerCommand;
+    //FullAutoIndexerCommand reverseIndexerCommand;
     StopIndexerCommand stopIndexerCommand;
 
     MilliTimeout startupTimeout;

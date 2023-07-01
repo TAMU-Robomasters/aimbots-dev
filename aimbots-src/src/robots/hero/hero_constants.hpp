@@ -215,7 +215,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 300;
+static constexpr int UNJAM_TIMER_MS = 100;
 
 static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
@@ -398,3 +398,5 @@ static constexpr float CIMU_Z_EULER = 90.0f;
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};
+
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 3;
