@@ -420,11 +420,11 @@ static constexpr float LEAD_SCREW_TICKS_PER_MM =
     8.0;  //  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
 // The value that the torque needs to be greater than to detect running into a wall
-static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 650;
 
 // The output to the motor while in calibration mode.
 // When adjusting, also change the constant above to find an appropriate match between the two
-static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
+static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 600;
 
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .kp = 1000.0f,

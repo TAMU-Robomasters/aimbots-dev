@@ -13,7 +13,7 @@ public:
 
     inline std::optional<float> getPredictedLaunchSpeed() const {
         if (projectileSpeedHistory.isEmpty()) {
-            return std::nullopt;
+            return lastAllowedProjectileSpeed;
         }
         return pastProjectileVelocitySum / projectileSpeedHistory.getSize();
     }

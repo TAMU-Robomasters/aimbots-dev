@@ -53,9 +53,12 @@ void RobotFrames::updateFrames(
     fieldFrame.setOrigin(robotPositionRelativeToStartPosition);
 }
 
+float camera_mounting_offset_angle = -0.0f;
+
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
     Matrix3f at_cv_update_gimbal_orientation_relative_to_chassis_orientation =
-        rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit);
+        rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit) *
+        rotationMatrix(camera_mounting_offset_angle, Z_AXIS, AngleUnit::Degrees);
 
     Vector3f at_cv_update_camera_origin_relative_to_chassis_origin =
         TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN +

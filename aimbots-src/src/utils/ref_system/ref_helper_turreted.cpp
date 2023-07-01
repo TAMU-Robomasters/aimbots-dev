@@ -123,7 +123,6 @@ bool RefereeHelperTurreted::isBarrelHeatUnderLimit(float percentageOfLimit, Barr
 bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     auto& turretData = drivers->refSerial.getRobotData().turret;
 
-
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
     auto projectileType = RefSerialRxData::BulletType::AMMO_17;
@@ -151,7 +150,8 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
             return true;
     }
 
-    return (lastHeat + heatGainedPerProjectile[projectileType-1] < heatLimit); //-1 is to align array index with enum values
+    return (
+        lastHeat + heatGainedPerProjectile[projectileType - 1] < heatLimit);  //-1 is to align array index with enum values
 }
 
 }  // namespace src::Utils

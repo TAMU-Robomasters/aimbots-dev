@@ -26,7 +26,13 @@ float targetPositionZDisplay = 0.0f;
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
-std::complex<float> DC_binDisplay = 0.0f;
+uint8_t DCBinDisplay = 0;
+float xDFTMagDisplay[30];
+
+float dampingValue = 0.999f;
+float spinMagnitude = 0.0f;
+
+uint32_t plateTimeOffsetDisplay = 0;
 
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
@@ -59,7 +65,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
 
-    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
+    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay + plateTimeOffsetDisplay);
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
     VisionTimedPosition targetPositionWithoutLagCompensation{
@@ -89,11 +95,30 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     YPositionFilter.update(dt, transformedData.position.getY());
     ZPositionFilter.update(dt, transformedData.position.getZ());
 
+    xDFT.damping_factor = dampingValue;
+
     xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
 
     if (xDFTValid) {
-        std::complex<float> DC_bin = xDFT.dft[0];
-        DC_binDisplay = DC_bin;
+        spinMagnitude = 0.0f;
+        // std::complex<float> DC_bin = xDFT.dft[0];
+        uint8_t highestMagIndex = 0;
+        float highestMag = 0;
+
+        for (size_t i = 0; i < 30; i++) {
+            // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
+            //     highestMag = std::abs<float>(xDFT.dft[i]);
+            //     highestMagIndex = i;
+            // }
+            xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
+        }
+
+        for (size_t i = 1; i < 29; i++) {
+            spinMagnitude += std::abs<float>(xDFT.dft[i]);
+        }
+
+        DCBinDisplay = highestMagIndex;
+        // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
     }
 
     lastUpdateTimestamp_uS = currentTime_uS;
