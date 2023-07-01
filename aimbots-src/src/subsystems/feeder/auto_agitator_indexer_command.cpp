@@ -20,10 +20,10 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
       refHelper(refHelper),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       MAX_UNJAM_COUNT(MAX_UNJAM_COUNT),
-      runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1.0f, UNJAM_TIMER_MS),
+      runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1500.0f, UNJAM_TIMER_MS),
       stopFeederCommand(drivers, feeder),
       runIndexerCommand(drivers, indexer, refHelper, indexerSpeed, acceptableHeatThreshold),
-      reverseIndexerCommand(drivers, indexer, refHelper, -indexerSpeed * 0.5, 1.0f),
+      /*reverseIndexerCommand(drivers, indexer, refHelper, -indexerSpeed * 0.5, 1.0f),*/
       stopIndexerCommand(drivers, indexer) {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
     this->comprisedCommandScheduler.registerSubsystem(indexer);
@@ -98,7 +98,7 @@ void AutoAgitatorIndexerCommand::execute() {
         fullyLoaded = true;
     }
 
-    if (drivers->remote.keyPressed(Remote::Key::R)) {
+    if (drivers->remote.keyPressed(Remote::Key::B)) {
         unjamming_count = 0;
         fullyLoaded = false;
     }
@@ -114,7 +114,7 @@ void AutoAgitatorIndexerCommand::execute() {
 
 void AutoAgitatorIndexerCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &runIndexerCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand, interrupted);
+    //descheduleIfScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
     feeder->setTargetRPM(0.0f);
     indexer->setTargetRPM(0.0f);

@@ -7,15 +7,14 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
     float speed,
-    float acceptableHeatThreshold,
+    float unjamSpeed,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       speed(speed),
-      acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      unjamSpeed(-3000.0f)  //
+      unjamSpeed(-unjamSpeed)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }

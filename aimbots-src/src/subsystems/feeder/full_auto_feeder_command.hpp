@@ -18,8 +18,8 @@ public:
         src::Drivers*,
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
-        float speed = FEEDER_DEFAULT_RPM,
-        float acceptableHeatThreshold = 0.90f,
+        float speed,
+        float unjamSpeed,
         int UNJAM_TIMER_MS = 300);
     void initialize() override;
 
@@ -39,7 +39,6 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
 
     float speed;
-    float acceptableHeatThreshold;
 
     int UNJAM_TIMER_MS;
 

@@ -4,6 +4,11 @@
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
+
+//
+#include "informants/transformers/robot_frames.hpp"
+#include "utils/ballistics_solver.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -21,7 +26,6 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -68,7 +72,7 @@ using namespace src::Shooter;
 
     Feeder/Indexer ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
-    Force Reload: R
+    Force Reload: B
 
     UI ----------------------------------------------------------------
 
@@ -89,14 +93,17 @@ using namespace tap::communication::serial;
 
 namespace HeroControl {
 
-src::Utils::RefereeHelper refHelper(drivers());
+// This is technically a command flag, but it needs to be defined before the refHelper
+BarrelID currentBarrel = BARREL_IDS[0];
+
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers());
+ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -141,12 +148,12 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
-FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
-FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
+FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
+FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
 StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
 AutoAgitatorIndexerCommand feederIndexerCommand(
@@ -156,9 +163,9 @@ AutoAgitatorIndexerCommand feederIndexerCommand(
     &refHelper,
     FEEDER_DEFAULT_RPM,
     INDEXER_DEFAULT_RPM,
-    0.8,
+    0.5f,
     UNJAM_TIMER_MS,
-    3);
+    1);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
