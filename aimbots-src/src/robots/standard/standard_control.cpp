@@ -49,8 +49,8 @@
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
-#include "informants/communication/communication_response_handler.hpp"
-#include "informants/communication/communication_response_subsytem.hpp"
+//#include "informants/communication/communication_response_handler.hpp"
+//#include "informants/communication/communication_response_subsytem.hpp"
 //
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
@@ -61,9 +61,9 @@ using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::Barrel_Manager;
-using namespace src::Communication;
-using namespace src::RobotStates;
+using namespace src::BarrelManager;
+//using namespace src::Communication;
+//using namespace src::RobotStates;
 using namespace src::utils::display;
 using namespace src::BarrelManager;
 
@@ -152,7 +152,7 @@ BarrelManagerSubsystem barrelManager(
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
 
-CommunicationResponseSubsytem response(*drivers());
+//CommunicationResponseSubsytem response(*drivers());
 ClientDisplaySubsystem clientDisplay(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
@@ -295,6 +295,8 @@ HoldCommandMapping leftClickMouse(
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
 
+
+
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
@@ -313,7 +315,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
-    drivers->commandScheduler.registerSubsystem(&response);
+    //drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -326,7 +328,7 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     barrelManager.initialize();
-    response.initialize();
+    //response.initialize();
     clientDisplay.initialize();
 }
 

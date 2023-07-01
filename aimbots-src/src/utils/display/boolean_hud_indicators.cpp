@@ -74,12 +74,17 @@ modm::ResumableResult<bool> BooleanHudIndicator::sendInitialGraphics() {
     RF_END();
 }
 
+bool hopperIndicatorDisplay = false;
+bool spinIndicatorDisplay = false;
+
 modm::ResumableResult<bool> BooleanHudIndicator::update() {
     RF_BEGIN(1);
 
     booleanHudIndicatorDrawers[HOPPER_STATUS].setIndicatorState(!hopper.isHopperOpen());
+    hopperIndicatorDisplay = !hopper.isHopperOpen();
     // booleanHudIndicatorDrawers[AGITATOR_STATUS_HEALTHY].setIndicatorState(true);
     booleanHudIndicatorDrawers[SPIN_TO_WIN].setIndicatorState(!this->chassis.getTokyoDrift());
+    spinIndicatorDisplay = !this->chassis.getTokyoDrift();
     booleanHudIndicatorDrawers[BOOST_ACTIVE].setIndicatorState(false);
 
     // draw all the booleanHudIndicatorDrawers (only actually sends data if graphic changed)
