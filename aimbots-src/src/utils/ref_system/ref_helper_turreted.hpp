@@ -25,6 +25,7 @@ public:
 
     float getLastProjectileSpeed();
 
+    // Needs to be called frequently to catch each projectile launch
     void updatePredictedProjectileSpeed();
 
     inline std::optional<float> getPredictedProjectileSpeed() {
@@ -43,7 +44,7 @@ private:
 
     src::Utils::ProjectileLaunchSpeedPredictor<PROJECTILE_SPEED_QUEUE_SIZE> projectileLaunchSpeedPredictor;
 
-    int heatGainedPerProjectile[2] = {10,100}; //{17mm, 42mm}
+    int heatGainedPerProjectile[2] = {10, 100};  //{17mm, 42mm}
 };
 
 }  // namespace src::Utils

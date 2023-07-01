@@ -120,7 +120,7 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers());
+ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(
     drivers(),
     HOPPER_PIN,
@@ -272,7 +272,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand,/*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
+    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
