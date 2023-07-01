@@ -1,9 +1,10 @@
 #include "full_auto_indexer_command.hpp"
 
 namespace src::Indexer {
-FullAutoIndexerCommand::FullAutoIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer, float speed, float acceptableHeatThreshold)
+FullAutoIndexerCommand::FullAutoIndexerCommand(src::Drivers* drivers, IndexerSubsystem* indexer, src::Utils::RefereeHelperTurreted* refHelper, float speed, float acceptableHeatThreshold)
     : drivers(drivers),
       indexer(indexer),
+      refHelper(refHelper),
       speed(speed),
       acceptableHeatThreshold(acceptableHeatThreshold),
       unjamSpeed(-3000.0f)  //
@@ -31,8 +32,8 @@ void FullAutoIndexerCommand::execute() {
 
 void FullAutoIndexerCommand::end(bool) { indexer->setTargetRPM(0.0f); }
 
-bool FullAutoIndexerCommand::isReady() { return indexer->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoIndexerCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
 
-bool FullAutoIndexerCommand::isFinished() const { return !indexer->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoIndexerCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
 
 }  // namespace src::Indexer

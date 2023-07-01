@@ -22,8 +22,8 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
       MAX_UNJAM_COUNT(MAX_UNJAM_COUNT),
       runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1.0f, UNJAM_TIMER_MS),
       stopFeederCommand(drivers, feeder),
-      runIndexerCommand(drivers, indexer, indexerSpeed, acceptableHeatThreshold),
-      reverseIndexerCommand(drivers, indexer, -indexerSpeed * 0.5, 1.0f),
+      runIndexerCommand(drivers, indexer, refHelper, indexerSpeed, acceptableHeatThreshold),
+      reverseIndexerCommand(drivers, indexer, refHelper, -indexerSpeed * 0.5, 1.0f),
       stopIndexerCommand(drivers, indexer) {
     this->comprisedCommandScheduler.registerSubsystem(feeder);
     this->comprisedCommandScheduler.registerSubsystem(indexer);

@@ -119,11 +119,6 @@ void BarrelSwapCommand::execute() {
 
         if (!refHelper->/*isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE)*/canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
-            /*if (barrelManager->getSide() == barrelSide::LEFT) {
-                barrelManager->setSide(barrelSide::RIGHT);
-            } else {
-                barrelManager->setSide(barrelSide::LEFT);
-            }*/
             barrelManager->toggleSide();
         }
 
