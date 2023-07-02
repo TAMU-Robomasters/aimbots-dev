@@ -2,8 +2,8 @@
 
 #include "tap/drivers.hpp"
 
-namespace src::utils::display {
+namespace src::Utils::ClientDisplay {
 
-ClientDisplaySubsystem::ClientDisplaySubsystem(tap::Drivers& drivers) : Subsystem(&drivers) {}
+ClientDisplaySubsystem::ClientDisplaySubsystem(tap::Drivers* drivers) : Subsystem(drivers) {}
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

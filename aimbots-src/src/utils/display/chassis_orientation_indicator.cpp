@@ -1,4 +1,4 @@
-#include "chassis_orientation.hpp"
+#include "chassis_orientation_indicator.hpp"
 
 #include <tuple>
 
@@ -15,8 +15,8 @@
 using namespace src::Gimbal;
 using namespace tap::communication::serial;
 
-namespace src::utils::display {
-ChassisOrientation::ChassisOrientation(
+namespace src::Utils::ClientDisplay {
+ChassisOrientationIndicator::ChassisOrientationIndicator(
     tap::Drivers &drivers,
     tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
     const GimbalSubsystem &gimbal)
@@ -24,7 +24,7 @@ ChassisOrientation::ChassisOrientation(
       drivers(drivers),
       gimbal(gimbal) {}
 
-modm::ResumableResult<bool> ChassisOrientation::sendInitialGraphics() {
+modm::ResumableResult<bool> ChassisOrientationIndicator::sendInitialGraphics() {
     RF_BEGIN(0)
 
     // send initial chassis orientation graphics
@@ -35,12 +35,12 @@ modm::ResumableResult<bool> ChassisOrientation::sendInitialGraphics() {
     RF_END();
 }
 
-modm::ResumableResult<bool> ChassisOrientation::update() {
+modm::ResumableResult<bool> ChassisOrientationIndicator::update() {
     RF_BEGIN(1);
 
     // update chassisOrientation if turret is online
     // otherwise don't rotate chassis
-    chassisOrientation.rotate(-gimbal.getYawMotorAngleWrapped(0));
+    chassisOrientation.rotate(-gimbal.getCurrentYawAxisAngle(AngleUnit::Radians));
 
     // if chassis orientation has changed, send new graphic with updated orientation
     if (chassisOrientation != chassisOrientationPrev) {
@@ -65,7 +65,7 @@ modm::ResumableResult<bool> ChassisOrientation::update() {
     RF_END();
 }
 
-void ChassisOrientation::initialize() {
+void ChassisOrientationIndicator::initialize() {
     // chassis orientation starts forward facing
     chassisOrientation.set(0, CHASSIS_LENGTH / 2);
     chassisOrientationPrev = chassisOrientation;
@@ -110,6 +110,4 @@ void ChassisOrientation::initialize() {
         &chassisOrientationGraphics.graphicData[1]);
 }
 
-
-
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

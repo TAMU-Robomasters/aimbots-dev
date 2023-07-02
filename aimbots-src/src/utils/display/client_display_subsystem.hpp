@@ -2,17 +2,19 @@
 
 #include "tap/control/command.hpp"
 #include "tap/control/subsystem.hpp"
-#include "tap/drivers.hpp"
 
-namespace src::utils::display {
+namespace tap {
+class Drivers;
+}
+
+namespace src::Utils::ClientDisplay {
 
 class ClientDisplaySubsystem : public tap::control::Subsystem {
 public:
-    ClientDisplaySubsystem(tap::Drivers& drivers);
+    ClientDisplaySubsystem(tap::Drivers* drivers);
     virtual ~ClientDisplaySubsystem(){};
 
-    // void refresh() override;
-
-    const char* getName() override { return "client display"; }
+    const char* getName() override { return "Client Display"; }
 };
-}  // namespace src::utils::display
+
+}  // namespace src::Utils::ClientDisplay

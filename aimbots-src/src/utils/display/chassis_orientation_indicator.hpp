@@ -1,31 +1,25 @@
 #pragma once
 
 #include "tap/communication/referee/state_hud_indicator.hpp"
-#include "tap/communication/serial/ref_serial.hpp"
-#include "tap/communication/serial/ref_serial_transmitter.hpp"
-#include "tap/control/command_scheduler.hpp"
-// #include "tap/drivers.hpp"
-#include <tuple>
-
-#include "tap/control/command.hpp"
-#include "tap/control/command_scheduler.hpp"
+#include "tap/communication/serial/ref_serial_data.hpp"
 
 #include "modm/math/geometry/vector2.hpp"
 #include "modm/processing/resumable.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
-#include "drivers.hpp"
 #include "hud_indicator.hpp"
 
-using namespace src::Gimbal;
+namespace tap {
+class Drivers;
+}
 
-namespace src::utils::display {
-class ChassisOrientation : public HudIndicator, protected modm::Resumable<2> {
+namespace src::Utils::ClientDisplay {
+class ChassisOrientationIndicator : public HudIndicator, protected modm::Resumable<2> {
 public:
-    ChassisOrientation(
+    ChassisOrientationIndicator(
         tap::Drivers &drivers,
         tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-        const GimbalSubsystem &gimbal);
+        const src::Gimbal::GimbalSubsystem &gimbal);
 
     modm::ResumableResult<bool> sendInitialGraphics() override;
 
@@ -53,7 +47,7 @@ private:
 
     tap::Drivers &drivers;
 
-    const GimbalSubsystem &gimbal;
+    const src::Gimbal::GimbalSubsystem &gimbal;
     /**
      * Vector with origin `(0, 0)` and length CHASSIS_LENGTH / 2. The turret drawn on the screen is
      * considered to be pointing up in the y axis (of the screen). This vector can be rotated around
@@ -73,4 +67,4 @@ private:
     Tx::Graphic2Message chassisOrientationGraphics;
 };
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

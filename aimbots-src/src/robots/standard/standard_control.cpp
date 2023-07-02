@@ -49,8 +49,8 @@
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
-//#include "informants/communication/communication_response_handler.hpp"
-//#include "informants/communication/communication_response_subsytem.hpp"
+// #include "informants/communication/communication_response_handler.hpp"
+// #include "informants/communication/communication_response_subsytem.hpp"
 //
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
@@ -62,9 +62,9 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
 using namespace src::BarrelManager;
-//using namespace src::Communication;
-//using namespace src::RobotStates;
-using namespace src::utils::display;
+// using namespace src::Communication;
+// using namespace src::RobotStates;
+using namespace src::Utils::ClientDisplay;
 using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
@@ -152,8 +152,8 @@ BarrelManagerSubsystem barrelManager(
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
 
-//CommunicationResponseSubsytem response(*drivers());
-ClientDisplaySubsystem clientDisplay(*drivers());
+// CommunicationResponseSubsytem response(*drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -163,7 +163,6 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
 
 // Define commands here ---------------------------------------------------
-
 
 ToykoRandomizerConfig randomizerConfig = {
     .minSpinRateModifier = 0.75f,
@@ -244,14 +243,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(
-    *drivers(),
-    drivers()->commandScheduler,
-    clientDisplay,
-    hopper,
-    gimbal,
-    chassis,
-    ballisticsSolver);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, &hopper, gimbal, chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -294,9 +286,6 @@ HoldCommandMapping leftClickMouse(
 // server and thus don't know when to start sending the initial HUD graphics.
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
-
-
-
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
@@ -315,7 +304,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
-    //drivers->commandScheduler.registerSubsystem(&response);
+    // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -328,7 +317,7 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     barrelManager.initialize();
-    //response.initialize();
+    // response.initialize();
     clientDisplay.initialize();
 }
 

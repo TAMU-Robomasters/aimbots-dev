@@ -11,7 +11,7 @@
 using namespace tap::communication::serial;
 using namespace tap::communication::referee;
 
-namespace src::utils::display {
+namespace src::Utils::ClientDisplay {
 CVDisplay::CVDisplay(
     tap::communication::serial::RefSerialTransmitter &RefSerialTransmitter,
     BallisticsSolver &ballisticsSolver)
@@ -102,4 +102,4 @@ modm::ResumableResult<bool> CVDisplay::updateVisionTargetStatus() {
     RF_END();
 }
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

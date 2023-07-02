@@ -4,11 +4,13 @@
 
 #include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
-#include "tap/drivers.hpp"
+
 using namespace tap::communication::serial;
 
-namespace src::utils::display {
-ReticleIndicator::ReticleIndicator(tap::Drivers &drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
+namespace src::Utils::ClientDisplay {
+ReticleIndicator::ReticleIndicator(
+    tap::Drivers &drivers,
+    tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
     : HudIndicator(refSerialTransmitter),
       drivers(drivers) {}
 
@@ -62,7 +64,13 @@ void ReticleIndicator::initialize() {
         // y coordinate of the horizontal reticle line
         uint16_t y = std::get<1>(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[i]);
 
-        RefSerialTransmitter::configLine(RETICLE_THICKNESS, startX, y, endX, y, &reticleMsg[reticleMsgIndex].graphicData[graphicDataIndex]);
+        RefSerialTransmitter::configLine(
+            RETICLE_THICKNESS,
+            startX,
+            y,
+            endX,
+            y,
+            &reticleMsg[reticleMsgIndex].graphicData[graphicDataIndex]);
 
         // update min and max y coordinates to be used when drawing the vertical reticle line that
         // connects horizontal reticle lines
@@ -93,4 +101,4 @@ void ReticleIndicator::initialize() {
              .graphicData[NUM_RETICLE_COORDINATES % MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]);
 }
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

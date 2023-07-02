@@ -13,23 +13,24 @@
 #include "subsystems/hopper/hopper.hpp"
 
 #include "hud_indicator.hpp"
+
 using namespace src::Hopper;
 using namespace src::Chassis;
 
-namespace src::utils::display {
-class BooleanHudIndicator : public HudIndicator, protected modm::Resumable<2> {
+namespace src::Utils::ClientDisplay {
+class BooleanHUDIndicators : public HudIndicator, protected modm::Resumable<2> {
 public:
-    BooleanHudIndicator(
+    BooleanHUDIndicators(
         tap::control::CommandScheduler &commandScheduler,
         tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-        const HopperSubsystem &hopper,
+        const HopperSubsystem *hopper,
         const ChassisSubsystem &chassis);
 
-    modm::ResumableResult<bool> sendInitialGraphics() override;
+    modm::ResumableResult<bool> sendInitialGraphics() override final;
 
-    modm::ResumableResult<bool> update() override;
+    modm::ResumableResult<bool> update() override final;
 
-    void initialize() override;
+    void initialize() override final;
 
 private:
     tap::control::CommandScheduler &commandScheduler;
@@ -54,32 +55,30 @@ private:
     using BooleanHUDIndicatorTuple = std::tuple<const char *, Tx::GraphicColor, Tx::GraphicColor>;
 
     enum BooleanHUDIndicatorIndex {
-        // AGITATOR_STATUS_HEALTHY,
-        BOOST_ACTIVE =0,
-        SPIN_TO_WIN,
+        SYSTEMS_CALIBRATING = 0,
+        TOKYO_STATUS,
         HOPPER_STATUS,
         NUM_BOOLEAN_HUD_INDICATORS,
     };
 
-    static constexpr BooleanHUDIndicatorTuple BOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
-        // BooleanHUDIndicatorTuple("AGITATOR", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
-        BooleanHUDIndicatorTuple("BOOST", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
-        BooleanHUDIndicatorTuple("SPINNY", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
-        BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK)};
+    static constexpr BooleanHUDIndicatorTuple BOOLEAN_HUD_INDICATOR_LABELS_AND_COLORS[NUM_BOOLEAN_HUD_INDICATORS]{
+        BooleanHUDIndicatorTuple("CALIB", Tx::GraphicColor::PURPLISH_RED, Tx::GraphicColor::GREEN),
+        BooleanHUDIndicatorTuple("TOKYO", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
+        BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
+    };
 
-    Tx::Graphic1Message booleanHudIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
-
-    tap::communication::referee::BooleanHUDIndicator booleanHudIndicatorDrawers[NUM_BOOLEAN_HUD_INDICATORS];
-
-    int booleanHudIndicatorIndexUpdate = 0;
-
-    int booleanHudIndicatorIndexSendInitialGraphics = 0;
-
-    Tx::Graphic1Message booleanHudIndicatorStaticGraphics[NUM_BOOLEAN_HUD_INDICATORS];
-    Tx::GraphicCharacterMessage booleanHudIndicatorStaticLabelGraphics[NUM_BOOLEAN_HUD_INDICATORS];
-
+    const HopperSubsystem *hopper;
     const ChassisSubsystem &chassis;
-    const HopperSubsystem &hopper;
+
+    Tx::Graphic1Message booleanHUDIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];
+
+    tap::communication::referee::BooleanHUDIndicator booleanHUDIndicatorDrawers[NUM_BOOLEAN_HUD_INDICATORS];
+
+    int HUDIndicatorIndexUpdate = 0;
+    int HUDIndicatorIndexInit = 0;
+
+    Tx::Graphic1Message booleanHUDIndicatorStaticGraphics[NUM_BOOLEAN_HUD_INDICATORS];
+    Tx::GraphicCharacterMessage booleanHUDIndicatorStaticLabelGraphics[NUM_BOOLEAN_HUD_INDICATORS];
 };
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

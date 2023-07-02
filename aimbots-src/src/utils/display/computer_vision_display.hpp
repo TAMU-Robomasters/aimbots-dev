@@ -16,7 +16,7 @@
 
 using namespace src::Utils::Ballistics;
 
-namespace src::utils::display {
+namespace src::Utils::ClientDisplay {
 class CVDisplay : public HudIndicator, protected modm::Resumable<3> {
 public:
     // TODO: need to add the cv pipe line when i get it and the actual darwings
@@ -56,4 +56,4 @@ private:
     void initializeVisionHudIndicator(Tx::GraphicData *graphicData, int xBoxLocation);
 };
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

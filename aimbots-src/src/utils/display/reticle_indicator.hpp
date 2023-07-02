@@ -3,13 +3,16 @@
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/communication/referee/state_hud_indicator.hpp"
 #include "tap/communication/serial/ref_serial_data.hpp"
-#include "tap/drivers.hpp"
 
 #include "modm/processing/resumable.hpp"
 
 #include "hud_indicator.hpp"
 
-namespace src::utils::display {
+namespace tap {
+class Drivers;
+}
+
+namespace src::Utils::ClientDisplay {
 class ReticleIndicator : public HudIndicator, protected modm::Resumable<2> {
 public:
     static constexpr int RETICLE_CENTER_X_OFFSET = 15;
@@ -31,10 +34,10 @@ private:
     using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
 
     static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{
-        ReticleTuple(40, 500, Tx::GraphicColor::CYAN), // 2 m
+        ReticleTuple(40, 500, Tx::GraphicColor::CYAN),  // 2 m
         ReticleTuple(60, 495, Tx::GraphicColor::CYAN),
         ReticleTuple(40, 490, Tx::GraphicColor::CYAN),
-        ReticleTuple(10, 455, Tx::GraphicColor::CYAN), // 4 m
+        ReticleTuple(10, 455, Tx::GraphicColor::CYAN),  // 4 m
         ReticleTuple(30, 450, Tx::GraphicColor::CYAN),
         ReticleTuple(10, 445, Tx::GraphicColor::CYAN),
         ReticleTuple(10, 485, Tx::GraphicColor::ORANGE),  // 8 m
@@ -65,4 +68,4 @@ private:
     size_t reticleIndex = 0;
 };
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

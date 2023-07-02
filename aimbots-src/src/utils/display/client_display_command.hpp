@@ -19,7 +19,7 @@
 #include "subsystems/hopper/hopper.hpp"
 
 #include "boolean_hud_indicators.hpp"
-#include "chassis_orientation.hpp"
+#include "chassis_orientation_indicator.hpp"
 #include "client_display_subsystem.hpp"
 #include "computer_vision_display.hpp"
 #include "reticle_indicator.hpp"
@@ -29,7 +29,15 @@ using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Utils::Ballistics;
 
-namespace src::utils::display {
+namespace tap::control {
+class Subsystem;
+}
+
+namespace tap {
+class Drivers;
+}
+
+namespace src::Utils::ClientDisplay {
 
 class ClientDisplayCommand : public tap::control::Command, ::modm::pt::Protothread {
 public:
@@ -37,12 +45,13 @@ public:
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
-        const HopperSubsystem &hopper,
+        const HopperSubsystem *hopper,
         const GimbalSubsystem &gimbal,
-        const ChassisSubsystem &chassis,
-       BallisticsSolver &ballisticsSolver);
+        const ChassisSubsystem &chassis  //,
+        // BallisticsSolver &ballisticsSolver
+    );
 
-    const char *getName() const override { return "client display"; }
+    const char *getName() const override { return "Client Display"; }
 
     void initialize() override;
 
@@ -55,18 +64,15 @@ public:
 private:
     tap::Drivers &drivers;
     tap::control::CommandScheduler &commandScheduler;
-    // ClientDisplaySubsystem &clientDisplay;
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
 
     // hud elements
-    BooleanHudIndicator booleanHudIndicator;
+    BooleanHUDIndicators booleanHudIndicators;
+    ChassisOrientationIndicator chassisOrientation;
     ReticleIndicator reticleIndicator;
-    ChassisOrientation chassisOrientation;
-    CVDisplay cvDisplay;
+    // CVDisplay cvDisplay;
 
     bool run();
-
-    HopperSubsystem *hopper;
 };
 
-}  // namespace src::utils::display
+}  // namespace src::Utils::ClientDisplay

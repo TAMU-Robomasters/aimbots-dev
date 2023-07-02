@@ -2,11 +2,14 @@
 
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/serial/ref_serial_data.hpp"
-#include "tap/communication/serial/ref_serial_transmitter.hpp"
 
 #include "modm/processing/resumable.hpp"
 
-namespace src::utils::display {
+namespace tap::communication::serial {
+class RefSerialTransmitter;
+}  // namespace tap::communication::serial
+
+namespace src::Utils::ClientDisplay {
 class HudIndicator : protected tap::communication::serial::RefSerialData {
 public:
     static constexpr uint16_t SCREEN_WIDTH = 1920;
@@ -36,4 +39,4 @@ protected:
     tap::arch::MilliTimeout delayTimer;
 };
 
-}  // namespace utils::display
+}  // namespace src::Utils::ClientDisplay

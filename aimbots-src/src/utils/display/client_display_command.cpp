@@ -17,23 +17,26 @@ using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Utils::Ballistics;
 
-namespace src::utils::display {
+using namespace tap::control;
+
+namespace src::Utils::ClientDisplay {
+
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
     ClientDisplaySubsystem &clientDisplay,
-    const HopperSubsystem &hopper,
+    const HopperSubsystem *hopper,
     const GimbalSubsystem &gimbal,
-    const ChassisSubsystem &chassis,
-    BallisticsSolver &ballisticsSolver)
-    : tap::control::Command(),
+    const ChassisSubsystem &chassis)
+    : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicator(commandScheduler, refSerialTransmitter, hopper, chassis),
-      reticleIndicator(drivers, refSerialTransmitter),
+      booleanHudIndicators(commandScheduler, refSerialTransmitter, hopper, chassis),
       chassisOrientation(drivers, refSerialTransmitter, gimbal),
-      cvDisplay(refSerialTransmitter, ballisticsSolver) {
+      reticleIndicator(drivers, refSerialTransmitter)  //,
+//   cvDisplay(refSerialTransmitter, ballisticsSolver)  //
+{
     addSubsystemRequirement(&clientDisplay);
 }
 
@@ -43,32 +46,32 @@ void ClientDisplayCommand::initialize() {
     HudIndicator::resetGraphicNameGenerator();
     restart();
     chassisOrientation.initialize();
-    cvDisplay.initialize();
-    booleanHudIndicator.initialize();
-    reticleIndicator.initialize();
-
     // cvDisplay.initialize();
+    booleanHudIndicators.initialize();
+    reticleIndicator.initialize();
 }
 
 void ClientDisplayCommand::execute() { run(); }
 
 bool ClientDisplayCommand::run() {
     PT_BEGIN();
+
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
 
     // PT_CALL(someIndcator.sendInitialGraphics());
-    //PT_CALL(chassisOrientation.sendInitialGraphics());
-    //PT_CALL(cvDisplay.sendInitialGraphics());
-    PT_CALL(booleanHudIndicator.sendInitialGraphics());
-    //PT_CALL(reticleIndicator.sendInitialGraphics());
+    // PT_CALL(chassisOrientation.sendInitialGraphics());
+    // PT_CALL(cvDisplay.sendInitialGraphics());
+    PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    // PT_CALL(reticleIndicator.sendInitialGraphics());
     while (true) {
         // PT_CALL(someIndcator.update());
-        //PT_CALL(chassisOrientation.update());
-        //PT_CALL(cvDisplay.update());
-        PT_CALL(booleanHudIndicator.update());
-        //PT_CALL(reticleIndicator.update());
+        // PT_CALL(chassisOrientation.update());
+        // PT_CALL(cvDisplay.update());
+        PT_CALL(booleanHudIndicators.update());
+        // PT_CALL(reticleIndicator.update());
         PT_YIELD();
     }
     PT_END();
 }
-}  // namespace src::utils::display
+
+}  // namespace src::Utils::ClientDisplay

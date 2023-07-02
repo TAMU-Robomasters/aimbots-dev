@@ -54,8 +54,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Communication;
 using namespace src::RobotStates;
-using namespace src::utils::display;
-
+using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -160,7 +159,10 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping rightSwitchMid(drivers(), {&runShooterCommand}, RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
@@ -168,7 +170,6 @@ HoldRepeatCommandMapping rightSwitchUp(
     {/*&runFeederCommand, &runIndexerCommand,*/ &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
-
 
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 HoldCommandMapping leftClickMouse(
