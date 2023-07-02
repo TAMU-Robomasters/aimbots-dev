@@ -36,6 +36,55 @@ public:
     bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
     bool canCurrBarrelShootSafely();
 
+    uint16_t getCurrBarrelHeat() {
+        auto& turretData = drivers->refSerial.getRobotData().turret;
+
+        uint16_t lastHeat = 0;
+
+        switch (currBarrelID) {
+            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+                lastHeat = turretData.heat17ID1;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+                lastHeat = turretData.heat17ID2;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_42MM: {
+                lastHeat = turretData.heat42;
+                break;
+            }
+            default:
+                return 1;
+        }
+        return lastHeat;
+    }
+
+    uint16_t getCurrBarrelLimit() {
+        auto& turretData = drivers->refSerial.getRobotData().turret;
+
+        uint16_t heatLimit = 0;
+
+        switch (currBarrelID) {
+            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+                heatLimit = turretData.heatLimit17ID1;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+                heatLimit = turretData.heatLimit17ID2;
+                break;
+            }
+            case RefSerialRxData::MechanismID::TURRET_42MM: {
+                heatLimit = turretData.heatLimit42;
+                break;
+            }
+            default:
+                return 1;
+        }
+        return heatLimit;
+    }
+
+
     BarrelID getCurrentBarrel() { return currBarrelID; }
     void setCurrentBarrel(BarrelID barrelID) { currBarrelID = barrelID; }
 

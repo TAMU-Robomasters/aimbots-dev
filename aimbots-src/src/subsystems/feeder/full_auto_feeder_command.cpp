@@ -19,13 +19,19 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
+bool isCommandRunningDisplay = false;
+
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
 
+uint16_t lastHeatDisplay = 0;
+uint16_t heatLimitDisplay = 0;
+
 void FullAutoFeederCommand::execute() {
+    isCommandRunningDisplay = true;
     if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
         unjamTimer.restart(UNJAM_TIMER_MS);
@@ -35,12 +41,15 @@ void FullAutoFeederCommand::execute() {
         feeder->setTargetRPM(speed);
         startupThreshold.restart(500);
     }
+
+    lastHeatDisplay = refHelper->getCurrBarrelHeat();
+    heatLimitDisplay = refHelper->getCurrBarrelLimit();
 }
 
-void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); isCommandRunningDisplay = false; }
 
-bool FullAutoFeederCommand::isReady() { return (refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely()); }
+bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
 
-bool FullAutoFeederCommand::isFinished() const { return (!refHelper->/*isCurrBarrelHeatUnderLimit(acceptableHeatThreshold)*/canCurrBarrelShootSafely()); }
+bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
 
 }  // namespace src::Feeder

@@ -20,12 +20,11 @@
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
-#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 //
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/sentry_commands/sentry_match_firing_control_command.hpp"
+
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -35,8 +34,6 @@
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
-#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
-#include "subsystems/gimbal/sentry_commands/sentry_match_gimbal_control_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -65,53 +62,81 @@ using namespace tap::control;
 
 namespace SentryControl {
 
-src::Utils::RefereeHelper refHelper(drivers());
-
-src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
-src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
-
+// This is technically a command flag, but it needs to be defined before the refHelper
 BarrelID currentBarrel = BARREL_IDS[0];
+
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
+
+//src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
+//src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers());
+ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers()/*, &refHelper*/);
 
 // Match Controllers ------------------------------------------------
-SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
-SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
-SentryMatchGimbalControlCommand matchGimbalControlCommand(
+//SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
+//SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
+/*SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
     &gimbalController,
     &refHelper,
     currentBarrel,
     &ballisticsSolver,
-    500.0f);
+    500.0f);*/
+
+SnapSymmetryConfig defaultSnapConfig = {
+    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
+    .snapAngle = modm::toRadian(0.0f),
+};
+
+TokyoConfig defaultTokyoConfig = {
+    .translationalSpeedMultiplier = 0.6f,
+    .translationThresholdToDecreaseRotationSpeed = 0.5f,
+    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedIncrement = 50.0f,
+};
+
+SpinRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
+
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
-ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
+ChassisTokyoCommand chassisTokyoCommand(drivers(), 
+    &chassis, 
+    &gimbal, 
+    defaultTokyoConfig,
+    0,
+    false,
+    randomizerConfig);
+//ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController);
-GimbalPatrolCommand gimbalPatrolCommand(
+/*GimbalPatrolCommand gimbalPatrolCommand(
     drivers(),
     &gimbal,
     &gimbalController,
     PITCH_PATROL_AMPLITUDE,
     PITCH_PATROL_FREQUENCY,
     PITCH_PATROL_OFFSET,
-    PITCH_OFFSET_ANGLE);  // TODO: Add constants to the sentry file and place them here
+    PITCH_OFFSET_ANGLE);*/  // TODO: Add constants to the sentry file and place them here
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -121,17 +146,17 @@ GimbalChaseCommand gimbalChaseCommand(
     &gimbal,
     &gimbalFieldRelativeController,
     &refHelper,
-    currentBarrel,
-    &ballisticsSolver);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 GimbalChaseCommand gimbalChaseCommand2(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
     &refHelper,
-    currentBarrel,
-    &ballisticsSolver);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0.80f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
@@ -201,11 +226,11 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
 
-    // drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace SentryControl

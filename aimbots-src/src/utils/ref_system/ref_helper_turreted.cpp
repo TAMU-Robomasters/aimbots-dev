@@ -120,6 +120,8 @@ bool RefereeHelperTurreted::isBarrelHeatUnderLimit(float percentageOfLimit, Barr
     return (lastHeat <= (static_cast<float>(heatLimit) * percentageOfLimit));
 }
 
+
+
 bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     auto& turretData = drivers->refSerial.getRobotData().turret;
 
