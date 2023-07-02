@@ -1,14 +1,24 @@
 #include "turret_can_communicator.hpp"
 
+#include "drivers.hpp"
+#include "tap/communication/sensors/imu/bmi088/bmi088.hpp"
+
 namespace src::Informants::TurretComms {
+
+TurretCommunicator::IMUData DBG_recievedIMUData;
 
 TurretCommunicator::TurretCommunicator(src::Drivers* drivers, CANBus bus)
     : drivers(drivers)
+    , bus(bus)
     , disconnectedTimeout(COMMS_DISCONNECTED_TIMEOUT)
+    , chassisRequestData(0)
 #ifndef TARGET_TURRET
-    , yawDataRXHandler(drivers, static_cast<uint32_t>(CanID::YawData), bus, this, handleYawDataRX)
-    , pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, handlePitchDataRX)
-    , rollDataRXHandler(drivers, static_cast<uint32_t>(CanID::RollData), bus, this, handleRollDataRX)
+    , sendToTurretTimer(SEND_TO_TURRET_PERIOD)
+    , yawDataRXHandler(drivers, static_cast<uint32_t>(CanID::YawData), bus, this, &TurretCommunicator::handleYawDataRX)
+    , pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, &TurretCommunicator::handleYawDataRX)
+    , rollDataRXHandler(drivers, static_cast<uint32_t>(CanID::RollData), bus, this, &TurretCommunicator::handleYawDataRX)
+#else
+    , chassisRequestRXHandler(drivers, static_cast<uint32_t>(CanID::ChassisToTurret), bus, this, &TurretCommunicator::handleChassisRequestRX)
 #endif
 { }
 
@@ -22,19 +32,80 @@ void TurretCommunicator::init()
 #endif
 }
 
+
 #ifdef TARGET_TURRET
 void TurretCommunicator::sendIMUData()
 {
-    // TODO: Send imu data to chassis
+    using namespace tap::communication::sensors::imu::bmi088;
+    Bmi088::ImuState imuState = drivers->bmi088.getImuState();
+
+    if ((imuState == Bmi088::ImuState::IMU_CALIBRATED
+      || imuState == Bmi088::ImuState::IMU_NOT_CALIBRATED)
+     && drivers->can.isReadyToSend(bus))
+    {
+        modm::can::Message yawMsg(static_cast<uint32_t>(CanID::YawData), 7);
+        AngleMessageData* yawData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+        yawData->target = static_cast<int16_t>(modm::toRadian(drivers->bmi088.getYaw()) * ANGLE_PRECISION_FACTOR);
+        // TODO: Check if this is right??
+        yawData->angularVelocity = static_cast<int16_t>(drivers->bmi088.getGz() / Bmi088::GYRO_DS_PER_GYRO_COUNT);
+        yawData->seq = sendSequence;
+
+        drivers->can.sendMessage(bus, yawMsg);
+
+        modm::can::Message pitchMsg(static_cast<uint32_t>(CanID::PitchData), 7);
+        AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+        pitchData->target = static_cast<int16_t>(modm::toRadian(drivers->bmi088.getPitch()) * ANGLE_PRECISION_FACTOR);
+        // TODO: Check if this is right??
+        pitchData->angularVelocity = static_cast<int16_t>(drivers->bmi088.getGy() / Bmi088::GYRO_DS_PER_GYRO_COUNT);
+        pitchData->seq = sendSequence;
+
+        drivers->can.sendMessage(bus, pitchMsg);
+
+        modm::can::Message rollMsg(static_cast<uint32_t>(CanID::RollData), 7);
+        AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+        rollData->target = static_cast<int16_t>(modm::toRadian(drivers->bmi088.getRoll()) * ANGLE_PRECISION_FACTOR);
+        // TODO: Check if this is right??
+        rollData->angularVelocity = static_cast<int16_t>(drivers->bmi088.getGx() / Bmi088::GYRO_DS_PER_GYRO_COUNT);
+        rollData->seq = sendSequence;
+
+        drivers->can.sendMessage(bus, rollMsg);
+
+        sendSequence++;
+    }
+}
+
+
+void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg)
+{
+    uint8_t data = msg.data[0];
+
+    if (data & CHASSIS_TO_TURRET_MSG_REQUEST_IMU_CALIBRATION)
+    {
+        drivers->bmi088.requestRecalibration();
+    }
 }
 #else
+void TurretCommunicator::sendTurretRequest()
+{
+    if (sendToTurretTimer.execute())
+    {
+        modm::can::Message msg(static_cast<uint32_t>(CanID::ChassisToTurret), 1);
+        msg.setExtended(false);
+        msg.data[0] = chassisRequestData;
+        drivers->can.sendMessage(bus, msg);
+
+        chassisRequestData = 0;
+        sendToTurretTimer.restart();
+    }
+}
+
+
 void TurretCommunicator::handleYawDataRX(modm::can::Message const& msg)
 {
     AngleMessageData const* data = reinterpret_cast<AngleMessageData const*>(msg.data);
 
     currentIMUData.yaw             = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.yawVelocity     = data->angularVelocity;
-    currentIMUData.yawAcceleration = static_cast<float>(data->linearAcceleration) * CMPS2_TO_MPS2;
 
     currentIMUData.seq = data->seq;
 }
@@ -52,7 +123,6 @@ void TurretCommunicator::handlePitchDataRX(modm::can::Message const& msg)
 
     currentIMUData.pitch             = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.pitchVelocity     = data->angularVelocity;
-    currentIMUData.pitchAcceleration = static_cast<float>(data->linearAcceleration) * CMPS2_TO_MPS2;
 }
 
 
@@ -68,11 +138,24 @@ void TurretCommunicator::handleRollDataRX(modm::can::Message const& msg)
 
     currentIMUData.roll             = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.rollVelocity     = data->angularVelocity;
-    currentIMUData.rollAcceleration = static_cast<float>(data->linearAcceleration) * CMPS2_TO_MPS2;
 
     lastIMUData    = currentIMUData;
+    DBG_recievedIMUData = lastIMUData;
     currentIMUData = IMUData { };
 }
 #endif
+
+
+TurretCommunicator::RXHandler::RXHandler(src::Drivers* drivers, uint32_t id, CANBus bus, TurretCommunicator* ctx, CANListenerProc proc)
+    : CanRxListener(drivers, id, bus)
+    , ctx(ctx)
+    , proc(proc)
+{ }
+
+
+void TurretCommunicator::RXHandler::processMessage(modm::can::Message const& msg)
+{
+    (ctx->*proc)(msg);
+}
 
 } // namespace src::Informants::TurretComms
