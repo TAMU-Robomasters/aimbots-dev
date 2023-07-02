@@ -243,16 +243,6 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
     7050};
 // clang-format on
 
-// clang-format off
-static constexpr float heat_tolerance_array[6] = {  // ONLY TUNE WITH FULL BATTERY
-    15,
-    0.9,  // {ball m/s, heat tolerance}
-    18,
-    0.7,
-    30,
-    0.8};
-// clang-format on
-
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 4500.0f;

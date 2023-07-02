@@ -26,8 +26,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(0.0f)),
-    wrapTo0To2PIRange(modm::toRadian(0.0f))};
+    wrapTo0To2PIRange(modm::toRadian(191.6f)),
+    wrapTo0To2PIRange(modm::toRadian(182.5f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
@@ -35,10 +35,10 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentr
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0.0f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(267.75f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -47,8 +47,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(360.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-29.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -84,7 +84,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 35.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 5000.0f,
@@ -98,7 +98,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 25.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -113,10 +113,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 3000.0f,
+    .ki = 25.0f,
     .kd = 0.0f,
-    .maxICumulative = 10.0f,
+    .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -127,8 +127,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
-    .ki = 0.0f,
+    .kp = 900.0f,
+    .ki = 30.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -151,15 +151,15 @@ static constexpr float HORIZON_OFFSET = 0.0f;
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
                                                                     {1.5f, 3'000.0f},
-                                                                    {5.25f, 6'000.0f},
-                                                                    {9.0f, 9'000.0f},
-                                                                    {13.2f, 12'000.0f},
-                                                                    {17.2f, 15'000.0f},
-                                                                    {21.0f, 18'000.0f},
-                                                                    {24.85f, 21'000.0f},
-                                                                    {28.6f, 24'000.0f},
-                                                                    {29.75f, 27'000.0f},
-                                                                    {29.9f, 30'000.0f}
+                                                                    {5.15f, 6'000.0f},
+                                                                    {8.8f, 9'000.0f},
+                                                                    {12.6f, 12'000.0f},
+                                                                    {16.45f, 15'000.0f},
+                                                                    {20.25f, 18'000.0f},
+                                                                    {24.11f, 21'000.0f},
+                                                                    {27.97f, 24'000.0f},
+                                                                    {29.18f, 27'000.0f},
+                                                                    {29.2f, 30'000.0f}
                                                                     };
 
 

@@ -83,6 +83,7 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Ballistics Solver
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers()/*, &refHelper*/);
 
+
 // Match Controllers ------------------------------------------------
 //SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
 //SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
@@ -185,7 +186,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand/*, &runShooterWithFeederCommand*/},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
@@ -226,10 +227,10 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    // drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&leftSwitchMid);
     // drivers->commandMapper.addMap(&leftSwitchUp);
 
-    drivers->commandMapper.addMap(&rightSwitchMid);
+    // drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
