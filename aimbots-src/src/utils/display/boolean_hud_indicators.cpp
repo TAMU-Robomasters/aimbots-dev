@@ -53,14 +53,16 @@ modm::ResumableResult<bool> BooleanHUDIndicators::sendInitialGraphics() {
 
     for (HUDIndicatorIndexInit = 0; HUDIndicatorIndexUpdate < NUM_BOOLEAN_HUD_INDICATORS; HUDIndicatorIndexInit++) {
         RF_CALL(booleanHUDIndicatorDrawers[HUDIndicatorIndexInit].initialize());
-        // RF_CALL(refSerialTransmitter.sendGraphic(&booleanHUDIndicatorStaticGraphics[HUDIndicatorIndexInit]));
-        // RF_CALL(refSerialTransmitter.sendGraphic(&booleanHudIndicatorStaticLabelGraphics[HUDIndicatorIndexInit]));
+        RF_CALL(refSerialTransmitter.sendGraphic(&booleanHUDIndicatorStaticGraphics[HUDIndicatorIndexInit]));
+        RF_CALL(refSerialTransmitter.sendGraphic(&booleanHUDIndicatorStaticLabelGraphics[HUDIndicatorIndexInit]));
     }
 
     RF_END();
 }
 
-// bool hopperIndicatorDisplay = false;
+
+
+bool hopperIndicatorDisplay = false;
 // bool spinIndicatorDisplay = false;
 
 modm::ResumableResult<bool> BooleanHUDIndicators::update() {
@@ -68,7 +70,9 @@ modm::ResumableResult<bool> BooleanHUDIndicators::update() {
 
     booleanHUDIndicatorDrawers[SYSTEMS_CALIBRATING].setIndicatorState(false);
     booleanHUDIndicatorDrawers[TOKYO_STATUS].setIndicatorState(false);
-    booleanHUDIndicatorDrawers[HOPPER_STATUS].setIndicatorState(false);
+    booleanHUDIndicatorDrawers[HOPPER_STATUS].setIndicatorState(hopper->getHopperState());
+
+    hopperIndicatorDisplay = hopper->getHopperState();
 
     // draw all the booleanHudIndicatorDrawers (only actually sends data if graphic changed)
     for (HUDIndicatorIndexUpdate = 0; HUDIndicatorIndexUpdate < NUM_BOOLEAN_HUD_INDICATORS; HUDIndicatorIndexUpdate++) {

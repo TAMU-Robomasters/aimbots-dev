@@ -291,10 +291,6 @@ PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapSt
     drivers(),
     {&guiDisplayCommand},
     RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
-// HoldCommandMapping rightClickMouse(
-//     drivers(),
-//     {&},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -336,7 +332,7 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
