@@ -24,7 +24,7 @@
 #include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
-
+#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -158,6 +158,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
+DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
@@ -186,7 +187,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand/*, &runShooterWithFeederCommand*/},
+    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

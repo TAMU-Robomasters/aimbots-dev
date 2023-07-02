@@ -1,19 +1,19 @@
-#include "dual_barrel_feeder_command.hpp"
+#include "barrel_swapping_feeder_command.hpp"
 
 namespace src::Feeder {
 
-DualBarrelFeederCommand::DualBarrelFeederCommand(
+BarrelSwappingFeederCommand::BarrelSwappingFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
-    std::array<BarrelID, 2> BARREL_IDS,
+    bool& barrelMovingFlag,
     float speed,
     float unjamSpeed,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
-      BARREL_IDS(BARREL_IDS),
+      barrelMovingFlag(barrelMovingFlag),
       speed(speed),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       unjamSpeed(-unjamSpeed)  //
@@ -21,13 +21,14 @@ DualBarrelFeederCommand::DualBarrelFeederCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void DualBarrelFeederCommand::initialize() {
+void BarrelSwappingFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
 
-void DualBarrelFeederCommand::execute() {
+void BarrelSwappingFeederCommand::execute() {
+    if (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag){
         if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
             feeder->setTargetRPM(unjamSpeed);
             unjamTimer.restart(UNJAM_TIMER_MS);
@@ -37,16 +38,22 @@ void DualBarrelFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
+    }
+    else {
+        feeder->setTargetRPM(0.0f);
+        unjamTimer.restart(0);
+    }
 }
 
-void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void BarrelSwappingFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool DualBarrelFeederCommand::isReady() {
-    return (refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
+bool BarrelSwappingFeederCommand::isReady() {
+    return (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag);
 }
 
-bool DualBarrelFeederCommand::isFinished() const {
-    return !(refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
+bool BarrelSwappingFeederCommand::isFinished() const {
+    // return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    return false;
 }
 
 

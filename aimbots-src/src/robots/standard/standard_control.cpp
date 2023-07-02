@@ -24,7 +24,7 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
-#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
+#include "subsystems/feeder/barrel_swapping_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
@@ -231,7 +231,7 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-DualBarrelFeederCommand runDoubleBarrelFeederCommand(
+BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
     drivers(),
     &feeder,
     &refHelper,
@@ -239,7 +239,7 @@ DualBarrelFeederCommand runDoubleBarrelFeederCommand(
     FEEDER_DEFAULT_RPM,
     3000.0f,
     UNJAM_TIMER_MS);
-DualBarrelFeederCommand runDoubleBarrelFeederCommandFromMouse(
+BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
     drivers(),
     &feeder,
     &refHelper,

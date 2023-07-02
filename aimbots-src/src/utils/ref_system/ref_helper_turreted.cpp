@@ -156,4 +156,38 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
         lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit);  //-1 is to align array index with enum values
 }
 
+bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
+    auto& turretData = drivers->refSerial.getRobotData().turret;
+
+    uint16_t lastHeat = 0;
+    uint16_t heatLimit = 0;
+    auto projectileType = RefSerialRxData::BulletType::AMMO_17;
+
+    switch (barrelID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            lastHeat = turretData.heat17ID1;
+            heatLimit = turretData.heatLimit17ID1;
+            projectileType = RefSerialRxData::AMMO_17;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            lastHeat = turretData.heat17ID2;
+            heatLimit = turretData.heatLimit17ID2;
+            projectileType = RefSerialRxData::AMMO_17;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            lastHeat = turretData.heat42;
+            heatLimit = turretData.heatLimit42;
+            projectileType = RefSerialRxData::AMMO_42;
+            break;
+        }
+        default:
+            return true;
+    }
+
+    return (
+        lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit);  //-1 is to align array index with enum values
+}
+
 }  // namespace src::Utils

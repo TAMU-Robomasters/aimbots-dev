@@ -12,13 +12,13 @@
 
 namespace src::Feeder {
 
-class DualBarrelFeederCommand : public TapCommand {
+class BarrelSwappingFeederCommand : public TapCommand {
 public:
-    DualBarrelFeederCommand(
+    BarrelSwappingFeederCommand(
         src::Drivers*,
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
-        std::array<BarrelID, 2> BARREL_IDS,
+        bool& barrelMovingFlag,
         float speed,
         float unjamSpeed,
         int UMJAM_TIMER_MS);
@@ -39,8 +39,7 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
 
-    std::array<BarrelID, 2> BARREL_IDS;
-
+    bool& barrelMovingFlag;
     float speed;
 
     int UNJAM_TIMER_MS;
