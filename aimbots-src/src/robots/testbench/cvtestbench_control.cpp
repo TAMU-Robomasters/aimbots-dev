@@ -72,13 +72,15 @@ using namespace tap::communication::serial;
 
 namespace CVTestbenchControl {
 
-src::Utils::RefereeHelper refHelper(drivers());
+BarrelID currentBarrel = BarrelID::TURRET_17MM_1;
+
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers());
+ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(
     drivers(),
     HOPPER_PIN,
@@ -94,12 +96,33 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), &refHelper);
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
+
+// Configs -----------------------------------------------------------------
+SnapSymmetryConfig defaultSnapConfig = {
+    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
+    .snapAngle = modm::toRadian(0.0f),
+};
+
+TokyoConfig defaultTokyoConfig = {
+    .translationalSpeedMultiplier = 0.6f,
+    .translationThresholdToDecreaseRotationSpeed = 0.5f,
+    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedIncrement = 50.0f,
+};
+
+SpinRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 // ChassisShakiraCommand chassisShakiraCommand(
 //     drivers(),
 //     &chassis,
@@ -114,9 +137,20 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
-GimbalChaseCommand gimbalChaseCommand2(drivers(), &gimbal, &gimbalFieldRelativeController, &ballisticsSolver);
-
+GimbalChaseCommand gimbalChaseCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalChaseCommand gimbalChaseCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -180,7 +214,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
 
-    drivers->kinematicInformant.registerSubsystems(&gimbal);
+    drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------

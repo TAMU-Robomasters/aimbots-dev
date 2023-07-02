@@ -1,6 +1,6 @@
-#include "utils/robot_specific_inc.hpp"
-
 #include "gimbal_patrol_command.hpp"
+
+#include "utils/robot_specific_inc.hpp"
 
 namespace src::Gimbal {
 
@@ -8,18 +8,18 @@ GimbalPatrolCommand::GimbalPatrolCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalChassisRelativeController* gimbalController,
-    float PITCH_PATROL_AMPLITUDE,
-    float PITCH_PATROL_FREQUENCY,
-    float PITCH_PATROL_OFFSET,
-    float PITCH_OFFSET_ANGLE)
+    float pitchPatrolAmplitude,
+    float pitchPatrolFrequency,
+    float pitchPatrolOffset,
+    float pitchOffsetAngle)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
-      PITCH_PATROL_AMPLITUDE(PITCH_PATROL_AMPLITUDE),
-      PITCH_PATROL_FREQUENCY(PITCH_PATROL_FREQUENCY),
-      PITCH_PATROL_OFFSET(PITCH_PATROL_OFFSET),
-      PITCH_OFFSET_ANGLE(PITCH_OFFSET_ANGLE),
+      pitchPatrolAmplitude(pitchPatrolAmplitude),
+      pitchPatrolFrequency(pitchPatrolFrequency),
+      pitchPatrolOffset(pitchPatrolOffset),
+      pitchOffsetAngle(pitchOffsetAngle),
       patrolCoordinates(Matrix<float, 3, 3>::zeroMatrix()),
       patrolCoordinateIndex(0),
       patrolCoordinateIncrement(1) /* incrememnt set to -1 because index starts at 0 */
@@ -32,6 +32,7 @@ float currPatrolCoordinateYDisplay = 0.0f;
 float currPatrolCoordinateTimeDisplay = 0.0f;
 
 void GimbalPatrolCommand::initialize() {
+    commandStartTime = tap::arch::clock::getTimeMilliseconds();
     // clang-format off
     static constexpr float xy_field_relative_patrol_location_array[9] = {
         5.0f, -3.0f, 500.0f, // field coordinate x, y, time spent at this angle
@@ -59,7 +60,7 @@ void GimbalPatrolCommand::execute() {
     controller->setTargetPitch(AngleUnit::Degrees, targetPitchAxisAngle);
 
     controller->runYawController();
-    controller->runPitchController(0.0f); //That parameter is unused and should be unecessary, but complier is strange
+    controller->runPitchController(0.0f);  // That parameter is unused and should be unecessary, but complier is strange
 }
 
 bool GimbalPatrolCommand::isReady() { return true; }
@@ -109,15 +110,15 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     currPatrolCoordinateYDisplay = patrolCoordinates[patrolCoordinateIndex][Y];
     currPatrolCoordinateTimeDisplay = patrolCoordinates[patrolCoordinateIndex][TIME];
 
-    //Matrix<float, 1, 3> demoPosition1 = Matrix<float, 1, 3>::zeroMatrix();
-    //demoPosition1[0][0] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][X];
-    //demoPosition1[0][1] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][Y];
+    // Matrix<float, 1, 3> demoPosition1 = Matrix<float, 1, 3>::zeroMatrix();
+    // demoPosition1[0][0] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][X];
+    // demoPosition1[0][1] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][Y];
 
-    //Matrix<float, 1, 3> demoPosition2 = Matrix<float, 1, 3>::zeroMatrix();
-    //demoPosition2[0][0] = -3.6675f + 1.0f;
-    //demoPosition2[0][1] = -1.6675f + 1.0f;
+    // Matrix<float, 1, 3> demoPosition2 = Matrix<float, 1, 3>::zeroMatrix();
+    // demoPosition2[0][0] = -3.6675f + 1.0f;
+    // demoPosition2[0][1] = -1.6675f + 1.0f;
 
-    //This function doesn't exist anymore, presumably a transformation helper function now
+    // This function doesn't exist anymore, presumably a transformation helper function now
     float xy_angle = 0;
     /*float xy_angle = src::Utils::MatrixHelper::xy_angle_between_locations(
         AngleUnit::Radians,
@@ -126,11 +127,11 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     xy_angleDisplay = modm::toDegree(xy_angle);*/
 
     // if robot is sentry, need to rotate by 45 degrees because sentry rail is at 45 degree angle relative to field
-    //xy_angle -= modm::toRadian(45.0f);
+    // xy_angle -= modm::toRadian(45.0f);
 
     // offset by the preset "front" angle of the robot
     // New gimbal handles the offset internally, should not be here I think
-    float robotRelativeAngle = /*YAW_OFFSET_ANGLE*/ + xy_angle;
+    float robotRelativeAngle = /*YAW_OFFSET_ANGLE*/ +xy_angle;
 
     if (unit == AngleUnit::Degrees) {
         robotRelativeAngle = modm::toDegree(robotRelativeAngle);
@@ -139,5 +140,3 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 }
 
 };  // namespace src::Gimbal
-
-

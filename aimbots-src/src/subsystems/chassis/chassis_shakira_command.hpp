@@ -3,7 +3,9 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
+#include "chassis_helper.hpp"
 #include "drivers.hpp"
+
 
 using namespace src::Utils::Ballistics;
 

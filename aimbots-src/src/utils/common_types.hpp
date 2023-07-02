@@ -11,6 +11,7 @@
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/communication/gpio/digital.hpp"  //maybe not
+#include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 #include "tap/motor/servo.hpp"
@@ -21,7 +22,6 @@
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
-#include "tap/communication/serial/ref_serial_data.hpp"
 
 inline float pow2(float x) { return x * x; }
 

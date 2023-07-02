@@ -224,6 +224,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 1;
+
 // clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {
     15, 3900,  // {ball m/s, flywheel rpm}
@@ -380,6 +383,8 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     0.01683f, //z = 0.01683
 };
 // clang-format on
+
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 

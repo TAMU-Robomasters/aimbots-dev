@@ -1,13 +1,12 @@
 #pragma once
 
+#include "sentry_legacy_commands/chassis_rail_bounce_command.hpp"
+#include "sentry_legacy_commands/chassis_rail_evade_command.hpp"
 #include "subsystems/chassis/chassis.hpp"
-
-#include "chassis_rail_bounce_command.hpp"
-#include "chassis_rail_evade_command.hpp"
-
 #include "utils/common_types.hpp"
 
 #include "drivers.hpp"
+
 
 namespace src::Chassis {
 

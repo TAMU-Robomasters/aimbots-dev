@@ -3,7 +3,6 @@
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
 #include "utils/common_types.hpp"
-#include "utils/ref_system/ref_helper_turreted.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
@@ -22,10 +21,11 @@
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/burst_feeder_command.hpp"
+#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
@@ -67,8 +67,8 @@ BarrelID currentBarrel = BARREL_IDS[0];
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
 
-//src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
-//src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
+// src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
+// src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
@@ -81,12 +81,11 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers()/*, &refHelper*/);
-
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
 
 // Match Controllers ------------------------------------------------
-//SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
-//SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
+// SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
+// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
 /*SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
@@ -116,20 +115,12 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), 
-    &chassis, 
-    &gimbal, 
-    defaultTokyoConfig,
-    0,
-    false,
-    randomizerConfig);
-//ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
+// ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalController);
 /*GimbalPatrolCommand gimbalPatrolCommand(
     drivers(),
     &gimbal,
@@ -158,7 +149,16 @@ GimbalChaseCommand gimbalChaseCommand2(
     SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
-DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
+
+DualBarrelFeederCommand dualBarrelsFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    BARREL_IDS,
+    FEEDER_DEFAULT_RPM,
+    UNJAM_TIMER_MS,
+    -1500);
+
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);

@@ -29,7 +29,7 @@ void KinematicInformant::updateChassisIMUAngles() {
         drivers->bmi088.getRoll(),
         drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
 
-    Vector3f getIMUAngularVelocity = {drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
+    Vector3f getIMUAngularVelocity = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
 
     // Gets chassis angles
     Vector3f chassisAngles =

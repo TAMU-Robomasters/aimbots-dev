@@ -199,9 +199,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 25.0f, //40
+    .kp = 25.0f,  // 40
     .ki = 0.0f,
-    .kd = 0.0f, //0.01
+    .kd = 0.0f,  // 0.01
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -316,7 +316,7 @@ static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .kp = 1.25f,
     .ki = 0.0f,
-    .kd = 0.25f, //0.03
+    .kd = 0.25f,  // 0.03
     .maxICumulative = 0.9f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -383,7 +383,7 @@ static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, Barr
 
 // PITCH PATROL FUNCTION CONSTANTS
 // TODO: Gimbal Control Command needs to be modified to work in radians, and then convert these constants.
-static constexpr float PITCH_PATROL_AMPLITUDE = 12.5f;  // degrees
+static constexpr float PITCH_PATROL_AMPLITUDE = modm::toRadian(12.5f);
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
