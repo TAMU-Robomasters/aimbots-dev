@@ -45,7 +45,7 @@ public:
             case CAMERA_AT_CV_UPDATE_FRAME:
                 return cameraAtCVUpdateFrame;
                 break;
-            case GIMBAL_IMU_FRAME;
+            case GIMBAL_IMU_FRAME:
                 return gimbalIMUFrame;
                 break;
         }
@@ -62,60 +62,60 @@ public:
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 
 private:
-                CoordinateFrame fieldFrame;
-                CoordinateFrame chassisFrame;  // "Ground Frame
-                CoordinateFrame gimbalFrame;
-                CoordinateFrame cameraFrame;
-                CoordinateFrame ballisticsFrame;
-                // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
-                CoordinateFrame chassisIMUFrame;
-                CoordinateFrame cameraAtCVUpdateFrame;
-                CoordinateFrame gimbalIMUFRame;
+    CoordinateFrame fieldFrame;
+    CoordinateFrame chassisFrame;  // "Ground Frame
+    CoordinateFrame gimbalFrame;
+    CoordinateFrame cameraFrame;
+    CoordinateFrame ballisticsFrame;
+    // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
+    CoordinateFrame chassisIMUFrame;
+    CoordinateFrame cameraAtCVUpdateFrame;
+    CoordinateFrame gimbalIMUFrame;
 
-                Vector3f chassis_origin_relative_to_world_origin;
-                Matrix3f chassis_orientation_relative_to_world_orientation;
+    Vector3f chassis_origin_relative_to_world_origin;
+    Matrix3f chassis_orientation_relative_to_world_orientation;
 
-                Vector3f camera_origin_relative_to_chassis_origin;
-                Matrix3f gimbal_orientation_relative_to_chassis_orientation;
+    Vector3f camera_origin_relative_to_chassis_origin;
+    Matrix3f gimbal_orientation_relative_to_chassis_orientation;
 
-                Matrix3f gimbalIMUOrientation;  // Should probbaly remember this
-        };
-    }  // namespace src::Informants::Transformers
+    Matrix3f gimbalIMUOrientation;  // Should probbaly remember this
+};
+}  // namespace src::Informants::Transformers
 
-    // Set Orientation matrix w.r.t field I.E where is robot facing (0 = robot is facing same direction as field coordinates)
-    // ____________
-    // |R  |Y     |
-    // |__  ^     |
-    // |    |     |
-    // |    +->X  |
-    // |        __|
-    // |          |
-    // |______|__B|
-    //
-    //
+// Set Orientation matrix w.r.t field I.E where is robot facing (0 = robot is facing same direction as field coordinates)
+// ____________
+// |R  |Y     |
+// |__  ^     |
+// |    |     |
+// |    +->X  |
+// |        __|
+// |          |
+// |______|__B|
+//
+//
 
-    // Calculate the orientation relative to chassis
-    //      FRONT                          ^ Gz
-    // _______________                  ___|__
-    // |      ^ y    |           ______/   |  \.
-    // |      |      |    Gy <- |O|___|----+   |
-    // |      +-> x  |                 \______/'
-    // |     /       |           ________|  |_______
-    // |    z        |          /TAMU #1 > UW >> CU \.
-    // |_____________|         /_____________________\.
-    //       BACK                \__/           \__/
-    //
-    // Note that for the chassis orientation, the theta is measured turning away from the x as positive
-    // Note to double check pitch angle correctly by turning up should be positive (towards z)
-    //      FRONT                _> +      ^ Gz
-    // _______________          /       ___|__
-    // |    _ ^ y    |         | ______/   |  \.
-    // |  /   |      |    Gy <- |O|___|----+   |
-    // | \/   +-> x  |                 \______/'
-    // |  +          |           ________|  |_______
-    // |             |          /   SOUNDS LIKE A   \.
-    // |_____________|         /_____SKILL_ISSUE_____\.
-    //       BACK                \__/           \__/
-    //
-    //
-    // Chassis frame is automatically initialized to the ground frame
+// Calculate the orientation relative to chassis
+//      FRONT                          ^ Gz
+// _______________                  ___|__
+// |      ^ y    |           ______/   |  \.
+// |      |      |    Gy <- |O|___|----+   |
+// |      +-> x  |                 \______/'
+// |     /       |           ________|  |_______
+// |    z        |          /TAMU #1 > UW >> CU \.
+// |_____________|         /_____________________\.
+//       BACK                \__/           \__/
+//
+// Note that for the chassis orientation, the theta is measured turning away from the x as positive
+// Note to double check pitch angle correctly by turning up should be positive (towards z)
+//      FRONT                _> +      ^ Gz
+// _______________          /       ___|__
+// |    _ ^ y    |         | ______/   |  \.
+// |  /   |      |    Gy <- |O|___|----+   |
+// | \/   +-> x  |                 \______/'
+// |  +          |           ________|  |_______
+// |             |          /   SOUNDS LIKE A   \.
+// |_____________|         /_____SKILL_ISSUE_____\.
+//       BACK                \__/           \__/
+//
+//
+// Chassis frame is automatically initialized to the ground frame

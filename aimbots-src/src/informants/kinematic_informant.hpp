@@ -20,6 +20,8 @@ namespace src::Chassis {
 class ChassisSubsystem;
 }
 
+using namespace src::Utils;
+
 namespace src::Informants {
 
 enum AngularAxis { PITCH_AXIS = 0, ROLL_AXIS = 1, YAW_AXIS = 2 };
@@ -47,13 +49,16 @@ public:
     float getIMUAngle(AngularAxis axis);
     Vector3f getIMUAngles();
 
-    float getIMUAngularVelocity(AngularAxis axis);
     Vector3f getIMUAngularVelocities();
+    float getIMUAngularVelocity(AngularAxis axis);
 
+    Vector3f getIMULinearAccelerations();
     float getIMULinearAcceleration(LinearAxis axis);
-    Vector3f getIMUAngularAccelerations();
 
-    Vector3f removeFalseAcceleration(Vector3f imuLKSV, Vector3f imuAKSV, Vector3f r);
+    Vector3f removeFalseAcceleration(
+        Vector<KinematicStateVector, 3> imuLKSV,
+        Vector<KinematicStateVector, 3> imuAKSV,
+        Vector3f r);
 
     void updateIMUKinematicStateVector();
 
@@ -65,6 +70,7 @@ public:
     // Returns angular velocity in rad/s or deg/s
     float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
+    Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
     void updateChassisAcceleration();
@@ -92,53 +98,50 @@ private:
 
     src::Informants::Transformers::RobotFrames robotFrames;
 
-    src::Utils::KinematicStateVector imuLinearXState;
-    src::Utils::KinematicStateVector imuLinearYState;
-    src::Utils::KinematicStateVector imuLinearZState;
+    KinematicStateVector imuLinearXState;
+    KinematicStateVector imuLinearYState;
+    KinematicStateVector imuLinearZState;
 
-    src::Utils::KinematicStateVector imuAngularXState;
-    src::Utils::KinematicStateVector imuAngularYState;
-    src::Utils::KinematicStateVector imuAngularZState;
+    KinematicStateVector imuAngularXState;
+    KinematicStateVector imuAngularYState;
+    KinematicStateVector imuAngularZState;
 
 #ifndef TARGET_TURRET
-    src::Utils::KinematicStateVector chassisLinearXState;
-    src::Utils::KinematicStateVector chassisLinearYState;
-    src::Utils::KinematicStateVector chassisLinearZState;
+    KinematicStateVector chassisLinearXState;
+    KinematicStateVector chassisLinearYState;
+    KinematicStateVector chassisLinearZState;
 
-    src::Utils::KinematicStateVector chassisAngularXState;
-    src::Utils::KinematicStateVector chassisAngularYState;
-    src::Utils::KinematicStateVector chassisAngularZState;
+    KinematicStateVector chassisAngularXState;
+    KinematicStateVector chassisAngularYState;
+    KinematicStateVector chassisAngularZState;
 
-    src::Utils::KinematicStateVector turretIMULinearXState;
-    src::Utils::KinematicStateVector turretIMULinearYState;
-    src::Utils::KinematicStateVector turretIMULinearZState;
+    KinematicStateVector turretIMULinearXState;
+    KinematicStateVector turretIMULinearYState;
+    KinematicStateVector turretIMULinearZState;
 
-    src::Utils::KinematicStateVector turretIMUAngularXState;
-    src::Utils::KinematicStateVector turretIMUAngularYState;
-    src::Utils::KinematicStateVector turretIMUAngularZState;
+    KinematicStateVector turretIMUAngularXState;
+    KinematicStateVector turretIMUAngularYState;
+    KinematicStateVector turretIMUAngularZState;
 #endif
 
-    modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {
-        imuAngularXState,
-        imuAngularYState,
-        imuAngularZState};
+    modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
+    modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
 
 #ifndef TARGET_TURRET
-    modm::Vector<src::Utils::KinematicStateVector, 3> chassisLinearState = {
+    modm::Vector<KinematicStateVector, 3> chassisLinearState = {
         chassisLinearXState,
         chassisLinearYState,
         chassisLinearZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> chassisAngularState = {
+    modm::Vector<KinematicStateVector, 3> chassisAngularState = {
         chassisAngularXState,
         chassisAngularYState,
         chassisAngularZState};
 
-    modm::Vector<src::Utils::KinematicStateVector, 3> turretIMULinearState = {
+    modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
         turretIMULinearXState,
         turretIMULinearYState,
         turretIMULinearZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> turretIMUAngularState = {
+    modm::Vector<KinematicStateVector, 3> turretIMUAngularState = {
         turretIMUAngularXState,
         turretIMUAngularYState,
         turretIMUAngularZState};

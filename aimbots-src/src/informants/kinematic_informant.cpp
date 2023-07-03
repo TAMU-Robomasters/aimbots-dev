@@ -33,7 +33,6 @@ Vector3f KinematicInformant::getIMUAngles() {  // Gets IMU angles in IMU Frame
     return imuAngles * (M_PI / 180.0f);      // Convert to rad
 }
 float KinematicInformant::getIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
-
     switch (axis) {
         case PITCH_AXIS:
             return -drivers->bmi088.getPitch() * (M_PI / 180.0f);
@@ -43,6 +42,7 @@ float KinematicInformant::getIMUAngle(AngularAxis axis) {  // Gets IMU angles in
             return (drivers->bmi088.getYaw() - 180.0f) * (M_PI / 180.0f);
             // for some reason yaw is 180.0 degrees rotated
     }
+    return 0;
 }
 
 Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
@@ -51,7 +51,6 @@ Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Ve
 }
 
 float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
-
     switch (axis) {
         case PITCH_AXIS:
             return -drivers->bmi088.getGy() * (M_PI / 180.0f);
@@ -60,11 +59,12 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU
         case YAW_AXIS:
             return drivers->bmi088.getGz() * (M_PI / 180.0f);
     }
+    return 0;
 }
 
 // Update IMU Kinematic State Vectors
 // All relative to IMU Frame
-void updateIMUKinematicStateVector() {
+void KinematicInformant::updateIMUKinematicStateVector() {
     imuLinearState[X_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAy());
@@ -105,11 +105,12 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
         case Z_AXIS:
             return drivers->bmi088.getAz();
     }
+    return 0;
 }
 
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getIMUAngles();
-    Vector3f IMUAngularVelocities = getIMUAngularVelocities;
+    Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
     // Gets chassis angles
     Vector3f chassisAngles =
@@ -138,7 +139,7 @@ void KinematicInformant::updateChassisIMUAngles() {
 float KinematicInformant::getChassisIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = chassisAngularState[axis].getPosition();
 
-    return unit == AngleUnit::Radians ? angle : toDegree(angle);
+    return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
 }
 
 float KinematicInformant::getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
@@ -166,7 +167,10 @@ float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit 
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
-Vector3f KinematicInformant::removeFalseAcceleration(Vector3f imuLinearKSV, Vector3f imuAngularKSV, Vector3f r) {
+Vector3f KinematicInformant::removeFalseAcceleration(
+    Vector<KinematicStateVector, 3> imuLinearKSV,
+    Vector<KinematicStateVector, 3> imuAngularKSV,
+    Vector3f r) {
     Vector3f w = {
         imuAngularKSV[X_AXIS].getVelocity(),
         imuAngularKSV[Y_AXIS].getVelocity(),
