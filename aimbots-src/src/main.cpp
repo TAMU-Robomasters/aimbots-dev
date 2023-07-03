@@ -60,7 +60,7 @@ static void initializeIo(src::Drivers *drivers);
 static void updateIo(src::Drivers *drivers);
 
 // bmi088 is at 1000Hz.. coincidence? I think not!!11!
-static constexpr float SAMPLE_FREQUENCY = 500.0f;
+static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
 
@@ -93,12 +93,12 @@ int main() {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
-        // every 2ms...
         if (mainLoopTimeout.execute()) {
-            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
-            // }
-            // if (sendMotorTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
+        }
+        // every 2ms...
+        if (sendMotorTimeout.execute()) {
+            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
 
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
@@ -141,6 +141,7 @@ static void initializeIo(src::Drivers *drivers) {
 
 float yawDisplay, pitchDisplay, rollDisplay;
 float gXDisplay, gYDisplay, gZDisplay;
+float aXDisplay, aYDisplay, aZDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
