@@ -28,7 +28,7 @@ void BarrelSwappingFeederCommand::initialize() {
 }
 
 void BarrelSwappingFeederCommand::execute() {
-    if (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag){
+    if (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag) {
         if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
             feeder->setTargetRPM(unjamSpeed);
             unjamTimer.restart(UNJAM_TIMER_MS);
@@ -38,8 +38,7 @@ void BarrelSwappingFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
-    }
-    else {
+    } else {
         feeder->setTargetRPM(0.0f);
         unjamTimer.restart(0);
     }
@@ -47,14 +46,11 @@ void BarrelSwappingFeederCommand::execute() {
 
 void BarrelSwappingFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool BarrelSwappingFeederCommand::isReady() {
-    return (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag);
-}
+bool BarrelSwappingFeederCommand::isReady() { return (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag); }
 
 bool BarrelSwappingFeederCommand::isFinished() const {
     // return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
     return false;
 }
-
 
 }  // namespace src::Feeder
