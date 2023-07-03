@@ -20,9 +20,16 @@ RobotFrames::RobotFrames() {
                                      rotationMatrix(CIMU_Z_EULER, Z_AXIS, AngleUnit::Degrees);
     chassisIMUFrame.setOrientation(chassisIMUOrientation);
 
+    // gimbal imu frame relative to gimbal (i.e. how fucked up is the imu mounted. In an ideal world this is all 0, 0, 0 but
+    // hardware kids arent that good.
+    Matrix3f gimbalIMUOrientation = rotationMatrix(CIMU_X_EULER, X_AXIS, AngleUnit::Degrees) *
+                                    rotationMatrix(CIMU_Y_EULER, Y_AXIS, AngleUnit::Degrees) *
+                                    rotationMatrix(CIMU_Z_EULER, Z_AXIS, AngleUnit::Degrees);
+
     // update frames to initial values
     updateFrames(YAW_AXIS_START_ANGLE, PITCH_AXIS_START_ANGLE, CHASSIS_START_ANGLE_WORLD, {0, 0, 0}, AngleUnit::Radians);
 
+    gimbalIMUFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation * gimbalIMUOrientation);
     cameraAtCVUpdateFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
     cameraAtCVUpdateFrame.setOrigin(camera_origin_relative_to_chassis_origin);
 }
@@ -44,6 +51,7 @@ void RobotFrames::updateFrames(
                                                        CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;  // also gimbal to chassis
 
     gimbalFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
+    gimbalIMUFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation * gimbalIMUOrientation);
 
     // disabling this for performance, we're using the cameraAtCVUpdateFrame for all ballistics math
     // cameraFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
