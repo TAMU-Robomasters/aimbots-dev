@@ -34,13 +34,11 @@
 
 #include "bmi088_data.hpp"
 
-namespace tap
-{
+namespace tap {
 class Drivers;
 }
 
-namespace tap::communication::sensors::imu::bmi088
-{
+namespace tap::communication::sensors::imu::bmi088 {
 /**
  * For register tables and descriptions, refer to the bmi088 datasheet:
  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf
@@ -56,8 +54,7 @@ namespace tap::communication::sensors::imu::bmi088
  *    expect
  *  - roll and pitch to be defined as.
  */
-class Bmi088 final_mockable : public Bmi088Data, public ImuInterface
-{
+class Bmi088 final_mockable : public Bmi088Data, public ImuInterface {
 public:
     static constexpr Acc::AccRange_t ACC_RANGE = Acc::AccRange::G3;
     static constexpr Gyro::GyroRange_t GYRO_RANGE = Gyro::GyroRange::DPS2000;
@@ -146,10 +143,8 @@ private:
     /// Offset parsed temperature reading by this amount if > RAW_TEMPERATURE_TO_APPLY_OFFSET.
     static constexpr int16_t RAW_TEMPERATURE_OFFSET = -2048;
 
-    struct ImuData
-    {
-        enum Axis
-        {
+    struct ImuData {
+        enum Axis {
             X = 0,
             Y = 1,
             Z = 2,
@@ -180,7 +175,7 @@ private:
     void initializeAcc();
     void initializeGyro();
 
-    void computeOffsets();
+    void computeOffsets(float EULER_X = 0, float EULER_Y = 0, float EULER_Z = 0);
 
     void setAndCheckAccRegister(Acc::Register reg, Acc::Registers_t value);
 
@@ -193,15 +188,12 @@ private:
      * stored in an 11-bit value in 2's complement format. The resolution is 0.125 deg C / LSB. The
      * temperature returned is as a float in degrees C.
      */
-    static inline float parseTemp(uint8_t tempMsb, uint8_t tempLsb)
-    {
-        uint16_t temp =
-            (static_cast<uint16_t>(tempMsb) * 8) + (static_cast<uint16_t>(tempLsb) / 32);
+    static inline float parseTemp(uint8_t tempMsb, uint8_t tempLsb) {
+        uint16_t temp = (static_cast<uint16_t>(tempMsb) * 8) + (static_cast<uint16_t>(tempLsb) / 32);
 
         int16_t shiftedTemp = static_cast<int16_t>(temp);
 
-        if (temp > RAW_TEMPERATURE_TO_APPLY_OFFSET)
-        {
+        if (temp > RAW_TEMPERATURE_TO_APPLY_OFFSET) {
             shiftedTemp += RAW_TEMPERATURE_OFFSET;
         }
 
