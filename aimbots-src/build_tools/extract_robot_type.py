@@ -25,7 +25,8 @@ VALID_ROBOT_TYPES   = [ "TARGET_STANDARD",
                         "TARGET_SWERVE_ENGINEER",
                         "TARGET_SENTRY",
                         "TARGET_HERO",
-                        "TARGET_CVTESTBENCH" ]
+                        "TARGET_CVTESTBENCH",
+                        "TARGET_TURRET" ]
 
 def get_robot_type():
     robot_type = ARGUMENTS.get("robot")

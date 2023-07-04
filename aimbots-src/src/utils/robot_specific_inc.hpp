@@ -32,4 +32,8 @@
 #include "robots/testbench/cvtestbench_constants.hpp"
 #include "robots/testbench/cvtestbench_control_interface.hpp"
 
+#elif defined(TARGET_TURRET)
+#include "robots/turret/turret_constants.hpp"
+#include "robots/turret/turret_control_interface.hpp"
+
 #endif

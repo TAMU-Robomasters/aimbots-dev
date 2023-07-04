@@ -137,6 +137,7 @@ static void initializeIo(src::Drivers *drivers) {
 #endif
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
+    drivers->turretCommunicator.init();
 }
 
 float yawDisplay, pitchDisplay, rollDisplay;
@@ -154,6 +155,12 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
 
     drivers->cvCommunicator.updateSerial();
+
+#ifdef TARGET_TURRET
+    drivers->turretCommunicator.sendIMUData();
+#else
+    drivers->turretCommunicator.sendTurretRequest();
+#endif
 
     // utils::Music::continuePlayingXPStartupTune(drivers);
 
