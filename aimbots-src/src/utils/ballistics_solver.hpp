@@ -56,7 +56,7 @@ struct MeasuredKinematicState {
 
 class BallisticsSolver {
 public:
-    BallisticsSolver(src::Drivers *);
+    BallisticsSolver(src::Drivers *, Vector3f);
     ~BallisticsSolver() = default;
 
     struct AngularFilterConfig {
@@ -140,6 +140,8 @@ private:
     const float defaultProjectileSpeed = 30.0f;  // m/s
 
     uint32_t lastPlatePredictionTime = 0;
+
+    Vector3f barrelOriginFromGimbalOrigin;
 
     std::optional<BallisticsSolution> lastBallisticsSolution = {};
 };

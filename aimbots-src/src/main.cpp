@@ -104,9 +104,10 @@ int main() {
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
             // comms
-
+#ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             utils::Music::playPacMan(drivers);
+#endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
         modm::delay_us(10);
@@ -116,28 +117,33 @@ int main() {
 
 static void initializeIo(src::Drivers *drivers) {
     modm::platform::RandomNumberGenerator::enable();
+
     drivers->analog.init();
     drivers->pwm.init();
     drivers->digital.init();
     drivers->leds.init();
     drivers->can.initialize();
     drivers->errorController.init();
-    drivers->remote.initialize();
-
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
-
-    drivers->kinematicInformant.recalibrateIMU();
-
+#ifndef TARGET_TURRET  // Chassis-exclusive initializations
+    drivers->remote.initialize();
     drivers->refSerial.initialize();
+    // drivers->magnetometer.init();
+    drivers->cvCommunicator.initialize();
+    drivers->kinematicInformant.recalibrateIMU(CHASSIS_IMU_CALIBRATION_EULER);
+#else
+    drivers->kinematicInformant.recalibrateIMU(TURRET_IMU_CALIBRATION_EULER);
+#endif
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
 #ifdef ULTRASONIC
     drivers->railDistanceSensor.initialize();
 #endif
-    // drivers->magnetometer.init();
-    drivers->cvCommunicator.initialize();
+
+#ifdef TURRET_HAS_IMU
     drivers->turretCommunicator.init();
+#endif
 }
 
 float yawDisplay, pitchDisplay, rollDisplay;
@@ -150,15 +156,17 @@ static void updateIo(src::Drivers *drivers) {
     tap::motorsim::SimHandler::updateSims();
 #endif
 
+#ifndef TARGET_TURRET
     drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 
     drivers->cvCommunicator.updateSerial();
-
-#ifdef TARGET_TURRET
-    drivers->turretCommunicator.sendIMUData();
 #else
+    drivers->turretCommunicator.sendIMUData();
+#endif
+
+#ifdef TURRET_HAS_IMU
     drivers->turretCommunicator.sendTurretRequest();
 #endif
 
@@ -166,16 +174,23 @@ static void updateIo(src::Drivers *drivers) {
 
     // imuStatus = drivers->kinematicInformant.getIMUState();
 
-    yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
-    pitchDisplay =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
-    rollDisplay =
-        drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
+    // yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
+    // AngleUnit::Degrees); pitchDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
+    // rollDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
-    gXDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
-    gYDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
-    gZDisplay =
-        drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+    // gZDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+    //     AngleUnit::Radians);
+    // gYDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS,
+    //     AngleUnit::Radians);
+    // gXDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
+    //     AngleUnit::Radians);
+
+    // yawDisplay = modm::toDegree(yaw);
+    // pitchDisplay = modm::toDegree(pitch);
+    // rollDisplay = modm::toDegree(roll);
 }

@@ -81,7 +81,7 @@ GimbalChassisRelativeController gimbalController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
 // Match Controllers ------------------------------------------------
 // SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);

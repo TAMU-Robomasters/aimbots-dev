@@ -6,7 +6,10 @@ enum CVState;
 
 namespace src::Utils::Ballistics {
 
-BallisticsSolver::BallisticsSolver(src::Drivers *drivers) : drivers(drivers) {}
+BallisticsSolver::BallisticsSolver(src::Drivers *drivers, Vector3f barrelOriginFromGimbalOrigin)
+    : drivers(drivers),
+      barrelOriginFromGimbalOrigin(barrelOriginFromGimbalOrigin)  //
+{}
 
 BallisticsSolver::BallisticsSolution solutionDisplay;
 MeasuredKinematicState plateKinematicStateDisplay;
@@ -77,14 +80,14 @@ bool BallisticsSolver::findTargetProjectileIntersection(
 
     float squaredTargetX = pow2(projectedTargetPosition.x);
     float squaredTargetY = pow2(projectedTargetPosition.y);
-    float squaredBarrelPositionX = pow2(BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX());
+    float squaredBarrelPositionX = pow2(barrelOriginFromGimbalOrigin.getX());
 
     *turretYaw = acos(
         (projectedTargetPosition.y * sqrt(squaredTargetX + squaredTargetY - squaredBarrelPositionX) +
-         BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() * projectedTargetPosition.x) /
+         barrelOriginFromGimbalOrigin.getX() * projectedTargetPosition.x) /
         (squaredTargetX + squaredTargetY));
 
-    if (projectedTargetPosition.x - BARREL_POSITION_FROM_GIMBAL_ORIGIN.getX() > 0) {
+    if (projectedTargetPosition.x - barrelOriginFromGimbalOrigin.getX() > 0) {
         *turretYaw *= -1;
     }
 
@@ -102,7 +105,7 @@ bool BallisticsSolver::computeTravelTime(
     float sqrtTerm =
         pow2(bulletVelocitySquared) -
         ACCELERATION_GRAVITY * (ACCELERATION_GRAVITY * pow2(horizontalDist) +
-                                2 * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ()) * bulletVelocitySquared);
+                                2 * (targetPosition.z + barrelOriginFromGimbalOrigin.getZ()) * bulletVelocitySquared);
 
     if (sqrtTerm < 0) {
         return false;
@@ -116,7 +119,7 @@ bool BallisticsSolver::computeTravelTime(
     // trajectory reaches y_f
     if (compareFloatClose(*turretPitch, 0, 1E-2)) {
         float sqrtTerm =
-            pow2(bulletVelocity) - 2 * ACCELERATION_GRAVITY * (targetPosition.z + BARREL_POSITION_FROM_GIMBAL_ORIGIN.getZ());
+            pow2(bulletVelocity) - 2 * ACCELERATION_GRAVITY * (targetPosition.z + barrelOriginFromGimbalOrigin.getZ());
 
         // If there isn't a real-valued root, there is no time where we can reach the target with
         // the given assumptions

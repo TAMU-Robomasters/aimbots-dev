@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_UNTETHERED
+#define TURRET_HAS_IMU
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -372,9 +373,15 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_X_EULER = 0.0f;
-static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 0.0f;
+static const Vector3f CHASSIS_IMU_CALIBRATION_EULER{
+    modm::toRadian(0.0f),
+    modm::toRadian(0.0f),
+    modm::toRadian(90.0f)};  // XYZ Euler Angles
+
+static const Vector3f TURRET_IMU_CALIBRATION_EULER{
+    modm::toRadian(0.0f),
+    modm::toRadian(0.0f),
+    modm::toRadian(0.0f)};  // XYZ Euler Angles
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 

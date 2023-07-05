@@ -96,7 +96,7 @@ GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers());
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
 // Configs -----------------------------------------------------------------
 SnapSymmetryConfig defaultSnapConfig = {

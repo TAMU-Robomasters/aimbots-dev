@@ -3,7 +3,6 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
-
 /**
  * @brief Defines the number of motors created for the chassis.
  */
@@ -323,66 +322,11 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
-static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.25f,
-    .ki = 0.0f,
-    .kd = 0.00625f,
-    .maxICumulative = 10.0f,
-    .maxOutput = 1.0f,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
-/**
- * @brief TOKYO CONSTANTS
- */
-// Fraction that user input is multiplied by when "drifting"
-static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
-// Fraction of the maximum translation speed for when rotation speed should be reduced
-static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
-// Fraction of max chassis speed applied to rotation speed
-static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
-// Fraction to cut rotation speed by when the robot is "drifting"
-static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
-// Rotational speed increment per iteration to apply until rotation setpoint is reached
-static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
-
-/**
- * @brief Transformation Matrices, specific to robot
- */
-
-// clang-format off
-static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.062f, // x
-    0.055f, // y
-    -0.009f,  // z
-};
-
-static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
-    0.0f, // x
-    0.0f, // y
-    0.0f  // z
-};
-
-static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
-    0.0f, // x
-    0.0f, // y
-    0.0f, // z
-};
-
-static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.045f, //x = 0.04498
-    0.0f, //y - does not matter too much 
-    0.01683f, //z = 0.01683
-};
-// clang-format on
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_X_EULER = 180.0f;
-static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 180.0f;
+static const Vector3f TURRET_IMU_CALIBRATION_EULER{
+    modm::toRadian(0.0f),
+    modm::toRadian(0.0f),
+    modm::toRadian(0.0f)};  // XYZ Euler Angles

@@ -13,8 +13,9 @@ enum FrameType {
     GIMBAL_FRAME = 2,
     CAMERA_FRAME = 3,
     BALLISTICS_FRAME = 4,
-    CHASSIS_IMU_FRAME = 5,
-    CAMERA_AT_CV_UPDATE_FRAME = 6
+    CAMERA_AT_CV_UPDATE_FRAME = 5,
+    CHASSIS_IMU_FRAME = 6,
+    GIMBAL_IMU_FRAME = 7
 };
 class RobotFrames {
 public:
@@ -38,11 +39,14 @@ public:
             case BALLISTICS_FRAME:
                 return ballisticsFrame;
                 break;
+            case CAMERA_AT_CV_UPDATE_FRAME:
+                return cameraAtCVUpdateFrame;
+                break;
             case CHASSIS_IMU_FRAME:
                 return chassisIMUFrame;
                 break;
-            case CAMERA_AT_CV_UPDATE_FRAME:
-                return cameraAtCVUpdateFrame;
+            case GIMBAL_IMU_FRAME:
+                return gimbalIMUFrame;
                 break;
         }
         return chassisFrame;
@@ -66,12 +70,15 @@ private:
     // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
     CoordinateFrame chassisIMUFrame;
     CoordinateFrame cameraAtCVUpdateFrame;
+    CoordinateFrame gimbalIMUFrame;
 
     Vector3f chassis_origin_relative_to_world_origin;
     Matrix3f chassis_orientation_relative_to_world_orientation;
 
     Vector3f camera_origin_relative_to_chassis_origin;
     Matrix3f gimbal_orientation_relative_to_chassis_orientation;
+
+    Matrix3f gimbalIMUOrientation;  // Should probbaly remember this
 };
 }  // namespace src::Informants::Transformers
 

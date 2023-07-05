@@ -50,8 +50,9 @@ void ChassisAutoNavCommand::execute() {
     float desiredY = yController.runController(yError, currentWorldVelocity.getY());
     float desiredR = rotationController.runController(
         rotationError,
-        -RADPS_TO_RPM(
-            drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)));
+        -RADPS_TO_RPM(drivers->kinematicInformant.getChassisIMUAngularVelocity(
+            src::Informants::AngularAxis::YAW_AXIS,
+            AngleUnit::Radians)));
 
     // Rotate world-relative desired input to chassis-relative desired input
     tap::algorithms::rotateVector(&desiredX, &desiredY, -currentWorldLocation.getOrientation());

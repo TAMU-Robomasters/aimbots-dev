@@ -99,27 +99,27 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
 
-    if (xDFTValid) {
-        spinMagnitude = 0.0f;
-        // std::complex<float> DC_bin = xDFT.dft[0];
-        uint8_t highestMagIndex = 0;
-        float highestMag = 0;
+    // if (xDFTValid) {
+    //     spinMagnitude = 0.0f;
+    //     // std::complex<float> DC_bin = xDFT.dft[0];
+    //     uint8_t highestMagIndex = 0;
+    //     float highestMag = 0;
 
-        for (size_t i = 0; i < 30; i++) {
-            // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
-            //     highestMag = std::abs<float>(xDFT.dft[i]);
-            //     highestMagIndex = i;
-            // }
-            xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
-        }
+    //     for (size_t i = 0; i < 30; i++) {
+    //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
+    //         //     highestMag = std::abs<float>(xDFT.dft[i]);
+    //         //     highestMagIndex = i;
+    //         // }
+    //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
+    //     }
 
-        for (size_t i = 1; i < 29; i++) {
-            spinMagnitude += std::abs<float>(xDFT.dft[i]);
-        }
+    //     for (size_t i = 1; i < 29; i++) {
+    //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
+    //     }
 
-        DCBinDisplay = highestMagIndex;
-        // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
-    }
+    //     DCBinDisplay = highestMagIndex;
+    //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
+    // }
 
     lastUpdateTimestamp_uS = currentTime_uS;
 }

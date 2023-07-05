@@ -20,9 +20,11 @@ namespace src::Chassis {
 class ChassisSubsystem;
 }
 
+using namespace src::Utils;
+
 namespace src::Informants {
 
-enum AngularAxis { YAW_AXIS = 0, PITCH_AXIS = 1, ROLL_AXIS = 2 };
+enum AngularAxis { PITCH_AXIS = 0, ROLL_AXIS = 1, YAW_AXIS = 2 };
 
 class KinematicInformant {
 public:
@@ -40,9 +42,28 @@ public:
         chassisKFOdometry.registerChassisSubsystem(chassisSubsystem);
     }
 
-    void initialize(float imuFrequency, float imukP, float imukI);
-    void recalibrateIMU();
     tap::communication::sensors::imu::ImuInterface::ImuState getIMUState();
+
+    void initialize(float imuFrequency, float imukP, float imukI);
+
+    void recalibrateIMU(Vector3f imuCalibrationEuler = {0.0f, 0.0f, 0.0f});
+
+    // Gets raw IMU values, in our coordinate system XYZ (Pitch, Roll, Yaw)
+    Vector3f getLocalIMUAngles();
+    float getLocalIMUAngle(AngularAxis axis);
+
+    Vector3f getIMUAngularVelocities();
+    float getIMUAngularVelocity(AngularAxis axis);
+
+    Vector3f getIMULinearAccelerations();
+    float getIMULinearAcceleration(LinearAxis axis);
+
+    Vector3f removeFalseAcceleration(
+        Vector<KinematicStateVector, 3> imuLKSV,
+        Vector<KinematicStateVector, 3> imuAKSV,
+        Vector3f r);
+
+    void updateIMUKinematicStateVector();
 
     void updateChassisIMUAngles();
 
@@ -50,8 +71,9 @@ public:
     float getChassisIMUAngle(AngularAxis axis, AngleUnit unit);
 
     // Returns angular velocity in rad/s or deg/s
-    float getIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
+    float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
+    Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
     void updateChassisAcceleration();
@@ -81,30 +103,50 @@ private:
 
     src::Informants::Transformers::RobotFrames robotFrames;
 
-    src::Utils::KinematicStateVector imuLinearXState;
-    src::Utils::KinematicStateVector imuLinearYState;
-    src::Utils::KinematicStateVector imuLinearZState;
+    KinematicStateVector imuLinearXState;
+    KinematicStateVector imuLinearYState;
+    KinematicStateVector imuLinearZState;
 
-    src::Utils::KinematicStateVector imuAngularXState;
-    src::Utils::KinematicStateVector imuAngularYState;
-    src::Utils::KinematicStateVector imuAngularZState;
+    KinematicStateVector imuAngularXState;
+    KinematicStateVector imuAngularYState;
+    KinematicStateVector imuAngularZState;
 
-    src::Utils::KinematicStateVector chassisLinearXState;
-    src::Utils::KinematicStateVector chassisLinearYState;
-    src::Utils::KinematicStateVector chassisLinearZState;
+    KinematicStateVector chassisLinearXState;
+    KinematicStateVector chassisLinearYState;
+    KinematicStateVector chassisLinearZState;
 
-    Vector3f chassisIMUAngles = {0.0f, 0.0f, 0.0f};
-    Vector3f chassisIMUAngularVelocities = {0.0f, 0.0f, 0.0f};
+    KinematicStateVector chassisAngularXState;
+    KinematicStateVector chassisAngularYState;
+    KinematicStateVector chassisAngularZState;
 
-    modm::Vector<src::Utils::KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> imuAngularState = {
-        imuAngularXState,
-        imuAngularYState,
-        imuAngularZState};
-    modm::Vector<src::Utils::KinematicStateVector, 3> chassisLinearState = {
+    KinematicStateVector turretIMULinearXState;
+    KinematicStateVector turretIMULinearYState;
+    KinematicStateVector turretIMULinearZState;
+
+    KinematicStateVector turretIMUAngularXState;
+    KinematicStateVector turretIMUAngularYState;
+    KinematicStateVector turretIMUAngularZState;
+
+    modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
+    modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
+
+    modm::Vector<KinematicStateVector, 3> chassisLinearState = {
         chassisLinearXState,
         chassisLinearYState,
         chassisLinearZState};
+    modm::Vector<KinematicStateVector, 3> chassisAngularState = {
+        chassisAngularXState,
+        chassisAngularYState,
+        chassisAngularZState};
+
+    modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
+        turretIMULinearXState,
+        turretIMULinearYState,
+        turretIMULinearZState};
+    modm::Vector<KinematicStateVector, 3> turretIMUAngularState = {
+        turretIMUAngularXState,
+        turretIMUAngularYState,
+        turretIMUAngularZState};
 
     src::Informants::Odometry::ChassisKFOdometry chassisKFOdometry;
 };

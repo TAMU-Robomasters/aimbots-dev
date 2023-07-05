@@ -81,7 +81,7 @@ void GimbalFieldRelativeController::runYawController(
 
         float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
-            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
+            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians) /
                                                           GIMBAL_YAW_GEAR_RATIO);
@@ -95,7 +95,7 @@ void GimbalFieldRelativeController::runYawController(
 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget -
-            (drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) /
+            (drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) /
              GIMBAL_YAW_GEAR_RATIO);
 
         float velocityFeedforward = tap::algorithms::limitVal(
@@ -140,7 +140,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         float fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
-            RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getIMUAngularVelocity(
+            RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                             src::Informants::AngularAxis::PITCH_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_PITCH_GEAR_RATIO);

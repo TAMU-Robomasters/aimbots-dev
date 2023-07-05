@@ -13,7 +13,6 @@ CoordinateFrame::CoordinateFrame() {
     updateTransform();
 }
 
-// Constructor
 CoordinateFrame::CoordinateFrame(Matrix3f orientation, Vector3f origin) : orientation(orientation), origin(origin) {
     updateTransform();
 }
