@@ -291,10 +291,6 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
-// 0.205f normally
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // Power limiting constants, will explain later

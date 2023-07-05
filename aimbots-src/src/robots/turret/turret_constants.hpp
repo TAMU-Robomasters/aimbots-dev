@@ -287,10 +287,6 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
-// 0.205f normally
-
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
 // Power limiting constants, will explain later
@@ -298,6 +294,12 @@ static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
 static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
+
+/**
+ * The minimum desired wheel speed for chassis rotation, measured in RPM before
+ * we start slowing down translational speed.
+ */
+static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 
 /**
  * @brief Power constants for chassis
@@ -309,18 +311,6 @@ static constexpr int MAX_CHASSIS_POWER = 120;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
     (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) / (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
 static_assert(WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE >= 0);
-
-/**
- * @brief Behavior constants for chassis
- */
-
-/**
- * The minimum desired wheel speed for chassis rotation, measured in RPM before
- * we start slowing down translational speed.
- */
-static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
-
-static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 

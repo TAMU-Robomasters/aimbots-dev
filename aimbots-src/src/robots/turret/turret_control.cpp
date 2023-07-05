@@ -8,16 +8,13 @@
 namespace TurretControl {
 
 // Register subsystems here -----------------------------------------------
-void registerSubsystems(src::Drivers *drivers) {
-}
+void registerSubsystems(src::Drivers *) {}
 
 // Initialize subsystems here ---------------------------------------------
-void initializeSubsystems() {
-}
+void initializeSubsystems() {}
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {
-}
+void setDefaultCommands(src::Drivers *) {}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *) {
@@ -29,8 +26,7 @@ void startupCommands(src::Drivers *) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {
-}
+void registerIOMappings(src::Drivers *) {}
 
 }  // namespace TurretControl
 

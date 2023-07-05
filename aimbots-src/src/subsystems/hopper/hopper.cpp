@@ -6,23 +6,28 @@
 
 #include "drivers.hpp"
 
-
-#define REMAP_HOPPER(x) (REMAP(x, HOPPER_MIN_ANGLE, HOPPER_MAX_ANGLE, HOPPER_MIN_PWM, HOPPER_MAX_PWM))
-
 namespace src::Hopper {
 
-HopperSubsystem::HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin HOPPER_PIN, float HOPPER_MAX_PWM, float HOPPER_MIN_PWM, float HOPPER_PWM_RAMP_SPEED, float HOPPER_MIN_ANGLE, float HOPPER_MAX_ANGLE, uint32_t HOPPER_MIN_ACTION_DELAY)
+HopperSubsystem::HopperSubsystem(
+    tap::Drivers* drivers,
+    tap::gpio::Pwm::Pin hopperPin,
+    float hopperMaxPWM,
+    float hopperMinPWM,
+    float hopperPWMRampSpeed,
+    float hopperMinAngle,
+    float hopperMaxAngle,
+    uint32_t hopperMinActionDelay)
     : Subsystem(drivers),
       drivers(drivers),
-      hopperMotor(drivers, HOPPER_PIN, HOPPER_MAX_PWM, HOPPER_MIN_PWM, HOPPER_PWM_RAMP_SPEED),
+      hopperMotor(drivers, hopperPin, hopperMaxPWM, hopperMinPWM, hopperPWMRampSpeed),
       hopper_state(2),
-      HOPPER_PIN(HOPPER_PIN),
-      HOPPER_MAX_PWM(HOPPER_MAX_PWM),
-      HOPPER_MIN_PWM(HOPPER_MIN_PWM),
-      HOPPER_PWM_RAMP_SPEED(HOPPER_PWM_RAMP_SPEED),
-      HOPPER_MIN_ANGLE(HOPPER_MIN_ANGLE),
-      HOPPER_MAX_ANGLE(HOPPER_MAX_ANGLE),
-      HOPPER_MIN_ACTION_DELAY(HOPPER_MIN_ACTION_DELAY) {}
+      hopperPin(hopperPin),
+      hopperMaxPWM(hopperMaxPWM),
+      hopperMinPWM(hopperMinPWM),
+      hopperPWMRampSpeed(hopperPWMRampSpeed),
+      hopperMinAngle(hopperMinAngle),
+      hopperMaxAngle(hopperMaxAngle),
+      hopperMinActionDelay(hopperMinActionDelay) {}
 
 void HopperSubsystem::initialize() {
     drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1, 330);  // Timer 1 for C1 Pin
@@ -37,17 +42,16 @@ float hopperAngleSetDisplay = 0.0f;
 void HopperSubsystem::setHopperAngle(float desiredAngle) {
     desiredAngle = tap::algorithms::limitVal<float>(
         desiredAngle,
-        HOPPER_MIN_ANGLE,
-        HOPPER_MAX_ANGLE);  // Limit inputs to min/max of motor
+        hopperMinAngle,
+        hopperMaxAngle);  // Limit inputs to min/max of motor
     hopperAngleSetDisplay = desiredAngle;
-    hopperMotor.setTargetPwm(REMAP_HOPPER(desiredAngle));
+    hopperMotor.setTargetPwm(REMAP(desiredAngle, hopperMinAngle, hopperMaxAngle, hopperMinPWM, hopperMaxPWM));
     actionStartTime = tap::arch::clock::getTimeMilliseconds();
 }
 
 bool HopperSubsystem::isHopperReady() const {
     return (
-        hopperMotor.isRampTargetMet() &&
-        (tap::arch::clock::getTimeMilliseconds() - actionStartTime) > HOPPER_MIN_ACTION_DELAY);
+        hopperMotor.isRampTargetMet() && (tap::arch::clock::getTimeMilliseconds() - actionStartTime) > hopperMinActionDelay);
     // return true;
     // the delay is mostly just to keep commands from ending b4 they should, bc isRampTargetMet() is based on pwm ramp
     // finishing
