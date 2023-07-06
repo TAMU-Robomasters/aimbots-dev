@@ -23,9 +23,9 @@
 #include "tap/drivers.hpp"
 
 #include "informants/kinematic_informant.hpp"
-//#include "informants/ultrasonic_distance_sensor.hpp"
-#include "informants/vision/jetson_communicator.hpp"
+// #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/turret-comms/turret_can_communicator.hpp"
+#include "informants/vision/jetson_communicator.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/robot_specific_inc.hpp"
 
@@ -42,7 +42,7 @@ public:
           magnetometer(),
           cvCommunicator(this),
           kinematicInformant(this),
-          turretCommunicator(this, CANBus::CAN_BUS2) {}
+          turretCommunicator(this, CANBus::CAN_BUS1) {}
 
 public:
     Control::OperatorInterface controlOperatorInterface;

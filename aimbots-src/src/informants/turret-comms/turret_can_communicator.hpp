@@ -3,59 +3,53 @@
 #include "informants/kinematic_informant.hpp"
 #include "utils/common_types.hpp"
 
-
 namespace src {
-    class Drivers;
-} // namespace src
-
+class Drivers;
+}  // namespace src
 
 namespace src::Informants::TurretComms {
 
 static constexpr uint32_t COMMS_DISCONNECTED_TIMEOUT = 1000;
 
-class TurretCommunicator
-{
-    static constexpr float ANGLE_PRECISION_FACTOR = 10000.0f;
+class TurretCommunicator {
+    static constexpr float ANGLE_PRECISION_FACTOR = 10000.0f;  // Max input before clipping = 32'767 / 10000 = +-3.276 rads
+    static constexpr float LINEAR_PRECISION_FACTOR = 1000.0f;  // Max input before clipping = 32'767 / 1000 = +-32.76 m/s^2
     static constexpr float CMPS2_TO_MPS2 = 0.01f;
 
-    static constexpr uint32_t SEND_TO_TURRET_PERIOD  = 300;
+    static constexpr uint32_t SEND_TO_TURRET_PERIOD = 300;
 
-    enum class CanID
-    {
-        TurretStatus    = 0x1f8,
-        YawData         = 0x1f9,
-        PitchData       = 0x1fa,
-        RollData        = 0x1fb,
+    enum class CanID {
+        TurretStatus = 0x1f8,
+        YawData = 0x1f9,
+        PitchData = 0x1fa,
+        RollData = 0x1fb,
         ChassisToTurret = 0x1fc,
     };
 
-    enum : uint8_t
-    {
+    enum : uint8_t {
         CHASSIS_TO_TURRET_MSG_REQUEST_IMU_CALIBRATION = 0x01,
     };
 
-    struct AngleMessageData
-    {
+    struct AngleMessageData {
         int16_t target;
         int16_t angularVelocity;
-		int16_t angularAcceleration;
+        int16_t linearAcceleration;
         uint8_t seq;
     } modm_packed;
 
 public:
-    struct IMUData
-    {
-        float yaw                    = 0.0f;
-        float yawAngularVelocity     = 0.0f;
-		float yawAngularAcceleration = 0.0f;
+    struct IMUData {
+        float yaw = 0.0f;
+        float yawAngularVelocity = 0.0f;
+        float zLinearAcceleration = 0.0f;
 
-        float pitch                    = 0.0f;
-        float pitchAngularVelocity     = 0.0f;
-		float pitchAngularAcceleration = 0.0f;
+        float pitch = 0.0f;
+        float pitchAngularVelocity = 0.0f;
+        float xLinearAcceleration = 0.0f;
 
-        float roll                    = 0.0f;
-        float rollAngularVelocity     = 0.0f;
-		float rollAngularAcceleration = 0.0f;
+        float roll = 0.0f;
+        float rollAngularVelocity = 0.0f;
+        float yLinearAcceleration = 0.0f;
 
         uint8_t seq = 0xff;
     };
@@ -64,9 +58,9 @@ public:
 
     void init();
 
-	float getLastReportedAngle(AngularAxis axis, AngleUnit unit);
-	float getLastReportedAngularVelocity(AngularAxis axis, AngleUnit unit);
-	float getLastReportedAngularAcceleration(AngularAxis axis, AngleUnit unit);
+    float getLastReportedAngle(AngularAxis axis, AngleUnit unit);
+    float getLastReportedAngularVelocity(AngularAxis axis, AngleUnit unit);
+    float getLastReportedLinearAcceleration(LinearAxis axis);
 
 #ifdef TARGET_TURRET
     void sendIMUData();
@@ -82,8 +76,7 @@ public:
 #endif
 
     using CANListenerProc = void (TurretCommunicator::*)(const modm::can::Message& message);
-    class RXHandler : public tap::can::CanRxListener
-    {
+    class RXHandler : public tap::can::CanRxListener {
     public:
         RXHandler(src::Drivers* drivers, uint32_t id, CANBus bus, TurretCommunicator* ctx, CANListenerProc proc);
         void processMessage(modm::can::Message const& msg) override;
@@ -117,4 +110,4 @@ private:
 #endif
 };
 
-} // namespace src::Informants::TurretComms
+}  // namespace src::Informants::TurretComms

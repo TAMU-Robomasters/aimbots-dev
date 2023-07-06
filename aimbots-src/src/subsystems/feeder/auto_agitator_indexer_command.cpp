@@ -61,7 +61,14 @@ void AutoAgitatorIndexerCommand::initialize() {
 // Read a different remote input to reset the unjam counter (force reload, essentially)
 // Once the "shoot" trigger is pressed, start moving the indexer, and reset the unjam counter
 
+// uint16_t currHeat = 69;
+// uint16_t currHeatLimit = 420;
+// uint16_t chassisPowerLimit = 77;
 void AutoAgitatorIndexerCommand::execute() {
+    // currHeat = refHelper->getCurrBarrelHeat();
+    // currHeatLimit = refHelper->getCurrBarrelLimit();
+    // chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+
     commandIsRunning = true;
     unjamDisplay = jamDetected;
     isLoadedDisplay = fullyLoaded;
@@ -114,7 +121,7 @@ void AutoAgitatorIndexerCommand::execute() {
 
 void AutoAgitatorIndexerCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &runIndexerCommand, interrupted);
-    //descheduleIfScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand, interrupted);
+    // descheduleIfScheduled(this->comprisedCommandScheduler, &reverseIndexerCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &runFeederCommand, interrupted);
     feeder->setTargetRPM(0.0f);
     indexer->setTargetRPM(0.0f);

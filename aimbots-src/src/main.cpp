@@ -64,6 +64,9 @@ static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
 
+uint16_t currHeat = 69;
+uint16_t currHeatLimit = 420;
+uint16_t chassisPowerLimit = 77;
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -95,6 +98,9 @@ int main() {
 
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
+            // currHeat = refHelper->getCurrBarrelHeat();
+            // currHeatLimit = refHelper->getCurrBarrelLimit();
+            chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
