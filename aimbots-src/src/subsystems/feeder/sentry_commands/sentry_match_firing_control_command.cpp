@@ -18,16 +18,20 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
     FeederSubsystem* feeder,
     ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelper,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController,
     src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
       shooter(shooter),
       refHelper(refHelper),
+      ballisticsSolver(ballisticsSolver),
+      fieldRelativeGimbalController(fieldRelativeGimbalController),
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, 0,0,0),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
@@ -43,16 +47,30 @@ void SentryMatchFiringControlCommand::initialize() {
 }
 
 void SentryMatchFiringControlCommand::execute() {
-    // descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, true);
-
     // if (1) {
     if (drivers->cvCommunicator.isJetsonOnline()) {
-        if (chassisState != src::Chassis::ChassisMatchStates::EVADE &&
-            drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FIRE) {
+        // Assuming the cvState is found, we need to determine if the turret is within an armor panel's distance
+        bool isErrorCloseEnoughToShoot = false;
+        float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetY;
+
+        if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FOUND) {
+            float yawTargetGimbal = fieldRelativeGimbalController->getTargetYaw(AngleUnit::Radians);
+            tap::algorithms::ContiguousFloat yawCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
+
+            float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
+            tap::algorithms::ContiguousFloat pitchCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
+
+            isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
+                yawCurrentGimbal.difference(yawTargetGimbal),
+                pitchCurrentGimbal.difference(pitchTargetGimbal),
+                targetDepth);
+        }
+
+        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && isErrorCloseEnoughToShoot) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
-            float targetDepth = drivers->cvCommunicator.getLastValidMessage()
-                                    .targetZ;  // TODO: Replace this this the appropriate kinematic informant function
 
             float feederSpeed = MAX_FEEDER_SPEED;
             float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage
@@ -78,7 +96,6 @@ void SentryMatchFiringControlCommand::execute() {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
         }
     } else {
-        // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, true);
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }
 

@@ -28,8 +28,8 @@ public:
     }
 
     bool isSettled() {
-        return xController.isSettled(linearSettledThreshold) && yController.isSettled(linearSettledThreshold) &&
-               rotationController.isSettled(angularSettledThreshold);
+        return xController.isSettled(linearSettledThreshold, 0) && yController.isSettled(linearSettledThreshold, 0) &&
+               rotationController.isSettled(angularSettledThreshold, 0);
     }
 
     bool isReady() override;

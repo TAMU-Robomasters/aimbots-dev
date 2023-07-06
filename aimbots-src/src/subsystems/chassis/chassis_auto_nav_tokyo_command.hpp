@@ -29,7 +29,7 @@ public:
     }
 
     bool isSettled() {
-        return xController.isSettled(linearSettledThreshold) && yController.isSettled(linearSettledThreshold);
+        return xController.isSettled(linearSettledThreshold, 0) && yController.isSettled(linearSettledThreshold, 0);
     }
 
     bool isReady() override;

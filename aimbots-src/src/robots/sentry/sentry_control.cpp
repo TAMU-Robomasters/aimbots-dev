@@ -119,7 +119,6 @@ SpinRandomizerConfig randomizerConfig = {
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
-// ChassisRailEvadeCommand chassisRailEvadeCommand(drivers(), &chassis, 25.0f);  // Likely to be changed to different evasion
 
 /*GimbalPatrolCommand gimbalPatrolCommand(
     drivers(),
@@ -148,7 +147,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, UNJAM_TIMER_MS, -1500);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, -1500, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(
     drivers(),

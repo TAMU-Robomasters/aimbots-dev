@@ -1,6 +1,5 @@
 #pragma once
 
-#include "tap/algorithms/ballistics.hpp"
 #include "tap/control/command.hpp"
 
 #include "informants/enemy_data_conversion.hpp"

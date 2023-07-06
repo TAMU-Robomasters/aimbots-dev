@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils/ballistics_solver.hpp"
 #include "utils/common_types.hpp"
 
 #include "drivers.hpp"
@@ -14,6 +15,8 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
+//
+#include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 
 namespace src::Control {
 
@@ -35,6 +38,8 @@ public:
         FeederSubsystem*,
         ShooterSubsystem*,
         src::Utils::RefereeHelperTurreted*,
+        src::Utils::Ballistics::BallisticsSolver*,
+        src::Gimbal::GimbalControllerInterface*,
         src::Chassis::ChassisMatchStates& chassisState);
 
     void initialize() override;
@@ -51,6 +56,9 @@ private:
     FeederSubsystem* feeder;
     ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
+
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
+    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController;
 
     src::Chassis::ChassisMatchStates& chassisState;
 

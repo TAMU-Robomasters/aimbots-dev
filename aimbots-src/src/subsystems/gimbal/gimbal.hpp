@@ -97,6 +97,20 @@ public:
         return yawOnline && pitchOnline;
     }
 
+    inline bool isYawMotorOnline(uint8_t YawIdx) const {
+        if (YawIdx >= YAW_MOTOR_COUNT) {
+            return false;
+        }
+        return yawMotors[YawIdx]->isMotorOnline();
+    }
+
+    inline bool isPitchMotorOnline(uint8_t PitchIdx) const {
+        if (PitchIdx >= PITCH_MOTOR_COUNT) {
+            return false;
+        }
+        return pitchMotors[PitchIdx]->isMotorOnline();
+    }
+
     void setDesiredYawMotorOutput(uint8_t YawIdx, float output) { desiredYawMotorOutputs[YawIdx] = output; }
     void setDesiredPitchMotorOutput(uint8_t PitchIdx, float output) { desiredPitchMotorOutputs[PitchIdx] = output; }
 

@@ -39,7 +39,11 @@ struct SmoothPIDWrapper {
 
     bool isSettled(float errTolerance) { return settledUtil.isSettled(this->error, errTolerance); }
 
-    bool isSettled(float errTolerance, uint32_t errorTimeout, float derivTolerance, uint32_t derivativeTimeout) {
+    bool isSettled(
+        float errTolerance,
+        std::optional<uint32_t> errorTimeout = std::nullopt,
+        std::optional<float> derivTolerance = std::nullopt,
+        std::optional<uint32_t> derivativeTimeout = std::nullopt) {
         return settledUtil
             .isSettled(this->error, errTolerance, errorTimeout, this->errorDerivative, derivTolerance, derivativeTimeout);
     }
