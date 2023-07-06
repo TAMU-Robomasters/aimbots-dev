@@ -1,5 +1,6 @@
 #pragma once
 
+#include "informants/kinematic_informant.hpp"
 #include "utils/common_types.hpp"
 
 
@@ -37,18 +38,24 @@ class TurretCommunicator
     {
         int16_t target;
         int16_t angularVelocity;
+		int16_t angularAcceleration;
         uint8_t seq;
     } modm_packed;
 
 public:
     struct IMUData
     {
-        float yaw             = 0.0f;
-        int16_t yawVelocity   = 0.0f;
-        float pitch           = 0.0f;
-        int16_t pitchVelocity = 0.0f;
-        float roll            = 0.0f;
-        int16_t rollVelocity  = 0.0f;
+        float yaw                    = 0.0f;
+        float yawAngularVelocity     = 0.0f;
+		float yawAngularAcceleration = 0.0f;
+
+        float pitch                    = 0.0f;
+        float pitchAngularVelocity     = 0.0f;
+		float pitchAngularAcceleration = 0.0f;
+
+        float roll                    = 0.0f;
+        float rollAngularVelocity     = 0.0f;
+		float rollAngularAcceleration = 0.0f;
 
         uint8_t seq = 0xff;
     };
@@ -56,6 +63,10 @@ public:
     TurretCommunicator(src::Drivers* drivers, CANBus bus);
 
     void init();
+
+	float getLastReportedAngle(AngularAxis axis, AngleUnit unit);
+	float getLastReportedAngularVelocity(AngularAxis axis, AngleUnit unit);
+	float getLastReportedAngularAcceleration(AngularAxis axis, AngleUnit unit);
 
 #ifdef TARGET_TURRET
     void sendIMUData();
