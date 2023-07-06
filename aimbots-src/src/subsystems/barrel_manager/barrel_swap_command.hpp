@@ -18,8 +18,7 @@ public:
         BarrelManagerSubsystem* barrelSwap,
         src::Utils::RefereeHelperTurreted* RefHelper,
         bool& barrelMovingFlag,
-        bool& barrelCaliDoneFlag,
-        float ACCEPTABLE_HEAT_PERCENTAGE);
+        bool& barrelCaliDoneFlag);
 
     void initialize() override;
 
@@ -46,8 +45,6 @@ private:
 
     bool wasRPressed = false;
     bool wasLogicSwitchRequested = false;
-
-    float ACCEPTABLE_HEAT_PERCENTAGE;
 
     barrelSide currentCalibratingBarrel = barrelSide::LEFT;
 };

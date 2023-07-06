@@ -27,6 +27,9 @@ void BarrelSwappingFeederCommand::initialize() {
     unjamTimer.restart(0);
 }
 
+float swappableHeatLimitDisplay = 0;
+float swappableCurrentHeatDisplay = 0;
+
 void BarrelSwappingFeederCommand::execute() {
     if (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag) {
         if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
@@ -42,6 +45,9 @@ void BarrelSwappingFeederCommand::execute() {
         feeder->setTargetRPM(0.0f);
         unjamTimer.restart(0);
     }
+
+    swappableHeatLimitDisplay = refHelper->getCurrBarrelLimit();
+    swappableCurrentHeatDisplay = refHelper->getCurrBarrelHeat();
 }
 
 void BarrelSwappingFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }

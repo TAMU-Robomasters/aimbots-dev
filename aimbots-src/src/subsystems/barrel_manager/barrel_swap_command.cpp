@@ -9,15 +9,13 @@ BarrelSwapCommand::BarrelSwapCommand(
     BarrelManagerSubsystem* barrelManager,
     src::Utils::RefereeHelperTurreted* RefHelper,
     bool& barrelMovingFlag,
-    bool& barrelCaliDoneFlag,
-    float ACCEPTABLE_HEAT_PERCENTAGE)
+    bool& barrelCaliDoneFlag)
     : drivers(drivers),
       barrelManager(barrelManager),
       refHelper(RefHelper),
       swapMotorPID(BARREL_SWAP_POSITION_PID_CONFIG),
       barrelMovingFlag(barrelMovingFlag),
-      barrelCaliDoneFlag(barrelCaliDoneFlag),
-      ACCEPTABLE_HEAT_PERCENTAGE(ACCEPTABLE_HEAT_PERCENTAGE) {
+      barrelCaliDoneFlag(barrelCaliDoneFlag) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(barrelManager));
 }
 
@@ -89,14 +87,11 @@ void BarrelSwapCommand::execute() {
             barrelManager->toggleSide();
         }
 
-        /*float stickSwitchThres = 0.1;
-        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres &&
-        drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
-            //barrelManager->setSide(barrelSide::RIGHT);
+        /*if (abs(drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID)) {
+            barrelManager->setSide(barrelSide::RIGHT);
         }
-        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres &&
-        drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
-            //barrelManager->setSide(barrelSide::LEFT);
+        if (abs(drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)) {
+            barrelManager->setSide(barrelSide::LEFT);
         }*/
 
         if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {
@@ -104,20 +99,8 @@ void BarrelSwapCommand::execute() {
         }
 
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE);
 
-        /*if (!refHelper->isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
-            wasLogicSwitchRequested = true;
-            if (barrelManager->getSide() == barrelSide::LEFT) {
-                barrelManager->setSide(barrelSide::RIGHT);
-            }
-            else {
-                barrelManager->setSide(barrelSide::LEFT);
-            }
-
-        }*/
-
-        if (!refHelper->/*isCurrBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE)*/canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
+        if (!refHelper->canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
             barrelManager->toggleSide();
         }

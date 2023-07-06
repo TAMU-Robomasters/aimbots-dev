@@ -253,7 +253,7 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag, 0.80f);
+BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
@@ -263,16 +263,17 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 
 GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 
+
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalToggleAimCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand, &chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
+    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
