@@ -289,7 +289,7 @@ static constexpr float HOPPER_MIN_ANGLE = 0.0f;
 static constexpr float HOPPER_MAX_ANGLE = 270.0f;
 
 static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
-static constexpr float HOPPER_CLOSED_ANGLE = 70.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
