@@ -28,7 +28,7 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(191.6f)),
-    wrapTo0To2PIRange(modm::toRadian(182.5f))};
+    wrapTo0To2PIRange(modm::toRadian(181.5f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
@@ -239,7 +239,7 @@ static constexpr uint16_t shooter_speed_array[2] = {30, 7050};  // {m/s, rpm}
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 1000.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
 

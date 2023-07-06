@@ -117,7 +117,7 @@ SpinRandomizerConfig randomizerConfig = {
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
+ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
 /*GimbalPatrolCommand gimbalPatrolCommand(
@@ -147,7 +147,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, -1500, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 1500, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(
     drivers(),
@@ -155,8 +155,8 @@ DualBarrelFeederCommand dualBarrelsFeederCommand(
     &refHelper,
     BARREL_IDS,
     FEEDER_DEFAULT_RPM,
-    UNJAM_TIMER_MS,
-    -1500);
+    1500,
+    UNJAM_TIMER_MS);
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
@@ -169,12 +169,12 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only
@@ -228,9 +228,9 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
-    // drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchUp);
 
-    // drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
