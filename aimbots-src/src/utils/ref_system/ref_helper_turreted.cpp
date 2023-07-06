@@ -187,7 +187,8 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
     }
 
     return (
-        lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit);  //-1 is to align array index with enum values
+        lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) || 
+        (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 
 }  // namespace src::Utils

@@ -406,7 +406,7 @@ static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
 
 // this is from edge to edge, aligned center to aligned center,
-static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm
+static constexpr float BARREL_SWAP_DISTANCE_MM = 45.5;  // In mm
 
 // If the barrel is this close to the flywheel chamber, it is considered aligned
 static constexpr float BARRELS_ALIGNED_TOLERANCE = 2.0;  // In mm
