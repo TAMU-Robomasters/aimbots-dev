@@ -335,9 +335,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.25f,  // 0.45
+    .kp = 1.65f,  // 0.45
     .ki = 0.0f,
-    .kd = 0.006f,  // 0.05
+    .kd = 0.005f,  // 0.05
     .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -393,15 +393,13 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static const Vector3f CHASSIS_IMU_CALIBRATION_EULER{
-    modm::toRadian(0.0f),
-    modm::toRadian(0.0f),
-    modm::toRadian(90.0f)};  // XYZ Euler Angles
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 
-static const Vector3f TURRET_IMU_CALIBRATION_EULER{
-    modm::toRadian(0.0f),
-    modm::toRadian(0.0f),
-    modm::toRadian(0.0f)};  // XYZ Euler Angles
+static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};

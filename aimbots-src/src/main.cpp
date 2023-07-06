@@ -130,9 +130,11 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
-    drivers->kinematicInformant.recalibrateIMU(CHASSIS_IMU_CALIBRATION_EULER);
+    drivers->kinematicInformant.recalibrateIMU(
+        {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
-    drivers->kinematicInformant.recalibrateIMU(TURRET_IMU_CALIBRATION_EULER);
+    drivers->kinematicInformant.recalibrateIMU(
+        {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
 #endif
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();

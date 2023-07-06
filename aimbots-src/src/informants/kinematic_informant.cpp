@@ -25,7 +25,8 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
 }
 
 void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
-    drivers->bmi088.requestRecalibration(imuCalibrationEuler);
+    // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
+    drivers->bmi088.requestRecalibration();
 };
 
 tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::getIMUState() {
@@ -114,9 +115,13 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
     return 0;
 }
 
+Vector3f chassisAnglesConvertedDisplay;
+Vector3f IMUAnglesDisplay;
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+
+    IMUAnglesDisplay = IMUAngles;
 
     // Gets chassis angles
     Vector3f chassisAngles =
@@ -125,6 +130,8 @@ void KinematicInformant::updateChassisIMUAngles() {
             .getPointInFrame(
                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
                 IMUAngles);
+
+    chassisAnglesConvertedDisplay = chassisAngles;
 
     Vector3f chassisAngularVelocities =
         drivers->kinematicInformant.getRobotFrames()
@@ -198,9 +205,11 @@ void KinematicInformant::updateChassisAcceleration() {
     chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
 }
 
+float chassisYawAngleDisplay = 0.0f;
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
+    chassisYawAngleDisplay = currChassisAngle;
     return ContiguousFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 

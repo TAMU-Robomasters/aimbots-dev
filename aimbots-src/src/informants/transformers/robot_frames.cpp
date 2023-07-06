@@ -15,9 +15,9 @@ RobotFrames::RobotFrames() {
     // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
     ballisticsFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
     gimbalFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
-    Matrix3f chassisIMUOrientation = rotationMatrix(CHASSIS_IMU_CALIBRATION_EULER.getX(), X_AXIS, AngleUnit::Radians) *
-                                     rotationMatrix(CHASSIS_IMU_CALIBRATION_EULER.getY(), Y_AXIS, AngleUnit::Radians) *
-                                     rotationMatrix(CHASSIS_IMU_CALIBRATION_EULER.getZ(), Z_AXIS, AngleUnit::Radians);
+    Matrix3f chassisIMUOrientation = rotationMatrix(CIMU_CALIBRATION_EULER_X, X_AXIS, AngleUnit::Radians) *
+                                     rotationMatrix(CIMU_CALIBRATION_EULER_Y, Y_AXIS, AngleUnit::Radians) *
+                                     rotationMatrix(CIMU_CALIBRATION_EULER_Z, Z_AXIS, AngleUnit::Radians);
     chassisIMUFrame.setOrientation(chassisIMUOrientation);
 
     // update frames to initial values
@@ -29,9 +29,9 @@ RobotFrames::RobotFrames() {
 #ifdef TURRET_IMU
     // gimbal imu frame relative to gimbal (i.e. how is the imu mounted. In an ideal world this is all 0, 0, 0 but
     // hardware kids arent that good.
-    Matrix3f gimbalIMUOrientation = rotationMatrix(TURRET_IMU_CALIBRATION_EULER.getX(), X_AXIS, AngleUnit::Radians) *
-                                    rotationMatrix(TURRET_IMU_CALIBRATION_EULER.getY(), Y_AXIS, AngleUnit::Radians) *
-                                    rotationMatrix(TURRET_IMU_CALIBRATION_EULER.getZ(), Z_AXIS, AngleUnit::Radians);
+    Matrix3f gimbalIMUOrientation = rotationMatrix(TIMU_CALIBRATION_EULER_X, X_AXIS, AngleUnit::Radians) *
+                                    rotationMatrix(TIMU_CALIBRATION_EULER_Y, Y_AXIS, AngleUnit::Radians) *
+                                    rotationMatrix(TIMU_CALIBRATION_EULER_Z, Z_AXIS, AngleUnit::Radians);
     gimbalIMUFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation * gimbalIMUOrientation);
 #endif
 }

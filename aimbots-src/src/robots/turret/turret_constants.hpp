@@ -316,7 +316,6 @@ static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static const Vector3f TURRET_IMU_CALIBRATION_EULER{
-    modm::toRadian(0.0f),
-    modm::toRadian(0.0f),
-    modm::toRadian(0.0f)};  // XYZ Euler Angles
+static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
