@@ -160,7 +160,7 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
             return true;
     }
 
-    return (lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) ||
+    return (lastHeat + heatGainedPerProjectile[projectileType - 1] < heatLimit) ||
            (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 
@@ -190,11 +190,12 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
             projectileType = RefSerialRxData::AMMO_42;
             break;
         }
+        
         default:
             return true;
     }
 
-    return (lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) ||
+    return (lastHeat + heatGainedPerProjectile[projectileType - 1] < heatLimit) ||
            (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 

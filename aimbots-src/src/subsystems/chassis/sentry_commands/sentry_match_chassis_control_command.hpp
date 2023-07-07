@@ -3,9 +3,9 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/sentry_commands/sentry_chassis_auto_nav_evade_command.hpp"
 #include "utils/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
+#include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
 #include "drivers.hpp"
 
@@ -19,7 +19,11 @@ public:
         src::Drivers*,
         ChassisSubsystem*,
         ChassisMatchStates& chassisState,
-        src::Utils::RefereeHelperTurreted* refHelper);
+        src::Utils::RefereeHelperTurreted* refHelper,
+        const SnapSymmetryConfig& snapSymmetryConfig,
+        const TokyoConfig& tokyoConfig,
+        bool randomizeSpinRate,
+        const SpinRandomizerConfig& randomizerConfig);
 
     void initialize() override;
     void execute() override;
@@ -33,24 +37,19 @@ public:
 private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
-    static Vector2f TARGET_A = {-5.300f, -0.176f};    // Point A near base
-    static Vector2f TARGET_B = {-5.300f, 2.000f};     // Point B near heal
-    static Vector2f TARGET_HEAL = {-5.300f, 3.250f};  // Point in heal
-    static Vector2f TARGET_START = {
+    Vector<float, 2> TARGET_A = {-5.300f, -0.176f};    // Point A near base
+    Vector<float, 2> TARGET_B = {-5.300f, 2.000f};     // Point B near heal
+    Vector<float, 2> TARGET_HEAL = {-5.300f, 3.250f};  // Point in heal
+    Vector<float, 2> TARGET_START = {
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0],
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]};  // starting position
-
-    modm::Location2D<float> locationStart({-5.300f, -0.176f}, modm::toRadian(0.0f));
-    modm::Location2D<float> locationA(TARGET_A, modm::toRadian(0.0f));
-    modm::Location2D<float> locationB(TARGET_B, modm::toRadian(0.0f));
-    modm::Location2D<float> locationHeal(TARGET_HEAL, modm::toRadian(0.0f));
 
     src::Chassis::ChassisMatchStates& chassisState;
 
     ChassisAutoNavCommand autoNavCommand;
     ChassisAutoNavTokyoCommand autoNavTokyoCommand;
-    SentryChassisAutoNavEvadeCommand sentryChassisAutoNavEvadeCommand;
 
     MilliTimeout evadeTimeout;
 };

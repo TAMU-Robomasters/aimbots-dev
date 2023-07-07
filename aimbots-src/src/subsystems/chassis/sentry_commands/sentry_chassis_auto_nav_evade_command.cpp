@@ -2,7 +2,7 @@
 
 namespace src::Chassis {
 
-SentryChassisAutoNavEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis) : drivers(drivers), chassis(chassis) {
+SentryChassisAutoNavEvadeCommand::SentryChassisAutoNavEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis) : drivers(drivers), chassis(chassis) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 

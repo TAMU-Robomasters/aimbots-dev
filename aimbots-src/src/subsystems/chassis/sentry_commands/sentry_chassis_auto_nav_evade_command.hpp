@@ -20,6 +20,6 @@ public:
 private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
-}
+};
 
 }  // namespace src::Chassis
