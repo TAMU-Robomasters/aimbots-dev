@@ -9,6 +9,16 @@ RefereeHelperTurreted::RefereeHelperTurreted(src::Drivers* drivers, BarrelID& ba
       currBarrelID(barrelID)  //
 {}
 
+float RefereeHelperTurreted::getReceivedDPS() {
+    auto botData = drivers->refSerial.getRobotData();
+    return botData.receivedDps;
+}
+
+float RefereeHelperTurreted::getCurrHealthPercentage() {
+    auto botData = drivers->refSerial.getRobotData();
+    return static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
+}
+
 std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit() {
     auto& turretData = drivers->refSerial.getRobotData().turret;
 
@@ -120,8 +130,6 @@ bool RefereeHelperTurreted::isBarrelHeatUnderLimit(float percentageOfLimit, Barr
     return (lastHeat <= (static_cast<float>(heatLimit) * percentageOfLimit));
 }
 
-
-
 bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     auto& turretData = drivers->refSerial.getRobotData().turret;
 
@@ -152,9 +160,8 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
             return true;
     }
 
-    return (
-        lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit)  || 
-        (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
+    return (lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) ||
+           (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 
 bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
@@ -187,9 +194,8 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
             return true;
     }
 
-    return (
-        lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) || 
-        (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
+    return (lastHeat + heatGainedPerProjectile[projectileType - 1] <= heatLimit) ||
+           (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 
 }  // namespace src::Utils
