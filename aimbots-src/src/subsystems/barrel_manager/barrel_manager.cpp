@@ -60,8 +60,8 @@ void BarrelManagerSubsystem::refresh() {
 
         currentSwapDesiredOutputDisplay = desiredSwapMotorOutput;
 
-        if (currentBarrelSide !=
-            barrelSide::CURRENT) {  // This if statement should never be needed, but just in case I added it anyways
+        if (isBarrelAligned() && currentBarrelSide !=
+            barrelSide::CURRENT ) {
             currentBarrel = BARREL_ARRAY[currentBarrelSide];
         }
 

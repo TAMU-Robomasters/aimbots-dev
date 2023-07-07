@@ -17,7 +17,7 @@ enum BarrelSpeeds : uint8_t {
 
 class RefereeHelperTurreted : public RefereeHelperInterface {
 public:
-    RefereeHelperTurreted(src::Drivers*, BarrelID& barrelID);
+    RefereeHelperTurreted(src::Drivers*, BarrelID& barrelID, int safetyHeatTolerance);
     ~RefereeHelperTurreted() = default;
 
     float getReceivedDPS();
@@ -98,6 +98,8 @@ private:
     src::Utils::ProjectileLaunchSpeedPredictor<PROJECTILE_SPEED_QUEUE_SIZE> projectileLaunchSpeedPredictor;
 
     int heatGainedPerProjectile[2] = {10, 100};  //{17mm, 42mm}
+
+    int safetyHeatTolerance = 0;
 };
 
 }  // namespace src::Utils

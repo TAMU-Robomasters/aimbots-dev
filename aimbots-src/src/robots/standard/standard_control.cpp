@@ -115,7 +115,7 @@ namespace StandardControl {
 // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
 BarrelID currentBarrel = BARREL_IDS[0];
 
-src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 5);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());

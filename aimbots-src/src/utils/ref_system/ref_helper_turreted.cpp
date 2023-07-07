@@ -4,9 +4,10 @@
 
 namespace src::Utils {
 
-RefereeHelperTurreted::RefereeHelperTurreted(src::Drivers* drivers, BarrelID& barrelID)
+RefereeHelperTurreted::RefereeHelperTurreted(src::Drivers* drivers, BarrelID& barrelID, int safetyHeatTolerance = 0)
     : RefereeHelperInterface(drivers),
-      currBarrelID(barrelID)  //
+      currBarrelID(barrelID),
+      safetyHeatTolerance(safetyHeatTolerance)  //
 {}
 
 float RefereeHelperTurreted::getReceivedDPS() {
@@ -160,8 +161,8 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
             return true;
     }
 
-    return (lastHeat + heatGainedPerProjectile[projectileType - 1] < heatLimit) ||
-           (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
+    return (lastHeat + heatGainedPerProjectile[projectileType - 1] + safetyHeatTolerance < heatLimit) /*||
+           (heatGainedPerProjectile[projectileType - 1] >= heatLimit)*/;  //-1 is to align array index with enum values
 }
 
 bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
@@ -190,7 +191,7 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
             projectileType = RefSerialRxData::AMMO_42;
             break;
         }
-        
+
         default:
             return true;
     }

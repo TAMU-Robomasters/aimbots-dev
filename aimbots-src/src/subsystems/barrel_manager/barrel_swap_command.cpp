@@ -37,6 +37,8 @@ int16_t heatRemainDisplay = 0;
 
 bool currBHeatDisplay = false;
 BarrelID currentBarrelDisplay;
+
+MilliTimeout fakeBarrelSwitch;
 //-----------
 
 void BarrelSwapCommand::initialize() {}
@@ -104,6 +106,15 @@ void BarrelSwapCommand::execute() {
             wasLogicSwitchRequested = true;
             barrelManager->toggleSide();
         }
+
+        //Uncomment if you want to auto switch back away from the 0 / 0 barrel
+        /*if (barrelManager->getSide() == barrelSide::RIGHT) {
+            fakeBarrelSwitch.restart(1000);
+        }
+
+        if (fakeBarrelSwitch.execute()) {
+            barrelManager->setSide(barrelSide::LEFT);
+        }*/
 
     } else {
         barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);

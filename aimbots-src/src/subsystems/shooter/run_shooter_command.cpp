@@ -28,7 +28,17 @@ tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataD
 
 uint16_t flywheelRPMDisplay = 0;
 uint16_t flywheelCurrentRPMDisplay = 0;
+
+float currentHeatDisplay = 0.0f;
+float heatLimitDisplay = 0.0f;
+
 void RunShooterCommand::execute() {
+
+    currentHeatDisplay = refHelper->getCurrBarrelHeat();
+    heatLimitDisplay = refHelper->getCurrBarrelLimit();
+
+    
+
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
     uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(SHOOTER_SPEED_MATRIX[0][0]);

@@ -65,7 +65,7 @@ namespace SentryControl {
 // This is technically a command flag, but it needs to be defined before the refHelper
 BarrelID currentBarrel = BARREL_IDS[0];
 
-src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 
 // src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
