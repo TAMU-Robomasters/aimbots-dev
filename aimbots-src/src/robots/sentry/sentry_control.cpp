@@ -115,6 +115,8 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL, &refHelper);
+
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
@@ -212,7 +214,7 @@ void setDefaultCommands(src::Drivers *) {
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     feeder.setDefaultCommand(&stopFeederCommand);
     // gimbal.setDefaultCommand(&gimbalControlCommand);
-    // chassis.setDefaultCommand(&chassisRailBounceCommand);
+    // chassis.setDefaultCommand(&sentryMatchChassisControlCommand);
     // gimbal.setDefaultCommand(&gimbalChaseCommand);
 }
 

@@ -20,6 +20,10 @@ public:
     RefereeHelperTurreted(src::Drivers*, BarrelID& barrelID);
     ~RefereeHelperTurreted() = default;
 
+    float getReceivedDPS();
+
+    float getCurrHealthPercentage();
+
     std::optional<uint16_t> getCurrBarrelProjectileSpeedLimit();
     std::optional<uint16_t> getProjectileSpeedLimit(BarrelID barrelID);
 
@@ -84,7 +88,6 @@ public:
         }
         return heatLimit;
     }
-
 
     BarrelID getCurrentBarrel() { return currBarrelID; }
     void setCurrentBarrel(BarrelID barrelID) { currBarrelID = barrelID; }

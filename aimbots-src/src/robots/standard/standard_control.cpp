@@ -196,6 +196,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     false,
     randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
+
 ChassisAutoNavCommand chassisAutoNavCommand(
     drivers(),
     &chassis,
