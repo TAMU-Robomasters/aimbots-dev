@@ -18,7 +18,7 @@ GimbalPatrolCommand::GimbalPatrolCommand(
           {modm::Location2D<float>({5.0f, -3.0f}, 0.0f),
            modm::Location2D<float>({-1.425, -1.131}, 0.0f),
            modm::Location2D<float>({-3.25f, 2.5f}, 0.0f)}),
-      patrolCoordinateTimes({500, 500, 500})
+      patrolCoordinateTimes({1000, 1000, 1000})
 //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));

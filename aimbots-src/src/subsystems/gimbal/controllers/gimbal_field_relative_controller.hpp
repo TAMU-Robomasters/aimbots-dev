@@ -58,13 +58,11 @@ public:
 
     bool allOnlineYawControllersSettled(
         float errTolerance,
-        uint32_t errTimeout,
-        std::optional<float> derivTolerance = std::nullopt,
-        std::optional<uint32_t> derivTimeout = std::nullopt) {
+        uint32_t errTimeout) {
         bool controllersSettled = false;
         for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
             if (gimbal->isYawMotorOnline(i)) {
-                controllersSettled = yawPositionPIDs[i]->isSettled(errTolerance, errTimeout, derivTolerance, derivTimeout);
+                controllersSettled = yawPositionPIDs[i]->isSettled(errTolerance, errTimeout);
             }
         }
         return controllersSettled;
