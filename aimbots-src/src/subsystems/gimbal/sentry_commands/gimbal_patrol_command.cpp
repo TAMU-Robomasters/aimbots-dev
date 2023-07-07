@@ -33,17 +33,29 @@ void GimbalPatrolCommand::initialize() { commandStartTime = tap::arch::clock::ge
 float targetPatrolYawAxisAngleDisplay = 0.0f;
 float targetPatrolPitchAxisAngleDisplay = 0.0f;
 
+float patrolIndexDisplay = 0;
+bool patrolTimerDisplay = false;
+float patrolTimingDisplay = 0;
+bool patrolRunningDisplay = false;
+
 void GimbalPatrolCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
-    targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Degrees);
+    patrolIndexDisplay = patrolCoordinateIndex;
+
+    patrolTimingDisplay = patrolCoordinateTimes[patrolCoordinateIndex];
+
+    patrolTimerDisplay = patrolTimer.isExpired();
+    patrolRunningDisplay = patrolTimer.isStopped();
+
+    targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Radians);
     targetPatrolYawAxisAngleDisplay = targetYawAxisAngle;
-    targetPitchAxisAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Degrees);
+    targetPitchAxisAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Radians);
     targetPatrolPitchAxisAngleDisplay = targetPitchAxisAngle;
 
-    controller->setTargetYaw(AngleUnit::Degrees, targetYawAxisAngle);
-    controller->setTargetPitch(AngleUnit::Degrees, targetPitchAxisAngle);
+    controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
+    controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
     controller->runYawController();
     controller->runPitchController();  // That parameter is unused and should be unecessary, but complier is strange
@@ -58,13 +70,13 @@ void GimbalPatrolCommand::end(bool) {
     gimbal->setAllDesiredPitchOutputs(0);
 }
 
-float yawPositionPIDErrorDisplay = 0.0f;
+bool yawPositionPIDErrorDisplay = false;
 float yawPositionPIDDerivativeDisplay = 0.0f;
 
 void GimbalPatrolCommand::updateYawPatrolTarget() {
-    yawPositionPIDErrorDisplay = this->controller->allOnlineYawControllersSettled(modm::toRadian(15.0f), 0);
+    yawPositionPIDErrorDisplay = controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),0);
 
-    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f), 0)) {
+    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),0)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
             // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate
@@ -101,7 +113,7 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 
     // This function doesn't exist anymore, presumably a transformation helper function now
     float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-        drivers->kinematicInformant.getRobotLocation2D(),
+        /*drivers->kinematicInformant.getRobotLocation2D()*/{0,0,0},
         patrolCoordinates[patrolCoordinateIndex],
         AngleUnit::Radians);
 

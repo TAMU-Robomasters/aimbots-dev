@@ -36,6 +36,7 @@
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -176,6 +177,13 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalPatrolConfig patrolConfig = {
+    .pitchPatrolAmplitude = modm::toRadian(11.0f),
+    .pitchPatrolFrequency = 1.5f * M_PI,
+    .pitchPatrolOffset = -modm::toRadian(11.0f),
+};
+
+
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -203,6 +211,9 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
+
+
+GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -266,7 +277,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {/*&chassisToggleDriveCommand, &gimbalToggleAimCommand*/&gimbalPatrolCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
