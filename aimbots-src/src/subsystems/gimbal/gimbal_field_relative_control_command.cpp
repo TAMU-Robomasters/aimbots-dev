@@ -8,11 +8,13 @@ namespace src::Gimbal {
 GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
-    GimbalControllerInterface* gimbalController)
+    GimbalControllerInterface* gimbalController,
+    std::optional<float> quickTurnOffset)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
-      controller(gimbalController)  //
+      controller(gimbalController),
+      quickTurnOffset(quickTurnOffset)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
@@ -28,14 +30,14 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
-        quickTurnOffset += M_PI_2;
+        quickTurnOffset += this->quickTurnOffset.value_or(M_PI_2);
     }
 
     if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
 
     if (wasEPressed && !drivers->remote.keyPressed(Remote::Key::E)) {
         wasEPressed = false;
-        quickTurnOffset -= M_PI_2;
+        quickTurnOffset -= this->quickTurnOffset.value_or(M_PI_2);
     }
 
     gimbalYawInputDisplay = drivers->controlOperatorInterface.getGimbalYawInput();

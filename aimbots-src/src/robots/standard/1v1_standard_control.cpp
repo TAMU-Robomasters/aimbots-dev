@@ -52,9 +52,9 @@
 #include "subsystems/gui/gui_display.hpp"
 #include "subsystems/gui/gui_display_command.hpp"
 //
+#include "subsystems/barrel_manager/barrel_dormant_command.hpp"
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
-#include "subsystems/barrel_manager/barrel_dormant_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -184,7 +184,6 @@ GimbalPatrolConfig patrolConfig = {
     .pitchPatrolOffset = -modm::toRadian(11.0f),
 };
 
-
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -212,8 +211,6 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-
-
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -238,7 +235,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+    SHOOTER_SPEED_MATRIX[0][0],
+    modm::toRadian(30.0f));
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
@@ -279,7 +277,7 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand/*&gimbalPatrolCommand*/},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalPatrolCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper

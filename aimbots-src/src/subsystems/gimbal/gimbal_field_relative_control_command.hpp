@@ -9,14 +9,18 @@ namespace src::Gimbal {
 
 class GimbalFieldRelativeControlCommand : public tap::control::Command {
 public:
-    GimbalFieldRelativeControlCommand(src::Drivers*, GimbalSubsystem*, GimbalControllerInterface*);
+    GimbalFieldRelativeControlCommand(
+        src::Drivers*,
+        GimbalSubsystem*,
+        GimbalControllerInterface*,
+        std::optional<float> quickTurnOffset = std::nullopt);
 
     char const* getName() const override { return "Gimbal Control Command"; }
 
     void initialize() override;
     void execute() override;
 
-    void setIgnoreQuickTurn(bool ignore) {ignoreQuickTurns = ignore;}
+    void setIgnoreQuickTurn(bool ignore) { ignoreQuickTurns = ignore; }
 
     bool isReady() override;
     bool isFinished() const override;
@@ -27,6 +31,8 @@ private:
 
     GimbalSubsystem* gimbal;
     GimbalControllerInterface* controller;
+
+    std::optional<float> quickTurnOffset;
 
     bool wasQPressed = false;
     bool wasEPressed = false;
