@@ -359,8 +359,8 @@ static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
 };
 
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
-    -2830.0f, // x
-    -730.0f, // y
+    -2.830f, // x
+    -0.730f, // y
     0.0f, // z
 };
 
@@ -392,4 +392,3 @@ static constexpr float PITCH_PATROL_AMPLITUDE = modm::toRadian(12.5f);
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
-
