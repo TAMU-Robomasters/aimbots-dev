@@ -1,9 +1,9 @@
 #pragma once
 
+#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/chassis_helper.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
-#include "src/subsystems/chassis/chassis.hpp"
-#include "src/subsystems/chassis/chassis_helper.hpp"
 #include "drivers.hpp"
 
 namespace src::Chassis {
