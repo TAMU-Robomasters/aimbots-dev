@@ -108,7 +108,7 @@ void SentryMatchFiringControlCommand::execute() {
 void SentryMatchFiringControlCommand::end(bool interrupted) {
     // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &stopFeederCommand, interrupted);
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
 }
 
 bool SentryMatchFiringControlCommand::isReady() { return true; }

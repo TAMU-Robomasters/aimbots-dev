@@ -175,12 +175,12 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand,*/ &matchGimbalControlCommand, &matchFiringControlCommand},
+    {&chassisTokyoCommand, &matchGimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 
@@ -193,7 +193,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    {&matchFiringControlCommand/*&dualBarrelsFeederCommand, &runShooterWithFeederCommand*/},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
