@@ -68,6 +68,8 @@ private:
 
     StopShooterCommand stopShooterCommand;
     RunShooterCommand runShooterCommand;
+
+    MilliTimeout shootMinimumTime;
 };
 
 }  // namespace src::Control

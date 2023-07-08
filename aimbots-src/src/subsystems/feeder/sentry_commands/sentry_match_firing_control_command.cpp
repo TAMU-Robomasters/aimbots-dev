@@ -44,6 +44,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
 void SentryMatchFiringControlCommand::initialize() {
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &runShooterCommand);
+    shootMinimumTime.restart(0);
 }
 
 void SentryMatchFiringControlCommand::execute() {
@@ -68,7 +69,7 @@ void SentryMatchFiringControlCommand::execute() {
                 targetDepth);
         }
 
-        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && isErrorCloseEnoughToShoot) {
+        if ((chassisState != src::Chassis::ChassisMatchStates::EVADE && isErrorCloseEnoughToShoot) || !shootMinimumTime.isExpired()) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
@@ -91,9 +92,11 @@ void SentryMatchFiringControlCommand::execute() {
             fullAutoFeederCommand.setSpeed(feederSpeed);
 
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
+            shootMinimumTime.restart(500);
             // }
         } else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
+            fullAutoFeederCommand.setSpeed(0.0f);
         }
     } else {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);

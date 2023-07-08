@@ -48,8 +48,10 @@ void FullAutoFeederCommand::execute() {
 
 void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); isCommandRunningDisplay = false; }
 
-bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); 
+}
 
-bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); 
+}
 
 }  // namespace src::Feeder

@@ -39,6 +39,8 @@ float bSolDistanceDisplay = 0.0f;
 
 float gimbalPitchInputDisplay = 0.0f;
 
+float currBarrelSpeedDisplay = -1;
+
 float timestampDisplay;
 
 float predictedProjectileSpeed = 0.0f;
@@ -64,7 +66,7 @@ void GimbalChaseCommand::execute() {
     float targetPitchAxisAngle = 0.0f;
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
-
+    // projectileSpeed = 30.0f;
     predictedProjectileSpeed = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =

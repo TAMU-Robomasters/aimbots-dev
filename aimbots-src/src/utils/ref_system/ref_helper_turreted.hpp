@@ -99,7 +99,7 @@ private:
 
     int heatGainedPerProjectile[2] = {10, 100};  //{17mm, 42mm}
 
-    int safetyHeatTolerance = 0;
+    int safetyHeatTolerance;
 };
 
 }  // namespace src::Utils

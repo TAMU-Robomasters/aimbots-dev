@@ -25,6 +25,7 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/sentry_commands/sentry_match_firing_control_command.hpp"
 
 //
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
@@ -34,6 +35,8 @@
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/sentry_commands/sentry_match_gimbal_control_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -67,7 +70,7 @@ BarrelID currentBarrel = BARREL_IDS[0];
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 
-//ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
+ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::SETUP;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
@@ -83,17 +86,7 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Ballistics Solver
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
-// Match Controllers ------------------------------------------------
-// SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, chassisMatchState);
-// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
-/*SentryMatchGimbalControlCommand matchGimbalControlCommand(
-    drivers(),
-    &gimbal,
-    &gimbalController,
-    &refHelper,
-    currentBarrel,
-    &ballisticsSolver,
-    500.0f);*/
+
 
 SnapSymmetryConfig defaultSnapConfig = {
     .numSnapPositions = CHASSIS_SNAP_POSITIONS,
@@ -115,6 +108,24 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalPatrolConfig patrolConfig = {
+    .pitchPatrolAmplitude = modm::toRadian(11.0f),
+    .pitchPatrolFrequency = 1.5f * M_PI,
+    .pitchPatrolOffset = -modm::toRadian(11.0f),
+};
+
+// Match Controllers ------------------------------------------------
+SentryMatchFiringControlCommand matchFiringControlCommand(drivers(), &feeder, &shooter, &refHelper, &ballisticsSolver, &gimbalFieldRelativeController, chassisMatchState);
+// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    patrolConfig,
+    500);
+
 //SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL, &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
@@ -122,14 +133,7 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
-/*GimbalPatrolCommand gimbalPatrolCommand(
-    drivers(),
-    &gimbal,
-    &gimbalController,
-    PITCH_PATROL_AMPLITUDE,
-    PITCH_PATROL_FREQUENCY,
-    PITCH_PATROL_OFFSET,
-    PITCH_OFFSET_ANGLE);*/  // TODO: Add constants to the sentry file and place them here
+GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -171,12 +175,12 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables both chassis and gimbal manual control
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalChaseCommand /*&gimbalFieldRelativeControlCommand2*/},
+    {/*&chassisTokyoCommand,*/ &matchGimbalControlCommand, &matchFiringControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 

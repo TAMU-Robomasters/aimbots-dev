@@ -239,7 +239,7 @@ static constexpr uint16_t shooter_speed_array[2] = {30, 7050};  // {m/s, rpm}
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 1000.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 750.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
 
@@ -347,9 +347,9 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  */
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.0f, // x
-    0.0f, // y
-    0.0f,  // z
+    0.0002f, // x
+    0.04894f, // y
+    0.084879f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
@@ -364,10 +364,11 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
     0.0f, // z
 };
 
+//0.04301 how far apart barrels are
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.0f, //x = 0.04498
+    0.01785f - (0.5f * 0.04301f), //x = 0.04498
     0.0f, //y - does not matter too much because projectile comes out this axis
-    0.0f, //z = 0.01683
+    -0.00018f, //z = 0.01683
 };
 // clang-format on
 
@@ -392,3 +393,36 @@ static constexpr float PITCH_PATROL_AMPLITUDE = modm::toRadian(12.5f);
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
+
+//Sentry Chassis Travel Waypoints
+static constexpr int NUMBER_OF_WAYPOINTS = 5;
+
+enum waypointName {
+    SENTRY_START = 0,
+    SOUTHEAST_CORRIDOR,
+    EAST_MIDLINE,
+    NORTHEAST_CORRIDOR,
+    BUFF_POINT
+};
+
+static const Vector<float,2> SENTRY_WAYPOINTS[NUMBER_OF_WAYPOINTS] = 
+        {{CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0],CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]}, //Starting Location
+        {-2.50f,-1.75f},  //North-East of starting location
+        {-2.50f, 0.0f},   //Midline on East side of field
+        {-2.50f,1.75f},  //Just past midline of the field, can shoot at enemy reload zone
+        {0.0f,0.0f}}; //Central Buff Zone
+
+static const std::array<waypointName, 3> SETUP_TO_AGGRO = {
+    waypointName::SENTRY_START, 
+    waypointName::SOUTHEAST_CORRIDOR, 
+    waypointName::NORTHEAST_CORRIDOR};
+
+static const std::array<waypointName, 3> AGGRO_TO_CAPTURE = {
+    waypointName::NORTHEAST_CORRIDOR, 
+    waypointName::EAST_MIDLINE, 
+    waypointName::BUFF_POINT};
+
+static const std::array<waypointName, 3> CAPTURE_TO_AGGRO = {
+    waypointName::BUFF_POINT, 
+    waypointName::EAST_MIDLINE, 
+    waypointName::NORTHEAST_CORRIDOR};

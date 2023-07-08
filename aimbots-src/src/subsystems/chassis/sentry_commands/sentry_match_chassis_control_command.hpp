@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef TARGET_SENTRY
+
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
@@ -7,11 +9,19 @@
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
+
 #include "drivers.hpp"
 
 namespace src::Chassis {
 
-enum ChassisMatchStates { NONE = 0, PATROL = 1, EVADE = 2, HEAL = 3 };
+enum ChassisMatchStates { 
+    SETUP = 0,
+    HEAL,
+    GUARD,
+    AGGRO,
+    CAPTURE,
+    EVADE
+};
 
 class SentryMatchChassisControlCommand : public TapComprisedCommand {
 public:
@@ -46,12 +56,50 @@ private:
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0],
         CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]};  // starting position
 
+    modm::Location2D<float> waypointTarget;
+
     src::Chassis::ChassisMatchStates& chassisState;
+    src::Chassis::ChassisMatchStates lastChassisState;
 
     ChassisAutoNavCommand autoNavCommand;
     ChassisAutoNavTokyoCommand autoNavTokyoCommand;
 
     MilliTimeout evadeTimeout;
+
+    int MATCH_TIME_LENGTH = 300; //in seconds
+    int CENTRAL_BUFF_OPEN = 75;
+    int matchTimer = 0; //in seconds
+
+    int pathingStep = 0;
+
+    MilliTimeout aggroTimer;
+
+    int BUFF_POINT_REFRESH_TIME = 7500; //in milliseconds
+    MilliTimeout buffPointTimer;
+
+
+    bool engageTokyo = false;
+
+    int currentPathLength = 0;
+    int currPatrolIndex = 0;
+
+    void inline updateChassisState(ChassisMatchStates newState) {
+        currPatrolIndex = 0;
+        lastChassisState = chassisState;
+        chassisState = newState;
+    }
+
+    bool inline isNavSettled() {
+        if (comprisedCommandScheduler.isCommandScheduled(&autoNavCommand)) {
+            return autoNavCommand.isSettled();
+        }
+        else {
+            return autoNavTokyoCommand.isSettled();
+        }
+    }
+
 };
 
 }  // namespace src::Chassis
+
+#endif

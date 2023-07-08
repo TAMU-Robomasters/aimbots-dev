@@ -28,6 +28,7 @@ struct SnapSymmetryConfig {
     uint8_t numSnapPositions = 1;
     float snapAngle = 0.0f;
 };
+
 namespace Helper {
 /**
  * @brief Gets the user's desired movement from the control operator interface from [-1, 1]

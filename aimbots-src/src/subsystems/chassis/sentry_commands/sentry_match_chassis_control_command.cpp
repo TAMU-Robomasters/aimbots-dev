@@ -1,5 +1,7 @@
 #include "sentry_match_chassis_control_command.hpp"
 
+#ifdef TARGET_SENTRY
+
 namespace src::Chassis {
 
 static constexpr float MAX_SAFE_DPS = 20.0f;
@@ -34,78 +36,71 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
 
 void SentryMatchChassisControlCommand::initialize() {
     //chassis->setDefaultCommand(dynamic_cast<TapCommand*>(&chassisAutoNavCommand));
-    chassisState = ChassisMatchStates::PATROL;
+    chassisState = ChassisMatchStates::SETUP;
 
-    modm::Location2D<float> locationStart({-5.300f, -0.176f}, modm::toRadian(0.0f));
-    modm::Location2D<float> locationA(TARGET_A, modm::toRadian(0.0f));
-    modm::Location2D<float> locationB(TARGET_B, modm::toRadian(0.0f));
-    modm::Location2D<float> locationHeal(TARGET_HEAL, modm::toRadian(0.0f));
+    //Because this is set in intialize, only waypointTarget should need to be updated to move the robot
+    waypointTarget.setPosition(SENTRY_WAYPOINTS[waypointName::SENTRY_START]);
+    autoNavCommand.setTargetLocation(waypointTarget);
+    autoNavTokyoCommand.setTargetLocation(waypointTarget);
 
-    autoNavCommand.setTargetLocation(locationStart);
-    scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
+    //scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
 }
 
 float dpsDisplay = 0.0f;
-float currPatrolTarget = 0;  // 0 is A, 1 is B
 
 void SentryMatchChassisControlCommand::execute() {
-    //TODO: This is cringe, ask Sid for help fixing later
-    modm::Location2D<float> locationA(TARGET_A, modm::toRadian(0.0f));
-    modm::Location2D<float> locationB(TARGET_B, modm::toRadian(0.0f));
-    modm::Location2D<float> locationHeal(TARGET_HEAL, modm::toRadian(0.0f));
 
+    if (static_cast<int>(refHelper->getGameStage()) == 4) {
+        matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
-    if (static_cast<int>(refHelper->getGameStage()) < 2 || static_cast<int>(refHelper->getGameStage()) > 4) {
-        descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, true);
-    } else {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-        // auto gameData = drivers->refSerial.getGameData();
-
+        if (engageTokyo) {
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand);
+        }
+        else {   
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
+        }
+        
         float receivedDPS = refHelper->getReceivedDPS();
-        // auto gameState = gameData.gameStage;
 
         dpsDisplay = receivedDPS;
 
-        if (receivedDPS >= MAX_SAFE_DPS && chassisState != ChassisMatchStates::EVADE) {
-            chassisState = ChassisMatchStates::EVADE;
-            evadeTimeout.restart(EVADE_DURATION_MS);
-        } else if (refHelper->getCurrHealthPercentage() < .3 && chassisState != ChassisMatchStates::HEAL) {
-            chassisState = ChassisMatchStates::HEAL;
-        } else if (chassisState != ChassisMatchStates::PATROL) {
-            chassisState = ChassisMatchStates::PATROL;
+        //Logic for state swapping
+        if (matchTimer > CENTRAL_BUFF_OPEN && (buffPointTimer.isExpired() || buffPointTimer.isStopped())) {
+            updateChassisState(ChassisMatchStates::CAPTURE);
         }
+        else {
+            updateChassisState(ChassisMatchStates::AGGRO);
+        }
+
+        //What to do in each state
         switch (chassisState) {
-            case ChassisMatchStates::EVADE:
-                if (!evadeTimeout.isExpired()) {
-                    //scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavEvadeCommand);
-                } else {
-                    //descheduleIfScheduled(this->comprisedCommandScheduler, &sentryChassisAutoNavEvadeCommand, true);
-                    chassisState = ChassisMatchStates::NONE;
-                }
-                // schedule evade command if not scheduled & not timed out
-                // if timed out, remove from scheduler and change state to none
+            case ChassisMatchStates::SETUP:
+                //Do nothing currently
 
-            case ChassisMatchStates::HEAL:
-                autoNavCommand.setTargetLocation(locationHeal);
-                currPatrolTarget = 1;
-
-            case ChassisMatchStates::PATROL:  // Do we want to stop patrolling if we see someone and start shooting?
-                if (autoNavCommand.isSettled()) {
-                    if (currPatrolTarget == 0) {
-                        currPatrolTarget = 1;
-                        autoNavCommand.setTargetLocation(locationB);
-                    } else if (currPatrolTarget == 1) {
-                        currPatrolTarget = 0;
-                        autoNavCommand.setTargetLocation(locationA);
-                    }
-                } else {
-                    if (currPatrolTarget == 0) {
-                        autoNavCommand.setTargetLocation(locationA);
-                    } else if (currPatrolTarget == 1) {
-                        autoNavCommand.setTargetLocation(locationB);
-                    }
+            case ChassisMatchStates::CAPTURE:
+                if (lastChassisState == ChassisMatchStates::AGGRO) {
+                    waypointTarget.setPosition(SENTRY_WAYPOINTS[AGGRO_TO_CAPTURE[currPatrolIndex]]);
+                    currentPathLength = AGGRO_TO_CAPTURE.size();
                 }
+
+            case ChassisMatchStates::AGGRO:
+                if (lastChassisState == ChassisMatchStates::SETUP) {
+                    waypointTarget.setPosition(SENTRY_WAYPOINTS[SETUP_TO_AGGRO[currPatrolIndex]]);
+                    currentPathLength = SETUP_TO_AGGRO.size();
+                }
+                if (lastChassisState == ChassisMatchStates::CAPTURE) {
+                    waypointTarget.setPosition(SENTRY_WAYPOINTS[CAPTURE_TO_AGGRO[currPatrolIndex]]);
+                    currentPathLength = CAPTURE_TO_AGGRO.size();
+                }
+                
         }
+        if (isNavSettled() && currPatrolIndex < (currentPathLength-1)) {
+            currPatrolIndex++;
+        }
+
+    } else {
+        descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, true);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, true);
     }
 
     this->comprisedCommandScheduler.run();
@@ -113,7 +108,8 @@ void SentryMatchChassisControlCommand::execute() {
 
 void SentryMatchChassisControlCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, interrupted);
-    chassisState = NONE;
+    descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, interrupted);
+    chassisState = ChassisMatchStates::SETUP;
 }
 
 bool SentryMatchChassisControlCommand::isReady() { return true; }
@@ -121,3 +117,5 @@ bool SentryMatchChassisControlCommand::isReady() { return true; }
 bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
+
+#endif

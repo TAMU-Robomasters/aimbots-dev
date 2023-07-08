@@ -18,7 +18,7 @@ GimbalPatrolCommand::GimbalPatrolCommand(
           {modm::Location2D<float>({5.0f, -3.0f}, 0.0f),
            modm::Location2D<float>({-1.425, -1.131}, 0.0f),
            modm::Location2D<float>({-3.25f, 2.5f}, 0.0f)}),
-      patrolCoordinateTimes({1000, 1000, 1000})
+      patrolCoordinateTimes({1200, 1200, 1200})
 //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -76,7 +76,7 @@ float yawPositionPIDDerivativeDisplay = 0.0f;
 void GimbalPatrolCommand::updateYawPatrolTarget() {
     yawPositionPIDErrorDisplay = controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),0);
 
-    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),0)) {
+    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),50)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
             // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate

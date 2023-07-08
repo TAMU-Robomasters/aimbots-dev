@@ -161,7 +161,7 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
             return true;
     }
 
-    return (lastHeat + heatGainedPerProjectile[projectileType - 1] + safetyHeatTolerance < heatLimit) /*||
+    return ((lastHeat + heatGainedPerProjectile[projectileType - 1] + safetyHeatTolerance) < heatLimit) /*||
            (heatGainedPerProjectile[projectileType - 1] >= heatLimit)*/;  //-1 is to align array index with enum values
 }
 
