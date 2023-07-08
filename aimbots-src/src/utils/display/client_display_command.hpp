@@ -46,9 +46,9 @@ public:
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
         const HopperSubsystem *hopper,
-        const GimbalSubsystem &gimbal,
+        //const GimbalSubsystem &gimbal,
         const ChassisSubsystem &chassis  //,
-        // BallisticsSolver &ballisticsSolver
+       // BallisticsSolver &ballisticsSolver
     );
 
     const char *getName() const override { return "Client Display"; }
@@ -68,7 +68,7 @@ private:
 
     // hud elements
     BooleanHUDIndicators booleanHudIndicators;
-    ChassisOrientationIndicator chassisOrientation;
+    // ChassisOrientationIndicator chassisOrientation;
     ReticleIndicator reticleIndicator;
     // CVDisplay cvDisplay;
 

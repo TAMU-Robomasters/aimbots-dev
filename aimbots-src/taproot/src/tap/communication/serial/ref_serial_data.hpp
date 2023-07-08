@@ -438,8 +438,7 @@ public:
          *
          * Source: https://bbs.robomaster.com/forum.php?mod=viewthread&tid=9120
          */
-        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1280;
-
+        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 100;
         /**
          * Get the max wait time after which you can send more data to the client. Sending faster
          * than this time may cause dropped packets.
