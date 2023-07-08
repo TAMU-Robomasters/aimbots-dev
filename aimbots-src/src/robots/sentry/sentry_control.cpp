@@ -67,7 +67,7 @@ BarrelID currentBarrel = BARREL_IDS[0];
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 
-// src::Chassis::ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
+//ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::NONE;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
@@ -115,7 +115,7 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL, &refHelper);
+//SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL, &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -176,7 +176,7 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalChaseCommand /*&gimbalFieldRelativeControlCommand2*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 
