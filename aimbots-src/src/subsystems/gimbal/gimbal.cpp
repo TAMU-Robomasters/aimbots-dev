@@ -65,6 +65,7 @@ void GimbalSubsystem::refresh() {
             // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
         }
+
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
 

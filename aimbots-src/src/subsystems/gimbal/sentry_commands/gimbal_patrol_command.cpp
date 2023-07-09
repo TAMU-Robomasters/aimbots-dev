@@ -113,7 +113,7 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 
     // This function doesn't exist anymore, presumably a transformation helper function now
     float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-        /*drivers->kinematicInformant.getRobotLocation2D()*/{0,0,0},
+        /*drivers->kinematicInformant.getRobotLocation2D()*/{-2.83,-0.73,0},
         patrolCoordinates[patrolCoordinateIndex],
         AngleUnit::Radians);
 
