@@ -43,7 +43,7 @@ float currBarrelSpeedDisplay = -1;
 
 float timestampDisplay;
 
-float predictedProjectileSpeed = 0.0f;
+float predictedProjectileSpeedDisplay = 0.0f;
 
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
@@ -67,10 +67,10 @@ void GimbalChaseCommand::execute() {
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
     // projectileSpeed = 30.0f;
-    predictedProjectileSpeed = projectileSpeed;
+    predictedProjectileSpeedDisplay = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
+        ballisticsSolver->solve(refHelper->getPredictedProjectileSpeed());  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles

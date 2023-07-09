@@ -57,7 +57,7 @@ void GimbalPatrolCommand::execute() {
     controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
     controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-    controller->runYawController();
+    controller->runYawController(6.0f);
     controller->runPitchController();  // That parameter is unused and should be unecessary, but complier is strange
 }
 
@@ -74,9 +74,9 @@ bool yawPositionPIDErrorDisplay = false;
 float yawPositionPIDDerivativeDisplay = 0.0f;
 
 void GimbalPatrolCommand::updateYawPatrolTarget() {
-    yawPositionPIDErrorDisplay = controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),0);
+    yawPositionPIDErrorDisplay = controller->allOnlineYawControllersSettled(modm::toRadian(15.0f), 0);
 
-    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f),50)) {
+    if (controller->allOnlineYawControllersSettled(modm::toRadian(15.0f), 500)) {
         if (patrolTimer.execute()) {
             patrolCoordinateIndex += patrolCoordinateIncrement;
             // if we're settled at the target angle, and the timer expires for the first time, bounce the patrol coordinate
@@ -113,7 +113,7 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 
     // This function doesn't exist anymore, presumably a transformation helper function now
     float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-        /*drivers->kinematicInformant.getRobotLocation2D()*/{0,0,0},
+        /*drivers->kinematicInformant.getRobotLocation2D()*/ {0, 0, 0},
         patrolCoordinates[patrolCoordinateIndex],
         AngleUnit::Radians);
 

@@ -172,10 +172,10 @@ TokyoConfig defaultTokyoConfig = {
 };
 
 SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
+    .minSpinRateModifier = 0.65f,
     .maxSpinRateModifier = 1.0f,
     .minSpinRateModifierDuration = 500,
-    .maxSpinRateModifierDuration = 3000,
+    .maxSpinRateModifierDuration = 1000,
 };
 
 GimbalPatrolConfig patrolConfig = {

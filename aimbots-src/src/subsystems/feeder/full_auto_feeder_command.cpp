@@ -29,6 +29,7 @@ void FullAutoFeederCommand::initialize() {
 
 uint16_t lastHeatDisplay = 0;
 uint16_t heatLimitDisplay = 0;
+float lastProjectileSpeedDisplay = 0.0f;
 
 void FullAutoFeederCommand::execute() {
     isCommandRunningDisplay = true;
@@ -44,14 +45,16 @@ void FullAutoFeederCommand::execute() {
 
     lastHeatDisplay = refHelper->getCurrBarrelHeat();
     heatLimitDisplay = refHelper->getCurrBarrelLimit();
+    lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
 }
 
-void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); isCommandRunningDisplay = false; }
-
-bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); 
+void FullAutoFeederCommand::end(bool) {
+    feeder->setTargetRPM(0.0f);
+    isCommandRunningDisplay = false;
 }
 
-bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); 
-}
+bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
+
+bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
 
 }  // namespace src::Feeder
