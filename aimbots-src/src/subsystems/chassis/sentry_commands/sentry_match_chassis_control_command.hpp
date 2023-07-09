@@ -5,9 +5,12 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
+#include "subsystems/chassis/chassis_tokyo_command.hpp"
 #include "utils/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
+
+#include "subsystems/gimbal/gimbal.hpp"
 
 
 #include "drivers.hpp"
@@ -28,6 +31,7 @@ public:
     SentryMatchChassisControlCommand(
         src::Drivers*,
         ChassisSubsystem*,
+        src::Gimbal::GimbalSubsystem*,
         ChassisMatchStates& chassisState,
         src::Utils::RefereeHelperTurreted* refHelper,
         const SnapSymmetryConfig& snapSymmetryConfig,
@@ -47,6 +51,10 @@ public:
 private:
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
+    src::Gimbal::GimbalSubsystem* gimbal;
+
+    src::Chassis::ChassisMatchStates& chassisState;
+
     src::Utils::RefereeHelperTurreted* refHelper;
 
     Vector<float, 2> TARGET_A = {-5.300f, -0.176f};    // Point A near base
@@ -58,11 +66,13 @@ private:
 
     modm::Location2D<float> waypointTarget;
 
-    src::Chassis::ChassisMatchStates& chassisState;
+    
     src::Chassis::ChassisMatchStates lastChassisState;
 
     ChassisAutoNavCommand autoNavCommand;
     ChassisAutoNavTokyoCommand autoNavTokyoCommand;
+
+    ChassisTokyoCommand tokyoCommand;
 
     MilliTimeout evadeTimeout;
 

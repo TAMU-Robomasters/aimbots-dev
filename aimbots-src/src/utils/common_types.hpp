@@ -98,6 +98,8 @@ using Remote = tap::communication::serial::Remote;
 
 using BarrelID = tap::communication::serial::RefSerialData::Rx::MechanismID;
 
+using GamePeriod = tap::communication::serial::RefSerialData::Rx::GameStage;
+
 using PeriodicMilliTimer = tap::arch::PeriodicMilliTimer;
 using PeriodicMicroTimer = tap::arch::PeriodicMicroTimer;
 using MilliTimeout = tap::arch::MilliTimeout;

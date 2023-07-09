@@ -47,9 +47,13 @@ void SentryMatchFiringControlCommand::initialize() {
     shootMinimumTime.restart(0);
 }
 
+bool timerDisplay = false;
+bool timerStopped = false;
+bool conditionDisplay = false;
+
 void SentryMatchFiringControlCommand::execute() {
     // if (1) {
-    if (drivers->cvCommunicator.isJetsonOnline()) {
+    if (drivers->cvCommunicator.isJetsonOnline() && (refHelper->getGameStage()) == GamePeriod::IN_GAME) {
         // Assuming the cvState is found, we need to determine if the turret is within an armor panel's distance
         bool isErrorCloseEnoughToShoot = false;
         float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetY;
@@ -69,8 +73,15 @@ void SentryMatchFiringControlCommand::execute() {
                 targetDepth);
         }
 
-        if ((chassisState != src::Chassis::ChassisMatchStates::EVADE &&
-             isErrorCloseEnoughToShoot) /* || !shootMinimumTime.isExpired() */) {
+        timerDisplay = !shootMinimumTime.isExpired();
+        timerStopped = shootMinimumTime.isStopped();
+        conditionDisplay = isErrorCloseEnoughToShoot;
+
+        if (isErrorCloseEnoughToShoot) {
+            shootMinimumTime.restart(500);
+        }
+
+        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && !shootMinimumTime.isExpired()) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
 
@@ -93,7 +104,7 @@ void SentryMatchFiringControlCommand::execute() {
             fullAutoFeederCommand.setSpeed(feederSpeed);
 
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
-            shootMinimumTime.restart(500);
+            
             // }
         } else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
