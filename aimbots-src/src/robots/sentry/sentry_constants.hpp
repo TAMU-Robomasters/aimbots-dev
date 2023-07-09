@@ -234,7 +234,7 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
 // clang-format off
 // Sentry shoots at the speed of death
-static constexpr uint16_t shooter_speed_array[2] = {30, 7050};  // {m/s, rpm}
+static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -280,8 +280,8 @@ static constexpr float WHEELBASE_WIDTH = 0.357f;  // updated for 2023
 
 static constexpr float WHEELBASE_LENGTH = 0.357f;
 
-static constexpr float GIMBAL_X_OFFSET = 0.0f;
-static constexpr float GIMBAL_Y_OFFSET = 0.0f;
+static constexpr float GIMBAL_X_OFFSET = -0.05f;
+static constexpr float GIMBAL_Y_OFFSET = -0.05f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
@@ -289,14 +289,14 @@ static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
 static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
-static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
+static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 15.0f;
 
 /**
  * @brief Power constants for chassis
  */
 static constexpr int MIN_WHEEL_SPEED_SINGLE_MOTOR = 4000;
 static constexpr int MAX_WHEEL_SPEED_SINGLE_MOTOR = 8000;
-static constexpr int MIN_CHASSIS_POWER = 40;
+static constexpr int MIN_CHASSIS_POWER = 50;
 static constexpr int MAX_CHASSIS_POWER = 120;
 static constexpr int WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE =
     (MAX_WHEEL_SPEED_SINGLE_MOTOR - MIN_WHEEL_SPEED_SINGLE_MOTOR) / (MAX_CHASSIS_POWER - MIN_CHASSIS_POWER);
@@ -394,35 +394,29 @@ static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
 
-//Sentry Chassis Travel Waypoints
+// Sentry Chassis Travel Waypoints
 static constexpr int NUMBER_OF_WAYPOINTS = 5;
 
-enum waypointName {
-    SENTRY_START = 0,
-    SOUTHEAST_CORRIDOR,
-    EAST_MIDLINE,
-    NORTHEAST_CORRIDOR,
-    BUFF_POINT
-};
+enum waypointName { SENTRY_START = 0, SOUTHEAST_CORRIDOR, EAST_MIDLINE, NORTHEAST_CORRIDOR, BUFF_POINT };
 
-static const Vector<float,2> SENTRY_WAYPOINTS[NUMBER_OF_WAYPOINTS] = 
-        {{CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0],CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]}, //Starting Location
-        {-2.50f,-1.75f},  //North-East of starting location
-        {-2.50f, 0.0f},   //Midline on East side of field
-        {-2.50f,1.75f},  //Just past midline of the field, can shoot at enemy reload zone
-        {0.0f,0.0f}}; //Central Buff Zone
+static const Vector<float, 2> SENTRY_WAYPOINTS[NUMBER_OF_WAYPOINTS] = {
+    {CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0], CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]},  // Starting Location
+    {-2.50f, -1.75f},  // North-East of starting location
+    {-2.50f, 0.0f},    // Midline on East side of field
+    {-2.50f, 1.75f},   // Just past midline of the field, can shoot at enemy reload zone
+    {0.0f, 0.0f}};     // Central Buff Zone
 
 static const std::array<waypointName, 3> SETUP_TO_AGGRO = {
-    waypointName::SENTRY_START, 
-    waypointName::SOUTHEAST_CORRIDOR, 
+    waypointName::SENTRY_START,
+    waypointName::SOUTHEAST_CORRIDOR,
     waypointName::NORTHEAST_CORRIDOR};
 
 static const std::array<waypointName, 3> AGGRO_TO_CAPTURE = {
-    waypointName::NORTHEAST_CORRIDOR, 
-    waypointName::EAST_MIDLINE, 
+    waypointName::NORTHEAST_CORRIDOR,
+    waypointName::EAST_MIDLINE,
     waypointName::BUFF_POINT};
 
 static const std::array<waypointName, 3> CAPTURE_TO_AGGRO = {
-    waypointName::BUFF_POINT, 
-    waypointName::EAST_MIDLINE, 
+    waypointName::BUFF_POINT,
+    waypointName::EAST_MIDLINE,
     waypointName::NORTHEAST_CORRIDOR};

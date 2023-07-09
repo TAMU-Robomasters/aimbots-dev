@@ -105,7 +105,7 @@ float ShooterSubsystem::getMotorSpeed(MotorIndex motorIdx) const {
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info from it
         float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
-        float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
+        float PIDOut = velocityPIDs[motorIdx][0]->runController(err, motors[motorIdx][0]->getTorque());
         setDesiredOutput(motorIdx, PIDOut);
     }
 }

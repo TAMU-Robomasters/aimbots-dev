@@ -15,7 +15,7 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers)
     : drivers(drivers)
 #ifndef TARGET_TURRET
       ,
-      chassisKFOdometry(CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getX(), CHASSIS_START_POSITION_RELATIVE_TO_WORLD.getY())
+      chassisKFOdometry(-2.830f, -0.730f)
 #endif
 {
 }
