@@ -56,9 +56,9 @@ private:
 
     uint32_t commandStartTime = 0;
 
-    static constexpr size_t NUM_PATROL_LOCATIONS = 3;
-    Vector<modm::Location2D<float>, NUM_PATROL_LOCATIONS> patrolCoordinates;
-    Vector<uint32_t, NUM_PATROL_LOCATIONS> patrolCoordinateTimes;
+    static constexpr size_t NUM_PATROL_LOCATIONS = 4;
+    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> patrolCoordinates;
+    std::array<uint32_t, NUM_PATROL_LOCATIONS> patrolCoordinateTimes;
 
     MilliTimeout patrolTimer;
     int patrolCoordinateIndex = 0;

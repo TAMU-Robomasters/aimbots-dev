@@ -124,7 +124,7 @@ SentryMatchFiringControlCommand matchFiringControlCommand(
     &ballisticsSolver,
     &gimbalFieldRelativeController,
     chassisMatchState);
-// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, chassisMatchState);
+SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
@@ -196,7 +196,7 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &matchGimbalControlCommand},
+    {/*&chassisTokyoCommand,*/&matchChassisControlCommand, &matchGimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only
@@ -208,7 +208,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    {/*&dualBarrelsFeederCommand, &runShooterWithFeederCommand*/&matchFiringControlCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

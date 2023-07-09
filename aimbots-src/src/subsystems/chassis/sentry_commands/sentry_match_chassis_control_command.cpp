@@ -10,6 +10,7 @@ static constexpr uint32_t EVADE_DURATION_MS = 4000;
 SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
+    src::Gimbal::GimbalSubsystem* gimbal,
     ChassisMatchStates& chassisState,
     src::Utils::RefereeHelperTurreted* refHelper,
     const SnapSymmetryConfig& snapSymmetryConfig,
@@ -19,6 +20,7 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
     : TapComprisedCommand(drivers),
       drivers(drivers),
       chassis(chassis),
+      gimbal(gimbal),
       chassisState(chassisState),
       refHelper(refHelper),
       autoNavCommand(drivers, chassis, defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig),
@@ -29,6 +31,7 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
           tokyoConfig,
           randomizeSpinRate,
           randomizerConfig),  // velocity ramp value
+      tokyoCommand(drivers, chassis, gimbal, tokyoConfig, 0, randomizeSpinRate, randomizerConfig),
       evadeTimeout(EVADE_DURATION_MS) {
     addSubsystemRequirement(chassis);
     this->comprisedCommandScheduler.registerSubsystem(chassis);
@@ -50,8 +53,9 @@ float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
 
-    if (static_cast<int>(refHelper->getGameStage()) == 4) {
-        matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
+    if (refHelper->getGameStage() == GamePeriod::COUNTDOWN || refHelper->getGameStage() == GamePeriod::IN_GAME) {
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
+        /*matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (engageTokyo) {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand);
@@ -96,11 +100,12 @@ void SentryMatchChassisControlCommand::execute() {
         }
         if (isNavSettled() && currPatrolIndex < (currentPathLength-1)) {
             currPatrolIndex++;
-        }
+        }*/
 
     } else {
         descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, true);
         descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, true);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, true);
     }
 
     this->comprisedCommandScheduler.run();
@@ -109,6 +114,7 @@ void SentryMatchChassisControlCommand::execute() {
 void SentryMatchChassisControlCommand::end(bool interrupted) {
     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, interrupted);
     chassisState = ChassisMatchStates::SETUP;
 }
 

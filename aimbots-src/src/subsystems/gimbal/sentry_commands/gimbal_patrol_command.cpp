@@ -15,10 +15,12 @@ GimbalPatrolCommand::GimbalPatrolCommand(
       controller(gimbalController),
       patrolConfig(patrolConfig),
       patrolCoordinates(
-          {modm::Location2D<float>({5.0f, -3.0f}, 0.0f),
-           modm::Location2D<float>({-1.425, -1.131}, 0.0f),
-           modm::Location2D<float>({-3.25f, 2.5f}, 0.0f)}),
-      patrolCoordinateTimes({1200, 1200, 1200})
+          {modm::Location2D<float>({-1.5f, -2.75f}, 0.0f), //5, -3, 0
+           modm::Location2D<float>({-2.0f, -0.5f}, 0.0f), // -1.425, -1.131, 0
+           modm::Location2D<float>({-3.0f, 3.0f}, 0.0f),
+           modm::Location2D<float>({-4.75f, 1.5f}, 0.0f)   // -3.25, 2.5, 0
+           }), //-2, -0.5
+      patrolCoordinateTimes({1500, 600, 1000, 1500})
 //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -113,9 +115,10 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 
     // This function doesn't exist anymore, presumably a transformation helper function now
     float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-        /*drivers->kinematicInformant.getRobotLocation2D()*/ {0, 0, 0},
+        /*drivers->kinematicInformant.getRobotLocation2D()*/{-2.83,-0.73,0},
         patrolCoordinates[patrolCoordinateIndex],
         AngleUnit::Radians);
+
 
     xy_angleDisplay = modm::toDegree(zAngle);
 
