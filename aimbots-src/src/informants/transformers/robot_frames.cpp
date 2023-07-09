@@ -49,9 +49,9 @@ void RobotFrames::updateFrames(
         rotationMatrix(yawChassisRelative, Z_AXIS, angleUnit) *
         rotationMatrix(pitchChassisRelative, X_AXIS, angleUnit);  // gimbal to chassis rotation
 
-    this->camera_origin_relative_to_chassis_origin =
-        TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN + this->gimbal_orientation_relative_to_chassis_orientation *
-                                                       CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;  // also gimbal to chassis
+    // this->camera_origin_relative_to_chassis_origin =
+    //     TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN + this->gimbal_orientation_relative_to_chassis_orientation *
+    //                                                    CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;  // also gimbal to chassis
 
     gimbalFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation);
     gimbalIMUFrame.setOrientation(gimbal_orientation_relative_to_chassis_orientation * gimbalIMUOrientation);

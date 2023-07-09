@@ -36,12 +36,16 @@ public:
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
+    uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay; }
+
     bool isLastFrameStale() const;
 
 private:
     src::Drivers* drivers;
 
     static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
+
+    uint32_t lastFrameCaptureDelay = 0;
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
 

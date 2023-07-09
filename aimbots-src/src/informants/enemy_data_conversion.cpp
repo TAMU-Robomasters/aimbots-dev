@@ -39,6 +39,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
 
+    lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
+    drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
+
     src::Informants::Transformers::CoordinateFrame gimbalFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
 
@@ -54,6 +57,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     src::Informants::Transformers::CoordinateFrame chassisFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
 
+    src::Informants::Transformers::CoordinateFrame fieldFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::FIELD_FRAME);
+
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
     VisionTimedPosition currentData{
@@ -65,7 +71,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
 
-    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay + plateTimeOffsetDisplay);
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
     VisionTimedPosition targetPositionWithoutLagCompensation{
@@ -147,7 +152,7 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005);
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 
@@ -157,16 +162,20 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     targetPositionYFutureDisplay = yPlate.getX();
     targetVelocityYFutureDisplay = yPlate.getY();
+
     targetAccelerationYFutureDisplay = yPlate.getZ();
 
     targetPositionZFutureDisplay = zPlate.getX();
     targetVelocityZFutureDisplay = zPlate.getY();
+
     targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
-        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        // .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
+        .velocity = Vector3f(0, 0, 0),
+        // .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        .acceleration = Vector3f(0, 0, 0),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
     };
 }

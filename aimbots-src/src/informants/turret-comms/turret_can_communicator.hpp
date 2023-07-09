@@ -13,7 +13,7 @@ static constexpr uint32_t COMMS_DISCONNECTED_TIMEOUT = 1000;
 
 class TurretCommunicator {
     static constexpr float ANGLE_PRECISION_FACTOR = 10000.0f;  // Max input before clipping = 32'767 / 10000 = +-3.276 rads
-    static constexpr float LINEAR_PRECISION_FACTOR = 1000.0f;  // Max input before clipping = 32'767 / 1000 = +-32.76 m/s^2
+    static constexpr float LINEAR_PRECISION_FACTOR = 100.0f;   // Max input before clipping = 32'767 / 100 = +-327.6 m/s^2
     static constexpr float CMPS2_TO_MPS2 = 0.01f;
 
     static constexpr uint32_t SEND_TO_TURRET_PERIOD = 300;

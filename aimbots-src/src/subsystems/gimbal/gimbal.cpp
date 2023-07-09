@@ -25,7 +25,7 @@ void GimbalSubsystem::initialize() {
     ForAllPitchMotors(&DJIMotor::initialize);
 
     setAllDesiredYawMotorOutputs(0);
-    setAllDesiredPitchOutputs(0);
+    setAllDesiredPitchMotorOutputs(0);
     ForAllYawMotors(&GimbalSubsystem::setDesiredOutputToYawMotor);
     ForAllPitchMotors(&GimbalSubsystem::setDesiredOutputToPitchMotor);
 }
@@ -83,8 +83,8 @@ void GimbalSubsystem::refresh() {
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getValue();
         currentYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
-        otherYawMotorAngleDisplay = 
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx-1)]->getEncoderUnwrapped()));
+        otherYawMotorAngleDisplay =
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
 
         yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();

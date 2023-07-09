@@ -4,7 +4,7 @@
 
 #define GIMBAL_UNTETHERED
 #define BARREL_SWAP_COMPATIBLE
-#define TURRET_HAS_IMU
+// #define TURRET_HAS_IMU
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -86,7 +86,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 15.0f, //30
+    .kp = 20.0f,  // 30
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -115,8 +115,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 2200.0f,  // 3000
-    .ki = 0.0f,    // 25
+    .kp = 1850.0f,  // 3000
+    .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -246,8 +246,8 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f; //4500
-static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
+static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
+static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

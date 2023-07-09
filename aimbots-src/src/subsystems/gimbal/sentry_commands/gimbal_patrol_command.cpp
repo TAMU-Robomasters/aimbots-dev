@@ -67,7 +67,7 @@ bool GimbalPatrolCommand::isFinished() const { return false; }
 
 void GimbalPatrolCommand::end(bool) {
     gimbal->setAllDesiredYawMotorOutputs(0);
-    gimbal->setAllDesiredPitchOutputs(0);
+    gimbal->setAllDesiredPitchMotorOutputs(0);
 }
 
 bool yawPositionPIDErrorDisplay = false;

@@ -73,7 +73,7 @@ bool GimbalFieldRelativeControlCommand::isFinished() const { return false; }
 
 void GimbalFieldRelativeControlCommand::end(bool) {
     gimbal->setAllDesiredYawMotorOutputs(0);
-    gimbal->setAllDesiredPitchOutputs(0);
+    gimbal->setAllDesiredPitchMotorOutputs(0);
 }
 
 }  // namespace src::Gimbal

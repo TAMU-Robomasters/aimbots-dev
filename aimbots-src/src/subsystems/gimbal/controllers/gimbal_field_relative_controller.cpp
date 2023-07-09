@@ -163,9 +163,9 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
 
         float velocityFeedforward = gravityCompensationFeedforward +
                                     CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*
-             CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
-                 drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
+                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
+                                    CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
+                                        drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
             ;
 
         velocityFeedforward = tap::algorithms::limitVal(velocityFeedforward, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);

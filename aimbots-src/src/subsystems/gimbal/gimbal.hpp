@@ -115,7 +115,7 @@ public:
     void setDesiredPitchMotorOutput(uint8_t PitchIdx, float output) { desiredPitchMotorOutputs[PitchIdx] = output; }
 
     void setAllDesiredYawMotorOutputs(uint16_t output) { desiredYawMotorOutputs.fill(output); }
-    void setAllDesiredPitchOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
+    void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;

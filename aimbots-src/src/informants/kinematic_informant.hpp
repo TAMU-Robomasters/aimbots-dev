@@ -5,6 +5,7 @@
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
 #include "informants/odometry/chassis_kf_odometry.hpp"
+#include "informants/vision/jetson_communicator.hpp"
 #include "transformers/robot_frames.hpp"
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
@@ -12,13 +13,14 @@
 namespace src {
 class Drivers;
 }  // namespace src
+
 namespace src::Gimbal {
 class GimbalSubsystem;
 }
 
 namespace src::Chassis {
 class ChassisSubsystem;
-}
+}  // namespace src::Chassis
 
 using namespace src::Utils;
 
@@ -92,6 +94,12 @@ public:
 
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
+    inline Vector3f getChassisIMUOrientationAtTime(uint32_t time_ms) {
+        // assume 2 ms delay between gimbal updates
+        int index = std::min(time_ms / KINEMATIC_REFRESH_RATE, CHASSIS_IMU_BUFFER_SIZE - 1);
+        return chassisIMUHistoryBuffer[index];
+    }
+
     modm::Location2D<float> getRobotLocation2D() { return chassisKFOdometry.getCurrentLocation2D(); }
 
     modm::Vector2f getRobotVelocity2D() { return chassisKFOdometry.getCurrentVelocity2D(); }
@@ -102,6 +110,11 @@ private:
     tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
+
+    static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
+    static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
+
+    Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;
 
     KinematicStateVector imuLinearXState;
     KinematicStateVector imuLinearYState;

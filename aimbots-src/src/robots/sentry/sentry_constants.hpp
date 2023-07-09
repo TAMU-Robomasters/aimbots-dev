@@ -56,7 +56,7 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(11.0f);
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 1'000.0f,
+    .kp = 20'000.0f,
     .ki = 0.0f,
     .kd = 10.0f,
     .maxICumulative = 0.0f,
@@ -70,7 +70,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 1'000.0f,
+    .kp = 20'000.0f,
     .ki = 0.0f,
     .kd = 100.0f,
     .maxICumulative = 10.0f,

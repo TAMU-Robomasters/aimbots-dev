@@ -24,7 +24,27 @@ public:
     }
 
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
-    void runPitchController(std::optional<float> velocityLimit) override;
+    void runPitchController(std::optional<float> velocityLimit = std::nullopt) override;
+
+    bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
+        bool controllersSettled = false;
+        for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
+            if (gimbal->isYawMotorOnline(i)) {
+                controllersSettled = yawPositionPIDs[i]->isSettled(errTolerance, errTimeout);
+            }
+        }
+        return controllersSettled;
+    }
+
+    bool allOnlinePitchControllersSettled(float errTolerance, uint32_t errTimeout) {
+        bool controllersSettled = false;
+        for (int i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            if (gimbal->isPitchMotorOnline(i)) {
+                controllersSettled = pitchPositionPIDs[i]->isSettled(errTolerance, errTimeout);
+            }
+        }
+        return controllersSettled;
+    }
 
     inline SmoothPID* getYawPositionPID() { return yawPositionPIDs[0]; }
     inline SmoothPID* getPitchPositionPID() { return pitchPositionPIDs[0]; }

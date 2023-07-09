@@ -150,7 +150,9 @@ void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg) {
     uint8_t data = msg.data[0];
 
     if (data & CHASSIS_TO_TURRET_MSG_REQUEST_IMU_CALIBRATION) {
-        drivers->bmi088.requestRecalibration();
+        drivers->leds.set(tap::gpio::Leds::Green, true);
+
+        drivers->kinematicInformant.recalibrateIMU();
     }
 }
 #else

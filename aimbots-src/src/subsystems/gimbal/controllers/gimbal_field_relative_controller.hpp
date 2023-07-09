@@ -56,13 +56,21 @@ public:
         fieldRelativePitchTarget.setValue(targetPitch);
     }
 
-    bool allOnlineYawControllersSettled(
-        float errTolerance,
-        uint32_t errTimeout) {
+    bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
         bool controllersSettled = false;
         for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
             if (gimbal->isYawMotorOnline(i)) {
-                controllersSettled = yawPositionPIDs[i]->isSettled(errTolerance, errTimeout);
+                controllersSettled = yawPositionCascadePIDs[i]->isSettled(errTolerance, errTimeout);
+            }
+        }
+        return controllersSettled;
+    }
+
+    bool allOnlinePitchControllersSettled(float errTolerance, uint32_t errTimeout) {
+        bool controllersSettled = false;
+        for (int i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            if (gimbal->isPitchMotorOnline(i)) {
+                controllersSettled = pitchPositionCascadePIDs[i]->isSettled(errTolerance, errTimeout);
             }
         }
         return controllersSettled;

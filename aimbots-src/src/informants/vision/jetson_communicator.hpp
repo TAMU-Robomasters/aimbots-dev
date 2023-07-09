@@ -36,6 +36,8 @@ public:
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
+    uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
+
     bool isLastFrameStale() const;
 
 private:
