@@ -109,10 +109,11 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
+
 //Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
+    .numSnapPositions = 2,
     .snapAngle = modm::toRadian(0.0f),
 };
 

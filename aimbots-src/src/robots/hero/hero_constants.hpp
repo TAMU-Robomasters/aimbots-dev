@@ -27,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.20f)),   // 177.8
-    wrapTo0To2PIRange(modm::toRadian(199.60f))};  // 198.5
+    wrapTo0To2PIRange(modm::toRadian(147.80f)),   // 177.8
+    wrapTo0To2PIRange(modm::toRadian(189.80f))};  // 198.5 189.80f
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero

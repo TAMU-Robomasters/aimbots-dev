@@ -156,9 +156,13 @@ public:
         return (onlineMotors > 0) ? rpm / onlineMotors : 0.0f;
     }
 
+    inline void setYawAxisAngleOffset(float offset) {
+        yawAxisOffset = offset;
+    }
+
     inline float getCurrentYawAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue()
-                                            : modm::toDegree(currentYawAxisAngle.getValue());
+        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue() + yawAxisOffset
+                                            : modm::toDegree(currentYawAxisAngle.getValue() + yawAxisOffset);
     }
 
     inline float getCurrentPitchAxisAngle(AngleUnit unit) const {
@@ -245,6 +249,8 @@ private:
 
     tap::algorithms::ContiguousFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
     tap::algorithms::ContiguousFloat currentPitchAxisAngle;  // chassis relative, in radians
+
+    float yawAxisOffset = 0; //in radians
 
     tap::algorithms::ContiguousFloat targetYawAxisAngle;    // chassis relative, in radians
     tap::algorithms::ContiguousFloat targetPitchAxisAngle;  // chassis relative, in radians

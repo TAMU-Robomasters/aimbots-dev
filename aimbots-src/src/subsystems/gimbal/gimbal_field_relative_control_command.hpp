@@ -38,6 +38,9 @@ private:
     bool wasEPressed = false;
 
     bool ignoreQuickTurns = false;
+
+    bool forceYawOffset = false;
+    bool wasVPRessed = false;
 };
 
 }  // namespace src::Gimbal
