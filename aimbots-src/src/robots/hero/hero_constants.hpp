@@ -27,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(147.80f)),   // 177.8
-    wrapTo0To2PIRange(modm::toRadian(189.80f))};  // 198.5 189.80f
+    wrapTo0To2PIRange(modm::toRadian(188.90f)),   // 177.8
+    wrapTo0To2PIRange(modm::toRadian(188.75f))};  // 198.5 189.80f
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -86,9 +86,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f, //21
+    .kp = 20.0f, //25
     .ki = 0.0f,
-    .kd = 0.15f, //0.125
+    .kd = 0.05f, //0.15
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
     .tQDerivativeKalman = 1.0f,
@@ -115,7 +115,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1800.0f, //1500
+    .kp = 1300.0f, //1800
     .ki = 20.0f, //20
     .kd = 0.0f,
     .maxICumulative = 2000.0f,

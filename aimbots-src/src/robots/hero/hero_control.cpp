@@ -113,7 +113,7 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 //Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = 2,
+    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
     .snapAngle = modm::toRadian(0.0f),
 };
 
@@ -183,6 +183,7 @@ HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
