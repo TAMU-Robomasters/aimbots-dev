@@ -24,9 +24,9 @@ void GimbalFieldRelativeControlCommand::initialize() {}
 float gimbalYawInputDisplay = 0.0f;
 
 void GimbalFieldRelativeControlCommand::execute() {
-    if (drivers->remote.keyPressed(Remote::Key::V)/*drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID*/ && !forceYawOffset) wasVPRessed = true;
+    /*if (drivers->remote.keyPressed(Remote::Key::V) && !wasVPressed) wasVPRessed = true;
 
-    if (wasVPRessed && !drivers->remote.keyPressed(Remote::Key::V)/*drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID)*/) {
+    if (wasVPRessed && !drivers->remote.keyPressed(Remote::Key::V)) {
         forceYawOffset = !forceYawOffset;
     }
 
@@ -34,7 +34,7 @@ void GimbalFieldRelativeControlCommand::execute() {
         gimbal->setYawAxisAngleOffset(M_PI);
     } else {
         gimbal->setYawAxisAngleOffset(0);
-    }
+    }*/
 
     float quickTurnOffset = 0.0f;
 
