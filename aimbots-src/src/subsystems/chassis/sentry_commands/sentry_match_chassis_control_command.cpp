@@ -38,32 +38,33 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
 }
 
 void SentryMatchChassisControlCommand::initialize() {
-    //chassis->setDefaultCommand(dynamic_cast<TapCommand*>(&chassisAutoNavCommand));
+    // chassis->setDefaultCommand(dynamic_cast<TapCommand*>(&chassisAutoNavCommand));
     chassisState = ChassisMatchStates::SETUP;
 
-    //Because this is set in intialize, only waypointTarget should need to be updated to move the robot
+    // Because this is set in intialize, only waypointTarget should need to be updated to move the robot
     waypointTarget.setPosition(SENTRY_WAYPOINTS[waypointName::SENTRY_START]);
     autoNavCommand.setTargetLocation(waypointTarget);
-    autoNavTokyoCommand.setTargetLocation(waypointTarget);
 
-    //scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
+    modm::Location2D<float> targetLocation({-4.0f, 1.0f}, 0);
+    autoNavTokyoCommand.setTargetLocation(targetLocation);
+
+    // scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
 }
 
 float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
-
-    if (refHelper->getGameStage() == GamePeriod::COUNTDOWN || refHelper->getGameStage() == GamePeriod::IN_GAME) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
+    if (refHelper->getGameStage() == GamePeriod::IN_GAME) {
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand);
         /*matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (engageTokyo) {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand);
         }
-        else {   
+        else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
         }
-        
+
         float receivedDPS = refHelper->getReceivedDPS();
 
         dpsDisplay = receivedDPS;
@@ -96,7 +97,7 @@ void SentryMatchChassisControlCommand::execute() {
                     waypointTarget.setPosition(SENTRY_WAYPOINTS[CAPTURE_TO_AGGRO[currPatrolIndex]]);
                     currentPathLength = CAPTURE_TO_AGGRO.size();
                 }
-                
+
         }
         if (isNavSettled() && currPatrolIndex < (currentPathLength-1)) {
             currPatrolIndex++;
