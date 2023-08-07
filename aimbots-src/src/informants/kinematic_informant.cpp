@@ -190,6 +190,7 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     //     imuAngularKSV[X_AXIS].getAcceleration(),
     //     imuAngularKSV[Y_AXIS].getAcceleration(),
     //     imuAngularKSV[Z_AXIS].getAcceleration()};
+    // was broken so i made it 0, requires investigation on why it's broken (was setting stuff to infinity)
 
     Vector3f alpha = {0.0f, 0.0f, 0.0f};
 

@@ -149,7 +149,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->railDistanceSensor.initialize();
 #endif
 
-#ifdef TURRET_HAS_IMU
+#ifdef TURRET_HAS_IMU  // should probably be initialized for both TARGET_TURRET and chassis boards
     drivers->turretCommunicator.init();
 #endif
 }
@@ -165,7 +165,7 @@ static void updateIo(src::Drivers *drivers) {
 #endif
 
 #ifndef TARGET_TURRET
-    drivers->canRxHandler.pollCanData();
+    drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 
