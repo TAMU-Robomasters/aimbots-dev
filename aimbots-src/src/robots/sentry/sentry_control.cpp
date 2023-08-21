@@ -116,23 +116,24 @@ GimbalPatrolConfig patrolConfig = {
 };
 
 // Match Controllers ------------------------------------------------
-SentryMatchFiringControlCommand matchFiringControlCommand(
-    drivers(),
-    &feeder,
-    &shooter,
-    &refHelper,
-    &ballisticsSolver,
-    &gimbalFieldRelativeController,
-    chassisMatchState);
-SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
-SentryMatchGimbalControlCommand matchGimbalControlCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    patrolConfig,
-    500);
+// SentryMatchFiringControlCommand matchFiringControlCommand(
+//     drivers(),
+//     &feeder,
+//     &shooter,
+//     &refHelper,
+//     &ballisticsSolver,
+//     &gimbalFieldRelativeController,
+//     chassisMatchState);
+// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
+// defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
+// matchGimbalControlCommand(
+//     drivers(),
+//     &gimbal,
+//     &gimbalFieldRelativeController,
+//     &refHelper,
+//     &ballisticsSolver,
+//     patrolConfig,
+//     500);
 
 // SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL,
 // &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
@@ -168,10 +169,28 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+//only for when dirving with remote
+GimbalToggleAimCommand gimbalToggleAimCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 1500, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    BARREL_IDS,
+    FEEDER_DEFAULT_RPM,
+    1500,
+    UNJAM_TIMER_MS);
+
+DualBarrelFeederCommand dualBarrelsFeederCommandFromMouse(
     drivers(),
     &feeder,
     &refHelper,
@@ -189,27 +208,62 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 
 // Enables both chassis and gimbal manual control
+
 HoldCommandMapping leftSwitchMid(
-    drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    drivers(),  // gimbalFieldRelativeControlCommand
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
+// Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {/*&chassisTokyoCommand,*/&matchChassisControlCommand, &matchGimbalControlCommand},
+    drivers(),  // gimbalFieldRelativeControlCommand2
+    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// Runs shooter only
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {&openHopperCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+// Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// Runs shooter with feeder
-HoldCommandMapping rightSwitchUp(
+// Runs shooter with feeder and closes hopper
+HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {/*&dualBarrelsFeederCommand, &runShooterWithFeederCommand*/&matchFiringControlCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    true);
+
+HoldCommandMapping leftClickMouse(
+    drivers(),
+    {&dualBarrelsFeederCommandFromMouse},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+
+// HoldCommandMapping leftSwitchMid(
+//     drivers(),
+//     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+// HoldCommandMapping leftSwitchUp(
+//     drivers(),
+//     {/*&chassisTokyoCommand,&matchChassisControlCommand, &matchGimbalControlCommand},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+// // Runs shooter only
+// HoldCommandMapping rightSwitchMid(
+//     drivers(),
+//     {&runShooterCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+// // Runs shooter with feeder
+// HoldCommandMapping rightSwitchUp(
+//     drivers(),
+//     {/*&dualBarrelsFeederCommand, &runShooterWithFeederCommand*/&matchFiringControlCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
