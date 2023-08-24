@@ -211,12 +211,12 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {/*&chassisToggleDriveCommand,*/ &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
+    drivers(),
     {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
@@ -304,7 +304,7 @@ void startupCommands(src::Drivers *) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
+    //drivers->commandMapper.addMap(&leftSwitchUp);
 
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);

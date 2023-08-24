@@ -27,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(194.3f)),
-    wrapTo0To2PIRange(modm::toRadian(195.3f))};
+    wrapTo0To2PIRange(modm::toRadian(198.2f)), //179.6
+    wrapTo0To2PIRange(modm::toRadian(198.3f))}; //179.4
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
@@ -85,10 +85,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 35.0f,
+    .kp = 20.0f, //35 
     .ki = 0.0f,
     .kd = 0.0f,
-    .maxICumulative = 5000.0f,
+    .maxICumulative = 1000.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
