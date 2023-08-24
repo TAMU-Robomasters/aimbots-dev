@@ -50,7 +50,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-22.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(11.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -405,3 +405,5 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 3;
+
+static constexpr int FORCED_POWER_LIMIT = 70;

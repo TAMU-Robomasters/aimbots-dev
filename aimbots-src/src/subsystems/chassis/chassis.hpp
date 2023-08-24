@@ -118,6 +118,8 @@ public:
      * @return Returns the maximum wheel speed that can be reasonably achieved while maintaining the current power limit.
      */
     static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPowerLimit) {
+        chassisPowerLimit = FORCED_POWER_LIMIT;
+
         if (refSerialOnline) {
             float desWheelSpeed =
                 WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) +

@@ -50,7 +50,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(11.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -237,11 +237,11 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 // clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
     15,
-    4300,  // {ball m/s, flywheel rpm}
+    4850,  // {ball m/s, flywheel rpm} //4300
     18,
-    4850,
+    4850, //4850
     30,
-    7050};
+    4850}; //7050
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -434,3 +434,5 @@ static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+static constexpr int FORCED_POWER_LIMIT = 60;
