@@ -41,7 +41,7 @@ float OperatorInterface::getChassisXInput() {
 
     float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
-    float finalX = -analogX;  // TODO: Add digital values from keyboard as well
+    float finalX = analogX;  // TODO: Add digital values from keyboard as well
 
     // Scales analog values by values defined in standard_constants.hpp to speedshift input
     finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
