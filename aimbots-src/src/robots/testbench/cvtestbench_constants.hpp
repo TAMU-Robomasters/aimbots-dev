@@ -387,3 +387,5 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
+
+static constexpr int FORCED_POWER_LIMIT = 10; //Needed to appease the hardcoded sketchy-ness.
