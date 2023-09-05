@@ -25,7 +25,7 @@ void GimbalSubsystem::initialize() {
     ForAllPitchMotors(&DJIMotor::initialize);
 
     setAllDesiredYawMotorOutputs(0);
-    setAllDesiredPitchOutputs(0);
+    setAllDesiredPitchMotorOutputs(0);
     ForAllYawMotors(&GimbalSubsystem::setDesiredOutputToYawMotor);
     ForAllPitchMotors(&GimbalSubsystem::setDesiredOutputToPitchMotor);
 }
@@ -38,6 +38,7 @@ float currByFuncYawAngleDisplay = 0;
 float currentPitchAxisAngleDisplay = 0.0f;
 
 float currentYawMotorAngleDisplay = 0.0f;
+float otherYawMotorAngleDisplay = 0.0f;
 float currentPitchMotorAngleDisplay = 0.0f;
 
 float yawAxisMotorSpeedDisplay = 0.0f;
@@ -64,10 +65,9 @@ void GimbalSubsystem::refresh() {
             // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
         }
+
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
-        
-
 
         int64_t currentYawEncoderPosition = yawMotors[i]->getEncoderUnwrapped();
 
@@ -84,6 +84,8 @@ void GimbalSubsystem::refresh() {
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getValue();
         currentYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
+        otherYawMotorAngleDisplay =
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
 
         yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
@@ -97,15 +99,12 @@ void GimbalSubsystem::refresh() {
 
     int pitchOnlineCount = 0;
 
-
     float pitchAxisAngleSum = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         if (!pitchMotors[i]->isMotorOnline()) {
             continue;
         }
         pitchOnlineCount++;
-
-        
 
         int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoderUnwrapped();
 
@@ -157,7 +156,8 @@ void GimbalSubsystem::setDesiredOutputToYawMotor(uint8_t YawIdx) {
 
 void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
     pitchDesiredOutputDisplay = desiredPitchMotorOutputs[pitchDisplayMotorIdx];
-    pitchLimitedOutputDisplay = tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
+    pitchLimitedOutputDisplay =
+        tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
     // Clamp output to maximum value that the 6020 can handle
     pitchMotors[PitchIdx]->setDesiredOutput(
         tap::algorithms::limitVal<int32_t>(desiredPitchMotorOutputs[PitchIdx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));

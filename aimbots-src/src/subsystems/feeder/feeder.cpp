@@ -30,8 +30,17 @@ void FeederSubsystem::initialize() {
 #endif
 }
 
+float feederDesiredOutputDisplay = 0;
+float feederShaftRPMDisplay = 0;
+bool isFeederOnlineDisplay = false;
+
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
+    isFeederOnlineDisplay = feederMotor.isMotorOnline();
+    feederDesiredOutputDisplay = targetRPM;
+    feederShaftRPMDisplay = feederMotor.getShaftRPM();
+
+
     updateMotorVelocityPID();
     setDesiredOutput();
     limitSwitchLeft.refresh();

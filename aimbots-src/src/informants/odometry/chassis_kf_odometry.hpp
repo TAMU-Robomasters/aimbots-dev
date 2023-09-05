@@ -11,7 +11,7 @@ namespace src::Informants::Odometry {
 
 class ChassisKFOdometry : public tap::algorithms::odometry::Odometry2DInterface {
 public:
-    ChassisKFOdometry(float initialXPos, float initialYPos);
+    ChassisKFOdometry(float initialXPos = 0.0f, float initialYPos = 0.0f);
 
     void registerChassisSubsystem(tap::control::chassis::ChassisSubsystemInterface* chassis) { this->chassis = chassis; }
 

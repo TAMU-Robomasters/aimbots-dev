@@ -6,6 +6,7 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 
+#include "chassis_helper.hpp"
 #include "drivers.hpp"
 
 namespace src::Chassis {
@@ -16,10 +17,10 @@ public:
         src::Drivers*,
         ChassisSubsystem*,
         Gimbal::GimbalSubsystem*,
-        uint8_t numSnapPositions = 1,
-        float starterAngle = 0.0f,
+        const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
+        const TokyoConfig& tokyoConfig = TokyoConfig(),
         bool randomizeSpinRate = false,
-        const ToykoRandomizerConfig& randomizerConfig = ToykoRandomizerConfig());
+        const SpinRandomizerConfig& randomizerConfig = SpinRandomizerConfig());
 
     void initialize() override;
     void execute() override;

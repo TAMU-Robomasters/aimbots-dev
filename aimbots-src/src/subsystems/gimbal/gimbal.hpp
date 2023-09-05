@@ -97,11 +97,25 @@ public:
         return yawOnline && pitchOnline;
     }
 
+    inline bool isYawMotorOnline(uint8_t YawIdx) const {
+        if (YawIdx >= YAW_MOTOR_COUNT) {
+            return false;
+        }
+        return yawMotors[YawIdx]->isMotorOnline();
+    }
+
+    inline bool isPitchMotorOnline(uint8_t PitchIdx) const {
+        if (PitchIdx >= PITCH_MOTOR_COUNT) {
+            return false;
+        }
+        return pitchMotors[PitchIdx]->isMotorOnline();
+    }
+
     void setDesiredYawMotorOutput(uint8_t YawIdx, float output) { desiredYawMotorOutputs[YawIdx] = output; }
     void setDesiredPitchMotorOutput(uint8_t PitchIdx, float output) { desiredPitchMotorOutputs[PitchIdx] = output; }
 
     void setAllDesiredYawMotorOutputs(uint16_t output) { desiredYawMotorOutputs.fill(output); }
-    void setAllDesiredPitchOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
+    void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
@@ -142,9 +156,13 @@ public:
         return (onlineMotors > 0) ? rpm / onlineMotors : 0.0f;
     }
 
+    inline void setYawAxisAngleOffset(float offset) {
+        yawAxisOffset = offset;
+    }
+
     inline float getCurrentYawAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue()
-                                            : modm::toDegree(currentYawAxisAngle.getValue());
+        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue() + yawAxisOffset
+                                            : modm::toDegree(currentYawAxisAngle.getValue() + yawAxisOffset);
     }
 
     inline float getCurrentPitchAxisAngle(AngleUnit unit) const {
@@ -231,6 +249,8 @@ private:
 
     tap::algorithms::ContiguousFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
     tap::algorithms::ContiguousFloat currentPitchAxisAngle;  // chassis relative, in radians
+
+    float yawAxisOffset = 0; //in radians
 
     tap::algorithms::ContiguousFloat targetYawAxisAngle;    // chassis relative, in radians
     tap::algorithms::ContiguousFloat targetPitchAxisAngle;  // chassis relative, in radians

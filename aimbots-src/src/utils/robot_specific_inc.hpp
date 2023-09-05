@@ -24,6 +24,10 @@
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
+#elif defined(TARGET_1V1_STANDARD)
+#include "robots/standard/standard_constants.hpp"
+#include "robots/standard/standard_control_interface.hpp"
+
 #elif defined(TARGET_SWERVE_STANDARD)
 #include "robots/standard/swerve_standard_constants.hpp"
 #include "robots/standard/swerve_standard_control_interface.hpp"
@@ -31,5 +35,9 @@
 #elif defined(TARGET_CVTESTBENCH)
 #include "robots/testbench/cvtestbench_constants.hpp"
 #include "robots/testbench/cvtestbench_control_interface.hpp"
+
+#elif defined(TARGET_TURRET)
+#include "robots/turret/turret_constants.hpp"
+#include "robots/turret/turret_control_interface.hpp"
 
 #endif

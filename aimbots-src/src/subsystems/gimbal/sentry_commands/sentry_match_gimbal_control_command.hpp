@@ -14,10 +14,10 @@ public:
     SentryMatchGimbalControlCommand(
         src::Drivers*,
         GimbalSubsystem*,
-        GimbalChassisRelativeController*,
-        src::Utils::RefereeHelper*,
-        BarrelID&,
+        GimbalFieldRelativeController*,
+        src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
+        GimbalPatrolConfig patrolConfig,
         int chaseTimeoutMillis);
 
     void initialize() override;
@@ -33,7 +33,7 @@ private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    GimbalChassisRelativeController* controller;
+    GimbalFieldRelativeController* controller;
 
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 

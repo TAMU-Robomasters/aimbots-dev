@@ -17,17 +17,21 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     ShooterSubsystem* shooter,
-    src::Utils::RefereeHelper* refHelper,
+    src::Utils::RefereeHelperTurreted* refHelper,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController,
     src::Chassis::ChassisMatchStates& chassisState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       feeder(feeder),
       shooter(shooter),
       refHelper(refHelper),
+      ballisticsSolver(ballisticsSolver),
+      fieldRelativeGimbalController(fieldRelativeGimbalController),
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
@@ -40,18 +44,46 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
 void SentryMatchFiringControlCommand::initialize() {
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &runShooterCommand);
+    shootMinimumTime.restart(0);
 }
 
-void SentryMatchFiringControlCommand::execute() {
-    // descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, true);
+bool timerDisplay = false;
+bool timerStopped = false;
+bool conditionDisplay = false;
 
+void SentryMatchFiringControlCommand::execute() {
     // if (1) {
-    if (drivers->cvCommunicator.isJetsonOnline()) {
-        if (chassisState != src::Chassis::ChassisMatchStates::EVADE &&
-            drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FIRE) {
+    if (drivers->cvCommunicator.isJetsonOnline() && (refHelper->getGameStage()) == GamePeriod::IN_GAME) {
+        // Assuming the cvState is found, we need to determine if the turret is within an armor panel's distance
+        bool isErrorCloseEnoughToShoot = false;
+        float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetY;
+
+        if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FOUND) {
+            float yawTargetGimbal = fieldRelativeGimbalController->getTargetYaw(AngleUnit::Radians);
+            tap::algorithms::ContiguousFloat yawCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
+
+            float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
+            tap::algorithms::ContiguousFloat pitchCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
+
+            isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
+                yawCurrentGimbal.difference(yawTargetGimbal),
+                pitchCurrentGimbal.difference(pitchTargetGimbal),
+                targetDepth);
+        }
+
+        timerDisplay = !shootMinimumTime.isExpired();
+        timerStopped = shootMinimumTime.isStopped();
+        conditionDisplay = isErrorCloseEnoughToShoot;
+
+        if (isErrorCloseEnoughToShoot) {
+            shootMinimumTime.restart(500);
+        }
+
+        if (chassisState != src::Chassis::ChassisMatchStates::EVADE && !shootMinimumTime.isExpired()) {
             auto botData = drivers->refSerial.getRobotData();
             float healthPercentage = static_cast<float>(botData.currentHp) / static_cast<float>(botData.maxHp);
-            float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetZ;  //TODO: Replace this this the appropriate kinematic informant function
 
             float feederSpeed = MAX_FEEDER_SPEED;
             float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage
@@ -72,12 +104,14 @@ void SentryMatchFiringControlCommand::execute() {
             fullAutoFeederCommand.setSpeed(feederSpeed);
 
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
+            
             // }
         } else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
+            fullAutoFeederCommand.setSpeed(0.0f);
         }
+        // if (shootMinimumTime)
     } else {
-        // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, true);
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }
 
@@ -87,7 +121,7 @@ void SentryMatchFiringControlCommand::execute() {
 void SentryMatchFiringControlCommand::end(bool interrupted) {
     // descheduleIfScheduled(this->comprisedCommandScheduler, &burstFeederCommand, interrupted);
     descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &stopFeederCommand, interrupted);
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
 }
 
 bool SentryMatchFiringControlCommand::isReady() { return true; }

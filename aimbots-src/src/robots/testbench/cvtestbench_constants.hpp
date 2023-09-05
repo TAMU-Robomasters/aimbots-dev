@@ -224,6 +224,9 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 1;
+
 // clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {
     15, 3900,  // {ball m/s, flywheel rpm}
@@ -287,10 +290,6 @@ static constexpr float WHEELBASE_LENGTH = 0.366f;
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
-
-// Distance from gimbal to tip of barrel, in m
-static constexpr float GIMBAL_BARREL_LENGTH = 0.1f;  // Measured from 2022 Standard
-// 0.205f normally
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 
@@ -381,8 +380,10 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 };
 // clang-format on
 
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_X_EULER = 180.0f;
-static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 180.0f;
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);

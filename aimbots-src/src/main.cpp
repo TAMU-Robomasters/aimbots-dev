@@ -60,10 +60,13 @@ static void initializeIo(src::Drivers *drivers);
 static void updateIo(src::Drivers *drivers);
 
 // bmi088 is at 1000Hz.. coincidence? I think not!!11!
-static constexpr float SAMPLE_FREQUENCY = 500.0f;
+static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
 
+uint16_t currHeat = 69;
+uint16_t currHeatLimit = 420;
+uint16_t chassisPowerLimit = 77;
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -93,20 +96,24 @@ int main() {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
 
-        // every 2ms...
         if (mainLoopTimeout.execute()) {
-            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
-            // }
-            // if (sendMotorTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
+            // currHeat = drivers->refSerial.getRobotData().turret.heat42;
+            // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+            chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+        }
+        // every 2ms...
+        if (sendMotorTimeout.execute()) {
+            uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
 
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
             // comms
-
+#ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             utils::Music::playPacMan(drivers);
+#endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
         modm::delay_us(10);
@@ -115,31 +122,41 @@ int main() {
 }
 
 static void initializeIo(src::Drivers *drivers) {
+    modm::platform::RandomNumberGenerator::enable();
+
     drivers->analog.init();
     drivers->pwm.init();
     drivers->digital.init();
     drivers->leds.init();
     drivers->can.initialize();
     drivers->errorController.init();
-    drivers->remote.initialize();
-
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
-
-    drivers->kinematicInformant.recalibrateIMU();
-
+#ifndef TARGET_TURRET  // Chassis-exclusive initializations
+    drivers->remote.initialize();
     drivers->refSerial.initialize();
+    // drivers->magnetometer.init();
+    drivers->cvCommunicator.initialize();
+    drivers->kinematicInformant.recalibrateIMU(
+        {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
+#else
+    drivers->kinematicInformant.recalibrateIMU(
+        {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
+#endif
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
 #ifdef ULTRASONIC
     drivers->railDistanceSensor.initialize();
 #endif
-    // drivers->magnetometer.init();
-    drivers->cvCommunicator.initialize();
+
+#ifdef TURRET_HAS_IMU  // should probably be initialized for both TARGET_TURRET and chassis boards
+    drivers->turretCommunicator.init();
+#endif
 }
 
 float yawDisplay, pitchDisplay, rollDisplay;
 float gXDisplay, gYDisplay, gZDisplay;
+float aXDisplay, aYDisplay, aZDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -147,28 +164,39 @@ static void updateIo(src::Drivers *drivers) {
     tap::motorsim::SimHandler::updateSims();
 #endif
 
-    drivers->canRxHandler.pollCanData();
+#ifndef TARGET_TURRET
+    drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
 
     drivers->cvCommunicator.updateSerial();
+#else
+    drivers->turretCommunicator.sendIMUData();
+#endif
+
+#ifdef TURRET_HAS_IMU
+    drivers->turretCommunicator.sendTurretRequest();
+#endif
 
     // utils::Music::continuePlayingXPStartupTune(drivers);
 
     // imuStatus = drivers->kinematicInformant.getIMUState();
 
-    // float yaw = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
-    // AngleUnit::Radians); float pitch =
-    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    // float roll = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS,
-    // AngleUnit::Radians);
+    // yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
+    // AngleUnit::Degrees); pitchDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
+    // rollDisplay =
+    //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
     // gZDisplay =
-    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+    //     AngleUnit::Radians);
     // gYDisplay =
-    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS,
+    //     AngleUnit::Radians);
     // gXDisplay =
-    //     drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
+    //     AngleUnit::Radians);
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

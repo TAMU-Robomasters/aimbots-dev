@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 
 #include "drivers.hpp"
 
@@ -56,7 +56,7 @@ struct MeasuredKinematicState {
 
 class BallisticsSolver {
 public:
-    BallisticsSolver(src::Drivers *, src::Utils::RefereeHelper *refHelper);
+    BallisticsSolver(src::Drivers *, Vector3f);
     ~BallisticsSolver() = default;
 
     struct AngularFilterConfig {
@@ -110,6 +110,26 @@ public:
         float *projectedTravelTime,
         const float pitchAxisOffset = 0);
 
+    // The width tolerance of where a predicted shot needs to land on a plate be considered "on target"
+    static constexpr float PLATE_WIDTH_TOLERANCE = 0.15f;
+    // The height tolerance of where a predicted shot needs to land on a plate be considered "on target"
+    static constexpr float PLATE_HEIGHT_TOLERANCE = 0.1f;
+    // (Same tolerance for both types of armor panels)
+
+    /**
+     * @return true if the specified yaw and pitch angle errors are small enough such that if a
+     * projectile were to be launched, the projectile would hit an armor plate at
+     * targetDistance m away.
+     */
+    static inline bool withinAimingTolerance(float yawAngleError, float pitchAngleError, float targetDistance) {
+        if (targetDistance < 0) {
+            return false;
+        }
+
+        return (abs(yawAngleError) < atan2f(PLATE_WIDTH_TOLERANCE, 2.0f * targetDistance)) &&
+               (abs(pitchAngleError) < atan2f(PLATE_HEIGHT_TOLERANCE, 2.0f * targetDistance));
+    }
+
     /**
      * Computes an iterative numerical approximation of the pitch angle to aim the turret in order to
      * hit a given target and the time it will take for that target to be hit, given the velocity of a
@@ -136,11 +156,12 @@ public:
 
 private:
     src::Drivers *drivers;
-    src::Utils::RefereeHelper *refHelper;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
 
     uint32_t lastPlatePredictionTime = 0;
+
+    Vector3f barrelOriginFromGimbalOrigin;
 
     std::optional<BallisticsSolution> lastBallisticsSolution = {};
 };

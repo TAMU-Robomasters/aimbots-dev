@@ -5,10 +5,18 @@
 
 #include "tap/algorithms/cmsis_mat.hpp"
 
+#include "modm/math/geometry/location_2d.hpp"
 #include "utils/common_types.hpp"
 
 using Matrix3f_CMSIS = tap::algorithms::CMSISMat<3, 3>;
 namespace src::Utils::MatrixHelper {
+
+inline float getZAngleBetweenLocations(modm::Location2D<float> loc1, modm::Location2D<float> loc2, AngleUnit unit) {
+    float x = loc2.getX() - loc1.getX();
+    float y = loc2.getY() - loc1.getY();
+
+    return unit == AngleUnit::Radians ? -atan2f(x, y) : modm::toDegree(atan2f(x, y));
+}
 
 /**
  *   Constructs a rotation matrix about an elementary (Robot's X, Y, Z Axis)

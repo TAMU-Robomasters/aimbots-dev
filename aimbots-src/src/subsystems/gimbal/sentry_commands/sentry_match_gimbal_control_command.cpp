@@ -5,18 +5,18 @@ namespace src::Gimbal {
 SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
-    GimbalChassisRelativeController* gimbalController,
-    src::Utils::RefereeHelper* refHelper,
-    BarrelID& barrelID,
+    GimbalFieldRelativeController* gimbalController,
+    src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    GimbalPatrolConfig patrolConfig,
     int chaseTimeoutMillis)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       controller(gimbalController),
       ballisticsSolver(ballisticsSolver),
-      patrolCommand(drivers, gimbal, controller, 0, 0, 0, 0),
-      chaseCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
+      patrolCommand(drivers, gimbal, controller, patrolConfig),
+      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
       chaseTimeout(0),
       chaseTimeoutMillis(chaseTimeoutMillis)  //
 {

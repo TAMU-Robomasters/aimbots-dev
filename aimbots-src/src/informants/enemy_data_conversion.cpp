@@ -26,10 +26,21 @@ float targetPositionZDisplay = 0.0f;
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
+uint8_t DCBinDisplay = 0;
+float xDFTMagDisplay[30];
+
+float dampingValue = 0.999f;
+float spinMagnitude = 0.0f;
+
+uint32_t plateTimeOffsetDisplay = 0;
+
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
+
+    lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
+    drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
     src::Informants::Transformers::CoordinateFrame gimbalFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
@@ -46,6 +57,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     src::Informants::Transformers::CoordinateFrame chassisFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
 
+    src::Informants::Transformers::CoordinateFrame fieldFrame =
+        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::FIELD_FRAME);
+
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
     VisionTimedPosition currentData{
@@ -57,7 +71,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // now that we have enemy position (in METERS), transform to chassis space ! ! !
     // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
 
-    drivers->kinematicInformant.mirrorPastRobotFrame(frameCaptureDelay);
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
     VisionTimedPosition targetPositionWithoutLagCompensation{
@@ -87,6 +100,32 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     YPositionFilter.update(dt, transformedData.position.getY());
     ZPositionFilter.update(dt, transformedData.position.getZ());
 
+    xDFT.damping_factor = dampingValue;
+
+    xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+
+    // if (xDFTValid) {
+    //     spinMagnitude = 0.0f;
+    //     // std::complex<float> DC_bin = xDFT.dft[0];
+    //     uint8_t highestMagIndex = 0;
+    //     float highestMag = 0;
+
+    //     for (size_t i = 0; i < 30; i++) {
+    //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
+    //         //     highestMag = std::abs<float>(xDFT.dft[i]);
+    //         //     highestMagIndex = i;
+    //         // }
+    //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
+    //     }
+
+    //     for (size_t i = 1; i < 29; i++) {
+    //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
+    //     }
+
+    //     DCBinDisplay = highestMagIndex;
+    //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
+    // }
+
     lastUpdateTimestamp_uS = currentTime_uS;
 }
 
@@ -113,7 +152,7 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005);  // bandaid fix
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 
@@ -123,16 +162,20 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     targetPositionYFutureDisplay = yPlate.getX();
     targetVelocityYFutureDisplay = yPlate.getY();
+
     targetAccelerationYFutureDisplay = yPlate.getZ();
 
     targetPositionZFutureDisplay = zPlate.getX();
     targetVelocityZFutureDisplay = zPlate.getY();
+
     targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
-        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        // .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
+        .velocity = Vector3f(0, 0, 0),
+        // .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        .acceleration = Vector3f(0, 0, 0),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
     };
 }

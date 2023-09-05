@@ -4,7 +4,7 @@
 
 #include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
@@ -15,7 +15,7 @@ public:
     BurstFeederCommand(
         src::Drivers*,
         FeederSubsystem*,
-        src::Utils::RefereeHelper*,
+        src::Utils::RefereeHelperTurreted*,
         float speed = FEEDER_DEFAULT_RPM,
         float acceptableHeatThreshold = 0.90f,
         int burstLength = DEFAULT_BURST_LENGTH);
@@ -37,7 +37,7 @@ public:
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
-    src::Utils::RefereeHelper* refHelper;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     float speed;
     float acceptableHeatThreshold;

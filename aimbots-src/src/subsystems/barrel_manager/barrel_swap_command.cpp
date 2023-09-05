@@ -7,17 +7,15 @@ namespace src::BarrelManager {
 BarrelSwapCommand::BarrelSwapCommand(
     src::Drivers* drivers,
     BarrelManagerSubsystem* barrelManager,
-    src::Utils::RefereeHelper* RefHelper,
+    src::Utils::RefereeHelperTurreted* RefHelper,
     bool& barrelMovingFlag,
-    bool& barrelCaliDoneFlag,
-    float ACCEPTABLE_HEAT_PERCENTAGE)
+    bool& barrelCaliDoneFlag)
     : drivers(drivers),
       barrelManager(barrelManager),
       refHelper(RefHelper),
       swapMotorPID(BARREL_SWAP_POSITION_PID_CONFIG),
       barrelMovingFlag(barrelMovingFlag),
-      barrelCaliDoneFlag(barrelCaliDoneFlag),
-      ACCEPTABLE_HEAT_PERCENTAGE(ACCEPTABLE_HEAT_PERCENTAGE) {
+      barrelCaliDoneFlag(barrelCaliDoneFlag) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(barrelManager));
 }
 
@@ -35,8 +33,12 @@ bool wasSwapDisplay = false;
 float errorDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
-int16_t currentBarrelDisplay = 0;
 
+
+bool currBHeatDisplay = false;
+BarrelID currentBarrelDisplay;
+
+MilliTimeout fakeBarrelSwitch;
 //-----------
 
 void BarrelSwapCommand::initialize() {}
@@ -87,14 +89,11 @@ void BarrelSwapCommand::execute() {
             barrelManager->toggleSide();
         }
 
-        /*float stickSwitchThres = 0.1;
-        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres &&
-        drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) > 0) {
-            //barrelManager->setSide(barrelSide::RIGHT);
+        /*if (abs(drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID)) {
+            barrelManager->setSide(barrelSide::RIGHT);
         }
-        if (abs(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) - 1) >= stickSwitchThres &&
-        drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) < 0) {
-            //barrelManager->setSide(barrelSide::LEFT);
+        if (abs(drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP)) {
+            barrelManager->setSide(barrelSide::LEFT);
         }*/
 
         if (wasLogicSwitchRequested && barrelManager->isBarrelAligned()) {
@@ -102,28 +101,20 @@ void BarrelSwapCommand::execute() {
         }
 
         wasSwapDisplay = wasLogicSwitchRequested;
-        heatRemainDisplay = refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE, barrelManager->getBarrelSideID());
 
-        /*if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE) && !wasLogicSwitchRequested) {
+        if (!refHelper->canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
             wasLogicSwitchRequested = true;
-            if (barrelManager->getSide() == barrelSide::LEFT) {
-                barrelManager->setSide(barrelSide::RIGHT);
-            }
-            else {
-                barrelManager->setSide(barrelSide::LEFT);
-            }
-
-        }*/
-
-        if (!refHelper->isBarrelHeatUnderLimit(ACCEPTABLE_HEAT_PERCENTAGE, barrelManager->getBarrelSideID()) &&
-            !wasLogicSwitchRequested) {
-            wasLogicSwitchRequested = true;
-            if (barrelManager->getSide() == barrelSide::LEFT) {
-                barrelManager->setSide(barrelSide::RIGHT);
-            } else {
-                barrelManager->setSide(barrelSide::LEFT);
-            }
+            barrelManager->toggleSide();
         }
+
+        //Uncomment if you want to auto switch back away from the 0 / 0 barrel
+        /*if (barrelManager->getSide() == barrelSide::RIGHT) {
+            fakeBarrelSwitch.restart(1000);
+        }
+
+        if (fakeBarrelSwitch.execute()) {
+            barrelManager->setSide(barrelSide::LEFT);
+        }*/
 
     } else {
         barrelCalibratingFlag = !barrelManager->findZeroPosition(barrelSide::LEFT);
@@ -131,6 +122,10 @@ void BarrelSwapCommand::execute() {
 
     // Check this at the very end of the loop, after barrelCalibratingFlag has been updated
     barrelCaliDoneFlag = !barrelCalibratingFlag;
+
+
+    currBHeatDisplay = refHelper->isCurrBarrelHeatUnderLimit(0.5f);
+    currentBarrelDisplay = refHelper->getCurrentBarrel();
 }
 
 void BarrelSwapCommand::end(bool) { barrelManager->setMotorOutput(0); }

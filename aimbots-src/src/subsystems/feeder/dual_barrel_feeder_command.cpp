@@ -5,19 +5,18 @@ namespace src::Feeder {
 DualBarrelFeederCommand::DualBarrelFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
-    src::Utils::RefereeHelper* refHelper,
-    bool& barrelMovingFlag,
+    src::Utils::RefereeHelperTurreted* refHelper,
+    std::array<BarrelID, 2> BARREL_IDS,
     float speed,
-    float acceptableHeatThreshold,
+    float unjamSpeed,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
-      barrelMovingFlag(barrelMovingFlag),
+      BARREL_IDS(BARREL_IDS),
       speed(speed),
-      acceptableHeatThreshold(acceptableHeatThreshold),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      unjamSpeed(-3000.0f)  //
+      unjamSpeed(-unjamSpeed)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
@@ -29,25 +28,26 @@ void DualBarrelFeederCommand::initialize() {
 }
 
 void DualBarrelFeederCommand::execute() {
-    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-        feeder->setTargetRPM(unjamSpeed);
-        unjamTimer.restart(UNJAM_TIMER_MS);
-    }
+        if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+            feeder->setTargetRPM(unjamSpeed);
+            unjamTimer.restart(UNJAM_TIMER_MS);
+        }
 
-    if (unjamTimer.execute()) {
-        feeder->setTargetRPM(speed);
-        startupThreshold.restart(500);
-    }
+        if (unjamTimer.execute()) {
+            feeder->setTargetRPM(speed);
+            startupThreshold.restart(500);
+        }
 }
 
 void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
 bool DualBarrelFeederCommand::isReady() {
-    return (refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) && !barrelMovingFlag);
+    return (refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
 }
 
 bool DualBarrelFeederCommand::isFinished() const {
-    return (!refHelper->isBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);
+    return !(refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
 }
+
 
 }  // namespace src::Feeder

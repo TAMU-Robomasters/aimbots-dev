@@ -4,6 +4,9 @@
 
 #define GIMBAL_UNTETHERED
 #define BARREL_SWAP_COMPATIBLE
+// #define TURRET_HAS_IMU
+
+
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -85,7 +88,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 20.0f,  // 30
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -114,7 +117,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 2200.0f,  // 3000
+    .kp = 1850.0f,  // 3000
     .ki = 25.0f,    // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -233,7 +236,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
-// clang-format on
+// clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
     15,
     4300,  // {ball m/s, flywheel rpm}
@@ -245,8 +248,8 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4500.0f;
-static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
+static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
+static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -288,7 +291,7 @@ static constexpr float HOPPER_MIN_ANGLE = 0.0f;
 static constexpr float HOPPER_MAX_ANGLE = 270.0f;
 
 static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
-static constexpr float HOPPER_CLOSED_ANGLE = 70.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
@@ -337,9 +340,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.25f,  // 1.25f
+    .kp = 1.65f,  // 1.25f
     .ki = 0.0f,
-    .kd = 0.25f,  // 0.03f
+    .kd = 0.005f,  // 0.03f
     .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -349,20 +352,6 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
-
-/**
- * @brief TOKYO CONSTANTS
- */
-// Fraction that user input is multiplied by when "drifting"
-static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
-// Fraction of the maximum translation speed for when rotation speed should be reduced
-static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
-// Fraction of max chassis speed applied to rotation speed
-static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
-// Fraction to cut rotation speed by when the robot is "drifting"
-static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
-// Rotational speed increment per iteration to apply until rotation setpoint is reached
-static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 /**
  * @brief Transformation Matrices, specific to robot
@@ -396,12 +385,18 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_X_EULER = 180.0f;
-static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 90.0f;
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+
+static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 /**
  * @brief Barrel Manager Constants
@@ -411,7 +406,7 @@ static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, Barr
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
 
 // this is from edge to edge, aligned center to aligned center,
-static constexpr float BARREL_SWAP_DISTANCE_MM = 44.5;  // In mm
+static constexpr float BARREL_SWAP_DISTANCE_MM = 45.5;  // In mm
 
 // If the barrel is this close to the flywheel chamber, it is considered aligned
 static constexpr float BARRELS_ALIGNED_TOLERANCE = 2.0;  // In mm
@@ -422,11 +417,11 @@ static constexpr float LEAD_SCREW_TICKS_PER_MM =
     8.0;  //  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
 
 // The value that the torque needs to be greater than to detect running into a wall
-static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 450;
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 650;
 
 // The output to the motor while in calibration mode.
 // When adjusting, also change the constant above to find an appropriate match between the two
-static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 500;
+static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 600;
 
 static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .kp = 1000.0f,

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
 
 namespace src::Hopper {
@@ -12,8 +13,16 @@ enum HopperState : uint8_t {
 };
 
 class HopperSubsystem : public tap::control::Subsystem {
-   public:
-    HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin HOPPER_PIN, float HOPPER_MAX_PWM, float HOPPER_MIN_PWM, float HOPPER_PWM_RAMP_SPEED, float HOPPER_MIN_ANGLE, float HOPPER_MAX_ANGLE, uint32_t HOPPER_MIN_ACTION_DELAY);
+public:
+    HopperSubsystem(
+        tap::Drivers* drivers,
+        tap::gpio::Pwm::Pin hopperPin,
+        float hopperMaxPWM,
+        float hopperMinPWM,
+        float hopperPWMRampSpeed,
+        float hopperMinAngle,
+        float hopperMaxAngle,
+        uint32_t hopperMinActionDelay);
 
     mockable void initialize() override;
     void refresh() override;
@@ -51,18 +60,20 @@ class HopperSubsystem : public tap::control::Subsystem {
     bool isHopperOpen() const;
 
    private:
+
     tap::Drivers* drivers;
 
     Servo hopperMotor;
     uint8_t hopper_state;
     uint32_t actionStartTime;  // milliseconds
 
-    tap::gpio::Pwm::Pin HOPPER_PIN;
-    float HOPPER_MAX_PWM; 
-    float HOPPER_MIN_PWM;
-    float HOPPER_PWM_RAMP_SPEED;
-    float HOPPER_MIN_ANGLE;
-    float HOPPER_MAX_ANGLE;
-    uint32_t HOPPER_MIN_ACTION_DELAY;
+    tap::gpio::Pwm::Pin hopperPin;
+
+    float hopperMaxPWM;
+    float hopperMinPWM;
+    float hopperPWMRampSpeed;
+    float hopperMinAngle;
+    float hopperMaxAngle;
+    uint32_t hopperMinActionDelay;
 };
 };  // namespace src::Hopper

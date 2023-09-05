@@ -4,6 +4,11 @@
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
+
+//
+#include "informants/transformers/robot_frames.hpp"
+#include "utils/ballistics_solver.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
@@ -21,7 +26,6 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -65,8 +69,11 @@ using namespace src::Utils::ClientDisplay;
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
 
-    Decrease Chassis Ground Speed: Shift
-    Decrease Chassis Ground Speed (larger): Ctrl
+    Manually Choose Tokyo Direction (Left): F+Q
+    Manually Choose Tokyo Direction (Right): F+E
+
+    Decrease Chassis Ground Speed (60%): Shift
+    Decrease Chassis Ground Speed (25%): Ctrl
 
     Gimbal ------------------------------------------------------------
     Aim Using CV: Right Mouse Button
@@ -75,7 +82,7 @@ using namespace src::Utils::ClientDisplay;
 
     Feeder/Indexer ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
-    Force Reload: R
+    Force Reload: B
 
     UI ----------------------------------------------------------------
 
@@ -96,37 +103,71 @@ using namespace tap::communication::serial;
 
 namespace HeroControl {
 
-src::Utils::RefereeHelper refHelper(drivers());
+// This is technically a command flag, but it needs to be defined before the refHelper
+BarrelID currentBarrel = BARREL_IDS[0];
+
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers());
+
 CommunicationResponseSubsytem response(*drivers());
 ClientDisplaySubsystem clientDisplay(*drivers());
+ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
+
+//Define behavior configs here -----------------------------------------------
+
+SnapSymmetryConfig defaultSnapConfig = {
+    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
+    .snapAngle = modm::toRadian(0.0f),
+};
+
+TokyoConfig defaultTokyoConfig = {
+    .translationalSpeedMultiplier = 0.6f,
+    .translationThresholdToDecreaseRotationSpeed = 0.5f,
+    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedIncrement = 50.0f,
+};
+
+SpinRandomizerConfig randomizerConfig = {
+    .minSpinRateModifier = 0.75f,
+    .maxSpinRateModifier = 1.0f,
+    .minSpinRateModifierDuration = 500,
+    .maxSpinRateModifierDuration = 3000,
+};
+
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal);
+
+ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
+    &chassis, 
+    &gimbal, 
+    defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.50f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
-FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
-FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, INDEXER_DEFAULT_RPM, 0.50f);
+FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
+FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
 StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
 AutoAgitatorIndexerCommand feederIndexerCommand(
@@ -136,9 +177,9 @@ AutoAgitatorIndexerCommand feederIndexerCommand(
     &refHelper,
     FEEDER_DEFAULT_RPM,
     INDEXER_DEFAULT_RPM,
-    0.8,
+    0.5f,
     UNJAM_TIMER_MS,
-    3);
+    1);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
@@ -159,6 +200,7 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&runShooterCommand},
@@ -167,7 +209,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {/*&runFeederCommand, &runIndexerCommand,*/ &runShooterWithFeederCommand},
+    {&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 

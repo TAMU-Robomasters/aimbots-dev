@@ -17,9 +17,10 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalControllerInterface*,
-        src::Utils::RefereeHelper*,
-        BarrelID&,
-        src::Utils::Ballistics::BallisticsSolver*);
+        src::Utils::RefereeHelperTurreted*,
+        src::Utils::Ballistics::BallisticsSolver*,
+        float defaultLaunchSpeed,
+        std::optional<float> quickTurnOffset = std::nullopt);
 
     void initialize() override;
     void execute() override;

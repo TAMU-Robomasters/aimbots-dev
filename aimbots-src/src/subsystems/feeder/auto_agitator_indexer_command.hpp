@@ -3,13 +3,11 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-
-#include "subsystems/indexer/indexer.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
+#include "subsystems/indexer/indexer.hpp"
 #include "subsystems/indexer/stop_indexer_command.hpp"
-
 #include "utils/common_types.hpp"
-#include "utils/ref_helper.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
@@ -23,12 +21,12 @@ public:
         src::Drivers*,
         FeederSubsystem*,
         IndexerSubsystem*,
-        src::Utils::RefereeHelper*,
+        src::Utils::RefereeHelperTurreted*,
         float feederSpeed,
         float indexerSpeed,
-        float acceptableHeatThreshold = 0.80f,
-        int UNJAM_TIMER_MS = 300,
-        int MAX_UNJAM_COUNT = 3);
+        float acceptableHeatThreshold,
+        int UNJAM_TIMER_MS,
+        int MAX_UNJAM_COUNT);
 
     void initialize() override;
     void execute() override;
@@ -43,8 +41,8 @@ private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     IndexerSubsystem* indexer;
-    
-    src::Utils::RefereeHelper* refHelper;
+
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     int UNJAM_TIMER_MS;
     int MAX_UNJAM_COUNT;
@@ -56,11 +54,12 @@ private:
     StopFeederCommand stopFeederCommand;
 
     FullAutoIndexerCommand runIndexerCommand;
+    //FullAutoIndexerCommand reverseIndexerCommand;
     StopIndexerCommand stopIndexerCommand;
 
     MilliTimeout startupTimeout;
     MilliTimeout unjamTimer;
+    MilliTimeout reverseTimer;
 
     int unjamming_count = 0;
-
 };

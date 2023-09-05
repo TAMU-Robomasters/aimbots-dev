@@ -1,4 +1,4 @@
-#ifdef TARGET_STANDARD
+#if defined(TARGET_STANDARD) || defined(TARGET_1V1_STANDARD)
 #include "standard_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"

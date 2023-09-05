@@ -1,7 +1,10 @@
 #pragma once
 
-#include "drivers.hpp"
+#include "utils/ballistics_solver.hpp"
 #include "utils/common_types.hpp"
+
+#include "drivers.hpp"
+
 //
 #include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/feeder/burst_feeder_command.hpp"
@@ -12,6 +15,8 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
+//
+#include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 
 namespace src::Control {
 
@@ -27,8 +32,15 @@ using namespace src::Shooter;
 static constexpr float SENTRY_SHOOTER_MAX_ACCEL = 2.5f;
 
 class SentryMatchFiringControlCommand : public TapComprisedCommand {
-   public:
-    SentryMatchFiringControlCommand(src::Drivers*, FeederSubsystem*, ShooterSubsystem*, src::Utils::RefereeHelper*, src::Chassis::ChassisMatchStates& chassisState);
+public:
+    SentryMatchFiringControlCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        ShooterSubsystem*,
+        src::Utils::RefereeHelperTurreted*,
+        src::Utils::Ballistics::BallisticsSolver*,
+        src::Gimbal::GimbalControllerInterface*,
+        src::Chassis::ChassisMatchStates& chassisState);
 
     void initialize() override;
     void execute() override;
@@ -39,11 +51,14 @@ class SentryMatchFiringControlCommand : public TapComprisedCommand {
 
     const char* getName() const override { return "Sentry Match Firing Control Command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     ShooterSubsystem* shooter;
-    src::Utils::RefereeHelper* refHelper;
+    src::Utils::RefereeHelperTurreted* refHelper;
+
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
+    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController;
 
     src::Chassis::ChassisMatchStates& chassisState;
 
@@ -53,6 +68,8 @@ class SentryMatchFiringControlCommand : public TapComprisedCommand {
 
     StopShooterCommand stopShooterCommand;
     RunShooterCommand runShooterCommand;
+
+    MilliTimeout shootMinimumTime;
 };
 
 }  // namespace src::Control

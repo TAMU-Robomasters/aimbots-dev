@@ -14,8 +14,8 @@ ChassisShakiraCommand::ChassisShakiraCommand(
     src::Gimbal::GimbalSubsystem* gimbal,
     SmoothPIDConfig* rotationControllerConfig,
     BallisticsSolver* ballisticsSolver,
-    int numSnapPositions,
-    float starterAngle,
+    const TokyoConfig& tokyoConfig,
+    const SnapSymmetryConfig& snapSymmetryConfig,
     float angularMagnitude,
     uint32_t timePeriod)
     : drivers(drivers),
@@ -23,8 +23,8 @@ ChassisShakiraCommand::ChassisShakiraCommand(
       gimbal(gimbal),
       rotationController(*rotationControllerConfig),
       ballisticsSolver(ballisticsSolver),
-      numSnapPositions(numSnapPositions),
-      starterAngle(starterAngle),
+      snapSymmetryConfig(snapSymmetryConfig),
+      tokyoConfig(tokyoConfig),
       angularMagnitude(angularMagnitude),
       timePeriod(timePeriod)  //
 {
@@ -50,9 +50,9 @@ void ChassisShakiraCommand::execute() {
         if (ballisticsSolution != std::nullopt) {
             float targetYawAngle = ballisticsSolution->yawAngle;  // chassis relative gimbal target
 
-            if (fabsf(desiredX) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED ||
-                fabsf(desiredY) > TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED) {
-                angularMagnitudeMultiplier = TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING;
+            if (fabsf(desiredX) > tokyoConfig.translationThresholdToDecreaseRotationSpeed ||
+                fabsf(desiredY) > tokyoConfig.translationThresholdToDecreaseRotationSpeed) {
+                angularMagnitudeMultiplier = tokyoConfig.rotationalSpeedMultiplierWhenTranslating;
             }
 
             float offsetFromTarget =
@@ -60,11 +60,11 @@ void ChassisShakiraCommand::execute() {
                 sinf(M_TWOPI * (tap::arch::clock::getTimeMilliseconds() - startingTimestamp) / timePeriod);
 
             float chassisErrorAngle =
-                Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, numSnapPositions, starterAngle);
+                Helper::findNearestChassisErrorTo(targetYawAngle + offsetFromTarget, snapSymmetryConfig);
 
             rotationController.runController(
                 chassisErrorAngle,
-                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                -RADPS_TO_RPM(drivers->kinematicInformant.getChassisIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
@@ -81,7 +81,7 @@ void ChassisShakiraCommand::execute() {
         } else {
             rotationController.runController(
                 yawAngleFromChassisCenter,
-                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUAngularVelocity(
+                -RADPS_TO_RPM(drivers->kinematicInformant.getChassisIMUAngularVelocity(
                     src::Informants::AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 

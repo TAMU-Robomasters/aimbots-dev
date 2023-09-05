@@ -5,8 +5,8 @@
 #include "tap/control/subsystem.hpp"
 
 #include "utils/common_types.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
-
 
 namespace src::Shooter {
 
@@ -23,7 +23,7 @@ enum MotorIndex {
 
 class ShooterSubsystem : public tap::control::Subsystem {
 public:
-    ShooterSubsystem(tap::Drivers* drivers);
+    ShooterSubsystem(tap::Drivers* drivers, src::Utils::RefereeHelperTurreted* refHelper);
 
     /**
      * Allows user to call a DJIMotor member function on all shooter motors
@@ -121,5 +121,7 @@ public:
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
+
+    src::Utils::RefereeHelperTurreted* refHelper;
 };
 };  // namespace src::Shooter

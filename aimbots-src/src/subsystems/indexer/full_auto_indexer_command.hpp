@@ -2,12 +2,14 @@
 
 #include "subsystems/indexer/indexer.hpp"
 
+#include "utils/ref_system/ref_helper_turreted.hpp"
+
 #include "drivers.hpp"
 
 namespace src::Indexer {
 class FullAutoIndexerCommand : public TapCommand {
 public:
-    FullAutoIndexerCommand(src::Drivers*, IndexerSubsystem*, float speed, float acceptableHeatThreshold = 0.90f);
+    FullAutoIndexerCommand(src::Drivers*, IndexerSubsystem*, src::Utils::RefereeHelperTurreted*, float speed, float acceptableHeatThreshold = 0.90f);
     void initialize() override;
 
     void execute() override;
@@ -23,6 +25,7 @@ public:
 private:
     src::Drivers* drivers;
     IndexerSubsystem* indexer;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     float speed;
     float acceptableHeatThreshold;

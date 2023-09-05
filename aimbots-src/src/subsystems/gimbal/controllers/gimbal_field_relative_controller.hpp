@@ -23,8 +23,8 @@ public:
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
             yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] =
-                new src::Utils::Filters::EMAFilter(0.02);  // smoothing yaw velocity heavily for display purposes
+            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
+            // smoothing yaw velocity heavily for display purposes
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
@@ -34,7 +34,7 @@ public:
     }
 
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
-    void runPitchController(std::optional<float> velocityLimit) override;
+    void runPitchController(std::optional<float> velocityLimit = std::nullopt) override;
 
     bool isOnline() const;
 
@@ -54,6 +54,26 @@ public:
         targetPitch =
             tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
         fieldRelativePitchTarget.setValue(targetPitch);
+    }
+
+    bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
+        bool controllersSettled = false;
+        for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
+            if (gimbal->isYawMotorOnline(i)) {
+                controllersSettled = yawPositionCascadePIDs[i]->isSettled(errTolerance, errTimeout);
+            }
+        }
+        return controllersSettled;
+    }
+
+    bool allOnlinePitchControllersSettled(float errTolerance, uint32_t errTimeout) {
+        bool controllersSettled = false;
+        for (int i = 0; i < PITCH_MOTOR_COUNT; i++) {
+            if (gimbal->isPitchMotorOnline(i)) {
+                controllersSettled = pitchPositionCascadePIDs[i]->isSettled(errTolerance, errTimeout);
+            }
+        }
+        return controllersSettled;
     }
 
     float getTargetYaw(AngleUnit unit) const override {

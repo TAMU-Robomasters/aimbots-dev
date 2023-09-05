@@ -6,14 +6,15 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
     GimbalControllerInterface* controller,
-    src::Utils::RefereeHelper* refHelper,
-    BarrelID& barrelID,
-    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver)
+    src::Utils::RefereeHelperTurreted* refHelper,
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
+    float defaultLaunchSpeed,
+    std::optional<float> quickTurnOffset)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
-      gimbalCVCommand(drivers, gimbal, controller, refHelper, barrelID, ballisticsSolver),
-      gimbalFreeAimCommand(drivers, gimbal, controller)  //
+      gimbalCVCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, defaultLaunchSpeed),
+      gimbalFreeAimCommand(drivers, gimbal, controller, quickTurnOffset)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
     comprisedCommandScheduler.registerSubsystem(dynamic_cast<tap::control::Subsystem*>(gimbal));

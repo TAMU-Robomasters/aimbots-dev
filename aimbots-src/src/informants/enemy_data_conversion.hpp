@@ -5,6 +5,7 @@
 
 #include "utils/common_types.hpp"
 #include "utils/filters/kinematic_kalman.hpp"
+#include "utils/math/dft_helper.hpp"
 
 namespace src {
 class Drivers;
@@ -35,6 +36,8 @@ public:
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
+    uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay; }
+
     bool isLastFrameStale() const;
 
 private:
@@ -42,7 +45,13 @@ private:
 
     static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
 
+    uint32_t lastFrameCaptureDelay = 0;
+
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
+
+    // 1s sample, 30ms per sample = 33 samples
+    SlidingDFT<float, 30> xDFT;
+    bool xDFTValid = false;
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;

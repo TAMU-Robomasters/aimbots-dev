@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_UNTETHERED
+#define TURRET_HAS_IMU
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -26,8 +27,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.20f)),   // 177.8
-    wrapTo0To2PIRange(modm::toRadian(199.60f))};  // 198.5
+    wrapTo0To2PIRange(modm::toRadian(188.90f)),   // 177.8
+    wrapTo0To2PIRange(modm::toRadian(188.75f))};  // 198.5 189.80f
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -85,10 +86,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 21.0f,
+    .kp = 20.0f, //25
     .ki = 0.0f,
-    .kd = 0.125f,
-    .maxICumulative = 5000.0f,
+    .kd = 0.05f, //0.15
+    .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -99,9 +100,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 30.0f, //30
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.0f, //0
     .maxICumulative = 1000.0f,
     .maxOutput = 35,
     .tQDerivativeKalman = 1.0f,
@@ -114,8 +115,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1500.0f,
-    .ki = 20.0f,
+    .kp = 1300.0f, //1800
+    .ki = 20.0f, //20
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -128,8 +129,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
-    .ki = 17.0f,
+    .kp = 500.0f, //500
+    .ki = 17.0f, //17
     .kd = 0.0f,
     .maxICumulative = 1500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -215,7 +216,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 300;
+static constexpr int UNJAM_TIMER_MS = 100;
 
 static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
@@ -245,12 +246,15 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+
 // clang-format on
 static constexpr uint16_t shooter_speed_array[4] = {
     10,
-    3900,  // {ball m/s, flywheel rpm}
+    3900,  // {ball m/s, flywheel rpm} //3900
     16,
-    6500};
+    6100};  // 6500
 
 // clang-format on
 
@@ -331,10 +335,10 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 0.45f,
+    .kp = 1.65f,  // 0.45
     .ki = 0.0f,
-    .kd = 0.05f,
-    .maxICumulative = 0.9f,
+    .kd = 0.005f,  // 0.05
+    .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -389,9 +393,15 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_X_EULER = 0.0f;
-static constexpr float CIMU_Y_EULER = 0.0f;  // XYZ Euler Angles, All in Degrees!!!
-static constexpr float CIMU_Z_EULER = 90.0f;
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+
+static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};
+
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 3;

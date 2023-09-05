@@ -3,8 +3,7 @@
 
 #include <subsystems/chassis/chassis_helper.hpp>
 
-#include "utils/math/random.hpp"
-
+#include "chassis_helper.hpp"
 #include "chassis_tokyo_command.hpp"
 
 #warning "tokyo compatible"
@@ -15,12 +14,14 @@ ChassisTokyoCommand::ChassisTokyoCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
     src::Gimbal::GimbalSubsystem* gimbal,
+    const TokyoConfig& tokyoConfig,
     int spinDirectionOverride,
     bool randomizeSpinRate,
-    const ToykoRandomizerConfig& randomizerConfig)
+    const SpinRandomizerConfig& randomizerConfig)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
+      tokyoConfig(tokyoConfig),
       spinDirectionOverride(spinDirectionOverride),
       randomizeSpinRate(randomizeSpinRate),
       randomizerConfig(randomizerConfig)  //
@@ -61,29 +62,32 @@ void ChassisTokyoCommand::execute() {
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        desiredX *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * maxWheelSpeed;
-        desiredY *= TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * maxWheelSpeed;
+        desiredX *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
+        desiredY *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
 
-        const float translationalSpeedThreshold =
-            maxWheelSpeed * TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER * TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED;
+        const float translationalSpeedThreshold = maxWheelSpeed * tokyoConfig.translationalSpeedMultiplier *
+                                                  tokyoConfig.translationThresholdToDecreaseRotationSpeed;
 
-        float rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX;
+        float rampTarget = maxWheelSpeed * rotationDirection * tokyoConfig.rotationalSpeedFractionOfMax;
 
         if (randomizeSpinRate) {
             if (spinRateModifierTimer.isExpired() || spinRateModifierTimer.isStopped()) {
-                randomizeSpinCharacteristics();
+                Helper::randomizeSpinCharacteristics(
+                    &this->spinRateModifier,
+                    &this->spinRateModifierDuration,
+                    randomizerConfig);
                 spinRateModifierTimer.restart(spinRateModifierDuration);
             }
-            rampTarget = maxWheelSpeed * rotationDirection * TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX * spinRateModifier;
+            rampTarget *= spinRateModifier;
         }
 
         // reduces rotation speed when translation speed is high
         if (fabsf(desiredX) > translationalSpeedThreshold || fabsf(desiredY) > translationalSpeedThreshold) {
-            rampTarget *= TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING;
+            rampTarget *= tokyoConfig.rotationalSpeedMultiplierWhenTranslating;
         }
 
         rotationSpeedRamp.setTarget(rampTarget);
-        rotationSpeedRamp.update(TOKYO_ROTATIONAL_SPEED_INCREMENT);
+        rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
         desiredRotation = rotationSpeedRamp.getValue();
 
         rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
@@ -103,16 +107,6 @@ void ChassisTokyoCommand::end(bool interrupted) {
 bool ChassisTokyoCommand::isReady() { return true; }
 
 bool ChassisTokyoCommand::isFinished() const { return false; }
-
-void ChassisTokyoCommand::randomizeSpinCharacteristics() {
-    this->spinRateModifier = src::Utils::Random::getRandomFloatInBounds(
-        randomizerConfig.minSpinRateModifier,
-        randomizerConfig.maxSpinRateModifier);
-
-    this->spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
-        randomizerConfig.minSpinRateModifierDuration,
-        randomizerConfig.maxSpinRateModifierDuration);
-}
 
 }  // namespace src::Chassis
 
