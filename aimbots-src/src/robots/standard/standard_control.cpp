@@ -49,18 +49,25 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 //
-#include "subsystems/gui/gui_display.hpp"
-#include "subsystems/gui/gui_display_command.hpp"
-//
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
+//
+// #include "informants/communication/communication_response_handler.hpp"
+// #include "informants/communication/communication_response_subsytem.hpp"
+//
+#include "utils/display/client_display_command.hpp"
+#include "utils/display/client_display_subsystem.hpp"
+//
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::GUI;
+using namespace src::BarrelManager;
+// using namespace src::Communication;
+// using namespace src::RobotStates;
+using namespace src::Utils::ClientDisplay;
 using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
@@ -131,7 +138,7 @@ HopperSubsystem hopper(
     HOPPER_MIN_ANGLE,
     HOPPER_MAX_ANGLE,
     HOPPER_MIN_ACTION_DELAY);
-GUI_DisplaySubsystem gui(drivers());
+
 BarrelManagerSubsystem barrelManager(
     drivers(),
     HARD_STOP_OFFSET,
@@ -147,6 +154,9 @@ BarrelManagerSubsystem barrelManager(
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
+
+// CommunicationResponseSubsytem response(*drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -270,7 +280,10 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
-GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
+// CommunicationResponseHandler responseHandler(*drivers());
+
+// client display
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, &hopper, chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -307,15 +320,16 @@ HoldCommandMapping leftClickMouse(
     {&runDoubleBarrelFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
+// The user can press b+ctrl when the remote right switch is in the down position to restart the
+// client display command. This is necessary since we don't know when the robot is connected to the
+// server and thus don't know when to start sending the initial HUD graphics.
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
     {&guiDisplayCommand},
     RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
-// HoldCommandMapping rightClickMouse(
-//     drivers(),
-//     {&},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -324,9 +338,9 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-    drivers->commandScheduler.registerSubsystem(&gui);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
-
+    // drivers->commandScheduler.registerSubsystem(&response);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
@@ -337,8 +351,9 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
-    gui.initialize();
     barrelManager.initialize();
+    // response.initialize();
+    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -349,23 +364,25 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
-    drivers->commandMapper.addMap(&leftClickMouse);
-    // drivers->commandMapper.addMap(&ctrlC);
+    // drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
 }  // namespace StandardControl
@@ -380,5 +397,7 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
     StandardControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
+
+// temp
 
 #endif  // TARGET_STANDARD

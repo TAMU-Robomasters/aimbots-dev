@@ -163,6 +163,9 @@ public:
         return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
     }
 
+    bool getTokyoDrift() const;
+    void setTokyoDrift(bool drift) { tokyoDrift = drift; }
+
 #ifndef ENV_UNIT_TESTS
 private:
 #else
@@ -185,6 +188,8 @@ public:
     Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
     src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
+
+    bool tokyoDrift;
 
 protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;

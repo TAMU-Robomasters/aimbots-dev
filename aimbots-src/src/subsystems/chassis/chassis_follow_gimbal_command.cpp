@@ -21,7 +21,9 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisFollowGimbalCommand::initialize() {}
+void ChassisFollowGimbalCommand::initialize() {
+    
+}
 
 // Debug variables
 float yawAngleFromChassisCenterDisplay2 = 0.0f;
@@ -33,6 +35,7 @@ bool gimbalOnlineDisplay = false;
 float chassisErrorAngleDisplay = 0.0f;
 
 void ChassisFollowGimbalCommand::execute() {
+    chassis->setTokyoDrift(false);
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;

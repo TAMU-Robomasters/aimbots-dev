@@ -44,12 +44,14 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
+#include "informants/communication/communication_response_handler.hpp"
+#include "informants/communication/communication_response_subsytem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-
+using namespace src::Communication;
 using namespace src::Control;
 
 /*
@@ -77,6 +79,7 @@ ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::SETUP;
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
+CommunicationResponseSubsytem response(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Informant Controllers
@@ -205,6 +208,8 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
+CommunicationResponseHandler responseHandler(*drivers());
+
 // Define command mappings here -------------------------------------------
 
 // Enables both chassis and gimbal manual control
@@ -271,6 +276,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&response);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -281,6 +287,7 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -293,7 +300,9 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
+    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command

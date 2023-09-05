@@ -3,8 +3,10 @@
 #include "tap/communication/gpio/pwm.hpp"
 
 #include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
+
 
 namespace src::Hopper {
 
@@ -57,7 +59,23 @@ bool HopperSubsystem::isHopperReady() const {
     // finishing
 }
 
-uint8_t HopperSubsystem::getHopperState() const { return hopper_state; }
+uint8_t state_;
+uint8_t HopperSubsystem::getHopperState() const {
+    state_ = hopper_state;
+    return hopper_state;
+}
 
-void HopperSubsystem::setHopperState(uint8_t new_state) { hopper_state = new_state; }
+uint8_t new_state_display;
+void HopperSubsystem::setHopperState(uint8_t new_state) {
+    new_state_display = new_state;
+    hopper_state = new_state;
+}
+
+bool HopperSubsystem::isHopperOpen() const {
+    if (hopper_state == OPEN) {
+        return true;
+    } else {
+        return false;
+    }
+}
 };  // namespace src::Hopper

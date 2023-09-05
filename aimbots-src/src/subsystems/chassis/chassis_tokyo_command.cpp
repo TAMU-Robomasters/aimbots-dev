@@ -38,13 +38,14 @@ void ChassisTokyoCommand::initialize() {
     }
 
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
-
+    
     if (randomizeSpinRate) {
         spinRateModifierTimer.restart(0);
     }
 }
 
 void ChassisTokyoCommand::execute() {
+    chassis->setTokyoDrift(true);
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;

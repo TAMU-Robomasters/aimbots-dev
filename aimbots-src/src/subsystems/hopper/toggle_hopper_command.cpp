@@ -9,6 +9,7 @@ ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem*
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 
+
 bool cPressedDisplay;
 bool hopperStateDisplay;
 bool commandIsRunning = false;

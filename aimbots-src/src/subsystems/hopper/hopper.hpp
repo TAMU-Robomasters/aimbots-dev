@@ -6,7 +6,11 @@
 
 namespace src::Hopper {
 
-enum HopperState : uint8_t { CLOSED = 0, OPEN = 1, UNKNOWN = 2 };
+enum HopperState : uint8_t {
+    CLOSED = 0,
+    OPEN = 1,
+//  UNKNOWN = 2
+};
 
 class HopperSubsystem : public tap::control::Subsystem {
 public:
@@ -53,7 +57,10 @@ public:
      */
     void setHopperState(uint8_t new_state);
 
-private:
+    bool isHopperOpen() const;
+
+   private:
+
     tap::Drivers* drivers;
 
     Servo hopperMotor;

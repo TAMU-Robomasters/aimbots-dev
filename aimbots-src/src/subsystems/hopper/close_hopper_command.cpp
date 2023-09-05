@@ -8,7 +8,10 @@ CloseHopperCommand::CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* h
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(hopper));
 }
 
-void CloseHopperCommand::initialize() { hopper->setHopperAngle(HOPPER_CLOSED_ANGLE); }
+void CloseHopperCommand::initialize() {
+    hopper->setHopperAngle(HOPPER_CLOSED_ANGLE);
+    hopper->setHopperState(CLOSED);
+}
 
 void CloseHopperCommand::execute() {}
 
