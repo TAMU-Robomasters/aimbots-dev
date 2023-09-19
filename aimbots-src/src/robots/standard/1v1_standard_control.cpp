@@ -49,8 +49,8 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 //
-#include "subsystems/gui/gui_display.hpp"
-#include "subsystems/gui/gui_display_command.hpp"
+#include "utils/display/client_display_command.hpp"
+#include "utils/display/client_display_subsystem.hpp"
 //
 #include "subsystems/barrel_manager/barrel_dormant_command.hpp"
 #include "subsystems/barrel_manager/barrel_manager.hpp"
@@ -61,8 +61,8 @@ using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::GUI;
 using namespace src::BarrelManager;
+using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -123,27 +123,9 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-HopperSubsystem hopper(
-    drivers(),
-    HOPPER_PIN,
-    HOPPER_MAX_PWM,
-    HOPPER_MIN_PWM,
-    HOPPER_PWM_RAMP_SPEED,
-    HOPPER_MIN_ANGLE,
-    HOPPER_MAX_ANGLE,
-    HOPPER_MIN_ACTION_DELAY);
-GUI_DisplaySubsystem gui(drivers());
-BarrelManagerSubsystem barrelManager(
-    drivers(),
-    HARD_STOP_OFFSET,
-    BARREL_SWAP_DISTANCE_MM,
-    BARRELS_ALIGNED_TOLERANCE,
-    LEAD_SCREW_TICKS_PER_MM,
-    LEAD_SCREW_CURRENT_SPIKE_TORQUE,
-    LEAD_SCREW_CALI_OUTPUT,
-    BARREL_SWAP_POSITION_PID_CONFIG,
-    BARREL_IDS,
-    currentBarrel);
+HopperSubsystem hopper(drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
+BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -272,7 +254,7 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
-GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, &hopper, chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -326,7 +308,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-    drivers->commandScheduler.registerSubsystem(&gui);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->commandScheduler.registerSubsystem(&barrelManager);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
@@ -339,7 +321,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
-    gui.initialize();
+    clientDisplay.initialize();
     barrelManager.initialize();
 }
 

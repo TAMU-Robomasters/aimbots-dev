@@ -9,6 +9,7 @@
 
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
 namespace src::Chassis {
 
 enum WheelIndex {  // index used to easily navigate wheel matrices
@@ -202,3 +203,5 @@ public:
 };
 
 };  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

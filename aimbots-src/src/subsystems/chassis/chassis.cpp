@@ -6,6 +6,8 @@
 
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 using namespace tap::algorithms;
 
 namespace src::Chassis {
@@ -296,3 +298,5 @@ float ChassisSubsystem::calculateRotationLimitedTranslationalWheelspeed(
 
 bool ChassisSubsystem::getTokyoDrift() const { return tokyoDrift; }
 };  // namespace src::Chassis
+
+#endif  // #ifdef CHASSIS_COMPATIBLE

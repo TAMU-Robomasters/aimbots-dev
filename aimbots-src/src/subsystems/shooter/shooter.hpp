@@ -1,3 +1,5 @@
+
+
 #pragma once
 #include <vector>
 
@@ -7,6 +9,8 @@
 #include "utils/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
+
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -125,3 +129,5 @@ public:
     src::Utils::RefereeHelperTurreted* refHelper;
 };
 };  // namespace src::Shooter
+
+#endif

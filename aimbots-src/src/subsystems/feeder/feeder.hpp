@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 class FeederSubsystem : public tap::control::Subsystem {
 public:
@@ -49,3 +51,5 @@ public:
 };
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

@@ -9,7 +9,6 @@
 
 #include "drivers.hpp"
 
-
 #ifdef BARREL_SWAP_COMPATIBLE
 
 namespace src::BarrelManager {
@@ -24,17 +23,7 @@ enum barrelSide {
 
 class BarrelManagerSubsystem : public tap::control::Subsystem {
 public:
-    BarrelManagerSubsystem(
-        tap::Drivers* drivers,
-        float HARD_STOP_OFFSET,
-        float BARREL_SWAP_DISTANCE_MM,
-        float BARRELS_ALIGNED_TOLERANCE,
-        float LEAD_SCREW_TICKS_PER_MM,
-        int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
-        int16_t LEAD_SCREW_CALI_OUTPUT,
-        SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG,
-        std::array<BarrelID, 2> BARREL_ARRAY,
-        BarrelID& currentBarrel);
+    BarrelManagerSubsystem(tap::Drivers* drivers, BarrelID& currentBarrel);
 
     mockable void initialize() override;
     void refresh() override;
@@ -76,7 +65,7 @@ public:
         if (actualSide == barrelSide::CURRENT) {
             actualSide = getSide();
         }
-        return BARREL_ARRAY[actualSide];
+        return BARREL_IDS[actualSide];
     }
 
 private:
@@ -101,18 +90,8 @@ private:
     // {Left side, Right side} In mm
     float limitLRPositions[2] = {0, BARREL_SWAP_DISTANCE_MM};  //
 
-    // Constants to be set by at the construction of a new barrel manager instance
-    float HARD_STOP_OFFSET;
-    float BARREL_SWAP_DISTANCE_MM;
-    float BARRELS_ALIGNED_TOLERANCE;
-    float LEAD_SCREW_TICKS_PER_MM;
-    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE;
-    int16_t LEAD_SCREW_CALI_OUTPUT;
-    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG;
-
-    std::array<BarrelID, 2> BARREL_ARRAY;
     BarrelID& currentBarrel;
 };
 
 }  // namespace src::BarrelManager
-#endif
+#endif  // #ifdef BARREL_SWAP_COMPATIBLE

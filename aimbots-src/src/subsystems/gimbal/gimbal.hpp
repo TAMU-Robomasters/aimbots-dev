@@ -6,6 +6,8 @@
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
 
+#ifdef GIMBAL_COMPATIBLE
+
 static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
 }
@@ -156,9 +158,7 @@ public:
         return (onlineMotors > 0) ? rpm / onlineMotors : 0.0f;
     }
 
-    inline void setYawAxisAngleOffset(float offset) {
-        yawAxisOffset = offset;
-    }
+    inline void setYawAxisAngleOffset(float offset) { yawAxisOffset = offset; }
 
     inline float getCurrentYawAxisAngle(AngleUnit unit) const {
         return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue() + yawAxisOffset
@@ -250,7 +250,7 @@ private:
     tap::algorithms::ContiguousFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
     tap::algorithms::ContiguousFloat currentPitchAxisAngle;  // chassis relative, in radians
 
-    float yawAxisOffset = 0; //in radians
+    float yawAxisOffset = 0;  // in radians
 
     tap::algorithms::ContiguousFloat targetYawAxisAngle;    // chassis relative, in radians
     tap::algorithms::ContiguousFloat targetPitchAxisAngle;  // chassis relative, in radians
@@ -266,3 +266,5 @@ private:
 };
 
 }  // namespace src::Gimbal
+
+#endif  // #ifdef GIMBAL_COMPATIBLE

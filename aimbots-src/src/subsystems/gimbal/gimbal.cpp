@@ -4,6 +4,8 @@
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
+
 static inline float wrapAngleToPiRange(float angle) { return fmodf(angle + M_PI, M_TWOPI) - M_PI; }
 
 namespace src::Gimbal {
@@ -180,3 +182,5 @@ float GimbalSubsystem::getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit un
 }
 
 }  // namespace src::Gimbal
+
+#endif //#ifdef GIMBAL_COMPATIBLE

@@ -129,34 +129,15 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-HopperSubsystem hopper(
-    drivers(),
-    HOPPER_PIN,
-    HOPPER_MAX_PWM,
-    HOPPER_MIN_PWM,
-    HOPPER_PWM_RAMP_SPEED,
-    HOPPER_MIN_ANGLE,
-    HOPPER_MAX_ANGLE,
-    HOPPER_MIN_ACTION_DELAY);
-
-BarrelManagerSubsystem barrelManager(
-    drivers(),
-    HARD_STOP_OFFSET,
-    BARREL_SWAP_DISTANCE_MM,
-    BARRELS_ALIGNED_TOLERANCE,
-    LEAD_SCREW_TICKS_PER_MM,
-    LEAD_SCREW_CURRENT_SPIKE_TORQUE,
-    LEAD_SCREW_CALI_OUTPUT,
-    BARREL_SWAP_POSITION_PID_CONFIG,
-    BARREL_IDS,
-    currentBarrel);
+HopperSubsystem hopper(drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
+BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
 
 // CommunicationResponseSubsytem response(*drivers());
-ClientDisplaySubsystem clientDisplay(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);

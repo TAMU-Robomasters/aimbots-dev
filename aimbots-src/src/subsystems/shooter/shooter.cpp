@@ -1,9 +1,13 @@
+
+
 #include "subsystems/shooter/shooter.hpp"
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
 #include "utils/common_types.hpp"
+
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -124,3 +128,5 @@ void ShooterSubsystem::setDesiredOutputToMotor(MotorIndex motorIdx) {
     }
 }
 };  // namespace src::Shooter
+
+#endif

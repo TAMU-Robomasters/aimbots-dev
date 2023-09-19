@@ -1,5 +1,7 @@
 #include "subsystems/feeder/feeder.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
@@ -16,7 +18,7 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
 {
 }
 
-//Watch Variables
+// Watch Variables
 int16_t heatCurrentDisplay = 0;
 int16_t barrelDDisplay = 0;
 
@@ -39,7 +41,6 @@ void FeederSubsystem::refresh() {
     isFeederOnlineDisplay = feederMotor.isMotorOnline();
     feederDesiredOutputDisplay = targetRPM;
     feederShaftRPMDisplay = feederMotor.getShaftRPM();
-
 
     updateMotorVelocityPID();
     setDesiredOutput();
@@ -74,3 +75,5 @@ int FeederSubsystem::getTotalLimitCount() const {
 }
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

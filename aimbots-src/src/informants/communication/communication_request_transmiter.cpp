@@ -11,6 +11,8 @@
 #include "communication_message.hpp"
 #include "drivers.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 namespace src::Communication {
 CommunicationRequestTransmiter::CommunicationRequestTransmiter(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
 
@@ -51,3 +53,5 @@ void CommunicationRequestTransmiter::updateQue(MessageType type) {
 }
 
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

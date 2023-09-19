@@ -1,3 +1,5 @@
+#ifdef REF_COMM_COMPATIBLE
+
 #include "communication_response_subsytem.hpp"
 
 #include "informants/robot-states/robot_state.hpp"
@@ -104,3 +106,5 @@ bool CommunicationResponseSubsytem::run() {
 }
 
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

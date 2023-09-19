@@ -1,4 +1,7 @@
+#ifdef REF_COMM_COMPATIBLE
+
 #include "robot_state.hpp"
+
 namespace src::RobotStates {
 Robot::Robot(short x, short y, short z, int robotId, int health, Team teamColor) {
     this->position = Matrix<short, 3, 1>().zeroMatrix();
@@ -59,4 +62,6 @@ void Robot::setTeamColor(Team teamColor) { this->teamColor = teamColor; }
 
 Team Robot::getTeamColor() { return this->teamColor; }
 
-}  // namespace src::robotStates
+}  // namespace src::RobotStates
+
+#endif //#ifdef REF_COMM_COMPATIBLE

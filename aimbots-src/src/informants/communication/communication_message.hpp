@@ -1,6 +1,8 @@
 #pragma once
 #include "utils/common_types.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 namespace src::Communication {
 #ifdef TARGET_SENTRY
 struct robot_state_message_team {
@@ -41,3 +43,5 @@ static constexpr uint16_t SENTRY_RESPONSE_MESSAGE_ID = 0x201;
 static constexpr uint16_t STANDARD_REQUEST_ROBOT_ID = 0x200;
 static constexpr uint16_t STANDARD_RESPONSE_MESSAGE_ID = 0x201;
 }  // namespace src::Communication
+
+#endif  // #ifdef REF_COMM_COMPATIBLE
