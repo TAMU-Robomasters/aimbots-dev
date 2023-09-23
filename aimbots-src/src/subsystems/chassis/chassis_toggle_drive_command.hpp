@@ -9,6 +9,8 @@
 #include "chassis_helper.hpp"
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class ChassisToggleDriveCommand : public TapComprisedCommand {
@@ -48,3 +50,5 @@ private:
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

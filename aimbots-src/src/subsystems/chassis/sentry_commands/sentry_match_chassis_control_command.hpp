@@ -2,6 +2,7 @@
 
 #ifdef TARGET_SENTRY
 
+
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
@@ -14,6 +15,8 @@
 
 
 #include "drivers.hpp"
+
+#ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
 
@@ -112,4 +115,6 @@ private:
 
 }  // namespace src::Chassis
 
+
+#endif //#ifdef CHASSIS_COMPATIBLE
 #endif

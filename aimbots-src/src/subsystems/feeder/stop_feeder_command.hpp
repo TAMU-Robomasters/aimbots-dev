@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 class StopFeederCommand : public TapCommand {
@@ -29,3 +31,5 @@ private:
 };
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 
 StopShooterCommand::StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
@@ -28,3 +30,5 @@ bool StopShooterCommand::isReady() { return true; }
 bool StopShooterCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter
+
+#endif //#ifdef SHOOTER_COMPATIBLE

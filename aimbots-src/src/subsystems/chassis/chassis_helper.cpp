@@ -3,6 +3,8 @@
 #include "utils/math/random.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 int8_t chassisYDesiredWheelspeedWatch = 0;
 int8_t chassisXDesiredWheelspeedWatch = 0;
 
@@ -80,3 +82,5 @@ float findNearestChassisErrorTo(float chassisRelativeTargetAngle, SnapSymmetryCo
 }
 
 }  // namespace src::Chassis::Helper
+
+#endif //#ifdef CHASSIS_COMPATIBLE

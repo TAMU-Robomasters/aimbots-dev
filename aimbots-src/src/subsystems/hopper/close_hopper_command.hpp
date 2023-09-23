@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#ifdef HOPPER_LID_COMPATIBLE
+
 namespace src::Hopper {
 
 class CloseHopperCommand : public TapCommand {
@@ -28,3 +30,5 @@ private:
     float HOPPER_CLOSED_ANGLE;
 };
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

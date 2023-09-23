@@ -1,5 +1,3 @@
-
-
 #pragma once
 #include <vector>
 
@@ -130,4 +128,4 @@ public:
 };
 };  // namespace src::Shooter
 
-#endif
+#endif //#ifdef SHOOTER_COMPATIBLE

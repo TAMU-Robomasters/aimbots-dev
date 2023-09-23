@@ -7,6 +7,8 @@
 
 #include "drivers.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 static int highestSpeedDebug = 0;
 BrakeShooterCommand::BrakeShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, float brakePower)
@@ -37,3 +39,5 @@ bool BrakeShooterCommand::isFinished() const {
 }
 
 }  // namespace src::Shooter
+
+#endif //#ifdef SHOOTER_COMPATIBLE

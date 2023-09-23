@@ -9,6 +9,8 @@
 
 #include "drivers.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 
 class RunShooterCommand : public TapCommand {
@@ -32,3 +34,5 @@ private:
 };
 
 }  // namespace src::Shooter
+
+#endif //#ifdef SHOOTER_COMPATIBLE

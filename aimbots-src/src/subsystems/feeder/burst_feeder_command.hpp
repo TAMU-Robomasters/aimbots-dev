@@ -9,6 +9,8 @@
 
 #include "drivers.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 class BurstFeederCommand : public TapCommand {
 public:
@@ -48,3 +50,5 @@ private:
 };
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

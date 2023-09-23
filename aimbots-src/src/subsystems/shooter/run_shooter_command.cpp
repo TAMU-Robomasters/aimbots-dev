@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 
 RunShooterCommand::RunShooterCommand(
@@ -65,3 +67,5 @@ bool RunShooterCommand::isReady() { return true; }
 
 bool RunShooterCommand::isFinished() const { return false; }
 }  // namespace src::Shooter
+
+#endif //#ifdef SHOOTER_COMPATIBLE

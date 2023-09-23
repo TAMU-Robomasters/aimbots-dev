@@ -1,5 +1,7 @@
 #include "auto_agitator_indexer_command.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 using namespace src::Feeder;
 using namespace src::Indexer;
 
@@ -132,3 +134,5 @@ void AutoAgitatorIndexerCommand::end(bool interrupted) {
 bool AutoAgitatorIndexerCommand::isReady() { return true; }
 
 bool AutoAgitatorIndexerCommand::isFinished() const { return false; }
+
+#endif  // #ifdef FEEDER_COMPATIBLE

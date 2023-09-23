@@ -1,5 +1,7 @@
 #include "sentry_chassis_auto_nav_evade_command.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 SentryChassisAutoNavEvadeCommand::SentryChassisAutoNavEvadeCommand(src::Drivers* drivers, ChassisSubsystem* chassis) : drivers(drivers), chassis(chassis) {
@@ -27,3 +29,5 @@ bool SentryChassisAutoNavEvadeCommand::isFinished() const { return false; }
 void SentryChassisAutoNavEvadeCommand::end(bool interrupted) { UNUSED(interrupted); }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

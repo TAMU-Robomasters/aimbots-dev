@@ -3,6 +3,8 @@
 #include <drivers.hpp>
 #include <subsystems/chassis/chassis.hpp>
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 struct TokyoConfig {
@@ -61,3 +63,5 @@ float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmet
 }  // namespace Helper
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

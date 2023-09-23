@@ -1,6 +1,7 @@
 #include "sentry_match_chassis_control_command.hpp"
 
 #ifdef TARGET_SENTRY
+#ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
 
@@ -125,4 +126,5 @@ bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
+#endif //#ifdef CHASSIS_COMPATIBLE
 #endif

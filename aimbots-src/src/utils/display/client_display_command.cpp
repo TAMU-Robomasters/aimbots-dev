@@ -12,7 +12,7 @@
 #include "hud_indicator.hpp"
 #include "reticle_indicator.hpp"
 
-using namespace src::Hopper;
+// using namespace src::Hopper;
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Utils::Ballistics;
@@ -25,14 +25,14 @@ ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
     ClientDisplaySubsystem &clientDisplay,
-    const HopperSubsystem *hopper,
+    // const HopperSubsystem *hopper,
     //const GimbalSubsystem &gimbal,
     const ChassisSubsystem &chassis)
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicators(commandScheduler, refSerialTransmitter, hopper, chassis),
+      booleanHudIndicators(commandScheduler, refSerialTransmitter, /*hopper,*/ chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
       reticleIndicator(drivers, refSerialTransmitter)  //,
      /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */

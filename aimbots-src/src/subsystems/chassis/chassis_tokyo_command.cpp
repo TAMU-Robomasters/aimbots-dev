@@ -1,5 +1,6 @@
 #include "utils/robot_specific_inc.hpp"
 #ifdef GIMBAL_UNTETHERED
+#ifdef CHASSIS_COMPATIBLE
 
 #include <subsystems/chassis/chassis_helper.hpp>
 
@@ -110,4 +111,5 @@ bool ChassisTokyoCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
-#endif
+#endif //#ifdef CHASSIS_COMPATIBLE
+#endif //#ifdef GIMBAL_UNTETHERED

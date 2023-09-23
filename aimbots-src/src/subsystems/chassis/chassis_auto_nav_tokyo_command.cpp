@@ -2,6 +2,8 @@
 
 #include "chassis_helper.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 ChassisAutoNavTokyoCommand::ChassisAutoNavTokyoCommand(
@@ -98,3 +100,5 @@ void ChassisAutoNavTokyoCommand::end(bool interrupted) {
 }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

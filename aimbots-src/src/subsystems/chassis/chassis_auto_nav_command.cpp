@@ -2,6 +2,8 @@
 
 namespace src::Chassis {
 
+#ifdef CHASSIS_COMPATIBLE
+
 ChassisAutoNavCommand::ChassisAutoNavCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
@@ -72,3 +74,5 @@ void ChassisAutoNavCommand::end(bool interrupted) {
 }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

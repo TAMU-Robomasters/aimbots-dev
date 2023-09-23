@@ -24,7 +24,7 @@
 #include "computer_vision_display.hpp"
 #include "reticle_indicator.hpp"
 
-using namespace src::Hopper;
+// using namespace src::Hopper;
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Utils::Ballistics;
@@ -45,7 +45,7 @@ public:
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
         ClientDisplaySubsystem &clientDisplay,
-        const HopperSubsystem *hopper,
+        // const HopperSubsystem *hopper,
         //const GimbalSubsystem &gimbal,
         const ChassisSubsystem &chassis  //,
        // BallisticsSolver &ballisticsSolver

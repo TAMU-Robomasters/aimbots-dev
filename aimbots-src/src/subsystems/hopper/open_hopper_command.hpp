@@ -7,6 +7,8 @@
 
 #include "drivers.hpp"
 
+#ifdef HOPPER_LID_COMPATIBLE
+
 namespace src::Hopper {
 
 class OpenHopperCommand : public TapCommand {
@@ -28,3 +30,5 @@ private:
     float HOPPER_OPEN_ANGLE;
 };
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE
