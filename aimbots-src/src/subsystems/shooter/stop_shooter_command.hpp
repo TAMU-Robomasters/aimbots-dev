@@ -1,15 +1,14 @@
 #pragma once
 
-#include "drivers.hpp"
-#ifndef ENGINEER
-
 #include "tap/control/subsystem.hpp"
 
 #include "subsystems/shooter/shooter.hpp"
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
-//#ifndef TARGET_ENGINEER
+#include "drivers.hpp"
+
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -33,4 +32,4 @@ private:
 
 }  // namespace src::Shooter
 
-#endif
+#endif //#ifdef SHOOTER_COMPATIBLE

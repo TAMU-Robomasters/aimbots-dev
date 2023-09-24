@@ -9,6 +9,7 @@
 
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
 namespace src::Chassis {
 
 enum WheelIndex {  // index used to easily navigate wheel matrices
@@ -26,6 +27,15 @@ enum MotorOnWheelIndex {
     YAW = 1
 };
 
+/**
+ * Used to index into matrices returned by functions of the form get*Velocity*().
+ */
+enum ChassisVelIndex {
+    X = 0,
+    Y = 1,
+    R = 2,
+};
+
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
 public:
     ChassisSubsystem(  // Default chassis constructor
@@ -40,9 +50,9 @@ public:
     template <class... Args>
     void ForAllChassisMotors(void (DJIMotor::*func)(Args...), Args... args) {
         for (auto i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-            (motors[i][0]->*func)(args...);
+            (motors[i][DRIVER]->*func)(args...);
 #ifdef SWERVE
-            (motors[i][1]->*func)(args...);
+            (motors[i][YAW]->*func)(args...);
 #endif
         }
     }
@@ -85,9 +95,7 @@ public:
     // Uses the desiredOutputs matrix to set the desired power of the motors
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
-#ifndef SWERVE
-    void calculateMecanum(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
-#endif
+    void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 #ifdef SWERVE
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
 #endif
@@ -103,7 +111,9 @@ public:
      * @return A number between 0 and 1 that is the ratio between the rotationRpm and
      *      the max rotation speed.
      */
-    mockable float calculateRotationLimitedTranslationalWheelspeed(float chassisRotationDesiredWheelspeed, float maxWheelSpeed);
+    mockable float calculateRotationLimitedTranslationalWheelspeed(
+        float chassisRotationDesiredWheelspeed,
+        float maxWheelSpeed);
 
     /**
      * @return Returns the maximum wheel speed that can be reasonably achieved while maintaining the current power limit.
@@ -111,7 +121,8 @@ public:
     static inline float getMaxRefWheelSpeed(bool refSerialOnline, int chassisPowerLimit) {
         if (refSerialOnline) {
             float desWheelSpeed =
-                WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) + MIN_WHEEL_SPEED_SINGLE_MOTOR;
+                WHEEL_SPEED_OVER_CHASSIS_POWER_SLOPE * static_cast<float>(chassisPowerLimit - MIN_CHASSIS_POWER) +
+                MIN_WHEEL_SPEED_SINGLE_MOTOR;
 
             return tap::algorithms::limitVal(
                 desWheelSpeed,
@@ -134,10 +145,27 @@ public:
         return true;
     }
 
-    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
-        // no proper override because we don't have a need for this function yet
-        return Matrix<float, 3, 1>::zeroMatrix();
+    /**
+     * Converts the velocity matrix from raw RPM to wheel velocity in m/s.
+     */
+    inline modm::Matrix<float, 4, 1> convertRawRPM(const modm::Matrix<float, 4, 1>& mat) const {
+        static constexpr float ratio = 2.0f * M_PI * CHASSIS_GEARBOX_RATIO / 60.0f;
+        return mat * ratio;
     }
+
+    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
+        Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
+
+        wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
+        wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
+        wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
+        wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+
+        return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
+    }
+
+    bool getTokyoDrift() const;
+    void setTokyoDrift(bool drift) { tokyoDrift = drift; }
 
 #ifndef ENV_UNIT_TESTS
 private:
@@ -147,19 +175,12 @@ public:
     src::Drivers* drivers;
     float desiredRotation = 0.0f;
 
-#ifdef TARGET_SENTRY
-    DJIMotor railWheel;
-    SmoothPID railWheelVelPID;
-
-#else
     DJIMotor leftBackWheel, leftFrontWheel, rightFrontWheel, rightBackWheel;
     SmoothPID leftBackWheelVelPID, leftFrontWheelVelPID, rightFrontWheelVelPID, rightBackWheelVelPID;
 #ifdef SWERVE
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
     SmoothPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
 #endif
-#endif
-
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> desiredOutputs;
 
@@ -167,22 +188,20 @@ public:
 
     Matrix<SmoothPID*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> velocityPIDs;
 
-    src::utils::Control::PowerLimiting::PowerLimiter powerLimiter;
+    src::Utils::Control::PowerLimiting::PowerLimiter powerLimiter;
 
-    Matrix<float, 4, 3> wheelLocationMatrix;
+    bool tokyoDrift;
+
+protected:
+    Matrix<float, 3, 4> wheelVelToChassisVelMat;
 
 public:
-#ifdef TARGET_SENTRY
-    inline int16_t getLeftFrontRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getLeftBackRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getRightFrontRpmActual() const override { return railWheel.getShaftRPM(); }
-    inline int16_t getRightBackRpmActual() const override { return railWheel.getShaftRPM(); }
-#else
     inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }
     inline int16_t getLeftBackRpmActual() const override { return leftBackWheel.getShaftRPM(); }
     inline int16_t getRightFrontRpmActual() const override { return rightFrontWheel.getShaftRPM(); }
     inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
-#endif
 };
 
 };  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

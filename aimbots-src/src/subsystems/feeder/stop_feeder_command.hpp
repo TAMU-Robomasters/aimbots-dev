@@ -1,6 +1,5 @@
 #pragma once
 
-#ifndef ENGINEER
 #include "tap/control/command.hpp"
 
 #include "subsystems/feeder/feeder.hpp"
@@ -8,6 +7,8 @@
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
+
+#ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
 
@@ -31,4 +32,4 @@ private:
 
 }  // namespace src::Feeder
 
-#endif
+#endif  // #ifdef FEEDER_COMPATIBLE

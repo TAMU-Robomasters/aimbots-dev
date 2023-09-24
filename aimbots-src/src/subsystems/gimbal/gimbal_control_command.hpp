@@ -4,6 +4,7 @@
 #include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
@@ -28,3 +29,4 @@ private:
 };
 
 }  // namespace src::Gimbal
+#endif

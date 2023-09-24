@@ -1,16 +1,24 @@
 #pragma once
 
-#include "drivers.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
 #include "utils/common_types.hpp"
 
+#include "drivers.hpp"
+
 namespace src::Gimbal {
 
 class SentryMatchGimbalControlCommand : public TapComprisedCommand {
-   public:
-    SentryMatchGimbalControlCommand(src::Drivers*, GimbalSubsystem*, GimbalChassisRelativeController*, int chaseTimeoutMillis);
+public:
+    SentryMatchGimbalControlCommand(
+        src::Drivers*,
+        GimbalSubsystem*,
+        GimbalFieldRelativeController*,
+        src::Utils::RefereeHelperTurreted*,
+        src::Utils::Ballistics::BallisticsSolver*,
+        GimbalPatrolConfig patrolConfig,
+        int chaseTimeoutMillis);
 
     void initialize() override;
     void execute() override;
@@ -21,11 +29,13 @@ class SentryMatchGimbalControlCommand : public TapComprisedCommand {
 
     const char* getName() const override { return "Sentry Match Gimbal Control Command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    GimbalChassisRelativeController* controller;
+    GimbalFieldRelativeController* controller;
+
+    src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     GimbalPatrolCommand patrolCommand;
     GimbalChaseCommand chaseCommand;

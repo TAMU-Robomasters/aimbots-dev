@@ -2,6 +2,8 @@
 
 #include "subsystems/chassis/chassis_helper.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 ChassisManualDriveCommand::ChassisManualDriveCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
@@ -34,3 +36,5 @@ bool ChassisManualDriveCommand::isReady() { return true; }
 bool ChassisManualDriveCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

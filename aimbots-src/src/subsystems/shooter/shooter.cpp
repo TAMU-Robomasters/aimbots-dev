@@ -1,15 +1,17 @@
-#include "subsystems/shooter/shooter.hpp"
 
-#ifndef ENGINEER
+
+#include "subsystems/shooter/shooter.hpp"
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
 #include "utils/common_types.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 
-ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
+ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers, src::Utils::RefereeHelperTurreted* refHelper)
     : Subsystem(drivers),
       flywheel1(drivers, SHOOTER_1_ID, SHOOTER_BUS, SHOOTER_1_DIRECTION, "Flywheel One"),
       flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, SHOOTER_2_DIRECTION, "Flywheel Two"),
@@ -25,7 +27,8 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers)
       targetRPMs(Matrix<float, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       desiredOutputs(Matrix<int32_t, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
-      velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix())
+      velocityPIDs(Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1>::zeroMatrix()),
+      refHelper(refHelper)
 //
 {
     motors[RIGHT][0] = &flywheel1;  // TOP_RIGHT == RIGHT
@@ -76,8 +79,9 @@ void ShooterSubsystem::refresh() {
         FWBotLeft = flywheel4.getShaftRPM();
     }
 #endif
-
     ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor);
+
+    refHelper->updatePredictedProjectileSpeed();
 }
 
 // Returns the speed of the shooter motor with the highest absolute value of RPM
@@ -105,7 +109,7 @@ float ShooterSubsystem::getMotorSpeed(MotorIndex motorIdx) const {
 void ShooterSubsystem::updateMotorVelocityPID(MotorIndex motorIdx) {
     if (motors[motorIdx][0]->isMotorOnline()) {  // Check if motor is online when getting info from it
         float err = targetRPMs[motorIdx][0] - motors[motorIdx][0]->getShaftRPM();
-        float PIDOut = velocityPIDs[motorIdx][0]->runControllerDerivateError(err);
+        float PIDOut = velocityPIDs[motorIdx][0]->runController(err, motors[motorIdx][0]->getTorque());
         setDesiredOutput(motorIdx, PIDOut);
     }
 }

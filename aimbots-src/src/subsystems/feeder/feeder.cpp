@@ -1,5 +1,7 @@
 #include "subsystems/feeder/feeder.hpp"
-#ifndef ENGINEER
+
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
@@ -16,6 +18,12 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
 {
 }
 
+// Watch Variables
+int16_t heatCurrentDisplay = 0;
+int16_t barrelDDisplay = 0;
+
+int16_t heatMaxDisplay = 0;
+
 void FeederSubsystem::initialize() {
     feederMotor.initialize();
     limitSwitchLeft.initialize();
@@ -24,8 +32,16 @@ void FeederSubsystem::initialize() {
 #endif
 }
 
+float feederDesiredOutputDisplay = 0;
+float feederShaftRPMDisplay = 0;
+bool isFeederOnlineDisplay = false;
+
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
+    isFeederOnlineDisplay = feederMotor.isMotorOnline();
+    feederDesiredOutputDisplay = targetRPM;
+    feederShaftRPMDisplay = feederMotor.getShaftRPM();
+
     updateMotorVelocityPID();
     setDesiredOutput();
     limitSwitchLeft.refresh();
@@ -58,36 +74,6 @@ int FeederSubsystem::getTotalLimitCount() const {
 #endif
 }
 
-bool FeederSubsystem::isBarrelHeatAcceptable(float maxPercentage) {
-    using RefSerialRxData = tap::communication::serial::RefSerial::Rx;
-    auto turretData = drivers->refSerial.getRobotData().turret;
-
-    uint16_t lastHeat = 0;
-    uint16_t heatLimit = 0;
-
-    auto launcherID = turretData.launchMechanismID;
-    switch (launcherID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_42MM: {
-            lastHeat = turretData.heat42;
-            heatLimit = turretData.heatLimit42;
-            break;
-        }
-        default:
-            break;
-    }
-
-    return (lastHeat <= (static_cast<float>(heatLimit) * maxPercentage));
-}
-
 }  // namespace src::Feeder
-#endif
+
+#endif  // #ifdef FEEDER_COMPATIBLE

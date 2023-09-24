@@ -1,14 +1,13 @@
 #include "subsystems/shooter/brake_shooter_command.hpp"
-#ifndef ENGINEER
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
 
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 
-//#ifndef TARGET_ENGINEER
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 static int highestSpeedDebug = 0;
@@ -41,5 +40,4 @@ bool BrakeShooterCommand::isFinished() const {
 
 }  // namespace src::Shooter
 
-//#endif //#ifndef TARGET_ENGINEER
-#endif
+#endif //#ifdef SHOOTER_COMPATIBLE

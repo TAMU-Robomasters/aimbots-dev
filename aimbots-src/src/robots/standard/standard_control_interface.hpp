@@ -1,7 +1,10 @@
+
 #pragma once
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "tap/util_macros.hpp"
+
+#include "utils/filters/ema.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 using namespace tap::algorithms;
@@ -9,7 +12,7 @@ using namespace tap::algorithms;
 namespace src::Control {
 
 class OperatorInterface {
-   private:
+private:
     tap::Drivers *drivers;
 
     uint32_t prevUpdateCounterX = 0;
@@ -24,12 +27,19 @@ class OperatorInterface {
     LinearInterpolationPredictor chassisYInput;
     LinearInterpolationPredictor chassisRotationInput;
 
+    src::Utils::Filters::EMAFilter mouseXFilter;
+    src::Utils::Filters::EMAFilter mouseYFilter;
+
     tap::algorithms::Ramp chassisXRamp;
     tap::algorithms::Ramp chassisYRamp;
     tap::algorithms::Ramp chassisRotationRamp;
 
-   public:
-    OperatorInterface(tap::Drivers *drivers) : drivers(drivers) {}
+public:
+    OperatorInterface(tap::Drivers *drivers)
+        :  //
+          drivers(drivers),
+          mouseXFilter(0.5f),
+          mouseYFilter(0.5f) {}
     DISALLOW_COPY_AND_ASSIGN(OperatorInterface)
     mockable ~OperatorInterface() = default;
 
@@ -45,7 +55,7 @@ class OperatorInterface {
     // The scalar is used in the calculation to determine what percentage of that range is currently being used
     //(Or so I believe, this is techincally straight copied from UW's code and has yet to be field tested)
     static constexpr int16_t USER_MOUSE_YAW_MAX = 250;
-    static constexpr float USER_MOUSE_YAW_SCALAR =16.0f / USER_MOUSE_YAW_MAX;
+    static constexpr float USER_MOUSE_YAW_SCALAR = 16.0f / USER_MOUSE_YAW_MAX;
 
     static constexpr int16_t USER_MOUSE_PITCH_MAX = 100;
     static constexpr float USER_MOUSE_PITCH_SCALAR = 5.0f / USER_MOUSE_PITCH_MAX;

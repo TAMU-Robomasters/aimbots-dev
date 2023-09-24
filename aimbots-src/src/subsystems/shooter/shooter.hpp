@@ -1,12 +1,14 @@
 #pragma once
 #include <vector>
 
-#ifndef ENGINEER
-
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -22,8 +24,8 @@ enum MotorIndex {
 };
 
 class ShooterSubsystem : public tap::control::Subsystem {
-   public:
-    ShooterSubsystem(tap::Drivers* drivers);
+public:
+    ShooterSubsystem(tap::Drivers* drivers, src::Utils::RefereeHelperTurreted* refHelper);
 
     /**
      * Allows user to call a DJIMotor member function on all shooter motors
@@ -103,9 +105,9 @@ class ShooterSubsystem : public tap::control::Subsystem {
     }
 
 #ifndef ENV_UNIT_TESTS
-   private:
+private:
 #else
-   public:
+public:
 #endif
 
     DJIMotor flywheel1, flywheel2;
@@ -121,7 +123,9 @@ class ShooterSubsystem : public tap::control::Subsystem {
     Matrix<DJIMotor*, SHOOTER_MOTOR_COUNT, 1> motors;
 
     Matrix<SmoothPID*, SHOOTER_MOTOR_COUNT, 1> velocityPIDs;
+
+    src::Utils::RefereeHelperTurreted* refHelper;
 };
 };  // namespace src::Shooter
 
-#endif
+#endif //#ifdef SHOOTER_COMPATIBLE

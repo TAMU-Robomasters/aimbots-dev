@@ -1,58 +1,56 @@
 #include "gimbal_chassis_relative_controller.hpp"
-#ifndef ENGINEER
-
-#include <utils/robot_specific_inc.hpp>
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
 GimbalChassisRelativeController::GimbalChassisRelativeController(GimbalSubsystem* gimbalSubsystem)
-    : gimbal(gimbalSubsystem),
-      yawPositionPID(YAW_POSITION_PID_CONFIG),
-      pitchPositionPID(PITCH_POSITION_PID_CONFIG) {}
+    : gimbal(gimbalSubsystem)  //
+{
+    BuildPIDControllers();
+}
 
 void GimbalChassisRelativeController::initialize() {
-    yawPositionPID.pid.reset();
-    pitchPositionPID.pid.reset();
+    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawPositionPIDs[i]->pid.reset();
+    }
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        pitchPositionPIDs[i]->pid.reset();
+    }
 }
 
-void GimbalChassisRelativeController::runYawController(AngleUnit unit, float targetChassisRelativeYawAngle, bool vision) {
-    UNUSED(unit);
-    UNUSED(vision);
-    gimbal->setTargetChassisRelativeYawAngle(AngleUnit::Degrees, targetChassisRelativeYawAngle);
+float yawPositionPIDOutputDisplay = 0.0f;
+float yawMotorSetpointErrorDisplay = 0.0f;
+float pitchMotorSetpointErrorDisplay = 0.0f;
 
-    float positionControllerError =
-        modm::toDegree(
-            gimbal->getCurrentChassisRelativeYawAngleAsContiguousFloat()
-                .difference(gimbal->getTargetChassisRelativeYawAngle(AngleUnit::Radians)));
+void GimbalChassisRelativeController::runYawController(std::optional<float> velocityLimit) {
+    UNUSED(velocityLimit);
 
-    float yawPositionPIDOutput = yawPositionPID.runController(positionControllerError, gimbal->getYawMotorRPM());
+    float positionPIDOutput = 0.0f;
+    for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawMotorSetpointErrorDisplay = gimbal->getYawMotorSetpointError(i, AngleUnit::Degrees);
+        positionPIDOutput = yawPositionPIDs[i]->runController(
+            gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
+            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
-    gimbal->setYawMotorOutput(yawPositionPIDOutput);
+        yawPositionPIDOutputDisplay = positionPIDOutput;
+
+        gimbal->setDesiredYawMotorOutput(i, positionPIDOutput);
+    }
 }
 
-float gravityCompensationDisplay = 0.0f;
+void GimbalChassisRelativeController::runPitchController(std::optional<float> velocityLimit) {
+    UNUSED(velocityLimit);
 
-void GimbalChassisRelativeController::runPitchController(AngleUnit unit, float targetChassisRelativePitchAngle, bool vision) {
-    UNUSED(vision);
-    gimbal->setTargetChassisRelativePitchAngle(unit, targetChassisRelativePitchAngle);
+    float positionPIDOutput = 0.0f;
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
+        pitchMotorSetpointErrorDisplay = gimbal->getPitchMotorSetpointError(i, AngleUnit::Degrees);
 
-    // This gets converted to degrees so that we get a higher error. ig
-    // we could also just boost our constants, but this takes minimal
-    // calculation and seems simpler. subject to change I suppose...
-    float positionControllerError =
-        modm::toDegree(
-            gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                .difference(gimbal->getTargetChassisRelativePitchAngle(AngleUnit::Radians)));
+        positionPIDOutput = pitchPositionPIDs[i]->runController(
+            gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
+            RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));
 
-    float pitchPositionPIDOutput = pitchPositionPID.runController(positionControllerError, gimbal->getPitchMotorRPM());
-
-    float toHorizonError = gimbal->getCurrentChassisRelativePitchAngleAsContiguousFloat()
-                               .difference(modm::toRadian(PITCH_START_ANGLE + HORIZON_OFFSET));
-
-    float gravityCompensation = -cos(toHorizonError) * kGRAVITY;
-    gravityCompensationDisplay = gravityCompensation;
-
-    gimbal->setPitchMotorOutput(pitchPositionPIDOutput + gravityCompensation);
+        gimbal->setDesiredPitchMotorOutput(i, positionPIDOutput);
+    }
 }
 
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }

@@ -1,17 +1,27 @@
 #include "full_auto_feeder_command.hpp"
-#ifndef ENGINEER
+
+#ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
 
-FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder, float speed, float acceptableHeatThreshold)
+FullAutoFeederCommand::FullAutoFeederCommand(
+    src::Drivers* drivers,
+    FeederSubsystem* feeder,
+    src::Utils::RefereeHelperTurreted* refHelper,
+    float speed,
+    float unjamSpeed,
+    int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
+      refHelper(refHelper),
       speed(speed),
-      acceptableHeatThreshold(acceptableHeatThreshold),
-      unjamSpeed(-3000.0f)  //
+      UNJAM_TIMER_MS(UNJAM_TIMER_MS),
+      unjamSpeed(-unjamSpeed)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
+
+bool isCommandRunningDisplay = false;
 
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
@@ -19,23 +29,36 @@ void FullAutoFeederCommand::initialize() {
     unjamTimer.restart(0);
 }
 
+uint16_t lastHeatDisplay = 0;
+uint16_t heatLimitDisplay = 0;
+float lastProjectileSpeedDisplay = 0.0f;
+
 void FullAutoFeederCommand::execute() {
+    isCommandRunningDisplay = true;
     if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
-        unjamTimer.restart(175);
+        unjamTimer.restart(UNJAM_TIMER_MS);
     }
 
     if (unjamTimer.execute()) {
         feeder->setTargetRPM(speed);
         startupThreshold.restart(500);
     }
+
+    lastHeatDisplay = refHelper->getCurrBarrelHeat();
+    heatLimitDisplay = refHelper->getCurrBarrelLimit();
+    lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
 }
 
-void FullAutoFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void FullAutoFeederCommand::end(bool) {
+    feeder->setTargetRPM(0.0f);
+    isCommandRunningDisplay = false;
+}
 
-bool FullAutoFeederCommand::isReady() { return feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
 
-bool FullAutoFeederCommand::isFinished() const { return !feeder->isBarrelHeatAcceptable(acceptableHeatThreshold); }
+bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
 
 }  // namespace src::Feeder
-#endif
+
+#endif  // #ifdef FEEDER_COMPATIBLE

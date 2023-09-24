@@ -1,18 +1,18 @@
 #pragma once
 
-#ifdef TARGET_STANDARD
+#include "subsystems/hopper/hopper.hpp"
+#include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "tap/control/subsystem.hpp"
-#include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+
+#ifdef HOPPER_LID_COMPATIBLE
 
 namespace src::Hopper {
 
 class ToggleHopperCommand : public TapCommand {
-   public:
-    ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper);
+public:
+    ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE, float HOPPER_OPEN_ANGLE);
 
     void initialize() override;
     void execute() override;
@@ -22,10 +22,16 @@ class ToggleHopperCommand : public TapCommand {
     bool isFinished() const override;
     const char* getName() const override { return "toggle hopper command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     HopperSubsystem* hopper;
-};
-};  // namespace src::Hopper
 
-#endif
+    bool wasCPressed = false;
+    bool hopperClosed = true;
+
+    float HOPPER_CLOSED_ANGLE;
+    float HOPPER_OPEN_ANGLE;
+};
+}  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

@@ -1,19 +1,24 @@
 #pragma once
 
 #include "tap/control/subsystem.hpp"
+
 #include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+#ifdef HOPPER_LID_COMPATIBLE
 
 namespace src::Hopper {
 
 enum HopperState : uint8_t {
     CLOSED = 0,
     OPEN = 1,
-    UNKNOWN = 2
+    //  UNKNOWN = 2
 };
 
 class HopperSubsystem : public tap::control::Subsystem {
-   public:
-    HopperSubsystem(tap::Drivers* drivers);
+public:
+    HopperSubsystem(
+        tap::Drivers* drivers);
 
     mockable void initialize() override;
     void refresh() override;
@@ -48,11 +53,15 @@ class HopperSubsystem : public tap::control::Subsystem {
      */
     void setHopperState(uint8_t new_state);
 
-   private:
+    bool isHopperOpen() const;
+
+private:
     tap::Drivers* drivers;
 
     Servo hopperMotor;
-    uint8_t hopper_state;
+    uint8_t hopperState;
     uint32_t actionStartTime;  // milliseconds
 };
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

@@ -20,12 +20,13 @@
 #ifndef DRIVERS_HPP_
 #define DRIVERS_HPP_
 
-#include "informants/field_relative_informant.hpp"
-#include "informants/ultrasonic_distance_sensor.hpp"
-#include "informants/vision/jetson_communicator.hpp"
 #include "tap/drivers.hpp"
+
+#include "informants/kinematic_informant.hpp"
+// #include "informants/ultrasonic_distance_sensor.hpp"
+#include "informants/turret-comms/turret_can_communicator.hpp"
+#include "informants/vision/jetson_communicator.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
-#include "utils/nxp_imu/nxp_bmi088.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 namespace src {
@@ -33,28 +34,22 @@ class Drivers : public tap::Drivers {
     friend class DriversSingleton;
 
 #ifdef ENV_UNIT_TESTS
-   public:
+public:
 #endif
-    Drivers() : tap::Drivers(),
-#ifdef TARGET_SENTRY
-                railDistanceSensor(this),
-#endif
-                controlOperatorInterface(this),
-                imu(this),
-                magnetometer(),
-                cvCommunicator(this),
-                fieldRelativeInformant(this) {
-    }
+    Drivers()
+        : tap::Drivers(),
+          controlOperatorInterface(this),
+          magnetometer(),
+          cvCommunicator(this),
+          kinematicInformant(this),
+          turretCommunicator(this, CANBus::CAN_BUS1) {}
 
-   public:
-#ifdef TARGET_SENTRY
-    Informants::UltrasonicDistanceSensor railDistanceSensor;
-#endif
+public:
     Control::OperatorInterface controlOperatorInterface;
-    ::utils::NXPBMI088 imu;
-    ::utils::Ist8310 magnetometer;
-    Informants::vision::JetsonCommunicator cvCommunicator;
-    Informants::FieldRelativeInformant fieldRelativeInformant;
+    utils::Ist8310 magnetometer;
+    Informants::Vision::JetsonCommunicator cvCommunicator;
+    Informants::KinematicInformant kinematicInformant;
+    Informants::TurretComms::TurretCommunicator turretCommunicator;
 };  // class Drivers
 
 }  // namespace src

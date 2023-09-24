@@ -12,6 +12,17 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
+static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
+static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
+
+static constexpr int16_t MOUSE_YAW_MAX = 1000;
+static constexpr int16_t MOUSE_PITCH_MAX = 1000;
+static constexpr float YAW_MOUSE_INPUT_SENSITIVITY = (0.15f / MOUSE_YAW_MAX);
+static constexpr float PITCH_MOUSE_INPUT_SENSITIVITY = (0.1f / MOUSE_PITCH_MAX);
+
+static constexpr float CTRL_SCALAR = (1.0f / 4);
+static constexpr float SHIFT_SCALAR = 0.6f;
+
 namespace src::Control {
 /**
  * @brief Gets the current X input from the operator.
@@ -30,7 +41,7 @@ float OperatorInterface::getChassisXInput() {
 
     float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
 
-    float finalX = -analogX;  // TODO: Add digital values from keyboard as well
+    float finalX = analogX;  // TODO: Add digital values from keyboard as well
 
     // Scales analog values by values defined in standard_constants.hpp to speedshift input
     finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
@@ -94,11 +105,29 @@ float OperatorInterface::getChassisRotationInput() {
 }
 
 float OperatorInterface::getGimbalYawInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL);
+    mouseXFilter.update(drivers->remote.getMouseX());
+    // mouseXDisplay = drivers->remote.getMouseX();
+    // mouseXDisplay = mouseXFilter.getValue();
+
+
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
+           static_cast<float>(limitVal<int16_t>(
+               mouseXFilter.getValue(),
+               -MOUSE_YAW_MAX,
+               MOUSE_YAW_MAX)) *
+               YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL);
+    mouseYFilter.update(-drivers->remote.getMouseY());
+    // mouseYDisplay = mouseYFilter.getValue();
+
+    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
+           static_cast<float>(limitVal<int16_t>(
+               mouseYFilter.getValue(),
+               -MOUSE_PITCH_MAX,
+               MOUSE_PITCH_MAX)) *
+               PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 
 }  // namespace src::Control

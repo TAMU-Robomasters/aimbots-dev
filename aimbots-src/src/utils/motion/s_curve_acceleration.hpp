@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace src::utils::motion {
+namespace src::Utils::motion {
 
 class SCurveAcceleration {
 public:
@@ -31,7 +31,10 @@ public:
         float acceleration;
         float jerk;
 
-        Constraints(float velocity, float acceleration, float jerk) : velocity(velocity), acceleration(acceleration), jerk(jerk) {}
+        Constraints(float velocity, float acceleration, float jerk)
+            : velocity(velocity),
+              acceleration(acceleration),
+              jerk(jerk) {}
     };
 
     float t1, v1, d1, t2, v2, d2, t3, v3, d3;
@@ -62,9 +65,11 @@ public:
         v3 = constraints.velocity;
         d3 = v2 * t3 + constraints.acceleration * (t3 * t3) / 2.0f - constraints.jerk * (t3 * t3 * t3) / 6.0f;
 
-        // no closed form solution for dispalcement paramaterization of the third segment, so quadratic interpolation works really nicely
+        // no closed form solution for dispalcement paramaterization of the third segment, so quadratic interpolation works
+        // really nicely
         float t3_mid = t3 / 2.0f;
-        float d3_mid = -constraints.jerk * (t3_mid * t3_mid * t3_mid) / 6.0f + constraints.acceleration * (t3_mid * t3_mid) / 2.0f + v2 * t3_mid;
+        float d3_mid = -constraints.jerk * (t3_mid * t3_mid * t3_mid) / 6.0f +
+                       constraints.acceleration * (t3_mid * t3_mid) / 2.0f + v2 * t3_mid;
         float denominator = d3_mid * d3 * (d3_mid - d3);
 
         distInterpA = (d3 * t3_mid - d3_mid * t3) / denominator;
@@ -77,13 +82,21 @@ public:
         }
 
         if (t < t1) {
-            return Step(constraints.jerk * (t * t * t) / 6.0f, constraints.jerk * (t * t) / 2.0, constraints.jerk * t, constraints.jerk);
+            return Step(
+                constraints.jerk * (t * t * t) / 6.0f,
+                constraints.jerk * (t * t) / 2.0,
+                constraints.jerk * t,
+                constraints.jerk);
         }
 
         t -= t1;
 
         if (t < t2) {
-            return Step(d1 + v1 * t + constraints.acceleration * (t * t) / 2.0f, v1 + constraints.acceleration * t, constraints.acceleration, 0.0f);
+            return Step(
+                d1 + v1 * t + constraints.acceleration * (t * t) / 2.0f,
+                v1 + constraints.acceleration * t,
+                constraints.acceleration,
+                0.0f);
         }
 
         t -= t2;
@@ -108,7 +121,8 @@ public:
         displacement -= d1;
 
         if (displacement < d2) {
-            float t = (-v1 + std::sqrt(v1 * v1 - 4.0f * constraints.acceleration / 2.0f * -displacement)) / (constraints.acceleration);
+            float t = (-v1 + std::sqrt(v1 * v1 - 4.0f * constraints.acceleration / 2.0f * -displacement)) /
+                      (constraints.acceleration);
             return (t + t1);
         }
 
@@ -129,14 +143,23 @@ public:
 
         if (displacement < d1) {
             float t = std::cbrt(displacement * 6.0f / constraints.jerk);
-            return Step(constraints.jerk * (t * t * t) / 6.0f, constraints.jerk * (t * t) / 2.0, constraints.jerk * t, constraints.jerk);
+            return Step(
+                constraints.jerk * (t * t * t) / 6.0f,
+                constraints.jerk * (t * t) / 2.0,
+                constraints.jerk * t,
+                constraints.jerk);
         }
 
         displacement -= d1;
 
         if (displacement < d2) {
-            float t = (-v1 + std::sqrt(v1 * v1 - 4.0f * constraints.acceleration / 2.0f * -displacement)) / (constraints.acceleration);
-            return Step(d1 + v1 * t + constraints.acceleration * (t * t) / 2.0f, v1 + constraints.acceleration * t, constraints.acceleration, 0.0f);
+            float t = (-v1 + std::sqrt(v1 * v1 - 4.0f * constraints.acceleration / 2.0f * -displacement)) /
+                      (constraints.acceleration);
+            return Step(
+                d1 + v1 * t + constraints.acceleration * (t * t) / 2.0f,
+                v1 + constraints.acceleration * t,
+                constraints.acceleration,
+                0.0f);
         }
 
         displacement -= d2;
@@ -157,4 +180,4 @@ public:
 
     float totalDisplacement() { return d1 + d2 + d3; }
 };
-}  // namespace src::utils::motion
+}  // namespace src::Utils::motion

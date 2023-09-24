@@ -1,11 +1,10 @@
 #pragma once
 
-#include <tap/algorithms/contiguous_float.hpp>
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
 #include <utils/common_types.hpp>
 
-#include "subsystems/gimbal/gimbal.hpp"
+#include "informants/enemy_data_conversion.hpp"
 
 #include "jetson_protocol.hpp"
 
@@ -13,16 +12,11 @@ namespace src {
 class Drivers;
 }
 
-namespace src::Informants::vision {
+namespace src::Informants::Vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
     AssemblingMessage,
-};
-
-enum GimbalAxis {
-    yaw = 0,
-    pitch = 1,
 };
 
 class JetsonCommunicator {
@@ -38,31 +32,38 @@ public:
 
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    void setGimbalSubsystem(src::Gimbal::GimbalSubsystem* gimbal) { this->gimbal = gimbal; }
+    PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
-    Matrix<float, 1, 2> const& getVisionTargetAngles() { return visionTargetAngles; }
+    uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
+
+    uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
+
+    bool isLastFrameStale() const;
 
 private:
     src::Drivers* drivers;
+    src::Informants::Vision::VisionDataConversion visionDataConverter;
 
     alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
-
-    JetsonMessage lastMessage;
 
     JetsonCommunicatorSerialState currentSerialState;
     size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
 
-    src::Gimbal::GimbalSubsystem* gimbal;
+    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
+    static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
+    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+
+    JetsonMessage lastMessage;
+    uint32_t lastFoundTargetTime;
 
     float fieldRelativeYawAngleAtVisionUpdate;
     float chassisRelativePitchAngleAtVisionUpdate;
 
-    Matrix<float, 1, 2> visionTargetAngles;
+    PlateKinematicState lastPlateKinematicState;
 
-    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
-    static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+    Matrix<float, 1, 2> visionTargetAngles;
+    Vector3f visionTargetPosition;
 };
-}  // namespace src::Informants::vision
+}  // namespace src::Informants::Vision

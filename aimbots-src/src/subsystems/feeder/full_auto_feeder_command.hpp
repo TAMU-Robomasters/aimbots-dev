@@ -1,20 +1,28 @@
 #pragma once
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 
 #include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
+
+#ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
 
 class FullAutoFeederCommand : public TapCommand {
 public:
-    FullAutoFeederCommand(src::Drivers*, FeederSubsystem*, float speed = FEEDER_DEFAULT_RPM, float acceptableHeatThreshold = 0.90f);
+    FullAutoFeederCommand(
+        src::Drivers*,
+        FeederSubsystem*,
+        src::Utils::RefereeHelperTurreted*,
+        float speed,
+        float unjamSpeed,
+        int UNJAM_TIMER_MS = 300);
     void initialize() override;
 
     void execute() override;
@@ -30,9 +38,11 @@ public:
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     float speed;
-    float acceptableHeatThreshold;
+
+    int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
@@ -41,4 +51,4 @@ private:
 
 }  // namespace src::Feeder
 
-#endif
+#endif  // #ifdef FEEDER_COMPATIBLE

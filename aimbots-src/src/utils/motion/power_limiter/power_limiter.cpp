@@ -1,11 +1,12 @@
 #include "power_limiter.hpp"
 
-namespace src::utils::Control::PowerLimiting {
-PowerLimiter::PowerLimiter(const src::Drivers *drivers,
-                           float startingEnergyBuffer,
-                           float energyBufferLimitThreshold,
-                           float energyBufferCritThreshold,
-                           float safetyFactor)
+namespace src::Utils::Control::PowerLimiting {
+PowerLimiter::PowerLimiter(
+    const src::Drivers *drivers,
+    float startingEnergyBuffer,
+    float energyBufferLimitThreshold,
+    float energyBufferCritThreshold,
+    float safetyFactor)
     : drivers(drivers),
       startingEnergyBuffer(startingEnergyBuffer),
       energyBufferLimitThreshold(energyBufferLimitThreshold),
@@ -15,8 +16,7 @@ PowerLimiter::PowerLimiter(const src::Drivers *drivers,
       prevTime(0),
       prevRobotDataReceivedTimestamp(0)
 //
-{
-}
+{}
 
 float PowerLimiter::getPowerLimitRatio() {
     if (!drivers->refSerial.getRefSerialReceivingData()) {
@@ -26,7 +26,10 @@ float PowerLimiter::getPowerLimitRatio() {
     updatePowerAndEnergyBuffer();
 
     if (energyBuffer < energyBufferLimitThreshold) {
-        return limitVal(static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold, 0.0f, 1.0f);
+        return limitVal(
+            static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold,
+            0.0f,
+            1.0f);
     } else {
         return 1.0f;
     }
@@ -51,4 +54,4 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
     consumedPower = newChassisPower;
 }
 
-}  // namespace src::utils::Control::PowerLimiting
+}  // namespace src::Utils::Control::PowerLimiting

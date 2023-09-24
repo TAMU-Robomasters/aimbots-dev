@@ -1,18 +1,19 @@
 #pragma once
+#include "tap/control/subsystem.hpp"
 
-#ifdef TARGET_STANDARD
+#include "subsystems/hopper/hopper.hpp"
+#include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "tap/control/subsystem.hpp"
-#include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+
+#ifdef HOPPER_LID_COMPATIBLE
 
 namespace src::Hopper {
 
 class OpenHopperCommand : public TapCommand {
-   public:
-    OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper);
+public:
+    OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_OPEN_ANGLE);
 
     void initialize() override;
     void execute() override;
@@ -22,10 +23,12 @@ class OpenHopperCommand : public TapCommand {
     bool isFinished() const override;
     const char* getName() const override { return "open hopper command"; }
 
-   private:
+private:
     src::Drivers* drivers;
     HopperSubsystem* hopper;
+
+    float HOPPER_OPEN_ANGLE;
 };
 };  // namespace src::Hopper
 
-#endif
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

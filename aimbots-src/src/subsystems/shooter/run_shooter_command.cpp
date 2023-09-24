@@ -1,21 +1,24 @@
 #include "subsystems/shooter/run_shooter_command.hpp"
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
 
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 
-//#ifndef TARGET_ENGINEER
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
-RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) {
-    this->drivers = drivers;
-    this->shooter = shooter;
+RunShooterCommand::RunShooterCommand(
+    src::Drivers* drivers,
+    ShooterSubsystem* shooter,
+    src::Utils::RefereeHelperTurreted* refHelper)
+    : drivers(drivers),
+      shooter(shooter),
+      refHelper(refHelper) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
@@ -25,35 +28,25 @@ void RunShooterCommand::initialize() {
 
 tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataDisplay;
 
+uint16_t flywheelRPMDisplay = 0;
+uint16_t flywheelCurrentRPMDisplay = 0;
+
+float currentHeatDisplay = 0.0f;
+float heatLimitDisplay = 0.0f;
+
 void RunShooterCommand::execute() {
-    using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+
+    currentHeatDisplay = refHelper->getCurrBarrelHeat();
+    heatLimitDisplay = refHelper->getCurrBarrelLimit();
+
+    
 
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
-    uint16_t refSpeedLimit = 0;
+    uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(SHOOTER_SPEED_MATRIX[0][0]);
 
-    auto refSysRobotTurretData = drivers->refSerial.getRobotData().turret;
-    refSysRobotTurretDataDisplay = refSysRobotTurretData;
-
-    auto launcherID = refSysRobotTurretData.launchMechanismID;
-    switch (launcherID) {  // gets launcher ID from ref serial, sets speed limit accordingly
-                           // #if defined(TARGET_STANDARD) || defined(TARGET_SENTRY)
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID1;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit17ID2;
-            break;
-        }
-            // #endif
-        case RefSerialRxData::MechanismID::TURRET_42MM: {
-            refSpeedLimit = refSysRobotTurretData.barrelSpeedLimit42;
-            break;
-        }
-        default:
-            break;
-    }
+    flywheelRPMDisplay = flywheelRPM;
+    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
 
     for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
         if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
@@ -72,10 +65,7 @@ void RunShooterCommand::end(bool) {
 
 bool RunShooterCommand::isReady() { return true; }
 
-bool RunShooterCommand::isFinished() const {
-    return false;
-}
+bool RunShooterCommand::isFinished() const { return false; }
 }  // namespace src::Shooter
 
-#endif
-
+#endif //#ifdef SHOOTER_COMPATIBLE

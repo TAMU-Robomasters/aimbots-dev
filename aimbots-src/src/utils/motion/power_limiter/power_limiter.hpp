@@ -1,21 +1,24 @@
 #pragma once
 
-#include "drivers.hpp"
 #include "utils/common_types.hpp"
 
-namespace src::utils::Control::PowerLimiting {
+#include "drivers.hpp"
+
+
+namespace src::Utils::Control::PowerLimiting {
 
 class PowerLimiter {
-   public:
-    PowerLimiter(const src::Drivers* drivers,
-                 float startingEnergyBuffer,
-                 float energyBufferLimitThreshold,
-                 float energyBufferCritThreshold,
-                 float safetyFactor);
+public:
+    PowerLimiter(
+        const src::Drivers* drivers,
+        float startingEnergyBuffer,
+        float energyBufferLimitThreshold,
+        float energyBufferCritThreshold,
+        float safetyFactor);
 
     float getPowerLimitRatio();
 
-   private:
+private:
     const src::Drivers* drivers;
     float startingEnergyBuffer;
     float energyBufferLimitThreshold;
@@ -30,4 +33,4 @@ class PowerLimiter {
     void updatePowerAndEnergyBuffer();
 };
 
-};  // namespace src::utils::Control::PowerLimiting
+};  // namespace src::Utils::Control::PowerLimiting

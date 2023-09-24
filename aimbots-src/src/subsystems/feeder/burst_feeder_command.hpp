@@ -1,21 +1,23 @@
 #pragma once
-#ifndef ENGINEER
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/command.hpp"
 
 #include "subsystems/feeder/feeder.hpp"
 #include "utils/common_types.hpp"
+#include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 
-namespace src::Feeder {
+#ifdef FEEDER_COMPATIBLE
 
+namespace src::Feeder {
 class BurstFeederCommand : public TapCommand {
 public:
     BurstFeederCommand(
         src::Drivers*,
         FeederSubsystem*,
+        src::Utils::RefereeHelperTurreted*,
         float speed = FEEDER_DEFAULT_RPM,
         float acceptableHeatThreshold = 0.90f,
         int burstLength = DEFAULT_BURST_LENGTH);
@@ -37,6 +39,7 @@ public:
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+    src::Utils::RefereeHelperTurreted* refHelper;
 
     float speed;
     float acceptableHeatThreshold;
@@ -48,4 +51,4 @@ private:
 
 }  // namespace src::Feeder
 
-#endif
+#endif  // #ifdef FEEDER_COMPATIBLE

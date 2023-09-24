@@ -1,13 +1,14 @@
 #include "stop_shooter_comprised_command.hpp"
-#ifndef ENGINEER
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"
 
 #include "utils/common_types.hpp"
-#include "utils/robot_constants.hpp"
+#include "utils/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
+
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -59,4 +60,4 @@ bool StopShooterComprisedCommand::isReady() { return true; }
 bool StopShooterComprisedCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter
-#endif
+#endif //#ifdef SHOOTER_COMPATIBLE

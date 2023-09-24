@@ -1,22 +1,27 @@
 #include "utils/robot_specific_inc.hpp"
-#ifdef TARGET_SENTRY
 
 #pragma once
 
 #include <drivers.hpp>
-#include <subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
 
+#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
+
 namespace src::Gimbal {
 
-class GimbalPatrolCommand : public tap::control::Command {
-   public:
-    GimbalPatrolCommand(src::Drivers*,
-                        GimbalSubsystem*,
-                        GimbalChassisRelativeController*);
+struct GimbalPatrolConfig {
+    float pitchPatrolAmplitude;
+    float pitchPatrolFrequency;
+    float pitchPatrolOffset;
+};
 
-    char const* getName() const override { return "Gimbal Control Command"; }
+class GimbalPatrolCommand : public tap::control::Command {
+public:
+    GimbalPatrolCommand(src::Drivers*, GimbalSubsystem*, GimbalFieldRelativeController*, GimbalPatrolConfig);
+
+    char const* getName() const override { return "Gimbal Patrol Command"; }
 
     void initialize() override;
     void execute() override;
@@ -27,12 +32,11 @@ class GimbalPatrolCommand : public tap::control::Command {
 
     // implements sin function with current time (millis) as function input
     float getSinusoidalPitchPatrolAngle(AngleUnit unit) {
-        constexpr float intialDirection = (PITCH_SOFTSTOP_HIGH < PITCH_SOFTSTOP_LOW) ? 1.0f : -1.0f;
-        float angle = modm::toRadian(PITCH_PATROL_AMPLITUDE) * sin(PITCH_PATROL_FREQUENCY * tap::arch::clock::getTimeMilliseconds() / 1000.0f) + modm::toRadian((intialDirection * PITCH_PATROL_OFFSET) + PITCH_START_ANGLE);
-        if (unit == AngleUnit::Radians) {
-            return angle;
-        }
-        return modm::toDegree(angle);
+        float angle = patrolConfig.pitchPatrolAmplitude *
+                          sin(patrolConfig.pitchPatrolFrequency * getTimeSinceCommandInitialize() / 1000.0f) +
+                      patrolConfig.pitchPatrolOffset;
+
+        return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
     }
 
     void updateYawPatrolTarget();
@@ -40,18 +44,25 @@ class GimbalPatrolCommand : public tap::control::Command {
     // function assumes gimbal yaw is at 0 degrees (positive x axis)
     float getFieldRelativeYawPatrolAngle(AngleUnit unit);
 
-   private:
+    uint32_t getTimeSinceCommandInitialize() { return tap::arch::clock::getTimeMilliseconds() - commandStartTime; }
+
+private:
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
-    GimbalChassisRelativeController* controller;
+    GimbalFieldRelativeController* controller;
+
+    GimbalPatrolConfig patrolConfig;
+
+    uint32_t commandStartTime = 0;
+
+    static constexpr size_t NUM_PATROL_LOCATIONS = 4;
+    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> patrolCoordinates;
+    std::array<uint32_t, NUM_PATROL_LOCATIONS> patrolCoordinateTimes;
 
     MilliTimeout patrolTimer;
-    Matrix<float, 3, 3> patrolCoordinates;
-    int patrolCoordinateIndex;
-    int patrolCoordinateIncrement;
+    int patrolCoordinateIndex = 0;
+    int patrolCoordinateIncrement = 1;
 };
 
 }  // namespace src::Gimbal
-
-#endif

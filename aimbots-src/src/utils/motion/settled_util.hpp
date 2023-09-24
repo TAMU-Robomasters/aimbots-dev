@@ -1,38 +1,38 @@
 #pragma once
 
+#include <optional>
+
 #include "tap/architecture/timeout.hpp"
 
-namespace src::utils::motion {
+namespace src::Utils::motion {
 
-    class SettledUtil {
-       private:
-        tap::arch::MilliTimeout errorTimeout;
-        tap::arch::MilliTimeout derivativeTimeout;
+class SettledUtil {
+public:
+    SettledUtil() = default;
+    ~SettledUtil() = default;
 
-       public:
-        SettledUtil() {}
-
-        static bool isSettled(float error, float errorTolerance) {
-            return static_cast<float>(fabs(error)) < errorTolerance;
-        }
-
-        bool isSettled(float error, float errTolerance, float derivative, float derivTolerance, float derivToleranceTime) {
-            if (static_cast<float>(fabs(error)) < errTolerance) {
-                if (static_cast<float>(fabs(derivative)) < derivTolerance) {
-                    // if timeout has expired and it's still running, then it's settled
-                    if (derivativeTimeout.isExpired()) {
-                        return true;
-                    } else if (derivativeTimeout.isStopped()) {
-                        // otherwise if the timeout has been stopped, then it must've previously left the settled range and needs restarting
-                        derivativeTimeout.restart(derivToleranceTime);
-                    }
-                } else {
-                    // if the derivative is out of the tolerance range, then stop the timeout
-                    derivativeTimeout.stop();
-                }
+    bool isSettled(
+        float error,
+        float errTolerance,
+        std::optional<uint32_t> errorTimeout = std::nullopt) {
+        // Sets both flags to false
+        bool errorFlag = false;
+        if (fabs(error) < errTolerance) {
+            if (errorTimer.isExpired()) {
+                errorFlag = true;
+            } else if (errorTimer.isStopped()) {  // if timer has been stopped, restart it
+                errorTimer.restart(errorTimeout.value_or(0));
             }
-            return false;
+        } else {
+            errorTimer.stop();  // if error is not within tolerance, stop timer
         }
-    };
 
-}  // namespace src::utils::motion
+        return errorFlag;
+    }
+
+private:
+    tap::arch::MilliTimeout errorTimer;
+    tap::arch::MilliTimeout derivativeTimer;
+};
+
+}  // namespace src::Utils::motion

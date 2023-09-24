@@ -6,6 +6,8 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class ChassisManualDriveCommand : public TapCommand {
@@ -27,3 +29,5 @@ class ChassisManualDriveCommand : public TapCommand {
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE
