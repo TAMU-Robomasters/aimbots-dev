@@ -9,6 +9,7 @@
 #include "utils/ref_system/ref_helper_turreted.hpp"
 
 #include "drivers.hpp"
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Utils::Ballistics {
 class BallisticsSolver;
@@ -61,3 +62,5 @@ private:
 };
 
 }  // namespace src::Gimbal
+
+#endif

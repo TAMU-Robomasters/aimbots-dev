@@ -1,4 +1,5 @@
 #include "gimbal_chassis_relative_controller.hpp"
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
@@ -55,3 +56,4 @@ void GimbalChassisRelativeController::runPitchController(std::optional<float> ve
 bool GimbalChassisRelativeController::isOnline() const { return gimbal->isOnline(); }
 
 }  // namespace src::Gimbal
+#endif

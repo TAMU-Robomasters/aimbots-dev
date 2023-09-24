@@ -1,5 +1,6 @@
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
 #ifdef GIMBAL_UNTETHERED
 
 #include "gimbal_field_relative_controller.hpp"
@@ -190,4 +191,5 @@ bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline()
 
 }  // namespace src::Gimbal
 
+#endif // GIMBAL_COMPATIBLE
 #endif  // GIMBAL_UNTETHERED

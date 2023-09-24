@@ -2,6 +2,7 @@
 
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
@@ -77,3 +78,5 @@ void GimbalFieldRelativeControlCommand::end(bool) {
 }
 
 }  // namespace src::Gimbal
+
+#endif

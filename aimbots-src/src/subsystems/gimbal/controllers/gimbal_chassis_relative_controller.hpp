@@ -5,6 +5,7 @@
 #include <subsystems/gimbal/gimbal.hpp>
 #include <utils/common_types.hpp>
 #include <utils/pid/smooth_pid_wrap.hpp>
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
@@ -65,3 +66,4 @@ private:
 };
 
 }  // namespace src::Gimbal
+#endif
