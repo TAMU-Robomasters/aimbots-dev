@@ -266,7 +266,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&bCtrlPressed);
-    // drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl
