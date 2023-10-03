@@ -4,6 +4,7 @@
 
 #include "utils/common_types.hpp"
 
+
 namespace src::Utils {
 class KinematicStateVector {
 public:
@@ -75,3 +76,4 @@ private:
     uint32_t lastTime;
 };
 }  // namespace src::Utils
+

@@ -6,6 +6,8 @@
 
 #include "drivers.hpp"
 
+#ifdef CV_COMPATIBLE
+
 namespace src::Gimbal {
 class GimbalSubsystem;
 }
@@ -167,3 +169,5 @@ private:
 };
 
 }  // namespace src::Utils::Ballistics
+
+#endif
