@@ -10,6 +10,7 @@
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
 namespace src {
 class Drivers;
 }  // namespace src
@@ -24,6 +25,7 @@ class ChassisSubsystem;
 
 using namespace src::Utils;
 
+#endif
 namespace src::Informants {
 
 enum AngularAxis { PITCH_AXIS = 0, ROLL_AXIS = 1, YAW_AXIS = 2 };
@@ -32,7 +34,7 @@ class KinematicInformant {
 public:
     KinematicInformant(src::Drivers* drivers);
     ~KinematicInformant() = default;
-
+#define GIMBAL_COMPATIBLE
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
     void registerSubsystems(
@@ -68,7 +70,7 @@ public:
     void updateIMUKinematicStateVector();
 
     void updateChassisIMUAngles();
-
+    
     // Returns angle in rad or deg
     float getChassisIMUAngle(AngularAxis axis, AngleUnit unit);
 
@@ -106,6 +108,7 @@ public:
 
 private:
     src::Drivers* drivers;
+    
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
     tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
 
@@ -161,7 +164,15 @@ private:
         turretIMUAngularYState,
         turretIMUAngularZState};
 
-    src::Informants::Odometry::ChassisKFOdometry chassisKFOdometry;
+    src::Informants::Odometry::ChassisKFOdometry chassisKFOdometry;    
+    
+    #else
+        private:
+            src::Drivers* drivers;
+    #endif  // #ifdef GIMBAL_COMPATIBLE
+
+
 };
 
 }  // namespace src::Informants
+

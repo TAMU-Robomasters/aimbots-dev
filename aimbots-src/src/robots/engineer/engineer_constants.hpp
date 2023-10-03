@@ -1,6 +1,10 @@
 #pragma once
 #include "utils/common_types.hpp"
 
+#define ENGINEER_COMPATIBLE
+#define TARGET_ENGINEER
+#define WRIST_COMPATIBLE
+
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
@@ -41,12 +45,45 @@ static constexpr float PITCH_OFFSET_ANGLE = M_PI_2;
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = 0.0f;
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.0f;
 
+static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS2;
+
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 static constexpr MotorID YAW_MOTOR_ID = MotorID::MOTOR5;
 static constexpr MotorID PITCH_MOTOR_ID = MotorID::MOTOR6;
+static constexpr MotorID ROLL_MOTOR_ID = MotorID::MOTOR7;  // MOTOR7 is a placeholder!!!
+
+// M3508
+static constexpr SmoothPIDConfig WRIST_VELOCITY_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 1.5f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// M2006
+static constexpr SmoothPIDConfig WRIST_ROLL_VELOCITY_PID_CONFIG = {
+    .kp = 15.0f,
+    .ki = 0.0f,
+    .kd = 0.8f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     LB = 0,
@@ -54,8 +91,6 @@ enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     RF = 2,
     RB = 3,
 };
-
-
 
 // Power limiting constants, will explain later
 static constexpr float MAX_ENERGY_BUFFER = 60.0f;

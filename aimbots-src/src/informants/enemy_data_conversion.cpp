@@ -2,6 +2,8 @@
 
 #include "drivers.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
+
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
@@ -188,3 +190,5 @@ bool VisionDataConversion::isLastFrameStale() const {
 }
 
 }  // namespace src::Informants::Vision
+
+#endif  // #ifdef GIMBAL_COMPATIBLE

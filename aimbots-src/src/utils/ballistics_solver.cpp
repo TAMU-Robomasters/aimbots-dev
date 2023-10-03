@@ -1,5 +1,8 @@
 #include "ballistics_solver.hpp"
 
+#ifdef CV_COMPATIBLE
+
+
 namespace src::Informants::Vision {
 enum CVState;
 }
@@ -138,3 +141,5 @@ bool BallisticsSolver::computeTravelTime(
 }
 
 }  // namespace src::Utils::Ballistics
+
+#endif

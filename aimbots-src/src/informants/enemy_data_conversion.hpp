@@ -10,7 +10,10 @@
 namespace src {
 class Drivers;
 }
+
+#ifdef GIMBAL_COMPATIBLE
 namespace src::Informants::Vision {
+
 
 struct VisionTimedPosition {
     Vector3f position;
@@ -84,3 +87,5 @@ static constexpr float KF_R[9] = { // Measurement Noise Covariance Matrix
 // clang-format on
 
 }  // namespace src::Informants::Vision
+
+#endif //#ifdef GIMBAL_COMPATIBLE
