@@ -6,7 +6,7 @@
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
-#ifdef GIMBAL_COMPATIBLE && CHASSIS_COMPATIBLE
+#ifdef GIMBAL_COMPATIBLE&& CHASSIS_COMPATIBLE
 
 namespace src::Informants {
 

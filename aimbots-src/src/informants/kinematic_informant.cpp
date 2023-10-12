@@ -9,7 +9,6 @@
 
 #include "drivers.hpp"
 
-
 namespace src::Informants {
 
 KinematicInformant::KinematicInformant(src::Drivers* drivers)
@@ -23,7 +22,6 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers)
 {
 }
 
-#ifdef GIMBAL_COMPATIBLE
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
 }
@@ -246,7 +244,6 @@ void KinematicInformant::updateChassisAcceleration() {
     chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
 }
 
-#ifdef GIMBAL_COMPATIBLE
 float chassisYawAngleDisplay = 0.0f;
 ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
@@ -313,7 +310,6 @@ float KinematicInformant::getChassisLinearAccelerationInGimbalDirection() {
     return accel;
 }
 
-
 modm::Location2D<float> robotLocationDisplay;
 float robotLocationXDisplay = 0.0f;
 float robotLocationYDisplay = 0.0f;
@@ -358,7 +354,5 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
 
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 }
-#endif
 
 }  // namespace src::Informants
-
