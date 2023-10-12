@@ -14,8 +14,12 @@
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
+//
+#include "subsystems/gimbal/gimbal.hpp"
+
 
 using namespace src::Chassis;
+using namespace src::Gimbal;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -32,6 +36,7 @@ namespace EngineerControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
+GimbalSubsystem gimbal(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
