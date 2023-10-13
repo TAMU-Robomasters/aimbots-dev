@@ -3,12 +3,11 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_COMPATIBLE
-#define BARREL_SWAP_COMPATIBLE
 #define CHASSIS_COMPATIBLE
-#define SHOOTER_COMPATIBLE
-#define FEEDER_COMPATIBLE
-#define HOPPER_LID_COMPATIBLE
+
 #define CV_COMPATIBLE
+
+#define WRIST_COMPATIBLE
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal

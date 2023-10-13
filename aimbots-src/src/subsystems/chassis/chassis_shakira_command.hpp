@@ -7,6 +7,7 @@
 #include "drivers.hpp"
 
 #ifdef CHASSIS_COMPATIBLE
+#ifdef CV_COMPATIBLE
 
 using namespace src::Utils::Ballistics;
 
@@ -61,3 +62,4 @@ private:
 }  // namespace src::Chassis
 
 #endif //#ifdef CHASSIS_COMPATIBLE
+#endif //#ifdef CV_COMPATIBLE
