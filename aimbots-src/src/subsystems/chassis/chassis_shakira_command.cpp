@@ -3,6 +3,7 @@
 
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
+#ifdef CV_COMPATIBLE
 
 #include "subsystems/chassis/chassis_helper.hpp"
 #include "subsystems/chassis/chassis_shakira_command.hpp"
@@ -113,3 +114,4 @@ void ChassisShakiraCommand::end(bool interrupted) { UNUSED(interrupted); }
 
 #endif //#ifdef CHASSIS_COMPATIBLE
 #endif //#ifdef GIMBAL_UNTETHERED
+#endif //#ifdef CV_COMPATIBLE
