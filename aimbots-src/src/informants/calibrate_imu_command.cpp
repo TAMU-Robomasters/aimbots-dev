@@ -1,5 +1,5 @@
 #include "calibrate_imu_command.hpp"
-#ifdef GIMBAL_COMPATIBLE && CHASSIS_COMPATIBLE
+#if defined(GIMBAL_COMPATIBLE) && defined(CHASSIS_COMPATIBLE)
 
 namespace src::Informants {
 

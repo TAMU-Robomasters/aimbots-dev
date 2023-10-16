@@ -40,4 +40,8 @@
 #include "robots/turret/turret_constants.hpp"
 #include "robots/turret/turret_control_interface.hpp"
 
+#elif defined(TARGET_EMTESTBENCH)
+#include "robots/testbench/emtestbench_constants.hpp"
+#include "robots/testbench/cvtestbench_control_interface.hpp"
+
 #endif

@@ -1,4 +1,4 @@
-#ifdef TARGET_CVTESTBENCH
+#if defined(TARGET_CVTESTBENCH) || defined (TARGET_EMTESTBENCH)
 #include "cvtestbench_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
