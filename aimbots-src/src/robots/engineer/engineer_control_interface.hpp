@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
@@ -11,7 +12,7 @@ using namespace tap::algorithms;
 namespace src::Control {
 
 class OperatorInterface {
-   private:
+private:
     tap::Drivers *drivers;
 
     uint32_t prevUpdateCounterX = 0;
@@ -33,12 +34,12 @@ class OperatorInterface {
     tap::algorithms::Ramp chassisYRamp;
     tap::algorithms::Ramp chassisRotationRamp;
 
-   public:
-    OperatorInterface(tap::Drivers *drivers) 
-        : 
-        drivers(drivers),
-        mouseXFilter(0.5f),
-        mouseYFilter(0.5f)  {}
+public:
+    OperatorInterface(tap::Drivers *drivers)
+        :  //
+          drivers(drivers),
+          mouseXFilter(0.5f),
+          mouseYFilter(0.5f) {}
     DISALLOW_COPY_AND_ASSIGN(OperatorInterface)
     mockable ~OperatorInterface() = default;
 

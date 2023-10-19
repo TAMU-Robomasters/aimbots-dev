@@ -1,15 +1,14 @@
 #include "subsystems/wrist/wrist.hpp"
 
-
 #ifdef WRIST_COMPATIBLE
 namespace src::Wrist {
 
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : drivers(drivers),
-        Subsystem(drivers) {} //,
-    //   yawMotor(drivers,0,0 /*YAW_MOTOR_ID, WRIST_BUS*/, true, "Yaw Motor"),
-    //   rollMotor(drivers, 0,0  /*ROLL_MOTOR_ID, WRIST_BUS*/, true, "Roll Motor"),
-    //   pitchMotor(drivers, 0,0 /*PITCH_MOTOR_ID, WRIST_BUS*/, true, "Pitch Motor") {}
+      Subsystem(drivers) 
+     {
+    BuildMotors();
+     }
 
 void WristSubsystem::initialize() {
     // idk
