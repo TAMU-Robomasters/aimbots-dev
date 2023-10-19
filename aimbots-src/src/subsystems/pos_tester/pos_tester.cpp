@@ -3,24 +3,35 @@
 
 namespace src::PosTester {
 
-PosTester::PosTester(src::Drivers* drivers) : 
-    drivers(drivers), 
-    motor(encoderWrapped),
-    feederPosPID(error), 
-    {
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(postester));
+PosTester::PosTester(src::Drivers* drivers) 
+    : Subsystem(drivers),
+    targetPos(0),
+    desiredOutput(0),
+    motorPosPID(MOTOR_VELOCITY_PID_CONFIG),
+    motor(drivers, MOTOR_ID, CAN_BUS, MOTOR_DIRECTION, "pos tester") {
+    //addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(postester));
 }
 
-void PosTester::getMotorPos() { M_TWOPI * getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION }
+void PosTester::initialize() { motor.initialize(); }
 
-void PosTester::setMotorPos() { postester->setValue(targetPos); }
+void PosTester::refresh() {
+    runController();
+    setTargetPos(targetPos);
+}
 
-void PosTester::initialize() { feedermotor->initialize(); }
+float PosTester::getMotorPos() { return M_TWOPI * motor.getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION; }
 
-void PosTester::Refresh() { UNUSED(interrupted); }
+void PosTester::setMotorRPM() { motor.setDesiredOutput(static_cast<int32_t>(desiredOutput)); }
 
-bool PosTester::SetTarget() { return true; }
+float PosTester::setTargetPos(float pos) {
+    this->targetPos = pos;
+    return targetPos;
+}
 
-bool PosTester::RunController() { return false; }
+void PosTester::runController() {
+    float err = targetPos - getMotorPos();
+    motorPosPID.runControllerDerivateError(err);
+    desiredOutput = motorPosPID.getOutput();
+}
 
 }  // namespace src::Feeder

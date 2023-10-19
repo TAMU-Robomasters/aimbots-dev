@@ -8,6 +8,11 @@
 
 //TESTBENCH POSITION CONSTANTS -----------------------------------------------------------
 
+SmoothPIDConfig MOTOR_VELOCITY_PID_CONFIG;
+MotorID MOTOR_ID = MotorID::MOTOR7; 
+//static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static constexpr CANBus CAN_BUS = CANBus::CAN_BUS1; //static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static bool MOTOR_DIRECTION = false;
 
 //TESTBENCH VELOCITY CONSTANTS -----------------------------------------------------------
 

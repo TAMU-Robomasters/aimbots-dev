@@ -1,36 +1,35 @@
 #pragma once
+
 #include "tap/control/subsystem.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-
 #include "drivers.hpp"
 
-#include "src/utils/pid/smooth_pid_wrap.hpp"
+//#include "src/utils/pid/smooth_pid_wrap.hpp"
 
 namespace src::PosTester {
 
 class PosTester : public tap::control::Subsystem {
 public:
     PosTester(src::Drivers*);
-    void getMotorPos() override;
 
-    void setMotorPos() override;
+    mockable void initialize() override;
     
-    void initialize() override;
-    
-    void refresh() override;
+    mockable void refresh() override;
 
-    bool setTargetPos() override;
+    float getMotorPos();
 
-    bool runController() override;
+    void setMotorRPM();
 
-    const char* getName() const override { return "pos tester"; }
+    float setTargetPos(float pos);
+
+    void runController();
+
+    const char* getName() { return "pos tester"; }
 
 private:
-    src::Drivers* drivers;
-
-    DjiMotor motor;
-    SmoothPID feederPosPID;
+    DJIMotor motor;
+    SmoothPID motorPosPID;
 
     float targetPos;
     float desiredOutput;
