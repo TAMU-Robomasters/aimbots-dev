@@ -207,6 +207,20 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr SmoothPIDConfig WRIST_VELOCITY_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 1.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
     .ki = 0.0f,

@@ -39,6 +39,7 @@ namespace src::Control {
 float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+
     lastXInputCallTime = currTime;
 
     if (prevUpdateCounterX != updateCounter) {
@@ -116,7 +117,8 @@ float OperatorInterface::getChassisRotationInput() {
 
     float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    float finalRotation =
+        limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
 
     chassisRotationRamp.setTarget(finalRotation);
@@ -132,12 +134,8 @@ float OperatorInterface::getGimbalYawInput() {
     // mouseXDisplay = drivers->remote.getMouseX();
     mouseXDisplay = mouseXFilter.getValue();
 
-
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseXFilter.getValue(),
-               -MOUSE_YAW_MAX,
-               MOUSE_YAW_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
                YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
@@ -145,11 +143,9 @@ float OperatorInterface::getGimbalPitchInput() {
     mouseYFilter.update(-drivers->remote.getMouseY());
     mouseYDisplay = mouseYFilter.getValue();
 
+    //mouseYDisplay = drivers->remote.getMouseY();
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseYFilter.getValue(),
-               -MOUSE_PITCH_MAX,
-               MOUSE_PITCH_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 
