@@ -9,14 +9,16 @@ PosTester::PosTester(src::Drivers* drivers)
     desiredOutput(0),
     motorPosPID(MOTOR_VELOCITY_PID_CONFIG),
     motor(drivers, MOTOR_ID, CAN_BUS, MOTOR_DIRECTION, "pos tester") {
+        
+    }
     //addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(postester));
-}
+
 
 void PosTester::initialize() { motor.initialize(); }
 
 void PosTester::refresh() {
     runController();
-    setTargetPos(targetPos);
+   setTargetPos(0);
 }
 
 float PosTester::getMotorPos() { return M_TWOPI * motor.getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION; }
