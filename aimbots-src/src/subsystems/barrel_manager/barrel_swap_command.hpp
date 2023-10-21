@@ -47,6 +47,10 @@ private:
     bool wasLogicSwitchRequested = false;
 
     barrelSide currentCalibratingBarrel = barrelSide::LEFT;
+
+    MilliTimeout autoSwitchTimeout;
+    float fakeHeatCount = 0;
+    bool initFakeHeat = true;
 };
 
 }  // namespace src::BarrelManager

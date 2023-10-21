@@ -34,6 +34,8 @@ float errorDisplay = 0;
 
 int16_t heatRemainDisplay = 0;
 
+float fakeHeatDisplay = 0;
+bool timerRunningDisplay = false;
 
 bool currBHeatDisplay = false;
 BarrelID currentBarrelDisplay;
@@ -102,10 +104,24 @@ void BarrelSwapCommand::execute() {
 
         wasSwapDisplay = wasLogicSwitchRequested;
 
-        if (!refHelper->canCurrBarrelShootSafely() && !wasLogicSwitchRequested) {
+        if (/*!refHelper->canCurrBarrelShootSafely() &&*/fakeHeatCount > 1 && !wasLogicSwitchRequested) {
+            fakeHeatCount = 0;
             wasLogicSwitchRequested = true;
             barrelManager->toggleSide();
         }
+
+        if (drivers->remote.getMouseL() && initFakeHeat) {
+            autoSwitchTimeout.restart(1000);
+            initFakeHeat = false;
+        }
+
+        if (drivers->remote.getMouseL() && autoSwitchTimeout.execute()) {
+            fakeHeatCount++;
+            autoSwitchTimeout.restart(1000);
+        }
+
+        fakeHeatDisplay = fakeHeatCount;
+        timerRunningDisplay = autoSwitchTimeout.isExpired();
 
         //Uncomment if you want to auto switch back away from the 0 / 0 barrel
         /*if (barrelManager->getSide() == barrelSide::RIGHT) {

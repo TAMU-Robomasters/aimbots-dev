@@ -62,7 +62,7 @@ void BarrelManagerSubsystem::refresh() {
 
         if (isBarrelAligned() && currentBarrelSide !=
             barrelSide::CURRENT ) {
-            currentBarrel = BARREL_ARRAY[currentBarrelSide];
+            //currentBarrel = BARREL_ARRAY[currentBarrelSide];
         }
 
         currentTorqueDisplay = swapMotor.getTorque();

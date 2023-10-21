@@ -53,7 +53,7 @@ void BarrelSwappingFeederCommand::execute() {
 
 void BarrelSwappingFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
-bool BarrelSwappingFeederCommand::isReady() { return (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag); }
+bool BarrelSwappingFeederCommand::isReady() { return (/*refHelper->canCurrBarrelShootSafely() && */!barrelMovingFlag); }
 
 bool BarrelSwappingFeederCommand::isFinished() const {
     // return (!refHelper->isCurrBarrelHeatUnderLimit(acceptableHeatThreshold) || barrelMovingFlag);

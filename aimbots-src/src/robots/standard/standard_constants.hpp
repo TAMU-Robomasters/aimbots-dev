@@ -50,7 +50,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(11.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(14.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -435,4 +435,4 @@ static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int FORCED_POWER_LIMIT = 60;
+static constexpr int FORCED_POWER_LIMIT = 40;
