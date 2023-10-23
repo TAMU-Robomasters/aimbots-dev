@@ -45,7 +45,8 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(196.21f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))
 };
-    
+
+static constexpr float WRIST_GEAR_RATIO = (1.0f / 19.0f);
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
