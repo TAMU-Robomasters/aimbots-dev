@@ -29,7 +29,7 @@ void WristSubsystem::refresh() {
     updateCurrentMotorAngles();
 
     //get error for each motor
-    
+
     /*
     for (auto i = 0; i < 3; i++) {
         if (!motors[i]->isMotorOnline()) {
@@ -90,7 +90,7 @@ void WristSubsystem::setDesiredOutputToMotor(uint8_t idx) {
 
 void WristSubsystem::updateCurrentMotorAngles() {
     for (auto i = 0; i < 3; i++) {
-        currentAngle[i]->setValue( getCurrentAngleWrapped(i) - WRIST_MOTOR_OFFSET_ANGLES[i]);
+        currentAngle[i]->setValue( (getCurrentAngleWrapped(i) - WRIST_MOTOR_OFFSET_ANGLES[i])*WRIST_GEAR_RATIO);
     }
 }
 
