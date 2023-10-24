@@ -9,13 +9,13 @@ WristMoveCommand::WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist)
 }
 
 void WristMoveCommand::initialize() {
-    wrist->setTargetYawAngle();
-    wrist->setTargetPitchAngle();
-    wrist->setTargetRollAngle();
-
+    // wrist->ForAllMotors(&WristSubsystem::setTargetAngle());
 }
 
-void WristMoveCommand::execute() {}
+void WristMoveCommand::execute() {
+    // wrist->setArmAngles();
+    wrist->ForAllMotors(&WristSubsystem::setDesiredOutputToMotor);
+}
 
 void WristMoveCommand::end(bool) {}
 
