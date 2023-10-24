@@ -55,9 +55,14 @@ public:
      * @param z
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
-    void setArmAngles();  // bruh
+    void setTargetAngle();  // bruh
 
-    // setter heaven
+    // setter heaven 
+    /**
+     * we should try to limit everything to one function
+     * so only one function to set the agnle for each motor
+     * 
+     */
     void setTargetYawAngle();
     void setTargetPitchAngle();
     void setTargetRollAngle();
@@ -78,6 +83,8 @@ public:
     inline float getCurrentAngleWrapped(uint16_t motorID) const {
         return (DJIEncoderValueToRadians(motors[motorID]->getEncoderUnwrapped()));
     }
+
+    
 
     // inline int16_t getYawMotorRPM() const { return (motors[YAW]->isMotorOnline()) ? motors[YAW]->getShaftRPM() : 0; }
     // inline int16_t getPitchMotorRPM() const { return (motors[PITCH]->isMotorOnline()) ? motors[PITCH]->getShaftRPM() : 0;
