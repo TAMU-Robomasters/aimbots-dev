@@ -24,6 +24,10 @@
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
+#elif defined(TARGET_BAL_STANDARD)
+#include "robots/standard/bal_standard_constants.hpp"
+#include "robots/standard/standard_control_interface.hpp"
+
 #elif defined(TARGET_1V1_STANDARD)
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
