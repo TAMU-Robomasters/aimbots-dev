@@ -103,6 +103,11 @@ uint16_t chassisPowerLimitDisplay = 0;
 float motorOutputDisplay = 0.0f;
 
 void ChassisSubsystem::refresh() {
+    #ifdef CHASSIS_BALANCING
+
+    //Do all balancing PIDing in here
+    #endif
+
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
@@ -170,6 +175,16 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
         ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+#elif defined(CHASSIS_BALANCING)
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
+    calculateHolonomic(
+        x,
+        y,
+        r,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+}
 #else
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
     calculateHolonomic(
@@ -179,8 +194,9 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
         ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
-#endif
 }
+#endif
+
 
 void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[WheelIdx][MotorPerWheelIdx]));
