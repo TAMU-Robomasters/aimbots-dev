@@ -71,6 +71,46 @@ static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
+static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+static constexpr SmoothPIDConfig SLIDE_Y_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 /**
  * @brief Position PID constants
  */
@@ -280,6 +320,19 @@ static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
 static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
+
+// TODO: set these to what they actually are
+static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
+static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR1;
+static constexpr MotorID SLIDE_Y_MOTOR_ID = MotorID::MOTOR2;
+static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR3;
+static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
+static constexpr bool SLIDE_Y_MOTOR_DIRECTION = true;
+static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
+static constexpr float SLIDE_X_UNWRAPPED_TO_CM_RATIO = 1.0f;
+static constexpr float SLIDE_Y_UNWRAPPED_TO_CM_RATIO = 1.0f;
+static constexpr float SLIDE_Z_UNWRAPPED_TO_CM_RATIO = 1.0f;
+
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
