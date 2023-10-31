@@ -74,7 +74,7 @@ void WristSubsystem::refresh() {
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {}
 
-void WristSubsystem::setArmAngles() {}
+void WristSubsystem::setTargetAngle() {}
 
 void WristSubsystem::setTargetYawAngle() {}
 
