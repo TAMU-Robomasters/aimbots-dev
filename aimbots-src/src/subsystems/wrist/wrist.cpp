@@ -1,6 +1,8 @@
 #include "subsystems/wrist/wrist.hpp"
 
-#include <utils/common_types.hpp>
+#include "utils/common_types.hpp"
+
+#include <cmath>
 
 #ifdef WRIST_COMPATIBLE
 
@@ -72,15 +74,22 @@ void WristSubsystem::refresh() {
     */
 }
 
-void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {}
+void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
+    
+    
 
-void WristSubsystem::setTargetAngle() {}
 
-void WristSubsystem::setTargetYawAngle() {}
 
-void WristSubsystem::setTargetPitchAngle() {}
+}
 
-void WristSubsystem::setTargetRollAngle() {}
+void WristSubsystem::setTargetAngle(int idx, float targetAngle) {
+    
+    motors[idx].setTargetAngle(targetAngle);
+    
+    
+}
+
+
 
 void WristSubsystem::setDesiredOutputToMotor(uint8_t idx) {
     // Clamp output to maximum value that the 6020 can handle

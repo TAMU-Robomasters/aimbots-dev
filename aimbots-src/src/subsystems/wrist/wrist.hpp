@@ -63,9 +63,7 @@ public:
      * so only one function to set the agnle for each motor
      * 
      */
-    void setTargetYawAngle();
-    void setTargetPitchAngle();
-    void setTargetRollAngle();
+
     void setDesiredOutputToMotor(uint8_t idx);
 
     // idk
@@ -120,17 +118,17 @@ private:
 
     // Deque<std::pair<float, float>, 3> wristOrientationBuffer;
 
-    //     SmoothPID yawPID;
-    //     SmoothPID pitchPID;
-    //     SmoothPID rollPID;
+        SmoothPID yawPID;
+        SmoothPID pitchPID;
+        SmoothPID rollPID;
 
-    //     tap::algorithms::ContiguousFloat currentYawAngle;  // radians
-    //     tap::algorithms::ContiguousFloat currentPitchAngle;
-    //     tap::algorithms::ContiguousFloat currentRollAngle;
+        tap::algorithms::ContiguousFloat currentYawAngle(); { return DJIEncoderValueToRadians(motors[MotorIndex::YAW].getCurrentAngleWrapped()); }; // radians
+        tap::algorithms::ContiguousFloat currentPitchAngle();{ return DJIEncoderValueToRadians(motors[MotorIndex::PITCH].getCurrentAngleWrapped()); };
+        tap::algorithms::ContiguousFloat currentRollAngle();{ return DJIEncoderValueToRadians(motors[MotorIndex::ROLL].getCurrentAngleWrapped()); };
 
-    //     tap::algorithms::ContiguousFloat targetYawAngle;  // radians
-    //     tap::algorithms::ContiguousFloat targetPitchAngle;
-    //     tap::algorithms::ContiguousFloat targetRollAngle;
+        tap::algorithms::ContiguousFloat targetYawAngle(); const { return targetYawAngle; }; // radians
+        tap::algorithms::ContiguousFloat targetPitchAngle(); const { return targetPitchAngle; };
+        tap::algorithms::ContiguousFloat targetRollAngle(); const { return targetRollAngle; };
 };
 };  // namespace src::Wrist
 
