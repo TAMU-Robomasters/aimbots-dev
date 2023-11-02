@@ -45,6 +45,7 @@ SlideSubsystem slide(drivers());
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 10, 10, 10);
+SlideGoToCommand goHome(drivers(), &slide, 0, 0, 0);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -52,11 +53,27 @@ HoldCommandMapping leftSwitchUp(
     {&chassisManualDriveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&goToTestLocation},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping leftSwitchDown(
+    drivers(),
+    {&goHome},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+
 // Register subsystems here -----------------------------------------------
-void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&chassis); }
+void registerSubsystems(src::Drivers *drivers) {
+    drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&slide);
+}
 
 // Initialize subsystems here ---------------------------------------------
-void initializeSubsystems() { chassis.initialize(); }
+void initializeSubsystems() {
+    chassis.initialize();
+    slide.initialize();
+}
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
@@ -64,7 +81,7 @@ void setDefaultCommands(src::Drivers *) {
 }
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *drivers) {
+void startupCommands(src::Drivers *) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -73,7 +90,11 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { drivers->commandMapper.addMap(&leftSwitchUp); }
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&leftSwitchDown);
+}
 
 }  // namespace EngineerControl
 
