@@ -21,27 +21,6 @@ void CommunicationRequestHandler::operator()(const tap::communication::serial::D
     MessageType type = static_cast<MessageType>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
 
     switch (type) {
-#ifdef TARGET_SENTRY
-        // case MessageType::TEAM_MESSAGE_STANDARD:
-        //     if (teamMesssageHandlerStandard != nullptr) {
-        //         updateRobotStateStandard();
-        //     }
-        //     break;
-        // case MessageType::TEAM_MESSAGE_HERO:
-        //     if (teamMesssageHandlerHero != nullptr) {
-        //         updateRobotStateHero();
-        //     }
-        //     break;
-        // case MessageType::TEAM_MESSAGE_SENTRY:
-        //     if (teamMessageHandlerSentry != nullptr) {
-        //         updateRobotStateSentry();
-        //     }
-        //     break;
-
-#else
-        case MessageType::ROBOT_STATE:
-            break;
-#endif
 
         default:
             RAISE_ERROR(drivers, "invalid message tpye");

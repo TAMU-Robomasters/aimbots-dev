@@ -23,25 +23,13 @@ public:
     bool recive();
 
     void updateStates();
-#ifdef TARGET_SENTRY
-    void attachTeamMessageHandlerStandard(MessageReceivedCallback message) { teamMesssageHandlerStandard = message; }
-    void attachTeamMessageHandlerHero(MessageReceivedCallback message) { teamMesssageHandlerHero = message; }
 
-#else
-    void attachRobotStateHandler(MessageReceivedCallback message) { robotStateHandler = message; }
-    void attachEnemyRobotStateHandler(MessageReceivedCallback message) { enemyRobotStateHandler = message; }
-#endif
 private:
     src::Drivers* drivers;
 
-#ifdef TARGET_SENTRY
-    MessageReceivedCallback teamMesssageHandlerStandard = nullptr;
-    MessageReceivedCallback teamMesssageHandlerHero = nullptr;
-    MessageReceivedCallback teamMessageHandlerSentry = nullptr;
-#else
     MessageReceivedCallback robotStateHandler = nullptr;
     MessageReceivedCallback enemyRobotStateHandler = nullptr;
-#endif
+    
 };
 }  // namespace src::robotStates
 
