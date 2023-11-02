@@ -76,9 +76,12 @@ void WristSubsystem::refresh() {
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     
+    //delete dis later
+    setTargetAngle(0, x);
+    setTargetAngle(1, y);
+    setTargetAngle(2, z);
+    //TODO: MATH STUFF LATER
     
-
-
 
 }
 
