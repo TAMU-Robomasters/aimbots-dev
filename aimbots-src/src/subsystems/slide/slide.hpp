@@ -6,12 +6,12 @@
 #include "utils/robot_specific_inc.hpp"
 #include "drivers.hpp"
 
-namespace src::Slider {
+namespace src::Slide {
 
 class SlideSubsystem : public tap::control::Subsystem {
 public:
-    SlideSubsystem(src::Drivers* drivers);
-    void setTargetPosition(float, float, float);
+    SlideSubsystem(Drivers*);
+    void setTargetPosition(float x , float y, float z);
 
     mockable void initialize() override;
     mockable void refresh() override;

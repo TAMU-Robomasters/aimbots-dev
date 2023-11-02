@@ -1,8 +1,8 @@
 #include "slide.hpp"
 
-namespace src::Slider {
+namespace src::Slide {
 
-SlideSubsystem::SlideSubsystem(src::Drivers* drivers)
+SlideSubsystem::SlideSubsystem(Drivers* drivers)
     : Subsystem(drivers),
     targetX(0), targetY(0), targetZ(0),
     desiredXRPM(0), desiredYRPM(0), desiredZRPM(0),
@@ -34,9 +34,9 @@ void SlideSubsystem::refresh()
 
 void SlideSubsystem::updateSlidePositionPID()
 {
-    float xPosition = xMotor.getEncoderUnwrapped()*SLIDE_X_UNWRAPPED_TO_CM_RATIO;
-    float yPosition = yMotor.getEncoderUnwrapped()*SLIDE_Y_UNWRAPPED_TO_CM_RATIO;
-    float zPosition = zMotor.getEncoderUnwrapped()*SLIDE_Z_UNWRAPPED_TO_CM_RATIO;
+    float xPosition = xMotor.getEncoderUnwrapped()*SLIDE_X_M_PER_UNWRAPPED_RATIO;
+    float yPosition = yMotor.getEncoderUnwrapped()*SLIDE_Y_M_PER_UNWRAPPED_RATIO;
+    float zPosition = zMotor.getEncoderUnwrapped()*SLIDE_Z_M_PER_UNWRAPPED_RATIO;
 
     float xErr = targetX - xPosition;
     xMotorPID.runControllerDerivateError(xErr);
