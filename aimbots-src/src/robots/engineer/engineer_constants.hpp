@@ -331,9 +331,9 @@ static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR3;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Y_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_X_UNWRAPPED_TO_CM_RATIO = 1.0f;
-static constexpr float SLIDE_Y_UNWRAPPED_TO_CM_RATIO = 1.0f;
-static constexpr float SLIDE_Z_UNWRAPPED_TO_CM_RATIO = 1.0f;
+static constexpr float SLIDE_X_M_PER_UNWRAPPED_RATIO = 1.0f;
+static constexpr float SLIDE_Y_M_PER_UNWRAPPED_RATIO = 1.0f;
+static constexpr float SLIDE_Z_M_PER_UNWRAPPED_RATIO = 1.0f;
 
 
 // CAN Bus 2

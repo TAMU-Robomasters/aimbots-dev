@@ -17,6 +17,8 @@
 //
 #include "subsystems/gimbal/gimbal.hpp"
 
+#include "subsystems/slide/slide.hpp"
+#include "subsystems/slide/slide_go_to_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
@@ -31,15 +33,18 @@ src::driversFunc drivers = src::DoNotUse_getDrivers;
 
 using namespace tap;
 using namespace tap::control;
+using namespace src::Slide;
 
 namespace EngineerControl {
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
+SlideSubsystem slide(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+SlideGoToCommand goToTestLocation(drivers(), &slide, 10, 10, 10);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
