@@ -55,7 +55,7 @@ public:
      * @param z
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
-    void setTargetAngle();  // bruh
+    void setTargetAngle(int idx, float targetAngle);  // bruh
 
     // setter heaven 
     /**
@@ -69,6 +69,7 @@ public:
     // idk
     void runAllControllers();
     void updateCurrentMotorAngles();
+    void updatePositionPID(int idx);
 
 // getter hell
 /**
@@ -118,17 +119,18 @@ private:
 
     // Deque<std::pair<float, float>, 3> wristOrientationBuffer;
 
-        SmoothPID yawPID;
-        SmoothPID pitchPID;
-        SmoothPID rollPID;
+        // SmoothPID yawPID;
+        // SmoothPID pitchPID;
+        // SmoothPID rollPID;
 
-        tap::algorithms::ContiguousFloat currentYawAngle(); { return DJIEncoderValueToRadians(motors[MotorIndex::YAW].getCurrentAngleWrapped()); }; // radians
-        tap::algorithms::ContiguousFloat currentPitchAngle();{ return DJIEncoderValueToRadians(motors[MotorIndex::PITCH].getCurrentAngleWrapped()); };
-        tap::algorithms::ContiguousFloat currentRollAngle();{ return DJIEncoderValueToRadians(motors[MotorIndex::ROLL].getCurrentAngleWrapped()); };
-
-        tap::algorithms::ContiguousFloat targetYawAngle(); const { return targetYawAngle; }; // radians
-        tap::algorithms::ContiguousFloat targetPitchAngle(); const { return targetPitchAngle; };
-        tap::algorithms::ContiguousFloat targetRollAngle(); const { return targetRollAngle; };
+        //original was tap::algorithms::ContiguousFloat return type
+        float currentYawAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::YAW]->getEncoderUnwrapped()); }; // radians
+        float currentPitchAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::PITCH]->getEncoderUnwrapped()); };
+        float currentRollAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::ROLL]->getEncoderUnwrapped()); };
+        
+        // float targetYawAngle() const { /*return targetYawAngle;*/ }; // radians
+        // float targetPitchAngle() const { /*return targetPitchAngle;*/ };
+        // float targetRollAngle() const { /*return targetRollAngle;*/ };
 };
 };  // namespace src::Wrist
 

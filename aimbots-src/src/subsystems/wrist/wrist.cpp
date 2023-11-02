@@ -10,7 +10,9 @@
 
 namespace src::Wrist {
 
-WristSubsystem::WristSubsystem(src::Drivers* drivers) : drivers(drivers), Subsystem(drivers) { BuildMotors(); }
+WristSubsystem::WristSubsystem(src::Drivers* drivers) : /*drivers(drivers),*/ Subsystem(drivers) { 
+    BuildMotors();
+}
 
 void WristSubsystem::initialize() {
     // idk
@@ -77,21 +79,27 @@ void WristSubsystem::refresh() {
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     
     //delete dis later
-    setTargetAngle(0, x);
-    setTargetAngle(1, y);
-    setTargetAngle(2, z);
+    setTargetAngle(PITCH, x);
+    setTargetAngle(ROLL, y);
+    setTargetAngle(YAW, z);
     //TODO: MATH STUFF LATER
     
 
 }
 
-void WristSubsystem::setTargetAngle(int idx, float targetAngle) {
+void WristSubsystem::setTargetAngle(int idx, float angle) {
     
-    motors[idx].setTargetAngle(targetAngle);
+    // targetAngle[idx] = dynamic_cast<tap::algorithms::ContiguousFloat>(angle);
     
     
+     
 }
-
+void WristSubsystem::updatePositionPID(int idx){
+    if(motors[idx]->isMotorOnline()) {
+        float err = currentAngle[idx] - targetAngle[idx];
+        float PIDOut = positionPID[idx]->runControllerDerivateError(err);//idk
+        //setDesiredOutput(motorIdx, PIDOut);
+    }
 
 
 void WristSubsystem::setDesiredOutputToMotor(uint8_t idx) {
