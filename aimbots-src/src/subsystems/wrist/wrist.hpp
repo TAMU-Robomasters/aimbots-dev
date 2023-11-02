@@ -105,8 +105,8 @@ public:
 private:
     src::Drivers* drivers;
 
-    // DJIMotor yawMotor, pitchMotor, rollMotor;
-    // SmoothPID yawPID, pitchPID, rollPID;
+    DJIMotor yawMotor, pitchMotor, rollMotor;
+    SmoothPID yawPID, pitchPID, rollPID;
 
     std::array<DJIMotor*, 3> motors;
     std::array<SmoothPID*, 3> positionPID;  // "position" means angle
