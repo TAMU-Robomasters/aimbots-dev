@@ -98,6 +98,7 @@ void ChassisSubsystem::initialize() {
 }
 
 int refSerialWorkingDisplay = 0;
+
 uint16_t chassisPowerLimitDisplay = 0;
 
 float motorOutputDisplay = 0.0f;
@@ -143,6 +144,7 @@ void ChassisSubsystem::limitChassisPower() {
 
 float targetRpmDisplay = 0.0f;
 float motorRpmDisplay = 0.0f;
+
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = 0;
     err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
@@ -232,6 +234,17 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
 
     desiredRotation = r;
 }
+#endif
+
+#ifdef CHASSIS_BALANCING
+// void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
+//     xInputDisplay = x;
+//     yInputDisplay = y;
+//     rInputDisplay = r;
+
+// put balancing control in here
+
+// }
 #endif
 
 #ifdef SWERVE
