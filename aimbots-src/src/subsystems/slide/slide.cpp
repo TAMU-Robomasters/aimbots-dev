@@ -32,11 +32,16 @@ void SlideSubsystem::refresh()
     setDesiredOutput();
 }
 
+float z_err_display = 0;
+float z_position_display = 0;
+float z_out_display = 0;
+
 void SlideSubsystem::updateSlidePositionPID()
 {
-    float xPosition = xMotor.getEncoderUnwrapped()*SLIDE_X_M_PER_UNWRAPPED_RATIO;
-    float yPosition = yMotor.getEncoderUnwrapped()*SLIDE_Y_M_PER_UNWRAPPED_RATIO;
-    float zPosition = zMotor.getEncoderUnwrapped()*SLIDE_Z_M_PER_UNWRAPPED_RATIO;
+    float xPosition = xMotor.getEncoderUnwrapped()*SLIDE_X_METERS_PER_ENCODER;
+    float yPosition = yMotor.getEncoderUnwrapped()*SLIDE_Y_METERS_PER_ENCODER;
+    float zPosition = zMotor.getEncoderUnwrapped()*SLIDE_Z_METERS_PER_ENCODER;
+    z_position_display = zPosition;
 
     float xErr = targetX - xPosition;
     xMotorPID.runControllerDerivateError(xErr);
@@ -47,8 +52,10 @@ void SlideSubsystem::updateSlidePositionPID()
     desiredYRPM = yMotorPID.getOutput();
 
     float zErr = targetZ - zPosition;
+    z_err_display = zErr;
     zMotorPID.runControllerDerivateError(zErr);
     desiredZRPM = zMotorPID.getOutput();
+    z_out_display = desiredZRPM;
 }
 
 void SlideSubsystem::setDesiredOutput()

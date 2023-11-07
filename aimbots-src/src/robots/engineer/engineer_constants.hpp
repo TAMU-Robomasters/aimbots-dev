@@ -100,9 +100,9 @@ static constexpr SmoothPIDConfig SLIDE_Y_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
-    .kd = 0.5f,
+    .kd = 0.0f,
     .maxICumulative = 5.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -327,13 +327,13 @@ static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
 static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR1;
 static constexpr MotorID SLIDE_Y_MOTOR_ID = MotorID::MOTOR2;
-static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR3;
+static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR4;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Y_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_X_M_PER_UNWRAPPED_RATIO = 1.0f;
-static constexpr float SLIDE_Y_M_PER_UNWRAPPED_RATIO = 1.0f;
-static constexpr float SLIDE_Z_M_PER_UNWRAPPED_RATIO = 1.0f;
+static constexpr float SLIDE_X_METERS_PER_ENCODER = 1.0f;
+static constexpr float SLIDE_Y_METERS_PER_ENCODER = 1.0f;
+static constexpr float SLIDE_Z_METERS_PER_ENCODER = 1.0f;
 
 
 // CAN Bus 2
