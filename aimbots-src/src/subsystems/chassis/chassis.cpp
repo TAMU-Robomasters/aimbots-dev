@@ -179,7 +179,7 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
 #elif defined(CHASSIS_BALANCING)
 void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateHolonomic(
+    calculateBalance(
         x,
         y,
         r,
@@ -237,14 +237,34 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
 #endif
 
 #ifdef CHASSIS_BALANCING
-// void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
-//     xInputDisplay = x;
-//     yInputDisplay = y;
-//     rInputDisplay = r;
+void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
+    xInputDisplay = x;
+    yInputDisplay = y;
+    rInputDisplay = r;
+    
+    // get distance from wheel to center of wheelbase
+    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
 
-// put balancing control in here
+    // offset gimbal center from center of wheelbase so we rotate around the gimbal
+    float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
+    float leftBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
+    float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
 
-// }
+    float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
+
+    targetRPMs[0][0] =
+        limitVal<float>(x - y - chassisRotateTranslated * rightFrontRotationRatio , -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[1][0] =
+        limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[2][0] =
+        limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[3][0] =
+        limitVal<float>(-x + y - chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+
+    desiredRotation = r;
+
+}
 #endif
 
 #ifdef SWERVE

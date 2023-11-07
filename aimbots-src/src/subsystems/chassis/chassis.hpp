@@ -96,6 +96,11 @@ public:
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 
     void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
+
+#ifdef CHASSIS_BALANCING
+    void calculateBalance(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
+#endif
+
 #ifdef SWERVE
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
 #endif
