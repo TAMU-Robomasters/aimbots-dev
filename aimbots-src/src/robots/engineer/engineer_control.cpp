@@ -67,6 +67,16 @@ HoldCommandMapping leftSwitchDown(
 
 /* END OF TEMPORARY MAPPINGS */
 
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&goToTestLocation},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping leftSwitchDown(
+    drivers(),
+    {&goHome},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
