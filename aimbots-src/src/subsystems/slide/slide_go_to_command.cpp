@@ -10,7 +10,7 @@ SlideGoToCommand::SlideGoToCommand(Drivers* drivers, SlideSubsystem* slide, floa
 };
 
 void SlideGoToCommand::initialize() {}
-
+ 
 void SlideGoToCommand::end(bool interrupted) {}
 
 void SlideGoToCommand::execute() {
