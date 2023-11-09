@@ -186,6 +186,10 @@ public:
     DJIMotor leftBackYaw, leftFrontYaw, rightFrontYaw, rightBackYaw;
     SmoothPID leftBackYawPosPID, leftFrontYawPosPID, rightFrontYawPosPID, rightBackYawPosPID;
 #endif
+
+#ifdef CHASSIS_BALANCING
+    SmoothPID balancingAnglePID;
+#endif
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> desiredOutputs;
 

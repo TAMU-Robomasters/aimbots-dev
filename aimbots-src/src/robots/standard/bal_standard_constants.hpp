@@ -192,7 +192,7 @@ const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDF
 
 // -------------------------------------------------------------------------------------------------------------------------
 
-static Vector3f IMU_MOUNT_POSITION{0.0992f, 0.0f, 0.0534f};
+static Vector3f IMU_MOUNT_POSITION{0.04f, 0.0f, 0.15f};
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
@@ -207,6 +207,21 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
+    .kp = 20.0f,
+    .ki = 100.0f,
+    .kd = 1.0f,
+    .maxICumulative = 1000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
@@ -390,9 +405,9 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(270.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
