@@ -6,6 +6,8 @@
 
 #include "drivers.hpp"
 
+#include "informants/kinematic_informant.hpp"
+
 #ifdef CHASSIS_COMPATIBLE
 
 using namespace tap::algorithms;
@@ -35,6 +37,10 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
 #endif
+#ifdef CHASSIS_BALANCING
+      balancingAnglePID(CHASSIS_BALANCE_PID_CONFIG),
+#endif
+
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       motors(Matrix<DJIMotor*, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -235,16 +241,19 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
     desiredRotation = r;
 }
 #endif
-
+float thetaInputDisplay = 0;
 #ifdef CHASSIS_BALANCING
 void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;
     
+    float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    thetaInputDisplay = modm::toDegree(ActualTiltAngle);
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
 
+    
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
     float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
