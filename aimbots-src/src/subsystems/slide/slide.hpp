@@ -22,7 +22,7 @@ private:
     DJIMotor xMotor, yMotor, zMotor;
     SmoothPID xMotorPID, yMotorPID, zMotorPID;
     float targetX, targetY, targetZ;
-    float desiredXRPM, desiredYRPM, desiredZRPM;
+    int32_t desiredXOutput, desiredYOutput, desiredZOutput;
 };
 
 }; // src::Slider
