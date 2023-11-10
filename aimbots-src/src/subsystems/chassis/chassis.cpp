@@ -18,10 +18,10 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     : ChassisSubsystemInterface(drivers),
       drivers(drivers),
 
-      leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Left Back Wheel Motor"),
-      leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),
-      rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Right Front Wheel Motor"),
-      rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),
+      leftBackWheel(drivers, LEFT_BACK_WHEEL_ID, CHASSIS_BUS, true, "Left Back Wheel Motor"), // 0
+      leftFrontWheel(drivers, LEFT_FRONT_WHEEL_ID, CHASSIS_BUS, false, "Left Front Wheel Motor"),   // 1
+      rightFrontWheel(drivers, RIGHT_FRONT_WHEEL_ID, CHASSIS_BUS, true, "Right Front Wheel Motor"),    //2
+      rightBackWheel(drivers, RIGHT_BACK_WHEEL_ID, CHASSIS_BUS, false, "Right Back Wheel Motor"),   //3
 
       leftBackWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
       leftFrontWheelVelPID(CHASSIS_VELOCITY_PID_CONFIG),
@@ -241,7 +241,9 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
     desiredRotation = r;
 }
 #endif
-float thetaInputDisplay = 0;
+float thetaDisplay = 0;
+float vOutDisplay = 0;
+int flag = 0;
 #ifdef CHASSIS_BALANCING
 void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
     xInputDisplay = x;
@@ -249,29 +251,56 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     rInputDisplay = r;
     
     float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    thetaInputDisplay = modm::toDegree(ActualTiltAngle);
+    
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
-
+    float error = 0 - modm::toDegree(ActualTiltAngle);
+    
+    balancingAnglePID.runControllerDerivateError(error);
+    
+    float wheelVelocity = balancingAnglePID.getOutput();
+    
+    thetaDisplay = modm::toDegree(ActualTiltAngle);
+    vOutDisplay = wheelVelocity;
     
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
     float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
     float leftBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
-
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    targetRPMs[0][0] =
-        limitVal<float>(x - y - chassisRotateTranslated * rightFrontRotationRatio , -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[1][0] =
-        limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[2][0] =
-        limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-    targetRPMs[3][0] =
-        limitVal<float>(-x + y - chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 20.0 )
+    {
+        flag = 0;
+        
+         targetRPMs[0][0] =
+            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[1][0] =
+            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[2][0] =
+            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[3][0] =
+            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
 
-    desiredRotation = r;
+        desiredRotation = r;
+
+    }
+    else
+    {
+        flag = 1;
+
+        targetRPMs[0][0] =
+            limitVal<float>(-x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[1][0] =
+            limitVal<float>(x + y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[2][0] =
+            limitVal<float>(x + y - chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[3][0] =
+            limitVal<float>(-x + y - chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+
+        desiredRotation = r;
+    }
 
 }
 #endif
