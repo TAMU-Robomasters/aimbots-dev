@@ -5,7 +5,7 @@ namespace src::Slide {
 SlideSubsystem::SlideSubsystem(Drivers* drivers)
     : Subsystem(drivers),
     targetX(0), targetY(0), targetZ(0),
-    desiredXRPM(0), desiredYRPM(0), desiredZRPM(0),
+    desiredXOutput(0), desiredYOutput(0), desiredZOutput(0),
     xMotor(drivers, SLIDE_X_MOTOR_ID, SLIDE_BUS, SLIDE_X_MOTOR_DIRECTION, "slide x motor"),
     yMotor(drivers, SLIDE_Y_MOTOR_ID, SLIDE_BUS, SLIDE_Y_MOTOR_DIRECTION, "slide y motor"),
     zMotor(drivers, SLIDE_Z_MOTOR_ID, SLIDE_BUS, SLIDE_Z_MOTOR_DIRECTION, "slide z motor"),
@@ -20,11 +20,6 @@ void SlideSubsystem::initialize()
     xMotor.initialize();
     yMotor.initialize();
     zMotor.initialize();
-
-    // paranoia
-    xMotor.setDesiredOutput(0);
-    yMotor.setDesiredOutput(0);
-    zMotor.setDesiredOutput(0);
 }
 
 void SlideSubsystem::refresh() 
@@ -45,24 +40,24 @@ void SlideSubsystem::updateSlidePositionPID()
 
     float xErr = targetX - xPosition;
     xMotorPID.runControllerDerivateError(xErr);
-    desiredXRPM = xMotorPID.getOutput();
+    desiredXOutput = static_cast<int32_t>(xMotorPID.getOutput());
 
     float yErr = targetY - yPosition;
     yMotorPID.runControllerDerivateError(yErr);
-    desiredYRPM = yMotorPID.getOutput();
+    desiredYOutput = static_cast<int32_t>(yMotorPID.getOutput());
 
     float zErr = targetZ - zPosition;
     z_err_display = zErr;
     zMotorPID.runControllerDerivateError(zErr);
-    desiredZRPM = zMotorPID.getOutput();
-    z_out_display = desiredZRPM;
+    desiredZOutput = static_cast<int32_t>(zMotorPID.getOutput());
+    z_out_display = desiredZOutput;
 }
 
 void SlideSubsystem::setDesiredOutput()
 {
-    xMotor.setDesiredOutput(static_cast<int32_t>(desiredXRPM));
-    yMotor.setDesiredOutput(static_cast<int32_t>(desiredYRPM));
-    zMotor.setDesiredOutput(static_cast<int32_t>(desiredZRPM));
+    xMotor.setDesiredOutput(desiredXOutput);
+    yMotor.setDesiredOutput(desiredYOutput);
+    zMotor.setDesiredOutput(desiredZOutput);
 }
 
 void SlideSubsystem::setTargetPosition(float x, float y, float z)
