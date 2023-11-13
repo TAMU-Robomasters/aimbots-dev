@@ -11,7 +11,6 @@
 
 #ifdef REF_COMM_COMPATIBLE
 
-using namespace src::RobotStates;
 
 namespace src::Communication {
 
