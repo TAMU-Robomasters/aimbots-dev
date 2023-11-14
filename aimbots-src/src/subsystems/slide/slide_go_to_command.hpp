@@ -12,7 +12,7 @@ namespace src::Slide {
 
 class SlideGoToCommand : public TapCommand {
 public:
-    SlideGoToCommand(Drivers*, SlideSubsystem*, float targetX, float targetY, float targetZ);
+    SlideGoToCommand(Drivers*, SlideSubsystem*, float targetX, float targetZ);
 
     void initialize() override;
     void end(bool interrupted) override;
@@ -26,7 +26,7 @@ public:
 private:
     Drivers* drivers;
     SlideSubsystem* slide;
-    float targetX, targetY, targetZ;
+    float targetX, targetZ;
 };
 
 };

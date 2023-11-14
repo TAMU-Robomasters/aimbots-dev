@@ -10,14 +10,13 @@ namespace src::Slide {
 
 enum MotorIndex {
     X = 0,
-    Y = 1,
-    Z = 2
+    Z = 1
 };
 
 class SlideSubsystem : public tap::control::Subsystem {
 public:
     SlideSubsystem(Drivers*);
-    void setTargetPosition(float x , float y, float z);
+    void setTargetPosition(float x, float z);
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -26,25 +25,25 @@ public:
     void updateSlidePositionPID();
 
     template<class... Args>
-    inline void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args)
+    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args)
     {
-        for (auto i = 0; i < 3; i++)
+        for (auto i = 0; i < NUMBER_OF_SLIDE_MOTORS; i++)
             (motors[i].*func)(args...);
     }
 
     template<class... Args>
     void ForAllSlideMotors(void (SlideSubsystem::*func)(MotorIndex, Args...), Args... args) {
-        for (auto i = 0; i < 3; i++) {
+        for (auto i = 0; i < NUMBER_OF_SLIDE_MOTORS; i++) {
             auto mi = static_cast<MotorIndex>(i);
             (this->*func)(mi, args...);
         }
     }
 
 private:
-    DJIMotor motors[3];
-    SmoothPID motorPIDs[3];
-    float targetPoses[3] {};
-    int32_t desiredOutputs[3] {};
+    DJIMotor motors[NUMBER_OF_SLIDE_MOTORS];
+    SmoothPID motorPIDs[NUMBER_OF_SLIDE_MOTORS];
+    float targetPoses[NUMBER_OF_SLIDE_MOTORS] {};
+    int32_t desiredOutputs[NUMBER_OF_SLIDE_MOTORS] {};
 
     void updateMotorPositionPID(MotorIndex);
 };
