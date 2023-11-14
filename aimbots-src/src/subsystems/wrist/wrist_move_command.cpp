@@ -14,7 +14,7 @@ void WristMoveCommand::initialize() {
 
 void WristMoveCommand::execute() {
     // wrist->setArmAngles();
-    wrist->ForAllMotors(&WristSubsystem::setDesiredOutputToMotor);
+    // wrist->ForAllMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
 void WristMoveCommand::end(bool) {}
