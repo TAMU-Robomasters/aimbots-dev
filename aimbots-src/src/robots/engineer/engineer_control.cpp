@@ -16,12 +16,17 @@
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/gimbal/gimbal.hpp"
+//
+#include "subsystems/wrist/wrist.hpp"
+#include "subsystems/wrist/wrist_home_command.hpp"
+#include "subsystems/wrist/wrist_move_command.hpp"
 
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Wrist;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -50,7 +55,7 @@ SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisManualDriveCommand},
+    {&chassisManualDriveCommand, &wristHomeCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 /* THESE MAPPINGS ARE TEMPORARY */
