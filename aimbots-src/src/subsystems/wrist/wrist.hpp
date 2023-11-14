@@ -7,9 +7,9 @@
 
 #ifdef WRIST_COMPATIBLE
 
-static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
-}
+// static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
+//     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+// }
 
 namespace src::Wrist {
 
@@ -37,7 +37,7 @@ public:
     void BuildMotors() {
         for (auto i = 0; i < 3; i++) {
             motors[i] =
-                new DJIMotor(drivers, YAW_MOTOR_IDS[i], (CANBus) WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
+                new DJIMotor(drivers, YAW_MOTOR_IDS[i], (CANBus)WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
             currentAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
             // targetAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
             positionPID[i] = new SmoothPID(WRIST_VELOCITY_PID_CONFIG);
@@ -65,26 +65,26 @@ public:
     void updateCurrentMotorAngles();
     void updatePositionPID(int idx);
 
-/**
- * @brief gets angle but 
- *
- * @param motorID
- * @return float
- */
-// #warning engineer wrist doesnt have gear ratios yet
+    /**
+     * @brief gets angle but
+     *
+     * @param motorID
+     * @return float
+     */
+    // #warning engineer wrist doesnt have gear ratios yet
     inline float getCurrentAngleWrapped(uint16_t motorID) const {
         return (DJIEncoderValueToRadians(motors[motorID]->getEncoderUnwrapped()));
     }
 
     inline int16_t getYawMotorRPM() const { return (motors[YAW]->isMotorOnline()) ? motors[YAW]->getShaftRPM() : 0; }
-    inline int16_t getPitchMotorRPM() const { return (motors[PITCH]->isMotorOnline()) ? motors[PITCH]->getShaftRPM() : 0;}
+    inline int16_t getPitchMotorRPM() const { return (motors[PITCH]->isMotorOnline()) ? motors[PITCH]->getShaftRPM() : 0; }
     inline int16_t getRollMotorRPM() const { return (motors[ROLL]->isMotorOnline()) ? motors[ROLL]->getShaftRPM() : 0; }
 
     inline int16_t getYawMotorTorque() const { return (motors[YAW]->isMotorOnline()) ? motors[YAW]->getTorque() : 0; }
     inline int16_t getPitchMotorTorque() const { return (motors[PITCH]->isMotorOnline()) ? motors[PITCH]->getTorque() : 0; }
     inline int16_t getRollMotorTorque() const { return (motors[ROLL]->isMotorOnline()) ? motors[ROLL]->getTorque() : 0; }
 
-    inline void setTargetAngle()
+    inline void setTargetAngle(int idx, float angle) { targetAngle[idx]->setValue(angle); }
 
 private:
     src::Drivers* drivers;

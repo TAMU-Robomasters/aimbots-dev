@@ -1,5 +1,4 @@
 #include "subsystems/wrist/wrist_move_command.hpp"
-#include "subsystems/wrist/wrist.hpp"
 
 #ifdef WRIST_COMPATIBLE
 
@@ -10,6 +9,9 @@ WristMoveCommand::WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist)
 
 void WristMoveCommand::initialize() {
     // wrist->ForAllMotors(&WristSubsystem::setTargetAngle());
+    wrist->setTargetAngle(YAW, 45.0f);
+    wrist->setTargetAngle(PITCH, 45.0f);
+    wrist->setTargetAngle(ROLL, 45.0f);
 }
 
 void WristMoveCommand::execute() {

@@ -16,10 +16,15 @@
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/gimbal/gimbal.hpp"
+//
+#include "subsystems/wrist/wrist.hpp"
+#include "subsystems/wrist/wrist_home_command.hpp"
+#include "subsystems/wrist/wrist_move_command.hpp"
 
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Wrist;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -37,15 +42,24 @@ namespace EngineerControl {
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
+WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+WristHomeCommand wristHomeCommand(drivers(), &wrist);
+WristMoveCommand wristMoveCommand(drivers(), &wrist);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisManualDriveCommand},
+    {&chassisManualDriveCommand, &wristHomeCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&wristMoveCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&chassis); }
@@ -68,7 +82,9 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { drivers->commandMapper.addMap(&leftSwitchUp); }
+void registerIOMappings(src::Drivers *drivers) { 
+    drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid); }
 
 }  // namespace EngineerControl
 
