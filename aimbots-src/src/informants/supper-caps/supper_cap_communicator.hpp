@@ -30,7 +30,7 @@ public:
 
     inline bool isSupperCapOnline() const { return !supperCapOfflineTimeout.isExpired(); }
 
-    inline SupperCapMessage const& getLastValidMessage() const { return lastMessage; }
+    inline SupperCapMessageRecieved const& getLastValidMessage() const { return lastMessage; }
 
     inline std::string makeChargeMessage(int x) const { return ("CHARGE " + std::to_string(x) + "\n"); }
 
@@ -38,7 +38,8 @@ private:
     src::Drivers* drivers;
     // src::Informants::Vision::VisionDataConversion visionDataConverter;
 
-    alignas(SupperCapMessage) uint8_t rawSerialBuffer[sizeof(SupperCapMessage)];
+    alignas(SupperCapMessageRecieved) uint8_t rawSerialBuffer[sizeof(SupperCapMessageRecieved)];
+    alignas(SupperCapMessageSent) uint8_t rawSerialBufferSent[sizeof(SupperCapMessageSent)];
 
     SupperCapCommunicatorSerialState currentSerialState;
     size_t nextByteIndex;
@@ -50,7 +51,8 @@ private:
     static constexpr uint16_t SUPPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort SUPPER_CAP_UART_PORT = UartPort::Uart1;
 
-    SupperCapMessage lastMessage;
+    SupperCapMessageRecieved lastMessage;
+    SupperCapMessageSent lastSentMessage;
     uint32_t lastUpdate;
 
     static constexpr char SUPPER_CAP_DISCHARGE_MSG[] = "DISCHARGE\n";
