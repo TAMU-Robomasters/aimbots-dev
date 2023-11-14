@@ -17,6 +17,8 @@ public:
 
     inline void setCommand(SupperCapCommand command) { this->currentCommand = command; }
 
+    inline SupperCapMessageRecieved getLastMessage() const { return lastMessage; }
+
 private:
     src::Drivers* drivers;
     SupperCapCommand currentCommand;

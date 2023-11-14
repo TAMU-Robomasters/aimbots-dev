@@ -58,6 +58,8 @@
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
 //
+#include "informants/supper-caps/supper_cap_subsystem.hpp"
+#include "informants/supper-caps/supper_cap_discharge_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -65,6 +67,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
 using namespace src::BarrelManager;
+using namespace src::Informants::SupperCap;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
@@ -132,6 +135,7 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
+SupperCapSubsystem supperCap(drivers());
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -261,6 +265,7 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+SupperCapDischargeCommand dischargeSupperCapsCommand(drivers(), &supperCap);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
@@ -306,6 +311,10 @@ HoldCommandMapping leftClickMouse(
 // server and thus don't know when to start sending the initial HUD graphics.
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
+PressCommandMapping c(
+    drivers(),
+    {&dischargeSupperCapsCommand},
+    RemoteMapState({Remote::Key::C}));
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
@@ -323,6 +332,7 @@ void registerSubsystems(src::Drivers *drivers) {
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    drivers->commandScheduler.registerSubsystem(&supperCap);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -335,6 +345,7 @@ void initializeSubsystems() {
     barrelManager.initialize();
     // response.initialize();
     clientDisplay.initialize();
+    supperCap.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -342,6 +353,7 @@ void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     barrelManager.setDefaultCommand(&barrelSwapperCommand);
+
 }
 
 // Set commands scheduled on startup
@@ -363,6 +375,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&c);
     // drivers->commandMapper.addMap(&bCtrlPressed);
 }
 

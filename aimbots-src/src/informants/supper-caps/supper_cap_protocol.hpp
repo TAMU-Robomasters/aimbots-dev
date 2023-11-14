@@ -33,6 +33,6 @@ struct SupperCapMessageSent {
 static_assert(sizeof(SupperCapMessageRecieved) == 17, "Supper Cap Message Recived is not the correct size");
 static_assert(sizeof(SupperCapMessageSent) == 3, "Supper Cap Message Sent is not the correct size");
 
-static constexpr size_t SUPPER_CAP_MESSAGE_SIZE = sizeof(SupperCapMessageRecieved);
-static constexpr size_t SUPPER_CAP_MESSAGE_SENT_SIZE = sizeof(SupperCapMessageSent);
+static constexpr uint8_t SUPPER_CAP_MESSAGE_SIZE = sizeof(SupperCapMessageRecieved);
+static constexpr uint8_t SUPPER_CAP_MESSAGE_SENT_SIZE = sizeof(SupperCapMessageSent);
 }  // namespace src::Informants::SupperCap
