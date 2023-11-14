@@ -13,7 +13,7 @@
 namespace src::Wrist {
 class WristMoveCommand : public TapCommand {
 public:
-    WristMoveCommand(src::Drivers* drivers, WristSubsystem* wirst);
+    WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist);
 
     void initialize() override;
     void execute() override;
