@@ -14,7 +14,9 @@ SupperCapCommunicator::SupperCapCommunicator(src::Drivers* drivers)
       currentSerialState(SupperCapCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       supperCapOfflineTimeout(),
-      lastMessage()  //
+      lastMessage(),
+      command(STOP),
+      chargeValue(0)  //
 {}
 
 void SupperCapCommunicator::initialize() {
@@ -44,7 +46,6 @@ void SupperCapCommunicator::updateSerial() {
     displayBuffer[displayBufIndex] = rawSerialBuffer[0];
     displayBufIndex = (displayBufIndex + 1) % SUPPER_CAP_MESSAGE_SIZE;
 
-    SupperCapCommand currentCommand = SupperCapCommand::STOP;
 
     switch (currentSerialState) {
         case SupperCapCommunicatorSerialState::SearchingForMagic:
@@ -80,7 +81,7 @@ void SupperCapCommunicator::updateSerial() {
             currentSerialState = SupperCapCommunicatorSerialState::SearchingForMagic;
 
             break;
-            switch (currentCommand) {
+            switch (command) {
                 case STOP:
                     /* code */
                     lastSentMessage.command = 's';
@@ -89,7 +90,7 @@ void SupperCapCommunicator::updateSerial() {
                 case CHARGE:
                     /* code */
                     lastSentMessage.command = 'c';
-                    lastSentMessage.charge = 1;  // supperCapSubSystem->getCharge();
+                    lastSentMessage.charge = chargeValue;  // supperCapSubSystem->getCharge();
                     break;
                 case DISCHARGE:
                     lastSentMessage.command = 'd';

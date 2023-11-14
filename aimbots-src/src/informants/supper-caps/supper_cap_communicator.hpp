@@ -32,8 +32,10 @@ public:
 
     inline SupperCapMessageRecieved const& getLastValidMessage() const { return lastMessage; }
 
-    inline std::string makeChargeMessage(int x) const { return ("CHARGE " + std::to_string(x) + "\n"); }
+    inline void setCommand(SupperCapCommand command) { this->command = command; }
 
+    inline std::string makeChargeMessage(int x) const { return ("CHARGE " + std::to_string(x) + "\n"); }
+    inline void setChargeValue(uint8_t x) { chargeValue = x; }
 private:
     src::Drivers* drivers;
     // src::Informants::Vision::VisionDataConversion visionDataConverter;
@@ -54,6 +56,8 @@ private:
     SupperCapMessageRecieved lastMessage;
     SupperCapMessageSent lastSentMessage;
     uint32_t lastUpdate;
+    SupperCapCommand command;
+    uint8_t chargeValue;
 
     static constexpr char SUPPER_CAP_DISCHARGE_MSG[] = "DISCHARGE\n";
 };
