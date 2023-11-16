@@ -38,6 +38,7 @@ src::driversFunc drivers = src::DoNotUse_getDrivers;
 using namespace tap;
 using namespace tap::control;
 using namespace src::Slide;
+using namespace src::Wrist;
 
 namespace EngineerControl {
 
@@ -45,6 +46,7 @@ namespace EngineerControl {
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
+WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -77,6 +79,7 @@ HoldCommandMapping leftSwitchDown(
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&slide);
+    drivers->commandScheduler.registerSubsystem(&wrist);
 }
 
 // Initialize subsystems here ---------------------------------------------
