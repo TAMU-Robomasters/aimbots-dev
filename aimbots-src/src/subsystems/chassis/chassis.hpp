@@ -98,7 +98,10 @@ public:
     void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 
 #ifdef CHASSIS_BALANCING
-    void calculateBalance(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
+    void calculateBalance(float x, float y, float r, float maxWheelSpeed);  // calculates the balancing motion for balancing standard
+
+    void setZeroVelocity();
+
 #endif
 
 #ifdef SWERVE
