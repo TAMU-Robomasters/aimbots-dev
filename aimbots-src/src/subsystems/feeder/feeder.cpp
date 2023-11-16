@@ -10,11 +10,8 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
       desiredOutput(0),
       feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
       feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
-      limitSwitchLeft(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
-#ifdef TARGET_SENTRY
-      ,
-      limitSwitchRight(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING)
-#endif
+      limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
+
 {
 }
 
@@ -26,10 +23,7 @@ int16_t heatMaxDisplay = 0;
 
 void FeederSubsystem::initialize() {
     feederMotor.initialize();
-    limitSwitchLeft.initialize();
-#ifdef TARGET_SENTRY
-    limitSwitchRight.initialize();
-#endif
+    limitSwitch.initialize();
 }
 
 float feederDesiredOutputDisplay = 0;
@@ -44,10 +38,8 @@ void FeederSubsystem::refresh() {
 
     updateMotorVelocityPID();
     setDesiredOutput();
-    limitSwitchLeft.refresh();
-#ifdef TARGET_SENTRY
-    limitSwitchRight.refresh();
-#endif
+    limitSwitch.refresh();
+
 }
 
 void FeederSubsystem::updateMotorVelocityPID() {
@@ -65,13 +57,8 @@ void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity
     feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
 }
 
-int FeederSubsystem::getTotalLimitCount() const {
-#ifndef TARGET_SENTRY
-    return limitSwitchLeft.getCurrentCount();
-#endif
-#ifdef TARGET_SENTRY
-    return limitSwitchLeft.getCurrentCount() + limitSwitchRight.getCurrentCount();
-#endif
+bool FeederSubsystem::getPressed() {
+    return limitSwitch.isFalling();
 }
 
 }  // namespace src::Feeder
