@@ -23,6 +23,11 @@ FullAutoFeederCommand::FullAutoFeederCommand(
 
 bool isCommandRunningDisplay = false;
 
+/*
+When initializing, check how much "heat" we have left,
+
+*/
+
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
@@ -55,9 +60,9 @@ void FullAutoFeederCommand::end(bool) {
     isCommandRunningDisplay = false;
 }
 
-bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isReady() { return true; }
 
-bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isFinished() const { return false; }
 
 }  // namespace src::Feeder
 
