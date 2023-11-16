@@ -243,6 +243,7 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
 #endif
 float thetaDisplay = 0;
 float vOutDisplay = 0;
+float errorOutputDisplay = 0.0f;
 int flag = 0;
 #ifdef CHASSIS_BALANCING
 void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
@@ -254,8 +255,13 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
-    float error = 0 - modm::toDegree(ActualTiltAngle);
+
+    float setPoint = -16.0f * y / 8000.0f;
+
+    float error = setPoint - modm::toDegree(ActualTiltAngle);
     
+    errorOutputDisplay = error;
+
     balancingAnglePID.runControllerDerivateError(error);
     
     float wheelVelocity = balancingAnglePID.getOutput();
@@ -270,18 +276,18 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    if (fabsf(modm::toDegree(ActualTiltAngle)) < 20.0 )
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
     {
         flag = 0;
         
          targetRPMs[0][0] =
-            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(-x/4.0f + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[1][0] =
-            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(x/4.0f + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[2][0] =
-            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(x/4.0f + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[3][0] =
-            limitVal<float>(wheelVelocity , -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(-x/4.0f + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
 
         desiredRotation = r;
 
@@ -289,6 +295,7 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     else
     {
         flag = 1;
+        error = 0.0f;
 
         targetRPMs[0][0] =
             limitVal<float>(-x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
@@ -303,6 +310,19 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     }
 
 }
+
+
+void ChassisSubsystem::setZeroVelocity()
+{
+    calculateHolonomic(
+        0.0f,
+        0.0f,
+        0.0f,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+}
+
 #endif
 
 #ifdef SWERVE

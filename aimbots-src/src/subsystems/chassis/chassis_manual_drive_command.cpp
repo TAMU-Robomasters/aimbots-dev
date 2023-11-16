@@ -29,7 +29,7 @@ void ChassisManualDriveCommand::execute() {
     chassis->setTargetRPMs(xDesiredWheelspeed, yDesiredWheelspeed, rotationDesiredWheelspeed);
 }
 
-void ChassisManualDriveCommand::end(bool) { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
+void ChassisManualDriveCommand::end(bool) { chassis->setZeroVelocity(); }
 
 bool ChassisManualDriveCommand::isReady() { return true; }
 
