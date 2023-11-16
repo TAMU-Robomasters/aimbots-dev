@@ -10,11 +10,13 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     src::Utils::RefereeHelperTurreted* refHelper,
     float speed,
     float unjamSpeed,
+    int projectileBuffer,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       speed(speed),
+      projectileBuffer(projectileBuffer),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       unjamSpeed(-unjamSpeed)  //
 {
@@ -27,6 +29,12 @@ void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
+
+    uint8_t projectilesRemaining = refHelper->getRemainingProjectiles() - projectileBuffer;
+    float maxRotations = (float) projectilesRemaining / PROJECTILES_PER_FEEDER_ROTATION;
+
+    int64_t encoderChangeThreshold = DJIMotor::ENC_RESOLUTION * maxRotations;
+    antiOverheatEncoderThreshold = feeder->getEncoderUnwrapped() + encoderChangeThreshold;
 }
 
 uint16_t lastHeatDisplay = 0;
@@ -35,19 +43,23 @@ float lastProjectileSpeedDisplay = 0.0f;
 
 void FullAutoFeederCommand::execute() {
     isCommandRunningDisplay = true;
-    if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-        feeder->setTargetRPM(unjamSpeed);
-        unjamTimer.restart(UNJAM_TIMER_MS);
-    }
+    if (feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+        feeder->setTargetRPM(0.0f);
+    } else {
+        if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
+            feeder->setTargetRPM(unjamSpeed);
+            unjamTimer.restart(UNJAM_TIMER_MS);
+        }
 
-    if (unjamTimer.execute()) {
-        feeder->setTargetRPM(speed);
-        startupThreshold.restart(500);
-    }
+        if (unjamTimer.execute()) {
+            feeder->setTargetRPM(speed);
+            startupThreshold.restart(500);
+        }
 
-    lastHeatDisplay = refHelper->getCurrBarrelHeat();
-    heatLimitDisplay = refHelper->getCurrBarrelLimit();
-    lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
+        lastHeatDisplay = refHelper->getCurrBarrelHeat();
+        heatLimitDisplay = refHelper->getCurrBarrelLimit();
+        lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
+    }
 }
 
 void FullAutoFeederCommand::end(bool) {
@@ -55,9 +67,9 @@ void FullAutoFeederCommand::end(bool) {
     isCommandRunningDisplay = false;
 }
 
-bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isReady() { return true; }
 
-bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isFinished() const { return false; }
 
 }  // namespace src::Feeder
 
