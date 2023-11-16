@@ -32,8 +32,8 @@ class FeederLimitCommand : public TapCommand {
     private:
         src::Drivers* drivers;
         FeederSubsystem* feeder;
-        bool isPressed;
-        float rpm;
+        bool isPressed; // might be deletable but we keeping it just in case ig :shrug:
+        float rpm;//你妈胖
         
 
 

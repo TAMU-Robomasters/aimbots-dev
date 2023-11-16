@@ -32,8 +32,8 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
-    if (feeder->getPressed()) {
-        feeder->setTargetRPM(0);
+    if (feeder->getPressed()) {//stops if switch gets pressed
+        feeder->setTargetRPM(0);//停止
     }
 
     else {
@@ -41,7 +41,5 @@ void FeederLimitCommand::execute() {
     }
     
 }
-
-
 }
 #endif 
