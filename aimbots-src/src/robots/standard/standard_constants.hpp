@@ -12,6 +12,9 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
+static constexpr uint8_t HEAT_GAIN_PER_PROJECTILE = 10;
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */

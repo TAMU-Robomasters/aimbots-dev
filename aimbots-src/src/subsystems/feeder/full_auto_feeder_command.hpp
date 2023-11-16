@@ -40,6 +40,8 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
 
+    int64_t antiOverheatEncoderThreshold;
+
     float speed;
 
     int UNJAM_TIMER_MS;
