@@ -55,7 +55,8 @@ enum WheelRPMIndex {  // index used to easily navigate wheel matrices
     RB = 3,
 };
 
-
+//Grabber Constants
+static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
 
 // Power limiting constants, will explain later
 static constexpr float MAX_ENERGY_BUFFER = 60.0f;
