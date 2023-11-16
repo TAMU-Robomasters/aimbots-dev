@@ -2,9 +2,9 @@
 
 namespace src::Slide {
 
-SlideGoToCommand::SlideGoToCommand(Drivers* drivers, SlideSubsystem* slide, float targetX, float targetY, float targetZ)
+SlideGoToCommand::SlideGoToCommand(Drivers* drivers, SlideSubsystem* slide, float targetX, float targetZ)
     : drivers(drivers), slide(slide),
-      targetX(targetX), targetY(targetY), targetZ(targetZ)
+      targetX(targetX), targetZ(targetZ)
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(slide));
 };
@@ -14,7 +14,7 @@ void SlideGoToCommand::initialize() {}
 void SlideGoToCommand::end(bool interrupted) {}
 
 void SlideGoToCommand::execute() {
-    slide->setTargetPosition(targetX, targetY, targetZ);
+    slide->setTargetPosition(targetX, targetZ);
     slide->updateSlidePositionPID();
 }
 
