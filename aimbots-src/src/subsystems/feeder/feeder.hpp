@@ -26,28 +26,25 @@ public:
 
     float getTargetRPM() const { return targetRPM; }
 
+    bool getPressed();
+
     float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
     int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
 
     int getTotalLimitCount() const;
 
-#ifndef ENV_UNIT_TESTS
 private:
-#else
-public:
-#endif
 
     float targetRPM;
     float desiredOutput;
 
     SmoothPID feederVelPID;
     DJIMotor feederMotor;
+    src::Drivers* drivers;
 
-    src::Informants::LimitSwitch limitSwitchLeft;  // for single-barreled robots
-#ifdef TARGET_SENTRY
-    src::Informants::LimitSwitch limitSwitchRight;  // for double-barreled robots
-#endif
+    src::Informants::LimitSwitch limitSwitch;  // for single-barreled robots
+//#endif
 
     // commands
 };

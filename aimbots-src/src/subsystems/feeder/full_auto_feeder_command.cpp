@@ -37,6 +37,11 @@ the feeder motor can rotate from this command until stopping
 to avoid shooting extra projectiles
 */
 
+/*
+When initializing, check how much "heat" we have left,
+
+*/
+
 void FullAutoFeederCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
