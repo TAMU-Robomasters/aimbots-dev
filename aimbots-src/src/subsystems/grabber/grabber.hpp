@@ -20,11 +20,13 @@ public:
 
     mockable void activate() override;
 
+    //mockable void deactivate() override;
+
     mockable void end() override;
 
 private:
     int Pin;
-    float duty_circle;
+    float duty_cycle;
 }
 
 } //namespace src::Grabber
