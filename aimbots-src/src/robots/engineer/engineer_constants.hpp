@@ -74,7 +74,7 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
     .kd = 0.5f,
     .maxICumulative = 5.0f,
@@ -88,7 +88,7 @@ static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 5.0f,
@@ -312,13 +312,13 @@ static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
 static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 
 // TODO: set these to what they actually are
-static constexpr uint8_t NUMBER_OF_SLIDE_MOTORS = 2;
+static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
 static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR1;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR4;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_ENCODER_RATIOS[] {1.0f, 1.0f};
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, 1.0f};
 
 
 // CAN Bus 2

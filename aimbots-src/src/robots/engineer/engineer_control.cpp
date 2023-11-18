@@ -44,7 +44,7 @@ SlideSubsystem slide(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 10000);
+SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 
 // Define command mappings here -------------------------------------------
