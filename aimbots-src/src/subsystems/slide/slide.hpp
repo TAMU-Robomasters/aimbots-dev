@@ -27,23 +27,23 @@ public:
     template<class... Args>
     void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args)
     {
-        for (auto i = 0; i < NUMBER_OF_SLIDE_MOTORS; i++)
+        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++)
             (motors[i].*func)(args...);
     }
 
     template<class... Args>
     void ForAllSlideMotors(void (SlideSubsystem::*func)(MotorIndex, Args...), Args... args) {
-        for (auto i = 0; i < NUMBER_OF_SLIDE_MOTORS; i++) {
+        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
             (this->*func)(mi, args...);
         }
     }
 
 private:
-    DJIMotor motors[NUMBER_OF_SLIDE_MOTORS];
-    SmoothPID motorPIDs[NUMBER_OF_SLIDE_MOTORS];
-    float targetPoses[NUMBER_OF_SLIDE_MOTORS] {};
-    int32_t desiredOutputs[NUMBER_OF_SLIDE_MOTORS] {};
+    DJIMotor motors[SLIDE_MOTOR_COUNT];
+    SmoothPID motorPIDs[SLIDE_MOTOR_COUNT];
+    float targetPoses[SLIDE_MOTOR_COUNT] {};
+    int32_t desiredOutputs[SLIDE_MOTOR_COUNT] {};
 
     void updateMotorPositionPID(MotorIndex);
 };
