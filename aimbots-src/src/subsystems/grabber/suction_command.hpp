@@ -4,7 +4,7 @@
 
 #include "subsystems/grabber/grabber.hpp"
 #include "utils/common_types.hpp"
-#include "utils/robot_specific_inc.hpp"
+
 
 #include "drivers.hpp"
 
@@ -16,7 +16,7 @@ namespace src:: Grabber {
 
 class SuctionCommand : public TapCommand {
 public:
-    SuctionCommand(src::Drivers* drivers, GrabberSubsystem* grabber);
+    SuctionCommand(tap::Drivers* drivers, GrabberSubsystem* grabber);
     void initialize() override;
 
     void execute() override;
@@ -28,7 +28,7 @@ public:
     const char* getName() const override { return "suction command"; }
 
 private:
-    src::Drivers* drivers;
+    tap::Drivers* drivers;
     GrabberSubsystem* grabber;
 
 };

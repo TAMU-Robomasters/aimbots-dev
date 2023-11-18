@@ -1,43 +1,35 @@
-#include "grabber.hpp"
+#include "subsystems/grabber/grabber.hpp"
+#include "tap/communication/gpio/pwm.hpp"
+#include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
+
+#include "drivers.hpp"
 
 #ifdef GRABBER_COMPATIBLE //TODO: Define this in a constants file later
 
 namespace src::Grabber {
 
-GrabberSubsystem::GrabberSubsystem(src::Drivers* drivers, tap::gpio::Pwm* pwm){
+GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers)
+    : Subsystem(drivers)
+{
 
 }
 void GrabberSubsystem::initialize() {
     drivers->pwm.init();
-    drivers->pwm.setTimerFrequency(tap::gpio::Pwm DEFAULT_TIMER1_FREQUENCY, 2000);
+    drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1 ,2000);
 }
 
 void GrabberSubsystem::refresh() {
-    activate(1.0f);
-    activate(0.0f);
+    // activate(1.0f);
+    // activate(0.0f);
 }
 
-void GrabberSubsystem::activate(float duty_cycle) {
-    if (duty_cycle > 1.0f) {
-        duty_cycle = 1.0f;
-    } else if (duty_cycle < 0.0f) {
-        duty_cycle = 0.0f;
-    }
-    drivers->pwm.write(duty_cycle, GRABBER_PIN);
+void GrabberSubsystem::deactivate() {
+    drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
-// void GrabberSubsystem::deactivate(float duty_cycle) {
-//     if (duty_cycle > 1.0f) {
-//         duty_cycle = 1.0f;
-//     } else if (duty_cycle < 0.0f) {
-//         duty_cycle = 0.0f;
-//     }
-//     drivers->pwm.write(duty_cycle, GRABBER_PIN);
-// }
-
-void GrabberSubsystem::end() {
-    activate(0.0f);
-    activate(1.0f);
+void GrabberSubsystem::activate(){
+    drivers->pwm.write(1.0f, GRABBER_PIN);
 }
 
 

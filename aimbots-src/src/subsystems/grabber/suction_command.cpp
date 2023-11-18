@@ -13,29 +13,39 @@
 
 namespace src:: Grabber {
 
-GrabberSubsystem::GrabberSubsystem(src::Drivers* dirvers, tap::gpio::Pwm* pwm, GrabberSubsystem* grabber, float duty_cycle){
+SuctionCommand::SuctionCommand(tap::Drivers* drivers, GrabberSubsystem* grabber){
     this->drivers = drivers;
     this->grabber = grabber;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
 }
 
-void GrabberSubsystem::initialize() {
-    grabber->activate(0.0f);
+void SuctionCommand::initialize() {
+    grabber->deactivate();
 
 }
 
-void GrabberSubsystem::execute() {
-    grabber->activate(duty_cycle);
+void SuctionCommand::execute() {
+    // if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwicthState::UP) {
+
+    // }
+    // if (duty_cycle > 1.0f) {
+    //     duty_cycle = 1.0f;
+    // } else if (duty_cycle < 0.0f) {
+    //     duty_cycle = 0.0f;
+    // }
+    grabber->activate();
+    // drivers->pwm.write(1.0f, GRABBER_PIN);
 
 }
 
-void GrabberSubsystem::end() {
-
+void SuctionCommand::end(bool interrupted) {
+    grabber->deactivate();
+    // drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
-bool GrabberSubsystem::isReady() { return true; }
+bool SuctionCommand::isReady() { return true; }
 
-bool GrabberSubsystem::isFinished() const { return false; }
+bool SuctionCommand::isFinished() const { return false; }
 
 } 
 
