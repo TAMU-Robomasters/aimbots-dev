@@ -42,7 +42,7 @@ void WristSubsystem::refresh() {
         // irrelevant to wrist
         // yawOnlineCount++;
 
-        //get current motor angle
+        // get current motor angle
         int64_t currentMotorEncoderPosition = motors[i]->getEncoderUnwrapped();
 
         // https://www.desmos.com/calculator/bducsk7y6v
@@ -82,8 +82,17 @@ void WristSubsystem::updatePositionPID(int idx) {
 
 void WristSubsystem::setDesiredOutputToMotor(uint8_t idx) {
     // Clamp output to maximum value that the 6020 can handle
-    motors[idx]->setDesiredOutput(
-        tap::algorithms::limitVal(desiredMotorOutputs[idx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));
+    if (idx == PITCH || idx == YAW) {
+        motors[idx]->setDesiredOutput(tap::algorithms::limitVal(
+            desiredMotorOutputs[idx],
+            -M3508_MAX_OUTPUT * 0.2f,
+            M3508_MAX_OUTPUT * 0.2f));  // capped to 20% for testbench safety
+    } else if (idx == ROLL) {
+        motors[idx]->setDesiredOutput(tap::algorithms::limitVal(
+            desiredMotorOutputs[idx],
+            -M2006_MAX_OUTPUT * 0.2f,
+            M2006_MAX_OUTPUT * 0.2f));  // capped to 20% for testbench safety
+    }
 }
 
 // polls motor encoders and stores the data in currentAngle

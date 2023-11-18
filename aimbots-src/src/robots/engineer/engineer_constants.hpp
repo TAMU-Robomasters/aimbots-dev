@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/common_types.hpp"
-#include "utils/math/matrix_helpers.hpp"    
+#include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
@@ -23,8 +23,9 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 /**
  * @brief GIMBAL SETUP
  */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t WRIST_MOTOR_COUNT = 3;
@@ -35,17 +36,16 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
-    wrapTo0To2PIRange(modm::toRadian(196.21f))
-};
+    wrapTo0To2PIRange(modm::toRadian(196.21f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f)),
-    wrapTo0To2PIRange(modm::toRadian(196.21f))
-};
+    wrapTo0To2PIRange(modm::toRadian(196.21f))};
 
 static constexpr float WRIST_GEAR_RATIO = (1.0f / 19.0f);
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
+static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR4, MotorID::MOTOR3};
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);

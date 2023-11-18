@@ -36,8 +36,7 @@ public:
     // Initializes motor array, angle arrays, positionPID array
     void BuildMotors() {
         for (auto i = 0; i < 3; i++) {
-            motors[i] =
-                new DJIMotor(drivers, YAW_MOTOR_IDS[i], (CANBus)WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
+            motors[i] = new DJIMotor(drivers, WRIST_MOTOR_IDS[i], WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
             currentAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
             // targetAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
             positionPID[i] = new SmoothPID(WRIST_VELOCITY_PID_CONFIG);
@@ -98,7 +97,7 @@ private:
     std::array<ContiguousFloat*, 3> targetAngle;
     std::array<float, 3> desiredMotorOutputs;
 
-    uint16_t WRIST_BUS = 0;
+    // uint16_t WRIST_BUS = 1;
 
     // SmoothPID yawPID;
     // SmoothPID pitchPID;
