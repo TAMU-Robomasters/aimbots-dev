@@ -25,7 +25,7 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
 
 
-/**
+/**                     
  * @brief GIMBAL SETUP
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;

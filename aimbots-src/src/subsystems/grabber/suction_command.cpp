@@ -18,7 +18,7 @@ Suction_Command::Suction_Command(tap::Drivers* drivers, GrabberSubsystem* grabbe
     this->grabber = grabber;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
 }
-
+bool isCommandRunningDisplay = false;
 void Suction_Command::initialize() {
     grabber->deactivate();
 
@@ -33,12 +33,14 @@ void Suction_Command::execute() {
     // } else if (duty_cycle < 0.0f) {
     //     duty_cycle = 0.0f;
     // }
+    isCommandRunningDisplay = true;
     grabber->activate();
     // drivers->pwm.write(1.0f, GRABBER_PIN);
 
 }
 
 void Suction_Command::end(bool interrupted) {
+    isCommandRunningDisplay = false;
     grabber->deactivate();
     // drivers->pwm.write(0.0f, GRABBER_PIN);
 }
