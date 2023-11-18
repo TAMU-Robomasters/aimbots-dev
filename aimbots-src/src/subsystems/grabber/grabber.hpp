@@ -3,8 +3,7 @@
 #include "tap/control/subsystem.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "tap/communication/gpio/pwm.hpp"
-#include "robots/engineer/engineer_constants.hpp"
+
 
 #ifdef GRABBER_COMPATIBLE //TODO: Define this in a constants file later
 
@@ -12,22 +11,21 @@ namespace src::Grabber {
 
 class GrabberSubsystem : public tap::control::Subsystem {
 public:
-    GrabberSubsystem(src::Drivers* drivers, tap::gpio::Pwm Pin);
+    GrabberSubsystem(tap::Drivers* drivers);
 
     mockable void initialize() override;
     
     mockable void refresh() override;
 
-    mockable void activate() override;
-
     //mockable void deactivate() override;
+    mockable void activate();
 
-    mockable void end() override;
+    mockable void deactivate();
 
 private:
-    int Pin;
-    float duty_cycle;
-}
+    tap::Drivers* drivers;
+
+};
 
 } //namespace src::Grabber
 
