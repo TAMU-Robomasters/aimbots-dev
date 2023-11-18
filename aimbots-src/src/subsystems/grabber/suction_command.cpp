@@ -1,4 +1,4 @@
-#include "subsystems/grabber/stop_suction_command.hpp"
+#include "subsystems/grabber/suction_command.hpp"
 
 #include "tap/control/subsystem.hpp"
 
@@ -7,19 +7,25 @@
 
 #include "drivers.hpp"
 
-#include "grabber.hpp"
+
 
 #ifdef GRABBER_COMPATIBLE 
 
 namespace src:: Grabber {
 
-GrabberSubsystem::GrabberSubsystem(src::Drivers* dirvers, tap::gpio::Pwm* pwm){
-
+GrabberSubsystem::GrabberSubsystem(src::Drivers* dirvers, tap::gpio::Pwm* pwm, GrabberSubsystem* grabber, float duty_circle){
+    this->drivers = drivers;
+    this->grabber = grabber;
+    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
 }
+
 void GrabberSubsystem::initialize() {
+    grabber->activate(0.0f);
+
 }
 
 void GrabberSubsystem::execute() {
+    grabber->activate(duty_circle);
 
 }
 
@@ -29,8 +35,8 @@ void GrabberSubsystem::end() {
 
 bool GrabberSubsystem::isReady() { return true; }
 
-bool GrabberSubsystem::isFinished() const {  }
+bool GrabberSubsystem::isFinished() const { return false; }
 
-};  
+} 
 
 #endif 
