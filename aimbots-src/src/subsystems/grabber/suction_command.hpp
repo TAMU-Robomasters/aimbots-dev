@@ -14,9 +14,9 @@
 
 namespace src:: Grabber {
 
-class SuctionCommand : public TapCommand {
+class Suction_Command : public TapCommand {
 public:
-    SuctionCommand(tap::Drivers* drivers, GrabberSubsystem* grabber);
+    Suction_Command(tap::Drivers* drivers, GrabberSubsystem* grabber);
     void initialize() override;
 
     void execute() override;

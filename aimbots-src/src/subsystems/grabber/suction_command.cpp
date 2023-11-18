@@ -13,18 +13,18 @@
 
 namespace src:: Grabber {
 
-SuctionCommand::SuctionCommand(tap::Drivers* drivers, GrabberSubsystem* grabber){
+Suction_Command::Suction_Command(tap::Drivers* drivers, GrabberSubsystem* grabber){
     this->drivers = drivers;
     this->grabber = grabber;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
 }
 
-void SuctionCommand::initialize() {
+void Suction_Command::initialize() {
     grabber->deactivate();
 
 }
 
-void SuctionCommand::execute() {
+void Suction_Command::execute() {
     // if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwicthState::UP) {
 
     // }
@@ -38,14 +38,14 @@ void SuctionCommand::execute() {
 
 }
 
-void SuctionCommand::end(bool interrupted) {
+void Suction_Command::end(bool interrupted) {
     grabber->deactivate();
     // drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
-bool SuctionCommand::isReady() { return true; }
+bool Suction_Command::isReady() { return true; }
 
-bool SuctionCommand::isFinished() const { return false; }
+bool Suction_Command::isFinished() const { return false; }
 
 } 
 

@@ -15,7 +15,7 @@ GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers)
 
 }
 void GrabberSubsystem::initialize() {
-    drivers->pwm.init();
+    // drivers->pwm.init();
     drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1 ,2000);
 }
 
