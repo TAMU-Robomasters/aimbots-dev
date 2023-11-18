@@ -13,7 +13,7 @@
 
 namespace src:: Grabber {
 
-GrabberSubsystem::GrabberSubsystem(src::Drivers* dirvers, tap::gpio::Pwm* pwm, GrabberSubsystem* grabber, float duty_circle){
+GrabberSubsystem::GrabberSubsystem(src::Drivers* dirvers, tap::gpio::Pwm* pwm, GrabberSubsystem* grabber, float duty_cycle){
     this->drivers = drivers;
     this->grabber = grabber;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
@@ -25,7 +25,7 @@ void GrabberSubsystem::initialize() {
 }
 
 void GrabberSubsystem::execute() {
-    grabber->activate(duty_circle);
+    grabber->activate(duty_cycle);
 
 }
 

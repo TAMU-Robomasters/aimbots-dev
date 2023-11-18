@@ -9,6 +9,7 @@
 #define FEEDER_COMPATIBLE
 #define HOPPER_LID_COMPATIBLE
 
+
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
