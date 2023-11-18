@@ -22,7 +22,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-/**
+/**                     
  * @brief GIMBAL SETUP
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
