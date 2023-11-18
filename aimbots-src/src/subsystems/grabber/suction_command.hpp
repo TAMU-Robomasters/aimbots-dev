@@ -8,6 +8,8 @@
 
 #include "drivers.hpp"
 
+#include "grabber.hpp"
+
 #ifdef GRABBER_COMPATIBLE
 
 namespace src:: Grabber {
@@ -28,6 +30,7 @@ public:
 private:
     src::Drivers* drivers;
     GrabberSubsystem* grabber;
+
 };
 
 }  // namespace src::Grabber
