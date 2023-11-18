@@ -22,6 +22,8 @@ public:
 
     mockable void deactivate();
 
+    mockable void unknown();
+
 private:
     tap::Drivers* drivers;
 

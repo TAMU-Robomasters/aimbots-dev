@@ -33,9 +33,26 @@ void Suction_Command::execute() {
     // } else if (duty_cycle < 0.0f) {
     //     duty_cycle = 0.0f;
     // }
-    isCommandRunningDisplay = true;
-    grabber->activate();
     // drivers->pwm.write(1.0f, GRABBER_PIN);
+    bool isCommandRunningDisplay = true;
+    grabber->activate();
+    
+    // while (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+    //     grabber->activate();
+    //     grabber->deactivate();
+    // }
+
+
+    // if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+    //     isCommandRunningDisplay = true;
+    //     grabber->activate();
+    // }
+    //  else if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
+    //     isCommandRunningDisplay = true;
+
+    //     // grabber->unknown();
+    //     grabber->activate();
+    // }
 
 }
 

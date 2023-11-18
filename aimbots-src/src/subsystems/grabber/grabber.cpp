@@ -27,13 +27,20 @@ void GrabberSubsystem::refresh() {
 }
 
 void GrabberSubsystem::deactivate() {
-    account_entering_commands++;
     drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
 void GrabberSubsystem::activate(){
-    account_entering_commands++;
     drivers->pwm.write(1.0f, GRABBER_PIN);
+}
+
+void GrabberSubsystem::unknown(){
+    // while(true) {
+    //     drivers->pwm.write(1.0f, GRABBER_PIN);
+    //     drivers->pwm.write(0.0f, GRABBER_PIN);
+    // }
+    drivers->pwm.write(1.0f, GRABBER_PIN);
+    drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
 
