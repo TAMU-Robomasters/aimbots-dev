@@ -47,6 +47,8 @@ class FeederLimitCommand : public TapCommand {
 
         MilliTimeout startupThreshold;
         MilliTimeout unjamTimer;
+        MilliTimeout semiautoDelay;
+        MilliTimeout limitswitchInactive;
         float unjamSpeed = 0.0f;
 
 

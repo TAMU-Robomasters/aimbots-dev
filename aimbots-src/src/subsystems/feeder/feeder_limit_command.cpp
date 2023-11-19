@@ -17,6 +17,9 @@
 
 namespace src::Feeder{
 bool limitpressed = false;
+bool isCurrSemiauto = false;
+bool isPrevSemiauto = false;
+bool isAutoLoading = true;
 FeederLimitCommand::FeederLimitCommand(
             src::Drivers* drivers, 
             FeederSubsystem* feeder,
@@ -39,24 +42,62 @@ FeederLimitCommand::FeederLimitCommand(
 void FeederLimitCommand::initialize() {
     feeder->setTargetRPM(0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
-    unjamTimer.restart(0);
+    semiautoDelay.restart(0);
+    limitswitchInactive.restart(0);
 }
 
 void FeederLimitCommand::execute() {
-    limitpressed = feeder->getPressed();
-    if (limitpressed and (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH)!= Remote::SwitchState::UP)) { //stops if switch gets pressed
-        feeder->setTargetRPM(0.0f);
-    }
+    /*
+        11/18/2023
+        Goal:
+            - Have both an "auto feeder" and a "semi auto feeder" states
+                - auto feeder == automatically fire until the limit switch clicks
+                - semi auto feeder == fire one projectile
+        
+
+        Currently:
+            - Works as it should until we enter semi auto
+            - Upon going to semi auto, the system shuts off completely lmao
+
+        ^^^ double check the goal w jack if this is correct ^^^
+            if not, update the goal & the corresponding date :P
+        
+        we need to fix :D
+            - dimitri & nico
+            
+    */
+
+
+    // Updates the limit switch state (is pressed or not)
+    limitpressed = feeder->getPressed(); 
+    // Updates the previous controller switch state (is up or not)
+    isPrevSemiauto = isCurrSemiauto;
+    // Updates the current controller switch state
+    isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
     
-    else if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH)== Remote::SwitchState::UP) {
-        feeder->setTargetRPM(speed * 4);
-        unjamTimer.restart(100);
-     
+    // Checks if the limit switch is pressed & is "not killed" (refer to )
+    if ( limitpressed and limitswitchInactive.isExpired() )
+        isAutoLoading = false;
+
+    // if the fire mode has been activated (with timer semiauto) then check if your still in the other timers range to keep shooting, else set the feeder to 0 until reset timers
+    if( semiautoDelay.isExpired() ){
+        if ( isAutoLoading )
+            feeder->setTargetRPM(speed);
+        else
+            feeder->setTargetRPM(0.0f);
     }
 
-    else {
-        feeder->setTargetRPM(speed);
+    // Checks if the controller is in its semiautomatic state
+    //      i.e. controller switch goes from mid to up
+    // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes to mid)
+    if ( isCurrSemiauto and !isPrevSemiauto ){
+        feeder->setTargetRPM(speed * 4);
+        semiautoDelay.restart(1000);
+        isAutoLoading = true;
+        limitswitchInactive.restart(4000);
     }
+        
+    
 }
 void FeederLimitCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
