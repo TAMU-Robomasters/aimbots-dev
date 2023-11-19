@@ -16,7 +16,13 @@ namespace src::Feeder{
     
 class FeederLimitCommand : public TapCommand {
     public:
-        FeederLimitCommand(src::Drivers* drivers, FeederSubsystem* feeder);
+        FeederLimitCommand(
+            src::Drivers* drivers, 
+            FeederSubsystem* feeder,
+            src::Utils::RefereeHelperTurreted*,
+            float speed,
+            float unjamSpeed,
+            int UMJAM_TIMER_MS = 300);
         void initialize() override;
 
         void execute() override;
@@ -25,6 +31,8 @@ class FeederLimitCommand : public TapCommand {
 
         bool isFinished() const override;
 
+        void setSpeed(float speed) { this->speed = speed; }
+
         const char* getName() const override { return "limit feeder"; }
         
 
@@ -32,9 +40,14 @@ class FeederLimitCommand : public TapCommand {
     private:
         src::Drivers* drivers;
         FeederSubsystem* feeder;
+        src::Utils::RefereeHelperTurreted* refHelper;
         bool isPressed; // might be deletable but we keeping it just in case ig :shrug:
-        float rpm;//你妈胖
-        
+        float speed;// 你妈胖
+        int UNJAM_TIMER_MS;
+
+        MilliTimeout startupThreshold;
+        MilliTimeout unjamTimer;
+        float unjamSpeed = 0.0f;
 
 
 };

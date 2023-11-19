@@ -58,7 +58,9 @@ void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity
 }
 
 bool FeederSubsystem::getPressed() {
-    return limitSwitch.isFalling();
+    return limitSwitch.readSwitch();
+
+
 }
 
 }  // namespace src::Feeder
