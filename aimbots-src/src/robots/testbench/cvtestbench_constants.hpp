@@ -254,10 +254,10 @@ static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
