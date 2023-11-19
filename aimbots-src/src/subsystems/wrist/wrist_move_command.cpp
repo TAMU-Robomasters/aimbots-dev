@@ -2,16 +2,17 @@
 
 #ifdef WRIST_COMPATIBLE
 
-namespace src::Wrist  {
-WristMoveCommand::WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist) : drivers(drivers), wrist(wrist) {
+namespace src::Wrist {
+WristMoveCommand::WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist, float yaw, float pitch, float roll) 
+    : drivers(drivers), wrist(wrist), yaw(yaw), pitch(pitch), roll(roll) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(wrist));
 }
 
 void WristMoveCommand::initialize() {
     // wrist->ForAllMotors(&WristSubsystem::setTargetAngle());
-    wrist->setTargetAngle(YAW, 45.0f);
-    wrist->setTargetAngle(PITCH, 45.0f);
-    wrist->setTargetAngle(ROLL, 45.0f);
+    wrist->setTargetAngle(YAW, yaw);
+    wrist->setTargetAngle(PITCH, pitch);
+    wrist->setTargetAngle(ROLL, roll);
 }
 
 void WristMoveCommand::execute() {
@@ -25,7 +26,6 @@ bool WristMoveCommand::isReady() { return true; }
 
 bool WristMoveCommand::isFinished() const { return false; }
 
-};  // namespace src::Wrist 
-
+};  // namespace src::Wrist
 
 #endif  // #ifdef WRIST_COMPATIBLE

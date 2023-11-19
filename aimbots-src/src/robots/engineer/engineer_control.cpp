@@ -18,7 +18,6 @@
 #include "subsystems/gimbal/gimbal.hpp"
 //
 #include "subsystems/wrist/wrist.hpp"
-#include "subsystems/wrist/wrist_home_command.hpp"
 #include "subsystems/wrist/wrist_move_command.hpp"
 
 #include "subsystems/slide/slide.hpp"
@@ -42,7 +41,7 @@ using namespace src::Slide;
 
 namespace EngineerControl {
 
-// Define subsystems here ------------------------------------------------
+// Define subsystems here -------`-----------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
@@ -51,6 +50,8 @@ SlideSubsystem slide(drivers());
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
+WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/4, PI/4, PI/4);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -82,11 +83,13 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     slide.initialize();
+    wrist.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
+    wrist.setDefaultCommand(&wristHomeCommand);
 }
 
 // Set commands scheduled on startup
