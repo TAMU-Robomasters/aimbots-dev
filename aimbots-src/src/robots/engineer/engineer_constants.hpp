@@ -32,7 +32,7 @@ static constexpr uint8_t WRIST_MOTOR_COUNT = 3;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR6, MotorID::MOTOR7};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
@@ -43,9 +43,12 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(196.21f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
 
-static constexpr float WRIST_GEAR_RATIO = (1.0f / 19.0f);
+static constexpr float WRIST_GEAR_RATIO = 19.0f;
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
-static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR4, MotorID::MOTOR3};
+static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR5, MotorID::MOTOR3};
+static constexpr MotorID WRIST_YAW_MOTOR_ID = MotorID::MOTOR1;
+static constexpr MotorID WRIST_PITCH_MOTOR_ID = MotorID::MOTOR5;
+static constexpr MotorID WRIST_ROLL_MOTOR_ID = MotorID::MOTOR3;
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -220,7 +223,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig WRIST_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 3000.0f,
     .ki = 0.0f,
     .kd = 1.0f,
     .maxICumulative = 10.0f,

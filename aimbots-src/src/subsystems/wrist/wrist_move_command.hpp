@@ -13,7 +13,7 @@
 namespace src::Wrist {
 class WristMoveCommand : public TapCommand {
 public:
-    WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist);
+    WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist, float yaw, float pitch, float roll);
 
     void initialize() override;
     void execute() override;
@@ -26,7 +26,8 @@ public:
 private:
     src::Drivers* drivers;
     WristSubsystem* wrist;
+    float yaw, pitch, roll;
 };
 
-};  // namespace src::Wrist
+};      // namespace src::Wrist
 #endif  // #ifdef WRIST_COMPATIBLE

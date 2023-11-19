@@ -18,9 +18,7 @@
 #include "subsystems/gimbal/gimbal.hpp"
 //
 #include "subsystems/wrist/wrist.hpp"
-#include "subsystems/wrist/wrist_home_command.hpp"
 #include "subsystems/wrist/wrist_move_command.hpp"
-
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
@@ -39,15 +37,15 @@ using namespace tap::control;
 
 namespace EngineerControl {
 
-// Define subsystems here ------------------------------------------------
+// Define subsystems here -------`-----------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-WristHomeCommand wristHomeCommand(drivers(), &wrist);
-WristMoveCommand wristMoveCommand(drivers(), &wrist);
+WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/4, PI/4, PI/4);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
@@ -60,16 +58,22 @@ HoldCommandMapping leftSwitchMid(
     {&wristMoveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-
 // Register subsystems here -----------------------------------------------
-void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&chassis); }
+void registerSubsystems(src::Drivers *drivers) {
+    drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&wrist);
+}
 
 // Initialize subsystems here ---------------------------------------------
-void initializeSubsystems() { chassis.initialize(); }
+void initializeSubsystems() {
+    chassis.initialize();
+    wrist.initialize();
+}
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
+    wrist.setDefaultCommand(&wristHomeCommand);
 }
 
 // Set commands scheduled on startup
@@ -82,9 +86,10 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { 
+void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid); }
+    drivers->commandMapper.addMap(&leftSwitchMid);
+}
 
 }  // namespace EngineerControl
 

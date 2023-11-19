@@ -24,11 +24,10 @@ public:
 
     // Returns whether or not ALL motors are online
     inline bool isOnline() const {
-        // maybe change idk
         // return yawMotor.isOnline() && pitchMotor.isOnline() && rollMotor.isOnline();
-        for (auto&& motors : motors) {
-            if (!motors->isMotorOnline()) return false;
-        }
+
+        for (auto&& motor : motors)
+            if (!motor->isMotorOnline()) return false;
 
         return true;
     }
@@ -36,8 +35,8 @@ public:
     // Initializes motor array, angle arrays, positionPID array
     void BuildMotors() {
         for (auto i = 0; i < 3; i++) {
-            motors[i] = new DJIMotor(drivers, WRIST_MOTOR_IDS[i], WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
-            currentAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
+            motors[i] =
+                new DJIMotor(drivers, WRIST_MOTOR_IDS[i], WRIST_BUS, WRIST_MOTOR_DIRECTIONS[i], WRIST_MOTOR_NAMES[i]);
             // targetAngle[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
             positionPID[i] = new SmoothPID(WRIST_VELOCITY_PID_CONFIG);
         }
@@ -59,7 +58,7 @@ public:
      *
      */
 
-    void setDesiredOutputToMotor(uint8_t idx);
+    void setDesiredOutputToMotor(MotorIndex idx);
     //
     void updateCurrentMotorAngles();
     void updatePositionPID(int idx);
@@ -71,7 +70,7 @@ public:
      * @return float
      */
     // #warning engineer wrist doesnt have gear ratios yet
-    inline float getCurrentAngleWrapped(uint16_t motorID) const {
+    float getCurrentAngleWrapped(uint16_t motorID) const {
         return (DJIEncoderValueToRadians(motors[motorID]->getEncoderUnwrapped()));
     }
 
@@ -88,29 +87,19 @@ public:
 private:
     src::Drivers* drivers;
 
-    // DJIMotor yawMotor, pitchMotor, rollMotor;
-    // SmoothPID yawPID, pitchPID, rollPID;
+    ContiguousFloat currentYawAngle, currentPitchAngle, currentRollAngle;
+    ContiguousFloat targetYawAngle, targetPitchAngle, targetRollAngle;
 
     std::array<DJIMotor*, 3> motors;
-    std::array<SmoothPID*, 3> positionPID;  // "position" means angle
-    std::array<ContiguousFloat*, 3> currentAngle;
+    std::array<SmoothPID*, 3> positionPID;
+    std::array<ContiguousFloat*, 3> currentAngles;
     std::array<ContiguousFloat*, 3> targetAngle;
     std::array<float, 3> desiredMotorOutputs;
 
-    // uint16_t WRIST_BUS = 1;
-
-    // SmoothPID yawPID;
-    // SmoothPID pitchPID;
-    // SmoothPID rollPID;
-
     // original was tap::algorithms::ContiguousFloat return type
-    float currentYawAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::YAW]->getEncoderUnwrapped()); };  // radians
-    float currentPitchAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::PITCH]->getEncoderUnwrapped()); };
-    float currentRollAngle() { return DJIEncoderValueToRadians(motors[MotorIndex::ROLL]->getEncoderUnwrapped()); };
-
-    // float targetYawAngle() const { /*return targetYawAngle;*/ }; // radians
-    // float targetPitchAngle() const { /*return targetPitchAngle;*/ };
-    // float targetRollAngle() const { /*return targetRollAngle;*/ };
+    float getCurrentAngle(MotorIndex idx) {
+        return DJIEncoderValueToRadians(motors[idx]->getEncoderUnwrapped());
+    };
 };
 };  // namespace src::Wrist
 
