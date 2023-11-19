@@ -44,11 +44,11 @@ void DualBarrelFeederCommand::execute() {
 void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
 
 bool DualBarrelFeederCommand::isReady() {
-    return (refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
+    return (true);
 }
 
 bool DualBarrelFeederCommand::isFinished() const {
-    return !(refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
+    return (false);
 }
 
 }  // namespace src::Feeder

@@ -26,6 +26,8 @@
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/feeder_limit_command.hpp"
+
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -163,6 +165,7 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
+FeederLimitCommand feederlimitcommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 
 FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
 FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
@@ -196,15 +199,21 @@ HoldCommandMapping leftSwitchUp(
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&feederlimitcommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand},
+    {&feederlimitcommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand},
+    {&feederlimitcommand, &runShooterCommand},//&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand,
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -241,7 +250,7 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
+    feeder.setDefaultCommand(&feederlimitcommand);
     indexer.setDefaultCommand(&stopIndexerCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
