@@ -8,16 +8,12 @@ WristMoveCommand::WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist,
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(wrist));
 }
 
-void WristMoveCommand::initialize() {
-    // wrist->ForAllMotors(&WristSubsystem::setTargetAngle());
+void WristMoveCommand::initialize() {}
+
+void WristMoveCommand::execute() {
     wrist->setTargetAngle(YAW, yaw);
     wrist->setTargetAngle(PITCH, pitch);
     wrist->setTargetAngle(ROLL, roll);
-}
-
-void WristMoveCommand::execute() {
-    // wrist->setArmAngles();
-    // wrist->ForAllMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
 void WristMoveCommand::end(bool) {}

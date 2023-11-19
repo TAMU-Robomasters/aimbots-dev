@@ -37,15 +37,9 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
 }
 
 void WristSubsystem::initialize() {
-    // idk
-    // initialize the fucking motors
-    // motors[YAW]->initialize();
-    // motors[PITCH]->initialize();
-    // motors[ROLL]->initialize();
-    // what the fuck
-    for (int idx = 0; idx < 3; idx++) {
-        motors[idx]->initialize();
-        motors[idx]->setDesiredOutput(0.0f);
+    for (int i = 0; i < 3; i++) {
+        motors[i]->initialize();
+        motors[i]->setDesiredOutput(0.0f);
     }
 }
 
@@ -56,21 +50,13 @@ int rollOnline = 0;
 int failCounter = 0;
 
 float yawTargetDisplay = 0.0f;
+
 void WristSubsystem::refresh() {
     yawOnline = motors[YAW]->isMotorOnline();
     pitchOnline = motors[PITCH]->isMotorOnline();
     rollOnline = motors[ROLL]->isMotorOnline();
 
     yawTargetDisplay = targetAngle[YAW]->getValue();
-    // if (!motors[YAW]->isMotorOnline()) {
-    //     yawOnline++;
-    // }
-    // if (!motors[PITCH]->isMotorOnline()) {
-    //     pitchOnline++;
-    // }
-    // if (!motors[ROLL]->isMotorOnline()) {
-    //     rollOnline++;
-    // }
 
     if (!isOnline()) {
         failCounter++;
@@ -89,13 +75,9 @@ void WristSubsystem::refresh() {
     // this is the angle, in radians, of the wrist head (after the gearbox)
     updateCurrentMotorAngles();
 
-    // get error for each motor
-
     for (auto i = 0; i < 3; i++) {
-        if (!motors[i]->isMotorOnline()) {
-            // tap::buzzer::playNote(&drivers->pwm, 932);
+        if (!motors[i]->isMotorOnline())
             continue;
-        }
 
         auto mi = static_cast<MotorIndex>(i);
         // float wrappedAxisAngle = getCurrentAngle(mi) - YAW_MOTOR_OFFSET_ANGLES[i];
@@ -122,8 +104,10 @@ float yawErrorDisplay = 0.0f;
 
 void WristSubsystem::updatePositionPID(int idx) {
     if (motors[idx]->isMotorOnline()) {
-        float err = currentAngles[idx]->getValue() - targetAngle[idx]->getValue();
-        yawErrorDisplay = err;
+        // float err = currentAngles[idx]->getValue() - targetAngle[idx]->getValue();
+        float err = currentAngles[idx]->difference(targetAngle[idx]->getValue());
+        if (idx == YAW)
+            yawErrorDisplay = err;
 
         positionPID[idx]->runControllerDerivateError(err);
         desiredMotorOutputs[idx] = positionPID[idx]->getOutput();
@@ -135,10 +119,7 @@ float pitchOutputDisplay;
 float rollOutputDisplay;
 
 void WristSubsystem::setDesiredOutputToMotor(MotorIndex idx) {
-    float motorMaxOutput = (idx == PITCH || idx == YAW) ? M3508_MAX_OUTPUT : M2006_MAX_OUTPUT;
-
-    motors[idx]->setDesiredOutput(
-        tap::algorithms::limitVal(desiredMotorOutputs[idx], -motorMaxOutput * 0.2f, motorMaxOutput * 0.2f));
+    motors[idx]->setDesiredOutput(desiredMotorOutputs[idx]);
 
     if (idx == YAW) {
         yawOutputDisplay = desiredMotorOutputs[idx];
@@ -151,12 +132,18 @@ void WristSubsystem::setDesiredOutputToMotor(MotorIndex idx) {
     }
 }
 
+float currentYaw_display = 0;
+
+float currentYawAngle_d = 0;
+
 // polls motor encoders and stores the data in currentAngle
 void WristSubsystem::updateCurrentMotorAngles() {
     for (auto i = 0; i < 3; i++) {
         auto mi = static_cast<MotorIndex>(i);
-        currentAngles[i]->setValue((getCurrentAngle(mi) - WRIST_MOTOR_OFFSET_ANGLES[i]) / WRIST_GEAR_RATIO);
+        currentAngles[i]->setValue((getCurrentAngle(mi) - WRIST_MOTOR_OFFSET_ANGLES[i]) /*/ WRIST_GEAR_RATIO*/);
     }
+
+    currentYaw_display = currentAngles[YAW]->getValue();
 }
 
 };  // namespace src::Wrist

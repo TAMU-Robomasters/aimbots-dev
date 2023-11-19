@@ -41,9 +41,9 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(186.15f)),
-    wrapTo0To2PIRange(modm::toRadian(196.21f)),
-    wrapTo0To2PIRange(modm::toRadian(196.21f))};
+    wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 186.15
+    wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 196.21
+    wrapTo0To2PIRange(modm::toRadian(0.0f))}; // 196.21
 
 static constexpr float WRIST_GEAR_RATIO = 19.0f;
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
@@ -108,9 +108,9 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 50'000.0f,  // 600
+    .kp = 1.0f,  // 600
     .ki = 0.0f,
-    .kd = 1'000.0f,  // 500
+    .kd = 0.0f,  // 500
     .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
