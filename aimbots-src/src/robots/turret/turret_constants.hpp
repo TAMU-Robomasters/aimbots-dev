@@ -3,6 +3,9 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define GIMBAL_COMPATIBLE
+#define GIMBAL_UNTETHERED
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */
