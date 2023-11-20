@@ -222,7 +222,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig WRIST_VELOCITY_PID_CONFIG = {
+static constexpr SmoothPIDConfig WRIST_POSITION_PID_CONFIG = {
     .kp = 3000.0f,
     .ki = 0.0f,
     .kd = 1.0f,

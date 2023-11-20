@@ -19,8 +19,8 @@ public:
     void execute() override;
     void end(bool interrupted) override;
 
-    bool isReady() override;
-    bool isFinished() const override;
+    bool isReady() override { return true; };
+    bool isFinished() const override { return false; };
     const char* getName() const override { return "move wrist command"; }
 
 private:
