@@ -22,11 +22,29 @@ public:
     void initialize() override;
     void refresh() override;
 
+    bool isMotorOnline(MotorIndex motorIdx) const {
+        return motors[motorIdx]->isMotorOnline();
+    }
+
     bool isOnline() const {
         for (auto&& motor : motors)
             if (!motor->isMotorOnline()) return false;
 
         return true;
+    }
+
+    template<class... Args>
+    void ForAllWristMotors(DJIMotorFunc<Args...> func, Args... args) {
+        for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++)
+            (motors[i]->*func)(args...);
+    }
+
+    template<class... Args>
+    void ForAllWristMotors(void (WristSubsystem::*func)(MotorIndex, Args...), Args... args) {
+        for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++) {
+            auto mi = static_cast<MotorIndex>(i);
+            (this->*func)(mi, args...);
+        }
     }
 
     /**
@@ -38,44 +56,70 @@ public:
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
 
-    void setDesiredOutputToMotor(MotorIndex idx);
-    void updateCurrentMotorAngles();
-    void updateMotorPositionPID(MotorIndex idx);
+    void updateMotorPositionPID(MotorIndex);
 
-    int16_t getMotorRPM(MotorIndex idx) const {
-        return isMotorOnline(idx) ? motors[idx]->getShaftRPM() : 0;
+    void setDesiredOutput(MotorIndex motorIdx, float desiredOutput) {
+        desiredMotorOutputs[motorIdx] = desiredOutput;
     }
 
-    int16_t getMotorTorque(MotorIndex idx) const {
-        return isMotorOnline(idx) ? motors[idx]->getTorque() : 0;
+    void setDesiredOutputToMotor(MotorIndex motorIdx) {
+        motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
     }
 
-    void setTargetAngle(MotorIndex idx, float angle) {
-        targetAngles[idx]->setValue(angle);
+    /** 
+     * Get the current unwrapped radians of the given motor after gear box ratios
+     * 
+     * @param motorIdx
+     */
+    float getCurrentAngleUnwrappedRadians(MotorIndex motorIdx) const {
+        return DJIEncoderValueToRadians(motors[motorIdx]->getEncoderUnwrapped() / WRIST_GEAR_RATIOS[motorIdx]);
+    }
+
+    /**
+     * Gets the given motor's current RPM, or 0 if it's offline
+     * 
+     * @param motorIdx
+    */
+    int16_t getMotorRPM(MotorIndex motorIdx) const {
+        return isMotorOnline(motorIdx) ? motors[motorIdx]->getShaftRPM() : 0;
+    }
+
+    /**
+     * Gets the given motor's current torque, or 0 if it's offline
+     * 
+     * @param motorIdx
+    */
+    int16_t getMotorTorque(MotorIndex motorIdx) const {
+        return isMotorOnline(motorIdx) ? motors[motorIdx]->getTorque() : 0;
+    }
+
+    /**
+     * Sets the desired target angle of the target motor after gear box ratios
+     * 
+     * @param motorIdx
+     * @param angle the angle in radians from -pi to pi
+    */
+    void setTargetAngle(MotorIndex motorIdx, float angle) {
+        targetAngles[motorIdx]->setValue(angle);
     }
 
 private:
     src::Drivers* drivers;
 
-    std::array<DJIMotor*, 3> motors;
-    std::array<SmoothPID*, 3> positionPIDs;
+    std::array<DJIMotor*, WRIST_MOTOR_COUNT> motors;
+    std::array<SmoothPID*, WRIST_MOTOR_COUNT> positionPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
-    std::array<ContiguousFloat*, 3> targetAngles;
+    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> targetAngles;
 
     /** The current angles of each motor AFTER scaling for the gear boxes */
-    std::array<ContiguousFloat*, 3> currentAngles;
+    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> currentAngles;
 
-    std::array<float, 3> desiredMotorOutputs;
+    std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs;
 
-    float getCurrentAngleUnwrappedRadians(MotorIndex idx) const {
-        return DJIEncoderValueToRadians(motors[idx]->getEncoderUnwrapped());
-    }
-
-    bool isMotorOnline(MotorIndex idx) const {
-        return motors[idx]->isMotorOnline();
-    }
+    void updateCurrentAngle(MotorIndex);
 };
+
 };  // namespace src::Wrist
 
 #endif  // #ifdef WRIST_COMPATIBLE
