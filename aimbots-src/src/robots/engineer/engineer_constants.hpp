@@ -37,13 +37,14 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+/* What motor angles ensure that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 186.15
     wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 196.21
     wrapTo0To2PIRange(modm::toRadian(0.0f))}; // 196.21
 
-static constexpr float WRIST_GEAR_RATIO = 19.0f;
+// TODO: SET THESE GEAR RATIOS PLEASE
+static const std::array<float, WRIST_MOTOR_COUNT> WRIST_GEAR_RATIOS {1.0f, 1.0f, 1.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
 static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR5, MotorID::MOTOR3};
 static constexpr MotorID WRIST_YAW_MOTOR_ID = MotorID::MOTOR1;
