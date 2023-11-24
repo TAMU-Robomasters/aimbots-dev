@@ -52,6 +52,9 @@
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
+#include "informants/vision/cv_detection_type/cv_detection_subsystem.hpp"
+#include "informants/vision/cv_detection_type/cv_detection_update_command.hpp"
+//
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
 //
@@ -69,6 +72,7 @@ using namespace src::BarrelManager;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
 using namespace src::BarrelManager;
+using namespace src::Informants::Vision::CVDetectionController;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -132,6 +136,7 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
+CVDectionSubystem cvDetectionSubystem(drivers());
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -261,6 +266,8 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+CVDectionUpdateCommand cvDetectionUpdateCommand(drivers(), &cvDetectionSubystem);
+
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
@@ -306,6 +313,11 @@ HoldCommandMapping leftClickMouse(
 // server and thus don't know when to start sending the initial HUD graphics.
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
+PressCommandMapping gPress(
+    drivers(),
+    {&cvDetectionUpdateCommand},
+    RemoteMapState({ Remote::Key::G}));
+
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
@@ -323,6 +335,8 @@ void registerSubsystems(src::Drivers *drivers) {
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    drivers->commandScheduler.registerSubsystem(&cvDetectionSubystem);
+
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -335,6 +349,7 @@ void initializeSubsystems() {
     barrelManager.initialize();
     // response.initialize();
     clientDisplay.initialize();
+    cvDetectionSubystem.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -364,6 +379,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
     // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&gPress);
 }
 
 }  // namespace StandardControl

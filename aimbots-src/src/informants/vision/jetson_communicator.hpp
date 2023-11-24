@@ -30,7 +30,7 @@ public:
 
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
-    inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
+    inline JetsonMessageReceive const& getLastValidMessage() const { return lastMessage; }
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
@@ -40,11 +40,14 @@ public:
 
     bool isLastFrameStale() const;
 
+    inline void setCVDectionType(CVDetectionType detectionType) { this->detectionType = detectionType; }
+    inline CVDetectionType getCVDectionType() const { return detectionType; }
+
 private:
     src::Drivers* drivers;
     src::Informants::Vision::VisionDataConversion visionDataConverter;
 
-    alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
+    alignas(JetsonMessageReceive) uint8_t rawSerialBufferRecieved[sizeof(JetsonMessageReceive)];
 
     JetsonCommunicatorSerialState currentSerialState;
     size_t nextByteIndex;
@@ -55,7 +58,7 @@ private:
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
-    JetsonMessage lastMessage;
+    JetsonMessageReceive lastMessage;
     uint32_t lastFoundTargetTime;
 
     float fieldRelativeYawAngleAtVisionUpdate;
@@ -65,5 +68,9 @@ private:
 
     Matrix<float, 1, 2> visionTargetAngles;
     Vector3f visionTargetPosition;
+
+    CVDetectionType detectionType;
+    JetsonMessageSend lastSend;
+    alignas(JetsonMessageSend) uint8_t rawSerialBufferSend[sizeof(JetsonMessageSend)];
 };
 }  // namespace src::Informants::Vision

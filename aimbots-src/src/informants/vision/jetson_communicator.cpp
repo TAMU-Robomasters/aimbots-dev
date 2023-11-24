@@ -25,7 +25,7 @@ void JetsonCommunicator::initialize() {
     drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
-uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
+uint8_t displayBuffer[JETSON_MESSAGE_RECEIVE_SIZE];
 int displayBufIndex = 0;
 
 float targetXDisplay = 0;
@@ -40,7 +40,7 @@ int msBetweenLastMessageDisplay = 0;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
- * The Jetson sends information in the form of a JetsonMessage.
+ * The Jetson sends information in the form of a JetsonMessageReceive.
  *
  * We send a magic number from the Jetson to the Development Board as the header of every message, and we can use that magic
  * number to determine whether a message is (probably) going to be valid. If a long magic number comes through as valid, we
@@ -48,25 +48,26 @@ int msBetweenLastMessageDisplay = 0;
  *
  * modm currently loads received bytes into an internal buffer, accessible using the READ() call.
  * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a
- * JetsonMessage from our received bytes.
+ * JetsonMessageReceive from our received bytes.
  */
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
-    size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
+    size_t bytesRead = READ(&rawSerialBufferRecieved[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
 
     // We've successfully read a new byte from the Jetson, so we can restart this.
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
-    displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
-    displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
+    displayBuffer[displayBufIndex] = rawSerialBufferRecieved[0];  // copy byte to display buffer
+    displayBufIndex =
+        (displayBufIndex + 1) % JETSON_MESSAGE_RECEIVE_SIZE;  // increment display index and wrap around if necessary
 
     switch (currentSerialState) {
         // ...looking for message start...
         case JetsonCommunicatorSerialState::SearchingForMagic: {
             // Check if the byte we just read is the byte we expected in the magic number.
-            if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
+            if (rawSerialBufferRecieved[nextByteIndex] == ((JETSON_MESSAGE_RECEIVE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
                 nextByteIndex++;
             } else {
                 nextByteIndex = 0;  // if not, reset the index and start over.
@@ -74,7 +75,7 @@ void JetsonCommunicator::updateSerial() {
 
             // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
             // we wouldn't have gotten this far.
-            if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
+            if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_RECEIVE_MAGIC))) {
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
             }
             break;
@@ -84,9 +85,9 @@ void JetsonCommunicator::updateSerial() {
             nextByteIndex++;
 
             // Increment the byte index until we reach the expected end of a message, then parse the message.
-            if (nextByteIndex == JETSON_MESSAGE_SIZE) {
-                // Reinterpret the received bytes into a JetsonMessage
-                lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
+            if (nextByteIndex == JETSON_MESSAGE_RECEIVE_SIZE) {
+                // Reinterpret the received bytes into a JetsonMessageReceive
+                lastMessage = *reinterpret_cast<JetsonMessageReceive*>(&rawSerialBufferRecieved);
 
                 // Update last message time and time between last message and now.
                 if (lastMsgTimeDisplay == 0) {
@@ -129,6 +130,14 @@ void JetsonCommunicator::updateSerial() {
             break;
         }
     }
+
+    lastSend.magic = JETSON_MESSAGE_SEND_MAGIC;
+    lastSend.detectionType = detectionType;
+    // rawSerialBufferRecieve = *reinterpret_cast<uint8_t*>(&lastSend);
+    rawSerialBufferSend[0] = lastSend.magic;
+    rawSerialBufferSend[1] = lastSend.detectionType;
+
+    WRITE(rawSerialBufferSend, JETSON_MESSAGE_SEND_SIZE);
 
     // if (!isJetsonOnline()) {
     //     lastMessage.targetX = 0.0f;

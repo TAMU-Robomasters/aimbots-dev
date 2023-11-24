@@ -8,9 +8,15 @@ enum CVState : uint8_t {
     FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
+enum CVDetectionType : bool {
+    RUNE = false,
+    ROBOT = true,
+};
 
-struct JetsonMessage {
+static constexpr uint8_t JETSON_MESSAGE_RECEIVE_MAGIC = 'a';
+static constexpr uint8_t JETSON_MESSAGE_SEND_MAGIC = 'b';
+
+struct JetsonMessageReceive {
     uint8_t magic;
     float targetX;
     float targetY;
@@ -19,7 +25,14 @@ struct JetsonMessage {
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
+struct JetsonMessageSend{
+    uint8_t magic;
+    CVDetectionType detectionType;
+} __attribute__((packed));
 
-static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
+static_assert(sizeof(JetsonMessageReceive) == 15, "JetsonMessageReceive is not the correct size");
+static_assert(sizeof(JetsonMessageSend) == 2, "JetsonMessageSend is not the correct size");
+
+static constexpr size_t JETSON_MESSAGE_RECEIVE_SIZE = sizeof(JetsonMessageReceive);
+static constexpr size_t JETSON_MESSAGE_SEND_SIZE = sizeof(JetsonMessageSend);
 }  // namespace src::Informants::Vision
