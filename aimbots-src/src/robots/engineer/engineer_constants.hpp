@@ -49,9 +49,6 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_GEAR_RATIOS {1.0f, 1.0f, 1.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
 static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR5, MotorID::MOTOR3};
-static constexpr MotorID WRIST_YAW_MOTOR_ID = MotorID::MOTOR1;
-static constexpr MotorID WRIST_PITCH_MOTOR_ID = MotorID::MOTOR5;
-static constexpr MotorID WRIST_ROLL_MOTOR_ID = MotorID::MOTOR3;
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);

@@ -22,6 +22,9 @@ public:
     void initialize() override;
     void refresh() override;
 
+    template<class... Args>
+    using WristFunc = void (WristSubsystem::*)(Args...);
+
     bool isMotorOnline(MotorIndex motorIdx) const {
         return motors[motorIdx]->isMotorOnline();
     }
@@ -40,19 +43,16 @@ public:
     }
 
     template<class... Args>
-    void ForAllWristMotors(void (WristSubsystem::*func)(MotorIndex, Args...), Args... args) {
+    void ForAllWristMotors(WristFunc<MotorIndex, Args...> wristFunc, Args... args) {
         for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
-            (this->*func)(mi, args...);
+            (this->*wristFunc)(mi, args...);
         }
     }
 
     /**
      * @brief calculates angles based on desired arm grabber position
      * reference frame unknown
-     * @param x
-     * @param y
-     * @param z
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
 
@@ -63,23 +63,18 @@ public:
     }
 
     void setDesiredOutputToMotor(MotorIndex motorIdx) {
-        motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
+        if (isMotorOnline(motorIdx))
+            motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
     }
 
     /** 
      * Get the current unwrapped radians of the given motor after gear box ratios
-     * 
-     * @param motorIdx
      */
-    float getCurrentAngleUnwrappedRadians(MotorIndex motorIdx) const {
-        return DJIEncoderValueToRadians(motors[motorIdx]->getEncoderUnwrapped() / WRIST_GEAR_RATIOS[motorIdx]);
-    }
+    float getUnwrappedRadians(MotorIndex) const;
 
     /**
      * Gets the given motor's current RPM, or 0 if it's offline
-     * 
-     * @param motorIdx
-    */
+     */
     int16_t getMotorRPM(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx]->getShaftRPM() : 0;
     }
@@ -94,7 +89,7 @@ public:
     }
 
     /**
-     * Sets the desired target angle of the target motor after gear box ratios
+     * Sets the desired target angle of the given motor after gear box ratios
      * 
      * @param motorIdx
      * @param angle the angle in radians from -pi to pi
@@ -118,6 +113,15 @@ private:
     std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs;
 
     void updateCurrentAngle(MotorIndex);
+
+    DJIMotor* buildMotor(MotorIndex idx)
+    {
+        return new DJIMotor(drivers, 
+                            WRIST_MOTOR_IDS[idx], 
+                            WRIST_BUS, 
+                            WRIST_MOTOR_DIRECTIONS[idx], 
+                            WRIST_MOTOR_NAMES[idx]);
+    }
 };
 
 };  // namespace src::Wrist
