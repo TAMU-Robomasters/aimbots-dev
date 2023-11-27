@@ -11,9 +11,9 @@ namespace src::Wrist {
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
     motors {
-        new DJIMotor(drivers, WRIST_YAW_MOTOR_ID, WRIST_BUS, WRIST_MOTOR_DIRECTIONS[YAW], "yaw"),
-        new DJIMotor(drivers, WRIST_PITCH_MOTOR_ID, WRIST_BUS, WRIST_MOTOR_DIRECTIONS[PITCH], "pitch"),
-        new DJIMotor(drivers, WRIST_ROLL_MOTOR_ID, WRIST_BUS, WRIST_MOTOR_DIRECTIONS[ROLL], "roll")
+        buildMotor(YAW),
+        buildMotor(PITCH),
+        buildMotor(ROLL)
     },
     positionPIDs {
         new SmoothPID(WRIST_POSITION_PID_CONFIG),
@@ -21,9 +21,9 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
         new SmoothPID(WRIST_POSITION_PID_CONFIG)
     },
     targetAngles {
-        new ContiguousFloat(0.0f, -M_PI, M_PI),
-        new ContiguousFloat(0.0f, -M_PI, M_PI),
-        new ContiguousFloat(0.0f, -M_PI, M_PI)
+        new ContiguousFloat(.0f, -M_PI, M_PI),
+        new ContiguousFloat(.0f, -M_PI, M_PI),
+        new ContiguousFloat(.0f, -M_PI, M_PI)
     },
     currentAngles {
         new ContiguousFloat(WRIST_MOTOR_OFFSET_ANGLES[YAW], -M_PI, M_PI),
@@ -45,11 +45,7 @@ void WristSubsystem::refresh() {
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
-    // delete dis later
-    setTargetAngle(PITCH, x);
-    setTargetAngle(ROLL, y);
-    setTargetAngle(YAW, z);
-    // TODO: MATH STUFF LATER
+    // TODO: not implemented at the moment
 }
 
 void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
@@ -62,9 +58,14 @@ void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
     }
 }
 
+float WristSubsystem::getUnwrappedRadians(MotorIndex motorIdx) const {
+    float scaledEncoderUnwrapped = motors[motorIdx]->getEncoderUnwrapped() / WRIST_GEAR_RATIOS[motorIdx];
+    return DJIEncoderValueToRadians(scaledEncoderUnwrapped);
+}
+
 /** Updates the current output angles scaled after gear boxes */
 void WristSubsystem::updateCurrentAngle(MotorIndex motorIdx) {
-    float angleScaled = getCurrentAngleUnwrappedRadians(motorIdx);
+    float angleScaled = getUnwrappedRadians(motorIdx);
     float angleOffsetted = angleScaled - WRIST_MOTOR_OFFSET_ANGLES[motorIdx];
 
     currentAngles[motorIdx]->setValue(angleOffsetted);
