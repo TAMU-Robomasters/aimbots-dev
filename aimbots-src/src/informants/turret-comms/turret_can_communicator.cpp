@@ -16,8 +16,8 @@ TurretCommunicator::TurretCommunicator(src::Drivers* drivers, CANBus bus)
 #ifndef TARGET_TURRET
       ,
       sendToTurretTimer(SEND_TO_TURRET_PERIOD),
-      yawDataRXHandler(drivers, static_cast<uint32_t>(CanID::YawData), bus, this, &TurretCommunicator::handleYawDataRX),
-      pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, &TurretCommunicator::handleYawDataRX),
+      yawDataRXHandler(drivers, static_cast<uint32_t>(CanID::YawData), bus, this, &TurretCommunicator::handleYawDataRX), 
+      pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, &TurretCommunicator::handleYawDataRX), //TODO: Probably needs to be Pitch/Roll
       rollDataRXHandler(drivers, static_cast<uint32_t>(CanID::RollData), bus, this, &TurretCommunicator::handleYawDataRX)
 #else
       ,
