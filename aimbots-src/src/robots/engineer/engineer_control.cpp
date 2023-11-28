@@ -45,7 +45,7 @@ WristSubsystem wrist(drivers());
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/4, PI/4, PI/4);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, .0f);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(

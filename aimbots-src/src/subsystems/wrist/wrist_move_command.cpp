@@ -4,8 +4,7 @@
 
 namespace src::Wrist {
 WristMoveCommand::WristMoveCommand(
-    src::Drivers* drivers, WristSubsystem* wrist, 
-    float yaw, float pitch, float roll) 
+    src::Drivers* drivers, WristSubsystem* wrist, float yaw, float pitch, float roll) 
     : drivers(drivers), wrist(wrist), 
       yaw(yaw), pitch(pitch), roll(roll)
 {
