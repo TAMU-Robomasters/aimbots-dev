@@ -108,7 +108,7 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 3000.0f,  // 600
     .ki = 0.0f,
-    .kd = 10.0f,  // 500
+    .kd = 100.0f,  // 500
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -120,9 +120,23 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 50'000.0f,
+    .kp = 1.0f,
     .ki = 0.0f,
-    .kd = 850.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig ROLL_POSITION_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

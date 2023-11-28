@@ -63,11 +63,8 @@ public:
     }
 
     void setDesiredOutputToMotor(MotorIndex motorIdx) {
-        if(motorIdx != PITCH)
-        {
-            if (isMotorOnline(motorIdx))
-                motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
-        }
+        if (isMotorOnline(motorIdx))
+            motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
     }
 
     /** Gets the current unwrapped radians of the given motor after gear box ratios */
