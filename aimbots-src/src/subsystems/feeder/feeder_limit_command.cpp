@@ -16,10 +16,12 @@
 #ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder{
+
 bool limitpressed = false;
 bool isCurrSemiauto = false;
 bool isPrevSemiauto = false;
 bool isAutoLoading = true;
+
 FeederLimitCommand::FeederLimitCommand(
             src::Drivers* drivers, 
             FeederSubsystem* feeder,
@@ -47,6 +49,7 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
+    
     /*
         11/18/2023
         Goal:
@@ -57,8 +60,8 @@ void FeederLimitCommand::execute() {
 
         Currently:
             - Works as it should until we enter semi auto
-            - Upon going to semi auto, the system shuts off completely lmao
-
+            - Upon going to semi auto, the system shuts off completely lmao lol us too :)
+ 
         ^^^ double check the goal w jack if this is correct ^^^
             if not, update the goal & the corresponding date :P
         
@@ -73,14 +76,15 @@ void FeederLimitCommand::execute() {
     // Updates the previous controller switch state (is up or not)
     isPrevSemiauto = isCurrSemiauto;
     // Updates the current controller switch state
-    isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
+    isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP; 
+
     
     // Checks if the limit switch is pressed & is "not killed" (refer to )
-    if ( limitpressed and limitswitchInactive.isExpired() )
+    if (limitpressed and limitswitchInactive.isExpired()){
         isAutoLoading = false;
-
+    }
     // if the fire mode has been activated (with timer semiauto) then check if your still in the other timers range to keep shooting, else set the feeder to 0 until reset timers
-    if( semiautoDelay.isExpired() ){
+    if(semiautoDelay.isExpired()){
         if ( isAutoLoading )
             feeder->setTargetRPM(speed);
         else
@@ -90,13 +94,15 @@ void FeederLimitCommand::execute() {
     // Checks if the controller is in its semiautomatic state
     //      i.e. controller switch goes from mid to up
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes to mid)
-    if ( isCurrSemiauto and !isPrevSemiauto ){
-        feeder->setTargetRPM(speed * 4);
+    //if (isCurrSemiauto and !isPrevSemiauto){
+    if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH)== Remote::SwitchState::UP){
+ //   if (true){
+        feeder->setTargetRPM(speed * 2);
         semiautoDelay.restart(1000);
         isAutoLoading = true;
         limitswitchInactive.restart(4000);
     }
-        
+
     
 }
 void FeederLimitCommand::end(bool) { feeder->setTargetRPM(0.0f); }
