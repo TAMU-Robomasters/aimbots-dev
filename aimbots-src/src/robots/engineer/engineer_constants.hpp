@@ -46,7 +46,7 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(0.0f))}; // 196.21
 
 // TODO: SET THESE GEAR RATIOS PLEASE
-static const std::array<float, WRIST_MOTOR_COUNT> WRIST_GEAR_RATIOS {1.0f, 1.0f, 1.0f};
+static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS {361.0f, 1.0f, 1.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {false, false, false};
 static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR5, MotorID::MOTOR3};
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
@@ -106,11 +106,11 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 1.0f,  // 600
+    .kp = 3000.0f,  // 600
     .ki = 0.0f,
-    .kd = 0.0f,  // 500
+    .kd = 10.0f,  // 500
     .maxICumulative = 0.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

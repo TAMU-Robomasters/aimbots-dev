@@ -10,13 +10,14 @@ namespace src::Wrist {
 
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
+    drivers(drivers),
     motors {
         buildMotor(YAW),
         buildMotor(PITCH),
         buildMotor(ROLL)
     },
     positionPIDs {
-        new SmoothPID(WRIST_POSITION_PID_CONFIG),
+        new SmoothPID(YAW_POSITION_PID_CONFIG),
         new SmoothPID(WRIST_POSITION_PID_CONFIG),
         new SmoothPID(WRIST_POSITION_PID_CONFIG)
     },
@@ -38,10 +39,22 @@ void WristSubsystem::initialize() {
     ForAllWristMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0));
 }
 
+//DEBUG
+float pitchTargetAngle_disp = 0;
+float pitchCurrentAngle_disp = 0;
+float pitchDesiredOutput_disp = 0;
+float yawTargetAngle_disp = 0;
+float yawCurrentAngle_disp = 0;
+float yawDesiredOutput_disp = 0;
+
 void WristSubsystem::refresh() {
     ForAllWristMotors(&WristSubsystem::updateCurrentAngle);
     ForAllWristMotors(&WristSubsystem::updateMotorPositionPID);
     ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
+
+    yawCurrentAngle_disp = currentAngles[YAW]->getValue();
+    yawTargetAngle_disp = targetAngles[YAW]->getValue();
+    pitchTargetAngle_disp = targetAngles[PITCH]->getValue();
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
@@ -55,11 +68,17 @@ void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
 
         positionPIDs[idx]->runControllerDerivateError(outputErr);
         setDesiredOutput(idx, positionPIDs[idx]->getOutput());
+        if (idx == PITCH)
+            pitchDesiredOutput_disp = positionPIDs[idx]->getOutput();
+        if (idx == YAW)
+            yawDesiredOutput_disp = positionPIDs[idx]->getOutput();
     }
 }
 
 float WristSubsystem::getUnwrappedRadians(MotorIndex motorIdx) const {
-    float scaledEncoderUnwrapped = motors[motorIdx]->getEncoderUnwrapped() / WRIST_GEAR_RATIOS[motorIdx];
+    float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
+    float scaledEncoderUnwrapped = motors[motorIdx]->getEncoderUnwrapped() / inPerOut;
+
     return DJIEncoderValueToRadians(scaledEncoderUnwrapped);
 }
 
@@ -69,6 +88,10 @@ void WristSubsystem::updateCurrentAngle(MotorIndex motorIdx) {
     float angleOffsetted = angleScaled - WRIST_MOTOR_OFFSET_ANGLES[motorIdx];
 
     currentAngles[motorIdx]->setValue(angleOffsetted);
+    if (motorIdx == PITCH)
+        pitchCurrentAngle_disp = angleOffsetted;
+    if (motorIdx == YAW)
+        yawCurrentAngle_disp = angleOffsetted;
 }
 
 };  // namespace src::Wrist

@@ -63,27 +63,22 @@ public:
     }
 
     void setDesiredOutputToMotor(MotorIndex motorIdx) {
-        if (isMotorOnline(motorIdx))
-            motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
+        if(motorIdx != PITCH)
+        {
+            if (isMotorOnline(motorIdx))
+                motors[motorIdx]->setDesiredOutput(desiredMotorOutputs[motorIdx]);
+        }
     }
 
-    /** 
-     * Get the current unwrapped radians of the given motor after gear box ratios
-     */
+    /** Gets the current unwrapped radians of the given motor after gear box ratios */
     float getUnwrappedRadians(MotorIndex) const;
 
-    /**
-     * Gets the given motor's current RPM, or 0 if it's offline
-     */
+    /** Gets the given motor's current RPM, or 0 if it's offline */
     int16_t getMotorRPM(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx]->getShaftRPM() : 0;
     }
 
-    /**
-     * Gets the given motor's current torque, or 0 if it's offline
-     * 
-     * @param motorIdx
-    */
+    /** Gets the given motor's current torque, or 0 if it's offline */
     int16_t getMotorTorque(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx]->getTorque() : 0;
     }
