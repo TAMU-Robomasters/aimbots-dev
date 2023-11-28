@@ -18,8 +18,8 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
     },
     positionPIDs {
         new SmoothPID(YAW_POSITION_PID_CONFIG),
-        new SmoothPID(WRIST_POSITION_PID_CONFIG),
-        new SmoothPID(WRIST_POSITION_PID_CONFIG)
+        new SmoothPID(PITCH_POSITION_PID_CONFIG),
+        new SmoothPID(ROLL_POSITION_PID_CONFIG)
     },
     targetAngles {
         new ContiguousFloat(.0f, -M_PI, M_PI),
