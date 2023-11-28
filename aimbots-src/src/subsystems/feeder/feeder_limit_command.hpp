@@ -42,7 +42,7 @@ class FeederLimitCommand : public TapCommand {
         FeederSubsystem* feeder;
         src::Utils::RefereeHelperTurreted* refHelper;
         bool isPressed; // might be deletable but we keeping it just in case ig :shrug:
-        float speed;// 你妈胖
+        float speed;
         int UNJAM_TIMER_MS;
 
         MilliTimeout startupThreshold;
