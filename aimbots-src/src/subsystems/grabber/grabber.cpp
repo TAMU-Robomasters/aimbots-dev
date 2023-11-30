@@ -5,8 +5,11 @@
 
 #include "drivers.hpp"
 
-#ifdef GRABBER_COMPATIBLE //TODO: Define this in a constants file later
-
+#ifdef GRABBER_COMPATIBLE
+/**
+ * Potential problem1: on testing, the trigger acting the same to duty cycle = 1 when setting to 0.5. Need more testing on behavior on dudy circle change.
+ * Potential problem2: unknown effect on frequency difference in GrabberSubsystem::initialize()
+ */
 namespace src::Grabber {
 
 GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers)
@@ -15,25 +18,35 @@ GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers)
 
 }
 int account_entering_commands;
+/**
+ * initialize local frequency
+ */
 void GrabberSubsystem::initialize() {
     drivers->pwm.init();
     drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1 ,2000);
 }
 
 void GrabberSubsystem::refresh() {
-    //activate();
-    // activate(1.0f);
-    // activate(0.0f);
 }
 
+/**
+ * set duty cycle to 0, deactivate the trigger
+ */
 void GrabberSubsystem::deactivate() {
     drivers->pwm.write(0.0f, GRABBER_PIN);
 }
 
+
+/**
+ * set duty cycle to 1, activate the trigger
+ */
 void GrabberSubsystem::activate(){
     drivers->pwm.write(1.0f, GRABBER_PIN);
 }
 
+/**
+ * testing for different behavior on different duty cycle
+ */
 void GrabberSubsystem::unknown(){
     // while(true) {
     //     drivers->pwm.write(1.0f, GRABBER_PIN);

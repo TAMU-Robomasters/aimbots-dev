@@ -17,7 +17,6 @@ public:
     
     mockable void refresh() override;
 
-    //mockable void deactivate() override;
     mockable void activate();
 
     mockable void deactivate();
@@ -29,7 +28,7 @@ private:
 
 };
 
-} //namespace src::Grabber
+}
 
 
 #endif //GRABBER_COMPATIBLE
