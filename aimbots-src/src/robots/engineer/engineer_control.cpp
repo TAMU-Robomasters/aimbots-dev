@@ -51,7 +51,7 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, .0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
