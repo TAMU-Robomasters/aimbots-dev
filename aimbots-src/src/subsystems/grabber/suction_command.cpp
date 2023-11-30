@@ -18,42 +18,25 @@ Suction_Command::Suction_Command(tap::Drivers* drivers, GrabberSubsystem* grabbe
     this->grabber = grabber;
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(grabber));
 }
+
 bool isCommandRunningDisplay = false;
 void Suction_Command::initialize() {
     grabber->deactivate();
 
 }
 
+/**
+ * action here
+ */
 void Suction_Command::execute() {
-    // if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwicthState::UP) {
-
-    // }
     // if (duty_cycle > 1.0f) {
     //     duty_cycle = 1.0f;
     // } else if (duty_cycle < 0.0f) {
     //     duty_cycle = 0.0f;
     // }
-    // drivers->pwm.write(1.0f, GRABBER_PIN);
     bool isCommandRunningDisplay = true;
     grabber->activate();
-    
-    // while (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
-    //     grabber->activate();
-    //     grabber->deactivate();
-    // }
-
-
-    // if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
-    //     isCommandRunningDisplay = true;
-    //     grabber->activate();
-    // }
-    //  else if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
-    //     isCommandRunningDisplay = true;
-
-    //     // grabber->unknown();
-    //     grabber->activate();
-    // }
-
+    // grabber->unknown();
 }
 
 void Suction_Command::end(bool interrupted) {

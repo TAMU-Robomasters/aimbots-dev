@@ -33,6 +33,6 @@ private:
 
 };
 
-}  // namespace src::Grabber
+}
 
 #endif //#ifdef GRABBER_COMPATIBLE
