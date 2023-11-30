@@ -13,6 +13,8 @@
 
 #ifdef WRIST_COMPATIBLE
 
+using namespace src::Utils::motion;
+
 namespace src::Wrist {
 class WristMoveCommand : public TapCommand {
 public:
@@ -32,9 +34,9 @@ private:
     float yaw, pitch, roll;
 
     //S curve stuff
-    src::Utils::motion::SCurveMotionProfile::Constraints profileConstraints
+    SCurveMotionProfile::Constraints profileConstraints;
     float movementStartTime;
-    SCurveMotionProfile* yawProfile;
+    SCurveMotionProfile* yawProfile;// = new SCurveMotionProfile(profileConstraints, 0.0f);    //(profileConstraints, 0.0f);
     int profilerDirection = 1;
 };
 
