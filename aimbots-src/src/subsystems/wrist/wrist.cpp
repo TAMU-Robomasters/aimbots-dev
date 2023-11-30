@@ -46,6 +46,9 @@ float pitchDesiredOutput_disp = 0;
 float yawTargetAngle_disp = 0;
 float yawCurrentAngle_disp = 0;
 float yawDesiredOutput_disp = 0;
+float rollTargetAngle_disp = 0;
+float rollCurrentAngle_disp = 0;
+float rollDesiredOutput_disp = 0;
 
 void WristSubsystem::refresh() {
     ForAllWristMotors(&WristSubsystem::updateCurrentAngle);
@@ -55,6 +58,7 @@ void WristSubsystem::refresh() {
     yawCurrentAngle_disp = currentAngles[YAW]->getValue();
     yawTargetAngle_disp = targetAngles[YAW]->getValue();
     pitchTargetAngle_disp = targetAngles[PITCH]->getValue();
+    rollTargetAngle_disp = targetAngles[ROLL]->getValue();
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
@@ -72,6 +76,8 @@ void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
             pitchDesiredOutput_disp = positionPIDs[idx]->getOutput();
         if (idx == YAW)
             yawDesiredOutput_disp = positionPIDs[idx]->getOutput();
+        if (idx == ROLL)
+            rollDesiredOutput_disp = positionPIDs[idx]->getOutput();
     }
 }
 
@@ -92,6 +98,8 @@ void WristSubsystem::updateCurrentAngle(MotorIndex motorIdx) {
         pitchCurrentAngle_disp = angleOffsetted;
     if (motorIdx == YAW)
         yawCurrentAngle_disp = angleOffsetted;
+    if (motorIdx == ROLL)
+        rollCurrentAngle_disp = angleOffsetted;
 }
 
 };  // namespace src::Wrist

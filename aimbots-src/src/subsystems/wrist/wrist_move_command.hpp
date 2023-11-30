@@ -5,6 +5,9 @@
 #include "subsystems/wrist/wrist.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
+#include "utils/motion/s_curve_acceleration.hpp"
+#include "utils/motion/s_curve_motion_profile.hpp"
+
 
 #include "drivers.hpp"
 
@@ -27,6 +30,12 @@ private:
     src::Drivers* drivers;
     WristSubsystem* wrist;
     float yaw, pitch, roll;
+
+    //S curve stuff
+    src::Utils::motion::SCurveMotionProfile::Constraints profileConstraints
+    float movementStartTime;
+    SCurveMotionProfile* yawProfile;
+    int profilerDirection = 1;
 };
 
 };      // namespace src::Wrist
