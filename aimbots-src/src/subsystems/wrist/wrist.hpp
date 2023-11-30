@@ -54,7 +54,7 @@ public:
      * @brief calculates angles based on desired arm grabber position
      * reference frame unknown
      */
-    void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
+    float calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
 
     void updateMotorPositionPID(MotorIndex);
 

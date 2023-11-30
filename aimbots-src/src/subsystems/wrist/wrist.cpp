@@ -61,8 +61,9 @@ void WristSubsystem::refresh() {
     rollTargetAngle_disp = targetAngles[ROLL]->getValue();
 }
 
-void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
+float WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
+    return 0.0f;//temp
 }
 
 void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
