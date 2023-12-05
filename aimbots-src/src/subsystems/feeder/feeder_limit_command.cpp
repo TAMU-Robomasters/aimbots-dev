@@ -95,7 +95,7 @@ void FeederLimitCommand::execute() {
     if (isCurrSemiauto and !isPrevSemiauto){
         feeder->setTargetRPM(speed * 2);
         isFiring = true;
-        limitswitchInactive.restart(1000);
+        limitswitchInactive.restart(350);
     }
 
     
