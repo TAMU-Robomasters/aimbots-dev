@@ -30,9 +30,9 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
     float positionMeters = positionRevs * SLIDE_METERS_PER_REVS_RATIOS[motorIdx];
     float err = targetPoses[motorIdx] - positionMeters;
 
-    motorPIDs[motorIdx].runControllerDerivateError(err);
+    float output = motorPIDs[motorIdx].runControllerDerivateError(err);
 
-    desiredOutputs[motorIdx] = static_cast<int32_t>(motorPIDs[motorIdx].getOutput());
+    desiredOutputs[motorIdx] = static_cast<int32_t>(output);
 }
 
 void SlideSubsystem::updateSlidePositionPID()
