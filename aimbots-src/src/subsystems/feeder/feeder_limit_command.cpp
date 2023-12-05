@@ -50,21 +50,19 @@ void FeederLimitCommand::initialize() {
 void FeederLimitCommand::execute() {
     
     /*
-        11/29/2023
+        12/04/2023
         Goal:
             - Implement a semi-auto functionality for hero robot
             - Switch states
                 - low: have feeder active until limit switch is pressed
                 - mid: same as low but have shooter wheels active
                 - up: fires one projectile
-        
 
         Currently:
-            - We think it works! we just need to test with actual projectiles to confirm
-            - Currently *not* in tune, will be done later
+            - It works!
         
-        we need to test :D
-            - dimitri, lohit, josh, yajat
+        we are done :D
+            - dimitri, lohit, josh, yajat, luis
             
     */
 
@@ -74,6 +72,10 @@ void FeederLimitCommand::execute() {
     isPrevSemiauto = isCurrSemiauto;
     // Updates the current controller switch state
     isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP; 
+    // States how long the limit switch is ignored when firing a projectile
+    limitSwitchDownTime = 350
+    // States the speed of the feeder wheel when firing
+    feederFiringRPM = speed * 2
     
 
     
@@ -93,9 +95,9 @@ void FeederLimitCommand::execute() {
     //      i.e. controller switch goes from mid to up
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes to mid)
     if (isCurrSemiauto and !isPrevSemiauto){
-        feeder->setTargetRPM(speed * 2);
+        feeder->setTargetRPM(feederFiringRPM);
         isFiring = true;
-        limitswitchInactive.restart(350);
+        limitswitchInactive.restart(limitSwitchDownTime);
     }
 
     
