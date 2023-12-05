@@ -56,7 +56,7 @@ public:
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
 
-    void updateMotorPositionPID(MotorIndex);
+    void updateMotorPID(MotorIndex);
 
     void setDesiredOutput(MotorIndex motorIdx, float desiredOutput) {
         desiredMotorOutputs[motorIdx] = desiredOutput;
@@ -95,6 +95,7 @@ private:
 
     std::array<DJIMotor*, WRIST_MOTOR_COUNT> motors;
     std::array<SmoothPID*, WRIST_MOTOR_COUNT> positionPIDs;
+    std::array<SmoothPID*, WRIST_MOTOR_COUNT> velocityPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
     std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> targetAngles;
