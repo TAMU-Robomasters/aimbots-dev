@@ -242,36 +242,35 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
     desiredRotation = r;
 }
 #endif
+
+
+#ifdef CHASSIS_BALANCING
 float thetaDisplay = 0;
 float vOutDisplay = 0;
 float errorOutputDisplay = 0.0f;
-int flag = 0;
-#ifdef CHASSIS_BALANCING
+
 void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;
+    float setPoint = -10.0f * y / 8000.0f; // user input to control the tilt angle set point 
     
-    float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    
-    // get distance from wheel to center of wheelbase
-    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
+    float rotationScaler = 2.5f; // 1/x times the rotation speed, used to slow down the rotation 
+    float driftScaler = 2.5f; // 1/x times the x direction speed, used to slow down the x direction movement
 
-    float setPoint = -15.0f * y / 8000.0f;
+    // measures the tilt angle 
+    float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
     float error = setPoint - modm::toDegree(ActualTiltAngle);
-    
-    errorOutputDisplay = error;
 
+    // calculate the gain scheduled PID controller
     balancingAnglePID.runControllerDerivateError(error);
     balancingAngleHighTiltPID.runControllerDerivateError(error);
     
-    float wheelVelocity = balancingAnglePID.getOutput();
-    float wheelVelocityAggressive = balancingAnglePID.getOutput();
-    
-    thetaDisplay = modm::toDegree(ActualTiltAngle);
-    vOutDisplay = wheelVelocity;
-    
+    float wheelVelocity = 0; 
+
+    // get distance from wheel to center of wheelbase
+    float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
     float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
@@ -279,56 +278,33 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    if (fabsf(modm::toDegree(ActualTiltAngle)) < 2.5 )
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18 )
     {
-        flag = 0;
-        
-         targetRPMs[0][0] =
-            limitVal<float>(-x/2.0f + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[1][0] =
-            limitVal<float>(x/2.0f + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[2][0] =
-            limitVal<float>(x/2.0f + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[3][0] =
-            limitVal<float>(-x/2.0f + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-
-        desiredRotation = r;
-
+        wheelVelocity = balancingAnglePID.getOutput();
     }
-    else if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
-    {
-        flag = 0;
-        
-         targetRPMs[0][0] =
-            limitVal<float>(-x/2.0f + wheelVelocityAggressive + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[1][0] =
-            limitVal<float>(x/2.0f + wheelVelocityAggressive + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[2][0] =
-            limitVal<float>(x/2.0f + wheelVelocityAggressive - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[3][0] =
-            limitVal<float>(-x/2.0f + wheelVelocityAggressive - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
-
-        desiredRotation = r;
-
-    }
+    // else if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
+    // {
+    //     wheelVelocity = balancingAngleHighTiltPID.getOutput();
+    // }
     else
     {
-        flag = 1;
-        error = 0.0f;
-
-        targetRPMs[0][0] =
-            limitVal<float>(-x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[1][0] =
-            limitVal<float>(x + y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[2][0] =
-            limitVal<float>(x + y - chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-        targetRPMs[3][0] =
-            limitVal<float>(-x + y - chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
-
-        desiredRotation = r;
+        wheelVelocity = yInputDisplay; 
     }
-    
 
+    targetRPMs[0][0] =
+        limitVal<float>(-x/driftScaler + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / rotationScaler , -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[1][0] =
+        limitVal<float>(x/driftScaler + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[2][0] =
+        limitVal<float>(x/driftScaler + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+    targetRPMs[3][0] =
+        limitVal<float>(-x/driftScaler + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+
+    // display variables 
+    desiredRotation = r;
+    errorOutputDisplay = error;
+    thetaDisplay = modm::toDegree(ActualTiltAngle);
+    vOutDisplay = wheelVelocity;
 }
 
 
