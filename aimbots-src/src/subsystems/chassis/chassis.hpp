@@ -192,6 +192,7 @@ public:
 
 #ifdef CHASSIS_BALANCING
     SmoothPID balancingAnglePID;
+    SmoothPID balancingAngleHighTiltPID;
 #endif
 
     Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL> targetRPMs;

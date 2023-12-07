@@ -39,6 +39,7 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
 #endif
 #ifdef CHASSIS_BALANCING
       balancingAnglePID(CHASSIS_BALANCE_PID_CONFIG),
+      balancingAngleHighTiltPID(CHASSIS_BALANCE_HIGH_TILT_PID_CONFIG),
 #endif
 
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -256,15 +257,17 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
 
-    float setPoint = -16.0f * y / 8000.0f;
+    float setPoint = -15.0f * y / 8000.0f;
 
     float error = setPoint - modm::toDegree(ActualTiltAngle);
     
     errorOutputDisplay = error;
 
     balancingAnglePID.runControllerDerivateError(error);
+    balancingAngleHighTiltPID.runControllerDerivateError(error);
     
     float wheelVelocity = balancingAnglePID.getOutput();
+    float wheelVelocityAggressive = balancingAnglePID.getOutput();
     
     thetaDisplay = modm::toDegree(ActualTiltAngle);
     vOutDisplay = wheelVelocity;
@@ -276,18 +279,34 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 2.5 )
     {
         flag = 0;
         
          targetRPMs[0][0] =
-            limitVal<float>(-x/4.0f + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(-x/2.0f + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[1][0] =
-            limitVal<float>(x/4.0f + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(x/2.0f + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[2][0] =
-            limitVal<float>(x/4.0f + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(x/2.0f + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
         targetRPMs[3][0] =
-            limitVal<float>(-x/4.0f + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+            limitVal<float>(-x/2.0f + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+
+        desiredRotation = r;
+
+    }
+    else if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
+    {
+        flag = 0;
+        
+         targetRPMs[0][0] =
+            limitVal<float>(-x/2.0f + wheelVelocityAggressive + chassisRotateTranslated * leftFrontRotationRatio / 2.0 , -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[1][0] =
+            limitVal<float>(x/2.0f + wheelVelocityAggressive + chassisRotateTranslated * rightFrontRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[2][0] =
+            limitVal<float>(x/2.0f + wheelVelocityAggressive - chassisRotateTranslated * leftBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
+        targetRPMs[3][0] =
+            limitVal<float>(-x/2.0f + wheelVelocityAggressive - chassisRotateTranslated * rightBackRotationRatio / 2.0, -maxWheelSpeed, maxWheelSpeed);
 
         desiredRotation = r;
 
@@ -308,6 +327,7 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
 
         desiredRotation = r;
     }
+    
 
 }
 

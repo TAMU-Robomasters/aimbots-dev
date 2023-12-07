@@ -209,10 +209,10 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
-    .kp = 300.0f,
-    .ki = 3.0f,
+    .kp = 270.0f,
+    .ki = 2.5f,
     .kd = 5.0f,
-    .maxICumulative = 700.0f,
+    .maxICumulative = 500.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -222,6 +222,19 @@ static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+static constexpr SmoothPIDConfig CHASSIS_BALANCE_HIGH_TILT_PID_CONFIG = {
+    .kp = 400.0f,
+    .ki = 60.0f, //6
+    .kd = 40.0f, //6
+    .maxICumulative = 1000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
