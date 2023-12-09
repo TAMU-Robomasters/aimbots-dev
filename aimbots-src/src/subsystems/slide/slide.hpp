@@ -24,15 +24,18 @@ public:
     mockable void setDesiredOutputs();
     void updateSlidePositionPID();
 
+    template<typename... Args>
+    using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);
+
     template<class... Args>
-    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args)
+    void ForAllSlideMotors(DJIMotorFunc<Args...> func, Args... args)
     {
         for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++)
             (motors[i].*func)(args...);
     }
 
     template<class... Args>
-    void ForAllSlideMotors(void (SlideSubsystem::*func)(MotorIndex, Args...), Args... args) {
+    void ForAllSlideMotors(SlideSubsystemFunc<MotorIndex, Args...> func, Args... args) {
         for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
             (this->*func)(mi, args...);
@@ -40,10 +43,10 @@ public:
     }
 
 private:
-    DJIMotor motors[SLIDE_MOTOR_COUNT];
-    SmoothPID motorPIDs[SLIDE_MOTOR_COUNT];
-    float targetPoses[SLIDE_MOTOR_COUNT] {};
-    int32_t desiredOutputs[SLIDE_MOTOR_COUNT] {};
+    std::array<DJIMotor, SLIDE_MOTOR_COUNT> motors;
+    std::array<SmoothPID, SLIDE_MOTOR_COUNT> motorPIDs;
+    std::array<float, SLIDE_MOTOR_COUNT> targetPoses {};
+    std::array<int32_t, SLIDE_MOTOR_COUNT> desiredOutputs {};
 
     void updateMotorPositionPID(MotorIndex);
 };
