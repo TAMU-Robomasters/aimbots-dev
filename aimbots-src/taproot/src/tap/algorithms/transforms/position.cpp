@@ -3,7 +3,7 @@
 /*****************************************************************************/
 
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2022-2023 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -21,30 +21,20 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TAPROOT_MOTOR_INTERFACE_HPP_
-#define TAPROOT_MOTOR_INTERFACE_HPP_
+#include "position.hpp"
 
-#include <cstdint>
+#include "vector.hpp"
 
-namespace tap::motor
+namespace tap::algorithms::transforms
 {
-class MotorInterface
+inline Vector Position::operator-(const Vector& other) const
 {
-public:
-    virtual void initialize() = 0;
-    virtual int64_t getEncoderUnwrapped() const = 0;
-    virtual uint16_t getEncoderWrapped() const = 0;
-    virtual void resetEncoderValue() = 0;
-    virtual float getPositionUnwrapped() const = 0;
-    virtual float getPositionWrapped() const = 0;
-    virtual void setDesiredOutput(int32_t desiredOutput) = 0;
-    virtual bool isMotorOnline() const = 0;
-    virtual int16_t getOutputDesired() const = 0;
-    virtual int8_t getTemperature() const = 0;
-    virtual int16_t getTorque() const = 0;
-    virtual int16_t getShaftRPM() const = 0;
-};
+    return Vector(this->coordinates_ - other.coordinates());
+}
 
-}  // namespace tap::motor
+inline Position Position::operator+(const Position& vector) const
+{
+    return Position(this->coordinates_ + vector.coordinates_);
+}
 
-#endif  // TAPROOT_MOTOR_INTERFACE_HPP_
+}  // namespace tap::algorithms::transforms

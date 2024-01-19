@@ -58,7 +58,7 @@ namespace tap::communication::serial
  * Receive information from the referee serial by continuously calling `messageReceiveCallback`.
  * Access data sent by the referee serial by calling `getRobotData` or `getGameData`.
  */
-class  RefSerial : public DJISerial, public RefSerialData
+class RefSerial : public DJISerial, public RefSerialData
 {
 private:
     /**
@@ -146,12 +146,24 @@ public:
         RobotToRobotMessageHandler* handler);
 
     /**
-     * Used by `RefSerialTransmitter`. It is necessary to acquire this lock to coordinate sending
-     * ref serial data from different protothreads.
+     * Used by `RefSerialTransmitter`. Attempts to acquire transmission semaphore.
+     *
+     * @note should be called only using RF_WAIT_UNTIL to block until acquiring semaphore.
      */
-    mockable void acquireTransmissionSemaphore() { transmissionSemaphore.acquire(); }
+    mockable bool acquireTransmissionSemaphore()
+    {
+        if (transmissionDelayTimer.isExpired() || transmissionDelayTimer.isStopped())
+        {
+            return transmissionSemaphore.acquire();
+        }
+        return false;
+    }
 
-    mockable void releaseTransmissionSemaphore() { transmissionSemaphore.release(); }
+    mockable void releaseTransmissionSemaphore(uint32_t sentMsgLen)
+    {
+        transmissionSemaphore.release();
+        transmissionDelayTimer.restart(sentMsgLen * 1'000 / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S);
+    }
 
     /**
      * @return True if the robot operator is blinded, false otherwise. Also return false if the
@@ -175,6 +187,7 @@ private:
     arch::MilliTimeout refSerialOfflineTimeout;
     std::unordered_map<uint16_t, RobotToRobotMessageHandler*> msgIdToRobotToRobotHandlerMap;
     modm::pt::Semaphore transmissionSemaphore;
+    tap::arch::MilliTimeout transmissionDelayTimer;
 
     /**
      * Decodes ref serial message containing the game stage and time remaining
