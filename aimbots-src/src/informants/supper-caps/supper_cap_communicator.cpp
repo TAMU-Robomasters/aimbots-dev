@@ -90,7 +90,7 @@ void SupperCapCommunicator::updateSerial() {
                 case CHARGE:
                     /* code */
                     lastSentMessage.command = 'c';
-                    lastSentMessage.charge = chargeValue;  // supperCapSubSystem->getCharge();
+                    lastSentMessage.charge = 100;  // supperCapSubSystem->getCharge();
                     break;
                 case DISCHARGE:
                     lastSentMessage.command = 'd';

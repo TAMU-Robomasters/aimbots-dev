@@ -9,9 +9,14 @@ SupperCapSubsystem::SupperCapSubsystem(src::Drivers* drivers)
       percent(0),
       inputPower(0) {}
 
-void SupperCapSubsystem::initialize() {
-    drivers->supperCapCommunicator.setCommand(CHARGE);
-}
+void SupperCapSubsystem::initialize() { drivers->supperCapCommunicator.setCommand(CHARGE); }
+
+float lastVoltage = 0;
+float lastPower = 0;
+float lastPercent = 0;
+float lastInputPower = 0;
+
+char lastCommand = ' ';
 
 void SupperCapSubsystem::refresh() {
     lastMessage = drivers->supperCapCommunicator.getLastValidMessage();
@@ -19,6 +24,12 @@ void SupperCapSubsystem::refresh() {
     power = lastMessage.power;
     percent = lastMessage.percent;
     inputPower = lastMessage.inputPower;
+
+    lastVoltage = voltage;
+    lastPower = power;
+    lastPercent = percent;
+    lastInputPower = inputPower;
+    lastCommand = currentCommand;
 
     switch (currentCommand) {
         case CHARGE:
@@ -43,6 +54,8 @@ void SupperCapSubsystem::refresh() {
             drivers->supperCapCommunicator.setCommand(STOP);
             break;
         default:
+            drivers->supperCapCommunicator.setCommand(CHARGE);
+            currentCommand = CHARGE;
             break;
     }
 }
