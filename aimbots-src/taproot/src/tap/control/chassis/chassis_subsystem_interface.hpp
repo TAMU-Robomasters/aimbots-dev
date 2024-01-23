@@ -45,11 +45,6 @@ public:
      */
     virtual inline int getNumChassisMotors() const = 0;
 
-    virtual inline int16_t getLeftFrontRpmActual() const = 0;
-    virtual inline int16_t getLeftBackRpmActual() const = 0;
-    virtual inline int16_t getRightFrontRpmActual() const = 0;
-    virtual inline int16_t getRightBackRpmActual() const = 0;
-
     /**
      * @return `true` iff all motors are online
      */
