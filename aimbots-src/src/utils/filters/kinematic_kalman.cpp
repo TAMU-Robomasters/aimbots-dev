@@ -47,7 +47,7 @@ void KinematicKalman::predict(float dt) {
 
 Matrix3f FDisplay = Matrix3f::zeroMatrix();
 Vector3f KinematicKalman::getFuturePrediction(float dt) const {
-    // 未来最高! 未来最高! 未来最高!!!
+    // 未来最高! 未来最高! 未来最高!!! 什么？？？？？？？？
     Matrix3f F = stateSpaceMatrix(dt);
     FDisplay = F;
     return F * x;

@@ -142,33 +142,40 @@ float targetVelocityZFutureDisplay = 0.0f;
 float targetAccelerationZFutureDisplay = 0.0f;
 
 float predictiondTDisplay = 0.0f;
-
+/**
+ * Input dt is how far in the future to predict the action
+*/
 PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const {
     lastFrameCaptureDisplay = lastFrameCaptureTimestamp_uS;
 
+    //This is the total amout of time to project forward in predictions based on the
+    //last time CV communicated to here (usually ~300ms)
     float totalForwardProjectionTime =
         static_cast<float>(dt + (tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS)) /
-        MICROSECONDS_PER_SECOND;
+        MICROSECONDS_PER_SECOND; 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005);  // bandaid fix
+    //TODO: take cv frame, convert it to gimbal frame
+    //predict the location of the panel
+    //kinematic shenanigans
+
+    //                          FIX THIS FUNC vvvvvvv
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005); //expected location of the panels
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 
-    targetPositionXFutureDisplay = xPlate.getX();
-    targetVelocityXFutureDisplay = xPlate.getY();
-    targetAccelerationXFutureDisplay = xPlate.getZ();
+    // targetPositionXFutureDisplay = xPlate.getX();
+    // targetVelocityXFutureDisplay = xPlate.getY();
+    // targetAccelerationXFutureDisplay = xPlate.getZ();
 
-    targetPositionYFutureDisplay = yPlate.getX();
-    targetVelocityYFutureDisplay = yPlate.getY();
+    // targetPositionYFutureDisplay = yPlate.getX();
+    // targetVelocityYFutureDisplay = yPlate.getY();
+    // targetAccelerationYFutureDisplay = yPlate.getZ();
 
-    targetAccelerationYFutureDisplay = yPlate.getZ();
-
-    targetPositionZFutureDisplay = zPlate.getX();
-    targetVelocityZFutureDisplay = zPlate.getY();
-
-    targetAccelerationZFutureDisplay = zPlate.getZ();
+    // targetPositionZFutureDisplay = zPlate.getX();
+    // targetVelocityZFutureDisplay = zPlate.getY();
+    // targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
