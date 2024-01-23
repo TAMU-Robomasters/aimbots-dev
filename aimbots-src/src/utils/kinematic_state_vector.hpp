@@ -67,6 +67,17 @@ public:
         lastTime = currTime;
     }
 
+    uint32_t getLastTime() const {
+        return lastTime;
+    }
+
+    // void updatePostion(float newPosition, bool updateLowerOrderTerms = true, std::optional<float> dt = std::nullopt) {
+    //     float currTime = tap::arch::clock::getTimeMilliseconds();
+    //     float deltaTime = currTime - lastTime;
+    //     newPosition = 
+    //     setPosition()
+    // }
+
 private:
     float calcIntegral(float x0, float v1, float dt) { return x0 + v1 * (dt); }
     float calcDerivative(float x0, float x1, float dt) { return (x1 - x0) / (dt); }

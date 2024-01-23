@@ -77,7 +77,8 @@ void KinematicInformant::updateIMUKinematicStateVector() {
     imuLinearState[X_AXIS].updateFromAcceleration(-drivers->bmi088.getAy());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
-
+    // s = ut + (1/2)a t^2
+    // X_position = imuLinearState[X_AXIS] * (t)^2
     imuAngularState[X_AXIS].updateFromPosition(getLocalIMUAngle(PITCH_AXIS));
     imuAngularState[Y_AXIS].updateFromPosition(getLocalIMUAngle(ROLL_AXIS));
     imuAngularState[Z_AXIS].updateFromPosition(getLocalIMUAngle(YAW_AXIS));
@@ -116,6 +117,30 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
     }
     return 0;
 }
+
+void KinematicInformant::updateIMUPosition() {
+    float deltaTime = tap::arch::clock::getTimeMilliseconds() - imuLinearState[X_AXIS].getLastTime();
+    if (deltaTime < 0) {
+        return;
+    }
+    Vector3f a = getIMULinearAcceleration();
+    imuLinearState[X_AXIS].updateFromAcceleration(a.getX(), deltaTime);
+    imuLinearState[Y_AXIS].updateFromAcceleration(a.getY(), deltaTime);
+    imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), deltaTime);
+}
+
+float KinamaticInformant::getCurrIMUPosition(LinearAxis axis) {
+    switch (axis) {
+        case X_AXIS:
+            return imuLinearState[X_AXIS].getPosition();
+        case Y_AXIS:
+            return imuLinearState[Y_AXIS].getPosition();
+        case Z_AXIS:
+            return imuLinearState[Z_AXIS].getPosition();
+    }
+    return 0;
+} 
+
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
