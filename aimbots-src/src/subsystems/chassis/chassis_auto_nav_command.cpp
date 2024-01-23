@@ -1,8 +1,8 @@
 #include "chassis_auto_nav_command.hpp"
 
-namespace src::Chassis {
-
 #ifdef CHASSIS_COMPATIBLE
+
+namespace src::Chassis {
 
 ChassisAutoNavCommand::ChassisAutoNavCommand(
     src::Drivers* drivers,
