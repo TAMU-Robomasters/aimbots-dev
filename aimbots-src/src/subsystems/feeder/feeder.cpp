@@ -9,10 +9,11 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
       targetRPM(0),
       desiredOutput(0),
       feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
-      feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
+ //     feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 
 {
+    BuildFeederMotors();
 }
 
 // Watch Variables
@@ -22,7 +23,8 @@ int16_t barrelDDisplay = 0;
 int16_t heatMaxDisplay = 0;
 
 void FeederSubsystem::initialize() {
-    feederMotor.initialize();
+ //   feederMotor.initialize();
+    ForAllFeederMotors(&DJIMotor::initialize);
     limitSwitch.initialize();
 }
 
