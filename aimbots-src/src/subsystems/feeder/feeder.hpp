@@ -32,6 +32,12 @@ public:
     
 
     mockable void initialize() override;
+
+    void BuildPIDControllers() {
+        for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+            feederPIDs[i] = new SmoothPID(FEEDER_PID_CONFIG);
+       }
+    }
     mockable void refresh() override;
 
     inline bool isOnline() const {
@@ -56,7 +62,10 @@ public:
 
     void updateMotorVelocityPID();
 
-    mockable void setAllDesiredOutput(unit16_t output) { desiredFeederMotorOutputs.fill(output);}
+    void setDesiredFeederMotorOutput(uint8_t FeederIdx, float output) {desiredFeederMotorOutputs[FeederIdx] = output;}
+
+
+    mockable void setAllDesiredFeederOutput(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
 
     mockable float setTargetRPM(float rpm);
 
@@ -73,15 +82,21 @@ public:
     int getTotalLimitCount() const;
 
 private:
+    src::Drivers* drivers;
+
+    std::array<DJIMotor*, Feeder_MOTOR_COUNT> feederMotors;
+
+    std::array<float, Feeder_MOTOR_COUNT> desiredFeederMotorOutputs;
+
+    void setDesiredOutputToFeederMotor(uint8_t FeederIdx);
 
     float targetRPM;
     float desiredOutput;
 
-    SmoothPID feederVelPID;
+    std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederPIDs;
     DJIMotor feederMotor;
-    src::Drivers* drivers;
 
-    src::Informants::LimitSwitch limitSwitch;  // for single-barreled robots
+    src::Informants::LimitSwitch limitSwitch;  
 //#endif
 
     // commands

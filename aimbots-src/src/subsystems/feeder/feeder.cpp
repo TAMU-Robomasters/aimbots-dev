@@ -6,6 +6,7 @@ namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
+    drivers(drivers),
       targetRPM(0),
       desiredOutput(0),
       feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
@@ -23,9 +24,19 @@ int16_t barrelDDisplay = 0;
 int16_t heatMaxDisplay = 0;
 
 void FeederSubsystem::initialize() {
+    for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+     //   feederPositionPIDs[i]->pid.reset();
+        feederPIDs[i]->SmoothPID.reset();
+    }
+
  //   feederMotor.initialize();
     ForAllFeederMotors(&DJIMotor::initialize);
     limitSwitch.initialize();
+    
+    setAllDesiredFeederMotorOutputs(0);
+    ForAllDesiredFeederMotorOutputs(&FeederSubsystem::setDesiredOutputToFeederMotor);
+    
+    
 }
 
 float feederDesiredOutputDisplay = 0;
@@ -34,14 +45,24 @@ bool isFeederOnlineDisplay = false;
 
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
-    isFeederOnlineDisplay = feederMotor.isMotorOnline();
-    feederDesiredOutputDisplay = targetRPM;
-    feederShaftRPMDisplay = feederMotor.getShaftRPM();
+    int feederOnlineCount = 0;
+    // feederDesiredOutputDisplay = targetRPM;
+    // feederShaftRPMDisplay = feederMotor.getShaftRPM();
 
-    updateMotorVelocityPID();
-    setDesiredOutput();
+    // updateMotorVelocityPID();
+    // setDesiredOutput();
     limitSwitch.refresh();
 
+    for (auto i = 0; i < Feeder_MOTOR_COUNT; i++) {
+        if (!feederMotors[i]->isMotorOnline()) {
+            // tap::buzzer::playNote(&drivers->pwm, 932);
+            continue;
+        }
+        
+        feederOnlineCount++;
+
+        setDesiredOutputToFeederMotor(i);
+    }
 }
 
 void FeederSubsystem::updateMotorVelocityPID() {
