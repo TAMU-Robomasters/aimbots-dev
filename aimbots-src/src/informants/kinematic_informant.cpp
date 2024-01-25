@@ -129,7 +129,7 @@ void KinematicInformant::updateIMUPosition() {
     imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), deltaTime);
 }
 // test
-float KinamaticInformant::getCurrIMUPosition(LinearAxis axis) {
+float KinematicInformant::getCurrIMUPosition(LinearAxis axis) {
     switch (axis) {
         case X_AXIS:
             return imuLinearState[X_AXIS].getPosition();

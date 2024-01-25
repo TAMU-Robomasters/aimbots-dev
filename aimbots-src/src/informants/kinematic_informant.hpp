@@ -78,6 +78,10 @@ public:
     Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
+
+    //localization testing
+    void updateIMUPosition();
+
     void updateChassisAcceleration();
 
     void updateRobotFrames();
