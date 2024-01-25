@@ -12,7 +12,7 @@
                 "${workspaceFolder}/**"
             ],
             "compilerPath": "gcc",
-            "intelliSenseMode": "windows-gcc-x64",
+            "intelliSenseMode": "windows-gcc-x86",
             "cStandard": "${default}",
             "cppStandard": "${default}"
         },
@@ -41,7 +41,7 @@
                 "${workspaceFolder}/aimbots-src"
             ],
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "D:/RoboMasters/Taproot Libraries/mingw64/bin/gcc.exe"
+            "compilerPath": "C:/Embedded/Winlibs/mingw64/bin/gcc.exe"
         }
     ],
     "version": 4
