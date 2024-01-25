@@ -81,6 +81,8 @@ public:
 
     //localization testing
     void updateIMUPosition();
+    float getCurrIMUPosition(LinearAxis axis);
+    float showPosition();
 
     void updateChassisAcceleration();
 

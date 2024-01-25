@@ -77,6 +77,7 @@ void KinematicInformant::updateIMUKinematicStateVector() {
     imuLinearState[X_AXIS].updateFromAcceleration(-drivers->bmi088.getAy());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
+    float accelerationX = imuLinearState[X_AXIS].getAcceleration();
     // s = ut + (1/2)a t^2
     // X_position = imuLinearState[X_AXIS] * (t)^2
     imuAngularState[X_AXIS].updateFromPosition(getLocalIMUAngle(PITCH_AXIS));
@@ -123,7 +124,7 @@ void KinematicInformant::updateIMUPosition() {
     if (deltaTime < 0) {
         return;
     }
-    Vector3f a = getIMULinearAcceleration();
+    Vector3f a = getIMULinearAccelerations();
     imuLinearState[X_AXIS].updateFromAcceleration(a.getX(), deltaTime);
     imuLinearState[Y_AXIS].updateFromAcceleration(a.getY(), deltaTime);
     imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), deltaTime);
@@ -139,6 +140,10 @@ float KinematicInformant::getCurrIMUPosition(LinearAxis axis) {
             return imuLinearState[Z_AXIS].getPosition();
     }
     return 0;
+} 
+
+float KinematicInformant::showPosition() {
+    float currentPositionX = imuLinearState[X_AXIS].getPosition();
 } 
 
 
