@@ -1,98 +1,89 @@
 #include "subsystems/wrist/wrist.hpp"
 
-#include <utils/common_types.hpp>
+#include <cmath>
+
+#include "utils/common_types.hpp"
 
 #ifdef WRIST_COMPATIBLE
 
-
-
 namespace src::Wrist {
 
-WristSubsystem::WristSubsystem(src::Drivers* drivers) : drivers(drivers), Subsystem(drivers) { BuildMotors(); }
+WristSubsystem::WristSubsystem(src::Drivers* drivers)
+    : Subsystem(drivers),
+    drivers(drivers),
+    motors {
+        buildMotor(YAW),
+        buildMotor(PITCH),
+        buildMotor(ROLL)
+    },
+    positionPIDs {
+        new SmoothPID(YAW_POSITION_PID_CONFIG),
+        new SmoothPID(PITCH_POSITION_PID_CONFIG),
+        new SmoothPID(ROLL_POSITION_PID_CONFIG)
+    },
+    velocityPIDs {
+        new SmoothPID(YAW_VELOCITY_PID_CONFIG),
+        new SmoothPID(PITCH_VELOCITY_PID_CONFIG),
+        new SmoothPID(ROLL_VELOCITY_PID_CONFIG)
+    },
+    targetAngles {
+        new ContiguousFloat(.0f, -M_PI, M_PI),
+        new ContiguousFloat(.0f, -M_PI, M_PI),
+        new ContiguousFloat(.0f, -M_PI, M_PI)
+    },
+    currentAngles {
+        new ContiguousFloat(WRIST_MOTOR_OFFSET_ANGLES[YAW], -M_PI, M_PI),
+        new ContiguousFloat(WRIST_MOTOR_OFFSET_ANGLES[PITCH], -M_PI, M_PI),
+        new ContiguousFloat(WRIST_MOTOR_OFFSET_ANGLES[ROLL], -M_PI, M_PI)
+    }
+{
+}
 
 void WristSubsystem::initialize() {
-    // idk
+    ForAllWristMotors(&DJIMotor::initialize);
+    ForAllWristMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0));
 }
 
 void WristSubsystem::refresh() {
-    if (!isOnline()) {
-        return;
-    }
-
-    /*
-    TODO periodically:
-    - update current motor angles
-    - update target motor angles (the hard math part)
-    - run PID controllers
-    - update motor outputs
-    */
-    updateCurrentMotorAngles();
-
-    //get error for each motor
-
-    /*
-    for (auto i = 0; i < 3; i++) {
-        if (!motors[i]->isMotorOnline()) {
-            // tap::buzzer::playNote(&drivers->pwm, 932);
-            continue;
-        }
-
-        // tap::buzzer::playNote(&drivers->pwm, 0);
-        yawOnlineCount++;
-
-        int64_t currentMotorEncoderPosition = motors[i]->getEncoderUnwrapped();
-
-        // https://www.desmos.com/calculator/bducsk7y6v
-        float wrappedAxisAngle =
-            GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentMotorEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
-
-        currentAngle[i]->setValue(wrappedAxisAngle);
-
-        axisAngleSum += wrappedAxisAngle;
-        ////////////////
-        // DEBUG VARS //
-        ////////////////
-        // currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getValue();
-        // currentYawMotorAngleDisplay =
-        //     modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
-        // otherYawMotorAngleDisplay =
-        //     modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
-        // yawOutputDisplay = yawMotors[i]->getOutputDesired();
-
-        // yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
-
-        // yawDesiredOutputDisplay = desiredYawMotorOutputs[yawDisplayMotorIdx];
-
-        // flush the desired output to the motor
-        setDesiredOutputToMotor(i);
-
-        // if (yawOnlineCount > 0) {
-        // currentAngle.setValue(yawAxisAngleSum / yawOnlineCount);
-    }
-    */
+    ForAllWristMotors(&WristSubsystem::updateCurrentAngle);
+    ForAllWristMotors(&WristSubsystem::updateMotorPID);
+    ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
-void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {}
-
-void WristSubsystem::setTargetAngle() {}
-
-void WristSubsystem::setTargetYawAngle() {}
-
-void WristSubsystem::setTargetPitchAngle() {}
-
-void WristSubsystem::setTargetRollAngle() {}
-
-void WristSubsystem::setDesiredOutputToMotor(uint8_t idx) {
-    // Clamp output to maximum value that the 6020 can handle
-    motors[idx]->setDesiredOutput(
-        tap::algorithms::limitVal(desiredMotorOutputs[idx], -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT));
+float WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
+    // TODO: not implemented at the moment
+    return 0.0f;//temp
 }
 
-void WristSubsystem::updateCurrentMotorAngles() {
-    for (auto i = 0; i < 3; i++) {
-        currentAngle[i]->setValue( (getCurrentAngleWrapped(i) - WRIST_MOTOR_OFFSET_ANGLES[i])*WRIST_GEAR_RATIO);
+// Doing cascade PIDs, feed position error to get desired velocity, feed velocity error to
+// get desired acceleration basically
+void WristSubsystem::updateMotorPID(MotorIndex idx) {
+    if (motors[idx]->isMotorOnline()) {
+        // ContiguousFloat::difference does (other - this), and we want (target - current)
+        float outputPositionErr = currentAngles[idx]->difference(targetAngles[idx]->getValue());
+
+        float desiredVelocity = positionPIDs[idx]->runControllerDerivateError(outputPositionErr);
+        float velocityError = desiredVelocity - RPM_TO_RADPS(motors[idx]->getShaftRPM());
+
+        float accelerationOutput = velocityPIDs[idx]->runControllerDerivateError(velocityError);
+
+        setDesiredOutput(idx, accelerationOutput);
     }
 }
 
-};      // namespace src::Wrist
+float WristSubsystem::getUnwrappedRadians(MotorIndex motorIdx) const {
+    float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
+    float scaledEncoderUnwrapped = motors[motorIdx]->getEncoderUnwrapped() / inPerOut;
+
+    return DJIEncoderValueToRadians(scaledEncoderUnwrapped);
+}
+
+/** Updates the current output angles scaled after gear boxes */
+void WristSubsystem::updateCurrentAngle(MotorIndex motorIdx) {
+    float angleScaled = getUnwrappedRadians(motorIdx);
+    float angleOffsetted = angleScaled - WRIST_MOTOR_OFFSET_ANGLES[motorIdx];
+}
+
+};  // namespace src::Wrist
+
 #endif  // #ifdef WRIST_COMPATIBLE

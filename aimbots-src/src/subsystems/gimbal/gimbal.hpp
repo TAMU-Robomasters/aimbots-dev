@@ -8,9 +8,9 @@
 
 #ifdef GIMBAL_COMPATIBLE
 
-static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
-}
+// static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
+//     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+// }
 
 namespace src::Gimbal {
 

@@ -22,7 +22,6 @@
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
-
 inline float pow2(float x) { return x * x; }
 
 static inline float wrapTo0To2PIRange(float angle) {
@@ -52,6 +51,10 @@ using DJIMotor = tap::mock::DjiMotorMock;
 #include "tap/motor/dji_motor.hpp"
 using DJIMotor = tap::motor::DjiMotor;
 #endif
+
+static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+}
 
 enum class AngleUnit : uint8_t {
     Degrees,

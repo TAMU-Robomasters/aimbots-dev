@@ -12,6 +12,7 @@ namespace utils::Music {
 static constexpr uint32_t NOTE_Bb = 466;
 static constexpr uint32_t NOTE_B = 494;
 static constexpr uint32_t NOTE_C = 523;
+static constexpr uint32_t NOTE_D = 587;
 static constexpr uint32_t NOTE_Eb = 622;
 static constexpr uint32_t NOTE_E = 659;
 static constexpr uint32_t NOTE_F = 699;
@@ -125,21 +126,10 @@ static uint32_t lastPMTime = 0;
 static uint32_t currentPMNote = 0;
 static uint32_t lastPMFreq = 0;
 
-static MusicNote pacManNotes[] = {{NOTE_B},  {NOTE_B2}, {NOTE_Gb}, {NOTE_Eb},
-
-                                  {NOTE_B2}, {0},       {NOTE_Eb}, {0},
-
-                                  {NOTE_C},  {NOTE_C2}, {NOTE_G},  {NOTE_E},
-
-                                  {NOTE_C2}, {0},       {NOTE_E},  {0},
-
-                                  {NOTE_B},  {NOTE_B2}, {NOTE_Gb}, {NOTE_Eb},
-
-                                  {NOTE_B2}, {0},       {NOTE_Eb}, {0},
-
-                                  {NOTE_Eb}, {NOTE_Eb}, {NOTE_F},  {NOTE_F},
-
-                                  {NOTE_G},  {NOTE_G},  {NOTE_B2}, {}};
+static MusicNote pacManNotes[] = {{NOTE_D}, {NOTE_E}, {NOTE_F}, {NOTE_G},
+                                  {NOTE_E}, {NOTE_E}, {NOTE_C}, {NOTE_D},
+                                  {NOTE_D}, {NOTE_D}, {NOTE_D}, {NOTE_D},
+                                  {}};
 
 static constexpr size_t PM_NOTE_COUNT = sizeof(pacManNotes) / sizeof(MusicNote);
 

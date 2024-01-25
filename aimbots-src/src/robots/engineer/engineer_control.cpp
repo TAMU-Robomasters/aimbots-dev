@@ -19,9 +19,13 @@
 
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
+//
+#include "subsystems/wrist/wrist.hpp"
+#include "subsystems/wrist/wrist_move_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Wrist;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -37,7 +41,7 @@ using namespace src::Slide;
 
 namespace EngineerControl {
 
-// Define subsystems here ------------------------------------------------
+// Define subsystems here -------`-----------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
@@ -46,18 +50,24 @@ SlideSubsystem slide(drivers());
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
+WristSubsystem wrist(drivers());
+
+// Define commands here ---------------------------------------------------
+ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisManualDriveCommand},
+    {&chassisManualDriveCommand, &wristHomeCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 /* THESE MAPPINGS ARE TEMPORARY */
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&goToTestLocation},
+    {&goToTestLocation, &wristMoveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchDown(
@@ -66,10 +76,11 @@ HoldCommandMapping leftSwitchDown(
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
 
 /* END OF TEMPORARY MAPPINGS */
-
+    
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
+    drivers->commandScheduler.registerSubsystem(&wrist);
     drivers->commandScheduler.registerSubsystem(&slide);
 }
 
@@ -77,11 +88,13 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     slide.initialize();
+    wrist.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
+    wrist.setDefaultCommand(&wristHomeCommand);
 }
 
 // Set commands scheduled on startup
