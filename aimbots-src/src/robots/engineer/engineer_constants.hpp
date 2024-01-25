@@ -6,6 +6,7 @@
 #define CHASSIS_COMPATIBLE
 
 #define CV_COMPATIBLE
+#define GRABBER_COMPATIBLE
 
 #define WRIST_COMPATIBLE
 
@@ -26,6 +27,8 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
+//Grabber Constants
+static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t WRIST_MOTOR_COUNT = 3;

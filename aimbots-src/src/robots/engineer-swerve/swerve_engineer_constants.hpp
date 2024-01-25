@@ -146,6 +146,9 @@ static constexpr MotorID LEFT_FRONT_YAW_ID = MotorID::MOTOR6;
 static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
+//Grabber constants
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+
 // CAN Bus 1
 static constexpr CANBus GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;

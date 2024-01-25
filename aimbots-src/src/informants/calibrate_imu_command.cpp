@@ -1,5 +1,5 @@
 #include "calibrate_imu_command.hpp"
-#ifdef GIMBAL_COMPATIBLE&& CHASSIS_COMPATIBLE
+#if defined(GIMBAL_COMPATIBLE) && defined(CHASSIS_COMPATIBLE)
 
 namespace src::Informants {
 
@@ -93,6 +93,7 @@ void IMUCalibrateCommand::execute() {
 }
 
 void IMUCalibrateCommand::end(bool interrupted) {
+    UNUSED(interrupted);
     gimbal->setAllDesiredPitchMotorOutputs(0);
     gimbal->setAllDesiredYawMotorOutputs(0);
 

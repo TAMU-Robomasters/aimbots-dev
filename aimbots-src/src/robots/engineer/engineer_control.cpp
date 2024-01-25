@@ -26,6 +26,9 @@
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Wrist;
+#include "subsystems/grabber/grabber.hpp"
+#include "subsystems/grabber/suction_command.hpp"
+using namespace src::Grabber;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -57,11 +60,19 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
+GrabberSubsystem grabber(drivers());
+
+Suction_Command Suction_Command(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&chassisManualDriveCommand, &wristHomeCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&Suction_Command},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 /* THESE MAPPINGS ARE TEMPORARY */
 
@@ -82,6 +93,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&wrist);
     drivers->commandScheduler.registerSubsystem(&slide);
+    drivers->commandScheduler.registerSubsystem(&grabber);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -89,7 +101,7 @@ void initializeSubsystems() {
     chassis.initialize();
     slide.initialize();
     wrist.initialize();
-}
+    grabber.initialize();
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
@@ -111,6 +123,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchDown);
+    drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
 }  // namespace EngineerControl
