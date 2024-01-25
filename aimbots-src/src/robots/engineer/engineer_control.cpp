@@ -48,6 +48,7 @@ namespace EngineerControl {
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
+GrabberSubsystem grabber(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -60,9 +61,10 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
-GrabberSubsystem grabber(drivers());
-
+//
 Suction_Command Suction_Command(drivers(), &grabber);
+//
+
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -102,6 +104,7 @@ void initializeSubsystems() {
     slide.initialize();
     wrist.initialize();
     grabber.initialize();
+}
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {

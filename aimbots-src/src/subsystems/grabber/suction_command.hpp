@@ -12,7 +12,7 @@
 
 #ifdef GRABBER_COMPATIBLE
 
-namespace src:: Grabber {
+namespace src::Grabber {
 
 class Suction_Command : public TapCommand {
 public:
