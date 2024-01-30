@@ -50,9 +50,8 @@ void WristSubsystem::refresh() {
     ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
-float WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
+void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
-    return 0.0f;//temp
 }
 
 // Doing cascade PIDs, feed position error to get desired velocity, feed velocity error to

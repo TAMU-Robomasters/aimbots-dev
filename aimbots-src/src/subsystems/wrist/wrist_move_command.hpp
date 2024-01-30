@@ -34,9 +34,9 @@ private:
     float yaw, pitch, roll;
 
     //S curve stuff
-    SCurveMotionProfile::Constraints profileConstraints;
+    src::Utils::motion::SCurveMotionProfile::Constraints profileConstraints;
     float movementStartTime;
-    SCurveMotionProfile* yawProfile;// = new SCurveMotionProfile(profileConstraints, 0.0f);    //(profileConstraints, 0.0f);
+    SCurveMotionProfile* yawProfile;
     int profilerDirection = 1;
 };
 
