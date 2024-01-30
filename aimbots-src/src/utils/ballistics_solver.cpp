@@ -21,7 +21,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
 
     // If we have already solved for this target, return the same solution
     if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
-        return lastBallisticsSolution;
+        return lastBallisticsSolution; 
     } else {
         lastPlatePredictionTime = drivers->cvCommunicator.getLastFoundTargetTime();
     }

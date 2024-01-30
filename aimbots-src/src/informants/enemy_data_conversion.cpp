@@ -83,22 +83,33 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    //TESTING : going directly from camera frame to chassis frame
+    VisionTimedPosition cameraToGimbal{
+        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
+        .timestamp_uS = currentData.timestamp_uS,
+    };
+
     targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
-    targetPositionXUnfilteredDisplay = transformedData.position.getX();
-    targetPositionYUnfilteredDisplay = transformedData.position.getY();
-    targetPositionZUnfilteredDisplay = transformedData.position.getZ();
+    // targetPositionXUnfilteredDisplay = transformedData.position.getX();
+    // targetPositionYUnfilteredDisplay = transformedData.position.getY();
+    // targetPositionZUnfilteredDisplay = transformedData.position.getZ();
 
-    targetPositionXDisplay = transformedData.position.getX();
-    targetPositionYDisplay = transformedData.position.getY();
-    targetPositionZDisplay = transformedData.position.getZ();
+    // targetPositionXDisplay = transformedData.position.getX();
+    // targetPositionYDisplay = transformedData.position.getY();
+    // targetPositionZDisplay = transformedData.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
     XPositionFilter.update(dt, transformedData.position.getX());
     YPositionFilter.update(dt, transformedData.position.getY());
     ZPositionFilter.update(dt, transformedData.position.getZ());
+
+    //see if this works
+    XPositionFilter.update(dt, cameraToGimbal.position.getX());
+    YPositionFilter.update(dt, cameraToGimbal.position.getY());
+    ZPositionFilter.update(dt, cameraToGimbal.position.getZ());
 
     xDFT.damping_factor = dampingValue;
 
@@ -142,6 +153,7 @@ float targetVelocityZFutureDisplay = 0.0f;
 float targetAccelerationZFutureDisplay = 0.0f;
 
 float predictiondTDisplay = 0.0f;
+
 /**
  * Input dt is how far in the future to predict the action
 */

@@ -51,6 +51,14 @@ public:
         }
         return chassisFrame;
     }
+    
+    //idk if this actually works 
+    // void cameraToGimbal(
+    //     float yawCamRelative,
+    //     float pitchCamRelative,
+    //     float camWorldRelativeAngle,
+    //     Vector3f robotPosRelativeToStartPos,
+    //     AngleUnit angleUnit);
 
     void updateFrames(
         float yawChassisRelative,
