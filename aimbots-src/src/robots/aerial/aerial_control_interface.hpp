@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
@@ -22,8 +23,16 @@ private:
     uint32_t lastYInputCallTime = 0;
     uint32_t lastRInputCallTime = 0;
 
+    LinearInterpolationPredictor chassisXInput;
+    LinearInterpolationPredictor chassisYInput;
+    LinearInterpolationPredictor chassisRotationInput;
+
     src::Utils::Filters::EMAFilter mouseXFilter;
     src::Utils::Filters::EMAFilter mouseYFilter;
+
+    tap::algorithms::Ramp chassisXRamp;
+    tap::algorithms::Ramp chassisYRamp;
+    tap::algorithms::Ramp chassisRotationRamp;
 
 public:
     OperatorInterface(tap::Drivers *drivers)
@@ -33,6 +42,10 @@ public:
           mouseYFilter(0.5f) {}
     DISALLOW_COPY_AND_ASSIGN(OperatorInterface)
     mockable ~OperatorInterface() = default;
+
+    mockable float getChassisXInput();
+    mockable float getChassisYInput();
+    mockable float getChassisRotationInput();
 
     mockable float getGimbalYawInput();
     mockable float getGimbalPitchInput();
