@@ -29,6 +29,12 @@ public:
         }
     }
 
+    void BuildPIDControllers()[
+        for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+            feederVelocityPIDs[i] = 
+        }
+    ]
+
     
 
     mockable void initialize() override;
@@ -60,7 +66,7 @@ public:
     }
 
 
-    void updateMotorVelocityPID();
+    void updateMotorVelocityPID(uint8_t FeederIdxIdx);
 
     void setDesiredFeederMotorOutput(uint8_t FeederIdx, float output) {desiredFeederMotorOutputs[FeederIdx] = output;}
 
@@ -69,13 +75,13 @@ public:
 
     mockable float setTargetRPM(float rpm);
 
-    float getTargetRPM(uint8_t FeederIdx) const {
+    float getRPM(uint8_t FeederIdx) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ? feederMotors[FeederIdx]->getShaftRPM() : 0;
     }
 
     bool getPressed();
 
-    float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
+   // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
     int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
 
