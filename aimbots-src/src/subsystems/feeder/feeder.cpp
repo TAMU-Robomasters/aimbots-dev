@@ -24,14 +24,16 @@ int16_t barrelDDisplay = 0;
 int16_t heatMaxDisplay = 0;
 
 void FeederSubsystem::initialize() {
-    for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-     //   feederPositionPIDs[i]->pid.reset();
-        feederPIDs[i]->SmoothPID.reset();
-    }
+    
 
  //   feederMotor.initialize();
     ForAllFeederMotors(&DJIMotor::initialize);
     limitSwitch.initialize();
+
+    // for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+    //  //   feederPositionPIDs[i]->pid.reset();
+    //     feederPIDs[i]->SmoothPID.reset();
+    // }
     
     setAllDesiredFeederMotorOutputs(0);
     ForAllDesiredFeederMotorOutputs(&FeederSubsystem::setDesiredOutputToFeederMotor);
@@ -63,12 +65,18 @@ void FeederSubsystem::refresh() {
 
         setDesiredOutputToFeederMotor(i);
     }
+    ForAllFeederMotors(&FeederSubsystem::setDesiredFeederMotorOutput);
+
 }
 
-void FeederSubsystem::updateMotorVelocityPID() {
-    float err = targetRPM - feederMotor.getShaftRPM();
-    feederVelPID.runControllerDerivateError(err);
-    desiredOutput = feederVelPID.getOutput();
+void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
+    if (feederMotors[FeederIdx]->isFeederMotorOnline(FeederIdx)){
+        float err = targetRPM - feederMotors[FeederIdx]->getRPM(FeederIdx);
+        float 
+    }
+    // float err = targetRPM - feederMotor.getShaftRPM();
+    // feederVelPID.runControllerDerivateError(err);
+    // desiredOutput = feederVelPID.getOutput();
 }
 
 float FeederSubsystem::setTargetRPM(float rpm) {
