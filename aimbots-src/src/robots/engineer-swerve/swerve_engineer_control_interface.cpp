@@ -74,7 +74,7 @@ float OperatorInterface::getChassisYInput() {
  */
 float OperatorInterface::getChassisRotationInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
-    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    uint32_t currTime = ;
 
     if (prevUpdateCounterRotation != updateCounter) {
         chassisRotationInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), currTime);

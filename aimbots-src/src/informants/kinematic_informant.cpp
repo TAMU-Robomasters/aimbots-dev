@@ -70,14 +70,19 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU
     }
     return 0;
 }
-
+float accelerationX = 0.0;
+float dPosition = 0;
+float dVelocity = 0;
 // Update IMU Kinematic State Vectors
 // All relative to IMU Frame
 void KinematicInformant::updateIMUKinematicStateVector() {
     imuLinearState[X_AXIS].updateFromAcceleration(-drivers->bmi088.getAy());
+    imuLinearState[X_AXIS].updatePositionOnly(drivers->bmi088.getAy());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
-    float accelerationX = imuLinearState[X_AXIS].getAcceleration();
+    dPosition = imuLinearState[X_AXIS].getPosition();
+    dVelocity = imuLinearState[X_AXIS].getVelocity();
+    accelerationX = imuLinearState[X_AXIS].getAcceleration();
     // s = ut + (1/2)a t^2
     // X_position = imuLinearState[X_AXIS] * (t)^2
     imuAngularState[X_AXIS].updateFromPosition(getLocalIMUAngle(PITCH_AXIS));
@@ -118,16 +123,20 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
     }
     return 0;
 }
-
+float da = 0;
 void KinematicInformant::updateIMUPosition() {
-    float deltaTime = tap::arch::clock::getTimeMilliseconds() - imuLinearState[X_AXIS].getLastTime();
-    if (deltaTime < 0) {
-        return;
-    }
+    // dtime = imuLinearState[X_AXIS].getDeltaTime();
+    // float deltaTime = dtime;
+    // if (deltaTime < 0) {
+    //     return;
+    // }
     Vector3f a = getIMULinearAccelerations();
-    imuLinearState[X_AXIS].updateFromAcceleration(a.getX(), deltaTime);
-    imuLinearState[Y_AXIS].updateFromAcceleration(a.getY(), deltaTime);
-    imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), deltaTime);
+    da = a.getX();
+    // dPosition = imuLinearState[X_AXIS].getPosition();
+    imuLinearState[X_AXIS].updateFromAcceleration(a.getX(), true);
+    // imuLinearState[Y_AXIS].updateFromAcceleration(a.getY(), true);
+    // imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), true);
+    dPosition = imuLinearState[X_AXIS].getPosition();
 }
 // test
 float KinematicInformant::getCurrIMUPosition(LinearAxis axis) {
@@ -347,6 +356,8 @@ float robotLocationYDisplay = 0.0f;
 void KinematicInformant::updateRobotFrames() {
     // Update IMU Stuff
     updateIMUKinematicStateVector();
+    // updateIMUPosition();
+
 
 #ifndef TARGET_TURRET
     // Update Chassis Stuff after IMU STUFF

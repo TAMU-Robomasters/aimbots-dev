@@ -51,14 +51,19 @@ public:
 
         lastTime = currTime;
     }
-
+    float dTime = 0;
+    float V = 0;
+    float S = 0;
+    float count = 0;
     void updateFromAcceleration(float a, bool updateLowerOrderTerms = true, std::optional<float> dt = std::nullopt) {
         float currTime = tap::arch::clock::getTimeMilliseconds();
-
         if (updateLowerOrderTerms) {
-            float v1 = calcIntegral(getVelocity(), a, dt.value_or(currTime - lastTime));
-            float x1 = calcIntegral(getPosition(), v1, dt.value_or(currTime - lastTime));
-
+            // float v1 = calcIntegral(getVelocity(), a, dt.value_or(currTime - lastTime));
+            // float x1 = calcIntegral(getPosition(), v1, dt.value_or(currTime - lastTime));
+            // float v1 = getVelocity() + a * (currTime - lastTime);
+            // float x1 = getPosition() + (v1) / 2 * (currTime - lastTime);
+            float v1 = 2;
+            float x1 = 2;
             setPosition(x1);
             setVelocity(v1);
         }
@@ -67,8 +72,23 @@ public:
         lastTime = currTime;
     }
 
-    uint32_t getLastTime() const {
-        return lastTime;
+    void updatePositionOnly(float a, std::optional<float> dt = std::nullopt) {
+        float currTime = tap::arch::clock::getTimeMilliseconds();
+        float deltaTime = dt.value_or(currTime - lastTime);
+        float v = getVelocity();
+        float s = getPosition();
+        float newVelocity = v + a * deltaTime;
+        float newPosition = s + (v + newVelocity) / 2 * deltaTime;
+        setVelocity(newVelocity);
+        setPosition(newPosition);
+        lastTime = currTime;
+    }
+
+    uint32_t getDeltaTime() const {
+        float currTime = tap::arch::clock::getTimeMilliseconds();
+
+        float time = currTime - lastTime;
+        return time;
     }
 
     // void updatePostion(float newPosition, bool updateLowerOrderTerms = true, std::optional<float> dt = std::nullopt) {
