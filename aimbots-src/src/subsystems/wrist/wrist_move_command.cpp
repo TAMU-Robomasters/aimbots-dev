@@ -22,7 +22,24 @@ void WristMoveCommand::initialize() {
     wrist->setTargetAngle(ROLL, roll);
 }
 
-void WristMoveCommand::execute() {}
+void WristMoveCommand::execute() {
+
+    // keybinds will need to be changed
+    // figure out best way to handle changing angle 
+    /*
+    if (drivers->remote.keyPressed(Remote::Key::E))
+    {
+        //iterate targetangle one way?
+    }
+    else if (drivers->remote.keyPressed(Remote::Key::Q))
+    {
+        //iterate targetangle other way?
+    }
+    */
+    wrist->setTargetAngle(YAW,yaw);
+    wrist->setTargetAngle(PITCH,pitch);
+    wrist->setTargetAngle(ROLL,roll);
+}
 
 void WristMoveCommand::end(bool) {}
 
