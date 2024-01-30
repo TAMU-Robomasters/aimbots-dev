@@ -22,12 +22,13 @@
 //
 #include "subsystems/wrist/wrist.hpp"
 #include "subsystems/wrist/wrist_move_command.hpp"
+//
+#include "subsystems/grabber/grabber.hpp"
+#include "subsystems/grabber/suction_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Wrist;
-#include "subsystems/grabber/grabber.hpp"
-#include "subsystems/grabber/suction_command.hpp"
 using namespace src::Grabber;
 
 /*
@@ -56,13 +57,12 @@ SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
 GrabberSubsystem grabber(drivers());
 
-Suction_Command Suction_Command(drivers(), &grabber);
+Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -71,7 +71,7 @@ HoldCommandMapping leftSwitchUp(
     
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&Suction_Command},
+    {&suctionCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 /* THESE MAPPINGS ARE TEMPORARY */
@@ -102,6 +102,7 @@ void initializeSubsystems() {
     slide.initialize();
     wrist.initialize();
     grabber.initialize();
+}
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
