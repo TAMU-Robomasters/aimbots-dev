@@ -28,6 +28,7 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
+static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
@@ -289,7 +290,7 @@ static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
+//static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
 static constexpr MotorID INDEXER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
@@ -298,7 +299,7 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
 
-static constexpr bool FEEDER_DIRECTION = false;
+//static constexpr bool FEEDER_DIRECTION = false;
 static constexpr bool INDEXER_DIRECTION = false;
 
 // Mechanical chassis constants, all in m

@@ -29,21 +29,15 @@ public:
         }
     }
 
-    void BuildPIDControllers()[
+    void BuildPIDControllers(){
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-            feederVelocityPIDs[i] = 
+            feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
+            feederVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
         }
-    ]
+    }
 
-    
 
     mockable void initialize() override;
-
-    void BuildPIDControllers() {
-        for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-            feederPIDs[i] = new SmoothPID(FEEDER_PID_CONFIG);
-       }
-    }
     mockable void refresh() override;
 
     inline bool isOnline() const {
@@ -90,9 +84,9 @@ public:
 private:
     src::Drivers* drivers;
 
-    std::array<DJIMotor*, Feeder_MOTOR_COUNT> feederMotors;
+    std::array<DJIMotor*, FEEDER_MOTOR_COUNT> feederMotors;
 
-    std::array<float, Feeder_MOTOR_COUNT> desiredFeederMotorOutputs;
+    std::array<float, FEEDER_MOTOR_COUNT> desiredFeederMotorOutputs;
 
     void setDesiredOutputToFeederMotor(uint8_t FeederIdx);
 
