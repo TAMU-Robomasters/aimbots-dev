@@ -58,6 +58,8 @@
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
 //
+#include "informants/pathfinding/graph.hpp"
+
 
 using namespace src::Chassis;
 using namespace src::Feeder;
