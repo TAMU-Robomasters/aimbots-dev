@@ -28,6 +28,7 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
+satic constexpr uint8_t Feeder_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};

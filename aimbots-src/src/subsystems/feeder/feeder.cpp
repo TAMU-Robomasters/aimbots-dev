@@ -38,7 +38,9 @@ void FeederSubsystem::initialize() {
     setAllDesiredFeederMotorOutputs(0);
     ForAllDesiredFeederMotorOutputs(&FeederSubsystem::setDesiredOutputToFeederMotor);
     
-    
+    for(auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+        feederPIDs[i]->pid.reset();
+    }
 }
 
 float feederDesiredOutputDisplay = 0;
@@ -56,6 +58,7 @@ void FeederSubsystem::refresh() {
     limitSwitch.refresh();
 
     for (auto i = 0; i < Feeder_MOTOR_COUNT; i++) {
+        feederVelocityFilters[i]->update(feeder->getRPM(i));
         if (!feederMotors[i]->isMotorOnline()) {
             // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
@@ -65,6 +68,9 @@ void FeederSubsystem::refresh() {
 
         setDesiredOutputToFeederMotor(i);
     }
+
+
+
     ForAllFeederMotors(&FeederSubsystem::setDesiredFeederMotorOutput);
 
 }
