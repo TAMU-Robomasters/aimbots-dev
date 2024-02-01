@@ -24,18 +24,18 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
  * @brief GIMBAL SETUP
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
-static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS2;
 
-static constexpr uint8_t YAW_MOTOR_COUNT = 2;
+static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR8};
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
-    wrapTo0To2PIRange(modm::toRadian(196.21f))};
+};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -66,7 +66,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 50'000.0f,  // 600
     .ki = 0.0f,
     .kd = 1'000.0f,  // 500
-    .maxICumulative = 0.0f,
+    .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -121,8 +121,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1850.0f,  // 3000
-    .ki = 25.0f,    // 25
+    .kp = 900.0f,  // 3000
+    .ki = 25.0f,   // 25
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -158,16 +158,16 @@ static constexpr float HORIZON_OFFSET = 0.0f;
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
-                                                                    {1.5f, 3'000.0f},
-                                                                    {5.25f, 6'000.0f},
-                                                                    {9.0f, 9'000.0f},
-                                                                    {13.2f, 12'000.0f},
-                                                                    {17.2f, 15'000.0f},
-                                                                    {21.0f, 18'000.0f},
-                                                                    {24.85f, 21'000.0f},
-                                                                    {28.6f, 24'000.0f},
-                                                                    {29.75f, 27'000.0f},
-                                                                    {29.9f, 30'000.0f}
+                                                                    {1.26f, 3'000.0f},
+                                                                    {4.14f, 6'000.0f},
+                                                                    {7.56f, 9'000.0f},
+                                                                    {11.1f, 12'000.0f},
+                                                                    {14.45f, 15'000.0f},
+                                                                    {17.64f, 18'000.0f},
+                                                                    {20.87f, 21'000.0f},
+                                                                    {24.02f, 24'000.0f},
+                                                                    {24.99f, 27'000.0f},
+                                                                    {25.12f, 30'000.0f}
                                                                     };
 
 
@@ -389,7 +389,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 
@@ -410,6 +410,7 @@ static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
 
 // this is from edge to edge, aligned center to aligned center,
+
 static constexpr float BARREL_SWAP_DISTANCE_MM = 45.5;  // In mm
 
 // If the barrel is this close to the flywheel chamber, it is considered aligned

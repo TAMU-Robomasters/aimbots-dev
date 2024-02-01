@@ -131,9 +131,9 @@ int16_t mouseXDisplay = 0;
 int16_t mouseYDisplay = 0;
 float OperatorInterface::getGimbalYawInput() {
     mouseXFilter.update(drivers->remote.getMouseX());
-    // mouseXDisplay = drivers->remote.getMouseX();
     mouseXDisplay = mouseXFilter.getValue();
 
+    // mouseXDisplay = drivers->remote.getMouseX();
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
            static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
                YAW_MOUSE_INPUT_SENSITIVITY;
