@@ -24,9 +24,54 @@ struct std::hash<modm::Vector2i>
 };
 
 struct WeightedSquareGraph {
+    //coordinate system
+    //   ^ +y
+    //   |
+    //  origin --> +x
     std::unordered_map<modm::Vector2i, modm::Vector2i> edges;
+    double dx;
+    double dy;
+    int graph_width;
+    int graph_height;
+    double width_meters;
+    double height_meters;
 
     // He was a modm::Vector2i. She was a Graph_loc. Will they fall in love?
+    WeightedSquareGraph (double width_meters, double height_meters, double precision_cm) {
+        this->width_meters = width_meters;
+        this->height_meters = height_meters;
+        graph_width = std::ceil(width_meters/(precision_cm/100)); //width of square grid measured in nodes
+        graph_height = std::ceil(height_meters/(precision_cm/100)); //height of square grid measured in nodes
+        dx = width_meters/graph_width; //this grid is evenly spaced
+        dy = height_meters/graph_height;
+
+        for (int i = 0; i < graph_width; i++){
+            for (int j = 0; j < graph_height; j++){
+                modm::Vector2i loc = {i, j};
+                modm::Vector2i pos = {i*dx, j*dy};
+                edges[loc] = pos;
+            }
+        }
+    }
+
+    void with_obstacle(modm::Vector2i bottom_left_meters, modm::Vector2i top_right_meters){
+        modm::Vector2i bottom_left = snap_to_grid(bottom_left_meters);
+        modm::Vector2i top_right = snap_to_grid(top_right_meters);
+        for (int i = bottom_left[0]; i < top_right[0]; i++){
+            for (int j = bottom_left[1]; j < top_right[1]; j++){
+                modm::Vector2i to_erase = {i, j};
+                edges.erase(to_erase);
+            }
+        }
+    }
+
+    modm::Vector2i snap_to_grid (modm::Vector2i pos) {
+        // gets nearest hypothetical node from a given position, no guarantee that node will exist
+        int x = std::round(pos[0]/dx);
+        int y = std::round(pos[1]/dy);
+        modm::Vector2i loc = {x, y};
+        return loc;
+    }
 
     void get_neighbors(modm::Vector2i loc, std::array<modm::Vector2i, 8>* neighbors) {
         // Generates up all neighbors on the grid relative to a specific node
