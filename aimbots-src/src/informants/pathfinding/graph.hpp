@@ -10,6 +10,19 @@
 //represents a location in a graph as apposed to an ID, because I think this is more scalable, this may be a bad idea
 
 
+//defines hash function for Vector2i so unordered map can work
+//reference: https://en.cppreference.com/w/cpp/utility/hash
+template <>
+struct std::hash<modm::Vector2i>
+{
+    std::size_t operator()(const modm::Vector2i& k) const
+    {
+        std::size_t h1 = std::hash<int>{}(k[0]);
+        std::size_t h2 = std::hash<int>{}(k[0]);
+        return (h1 ^ (h2 << 1)); //uses built in hash function on both ints, then combines the hashes uses bitwise magic i dont understand
+    }
+};
+
 struct WeightedSquareGraph {
     std::unordered_map<modm::Vector2i, modm::Vector2i> edges;
 
@@ -33,9 +46,9 @@ struct WeightedSquareGraph {
         }
     
     // Returns the distance between two nodes
-   /* double get_cost(Vector<> from_node, Graph_Loc to_node){
-        return std::sqrt(pow2(to_node.x - from_node.x) + pow2(to_node.y - from_node.y)); // tengo bomba :steam_happy:
+    double get_cost(modm::Vector2i from_node, modm::Vector2i to_node){
+        return std::sqrt(pow2(edges[to_node][0] - edges[from_node][0]) + pow2(edges[to_node][0] - edges[from_node][0])); // tengo bomba :steam_happy:
     }
-    */
+    
 
     }; // boo
