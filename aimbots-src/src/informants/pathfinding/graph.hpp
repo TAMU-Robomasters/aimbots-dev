@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "utils/common_types.hpp"
 #include <cmath>
+#include <array>
 
 //I stole all of this because I have not taken DSA
 //https://www.redblobgames.com/pathfinding/a-star/implementation.html#cpp
@@ -24,7 +25,7 @@ struct WeightedSquareGraph {
                 modm::Vector2i neighbor;
                 neighbor[0] = i + loc[0];
                 neighbor[1] = j + loc[1];
-                *neighbors + k = neighbor;
+                (*neighbors)[k] = neighbor;
                 
                 k++;
             }
