@@ -3,6 +3,8 @@
 #include "utils/common_types.hpp"
 #include <cmath>
 #include <array>
+#include <queue>
+#include <functional>
 
 //I stole all of this because I have not taken DSA
 //https://www.redblobgames.com/pathfinding/a-star/implementation.html#cpp
@@ -55,6 +57,7 @@ struct WeightedSquareGraph {
     }
 
     void with_obstacle(modm::Vector2i bottom_left_meters, modm::Vector2i top_right_meters){
+        //removes all nodes within a given square area. Will remove nodes that dont exist. Rounds to nearest node so will slightly under or overestimate area. 
         modm::Vector2i bottom_left = snap_to_grid(bottom_left_meters);
         modm::Vector2i top_right = snap_to_grid(top_right_meters);
         for (int i = bottom_left[0]; i < top_right[0]; i++){
@@ -94,6 +97,73 @@ struct WeightedSquareGraph {
     double get_cost(modm::Vector2i from_node, modm::Vector2i to_node){
         return std::sqrt(pow2(edges[to_node][0] - edges[from_node][0]) + pow2(edges[to_node][0] - edges[from_node][0])); // tengo bomba :steam_happy:
     }
-    
+
+    double heuristic (modm::Vector2i other_node, modm::Vector2i goal) {
+        return get_cost(other_node, goal);
+    }
+
 
     }; // boo
+
+//completely copied from redlob. Yoink.
+template<typename T, typename priority_t>
+struct PriorityQueue {
+  typedef std::pair<priority_t, T> PQElement;
+  std::priority_queue<PQElement, std::vector<PQElement>,
+                 std::greater<PQElement>> elements;
+
+  inline bool empty() const {
+     return elements.empty();
+  }
+
+  inline void put(T item, priority_t priority) {
+    elements.emplace(priority, item);
+  }
+
+  T get() {
+    T best_item = elements.top().second;
+    elements.pop();
+    return best_item;
+  }
+};
+
+
+
+
+template<typename Location, typename Graph>
+
+void a_star_search
+  (WeightedSquareGraph graph,
+   modm::Vector2i start,
+   modm::Vector2i goal,
+   std::unordered_map<modm::Vector2i, modm::Vector2i>& came_from,
+   std::unordered_map<modm::Vector2i, double>& cost_so_far)
+{
+  PriorityQueue<modm::Vector2i, double> frontier;
+  frontier.put(start, 0);
+
+  came_from[start] = start;
+  cost_so_far[start] = 0;
+  
+  while (!frontier.empty()) {
+    modm::Vector2i current = frontier.get();
+
+    if (current == goal) {
+      break;
+    }
+    std::array<modm::Vector2i, 8> neighbors;
+    for (Location next : graph.get_neighbors(current, &neighbors)) {
+      double new_cost = cost_so_far[current] + graph.get_cost(current, next);
+      if (cost_so_far.find(next) == cost_so_far.end()
+          || new_cost < cost_so_far[next]) {
+        cost_so_far[next] = new_cost;
+        double priority = new_cost + heuristic(next, goal);
+        frontier.put(next, priority);
+        came_from[next] = current;
+      }
+    }
+  }
+}
+
+
+
