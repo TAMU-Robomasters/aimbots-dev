@@ -61,16 +61,7 @@ WristSubsystem wrist(drivers());
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
-<<<<<<< HEAD
-//
-Suction_Command Suction_Command(drivers(), &grabber);
-//
-
-=======
-GrabberSubsystem grabber(drivers());
-
 Suction_Command suctionCommand(drivers(), &grabber);
->>>>>>> bbafc1ad4b61e229f73faaf967289c72c3928f6b
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
     drivers(),
