@@ -21,6 +21,11 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
         new SmoothPID(PITCH_POSITION_PID_CONFIG),
         new SmoothPID(ROLL_POSITION_PID_CONFIG)
     },
+    velocityPIDs {
+        new SmoothPID(YAW_VELOCITY_PID_CONFIG),
+        new SmoothPID(PITCH_VELOCITY_PID_CONFIG),
+        new SmoothPID(ROLL_VELOCITY_PID_CONFIG)
+    },
     targetAngles {
         new ContiguousFloat(.0f, -M_PI, M_PI),
         new ContiguousFloat(.0f, -M_PI, M_PI),
@@ -39,39 +44,29 @@ void WristSubsystem::initialize() {
     ForAllWristMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0));
 }
 
-//DEBUG
-float pitchTargetAngle_disp = 0;
-float pitchCurrentAngle_disp = 0;
-float pitchDesiredOutput_disp = 0;
-float yawTargetAngle_disp = 0;
-float yawCurrentAngle_disp = 0;
-float yawDesiredOutput_disp = 0;
-
 void WristSubsystem::refresh() {
     ForAllWristMotors(&WristSubsystem::updateCurrentAngle);
-    ForAllWristMotors(&WristSubsystem::updateMotorPositionPID);
+    ForAllWristMotors(&WristSubsystem::updateMotorPID);
     ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
-
-    yawCurrentAngle_disp = currentAngles[YAW]->getValue();
-    yawTargetAngle_disp = targetAngles[YAW]->getValue();
-    pitchTargetAngle_disp = targetAngles[PITCH]->getValue();
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
 }
 
-void WristSubsystem::updateMotorPositionPID(MotorIndex idx) {
+// Doing cascade PIDs, feed position error to get desired velocity, feed velocity error to
+// get desired acceleration basically
+void WristSubsystem::updateMotorPID(MotorIndex idx) {
     if (motors[idx]->isMotorOnline()) {
         // ContiguousFloat::difference does (other - this), and we want (target - current)
-        float outputErr = currentAngles[idx]->difference(targetAngles[idx]->getValue());
+        float outputPositionErr = currentAngles[idx]->difference(targetAngles[idx]->getValue());
 
-        positionPIDs[idx]->runControllerDerivateError(outputErr);
-        setDesiredOutput(idx, positionPIDs[idx]->getOutput());
-        if (idx == PITCH)
-            pitchDesiredOutput_disp = positionPIDs[idx]->getOutput();
-        if (idx == YAW)
-            yawDesiredOutput_disp = positionPIDs[idx]->getOutput();
+        float desiredVelocity = positionPIDs[idx]->runControllerDerivateError(outputPositionErr);
+        float velocityError = desiredVelocity - RPM_TO_RADPS(motors[idx]->getShaftRPM());
+
+        float accelerationOutput = velocityPIDs[idx]->runControllerDerivateError(velocityError);
+
+        setDesiredOutput(idx, accelerationOutput);
     }
 }
 
@@ -86,12 +81,6 @@ float WristSubsystem::getUnwrappedRadians(MotorIndex motorIdx) const {
 void WristSubsystem::updateCurrentAngle(MotorIndex motorIdx) {
     float angleScaled = getUnwrappedRadians(motorIdx);
     float angleOffsetted = angleScaled - WRIST_MOTOR_OFFSET_ANGLES[motorIdx];
-
-    currentAngles[motorIdx]->setValue(angleOffsetted);
-    if (motorIdx == PITCH)
-        pitchCurrentAngle_disp = angleOffsetted;
-    if (motorIdx == YAW)
-        yawCurrentAngle_disp = angleOffsetted;
 }
 
 };  // namespace src::Wrist
