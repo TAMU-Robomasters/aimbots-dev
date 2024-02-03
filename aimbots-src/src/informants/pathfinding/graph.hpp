@@ -5,6 +5,7 @@
 #include <array>
 #include <queue>
 #include <functional>
+#include "Ramer_Douglas_peucker.hpp"
 
 //I stole all of this because I have not taken DSA
 //https://www.redblobgames.com/pathfinding/a-star/implementation.html#cpp
