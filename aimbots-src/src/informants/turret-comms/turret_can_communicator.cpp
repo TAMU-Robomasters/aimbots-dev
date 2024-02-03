@@ -17,8 +17,8 @@ TurretCommunicator::TurretCommunicator(src::Drivers* drivers, CANBus bus)
       ,
       sendToTurretTimer(SEND_TO_TURRET_PERIOD),
       yawDataRXHandler(drivers, static_cast<uint32_t>(CanID::YawData), bus, this, &TurretCommunicator::handleYawDataRX), 
-      pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, &TurretCommunicator::handleYawDataRX), //TODO: Probably needs to be Pitch/Roll
-      rollDataRXHandler(drivers, static_cast<uint32_t>(CanID::RollData), bus, this, &TurretCommunicator::handleYawDataRX)
+      pitchDataRXHandler(drivers, static_cast<uint32_t>(CanID::PitchData), bus, this, &TurretCommunicator::handlePitchDataRX), //TODO: Probably needs to be Pitch/Roll
+      rollDataRXHandler(drivers, static_cast<uint32_t>(CanID::RollData), bus, this, &TurretCommunicator::handleRollDataRX)
 #else
       ,
       chassisRequestRXHandler(
@@ -95,6 +95,9 @@ float TurretCommunicator::getLastReportedLinearAcceleration(LinearAxis axis) {
 }
 
 #ifdef TARGET_TURRET
+
+uint8_t sequenceDisplay = 0;
+
 void TurretCommunicator::sendIMUData() {
     using namespace tap::communication::sensors::imu::bmi088;
     Bmi088::ImuState imuState = drivers->bmi088.getImuState();
@@ -104,23 +107,23 @@ void TurretCommunicator::sendIMUData() {
         modm::can::Message yawMsg(static_cast<uint32_t>(CanID::YawData), 7);
         AngleMessageData* yawData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
         yawData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         yawData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getIMUAngularVelocity(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
         yawData->linearAcceleration =
             static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Z_AXIS) * LINEAR_PRECISION_FACTOR);
         yawData->seq = sendSequence;
 
-        drivers->can.sendMessage(bus, yawMsg);
+        //drivers->can.sendMessage(bus, yawMsg);
 
         modm::can::Message pitchMsg(static_cast<uint32_t>(CanID::PitchData), 7);
-        AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+        AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(pitchMsg.data);
         pitchData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS) * ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         pitchData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians) *
+            drivers->kinematicInformant.getIMUAngularVelocity(PITCH_AXIS) *
             ANGLE_PRECISION_FACTOR);
         pitchData->linearAcceleration =
             static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(X_AXIS) * LINEAR_PRECISION_FACTOR);
@@ -129,12 +132,12 @@ void TurretCommunicator::sendIMUData() {
         drivers->can.sendMessage(bus, pitchMsg);
 
         modm::can::Message rollMsg(static_cast<uint32_t>(CanID::RollData), 7);
-        AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+        AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(rollMsg.data);
         rollData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS) * ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         rollData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getChassisIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians) *
+            drivers->kinematicInformant.getIMUAngularVelocity(ROLL_AXIS) *
             ANGLE_PRECISION_FACTOR);
         rollData->linearAcceleration =
             static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Y_AXIS) * LINEAR_PRECISION_FACTOR);
@@ -143,6 +146,8 @@ void TurretCommunicator::sendIMUData() {
         drivers->can.sendMessage(bus, rollMsg);
 
         sendSequence++;
+
+        sequenceDisplay = sendSequence;
     }
 }
 
@@ -168,24 +173,42 @@ void TurretCommunicator::sendTurretRequest() {
     }
 }
 
+float yawDataDisplay = 0;
+float pitchDataDisplay = 0;
+float rollDataDisplay = 0;
+
+float debugYawDisplay = 0;
+float debugPitchDisplay = 0;
+float debugRollDisplay = 0;
+
+bool outOfSequence = false;
+uint8_t incomingSeqDisplay = 0;
+uint8_t currentSeqDisplay = 0;
+
 void TurretCommunicator::handleYawDataRX(modm::can::Message const& msg) {
     AngleMessageData const* data = reinterpret_cast<AngleMessageData const*>(msg.data);
-
+    yawDataDisplay = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.yaw = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.yawAngularVelocity = static_cast<float>(data->angularVelocity) / ANGLE_PRECISION_FACTOR;
     currentIMUData.zLinearAcceleration = static_cast<float>(data->linearAcceleration) / LINEAR_PRECISION_FACTOR;
 
     currentIMUData.seq = data->seq;
+
+    outOfSequence = false;
 }
 
 void TurretCommunicator::handlePitchDataRX(modm::can::Message const& msg) {
     AngleMessageData const* data = reinterpret_cast<AngleMessageData const*>(msg.data);
+    incomingSeqDisplay = data->seq;
+    currentSeqDisplay = currentIMUData.seq;
     if (data->seq != currentIMUData.seq) {
         // Got an out-of-sequence message, so we can't reliably use this data
         // TODO: Report this error in a better way?
+        outOfSequence = true;
         return;
     }
 
+    pitchDataDisplay = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.pitch = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.pitchAngularVelocity = static_cast<float>(data->angularVelocity) / ANGLE_PRECISION_FACTOR;
     currentIMUData.xLinearAcceleration = static_cast<float>(data->linearAcceleration) / LINEAR_PRECISION_FACTOR;
@@ -199,6 +222,7 @@ void TurretCommunicator::handleRollDataRX(modm::can::Message const& msg) {
         return;
     }
 
+    rollDataDisplay = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.roll = static_cast<float>(data->target) / ANGLE_PRECISION_FACTOR;
     currentIMUData.rollAngularVelocity = static_cast<float>(data->angularVelocity) / ANGLE_PRECISION_FACTOR;
     currentIMUData.yLinearAcceleration = static_cast<float>(data->linearAcceleration) / LINEAR_PRECISION_FACTOR;
