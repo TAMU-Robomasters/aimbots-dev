@@ -10,7 +10,9 @@ SupperCapDischargeCommand::SupperCapDischargeCommand(src::Drivers* drivers, Supp
 
 void SupperCapDischargeCommand::initialize() {}
 
+float prec = 0;
 void SupperCapDischargeCommand::execute() {
+    prec = supperCap->getLastMessage().percent;
     if (supperCap->getLastMessage().percent < 28) {
         supperCap->setCommand(STOP);
     } else {

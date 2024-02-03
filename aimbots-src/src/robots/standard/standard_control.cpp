@@ -58,8 +58,8 @@
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
 //
-#include "informants/supper-caps/supper_cap_subsystem.hpp"
 #include "informants/supper-caps/supper_cap_discharge_command.hpp"
+#include "informants/supper-caps/supper_cap_subsystem.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -272,16 +272,22 @@ SupperCapDischargeCommand dischargeSupperCapsCommand(drivers(), &supperCap);
 ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+// HoldCommandMapping leftSwitchMid(
+//     drivers(),  // gimbalFieldRelativeControlCommand
+//     {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+// super cap test
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {&dischargeSupperCapsCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Enables both chassis and gimbal control and closes hopper
-HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+// HoldCommandMapping leftSwitchUp(
+// drivers(),  // gimbalFieldRelativeControlCommand2
+// {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+// RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
@@ -311,10 +317,7 @@ HoldCommandMapping leftClickMouse(
 // server and thus don't know when to start sending the initial HUD graphics.
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
-PressCommandMapping c(
-    drivers(),
-    {&dischargeSupperCapsCommand},
-    RemoteMapState({Remote::Key::C}));
+PressCommandMapping c(drivers(), {&dischargeSupperCapsCommand}, RemoteMapState({Remote::Key::C}));
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
     drivers(),
@@ -353,7 +356,6 @@ void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
     barrelManager.setDefaultCommand(&barrelSwapperCommand);
-
 }
 
 // Set commands scheduled on startup
@@ -370,7 +372,7 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);

@@ -34,8 +34,9 @@ void SupperCapSubsystem::refresh() {
     switch (currentCommand) {
         case CHARGE:
             if (percent > 95) {
-                drivers->supperCapCommunicator.setCommand(STOP);
-                currentCommand = STOP;
+                // drivers->supperCapCommunicator.setCommand(STOP);
+                // currentCommand = STOP;
+                currentCommand = currentCommand;
             } else {
                 drivers->supperCapCommunicator.setCommand(CHARGE);
             }
@@ -51,7 +52,8 @@ void SupperCapSubsystem::refresh() {
             }
             break;
         case STOP:
-            drivers->supperCapCommunicator.setCommand(STOP);
+            currentCommand = CHARGE;
+            drivers->supperCapCommunicator.setCommand(CHARGE);
             break;
         default:
             drivers->supperCapCommunicator.setCommand(CHARGE);

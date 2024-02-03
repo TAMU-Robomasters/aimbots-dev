@@ -53,7 +53,7 @@ private:
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart3;
+    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
     JetsonMessage lastMessage;
     uint32_t lastFoundTargetTime;
