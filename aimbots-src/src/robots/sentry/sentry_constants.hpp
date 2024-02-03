@@ -205,7 +205,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 25.0f,  // 40
+    .kp = 15.0f,  // 40
     .ki = 0.0f,
     .kd = 0.0f,  // 0.01
     .maxICumulative = 10.0f,
@@ -274,7 +274,7 @@ static constexpr bool SHOOTER_2_DIRECTION = false;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = true;
+static constexpr bool FEEDER_DIRECTION = false;
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
