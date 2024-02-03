@@ -5,9 +5,6 @@
 #include "subsystems/wrist/wrist.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "utils/motion/s_curve_acceleration.hpp"
-#include "utils/motion/s_curve_motion_profile.hpp"
-
 
 #include "drivers.hpp"
 

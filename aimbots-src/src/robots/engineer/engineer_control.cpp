@@ -60,8 +60,6 @@ SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
 
-GrabberSubsystem grabber(drivers());
-
 Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchUp(
