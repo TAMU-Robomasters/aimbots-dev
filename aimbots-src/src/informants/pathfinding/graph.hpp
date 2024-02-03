@@ -131,8 +131,6 @@ struct PriorityQueue {
 
 
 
-template<typename Location, typename Graph>
-
 void a_star_search
   (WeightedSquareGraph graph,
    modm::Vector2i start,
@@ -153,17 +151,28 @@ void a_star_search
       break;
     }
     std::array<modm::Vector2i, 8> neighbors;
-    for (Location next : graph.get_neighbors(current, &neighbors)) {
+    graph.get_neighbors(current, &neighbors);
+    for (modm::Vector2i next : neighbors) {
       double new_cost = cost_so_far[current] + graph.get_cost(current, next);
       if (cost_so_far.find(next) == cost_so_far.end()
           || new_cost < cost_so_far[next]) {
         cost_so_far[next] = new_cost;
-        double priority = new_cost + heuristic(next, goal);
+        double priority = new_cost + graph.heuristic(next, goal);
         frontier.put(next, priority);
         came_from[next] = current;
       }
     }
   }
+}
+
+std::unordered_map<modm::Vector2i, modm::Vector2i> graph_test() {
+    WeightedSquareGraph graph(10, 10, 100);
+    modm::Vector2i start = {0, 0};
+    modm::Vector2i goal = {4, 7};
+    std::unordered_map<modm::Vector2i, modm::Vector2i> came_from;
+    //std::unordered_map<modm::Vector2i, double> cost_so_far;
+    //a_star_search(graph, start, goal, came_from, cost_so_far);
+    return came_from;
 }
 
 
