@@ -22,12 +22,10 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
-#include "subsystems/feeder/auto_agitator_indexer_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 #include "subsystems/feeder/feeder_limit_command.hpp"
-
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -171,16 +169,16 @@ FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXE
 FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
 StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
-AutoAgitatorIndexerCommand feederIndexerCommand(
-    drivers(),
-    &feeder,
-    &indexer,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    INDEXER_DEFAULT_RPM,
-    0.5f,
-    UNJAM_TIMER_MS,
-    1);
+// AutoAgitatorIndexerCommand feederIndexerCommand(
+//     drivers(),
+//     &feeder,
+//     &indexer,
+//     &refHelper,
+//     FEEDER_DEFAULT_RPM,
+//     INDEXER_DEFAULT_RPM,
+//     0.5f,
+//     UNJAM_TIMER_MS,
+//     1);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
@@ -189,7 +187,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand, &feederIndexerCommand},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper

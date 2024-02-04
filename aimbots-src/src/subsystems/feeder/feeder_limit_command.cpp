@@ -21,6 +21,8 @@ bool limitpressed = false;
 bool isCurrSemiauto = false;
 bool isPrevSemiauto = false;
 bool isFiring = false;
+int limitSwitchDownTime;
+int feederFiringRPM;
 
 FeederLimitCommand::FeederLimitCommand(
             src::Drivers* drivers, 
@@ -73,9 +75,9 @@ void FeederLimitCommand::execute() {
     // Updates the current controller switch state
     isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP; 
     // States how long the limit switch is ignored when firing a projectile
-    limitSwitchDownTime = 350
+    limitSwitchDownTime = 350;
     // States the speed of the feeder wheel when firing
-    feederFiringRPM = speed * 2
+    feederFiringRPM = speed * 2;
     
 
     
