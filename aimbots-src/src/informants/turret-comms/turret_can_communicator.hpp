@@ -107,6 +107,8 @@ private:
     uint8_t sendSequence = 0;
 
     RXHandler chassisRequestRXHandler;
+
+    AngularAxis sendState = YAW_AXIS;
 #endif
 };
 

@@ -104,50 +104,64 @@ void TurretCommunicator::sendIMUData() {
 
     if ((imuState == Bmi088::ImuState::IMU_CALIBRATED || imuState == Bmi088::ImuState::IMU_NOT_CALIBRATED) &&
         drivers->can.isReadyToSend(bus)) {
-        modm::can::Message yawMsg(static_cast<uint32_t>(CanID::YawData), 7);
-        AngleMessageData* yawData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
-        yawData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
-        // TODO: Check if this is right??
-        yawData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getIMUAngularVelocity(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
-        yawData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Z_AXIS) * LINEAR_PRECISION_FACTOR);
-        yawData->seq = sendSequence;
 
-        //drivers->can.sendMessage(bus, yawMsg);
+        switch (sendState) {
+            case (AngularAxis::YAW_AXIS): {
+                modm::can::Message yawMsg(static_cast<uint32_t>(CanID::YawData), 7);
+                AngleMessageData* yawData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
+                yawData->target = static_cast<int16_t>(
+                    drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
+                // TODO: Check if this is right??
+                yawData->angularVelocity = static_cast<int16_t>(
+                    drivers->kinematicInformant.getIMUAngularVelocity(YAW_AXIS) * ANGLE_PRECISION_FACTOR);
+                yawData->linearAcceleration =
+                    static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Z_AXIS) * LINEAR_PRECISION_FACTOR);
+                yawData->seq = sendSequence;
 
-        modm::can::Message pitchMsg(static_cast<uint32_t>(CanID::PitchData), 7);
-        AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(pitchMsg.data);
-        pitchData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS) * ANGLE_PRECISION_FACTOR);
-        // TODO: Check if this is right??
-        pitchData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getIMUAngularVelocity(PITCH_AXIS) *
-            ANGLE_PRECISION_FACTOR);
-        pitchData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(X_AXIS) * LINEAR_PRECISION_FACTOR);
-        pitchData->seq = sendSequence;
+                drivers->can.sendMessage(bus, yawMsg);
+                sendState = AngularAxis::PITCH_AXIS;
+                break;
+            }
+            case (AngularAxis::PITCH_AXIS): {
+                modm::can::Message pitchMsg(static_cast<uint32_t>(CanID::PitchData), 7);
+                AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(pitchMsg.data);
+                pitchData->target = static_cast<int16_t>(
+                    drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS) * ANGLE_PRECISION_FACTOR);
+                // TODO: Check if this is right??
+                pitchData->angularVelocity = static_cast<int16_t>(
+                    drivers->kinematicInformant.getIMUAngularVelocity(PITCH_AXIS) *
+                    ANGLE_PRECISION_FACTOR);
+                pitchData->linearAcceleration =
+                    static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(X_AXIS) * LINEAR_PRECISION_FACTOR);
+                pitchData->seq = sendSequence;
 
-        drivers->can.sendMessage(bus, pitchMsg);
+                drivers->can.sendMessage(bus, pitchMsg);
+                sendState = AngularAxis::ROLL_AXIS;
+                break;
+            }
+            case (AngularAxis::ROLL_AXIS): {
+                modm::can::Message rollMsg(static_cast<uint32_t>(CanID::RollData), 7);
+                AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(rollMsg.data);
+                rollData->target = static_cast<int16_t>(
+                    drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS) * ANGLE_PRECISION_FACTOR);
+                // TODO: Check if this is right??
+                rollData->angularVelocity = static_cast<int16_t>(
+                    drivers->kinematicInformant.getIMUAngularVelocity(ROLL_AXIS) *
+                    ANGLE_PRECISION_FACTOR);
+                rollData->linearAcceleration =
+                    static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Y_AXIS) * LINEAR_PRECISION_FACTOR);
+                rollData->seq = sendSequence;
 
-        modm::can::Message rollMsg(static_cast<uint32_t>(CanID::RollData), 7);
-        AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(rollMsg.data);
-        rollData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS) * ANGLE_PRECISION_FACTOR);
-        // TODO: Check if this is right??
-        rollData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.getIMUAngularVelocity(ROLL_AXIS) *
-            ANGLE_PRECISION_FACTOR);
-        rollData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.getIMULinearAcceleration(Y_AXIS) * LINEAR_PRECISION_FACTOR);
-        rollData->seq = sendSequence;
+                drivers->can.sendMessage(bus, rollMsg);
 
-        drivers->can.sendMessage(bus, rollMsg);
+                sendSequence++;
 
-        sendSequence++;
-
-        sequenceDisplay = sendSequence;
+                sequenceDisplay = sendSequence;
+                sendState = AngularAxis::YAW_AXIS;
+                break;
+            }
+        }
+ 
     }
 }
 
