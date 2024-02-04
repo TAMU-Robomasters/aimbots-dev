@@ -87,7 +87,7 @@ public:
      * @param angle the angle in radians from -pi to pi
     */
     void setTargetAngle(MotorIndex motorIdx, float angle) {
-        targetAngles[motorIdx]->setValue(angle);
+        targetRadians[motorIdx]->setValue(angle);
     }
 
 private:
@@ -98,7 +98,7 @@ private:
     std::array<SmoothPID*, WRIST_MOTOR_COUNT> velocityPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
-    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> targetAngles;
+    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> targetRadians;
 
     /** The current angles of each motor AFTER scaling for the gear boxes */
     std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> currentAngles;
