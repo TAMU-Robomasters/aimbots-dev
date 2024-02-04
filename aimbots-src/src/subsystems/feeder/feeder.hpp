@@ -18,12 +18,19 @@ public:
     void BuildFeederMotors(){
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
-                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS,FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
+                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
         }
     }
 
     template <class... Args>
-    void ForAllFeederMotors(void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args) {
+    void ForAllFeederMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto& feederMotor : feederMotors) {
+            (feederMotor->*func)(args...);
+        }
+    }
+
+    template <class... Args>
+    void ForAllFeederMotors(void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args){
         for (uint8_t i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             (this->*func)(i, args...);
         }
@@ -32,7 +39,6 @@ public:
     void BuildPIDControllers(){
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
-            feederVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
         }
     }
 
@@ -44,7 +50,7 @@ public:
         bool feederOnline = false;
    
         for (auto& feederMotor : feederMotors) {
-            if (yfeederMotor->isMotorOnline()) {
+            if (feederMotor->isMotorOnline()) {
                 feederOnline = true;
             }
         }
@@ -53,10 +59,10 @@ public:
     }
 
     inline bool isFeederMotorOnline(uint8_t FeederIdx) const {
-        if (FeederIdx >= Feeder_MOTOR_COUNT) {
+        if (FeederIdx >= FEEDER_MOTOR_COUNT) {
             return false;
         }
-        return feederMotors[feederIdx]->isMotorOnline();
+        return feederMotors[FeederIdx]->isMotorOnline();
     }
 
 
@@ -64,8 +70,7 @@ public:
 
     void setDesiredFeederMotorOutput(uint8_t FeederIdx, float output) {desiredFeederMotorOutputs[FeederIdx] = output;}
 
-
-    mockable void setAllDesiredFeederOutput(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
+    void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
 
     mockable float setTargetRPM(float rpm);
 
@@ -91,10 +96,11 @@ private:
     void setDesiredOutputToFeederMotor(uint8_t FeederIdx);
 
     float targetRPM;
-    float desiredOutput;
+    //float desiredOutput;
 
-    std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederPIDs;
-    DJIMotor feederMotor;
+
+    std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederVelocityPIDs;
+    // DJIMotor feederMotor;
 
     src::Informants::LimitSwitch limitSwitch;  
 //#endif
