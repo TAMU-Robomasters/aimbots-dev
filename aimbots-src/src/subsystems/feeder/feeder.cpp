@@ -5,14 +5,13 @@
 namespace src::Feeder {
 
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
-    : Subsystem(drivers),
-    drivers(drivers),
+    : tap::control::Subsystem(drivers),
+      drivers(drivers),
       targetRPM(0),
-      desiredOutput(0),
-      feederVelPID(FEEDER_VELOCITY_PID_CONFIG),
- //     feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
+      //desiredOutput(0),
+      //feederVelocityPID(FEEDER_VELOCITY_PID_CONFIG),
+      //feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
       limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
-
 {
     BuildFeederMotors();
 }
@@ -30,16 +29,12 @@ void FeederSubsystem::initialize() {
     ForAllFeederMotors(&DJIMotor::initialize);
     limitSwitch.initialize();
 
-    // for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-    //  //   feederPositionPIDs[i]->pid.reset();
-    //     feederPIDs[i]->SmoothPID.reset();
-    // }
     
     setAllDesiredFeederMotorOutputs(0);
-    ForAllDesiredFeederMotorOutputs(&FeederSubsystem::setDesiredOutputToFeederMotor);
+    ForAllFeederMotors(&FeederSubsystem::setDesiredOutputToFeederMotor);
     
     for(auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-        feederPIDs[i]->pid.reset();
+        feederVelocityPIDs[i]->pid.reset();
     }
 }
 
@@ -57,8 +52,8 @@ void FeederSubsystem::refresh() {
     // setDesiredOutput();
     limitSwitch.refresh();
 
-    for (auto i = 0; i < Feeder_MOTOR_COUNT; i++) {
-        feederVelocityFilters[i]->update(feeder->getRPM(i));
+    for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+        //feederVelocityFilters[i]->update(feeder->getRPM(i));
         if (!feederMotors[i]->isMotorOnline()) {
             // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
@@ -90,8 +85,8 @@ float FeederSubsystem::setTargetRPM(float rpm) {
     return targetRPM;
 }
 
-void FeederSubsystem::setDesiredOutput() {  // takes the input from the velocity PID and sets the motor to that RPM
-    feederMotor.setDesiredOutput(static_cast<int32_t>(desiredOutput));
+void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {  // takes the input from the velocity PID and sets the motor to that RPM
+    feederMotors[FeederIdx]->setDesiredOutput(desiredFeederMotorOutputs[FeederIdx]);
 }
 
 bool FeederSubsystem::getPressed() {

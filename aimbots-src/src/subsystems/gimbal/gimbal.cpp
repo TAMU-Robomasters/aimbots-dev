@@ -99,7 +99,7 @@ void GimbalSubsystem::refresh() {
     }
     yawOnlineCountDisplay = yawOnlineCount;
 
-    int pitchOnlineCount = 0;0
+    int pitchOnlineCount = 0;
     float pitchAxisAngleSum = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         if (!pitchMotors[i]->isMotorOnline()) {
