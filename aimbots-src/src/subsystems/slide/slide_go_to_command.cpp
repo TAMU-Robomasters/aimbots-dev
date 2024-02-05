@@ -14,8 +14,8 @@ void SlideGoToCommand::initialize() {}
 void SlideGoToCommand::end(bool interrupted) {}
 
 void SlideGoToCommand::execute() {
-    slide->setTargetPosition(targetX, targetZ);
-    slide->updateSlidePositionPID();
+    slide->setTargetPositionMeters(targetX, targetZ);
+    slide->updatePositionPIDs();
 }
 
 bool SlideGoToCommand::isReady() { return true; }

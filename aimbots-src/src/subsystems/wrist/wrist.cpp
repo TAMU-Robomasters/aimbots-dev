@@ -45,14 +45,14 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
         buildMotor(ROLL)
     },
     positionPIDs {
-        new SmoothPID(YAW_POSITION_PID_CONFIG_temp),
-        new SmoothPID(PITCH_POSITION_PID_CONFIG),
-        new SmoothPID(ROLL_POSITION_PID_CONFIG)
+        SmoothPID(YAW_POSITION_PID_CONFIG_temp),
+        SmoothPID(PITCH_POSITION_PID_CONFIG),
+        SmoothPID(ROLL_POSITION_PID_CONFIG)
     },
     velocityPIDs {
-        new SmoothPID(YAW_VELOCITY_PID_CONFIG_temp),
-        new SmoothPID(PITCH_VELOCITY_PID_CONFIG),
-        new SmoothPID(ROLL_VELOCITY_PID_CONFIG)
+        SmoothPID(YAW_VELOCITY_PID_CONFIG_temp),
+        SmoothPID(PITCH_VELOCITY_PID_CONFIG),
+        SmoothPID(ROLL_VELOCITY_PID_CONFIG)
     }
 {
 }
@@ -62,7 +62,7 @@ void WristSubsystem::initialize() {
 }
 
 void WristSubsystem::refresh() {
-    ForAllWristMotors(&WristSubsystem::refreshMotor);
+    ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
@@ -79,19 +79,19 @@ float yawDesiredOut = 0.0f;
 // get desired acceleration basically
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
     if (isMotorOnline(idx)) {
-        float errorRadians = targetAnglesRads[idx] - getUnwrappedRadiansOffset(idx);
+        float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
 
-        float desiredVelocityRadsPs = positionPIDs[idx]->runControllerDerivateError(errorRadians);
-        float velocityErrorRadsPs = desiredVelocityRadsPs - getMotorRadsPs(idx);
+        float desiredVelocityRadsPs = positionPIDs[idx].runControllerDerivateError(errorRadians);
+        float velocityErrorRadsPs = desiredVelocityRadsPs - getMotorScaledRadsPs(idx);
 
-        float accelerationOutput = velocityPIDs[idx]->runControllerDerivateError(velocityErrorRadsPs);
+        float accelerationOutput = velocityPIDs[idx].runControllerDerivateError(velocityErrorRadsPs);
 
-        setDesiredOutput(idx, accelerationOutput);
+        desiredMotorOutputs[idx] = accelerationOutput;
 
         if (idx == YAW)
         {
-            yawAngle = getUnwrappedRadiansOffset(idx);
-            yawVelocity = getMotorRadsPs(idx);
+            yawAngle = getScaledUnwrappedRadiansOffset(idx);
+            yawVelocity = getMotorScaledRadsPs(idx);
             yawDesiredAngle = targetAnglesRads[idx];
             yawDesiredVelocity = desiredVelocityRadsPs;
             yawDesiredOut = accelerationOutput;
@@ -99,15 +99,11 @@ void WristSubsystem::updateMotorPID(MotorIndex idx) {
     }
 }
 
-float WristSubsystem::getUnwrappedRadians(MotorIndex motorIdx) const {
+float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
     float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
-    float unwrappedRadians = DJIEncoderValueToRadians(motors[motorIdx]->getEncoderUnwrapped());
+    float unwrappedRadians = DJIEncoderValueToRadians(motors[motorIdx].getEncoderUnwrapped());
 
     return unwrappedRadians / inPerOut;
-}
-
-float WristSubsystem::getUnwrappedRadiansOffset(MotorIndex motorIdx) const {
-    return getUnwrappedRadians(motorIdx) - WRIST_MOTOR_OFFSET_ANGLES[motorIdx];
 }
 
 };  // namespace src::Wrist
