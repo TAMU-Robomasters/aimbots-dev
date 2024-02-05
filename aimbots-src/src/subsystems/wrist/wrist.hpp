@@ -46,7 +46,7 @@ public:
     void ForAllWristMotors(WristFunc<MotorIndex, Args...> wristFunc, Args... args) {
         for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
-            (this.*wristFunc)(mi, args...);
+            (this->*wristFunc)(mi, args...);
         }
     }
 
