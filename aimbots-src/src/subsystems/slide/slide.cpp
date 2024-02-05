@@ -22,34 +22,33 @@ void SlideSubsystem::initialize()
 
 void SlideSubsystem::refresh() 
 {
-    setDesiredOutputs();
+    ForAllSlideMotors(&SlideSubsystem::refreshDesiredOutput);
+}
+
+void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx)
+{
+    motors[motorIdx].setDesiredOutput(desiredOutputs[motorIdx]);
+}
+
+void SlideSubsystem::updatePositionPIDs()
+{
+    ForAllSlideMotors(&SlideSubsystem::updateMotorPositionPID);
 }
 
 void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
     float positionRevs = motors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
     float positionMeters = positionRevs * SLIDE_METERS_PER_REVS_RATIOS[motorIdx];
-    float err = targetPoses[motorIdx] - positionMeters;
+    float err = targetPosesMeters[motorIdx] - positionMeters;
 
     motorPIDs[motorIdx].runControllerDerivateError(err);
 
     desiredOutputs[motorIdx] = static_cast<int32_t>(motorPIDs[motorIdx].getOutput());
 }
 
-void SlideSubsystem::updateSlidePositionPID()
+void SlideSubsystem::setTargetPositionMeters(float x, float z)
 {
-    ForAllSlideMotors(&SlideSubsystem::updateMotorPositionPID);
-}
-
-void SlideSubsystem::setDesiredOutputs()
-{
-    for (auto i = 0; i < 2; i++)
-        motors[i].setDesiredOutput(desiredOutputs[i]);
-}
-
-void SlideSubsystem::setTargetPosition(float x, float z)
-{
-    targetPoses[X] = x;
-    targetPoses[Z] = z;
+    targetPosesMeters[X] = x;
+    targetPosesMeters[Z] = z;
 }
 
 }; // namespace src::Slider

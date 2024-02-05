@@ -16,13 +16,12 @@ enum MotorIndex {
 class SlideSubsystem : public tap::control::Subsystem {
 public:
     SlideSubsystem(Drivers*);
-    void setTargetPosition(float x, float z);
 
     mockable void initialize() override;
     mockable void refresh() override;
 
-    mockable void setDesiredOutputs();
-    void updateSlidePositionPID();
+    void setTargetPositionMeters(float x, float z);
+    void updatePositionPIDs();
 
     template<typename... Args>
     using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);
@@ -45,10 +44,11 @@ public:
 private:
     std::array<DJIMotor, SLIDE_MOTOR_COUNT> motors;
     std::array<SmoothPID, SLIDE_MOTOR_COUNT> motorPIDs;
-    std::array<float, SLIDE_MOTOR_COUNT> targetPoses {};
+    std::array<float, SLIDE_MOTOR_COUNT> targetPosesMeters {};
     std::array<int32_t, SLIDE_MOTOR_COUNT> desiredOutputs {};
 
     void updateMotorPositionPID(MotorIndex);
+    void refreshDesiredOutput(MotorIndex);
 };
 
 }; // src::Slider
