@@ -70,9 +70,19 @@ public:
     /** Gets the current unwrapped radians of the given motor after gear box ratios */
     float getUnwrappedRadians(MotorIndex) const;
 
+    float getUnwrappedRadiansOffset(MotorIndex) const;
+
     /** Gets the given motor's current RPM, or 0 if it's offline */
     int16_t getMotorRPM(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx]->getShaftRPM() : 0;
+    }
+
+    float getMotorRadsPs(MotorIndex motorIdx) const {
+        float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
+        float radsPerSecond = RPM_TO_RADPS(getMotorRPM(motorIdx));
+        float scaledOutput = radsPerSecond / inPerOut;
+
+        return scaledOutput;
     }
 
     /** Gets the given motor's current torque, or 0 if it's offline */
@@ -87,7 +97,7 @@ public:
      * @param angle the angle in radians from -pi to pi
     */
     void setTargetAngle(MotorIndex motorIdx, float angle) {
-        targetRadians[motorIdx]->setValue(angle);
+        targetAnglesRads[motorIdx] = angle;
     }
 
 private:
@@ -98,14 +108,8 @@ private:
     std::array<SmoothPID*, WRIST_MOTOR_COUNT> velocityPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
-    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> targetRadians;
-
-    /** The current angles of each motor AFTER scaling for the gear boxes */
-    std::array<ContiguousFloat*, WRIST_MOTOR_COUNT> currentAngles;
-
-    std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs;
-
-    void updateCurrentAngle(MotorIndex);
+    std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads {0};
+    std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs {0};
 
     DJIMotor* buildMotor(MotorIndex idx)
     {
@@ -114,6 +118,12 @@ private:
                             WRIST_BUS, 
                             WRIST_MOTOR_DIRECTIONS[idx], 
                             WRIST_MOTOR_NAMES[idx]);
+    }
+
+    void refreshMotor(MotorIndex idx)
+    {
+        updateMotorPID(idx);
+        setDesiredOutputToMotor(idx);
     }
 };
 
