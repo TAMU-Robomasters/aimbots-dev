@@ -1,5 +1,7 @@
 #include "subsystems/feeder/feeder.hpp"
 
+#include <utils/common_types.hpp>
+
 #ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
@@ -55,7 +57,6 @@ void FeederSubsystem::refresh() {
     for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
         //feederVelocityFilters[i]->update(feeder->getRPM(i));
         if (!feederMotors[i]->isMotorOnline()) {
-            // tap::buzzer::playNote(&drivers->pwm, 932);
             continue;
         }
         
@@ -65,8 +66,7 @@ void FeederSubsystem::refresh() {
     }
 
 
-
-    ForAllFeederMotors(&FeederSubsystem::setDesiredFeederMotorOutput);
+    //ForAllFeederMotors(&FeederSubsystem::setDesiredFeederMotorOutput);
 
 }
 
