@@ -99,8 +99,6 @@ public:
     }
 
 private:
-    src::Drivers* drivers;
-
     std::array<DJIMotor, WRIST_MOTOR_COUNT> motors;
     std::array<SmoothPID, WRIST_MOTOR_COUNT> positionPIDs;
     std::array<SmoothPID, WRIST_MOTOR_COUNT> velocityPIDs;

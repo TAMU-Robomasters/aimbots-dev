@@ -52,6 +52,7 @@ GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
 WristSubsystem wrist(drivers());
 GrabberSubsystem grabber(drivers());
+WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);

@@ -38,7 +38,6 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG_temp = {
 
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-    drivers(drivers),
     motors {
         buildMotor(YAW),
         buildMotor(PITCH),
@@ -58,11 +57,11 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
 }
 
 void WristSubsystem::initialize() {
-    ForAllWristMotors(&DJIMotor::initialize);
+
 }
 
 void WristSubsystem::refresh() {
-    ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
+    // ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
