@@ -22,7 +22,7 @@ struct std::hash<modm::Vector2i>
     {
         std::size_t h1 = std::hash<int>{}(k[0]);
         std::size_t h2 = std::hash<int>{}(k[0]);
-        return (h1 ^ (h2 << 1)); //uses built in hash function on both ints, then combines the hashes uses bitwise magic i dont understand
+        return (h1 ^ (h2 << 1)); // Uses built in hash function on both ints, then combines the hashes uses bitwise magic i dont understand
     }
 };
 
@@ -40,12 +40,13 @@ struct WeightedSquareGraph {
     double height_meters;
 
     // He was a modm::Vector2i. She was a Graph_loc. Will they fall in love?
+
     WeightedSquareGraph (double width_meters, double height_meters, double precision_cm) {
         this->width_meters = width_meters;
         this->height_meters = height_meters;
-        graph_width = std::ceil(width_meters/(precision_cm/100)); //width of square grid measured in nodes
-        graph_height = std::ceil(height_meters/(precision_cm/100)); //height of square grid measured in nodes
-        dx = width_meters/graph_width; //this grid is evenly spaced
+        graph_width = std::ceil(width_meters/(precision_cm/100));   // width of square grid measured in nodes
+        graph_height = std::ceil(height_meters/(precision_cm/100)); // height of square grid measured in nodes
+        dx = width_meters/graph_width;                              // this grid is evenly spaced
         dy = height_meters/graph_height;
 
         for (int i = 0; i < graph_width; i++){
@@ -58,7 +59,8 @@ struct WeightedSquareGraph {
     }
 
     void with_obstacle(modm::Vector2i bottom_left_meters, modm::Vector2i top_right_meters){
-        //removes all nodes within a given square area. Will remove nodes that dont exist. Rounds to nearest node so will slightly under or overestimate area. 
+        // Removes all nodes within a given square area. Will remove nodes that dont exist. 
+        //    Rounds to nearest node so will slightly under or overestimate area. 
         modm::Vector2i bottom_left = snap_to_grid(bottom_left_meters);
         modm::Vector2i top_right = snap_to_grid(top_right_meters);
         for (int i = bottom_left[0]; i < top_right[0]; i++){
@@ -70,7 +72,7 @@ struct WeightedSquareGraph {
     }
 
     modm::Vector2i snap_to_grid (modm::Vector2i pos) {
-        // gets nearest hypothetical node from a given position, no guarantee that node will exist
+        // Gets nearest hypothetical node from a given position, no guarantee that node will exist
         int x = std::round(pos[0]/dx);
         int y = std::round(pos[1]/dy);
         modm::Vector2i loc = {x, y};
@@ -79,7 +81,7 @@ struct WeightedSquareGraph {
 
     void get_neighbors(modm::Vector2i loc, std::array<modm::Vector2i, 8>* neighbors) {
         // Generates up all neighbors on the grid relative to a specific node
-        //   Up to 4 orthogonal & 4 diagonal, similar to Minesweeper
+        //   Up to 4 orthogonal & 4 diagonal neighbors, similar to Minesweeper
         int k = 0;
         for (int i = -1; i < 2; i++){
             for (int j = -1; j <2; j++){
@@ -96,7 +98,7 @@ struct WeightedSquareGraph {
     
     // Returns the distance between two nodes
     double get_cost(modm::Vector2i from_node, modm::Vector2i to_node){
-        return std::sqrt(pow2(edges[to_node][0] - edges[from_node][0]) + pow2(edges[to_node][0] - edges[from_node][0])); // tengo bomba :steam_happy:
+        return std::sqrt(pow2(edges[to_node][0] - edges[from_node][0]) + pow2(edges[to_node][0] - edges[from_node][0]));
     }
 
     double heuristic (modm::Vector2i other_node, modm::Vector2i goal) {
@@ -104,7 +106,8 @@ struct WeightedSquareGraph {
     }
 
 
-    }; // boo
+    };
+
 
 //completely copied from redlob. Yoink.
 template<typename T, typename priority_t>
@@ -127,7 +130,6 @@ struct PriorityQueue {
     return best_item;
   }
 };
-
 
 
 
@@ -174,6 +176,3 @@ std::unordered_map<modm::Vector2i, modm::Vector2i> graph_test() {
     //a_star_search(graph, start, goal, came_from, cost_so_far);
     return came_from;
 }
-
-
-
