@@ -3,6 +3,7 @@
 #include "modm/platform/random/random_number_generator.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
 
@@ -109,3 +110,5 @@ int32_t ChassisRailEvadeCommand::getNewRPM() {
 }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

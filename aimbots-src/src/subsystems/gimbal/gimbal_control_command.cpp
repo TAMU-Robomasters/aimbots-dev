@@ -7,6 +7,8 @@
 #include "informants/vision/jetson_protocol.hpp"
 
 #include "drivers.hpp"
+#ifdef GIMBAL_COMPATIBLE
+
 
 namespace src::Gimbal {
 
@@ -51,3 +53,5 @@ void GimbalControlCommand::end(bool) {
 }
 
 }  // namespace src::Gimbal
+
+#endif

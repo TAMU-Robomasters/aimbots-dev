@@ -1,5 +1,7 @@
 #include "chassis_auto_nav_command.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 ChassisAutoNavCommand::ChassisAutoNavCommand(
@@ -72,3 +74,5 @@ void ChassisAutoNavCommand::end(bool interrupted) {
 }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

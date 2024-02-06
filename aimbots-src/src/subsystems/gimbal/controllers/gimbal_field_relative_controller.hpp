@@ -9,6 +9,7 @@
 #include <utils/pid/smooth_pid_wrap.hpp>
 
 #include "utils/filters/ema.hpp"
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 class GimbalFieldRelativeController : public GimbalControllerInterface {
@@ -106,3 +107,4 @@ private:
 };
 
 }  // namespace src::Gimbal
+#endif

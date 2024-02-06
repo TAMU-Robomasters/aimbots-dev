@@ -12,6 +12,8 @@
 
 #include "drivers.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 using namespace src::Feeder;
 using namespace src::Indexer;
 
@@ -63,3 +65,5 @@ private:
 
     int unjamming_count = 0;
 };
+
+#endif  // #ifdef FEEDER_COMPATIBLE

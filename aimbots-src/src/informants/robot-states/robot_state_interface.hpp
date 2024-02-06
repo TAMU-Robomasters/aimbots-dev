@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef REF_COMM_COMPATIBLE
+
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
 #include "informants/communication/communication_message.hpp"
@@ -26,8 +28,8 @@ public:
 
     void refresh() override;
 
-    void setIndivualRobotState(Robot robot);
-    Robot getIndivualRobotState(int robotNumber, Team teamColor);
+    void setIndividualRobotState(Robot robot);
+    Robot getIndividualRobotState(int robotNumber, Team teamColor);
 
     void updateRobotState(int robotNumber, Team teamColor, short x, short y, short z, int health);
     void updateRobotStateHealth(int robotNumber, Team teamColor, int health);
@@ -36,10 +38,12 @@ public:
 #ifdef TARGET_SENTRY
     void updateTeamMessage();
     uint8_t teamMessage[115];
-#elif TARGET_STANDARD
+#endif
+#ifdef TARGET_STANDARD
     void updateStandardMessage();
     // uint8_t standardMessage[115];
-#elif TARGET_HERO
+#endif
+#ifdef TARGET_HERO
     void updateHeroMessage();
     // uint8_t heroMessage[115];
 #endif
@@ -51,3 +55,5 @@ public:
 };
 
 }  // namespace src::RobotStates
+
+#endif // #ifdef REF_COMM_COMPATIBLE

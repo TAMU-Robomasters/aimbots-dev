@@ -8,6 +8,8 @@
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
+
 namespace src::Shooter {
 
 enum MotorIndex {
@@ -125,3 +127,5 @@ public:
     src::Utils::RefereeHelperTurreted* refHelper;
 };
 };  // namespace src::Shooter
+
+#endif //#ifdef SHOOTER_COMPATIBLE

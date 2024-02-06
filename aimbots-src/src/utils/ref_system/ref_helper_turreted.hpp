@@ -5,6 +5,7 @@
 #include "projectile_launch_speed_predictor.hpp"
 #include "ref_helper_interface.hpp"
 
+
 using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
 namespace src::Utils {

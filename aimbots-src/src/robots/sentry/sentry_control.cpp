@@ -51,7 +51,7 @@ using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-using namespace src::Communication;
+// using namespace src::Communication;
 using namespace src::Control;
 
 /*
@@ -79,7 +79,7 @@ ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::SETUP;
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
-CommunicationResponseSubsytem response(*drivers());
+// CommunicationResponseSubsytem response(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Informant Controllers
@@ -119,27 +119,27 @@ GimbalPatrolConfig patrolConfig = {
 };
 
 // Match Controllers ------------------------------------------------
-// SentryMatchFiringControlCommand matchFiringControlCommand(
-//     drivers(),
-//     &feeder,
-//     &shooter,
-//     &refHelper,
-//     &ballisticsSolver,
-//     &gimbalFieldRelativeController,
-//     chassisMatchState);
-// SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
-// defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
-// matchGimbalControlCommand(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     patrolConfig,
-//     500);
+SentryMatchFiringControlCommand matchFiringControlCommand(
+    drivers(),
+    &feeder,
+    &shooter,
+    &refHelper,
+    &ballisticsSolver,
+    &gimbalFieldRelativeController,
+    chassisMatchState);
+SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
+defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
+matchGimbalControlCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    patrolConfig,
+    500);
 
-// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), &chassis, ChassisMatchStates::PATROL,
-// &refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
+// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), 
+//     &chassis, ChassisMatchStates::PATROL,&refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -208,7 +208,7 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-CommunicationResponseHandler responseHandler(*drivers());
+// CommunicationResponseHandler responseHandler(*drivers());
 
 // Define command mappings here -------------------------------------------
 
@@ -276,7 +276,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&response);
+    // drivers->commandScheduler.registerSubsystem(&response);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -287,7 +287,7 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
-    response.initialize();
+    // response.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -301,7 +301,7 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
 
     // no startup commands should be set
     // yet...

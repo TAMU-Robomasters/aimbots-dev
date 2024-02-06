@@ -1,5 +1,7 @@
 #include "barrel_swapping_feeder_command.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 BarrelSwappingFeederCommand::BarrelSwappingFeederCommand(
@@ -61,3 +63,5 @@ bool BarrelSwappingFeederCommand::isFinished() const {
 }
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

@@ -1,5 +1,7 @@
 #include "dual_barrel_feeder_command.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 DualBarrelFeederCommand::DualBarrelFeederCommand(
@@ -49,5 +51,6 @@ bool DualBarrelFeederCommand::isFinished() const {
     return !(refHelper->canSpecificBarrelShootSafely(BARREL_IDS[0]) && refHelper->canSpecificBarrelShootSafely(BARREL_IDS[1]));
 }
 
-
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

@@ -14,7 +14,7 @@
 
 #include "hud_indicator.hpp"
 
-using namespace src::Hopper;
+// using namespace src::Hopper;
 using namespace src::Chassis;
 
 namespace src::Utils::ClientDisplay {
@@ -23,7 +23,7 @@ public:
     BooleanHUDIndicators(
         tap::control::CommandScheduler &commandScheduler,
         tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
-        const HopperSubsystem *hopper,
+        // const HopperSubsystem *hopper,
         const ChassisSubsystem &chassis);
 
     modm::ResumableResult<bool> sendInitialGraphics() override final;
@@ -67,7 +67,7 @@ private:
         BooleanHUDIndicatorTuple("HOPPER", Tx::GraphicColor::GREEN, Tx::GraphicColor::PINK),
     };
 
-    const HopperSubsystem *hopper;
+    // const HopperSubsystem *hopper;
     const ChassisSubsystem &chassis;
 
     Tx::Graphic1Message booleanHUDIndicatorGraphics[NUM_BOOLEAN_HUD_INDICATORS];

@@ -1,4 +1,6 @@
 #include "gimbal_toggle_aiming_command.hpp"
+#ifdef GIMBAL_COMPATIBLE
+
 
 namespace src::Gimbal {
 
@@ -58,3 +60,5 @@ bool GimbalToggleAimCommand::isReady() { return true; }
 bool GimbalToggleAimCommand::isFinished() const { return false; }
 
 }  // namespace src::Gimbal
+
+#endif

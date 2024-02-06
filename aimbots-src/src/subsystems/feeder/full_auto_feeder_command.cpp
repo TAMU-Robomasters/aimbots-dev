@@ -1,5 +1,7 @@
 #include "full_auto_feeder_command.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 
 FullAutoFeederCommand::FullAutoFeederCommand(
@@ -58,3 +60,5 @@ bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafe
 bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

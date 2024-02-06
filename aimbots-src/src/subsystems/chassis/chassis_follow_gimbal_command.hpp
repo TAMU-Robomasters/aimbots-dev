@@ -10,6 +10,9 @@
 #include "chassis_helper.hpp"
 #include "drivers.hpp"
 
+#ifdef GIMBAL_UNTETHERED
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class ChassisFollowGimbalCommand : public TapCommand {
@@ -40,3 +43,7 @@ private:
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE
+
+#endif //#ifdef GIMBAL_UNTETHERED

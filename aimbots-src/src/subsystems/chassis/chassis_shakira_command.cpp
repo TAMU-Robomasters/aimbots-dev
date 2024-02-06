@@ -2,6 +2,7 @@
 #include "utils/robot_specific_inc.hpp"
 
 #ifdef GIMBAL_UNTETHERED
+#ifdef CHASSIS_COMPATIBLE
 
 #include "subsystems/chassis/chassis_helper.hpp"
 #include "subsystems/chassis/chassis_shakira_command.hpp"
@@ -110,4 +111,5 @@ void ChassisShakiraCommand::end(bool interrupted) { UNUSED(interrupted); }
 
 }  // namespace src::Chassis
 
-#endif
+#endif //#ifdef CHASSIS_COMPATIBLE
+#endif //#ifdef GIMBAL_UNTETHERED

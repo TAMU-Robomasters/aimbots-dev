@@ -1,5 +1,7 @@
 #include "chassis_toggle_drive_command.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 ChassisToggleDriveCommand::ChassisToggleDriveCommand(
@@ -92,3 +94,5 @@ bool ChassisToggleDriveCommand::isReady() { return true; }
 bool ChassisToggleDriveCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

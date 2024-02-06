@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef REF_COMM_COMPATIBLE
+
 #include "utils/common_types.hpp"
 
 namespace src::RobotStates {
@@ -35,4 +38,6 @@ public:
     int getRobotID();
     Team getTeamColor();
 };
-}  // namespace src::robotStates
+}  // namespace src::RobotStates
+
+#endif  // #ifdef REF_COMM_COMPATIBLE

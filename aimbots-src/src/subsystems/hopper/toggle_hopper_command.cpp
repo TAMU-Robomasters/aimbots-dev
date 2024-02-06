@@ -1,5 +1,7 @@
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 
+#ifdef HOPPER_LID_COMPATIBLE
+
 namespace src::Hopper {
 ToggleHopperCommand::ToggleHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE, float HOPPER_OPEN_ANGLE) {
     this->drivers = drivers;
@@ -43,3 +45,5 @@ bool ToggleHopperCommand::isReady() { return true; }
 
 bool ToggleHopperCommand::isFinished() const { return false; }
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

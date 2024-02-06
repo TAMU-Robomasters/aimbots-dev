@@ -1,5 +1,7 @@
 #include "subsystems/hopper/close_hopper_command.hpp"
 
+#ifdef HOPPER_LID_COMPATIBLE
+
 namespace src::Hopper {
 CloseHopperCommand::CloseHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_CLOSED_ANGLE) {
     this->drivers = drivers;
@@ -22,3 +24,5 @@ bool CloseHopperCommand::isReady() { return true; }
 bool CloseHopperCommand::isFinished() const { return hopper->isHopperReady(); }
 
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

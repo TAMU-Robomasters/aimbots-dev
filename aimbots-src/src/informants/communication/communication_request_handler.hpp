@@ -10,6 +10,8 @@
 
 #include "drivers.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 namespace src::Communication {
 class CommunicationRequestHandler : public tap::communication::serial::RefSerial::RobotToRobotMessageHandler {
 public:
@@ -42,3 +44,5 @@ private:
 #endif
 };
 }  // namespace src::robotStates
+
+#endif // #ifdef REF_COMM_COMPATIBLE

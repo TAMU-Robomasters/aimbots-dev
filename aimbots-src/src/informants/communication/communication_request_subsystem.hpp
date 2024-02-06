@@ -8,6 +8,8 @@
 #include "communication_request_transmiter.hpp"
 #include "drivers.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 namespace src::Communication {
 class CommunicationRequestSubsystem : public tap::control::Subsystem {
 public:
@@ -22,3 +24,5 @@ private:
     Drivers* drivers;
 };
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

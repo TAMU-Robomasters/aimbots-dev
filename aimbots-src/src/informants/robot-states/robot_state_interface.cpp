@@ -1,14 +1,16 @@
-#include "drivers.hpp"
 // #include "ref_serial.hpp"
+#ifdef REF_COMM_COMPATIBLE
 
-#include "robot_state.hpp"
 #include "robot_state_interface.hpp"
 using namespace src::Communication;
 
 namespace src::RobotStates {
 
-RobotStates::RobotStates(tap::Drivers& drivers) : tap::control::Subsystem(&drivers), drivers(drivers), messageHandler(drivers) {
-    robotStates = Matrix<Robot, 2, 9>().zeroMatrix();
+RobotStates::RobotStates(tap::Drivers& drivers)
+    : tap::control::Subsystem(&drivers),
+      drivers(drivers),
+      messageHandler(drivers) {
+    /*robotStates = Matrix<Robot, 2, 9>().zeroMatrix();
     robotStates[Team::RED][0] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 1, 0, Team::RED);  // HERO
     robotStates[Team::RED][1] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 2, 0, Team::RED);  // ENGINEER
     robotStates[Team::RED][2] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 3, 0, Team::RED);  // STANDARD
@@ -26,14 +28,14 @@ RobotStates::RobotStates(tap::Drivers& drivers) : tap::control::Subsystem(&drive
     robotStates[Team::BLUE][5] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 6, 0, Team::BLUE);
     robotStates[Team::BLUE][6] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 7, 0, Team::BLUE);
     robotStates[Team::BLUE][7] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 8, 0, Team::BLUE);
-    robotStates[Team::BLUE][8] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 9, 0, Team::BLUE);
+    robotStates[Team::BLUE][8] = Robot(Matrix<short, 3, 1>().zeroMatrix(), 9, 0, Team::BLUE);*/
 }
 
 RobotStates::~RobotStates() {}
 
-void RobotStates::setIndivualRobotState(Robot robot) { robotStates[robot.getTeamColor()][robot.getRobotID() - 1] = robot; }
+void RobotStates::setIndividualRobotState(Robot robot) { robotStates[robot.getTeamColor()][robot.getRobotID() - 1] = robot; }
 
-Robot RobotStates::getIndivualRobotState(int robotNumber, Team team) { return robotStates[team][robotNumber - 1]; }
+Robot RobotStates::getIndividualRobotState(int robotNumber, Team team) { return robotStates[team][robotNumber - 1]; }
 
 void RobotStates::updateRobotState(int robotNumber, Team teamColor, short x, short y, short z, int health) {
     updateRobotStatePosition(robotNumber, teamColor, x, y, z);
@@ -46,7 +48,9 @@ void RobotStates::updateRobotStatePosition(int number, Team teamColor, short x, 
     robotStates[teamColor][number - 1].setZ(z);
 }
 
-void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health) { robotStates[teamColor][number - 1].setHealth(health); }
+void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health) {
+    robotStates[teamColor][number - 1].setHealth(health);
+}
 
 #ifdef TARGET_SENTRY
 void RobotStates::updateTeamMessage() {
@@ -73,7 +77,9 @@ void RobotStates::updateTeamMessage() {
     // message.sentryX = robotStates[color][6].getX();
     // message.sentryY = robotStates[color][6].getY();
 }
-#elif TARGET_STANDARD
+#endif
+
+#ifdef TARGET_STANDARD
 void updateStandardMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
     // standardMessage[0] = 1;
@@ -82,9 +88,9 @@ void updateStandardMessage() {
     // standardMessage[3] = robotStates[color][2].getY() >> 8;
     // standardMessage[4] = robotStates[color][2].getY();
 }
+#endif
 
-#elif TRAGET_HERO
-
+#ifdef TARGET_HERO
 void updateHeroMessage() {
     Team color = /*tap::communication::serial::RefSerial::isBlueTeam(id) ? Team::BLUE : */ Team::RED;
     // heroMessage[0] = 1;
@@ -110,10 +116,14 @@ void RobotStates::refresh() {
 #ifdef TARGET_SENTRY
     // TODO:: the code that will update stuff based on the recived messages
     this->updateTeamMessage();
-#elif TARGET_STANDARD
+#endif
+#ifdef TARGET_STANDARD
     this->updateStandardMessage();
-#elif TRAGET_HERO
+#endif
+#ifdef TARGET_HERO
     this->updateHeroMessage();
 #endif
 }
 }  // namespace src::RobotStates
+
+#endif //#ifdef REF_COMM_COMPATIBLE

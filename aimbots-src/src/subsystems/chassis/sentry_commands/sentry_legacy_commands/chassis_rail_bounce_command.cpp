@@ -1,5 +1,7 @@
 #include "chassis_rail_bounce_command.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 ChassisRailBounceCommand::ChassisRailBounceCommand(src::Drivers* drivers, ChassisSubsystem* chassis)
@@ -114,3 +116,5 @@ bool ChassisRailBounceCommand::isReady() { return true; }
 bool ChassisRailBounceCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

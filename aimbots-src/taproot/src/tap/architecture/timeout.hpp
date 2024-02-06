@@ -95,6 +95,17 @@ public:
     inline bool isExpired() const { return this->isRunning && TimeFunc() >= this->expireTime; }
 
     /**
+     * @return time left in timer if still running and not yet expired
+     */
+    inline uint32_t timeRemaining() const
+    {
+        if (this->isRunning && TimeFunc() < this->expireTime)
+            return this->expireTime - TimeFunc();
+        else
+            return 0;
+    }
+
+    /**
      * Returns `true` on the first call when timer has expired since restart. Use to
      * only catch the timeout expiration once.
      *

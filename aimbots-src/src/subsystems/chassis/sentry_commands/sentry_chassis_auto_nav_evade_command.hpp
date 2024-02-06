@@ -6,6 +6,8 @@
 
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class SentryChassisAutoNavEvadeCommand : public TapCommand {
@@ -27,3 +29,5 @@ private:
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

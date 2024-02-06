@@ -8,6 +8,7 @@
 
 #include "drivers.hpp"
 
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
 
@@ -59,3 +60,4 @@ bool StopShooterComprisedCommand::isReady() { return true; }
 bool StopShooterComprisedCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter
+#endif //#ifdef SHOOTER_COMPATIBLE

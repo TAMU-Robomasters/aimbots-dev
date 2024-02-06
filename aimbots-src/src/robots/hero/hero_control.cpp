@@ -47,8 +47,8 @@
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"
 //
-#include "utils/display/client_display_command.hpp"
-#include "utils/display/client_display_subsystem.hpp"
+// #include "utils/display/client_display_command.hpp"
+// #include "utils/display/client_display_subsystem.hpp"
 //
 
 using namespace src::Chassis;
@@ -56,9 +56,9 @@ using namespace src::Feeder;
 using namespace src::Indexer;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-using namespace src::Communication;
-using namespace src::RobotStates;
-using namespace src::Utils::ClientDisplay;
+// using namespace src::Communication;
+// using namespace src::RobotStates;
+// using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -113,9 +113,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
-
-CommunicationResponseSubsytem response(*drivers());
-ClientDisplaySubsystem clientDisplay(*drivers());
+// ClientDisplaySubsystem clientDisplay(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
@@ -185,9 +183,6 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-CommunicationResponseHandler responseHandler(*drivers());
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, hopper, gimbal);
-
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
@@ -213,7 +208,8 @@ HoldRepeatCommandMapping rightSwitchUp(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+
 HoldCommandMapping leftClickMouse(
     drivers(),
     {&runFeederCommandFromMouse, &runIndexerCommandFromMouse},
@@ -225,8 +221,8 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    // drivers->commandScheduler.registerSubsystem(&response);
+    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->commandScheduler.registerSubsystem(&indexer);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
@@ -239,8 +235,8 @@ void initializeSubsystems() {
     indexer.initialize();
     gimbal.initialize();
     shooter.initialize();
-    response.initialize();
-    clientDisplay.initialize();
+    // response.initialize();
+    // clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -252,8 +248,8 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
-    drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
+    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
 
     // test
     //  no startup commands should be set
@@ -269,8 +265,8 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-    // drivers->commandMapper.addMap(&leftClickMouse);
+    // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl

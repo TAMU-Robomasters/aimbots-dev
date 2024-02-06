@@ -1,5 +1,7 @@
 #include "burst_feeder_command.hpp"
 
+#ifdef FEEDER_COMPATIBLE
+
 namespace src::Feeder {
 BurstFeederCommand::BurstFeederCommand(
     src::Drivers* drivers,
@@ -32,3 +34,5 @@ bool BurstFeederCommand::isFinished() const {
 }
 
 }  // namespace src::Feeder
+
+#endif  // #ifdef FEEDER_COMPATIBLE

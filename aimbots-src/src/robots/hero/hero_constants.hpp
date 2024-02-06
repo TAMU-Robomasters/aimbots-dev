@@ -2,8 +2,13 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define GIMBAL_COMPATIBLE
+#define CHASSIS_COMPATIBLE
+#define SHOOTER_COMPATIBLE
+#define FEEDER_COMPATIBLE
+
+// #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
-#define TURRET_HAS_IMU
 
 /**
  * @brief Defines the number of motors created for the chassis.

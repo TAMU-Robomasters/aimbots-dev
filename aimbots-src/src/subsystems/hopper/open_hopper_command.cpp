@@ -1,5 +1,7 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 
+#ifdef HOPPER_LID_COMPATIBLE
+
 namespace src::Hopper {
 OpenHopperCommand::OpenHopperCommand(src::Drivers* drivers, HopperSubsystem* hopper, float HOPPER_OPEN_ANGLE) {
     this->drivers = drivers;
@@ -22,3 +24,5 @@ bool OpenHopperCommand::isReady() { return true; }
 bool OpenHopperCommand::isFinished() const { return hopper->isHopperReady(); }
 
 };  // namespace src::Hopper
+
+#endif  // #ifdef HOPPER_LID_COMPATIBLE

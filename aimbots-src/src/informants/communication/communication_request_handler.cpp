@@ -9,6 +9,8 @@
 #include "communication_message.hpp"
 #include "drivers.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 using namespace src::RobotStates;
 
 namespace src::Communication {
@@ -48,3 +50,5 @@ void CommunicationRequestHandler::operator()(const tap::communication::serial::D
 }
 
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

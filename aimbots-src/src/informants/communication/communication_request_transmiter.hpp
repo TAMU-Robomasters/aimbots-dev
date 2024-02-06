@@ -11,6 +11,8 @@
 #include "communication_message.hpp"
 #include "drivers.hpp"
 
+#ifdef REF_COMM_COMPATIBLE
+
 namespace src {
 class Drivers;
 }
@@ -69,3 +71,5 @@ public:
 };
 
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

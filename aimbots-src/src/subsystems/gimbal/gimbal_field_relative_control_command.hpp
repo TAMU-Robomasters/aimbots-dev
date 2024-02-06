@@ -5,6 +5,8 @@
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
 
+#ifdef GIMBAL_COMPATIBLE
+
 namespace src::Gimbal {
 
 class GimbalFieldRelativeControlCommand : public tap::control::Command {
@@ -44,3 +46,5 @@ private:
 };
 
 }  // namespace src::Gimbal
+
+#endif

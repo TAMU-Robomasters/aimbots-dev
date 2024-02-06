@@ -8,26 +8,11 @@ namespace src::BarrelManager {
 
 BarrelManagerSubsystem::BarrelManagerSubsystem(
     tap::Drivers* drivers,
-    float HARD_STOP_OFFSET,
-    float BARREL_SWAP_DISTANCE_MM,
-    float BARRELS_ALIGNED_TOLERANCE,
-    float LEAD_SCREW_TICKS_PER_MM,
-    int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE,
-    int16_t LEAD_SCREW_CALI_OUTPUT,
-    SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG,
-    std::array<BarrelID, 2> BARREL_ARRAY,
     BarrelID& currentBarrel)
     : tap::control::Subsystem(drivers),
       swapMotor(drivers, SWAP_MOTOR_ID, BARREL_BUS, BARREL_SWAP_DIRECTION, "Barrel Swap Motor"),
-      HARD_STOP_OFFSET(HARD_STOP_OFFSET),
-      BARREL_SWAP_DISTANCE_MM(BARREL_SWAP_DISTANCE_MM),
-      BARRELS_ALIGNED_TOLERANCE(BARRELS_ALIGNED_TOLERANCE),
-      LEAD_SCREW_TICKS_PER_MM(LEAD_SCREW_TICKS_PER_MM),
-      LEAD_SCREW_CURRENT_SPIKE_TORQUE(LEAD_SCREW_CURRENT_SPIKE_TORQUE),
-      LEAD_SCREW_CALI_OUTPUT(LEAD_SCREW_CALI_OUTPUT),
-      BARREL_SWAP_POSITION_PID_CONFIG(BARREL_SWAP_POSITION_PID_CONFIG),
-      BARREL_ARRAY(BARREL_ARRAY),
-      currentBarrel(currentBarrel) {}
+      currentBarrel(currentBarrel)
+       {}
 
 // DEBUG VARIABLES
 int16_t currentTorqueDisplay = 0;
@@ -62,7 +47,7 @@ void BarrelManagerSubsystem::refresh() {
 
         if (isBarrelAligned() && currentBarrelSide !=
             barrelSide::CURRENT ) {
-            currentBarrel = BARREL_ARRAY[currentBarrelSide];
+            currentBarrel = BARREL_IDS[currentBarrelSide];
         }
 
         currentTorqueDisplay = swapMotor.getTorque();
@@ -142,4 +127,4 @@ bool BarrelManagerSubsystem::isBarrelAligned() {
 
 }  // namespace src::BarrelManager
 
-#endif
+#endif //#ifdef BARREL_SWAP_COMPATIBLE

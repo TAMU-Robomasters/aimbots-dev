@@ -11,6 +11,8 @@
 
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 using namespace src::Utils::motion;
 
 namespace src::Chassis {
@@ -47,3 +49,5 @@ private:
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

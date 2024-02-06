@@ -7,6 +7,8 @@
 #include "chassis_helper.hpp"
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class ChassisAutoNavTokyoCommand : public TapCommand {
@@ -70,3 +72,5 @@ private:
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

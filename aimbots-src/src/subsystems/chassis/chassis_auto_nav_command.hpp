@@ -6,6 +6,8 @@
 #include "chassis_helper.hpp"
 #include "drivers.hpp"
 
+#ifdef CHASSIS_COMPATIBLE
+
 namespace src::Chassis {
 
 class ChassisAutoNavCommand : public TapCommand {
@@ -90,3 +92,5 @@ static constexpr SmoothPIDConfig defaultRotationConfig = {
 };
 
 }  // namespace src::Chassis
+
+#endif //#ifdef CHASSIS_COMPATIBLE

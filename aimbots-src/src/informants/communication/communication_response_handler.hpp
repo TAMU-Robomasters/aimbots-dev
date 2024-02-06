@@ -1,4 +1,7 @@
 #pragma once
+
+#ifdef REF_COMM_COMPATIBLE
+
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 #include "tap/control/subsystem.hpp"
@@ -21,3 +24,5 @@ private:
     tap::Drivers &drivers;
 };
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

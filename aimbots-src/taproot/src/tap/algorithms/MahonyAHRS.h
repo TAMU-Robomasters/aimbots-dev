@@ -19,9 +19,6 @@
 #define MAHONY_AHRS_H_
 
 #include <cmath>
-#include <optional>
-
-#include "modm/math/geometry/vector3.hpp"
 
 //--------------------------------------------------------------------------------------------
 // Variable declaration
@@ -44,26 +41,6 @@ private:
 
 public:
     Mahony();
-
-    void setCalibrationEuler(modm::Vector3f calibrationEuler)
-    {
-        float x_over_two = calibrationEuler.getX() * 0.5f;
-        float y_over_two = calibrationEuler.getY() * 0.5f;
-        float z_over_two = calibrationEuler.getZ() * 0.5f;
-
-        float cosx2 = cosf(x_over_two);
-        float cosy2 = cosf(y_over_two);
-        float cosz2 = cosf(z_over_two);
-        float sinx2 = sinf(x_over_two);
-        float siny2 = sinf(y_over_two);
-        float sinz2 = sinf(z_over_two);
-
-        q0 = cosx2 * cosy2 * cosz2 + sinx2 * siny2 * sinz2;
-        q1 = sinx2 * cosy2 * cosz2 - cosx2 * siny2 * sinz2;
-        q2 = cosx2 * siny2 * cosz2 + sinx2 * cosy2 * sinz2;
-        q3 = cosx2 * cosy2 * sinz2 - sinx2 * siny2 * cosz2;
-    }
-
     void begin(float sampleFrequency, float kp, float ki)
     {
         invSampleFreq = 1.0f / sampleFrequency;

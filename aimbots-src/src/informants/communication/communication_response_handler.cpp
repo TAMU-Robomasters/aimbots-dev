@@ -1,3 +1,5 @@
+#ifdef REF_COMM_COMPATIBLE
+
 #include "communication_response_handler.hpp"
 
 #include "tap/errors/create_errors.hpp"
@@ -8,6 +10,7 @@
 #include "communication_message.hpp"
 #include "communication_response_subsytem.hpp"
 #include "drivers.hpp"
+
 
 namespace src::Communication {
 
@@ -41,3 +44,5 @@ void CommunicationResponseHandler::operator()(const tap::communication::serial::
 }
 
 }  // namespace src::Communication
+
+#endif // #ifdef REF_COMM_COMPATIBLE

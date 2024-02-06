@@ -1,6 +1,7 @@
 #pragma once
 
 #include <subsystems/gimbal/gimbal.hpp>
+#ifdef GIMBAL_COMPATIBLE
 
 namespace src::Gimbal {
 
@@ -24,3 +25,4 @@ public:
 };
 
 }  // namespace src::Gimbal
+#endif

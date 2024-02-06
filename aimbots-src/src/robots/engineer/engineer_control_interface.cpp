@@ -1,5 +1,5 @@
-#ifdef TARGET_HERO
-#include "hero_control_interface.hpp"
+#ifdef TARGET_ENGINEER
+#include "engineer_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
