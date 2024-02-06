@@ -57,11 +57,11 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
 }
 
 void WristSubsystem::initialize() {
-
+    ForAllWristMotors(&DJIMotor::initialize);
 }
 
 void WristSubsystem::refresh() {
-    // ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
+    ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
 }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
