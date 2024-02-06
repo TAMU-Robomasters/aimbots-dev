@@ -7,10 +7,6 @@
 
 #ifdef WRIST_COMPATIBLE
 
-// static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-//     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
-// }
-
 namespace src::Wrist {
 
 enum MotorIndex {YAW, PITCH, ROLL};
@@ -56,12 +52,7 @@ public:
      */
     void calculateArmAngles(uint16_t x, uint16_t y, uint16_t z);
 
-    void updateMotorPID(MotorIndex);
-
-    void setDesiredOutputToMotor(MotorIndex motorIdx) {
-        if (isMotorOnline(motorIdx))
-            motors[motorIdx].setDesiredOutput(desiredMotorOutputs[motorIdx]);
-    }
+    void updateAllPIDs();
 
     /** Gets the current unwrapped radians of the given motor after gear box ratios */
     float getScaledUnwrappedRadians(MotorIndex) const;
@@ -104,8 +95,10 @@ private:
     std::array<SmoothPID, WRIST_MOTOR_COUNT> velocityPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
-    std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads {0};
-    std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs {0};
+    std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads {};
+    std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs {};
+
+    void updateMotorPID(MotorIndex);
 
     DJIMotor buildMotor(MotorIndex idx)
     {
@@ -114,6 +107,11 @@ private:
                         WRIST_BUS, 
                         WRIST_MOTOR_DIRECTIONS[idx], 
                         WRIST_MOTOR_NAMES[idx]);
+    }
+
+    void setDesiredOutputToMotor(MotorIndex motorIdx) {
+        if (isMotorOnline(motorIdx))
+            motors[motorIdx].setDesiredOutput(desiredMotorOutputs[motorIdx]);
     }
 };
 

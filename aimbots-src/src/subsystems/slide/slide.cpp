@@ -30,7 +30,7 @@ void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx)
     motors[motorIdx].setDesiredOutput(desiredOutputs[motorIdx]);
 }
 
-void SlideSubsystem::updatePositionPIDs()
+void SlideSubsystem::updateAllPIDs()
 {
     ForAllSlideMotors(&SlideSubsystem::updateMotorPositionPID);
 }
