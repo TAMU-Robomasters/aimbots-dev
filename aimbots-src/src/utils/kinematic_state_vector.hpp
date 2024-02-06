@@ -60,12 +60,21 @@ public:
         if (updateLowerOrderTerms) {
             // float v1 = calcIntegral(getVelocity(), a, dt.value_or(currTime - lastTime));
             // float x1 = calcIntegral(getPosition(), v1, dt.value_or(currTime - lastTime));
-            // float v1 = getVelocity() + a * (currTime - lastTime);
+            float v2 = a * (currTime - lastTime);
+            if (abs(a) > 0.5) {
+                float v1 = getVelocity() + v2;
+            //     //float v1 = (getVelocity()-
+            //     // float v1 = calcIntegral(getVelocity(), a, dt.value_or(currTime - lastTime));
+                setVelocity(v1);
+            } else {
+                a = 0;
+            }
+            setPosition(v2);
+            //float x1 = getPosition() + 2;
             // float x1 = getPosition() + (v1) / 2 * (currTime - lastTime);
-            float v1 = 2;
-            float x1 = 2;
-            setPosition(x1);
-            setVelocity(v1);
+            // float x1 = (v1 * (currTime - lastTime)) + (1/2) * a * ((currTime - lastTime) * (currTime - lastTime))
+            //float x1 = currTime;
+            //setPosition(x1);
         }
         setAcceleration(a);
 

@@ -137,6 +137,7 @@ void KinematicInformant::updateIMUPosition() {
     // imuLinearState[Y_AXIS].updateFromAcceleration(a.getY(), true);
     // imuLinearState[Z_AXIS].updateFromAcceleration(a.getZ(), true);
     dPosition = imuLinearState[X_AXIS].getPosition();
+
 }
 // test
 float KinematicInformant::getCurrIMUPosition(LinearAxis axis) {
