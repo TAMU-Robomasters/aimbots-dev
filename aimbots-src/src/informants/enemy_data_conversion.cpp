@@ -102,9 +102,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // targetPositionZDisplay = transformedData.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    XPositionFilter.update(dt, transformedData.position.getX());
-    YPositionFilter.update(dt, transformedData.position.getY());
-    ZPositionFilter.update(dt, transformedData.position.getZ());
+    // XPositionFilter.update(dt, transformedData.position.getX()); uncomment this after testign if not work
+    // YPositionFilter.update(dt, transformedData.position.getY());
+    // ZPositionFilter.update(dt, transformedData.position.getZ());
 
     //see if this works
     XPositionFilter.update(dt, cameraToGimbal.position.getX());
@@ -177,17 +177,17 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 
-    // targetPositionXFutureDisplay = xPlate.getX();
-    // targetVelocityXFutureDisplay = xPlate.getY();
-    // targetAccelerationXFutureDisplay = xPlate.getZ();
+    targetPositionXFutureDisplay = xPlate.getX();
+    targetVelocityXFutureDisplay = xPlate.getY();
+    targetAccelerationXFutureDisplay = xPlate.getZ();
 
-    // targetPositionYFutureDisplay = yPlate.getX();
-    // targetVelocityYFutureDisplay = yPlate.getY();
-    // targetAccelerationYFutureDisplay = yPlate.getZ();
+    targetPositionYFutureDisplay = yPlate.getX();
+    targetVelocityYFutureDisplay = yPlate.getY();
+    targetAccelerationYFutureDisplay = yPlate.getZ();
 
-    // targetPositionZFutureDisplay = zPlate.getX();
-    // targetVelocityZFutureDisplay = zPlate.getY();
-    // targetAccelerationZFutureDisplay = zPlate.getZ();
+    targetPositionZFutureDisplay = zPlate.getX();
+    targetVelocityZFutureDisplay = zPlate.getY();
+    targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),

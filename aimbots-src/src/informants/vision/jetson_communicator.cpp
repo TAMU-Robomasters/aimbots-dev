@@ -105,9 +105,14 @@ void JetsonCommunicator::updateSerial() {
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
                     // position is relative to camera
-                    visionTargetPosition.setX(lastMessage.targetX);
-                    visionTargetPosition.setY(lastMessage.targetY);
-                    visionTargetPosition.setZ(lastMessage.targetZ);
+                    // visionTargetPosition.setX(lastMessage.targetX);
+                    // visionTargetPosition.setY(lastMessage.targetY);
+                    // visionTargetPosition.setZ(lastMessage.targetZ);
+
+                    visionTargetPosition.setX(0); //test
+                    visionTargetPosition.setY(1);
+                    visionTargetPosition.setZ(0);
+
 
                     visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
