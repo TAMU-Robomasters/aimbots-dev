@@ -50,12 +50,12 @@ ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
 GrabberSubsystem grabber(drivers());
+WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
-WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
