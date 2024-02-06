@@ -78,7 +78,7 @@ void GimbalChaseCommand::execute() {
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
     // projectileSpeed = 30.0f;
     predictedProjectileSpeedDisplay = projectileSpeed;
-
+    drivers->cvCommunicator.getPlatePrediction(0);//debug, delete later
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
         ballisticsSolver->solve(refHelper->getPredictedProjectileSpeed());  // returns nullopt if no solution is available
 

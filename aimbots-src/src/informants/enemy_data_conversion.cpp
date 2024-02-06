@@ -23,6 +23,10 @@ float targetPositionXDisplay = 0.0f;
 float targetPositionYDisplay = 0.0f;
 float targetPositionZDisplay = 0.0f;
 
+float cameraToGimbalXDisplay = -10.0f;
+float cameraToGimbalYDisplay = 10.0f;
+float cameraToGimbalZDisplay = -10.0f;
+
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -89,9 +93,14 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    cameraToGimbalXDisplay = cameraToGimbal.position.getX();
+    cameraToGimbalYDisplay = cameraToGimbal.position.getY();
+    cameraToGimbalZDisplay = cameraToGimbal.position.getZ();
+
     targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
+
 
     // targetPositionXUnfilteredDisplay = transformedData.position.getX();
     // targetPositionYUnfilteredDisplay = transformedData.position.getY();
@@ -140,15 +149,15 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     lastUpdateTimestamp_uS = currentTime_uS;
 }
 
-float targetPositionXFutureDisplay = 0.0f;
+float targetPositionXFutureDisplay = 5.0f;
 float targetVelocityXFutureDisplay = 0.0f;
 float targetAccelerationXFutureDisplay = 0.0f;
 
-float targetPositionYFutureDisplay = 0.0f;
+float targetPositionYFutureDisplay = 4.0f;
 float targetVelocityYFutureDisplay = 0.0f;
 float targetAccelerationYFutureDisplay = 0.0f;
 
-float targetPositionZFutureDisplay = 0.0f;
+float targetPositionZFutureDisplay = 3.0f;
 float targetVelocityZFutureDisplay = 0.0f;
 float targetAccelerationZFutureDisplay = 0.0f;
 
