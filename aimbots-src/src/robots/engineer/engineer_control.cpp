@@ -59,7 +59,7 @@ SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 
 // Define commands here ---------------------------------------------------
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristMoveCommand wristMoveCommand(drivers(), &wrist, PI/2, .0f, 0.0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, 0.0f);
 
 Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
@@ -97,8 +97,8 @@ void registerSubsystems(src::Drivers *drivers) {
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    chassis.initialize();
-    slide.initialize();
+    // chassis.initialize();
+    // slide.initialize();
     wrist.initialize();
     grabber.initialize();
 }

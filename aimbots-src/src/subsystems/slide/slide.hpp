@@ -21,7 +21,7 @@ public:
     mockable void refresh() override;
 
     void setTargetPositionMeters(float x, float z);
-    void updatePositionPIDs();
+    void updateAllPIDs();
 
     template<typename... Args>
     using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);

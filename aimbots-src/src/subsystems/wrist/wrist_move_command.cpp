@@ -18,7 +18,7 @@ void WristMoveCommand::initialize() {
 }
 
 void WristMoveCommand::execute() {
-
+    wrist->updateAllPIDs();
 }
 
 void WristMoveCommand::end(bool) {
