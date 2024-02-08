@@ -12,7 +12,7 @@ BallisticsSolver::BallisticsSolver(src::Drivers *drivers, Vector3f barrelOriginF
 {}
 
 BallisticsSolver::BallisticsSolution solutionDisplay;
-MeasuredKinematicState plateKinematicStateDisplay;
+float plateKinematicStateDisplay;
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
     if (!drivers->cvCommunicator.isJetsonOnline() ||
         drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
@@ -37,7 +37,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
         .acceleration = plateKinematicState.acceleration,
     };
 
-    plateKinematicStateDisplay = targetKinematicState;
+    plateKinematicStateDisplay = targetKinematicState.position.getX();
 
     lastBallisticsSolution = BallisticsSolution();
     lastBallisticsSolution->distanceToTarget = targetKinematicState.position.getLength();
