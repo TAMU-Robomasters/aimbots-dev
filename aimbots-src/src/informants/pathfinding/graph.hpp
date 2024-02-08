@@ -5,7 +5,7 @@
 #include <array>
 #include <queue>
 #include <functional>
-#include "Ramer_Douglas_peucker.hpp"
+//#include "Ramer_Douglas_peucker.hpp"
 
 //I stole all of this because I have not taken DSA
 //https://www.redblobgames.com/pathfinding/a-star/implementation.html#cpp
@@ -167,7 +167,7 @@ void a_star_search
   }
 }
 
-std::unordered_map<modm::Vector2i, modm::Vector2i> graph_test() {
+std::unordered_map<modm::Vector2i, modm::Vector2i> wsg_test() {
     WeightedSquareGraph graph(10, 10, 100);
     modm::Vector2i start = {0, 0};
     modm::Vector2i goal = {4, 7};
