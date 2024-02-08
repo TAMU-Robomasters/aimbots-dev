@@ -83,16 +83,15 @@ public:
      * Sets the desired target angle of the given motor after gear box ratios
      * 
      * @param motorIdx
-     * @param angle the angle in radians from -pi to pi
+     * @param angleRadians the angle in radians from -pi to pi
     */
-    void setTargetAngle(MotorIndex motorIdx, float angle) {
-        targetAnglesRads[motorIdx] = angle;
+    void setTargetAngle(MotorIndex motorIdx, float angleRadians) {
+        targetAnglesRads[motorIdx] = angleRadians;
     }
 
 private:
     std::array<DJIMotor, WRIST_MOTOR_COUNT> motors;
     std::array<SmoothPID, WRIST_MOTOR_COUNT> positionPIDs;
-    std::array<SmoothPID, WRIST_MOTOR_COUNT> velocityPIDs;
 
     /** The target desired angles of each motor AFTER scaling for the gear boxes */
     std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads {};

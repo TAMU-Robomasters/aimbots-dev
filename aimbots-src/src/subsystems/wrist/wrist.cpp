@@ -16,11 +16,6 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
         SmoothPID(YAW_POSITION_PID_CONFIG),
         SmoothPID(PITCH_POSITION_PID_CONFIG),
         SmoothPID(ROLL_POSITION_PID_CONFIG)
-    },
-    velocityPIDs {
-        SmoothPID(YAW_VELOCITY_PID_CONFIG),
-        SmoothPID(PITCH_VELOCITY_PID_CONFIG),
-        SmoothPID(ROLL_VELOCITY_PID_CONFIG)
     }
 {
 }
@@ -41,19 +36,12 @@ void WristSubsystem::updateAllPIDs() {
     ForAllWristMotors(&WristSubsystem::updateMotorPID);
 }
 
-// Doing cascade PIDs, feed position error to get desired velocity, feed velocity error to
-// get desired acceleration basically
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
-    if (isMotorOnline(idx)) {
-        float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
-
-        float desiredVelocityRadsPs = positionPIDs[idx].runControllerDerivateError(errorRadians);
-        float velocityErrorRadsPs = desiredVelocityRadsPs - getMotorScaledRadsPs(idx);
-
-        float accelerationOutput = velocityPIDs[idx].runControllerDerivateError(velocityErrorRadsPs);
-
-        desiredMotorOutputs[idx] = accelerationOutput;
-    }
+    float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
+    float errorDerivative = getMotorRPM(idx);
+    float output = positionPIDs[idx].runController(errorRadians, errorDerivative);
+    
+    desiredMotorOutputs[idx] = output;
 }
 
 float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
