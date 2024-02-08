@@ -16,11 +16,13 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
       limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING)
 {
     BuildFeederMotors();
+    BuildPIDControllers();
 }
 
 // Watch Variables
 int16_t heatCurrentDisplay = 0;
 int16_t barrelDDisplay = 0;
+bool MotorOnline = false;
 
 int16_t heatMaxDisplay = 0;
 
@@ -47,12 +49,13 @@ bool isFeederOnlineDisplay = false;
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
     int feederOnlineCount = 0;
-    // feederDesiredOutputDisplay = targetRPM;
+     feederDesiredOutputDisplay = targetRPM;
     // feederShaftRPMDisplay = feederMotor.getShaftRPM();
 
     // updateMotorVelocityPID();
     // setDesiredOutput();
     limitSwitch.refresh();
+    MotorOnline = feederMotors[0]->isMotorOnline();
 
     for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
         //feederVelocityFilters[i]->update(feeder->getRPM(i));
@@ -71,9 +74,9 @@ void FeederSubsystem::refresh() {
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
-    if (feederMotors[FeederIdx]->isFeederMotorOnline(FeederIdx)){
-        float err = targetRPM - feederMotors[FeederIdx]->getRPM(FeederIdx);
-        float 
+    if (feederMotors[FeederIdx]->isMotorOnline()){
+        float err = targetRPM - feederMotors[FeederIdx]->getShaftRPM();
+  //      float 
     }
     // float err = targetRPM - feederMotor.getShaftRPM();
     // feederVelPID.runControllerDerivateError(err);

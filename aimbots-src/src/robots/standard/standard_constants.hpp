@@ -33,7 +33,7 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
-satic constexpr uint8_t Feeder_MOTOR_COUNT = 1;
+static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
@@ -271,11 +271,13 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID for Barrel Swap
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+//static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
+static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
@@ -285,7 +287,8 @@ static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1;  // TODO: check motor 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = false;
+//static constexpr bool FEEDER_DIRECTION = false;
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 static constexpr bool BARREL_SWAP_DIRECTION = true;
 
