@@ -28,7 +28,7 @@
 #include "informants/vision/jetson_communicator.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/robot_specific_inc.hpp"
-#include "informants/pathfinding/graph.hpp"
+// graphing elsewhere lol
 
 namespace src {
 class Drivers : public tap::Drivers {
