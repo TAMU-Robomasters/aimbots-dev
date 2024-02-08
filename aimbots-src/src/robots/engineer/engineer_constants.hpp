@@ -107,9 +107,9 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 10000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.7f,
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -344,7 +344,7 @@ static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 // TODO: set these to what they actually are
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
-static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR1;
+static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR2;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR4;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
