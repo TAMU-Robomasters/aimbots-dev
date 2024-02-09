@@ -39,7 +39,7 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
 #endif
 #ifdef CHASSIS_BALANCING
       balancingAnglePID(CHASSIS_BALANCE_PID_CONFIG),
-      balancingAngleHighTiltPID(CHASSIS_BALANCE_HIGH_TILT_PID_CONFIG),
+      balancingVelocityPID(CHASSIS_BALANCE_VELOCITY_PID_CONFIG),
 #endif
 
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -113,7 +113,6 @@ float motorOutputDisplay = 0.0f;
 void ChassisSubsystem::refresh() {
     #ifdef CHASSIS_BALANCING
 
-    //Do all balancing PIDing in here
     #endif
 
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
@@ -253,24 +252,32 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;
-    float setPoint = -10.0f * y / 8000.0f; // user input to control the tilt angle set point 
     
-    float rotationScaler = 2.5f; // 1/x times the rotation speed, used to slow down the rotation 
-    float driftScaler = 2.5f; // 1/x times the x direction speed, used to slow down the x direction movement
+    float SysVelocitySetPoint = y/ 8000.0f * 10;
 
+    float SysVelocity = 0.0f;
+
+    float SysVelocityError = SysVelocitySetPoint - SysVelocity;
+
+    balancingVelocityPID.runControllerDerivateError(SysVelocityError);
+
+    // update angle set point with balancingVelocityPID.getOutput() 
+    // this is the output of the outer PID which is the set point for the inner PID
+
+    float AngleSetPoint = -15.0f * y / 8000.0f; // user input to control the tilt angle set point 
+                                                // setPoint scaled between 0 and 15 degrees
     // measures the tilt angle 
     float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float SysAngleError = AngleSetPoint - modm::toDegree(ActualTiltAngle);
 
-    float error = setPoint - modm::toDegree(ActualTiltAngle);
-
-    // calculate the gain scheduled PID controller
-    balancingAnglePID.runControllerDerivateError(error);
-    balancingAngleHighTiltPID.runControllerDerivateError(error);
+    // calculate the angle PID controller
+    balancingAnglePID.runControllerDerivateError(SysAngleError);
     
     float wheelVelocity = 0; 
-
+   
     // get distance from wheel to center of wheelbase
     float wheelbaseCenterDist = sqrtf(pow2(WHEELBASE_WIDTH / 2.0f) + pow2(WHEELBASE_LENGTH / 2.0f));
+    
     // offset gimbal center from center of wheelbase so we rotate around the gimbal
     float leftFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET - GIMBAL_Y_OFFSET);
     float rightFrontRotationRatio = modm::toRadian(wheelbaseCenterDist - GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
@@ -278,14 +285,13 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
 
-    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18 )
+    float rotationScaler = 2.0f; // 1/x times the rotation speed, used to slow down the rotation 
+    float driftScaler = 2.0f; // 1/x times the x direction speed, used to slow down the x direction movement
+
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0f )
     {
         wheelVelocity = balancingAnglePID.getOutput();
     }
-    // else if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0 )
-    // {
-    //     wheelVelocity = balancingAngleHighTiltPID.getOutput();
-    // }
     else
     {
         wheelVelocity = yInputDisplay; 
@@ -302,7 +308,7 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
 
     // display variables 
     desiredRotation = r;
-    errorOutputDisplay = error;
+    errorOutputDisplay = SysAngleError;
     thetaDisplay = modm::toDegree(ActualTiltAngle);
     vOutDisplay = wheelVelocity;
 }
