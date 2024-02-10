@@ -53,8 +53,8 @@ void FullAutoFeederCommand::end(bool) {
     isCommandRunningDisplay = false;
 }
 
-bool FullAutoFeederCommand::isReady() { return refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isReady() { return /*refHelper->canCurrBarrelShootSafely();*/ true; }
 
-bool FullAutoFeederCommand::isFinished() const { return !refHelper->canCurrBarrelShootSafely(); }
+bool FullAutoFeederCommand::isFinished() const { return false; /*!refHelper->canCurrBarrelShootSafely();*/ }
 
 }  // namespace src::Feeder

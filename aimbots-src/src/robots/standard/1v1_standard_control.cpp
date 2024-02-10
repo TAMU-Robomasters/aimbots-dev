@@ -195,6 +195,14 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+ChassisToggleDriveCommand chassisToggleDriveCommand2(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(
     drivers(),
@@ -277,13 +285,13 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalPatrolCommand*/},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand},
+    {&chassisToggleDriveCommand2, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -300,7 +308,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -308,16 +316,6 @@ HoldCommandMapping leftClickMouse(
     drivers(),
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
-/*PressCommandMapping ctrlC(
-    drivers(),
-    {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
-// HoldCommandMapping rightClickMouse(
-//     drivers(),
-//     {&},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
