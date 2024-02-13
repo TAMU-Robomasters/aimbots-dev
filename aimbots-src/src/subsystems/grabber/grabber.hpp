@@ -5,7 +5,7 @@
 #include "utils/robot_specific_inc.hpp"
 
 
-#ifdef GRABBER_COMPATIBLE //TODO: Define this in a constants file later
+#ifdef GRABBER_COMPATIBLE
 
 namespace src::Grabber {
 
@@ -13,22 +13,20 @@ class GrabberSubsystem : public tap::control::Subsystem {
 public:
     GrabberSubsystem(tap::Drivers* drivers);
 
-    mockable void initialize() override;
+    void initialize() override;
     
-    mockable void refresh() override;
+    void refresh() override;
 
-    mockable void activate();
+    void activate();
 
-    mockable void deactivate();
+    void deactivate();
 
-    mockable void unknown();
+    void unknown();
 
 private:
-    tap::Drivers* drivers;
-
+    tap::gpio::Pwm* const pwm;
 };
 
 }
-
 
 #endif //GRABBER_COMPATIBLE
