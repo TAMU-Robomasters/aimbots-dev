@@ -44,19 +44,12 @@
 #include "subsystems/hopper/hopper.hpp"
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
-//
-#include "subsystems/gui/gui_display.hpp"
-#include "subsystems/gui/gui_display_command.hpp"
-//
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::GUI;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -74,22 +67,14 @@ namespace CVTestbenchControl {
 
 BarrelID currentBarrel = BarrelID::TURRET_17MM_1;
 
-src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-HopperSubsystem hopper(
-    drivers(),
-    HOPPER_PIN,
-    HOPPER_MAX_PWM,
-    HOPPER_MIN_PWM,
-    HOPPER_PWM_RAMP_SPEED,
-    HOPPER_MIN_ANGLE,
-    HOPPER_MAX_ANGLE,
-    HOPPER_MIN_ACTION_DELAY);
+HopperSubsystem hopper(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);

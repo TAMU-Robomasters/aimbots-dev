@@ -182,7 +182,7 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
     //kinematic shenanigans
 
     //                          FIX THIS FUNC vvvvvvv
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(dt); //expected location of the panels
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(0); //expected location of the panels
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 

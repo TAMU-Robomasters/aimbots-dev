@@ -2,6 +2,12 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define GIMBAL_COMPATIBLE
+#define CHASSIS_COMPATIBLE
+#define SHOOTER_COMPATIBLE
+#define FEEDER_COMPATIBLE
+#define HOPPER_LID_COMPATIBLE
+
 #define GIMBAL_UNTETHERED
 
 /**
