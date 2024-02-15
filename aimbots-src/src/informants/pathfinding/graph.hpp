@@ -80,7 +80,7 @@ struct WeightedSquareGraph {
     }
 
     void get_neighbors(modm::Vector2i loc, std::array<modm::Vector2i, 8>* neighbors) {
-        // Generates up all neighbors on the grid relative to a specific node
+        // Generates all possible neighbors on the grid relative to a specific node
         //   Up to 4 orthogonal & 4 diagonal neighbors, similar to Minesweeper
         int k = 0;
         for (int i = -1; i < 2; i++){
@@ -152,6 +152,7 @@ void a_star_search
     if (current == goal) {
       break;
     }
+    
     std::array<modm::Vector2i, 8> neighbors;
     graph.get_neighbors(current, &neighbors);
     for (modm::Vector2i next : neighbors) {
