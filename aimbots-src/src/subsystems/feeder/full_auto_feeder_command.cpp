@@ -34,11 +34,13 @@ void FullAutoFeederCommand::initialize() {
     unjamTimer.restart(0);
 }
 
-uint16_t lastHeatDisplay = 0;
-uint16_t heatLimitDisplay = 0;
+//uint16_t lastHeatDisplay = 0;
+//uint16_t heatLimitDisplay = 0;
+//float watchpeed;
 float lastProjectileSpeedDisplay = 0.0f;
 
 void FullAutoFeederCommand::execute() {
+//    watchpeed = speed;
     isCommandRunningDisplay = true;
     if (fabs(feeder->getRPM(0)) <= 10.0f && startupThreshold.execute()) {
         feeder->setTargetRPM(unjamSpeed);
@@ -50,8 +52,8 @@ void FullAutoFeederCommand::execute() {
         startupThreshold.restart(500);
     }
 
-    lastHeatDisplay = refHelper->getCurrBarrelHeat();
-    heatLimitDisplay = refHelper->getCurrBarrelLimit();
+ //   lastHeatDisplay = refHelper->getCurrBarrelHeat();
+  //  heatLimitDisplay = refHelper->getCurrBarrelLimit();
     lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
 }
 

@@ -43,8 +43,11 @@ public:
     }
 
 
+
     mockable void initialize() override;
     mockable void refresh() override;
+
+  //  float getMotorSpeed(FeederIdx feederIdx) const;
 
     inline bool isOnline() const {
         bool feederOnline = false;
@@ -75,7 +78,11 @@ public:
     mockable float setTargetRPM(float rpm);
 
     float getRPM(uint8_t FeederIdx) const {
-        return (feederMotors[FeederIdx]->isMotorOnline()) ? feederMotors[FeederIdx]->getShaftRPM() : 0;
+        return (feederMotors[FeederIdx]->isMotorOnline()) ?  - feederMotors[FeederIdx]->getShaftRPM() : 0;
+    }
+
+    inline int16_t getFeederMotorTorque(uint8_t feederIdx) const {
+        return feederMotors[feederIdx]->isMotorOnline() ? feederMotors[feederIdx]->getTorque() : 0;
     }
 
     bool getPressed();
