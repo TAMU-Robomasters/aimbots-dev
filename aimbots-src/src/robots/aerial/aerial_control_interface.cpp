@@ -1,4 +1,4 @@
-#if defined(TARGET_AERIAL) 
+#if defined(TARGET_AERIAL)
 #include "AERIAL_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
@@ -17,7 +17,7 @@ static constexpr float INPUT_Y_INC = 0.003f;
 static constexpr float INPUT_XY_STOP_INC = 0.03f;
 static constexpr float INPUT_R_INC = 0.003f;
 
-static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
+static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.008f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
 static constexpr int16_t MOUSE_YAW_MAX = 1000;

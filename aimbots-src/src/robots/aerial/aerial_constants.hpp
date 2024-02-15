@@ -271,8 +271,8 @@ static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID fo
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 //
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR2;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 //
 static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1;  // TODO: check motor ID for Barrel Swap
 

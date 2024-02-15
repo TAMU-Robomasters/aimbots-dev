@@ -209,21 +209,21 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 GimbalChaseCommand gimbalChaseCommand(
     drivers(),
     &gimbal,
-    &gimbalFieldRelativeController,
+    &gimbalChassisRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 GimbalChaseCommand gimbalChaseCommand2(
     drivers(),
     &gimbal,
-    &gimbalFieldRelativeController,
+    &gimbalChassisRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
-    &gimbalFieldRelativeController,
+    &gimbalChassisRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
