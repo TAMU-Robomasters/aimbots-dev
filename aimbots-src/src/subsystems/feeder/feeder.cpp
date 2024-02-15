@@ -25,6 +25,8 @@ int16_t barrelDDisplay = 0;
 bool MotorOnline = false;
 
 int16_t heatMaxDisplay = 0;
+//int watchPids = 0;
+float pidTargetDisplay = 0.0f;
 
 void FeederSubsystem::initialize() {
     
@@ -39,6 +41,7 @@ void FeederSubsystem::initialize() {
     
     for(auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
         feederVelocityPIDs[i]->pid.reset();
+  //      watchPids++;
     }
 }
 
@@ -49,7 +52,7 @@ bool isFeederOnlineDisplay = false;
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
     int feederOnlineCount = 0;
-     feederDesiredOutputDisplay = targetRPM;
+    feederDesiredOutputDisplay = targetRPM;
     // feederShaftRPMDisplay = feederMotor.getShaftRPM();
 
     // updateMotorVelocityPID();
@@ -64,7 +67,7 @@ void FeederSubsystem::refresh() {
         }
         
         feederOnlineCount++;
-
+        updateMotorVelocityPID(i);
         setDesiredOutputToFeederMotor(i);
     }
 
@@ -74,13 +77,14 @@ void FeederSubsystem::refresh() {
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
-    if (feederMotors[FeederIdx]->isMotorOnline()){
-        float err = targetRPM - feederMotors[FeederIdx]->getShaftRPM();
+  //  if (feederMotors[FeederIdx]->isMotorOnline()){
+    float err = targetRPM - feederMotors[FeederIdx]->getShaftRPM();
   //      float 
-    }
-    // float err = targetRPM - feederMotor.getShaftRPM();
-    // feederVelPID.runControllerDerivateError(err);
-    // desiredOutput = feederVelPID.getOutput();
+     //float err = targetRPM - feederMotor.getShaftRPM();
+     //feederVelocityPIDs[FeederIdx].runControllerDerivateError(err);
+     desiredOutput = feederVelocityPIDs[FeederIdx]->runController(
+        err, getFeederMotorTorque
+     )
 }
 
 float FeederSubsystem::setTargetRPM(float rpm) {
