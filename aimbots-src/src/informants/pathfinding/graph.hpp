@@ -173,7 +173,7 @@ std::unordered_map<modm::Vector2i, modm::Vector2i> wsg_test() {
     modm::Vector2i start = {0, 0};
     modm::Vector2i goal = {4, 7};
     std::unordered_map<modm::Vector2i, modm::Vector2i> came_from;
-    //std::unordered_map<modm::Vector2i, double> cost_so_far;
-    //a_star_search(graph, start, goal, came_from, cost_so_far);
+    std::unordered_map<modm::Vector2i, double> cost_so_far;
+    a_star_search(graph, start, goal, came_from, cost_so_far);
     return came_from;
 }

@@ -46,6 +46,7 @@
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
+#include "informants/pathfinding/graph.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -103,7 +104,19 @@ int main() {
             drivers->bmi088.periodicIMUUpdate();
             // currHeat = drivers->refSerial.getRobotData().turret.heat42;
             // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+            // path = wsg_test();
+            // auto it = path.begin();
+            // x1 = it->first[0];
+            // y1 = it->first[1];
+            // it++;
+            // x2 = it->first[0];
+            // y2 = it->first[1];
+            // it++;
+            // x3 = it->first[0];
+            // y3 = it->first[1];
+            
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
