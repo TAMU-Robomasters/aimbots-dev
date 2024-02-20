@@ -26,7 +26,7 @@ void SupperCapCommunicator::initialize() {
 
 uint8_t displayBuffer[SUPPER_CAP_MESSAGE_SIZE];
 int displayBufIndex = 0;
-
+int displayNextByteIndex = 0;
 int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
 
@@ -38,40 +38,52 @@ float lPower;
 char currentCommand;
 /**
  * @brief Suppercap
- *
+ * blz give me break points
  */
 void SupperCapCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
-
+    // restarts the timeout
     supperCapOfflineTimeout.restart(SUPPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS);
 
-    displayBuffer[displayBufIndex] = rawSerialBuffer[0];
-    displayBufIndex = (displayBufIndex + 1) % SUPPER_CAP_MESSAGE_SIZE;
+    //
+    displayBuffer[displayBufIndex] = rawSerialBuffer[0];  // copy byte to display buffer
+    displayBufIndex =
+        (displayBufIndex + 1) % SUPPER_CAP_MESSAGE_SIZE;  // increment display index and wrap around if necessary
 
     switch (currentSerialState) {
-        case SupperCapCommunicatorSerialState::SearchingForMagic:
+        case SupperCapCommunicatorSerialState::SearchingForMagic: {
+            // Check if the byte we just read is the byte we expected in the magic number.
+
             if (rawSerialBuffer[nextByteIndex] == ((SUPPER_CAP_MESSAGE_RECIEVED_MAGIC >> (8 * nextByteIndex)) & 0xFF)) {
                 currentSerialState = SupperCapCommunicatorSerialState::AssemblingMessage;
+                // goes to the next byte
                 nextByteIndex++;
             } else {
+                // starts over
                 nextByteIndex = 0;
             }
 
             if (nextByteIndex == sizeof(decltype(SUPPER_CAP_MESSAGE_RECIEVED_MAGIC))) {
+                // received a full message and we can now interpret it
                 currentSerialState = SupperCapCommunicatorSerialState::AssemblingMessage;
             }
-
+            displayNextByteIndex = nextByteIndex;
             break;
-        case SupperCapCommunicatorSerialState::AssemblingMessage:
+        }
+        case SupperCapCommunicatorSerialState::AssemblingMessage: {
             nextByteIndex++;
+            displayNextByteIndex = nextByteIndex;
 
             if (nextByteIndex == SUPPER_CAP_MESSAGE_SIZE) {
+                // received a full message and we can now interpret it
+                //  puts it into lastMessage struct
                 lastMessage = *reinterpret_cast<SupperCapMessageRecieved*>(rawSerialBuffer);
             }
             if (lastMsgTimeDisplay == 0) {
+                // gets time
                 lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
             } else {
                 msBetweenLastMessageDisplay =
@@ -79,6 +91,7 @@ void SupperCapCommunicator::updateSerial() {
                 lastMsgTimeDisplay = currTime;
             }
 
+            // test values
             lVoltage = lastMessage.voltage;
             lPower = lastMessage.power;
             lPrecent = lastMessage.percent;
@@ -87,34 +100,36 @@ void SupperCapCommunicator::updateSerial() {
             currentSerialState = SupperCapCommunicatorSerialState::SearchingForMagic;
 
             break;
+        }
     }
-    currentCommand = command;
-    switch (command) {
-        case STOP:
-            /* code */
-            lastSentMessage.command = 's';
-            lastSentMessage.charge = 0;
-            break;
-        case CHARGE:
-            /* code */
-            lastSentMessage.command = 'c';
-            lastSentMessage.charge = 100;  // supperCapSubSystem->getCharge();
-            break;
-        case DISCHARGE:
-            lastSentMessage.command = 'd';
-            lastSentMessage.charge = 0;
-        default:
-            // notify("Invalid command");
-            lastSentMessage.command = 's';
-            lastSentMessage.charge = 0;
-            break;
-    }
+    // displayNextByteIndex = nextByteIndex;
+    // currentCommand = command;
+    // switch (command) {
+    //     case STOP:
+    //         /* code */
+    //         lastSentMessage.command = 's';
+    //         lastSentMessage.charge = 0;
+    //         break;
+    //     case CHARGE:
+    //         /* code */
+    //         lastSentMessage.command = 'c';
+    //         lastSentMessage.charge = 100;  // supperCapSubSystem->getCharge();
+    //         break;
+    //     case DISCHARGE:
+    //         lastSentMessage.command = 'd';
+    //         lastSentMessage.charge = 0;
+    //     default:
+    //         // notify("Invalid command");
+    //         lastSentMessage.command = 's';
+    //         lastSentMessage.charge = 0;
+    //         break;
+    // }
 
-    // rawSerialBufferSent = *reinterpret_cast<uint8_t*>(&lastSentMessage);
-    rawSerialBufferSent[0] = lastSentMessage.magic;
-    rawSerialBufferSent[1] = lastSentMessage.command;
-    rawSerialBufferSent[2] = lastSentMessage.charge;
-    WRITE(rawSerialBufferSent, SUPPER_CAP_MESSAGE_SENT_SIZE);
+    // // rawSerialBufferSent = *reinterpret_cast<uint8_t*>(&lastSentMessage);
+    // rawSerialBufferSent[0] = lastSentMessage.magic;
+    // rawSerialBufferSent[1] = lastSentMessage.command;
+    // rawSerialBufferSent[2] = lastSentMessage.charge;
+    // WRITE(rawSerialBufferSent, SUPPER_CAP_MESSAGE_SENT_SIZE);
 }
 
 }  // namespace src::Informants::SupperCap

@@ -51,7 +51,7 @@ private:
 
     static constexpr uint32_t SUPPER_CAP_BAUD_RATE = 115200;
     static constexpr uint16_t SUPPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort SUPPER_CAP_UART_PORT = UartPort::Uart6;
+    static constexpr UartPort SUPPER_CAP_UART_PORT = UartPort::Uart1;
 
     SupperCapMessageRecieved lastMessage;
     SupperCapMessageSent lastSentMessage;

@@ -2,13 +2,9 @@
 
 namespace src::Informants::SupperCap {
 
-static constexpr uint8_t SUPPER_CAP_MESSAGE_RECIEVED_MAGIC = 'c';
+static constexpr uint8_t SUPPER_CAP_MESSAGE_RECIEVED_MAGIC = 'a';
 
-enum SupperCapCommand : char {
-    CHARGE = 'c',
-    DISCHARGE = 'd',
-    STOP = 's'
-};
+enum SupperCapCommand : char { CHARGE = 'c', DISCHARGE = 'd', STOP = 's' };
 
 // change this for ASCII data
 // we don't yet know what format supercap will be sending back
@@ -18,11 +14,9 @@ struct SupperCapMessageRecieved {
     float power;
     float percent;
     float inputPower;
-      // ms
-    // CVState cvState;
 } __attribute__((packed));
 
-//sent command
+// sent command
 struct SupperCapMessageSent {
     uint8_t magic;
     char command;
