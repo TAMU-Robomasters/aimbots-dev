@@ -352,7 +352,7 @@ static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, 1.0f};
 
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
