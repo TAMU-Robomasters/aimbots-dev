@@ -101,8 +101,8 @@ int main() {
 
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
-            // currHeat = drivers->refSerial.getRobotData().turret.heat42;
-            // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
+             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit17ID1;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
         }
         // every 2ms...
