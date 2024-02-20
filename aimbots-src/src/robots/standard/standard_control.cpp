@@ -292,13 +292,13 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runDoubleBarrelFeederCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the

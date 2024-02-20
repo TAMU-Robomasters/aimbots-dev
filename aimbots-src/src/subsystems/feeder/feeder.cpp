@@ -27,10 +27,10 @@ bool MotorOnline = false;
 int16_t heatMaxDisplay = 0;
 //int watchPids = 0;
 float pidTargetDisplay = 0.0f;
+bool watchonline = false;
 
 void FeederSubsystem::initialize() {
     
-
  //   feederMotor.initialize();
     ForAllFeederMotors(&DJIMotor::initialize);
     limitSwitch.initialize();
@@ -51,6 +51,7 @@ bool isFeederOnlineDisplay = false;
 
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
+    watchonline = isOnline();
     int feederOnlineCount = 0;
     feederDesiredOutputDisplay = targetRPM;
     // feederShaftRPMDisplay = feederMotor.getShaftRPM();
@@ -78,13 +79,12 @@ void FeederSubsystem::refresh() {
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
   //  if (feederMotors[FeederIdx]->isMotorOnline()){
-    float err = targetRPM - feederMotors[FeederIdx]->getShaftRPM();
   //      float 
      //float err = targetRPM - feederMotor.getShaftRPM();
      //feederVelocityPIDs[FeederIdx].runControllerDerivateError(err);
-     desiredOutput = feederVelocityPIDs[FeederIdx]->runController(
-        err, getFeederMotorTorque
-     )
+    float desiredOutput = feederVelocityPIDs[FeederIdx]->runController(
+        targetRPM - feederMotors[FeederIdx]->getShaftRPM(),getFeederMotorTorque(FeederIdx));
+    setDesiredFeederMotorOutput(FeederIdx, desiredOutput);
 }
 
 float FeederSubsystem::setTargetRPM(float rpm) {
