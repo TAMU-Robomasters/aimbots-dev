@@ -46,6 +46,7 @@
 #include "robots/robot_control.hpp"
 #include "utils/music/player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
+#include "informants/pathfinding/graph.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -67,6 +68,13 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
+std::unordered_map<modm::Vector2i, modm::Vector2i> path;
+int x1 = -1;
+int x2 = -1;
+int x3 = -1;
+int y1 = -1; 
+int y2 = -1;
+int y3 = -1;
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -100,7 +108,19 @@ int main() {
             drivers->bmi088.periodicIMUUpdate();
             // currHeat = drivers->refSerial.getRobotData().turret.heat42;
             // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+            // path = wsg_test();
+            // auto it = path.begin();
+            // x1 = it->first[0];
+            // y1 = it->first[1];
+            // it++;
+            // x2 = it->first[0];
+            // y2 = it->first[1];
+            // it++;
+            // x3 = it->first[0];
+            // y3 = it->first[1];
+            
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
