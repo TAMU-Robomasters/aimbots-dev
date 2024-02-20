@@ -29,6 +29,9 @@ void DualBarrelFeederCommand::initialize() {
     unjamTimer.restart(0);
 }
 
+float feeder_rpm = 0.0;
+float feeder_speed = 0.0;
+
 void DualBarrelFeederCommand::execute() {
         if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
             feeder->setTargetRPM(unjamSpeed);
@@ -39,6 +42,8 @@ void DualBarrelFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
+        feeder_rpm = feeder->getCurrentRPM();
+        feeder_speed = speed;
 }
 
 void DualBarrelFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
