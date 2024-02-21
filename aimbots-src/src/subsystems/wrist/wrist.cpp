@@ -51,6 +51,14 @@ float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
     return unwrappedRadians / inPerOut;
 }
 
+float WristSubsystem::getMotorScaledRadsPs(MotorIndex motorIdx) const {
+    float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
+    float radsPerSecond = RPM_TO_RADPS(getMotorRPM(motorIdx));
+    float scaledOutput = radsPerSecond / inPerOut;
+
+    return scaledOutput;
+}
+
 };  // namespace src::Wrist
 
 #endif  // #ifdef WRIST_COMPATIBLE
