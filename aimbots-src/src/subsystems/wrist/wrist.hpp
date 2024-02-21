@@ -54,29 +54,12 @@ public:
 
     void updateAllPIDs();
 
-    /** Gets the current unwrapped radians of the given motor after gear box ratios */
     float getScaledUnwrappedRadians(MotorIndex) const;
+
+    float getMotorScaledRadsPs(MotorIndex) const;
 
     float getScaledUnwrappedRadiansOffset(MotorIndex idx) const {
         return getScaledUnwrappedRadians(idx) - WRIST_MOTOR_OFFSET_ANGLES[idx];
-    }
-
-    /** Gets the given motor's current RPM, or 0 if it's offline */
-    int16_t getMotorRPM(MotorIndex motorIdx) const {
-        return isMotorOnline(motorIdx) ? motors[motorIdx].getShaftRPM() : 0;
-    }
-
-    float getMotorScaledRadsPs(MotorIndex motorIdx) const {
-        float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
-        float radsPerSecond = RPM_TO_RADPS(getMotorRPM(motorIdx));
-        float scaledOutput = radsPerSecond / inPerOut;
-
-        return scaledOutput;
-    }
-
-    /** Gets the given motor's current torque, or 0 if it's offline */
-    int16_t getMotorTorque(MotorIndex motorIdx) const {
-        return isMotorOnline(motorIdx) ? motors[motorIdx].getTorque() : 0;
     }
 
     /**
@@ -87,6 +70,16 @@ public:
     */
     void setTargetAngle(MotorIndex motorIdx, float angleRadians) {
         targetAnglesRads[motorIdx] = angleRadians;
+    }
+
+    /** Gets the given motor's current RPM, or 0 if it's offline */
+    int16_t getMotorRPM(MotorIndex motorIdx) const {
+        return isMotorOnline(motorIdx) ? motors[motorIdx].getShaftRPM() : 0;
+    }
+
+    /** Gets the given motor's current torque, or 0 if it's offline */
+    int16_t getMotorTorque(MotorIndex motorIdx) const {
+        return isMotorOnline(motorIdx) ? motors[motorIdx].getTorque() : 0;
     }
 
 private:
