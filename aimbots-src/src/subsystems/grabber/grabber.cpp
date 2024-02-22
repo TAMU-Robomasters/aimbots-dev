@@ -21,8 +21,6 @@ GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers)
 {
 }
 
-int account_entering_commands;
-
 void GrabberSubsystem::initialize() {
     pwm->init();
 }
@@ -46,13 +44,10 @@ void GrabberSubsystem::unknown() {
     //     drivers->pwm.write(1.0f, GRABBER_PIN);
     //     drivers->pwm.write(0.0f, GRABBER_PIN);
     // }
-    pwm->write(1.0f, GRABBER_PIN);
-    pwm->write(0.0f, GRABBER_PIN);
+    pwm->write(ON, GRABBER_PIN);
+    pwm->write(OFF, GRABBER_PIN);
 }
 
-
-
 } //namespace src::Grabber
-
 
 #endif //GRABBER_COMPATIBLE
