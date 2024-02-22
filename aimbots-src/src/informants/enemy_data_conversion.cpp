@@ -42,10 +42,16 @@ float XFilterReturnDisplay = 0.0f;
 
 uint32_t plateTimeOffsetDisplay = 0;
 
+float valueFromCVDisplay = 0.0f;
+
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
+
+    if (abs(position.getX()) > 20.0f) {
+        return;
+    }
 
     lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
@@ -101,6 +107,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // cameraToGimbalYDisplay = cameraToGimbal.position.getY();
     // cameraToGimbalZDisplay = cameraToGimbal.position.getZ();
 
+    valueFromCVDisplay = position.getX();
+
     targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
@@ -117,6 +125,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
     dtDisplay = dt;
+
     XPositionFilter.update(dt, transformedData.position.getX());
     // YPositionFilter.update(dt, transformedData.position.getY());
     // ZPositionFilter.update(dt, transformedData.position.getZ());

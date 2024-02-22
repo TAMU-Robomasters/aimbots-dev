@@ -33,17 +33,27 @@ Vector3f XatNanDisplay;
 
 float dtDisplay = 0.0f;
 
+float z1Dis = 0.0f;
+float z2Dis = 0.0f;
+float z3Dis = 0.0f;
+
 void KinematicKalman::update(float dt, float zPos, std::optional<float> zVel, std::optional<float> zAcc) {
     dtDisplay = dt;
     
     predict(dt);
 
+
     z.updateFromPosition(zPos, dt);
+
+    z1Dis = z.getPosition();
+    z2Dis = z.getVelocity();
+    z3Dis = z.getAcceleration();
+
     if (zVel.has_value()) {
-        z.updateFromVelocity(zVel.value(), false, dt);
+        //z.updateFromVelocity(zVel.value(), false, dt);
     }
     if (zAcc.has_value()) {
-        z.updateFromAcceleration(zAcc.value(), false, dt);
+        //z.updateFromAcceleration(zAcc.value(), false, dt);
     }
 
     Matrix3f PHt = P * H.asTransposed();
