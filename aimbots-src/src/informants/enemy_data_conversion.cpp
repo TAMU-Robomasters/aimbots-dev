@@ -27,6 +27,8 @@ float cameraToGimbalXDisplay = -10.0f;
 float cameraToGimbalYDisplay = 10.0f;
 float cameraToGimbalZDisplay = -10.0f;
 
+float dtDisplay = 0.1f;
+
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -88,37 +90,39 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     };
 
     //TESTING : going directly from camera frame to chassis frame
-    VisionTimedPosition cameraToGimbal{
-        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
-        .timestamp_uS = currentData.timestamp_uS,
-    };
+    // VisionTimedPosition cameraToGimbal{
+    //     .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
+    //     .timestamp_uS = currentData.timestamp_uS,
+    // };
 
-    cameraToGimbalXDisplay = cameraToGimbal.position.getX();
-    cameraToGimbalYDisplay = cameraToGimbal.position.getY();
-    cameraToGimbalZDisplay = cameraToGimbal.position.getZ();
+    // cameraToGimbalXDisplay = cameraToGimbal.position.getX();
+    // cameraToGimbalYDisplay = cameraToGimbal.position.getY();
+    // cameraToGimbalZDisplay = cameraToGimbal.position.getZ();
 
     targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
 
-    // targetPositionXUnfilteredDisplay = transformedData.position.getX();
-    // targetPositionYUnfilteredDisplay = transformedData.position.getY();
-    // targetPositionZUnfilteredDisplay = transformedData.position.getZ();
+    targetPositionXUnfilteredDisplay = transformedData.position.getX();
+    targetPositionYUnfilteredDisplay = transformedData.position.getY();
+    targetPositionZUnfilteredDisplay = transformedData.position.getZ();
 
-    // targetPositionXDisplay = transformedData.position.getX();
-    // targetPositionYDisplay = transformedData.position.getY();
-    // targetPositionZDisplay = transformedData.position.getZ();
+    targetPositionXDisplay = transformedData.position.getX();
+    targetPositionYDisplay = transformedData.position.getY();
+    targetPositionZDisplay = transformedData.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    // XPositionFilter.update(dt, transformedData.position.getX()); uncomment this after testign if not work
-    // YPositionFilter.update(dt, transformedData.position.getY());
-    // ZPositionFilter.update(dt, transformedData.position.getZ());
 
-    //see if this works
-    XPositionFilter.update(dt, cameraToGimbal.position.getX());
-    YPositionFilter.update(dt, cameraToGimbal.position.getY());
-    ZPositionFilter.update(dt, cameraToGimbal.position.getZ());
+    dtDisplay = dt;
+    XPositionFilter.update(dt, transformedData.position.getX());
+    YPositionFilter.update(dt, transformedData.position.getY());
+    ZPositionFilter.update(dt, transformedData.position.getZ());
+
+    // For testing later
+    // XPositionFilter.update(dt, cameraToGimbal.position.getX());
+    // YPositionFilter.update(dt, cameraToGimbal.position.getY());
+    // ZPositionFilter.update(dt, cameraToGimbal.position.getZ());
 
     xDFT.damping_factor = dampingValue;
 
@@ -149,15 +153,15 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     lastUpdateTimestamp_uS = currentTime_uS;
 }
 
-float targetPositionXFutureDisplay = 5.0f;
+float targetPositionXFutureDisplay = 0.0f;
 float targetVelocityXFutureDisplay = 0.0f;
 float targetAccelerationXFutureDisplay = 0.0f;
 
-float targetPositionYFutureDisplay = 4.0f;
+float targetPositionYFutureDisplay = 0.0f;
 float targetVelocityYFutureDisplay = 0.0f;
 float targetAccelerationYFutureDisplay = 0.0f;
 
-float targetPositionZFutureDisplay = 3.0f;
+float targetPositionZFutureDisplay = 0.0f;
 float targetVelocityZFutureDisplay = 0.0f;
 float targetAccelerationZFutureDisplay = 0.0f;
 
