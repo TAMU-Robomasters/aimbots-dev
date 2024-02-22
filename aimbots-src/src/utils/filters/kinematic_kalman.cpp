@@ -17,7 +17,25 @@ KinematicKalman::KinematicKalman(
       R(R0)  //
 {}
 
+Matrix3f HMxDisplay;
+Matrix3f SMxDisplay;
+Matrix3f PHMxDisplay;
+Vector3f xVecDisplay;
+Matrix3f KMxDisplay;
+Vector3f yVecDisplay;
+Vector3f zVecStateDisplay;
+
+bool foundTheNan = false;
+
+Matrix3f KatNanDisplay;
+Vector3f YatNanDisplay;
+Vector3f XatNanDisplay;
+
+float dtDisplay = 0.0f;
+
 void KinematicKalman::update(float dt, float zPos, std::optional<float> zVel, std::optional<float> zAcc) {
+    dtDisplay = dt;
+    
     predict(dt);
 
     z.updateFromPosition(zPos, dt);
@@ -30,11 +48,29 @@ void KinematicKalman::update(float dt, float zPos, std::optional<float> zVel, st
 
     Matrix3f PHt = P * H.asTransposed();
 
+    xVecDisplay = x;
+    
     Vector3f y = z.getStateVector() - H * x;
     Matrix3f S = H * PHt + R;
     Matrix3f K = PHt * asInverted(S);
 
     x = x + K * y;
+
+    if (!foundTheNan && isnan(x.getX())) {
+        foundTheNan = true;
+        XatNanDisplay = x;
+        YatNanDisplay = y;
+        KatNanDisplay = K;
+    }
+
+    zVecStateDisplay = z.getStateVector();
+    KMxDisplay = K;
+    yVecDisplay = y;
+    SMxDisplay = S;
+    PHMxDisplay = PHt;
+    HMxDisplay = H;
+    xVecDisplay = x;
+
     static const Matrix3f I = Matrix3f::identityMatrix();
     P = (I - K * H) * P;
 }

@@ -26,13 +26,17 @@ public:
     void updateFromPosition(float x, std::optional<float> dt = std::nullopt) {
         uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
-        // In this use case getPosition actually gets the last position
-        float v1 = calcDerivative(getPosition(), x, dt.value_or(currTime - lastTime));
-        float a1 = calcDerivative(getVelocity(), v1, dt.value_or(currTime - lastTime));
+        const float delta_time_seconds = dt.value_or((currTime - lastTime) / 1000.0f);
 
+        if (!tap::algorithms::compareFloatClose(delta_time_seconds, 0.0f, 1e-6f)) {
+            // In this use case getPosition actually gets the last position
+            /*float v1 = calcDerivative(getPosition(), x, delta_time_seconds);
+            float a1 = calcDerivative(getVelocity(), v1, delta_time_seconds);
+
+            setVelocity(v1);
+            setAcceleration(a1);*/
+        }
         setPosition(x);
-        setVelocity(v1);
-        setAcceleration(a1);
 
         lastTime = currTime;
     }
@@ -69,7 +73,12 @@ public:
 
 private:
     float calcIntegral(float x0, float v1, float dt) { return x0 + v1 * (dt); }
-    float calcDerivative(float x0, float x1, float dt) { return (x1 - x0) / (dt); }
+    float calcDerivative(float x0, float x1, float dt) {
+        if (tap::algorithms::compareFloatClose(dt, 0.0f, 1e-6f)) {
+            return 0;
+        }
+        return (x1 - x0) / (dt);
+    }
 
     Vector3f stateVector;
     uint32_t lastTime;
