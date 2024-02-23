@@ -1,8 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include "utils/common_types.hpp"
 #include "priority_queue.hpp"
+#include "utils/common_types.hpp"
 #include <cmath>
 #include <array>
 #include <queue>
@@ -55,7 +55,7 @@ struct WeightedSquareGraph {
 
     // Removes all nodes within a given rectangle area. Will remove nodes that dont exist. 
     // Rounds to nearest node so will slightly under or overestimate area. 
-    void with_obstacle(const Vector2f& bottom_left_meters, const Vector2f& top_right_meters);
+    void remove_region(const Vector2f& bottom_left_meters, const Vector2f& top_right_meters);
 
     // Gets all 8 grid neighbors of the given node
     array<Vector2i, 8> get_neighbors(const Vector2i&) const;
