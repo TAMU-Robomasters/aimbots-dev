@@ -44,12 +44,22 @@ array<Vector2i, 8> WeightedSquareGraph::get_neighbors(const Vector2i& node) cons
     array<Vector2i, 8> neighbors;
     size_t index = 0;
     
-    for (short x = -1; x <= 1; x++) {
-        for (short y = -1; y <= 1; y++) {
-            // Skip center
-            if (x == 0 && y == 0) continue;
+    for (short x = -1; x <= 1; x++)
+    {
+        for (short y = -1; y <= 1; y++)
+        {
+            bool isCenter = x == 0 && y == 0;
 
             Vector2i offset {x, y};
+            Vector2i neighbor = node + offset;
+
+            bool isOutOfBounds = neighbor[0] < 0 || 
+                                 neighbor[0] >= WIDTH_NODES || 
+                                 neighbor[1] < 0 || 
+                                 neighbor[1] >= HEIGHT_NODES;
+
+            if (isCenter || isOutOfBounds) continue;
+
             neighbors[index++] = node + offset;
         }
     }
