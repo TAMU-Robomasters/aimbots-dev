@@ -44,7 +44,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Stand
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-144.88f))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(146.82f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -53,8 +53,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-11.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(3.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -266,7 +266,7 @@ static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
@@ -275,7 +275,7 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = false;
+static constexpr bool FEEDER_DIRECTION = true;
 
 // Mechanical chassis constants, all in m
 /**
