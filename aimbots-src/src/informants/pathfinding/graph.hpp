@@ -58,7 +58,7 @@ struct WeightedSquareGraph {
     void remove_region(const Vector2f& bottom_left_meters, const Vector2f& top_right_meters);
 
     // Gets all 8 grid neighbors of the given node
-    array<Vector2i, 8> get_neighbors(const Vector2i&) const;
+    vector<Vector2i> get_neighbors(const Vector2i&) const;
     
     // Returns the distance between two nodes
     float get_distance_meters(const Vector2i&, const Vector2i&) const;

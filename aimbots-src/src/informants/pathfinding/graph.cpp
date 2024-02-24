@@ -39,28 +39,24 @@ void WeightedSquareGraph::remove_region(const Vector2f& bottom_left_meters, cons
             edges.erase({x, y});
 }
 
-array<Vector2i, 8> WeightedSquareGraph::get_neighbors(const Vector2i& node) const
+vector<Vector2i> WeightedSquareGraph::get_neighbors(const Vector2i& node) const
 {
-    array<Vector2i, 8> neighbors;
+    vector<Vector2i> neighbors;
     size_t index = 0;
     
     for (short x = -1; x <= 1; x++)
     {
         for (short y = -1; y <= 1; y++)
         {
-            bool isCenter = x == 0 && y == 0;
-
             Vector2i offset {x, y};
             Vector2i neighbor = node + offset;
 
-            bool isOutOfBounds = neighbor[0] < 0 || 
-                                 neighbor[0] >= WIDTH_NODES || 
-                                 neighbor[1] < 0 || 
-                                 neighbor[1] >= HEIGHT_NODES;
+            bool isCenter = x == 0 && y == 0;
+            bool isUntraversable = edges.find(neighbor) == edges.end();
 
-            if (isCenter || isOutOfBounds) continue;
+            if (isCenter || isUntraversable) continue;
 
-            neighbors[index++] = node + offset;
+            neighbors.push_back(neighbor);
         }
     }
 
@@ -119,18 +115,4 @@ void a_star_search
             }
         }
     }
-}
-
-unordered_map<Vector2i, Vector2i> wsg_test() {
-    WeightedSquareGraph graph(10, 10, 0.5);
-
-    Vector2i start {0, 0};
-    Vector2i goal {15, 9};
-
-    unordered_map<Vector2i, Vector2i> came_from;
-    unordered_map<Vector2i, float> cost_so_far;
-
-    a_star_search(graph, start, goal, came_from, cost_so_far);
-
-    return came_from;
 }
