@@ -63,12 +63,6 @@ using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-using namespace src::Hopper;
-using namespace src::BarrelManager;
-// using namespace src::Communication;
-// using namespace src::RobotStates;
-using namespace src::Utils::ClientDisplay;
-using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -117,7 +111,7 @@ using namespace tap;
 using namespace tap::control;
 using namespace tap::communication::serial;
 
-namespace AERIALControl {
+namespace AerialControl {
 
 // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
 BarrelID currentBarrel = BARREL_IDS[0];
@@ -129,13 +123,6 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-HopperSubsystem hopper(drivers());
-ClientDisplaySubsystem clientDisplay(drivers());
-BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
-
-// Command Flags ----------------------------
-bool barrelMovingFlag = true;
-bool barrelCaliDoneFlag = false;
 
 // CommunicationResponseSubsytem response(*drivers());
 
@@ -231,40 +218,12 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
+
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
-BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag);
-
-OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
-
-// CommunicationResponseHandler responseHandler(*drivers());
-
-// client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -278,39 +237,28 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&openHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {&},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &toggleHopperCommand},
+    {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runDoubleBarrelFeederCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-// The user can press b+ctrl when the remote right switch is in the down position to restart the
-// client display command. This is necessary since we don't know when the robot is connected to the
-// server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
-
-// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
-/*PressCommandMapping ctrlC(
-    drivers(),
-    {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -318,10 +266,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&hopper);
-    drivers->commandScheduler.registerSubsystem(&barrelManager);
-    // drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
@@ -331,17 +275,12 @@ void initializeSubsystems() {
     feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
-    hopper.initialize();
-    barrelManager.initialize();
-    // response.initialize();
-    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
@@ -361,21 +300,20 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
+    // drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
-}  // namespace AERIALControl
+}  // namespace AerialControl
 
 namespace src::Control {
 // Initialize subsystems ---------------------------------------------------
 void initializeSubsystemCommands(src::Drivers *drivers) {
-    AERIALControl::initializeSubsystems();
-    AERIALControl::registerSubsystems(drivers);
-    AERIALControl::setDefaultCommands(drivers);
-    AERIALControl::startupCommands(drivers);
-    AERIALControl::registerIOMappings(drivers);
+    AerialControl::initializeSubsystems();
+    AerialControl::registerSubsystems(drivers);
+    AerialControl::setDefaultCommands(drivers);
+    AerialControl::startupCommands(drivers);
+    AerialControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
 
