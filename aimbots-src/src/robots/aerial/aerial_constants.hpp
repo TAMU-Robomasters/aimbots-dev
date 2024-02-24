@@ -3,11 +3,9 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_COMPATIBLE
-#define BARREL_SWAP_COMPATIBLE
 #define CHASSIS_COMPATIBLE
 #define SHOOTER_COMPATIBLE
 #define FEEDER_COMPATIBLE
-#define HOPPER_LID_COMPATIBLE
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
@@ -152,7 +150,7 @@ static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
-static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
+static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
@@ -266,7 +264,6 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID for Barrel Swap
 
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
@@ -274,30 +271,11 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 //
-static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1;  // TODO: check motor ID for Barrel Swap
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr bool FEEDER_DIRECTION = false;
-
-static constexpr bool BARREL_SWAP_DIRECTION = true;
-
-// Hopper constants
-static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
-
-static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
-
-static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
-static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
-
-static constexpr float HOPPER_MIN_ANGLE = 0.0f;
-static constexpr float HOPPER_MAX_ANGLE = 270.0f;
-
-static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
-static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
-
-static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
 // Mechanical chassis constants, all in m
 /**
@@ -398,46 +376,6 @@ static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 // This array holds the IDs of all speed monitor barrels on the robot
-static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
-
-/**
- * @brief Barrel Manager Constants
- */
-// These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
-// A positive increase provides a bigger gap between hard stop and barrel
-static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
-
-// this is from edge to edge, aligned center to aligned center,
-
-static constexpr float BARREL_SWAP_DISTANCE_MM = 45.5;  // In mm
-
-// If the barrel is this close to the flywheel chamber, it is considered aligned
-static constexpr float BARRELS_ALIGNED_TOLERANCE = 2.0;  // In mm
-
-// Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
-static constexpr float LEAD_SCREW_TICKS_PER_MM =
-    tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 /
-    8.0;  //  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
-
-// The value that the torque needs to be greater than to detect running into a wall
-static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 650;
-
-// The output to the motor while in calibration mode.
-// When adjusting, also change the constant above to find an appropriate match between the two
-static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 600;
-
-static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
-    .ki = 0.0f,
-    .kd = 0.5f,
-    .maxICumulative = 5.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
