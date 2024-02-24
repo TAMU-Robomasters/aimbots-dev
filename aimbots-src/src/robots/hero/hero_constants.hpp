@@ -24,16 +24,15 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
-static constexpr uint8_t YAW_MOTOR_COUNT = 2;
+static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.90f)),   // 177.8
-    wrapTo0To2PIRange(modm::toRadian(188.75f))};  // 198.5 189.80f
+    wrapTo0To2PIRange(modm::toRadian(188.90f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -44,7 +43,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(215.12f))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(215.12f))}; //215.12
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -284,11 +283,11 @@ static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
-static constexpr MotorID INDEXER_ID = MotorID::MOTOR2;
+static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
+static constexpr MotorID INDEXER_ID = MotorID::MOTOR7;
 //
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;

@@ -186,13 +186,13 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand, &feederIndexerCommand},
+    {/*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 
@@ -204,7 +204,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -221,9 +221,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    // drivers->commandScheduler.registerSubsystem(&response);
-    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
-    drivers->commandScheduler.registerSubsystem(&indexer);
+    //drivers->commandScheduler.registerSubsystem(&indexer);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -242,7 +240,6 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    indexer.setDefaultCommand(&stopIndexerCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
@@ -265,7 +262,6 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
     drivers->commandMapper.addMap(&leftClickMouse);
 }
 
