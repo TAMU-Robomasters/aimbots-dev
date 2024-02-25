@@ -292,19 +292,19 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runDoubleBarrelFeederCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
@@ -319,9 +319,9 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-    drivers->commandScheduler.registerSubsystem(&barrelManager);
+    // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
@@ -334,14 +334,14 @@ void initializeSubsystems() {
     hopper.initialize();
     barrelManager.initialize();
     // response.initialize();
-    clientDisplay.initialize();
+    // clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapperCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
