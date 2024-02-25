@@ -19,9 +19,11 @@
 
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
+#include "subsystems/slide/slide_control_command.hpp"
 //
 #include "subsystems/wrist/wrist.hpp"
 #include "subsystems/wrist/wrist_move_command.hpp"
+#include "subsystems/wrist/wrist_control_command.hpp"
 //
 #include "subsystems/grabber/grabber.hpp"
 #include "subsystems/grabber/suction_command.hpp"
@@ -56,36 +58,31 @@ WristSubsystem wrist(drivers());
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
+SlideControlCommand slideControlCommand(drivers(), &slide);
 
 // Define commands here ---------------------------------------------------
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, 0.0f);
+WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
+HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&chassisManualDriveCommand, &wristHomeCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    {&chassisManualDriveCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
     
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&slideControlCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&suctionCommand},
+    {&wristControlCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
-/* THESE MAPPINGS ARE TEMPORARY */
 
-HoldCommandMapping leftSwitchMid(
-    drivers(),
-    {&goToTestLocation, &wristMoveCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-HoldCommandMapping leftSwitchDown(
-    drivers(),
-    {&goHome},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
-
-/* END OF TEMPORARY MAPPINGS */
     
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -98,15 +95,15 @@ void registerSubsystems(src::Drivers *drivers) {
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    // slide.initialize();
-    // wrist.initialize();
+    slide.initialize();
+    wrist.initialize();
     // grabber.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
-    wrist.setDefaultCommand(&wristHomeCommand);
+    // wrist.setDefaultCommand(&wristHomeCommand);
 }
 
 // Set commands scheduled on startup
@@ -120,9 +117,9 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchDown);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
 }
 
