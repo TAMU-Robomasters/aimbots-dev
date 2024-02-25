@@ -347,7 +347,7 @@ static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR2;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR4;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, 1.0f};
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, (0.7f / 800.0f)};
 
 
 // CAN Bus 2

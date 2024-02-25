@@ -60,20 +60,25 @@ SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, 0.0f);
+WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchUp(
+HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&chassisManualDriveCommand, &wristHomeCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    {&chassisManualDriveCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
     
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&slideControlCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&suctionCommand},
+    {&wristControlCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
-/* THESE MAPPINGS ARE TEMPORARY */
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
@@ -97,15 +102,15 @@ void registerSubsystems(src::Drivers *drivers) {
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    // slide.initialize();
-    // wrist.initialize();
+    slide.initialize();
+    wrist.initialize();
     // grabber.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
-    wrist.setDefaultCommand(&wristHomeCommand);
+    // wrist.setDefaultCommand(&wristHomeCommand);
 }
 
 // Set commands scheduled on startup
