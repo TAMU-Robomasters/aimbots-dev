@@ -21,7 +21,7 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 /**
  * @brief GIMBAL SETUP
  */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
@@ -32,7 +32,7 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.90f))};
+    wrapTo0To2PIRange(modm::toRadian(237.66f))}; //188.9
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -43,7 +43,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(215.12f))}; //215.12
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(148.12f))}; //215.12
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -53,7 +53,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-17.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -264,7 +264,7 @@ static constexpr uint16_t shooter_speed_array[4] = {
 
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 4000.0f; //500
 static constexpr float INDEXER_DEFAULT_RPM = 4000.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
