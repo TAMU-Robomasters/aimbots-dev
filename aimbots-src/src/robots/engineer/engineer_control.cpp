@@ -59,7 +59,7 @@ ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, .0f, 0.0f);
+WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, 0.0f, 0.0f);
 WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
@@ -101,9 +101,9 @@ void registerSubsystems(src::Drivers *drivers) {
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    chassis.initialize();
+    // chassis.initialize();
     slide.initialize();
-    wrist.initialize();
+    // wrist.initialize();
     // grabber.initialize();
 }
 

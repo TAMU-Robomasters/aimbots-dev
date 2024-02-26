@@ -21,6 +21,9 @@ public:
     mockable void refresh() override;
 
     void setTargetPositionMeters(float x, float z);
+    float getTargetXMeters() const;
+    float getTargetZMeters() const;
+
     void updateAllPIDs();
 
     template<typename... Args>
