@@ -31,8 +31,11 @@ void StopDartCommand::execute() {
 
     isStopRunningDisplay = true;
 
+    // dart->ForAllDartMotors(&DartSubsystem::setDesiredOutput, static_cast<float>(flywheelRPM));
     dart->ForAllDartMotors(&DartSubsystem::setTargetRPM, static_cast<float>(flywheelRPM));
     dart->ForAllDartMotors(&DartSubsystem::updateMotorVelocityPID);
+
+    dart->setLoadTargetSpeed(0.0f);
 }
 
 void StopDartCommand::end(bool) {

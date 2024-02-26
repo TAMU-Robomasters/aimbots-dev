@@ -34,7 +34,18 @@ float heatLimitDisplay = 0.0f;
 
 void RunDartCommand::execute() {
 
-    uint16_t flywheelRPM = 9000;
+    uint16_t flywheelRPM = 0;
+
+    float joySense = 1.0f;
+
+    float joystickInput = drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * joySense;
+
+    dart->setLoadTargetSpeed(joySense);
+    dart->runLoadPIDs();
+
+    if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
+        flywheelRPM = 9000;
+    }
 
     dart->ForAllDartMotors(&DartSubsystem::setTargetRPM, static_cast<float>(flywheelRPM));
     dart->ForAllDartMotors(&DartSubsystem::updateMotorVelocityPID);

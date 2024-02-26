@@ -396,3 +396,17 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
+
+static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};

@@ -28,7 +28,11 @@ DartSubsystem::DartSubsystem(tap::Drivers* drivers)
       launchTargetRPMs(Matrix<float, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
       launchDesiredOutputs(Matrix<int32_t, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
-      launchVelocityPIDs(Matrix<SmoothPID*, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix())
+      launchVelocityPIDs(Matrix<SmoothPID*, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
+      load1(drivers, MotorID::MOTOR6, CANBus::CAN_BUS1, false, "Load Top"),
+      load2(drivers, MotorID::MOTOR6, CANBus::CAN_BUS1, false, "Load Top"),
+      load1PID(BARREL_SWAP_POSITION_PID_CONFIG),
+      load2PID(BARREL_SWAP_POSITION_PID_CONFIG)
 //
 {
     motors[L_1][0] = &launch1;
@@ -59,6 +63,22 @@ void DartSubsystem::refresh() {
     firstBadMotorDisplay = isOnlineDisplay();
     ForAllDartMotors(&DartSubsystem::setDesiredOutputToMotor);
 
+}
+
+void DartSubsystem::setLoadTargetSpeed(float rpm) {
+    load1DOut = rpm;
+    load2DOut = rpm;
+}
+
+void DartSubsystem::runLoadPIDs() {
+    float load1Error = load1DOut - load1.getShaftRPM(); 
+    float load2Error = load2DOut - load2.getShaftRPM();
+
+    load1PID.runController(load1Error, load1.getTorque());
+    load2PID.runController(load2Error, load2.getTorque());
+
+    load1.setDesiredOutput(load1PID.getOutput());
+    load2.setDesiredOutput(load2PID.getOutput());
 }
 
 // Returns the speed of the shooter motor with the highest absolute value of RPM
@@ -104,6 +124,7 @@ void DartSubsystem::setDesiredOutputToMotor(L_MotorIndex motorIdx) {
         motors[motorIdx][0]->setDesiredOutput(launchDesiredOutputs[motorIdx][0]);
     }
 }
+
 
 int DartSubsystem::isOnlineDisplay() {
         for (auto i = 0; i < LAUNCH_MOTOR_COUNT; i++) {

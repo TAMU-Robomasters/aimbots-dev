@@ -92,6 +92,9 @@ public:
 
     int isOnlineDisplay();
 
+    void setLoadTargetSpeed(float rpm);
+    void runLoadPIDs();
+
     
 
 #ifndef ENV_UNIT_TESTS
@@ -103,6 +106,12 @@ public:
     DJIMotor launch1, launch2, launch3, launch4, launch5, launch6;
     SmoothPID launch1PID, launch2PID, launch3PID, launch4PID, launch5PID, launch6PID;
 
+    DJIMotor load1, load2;
+    SmoothPID load1PID, load2PID;
+    float load1DOut = 0.0f;
+    float load2DOut = 0.0f;
+
+    float loadTargetOutput = 0.0f;
 
     Matrix<float, LAUNCH_MOTOR_COUNT, 1> launchTargetRPMs;
     Matrix<int32_t, LAUNCH_MOTOR_COUNT, 1> launchDesiredOutputs;
