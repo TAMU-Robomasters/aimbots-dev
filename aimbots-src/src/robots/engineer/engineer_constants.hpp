@@ -107,7 +107,7 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 7000.0f,
+    .kp = 10000.0f,
     .ki = 0.0f,
     .kd = 0.7f,
     .maxICumulative = 0.0f,
@@ -121,7 +121,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 7000.0f,
+    .kp = 10000.0f,
     .ki = 0.0f,
     .kd = 0.7f,
     .maxICumulative = 10.0f,
@@ -135,7 +135,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig ROLL_POSITION_PID_CONFIG = {
-    .kp = 7000.0f,
+    .kp = 10000.0f,
     .ki = 0.0f,
     .kd = 0.7f,
     .maxICumulative = 10.0f,

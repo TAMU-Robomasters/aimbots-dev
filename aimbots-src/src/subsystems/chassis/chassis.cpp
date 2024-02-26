@@ -102,12 +102,33 @@ uint16_t chassisPowerLimitDisplay = 0;
 
 float motorOutputDisplay = 0.0f;
 
+bool chassisSystemOnlineDisplay = false;
+
+int firstOfflineMotor = 8;
+
+bool ChassisSubsystem::whichMotorOnline() {
+    for (int i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        for (int j = 0; j < MOTORS_PER_WHEEL; j++) {
+            if (!motors[i][j]->isMotorOnline()) {
+                firstOfflineMotor = i+1;
+                return false;
+            }
+        }
+    }
+    firstOfflineMotor = -1;
+    return true;
+}
+
 void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
 
     limitChassisPower();
+
+    whichMotorOnline();
+
+    chassisSystemOnlineDisplay = allMotorsOnline();
 
     motorOutputDisplay = motors[RB][0]->getOutputDesired();
 }
