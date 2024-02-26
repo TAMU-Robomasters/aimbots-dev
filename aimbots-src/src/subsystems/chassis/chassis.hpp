@@ -36,6 +36,8 @@ enum ChassisVelIndex {
     R = 2,
 };
 
+
+
 class ChassisSubsystem : public tap::control::chassis::ChassisSubsystemInterface {
 public:
     ChassisSubsystem(  // Default chassis constructor
@@ -144,6 +146,8 @@ public:
         }
         return true;
     }
+
+    bool whichMotorOnline();
 
     /**
      * Converts the velocity matrix from raw RPM to wheel velocity in m/s.
