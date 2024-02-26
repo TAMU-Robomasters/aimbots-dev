@@ -26,8 +26,6 @@ public:
 private:
     Drivers* drivers;
     SlideSubsystem* slide;
-    float targetX = 0.0f;
-    float targetZ = 0.0f;
 
     MilliTimeout joystickReadDelay;
 };
