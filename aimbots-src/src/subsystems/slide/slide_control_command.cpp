@@ -15,11 +15,19 @@ void SlideControlCommand::initialize() {
 
 float JOYSTICK_TO_METERS = 1.0 / 1000.0f; //Adjust sensitivity
 
+float deltaZDisplay = 0.0f;
+
 void SlideControlCommand::execute() {
 
     if (joystickReadDelay.execute()) {
         float z_dMeters = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_METERS;
         targetZ += z_dMeters;
+
+        deltaZDisplay = z_dMeters;
+
+        float x_dMeters = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_METERS;
+        targetX += x_dMeters;
+
         joystickReadDelay.restart(500); //May need to be lowered, if movement is choppy/lagging
     }
 
