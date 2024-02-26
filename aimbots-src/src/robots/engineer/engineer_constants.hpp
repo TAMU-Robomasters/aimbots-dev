@@ -48,7 +48,7 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
 // TODO: SET THESE GEAR RATIOS PLEASE
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS {365.0f, 361.0f, 361.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {true, false, false};
-static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR1, MotorID::MOTOR5, MotorID::MOTOR3};
+static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR1, MotorID::MOTOR4};
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -106,7 +106,7 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 10000.0f,
+    .kp = 7000.0f,
     .ki = 0.0f,
     .kd = 0.7f,
     .maxICumulative = 0.0f,
@@ -352,7 +352,7 @@ static constexpr float SLIDE_MAX_POSITIONS_METERS[] = { 0.5f, 0.5f };
 
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;

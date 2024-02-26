@@ -17,11 +17,15 @@ void WristControlCommand::initialize() {
 //Adjust this to change stick sensitivity
 float JOYSTICK_TO_DEGREES = 0.2;
 
+float yawDeltaDisplay = 0.0f;
+
 void WristControlCommand::execute() {
 
     if(joystickReadDelay.execute()) {
         float yaw_dTheta = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_DEGREES;
         yawTarget += yaw_dTheta;
+
+        yawDeltaDisplay = yaw_dTheta;
 
         float pitch_dTheta = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_DEGREES;
         pitchTarget += pitch_dTheta;
