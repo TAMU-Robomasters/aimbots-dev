@@ -87,100 +87,17 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
-// Configs -----------------------------------------------------------------
-SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
-    .snapAngle = modm::toRadian(0.0f),
-};
-
-TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
-    .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
-    .rotationalSpeedIncrement = 50.0f,
-};
-
-SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
-    .maxSpinRateModifier = 1.0f,
-    .minSpinRateModifierDuration = 500,
-    .maxSpinRateModifierDuration = 3000,
-};
-
 // Define commands here ---------------------------------------------------
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
-// ChassisShakiraCommand chassisShakiraCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     &ROTATION_POSITION_PID_CONFIG,
-//     &ballisticsSolver,
-//     &refHelper,
-//     4,
-//     modm::toRadian(45.0f),
-//     3000);
-
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 0.80f);
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
-
-RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
-StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
 RunDartCommand runDartCommand(drivers(), &dart);
 StopDartCommand stopDartCommand(drivers(), &dart);
 
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalChaseCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-// Enables both chassis and gimbal control and closes hopper
-HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand,*/ &gimbalFieldRelativeControlCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-// opens hopper
-// HoldCommandMapping rightSwitchDown(
-//     drivers(),
-//     {},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&runDartCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
 
 // HoldCommandMapping leftClickMouse(
 //     drivers(),
@@ -214,8 +131,6 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    // feeder.setDefaultCommand(&stopFeederCommand);
-    // shooter.setDefaultCommand(&stopShooterComprisedCommand);
     dart.setDefaultCommand(&stopDartCommand);
 }
 
@@ -230,8 +145,8 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     // drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&rightSwitchDown);
