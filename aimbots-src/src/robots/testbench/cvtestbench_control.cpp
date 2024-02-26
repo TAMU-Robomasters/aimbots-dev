@@ -45,18 +45,15 @@
 #include "subsystems/hopper/open_hopper_command.hpp"
 #include "subsystems/hopper/toggle_hopper_command.hpp"
 //
-#include "subsystems/gui/gui_display.hpp"
-#include "subsystems/gui/gui_display_command.hpp"
-//
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+#include "subsystems/dartsystem/dart.hpp"
+#include "subsystems/dartsystem/run_dart_command.hpp"
+#include "subsystems/dartsystem/stop_dart_command.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
-using namespace src::Hopper;
-using namespace src::GUI;
+using namespace src::Dart;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -74,22 +71,14 @@ namespace CVTestbenchControl {
 
 BarrelID currentBarrel = BarrelID::TURRET_17MM_1;
 
-src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel);
+src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-HopperSubsystem hopper(
-    drivers(),
-    HOPPER_PIN,
-    HOPPER_MAX_PWM,
-    HOPPER_MIN_PWM,
-    HOPPER_PWM_RAMP_SPEED,
-    HOPPER_MIN_ANGLE,
-    HOPPER_MAX_ANGLE,
-    HOPPER_MIN_ACTION_DELAY);
+DartSubsystem dart(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
@@ -159,11 +148,8 @@ RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
-OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
+RunDartCommand runDartCommand(drivers(), &dart);
+StopDartCommand stopDartCommand(drivers(), &dart);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -178,33 +164,33 @@ HoldCommandMapping leftSwitchUp(
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // opens hopper
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&openHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &closeHopperCommand},
+    {&runDartCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-// HoldCommandMapping rightClickMouse(
+// HoldCommandMapping leftClickMouse(
 //     drivers(),
-//     {&},
+//     {&runFeederCommandFromMouse},
 //     RemoteMapState(RemoteMapState::MouseButton::LEFT));
+
+// // HoldCommandMapping rightClickMouse(
+// //     drivers(),
+// //     {&},
+// //     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -212,24 +198,25 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
-    drivers->commandScheduler.registerSubsystem(&hopper);
+    drivers->commandScheduler.registerSubsystem(&dart);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    chassis.initialize();
-    feeder.initialize();
-    gimbal.initialize();
-    shooter.initialize();
-    hopper.initialize();
+    // chassis.initialize();
+    // feeder.initialize();
+    // gimbal.initialize();
+    // shooter.initialize();
+    dart.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
-    shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    // feeder.setDefaultCommand(&stopFeederCommand);
+    // shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    dart.setDefaultCommand(&stopDartCommand);
 }
 
 // Set commands scheduled on startup
@@ -245,10 +232,10 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    // drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
-    drivers->commandMapper.addMap(&leftClickMouse);
+    // drivers->commandMapper.addMap(&rightSwitchDown);
+    // drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace CVTestbenchControl

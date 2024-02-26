@@ -2,6 +2,13 @@
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define GIMBAL_COMPATIBLE
+#define CHASSIS_COMPATIBLE
+#define SHOOTER_COMPATIBLE
+#define FEEDER_COMPATIBLE
+
+#define DART_COMPATIBLE
+
 #define GIMBAL_UNTETHERED
 
 /**
@@ -11,6 +18,8 @@ static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
+
+static constexpr uint8_t LAUNCH_MOTOR_COUNT = 6;
 
 /**
  * @brief GIMBAL SETUP
