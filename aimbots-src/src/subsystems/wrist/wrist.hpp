@@ -11,6 +11,9 @@ namespace src::Wrist {
 
 enum MotorIndex {YAW, PITCH, ROLL};
 
+// Can go to starting angle plus/minus this angle (yaw, pitch, roll)
+static constexpr float WRIST_ANGLE_RANGES[] = { PI/4, PI/4, F32_ABSMAX };
+
 class WristSubsystem : public tap::control::Subsystem {
 public:
     WristSubsystem(src::Drivers*);
@@ -69,7 +72,12 @@ public:
      * @param angleRadians the angle in radians from -pi to pi
     */
     void setTargetAngle(MotorIndex motorIdx, float angleRadians) {
-        targetAnglesRads[motorIdx] = angleRadians;
+        float maxAngleFromZero = WRIST_ANGLE_RANGES[motorIdx];
+        targetAnglesRads[motorIdx] = std::clamp(angleRadians, -maxAngleFromZero, maxAngleFromZero);
+    }
+
+    float getTargetAngle(MotorIndex motorIdx) const {
+        return targetAnglesRads[motorIdx];
     }
 
     /** Gets the given motor's current RPM, or 0 if it's offline */
