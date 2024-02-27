@@ -38,7 +38,7 @@ void WristControlCommand::execute() {
 }
 
 void WristControlCommand::end(bool) {
-    // wrist->setTargetRPMs(0.0f, 0.0f, 0.0f); // stop moving
+    wrist->idle();
 }
 
 };  // namespace src::Wrist

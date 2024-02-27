@@ -44,6 +44,11 @@ public:
         }
     }
 
+    void idle()
+    {
+        desiredOutputs = {};
+    }
+
 private:
     std::array<DJIMotor, SLIDE_MOTOR_COUNT> motors;
     std::array<SmoothPID, SLIDE_MOTOR_COUNT> motorPIDs;
