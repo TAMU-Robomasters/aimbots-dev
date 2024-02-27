@@ -3,20 +3,6 @@
 
 namespace src::Slide {
 
-static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG_temp = {
-    .kp = 150000.0f,
-    .ki = 0.0f,
-    .kd = 0.1f,
-    .maxICumulative = 0.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
 SlideSubsystem::SlideSubsystem(Drivers* drivers)
     : Subsystem(drivers),
     motors {
@@ -25,7 +11,7 @@ SlideSubsystem::SlideSubsystem(Drivers* drivers)
     },
     motorPIDs {
         SmoothPID(SLIDE_X_POSITION_PID_CONFIG),
-        SmoothPID(SLIDE_Z_POSITION_PID_CONFIG_temp)
+        SmoothPID(SLIDE_Z_POSITION_PID_CONFIG)
     }
 {
 }
