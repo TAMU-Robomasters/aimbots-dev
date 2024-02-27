@@ -65,12 +65,7 @@ public:
         return getScaledUnwrappedRadians(idx) - WRIST_MOTOR_OFFSET_ANGLES[idx];
     }
 
-    /**
-     * Sets the desired target angle of the given motor after gear box ratios
-     * 
-     * @param motorIdx
-     * @param angleRadians the angle in radians from -pi to pi
-    */
+    // Sets the desired target angle of the given motor after gear box ratios
     void setTargetAngle(MotorIndex motorIdx, float angleRadians) {
         float maxAngleFromZero = WRIST_ANGLE_RANGES[motorIdx];
         targetAnglesRads[motorIdx] = std::clamp(angleRadians, -maxAngleFromZero, maxAngleFromZero);
@@ -80,21 +75,27 @@ public:
         return targetAnglesRads[motorIdx];
     }
 
-    /** Gets the given motor's current RPM, or 0 if it's offline */
+    // Gets the given motor's current RPM, or 0 if it's offline
     int16_t getMotorRPM(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx].getShaftRPM() : 0;
     }
 
-    /** Gets the given motor's current torque, or 0 if it's offline */
+    // Gets the given motor's current torque, or 0 if it's offline
     int16_t getMotorTorque(MotorIndex motorIdx) const {
         return isMotorOnline(motorIdx) ? motors[motorIdx].getTorque() : 0;
+    }
+
+    // Turn off all motors
+    void idle()
+    {
+        desiredMotorOutputs = {};
     }
 
 private:
     std::array<DJIMotor, WRIST_MOTOR_COUNT> motors;
     std::array<SmoothPID, WRIST_MOTOR_COUNT> positionPIDs;
 
-    /** The target desired angles of each motor AFTER scaling for the gear boxes */
+    // The target desired angles of each motor AFTER scaling for the gear boxes
     std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads {};
     std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs {};
 

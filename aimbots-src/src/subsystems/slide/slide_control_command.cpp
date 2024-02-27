@@ -34,7 +34,7 @@ void SlideControlCommand::execute() {
 }
 
 void SlideControlCommand::end(bool interrupted) {
-
+    slide->idle();
 }
 
 bool SlideControlCommand::isReady() { return true; }
