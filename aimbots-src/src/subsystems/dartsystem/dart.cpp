@@ -24,7 +24,7 @@ DartSubsystem::DartSubsystem(tap::Drivers* drivers)
       launch3PID(SHOOTER_VELOCITY_PID_CONFIG),
       launch4PID(SHOOTER_VELOCITY_PID_CONFIG),
       launch5PID(SHOOTER_VELOCITY_PID_CONFIG),
-      launch6PID(SHOOTER_VELOCITY_PID_CONFIG),
+      launch6PID(FEEDER_VELOCITY_PID_CONFIG),
       launchTargetRPMs(Matrix<float, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
       launchDesiredOutputs(Matrix<int32_t, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
       motors(Matrix<DJIMotor*, LAUNCH_MOTOR_COUNT, 1>::zeroMatrix()),
@@ -40,17 +40,20 @@ DartSubsystem::DartSubsystem(tap::Drivers* drivers)
     motors[L_3][0] = &launch3;
     motors[L_4][0] = &launch4; 
     motors[L_5][0] = &launch5;
-    motors[L_6][0] = &launch6; 
+    //motors[L_6][0] = &launch6; 
     launchVelocityPIDs[L_1][0] = &launch1PID;
     launchVelocityPIDs[L_2][0] = &launch2PID;
     launchVelocityPIDs[L_3][0] = &launch3PID;
     launchVelocityPIDs[L_4][0] = &launch4PID;
     launchVelocityPIDs[L_5][0] = &launch5PID;
-    launchVelocityPIDs[L_6][0] = &launch6PID;
+    //launchVelocityPIDs[L_6][0] = &launch6PID;
 }
 
 void DartSubsystem::initialize() {
     ForAllDartMotors(&DJIMotor::initialize);
+
+    launch6.initialize();
+    launch6.setDesiredOutput(0.0f);
 
     ForAllDartMotors(&DJIMotor::setDesiredOutput, static_cast<int32_t>(0.0f));
 }
@@ -77,13 +80,13 @@ void DartSubsystem::runLoadPIDs() {
     load1PID.runController(load1Error, load1.getTorque());
     load2PID.runController(load2Error, load2.getTorque());
 
-    float reelError = load1DOut - motors[L_6][0]->getShaftRPM();
+    float reelError = load1DOut - launch6.getShaftRPM();
 
-    launchVelocityPIDs[L_6][0]->runController(reelError, motors[L_6][0]->getTorque());
+    launch6PID.runController(reelError, launch6.getTorque());
 
     load1.setDesiredOutput(load1PID.getOutput());
     load2.setDesiredOutput(load2PID.getOutput());
-    motors[L_6][0]->setDesiredOutput(launchVelocityPIDs[L_6][0]->getOutput());
+    launch6.setDesiredOutput(launch6PID.getOutput());
 }
 
 float DartSubsystem::getMotorSpeed(L_MotorIndex motorIdx) const {

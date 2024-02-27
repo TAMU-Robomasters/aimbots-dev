@@ -36,12 +36,17 @@ void RunDartCommand::execute() {
 
     uint16_t flywheelRPM = 0;
 
-    float joySense = 1.0f;
+    float joySense = 100.0f;
 
-    float joystickInput = drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * joySense;
+    float joystickInput = drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * joySense;;
 
-    dart->setLoadTargetSpeed(joySense);
+    // if (!tap::algorithms::compareFloatClose(drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL), 0.0f, 0.1)) {
+        
+    // }
+
+    dart->setLoadTargetSpeed(joystickInput);
     dart->runLoadPIDs();
+
 
     if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID) {
         flywheelRPM = 9000;
