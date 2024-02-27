@@ -77,23 +77,13 @@ void DartSubsystem::runLoadPIDs() {
     load1PID.runController(load1Error, load1.getTorque());
     load2PID.runController(load2Error, load2.getTorque());
 
+    float reelError = load1DOut - motors[L_6][0]->getShaftRPM();
+
+    launchVelocityPIDs[L_6][0]->runController(reelError, motors[L_6][0]->getTorque());
+
     load1.setDesiredOutput(load1PID.getOutput());
     load2.setDesiredOutput(load2PID.getOutput());
-}
-
-// Returns the speed of the shooter motor with the highest absolute value of RPM
-float DartSubsystem::getHighestMotorSpeed() const {
-    float highestMotorSpeed = 0.0f;
-    for (int i = 0; i < SHOOTER_MOTOR_COUNT; i++) {
-        L_MotorIndex mi = static_cast<L_MotorIndex>(i);
-        if (motors[mi][0]->isMotorOnline()) {
-            float motorSpeed = motors[mi][0]->getShaftRPM();
-            if (fabs(motorSpeed) > highestMotorSpeed) {
-                highestMotorSpeed = motorSpeed;
-            }
-        }
-    }
-    return highestMotorSpeed;
+    motors[L_6][0]->setDesiredOutput(launchVelocityPIDs[L_6][0]->getOutput());
 }
 
 float DartSubsystem::getMotorSpeed(L_MotorIndex motorIdx) const {

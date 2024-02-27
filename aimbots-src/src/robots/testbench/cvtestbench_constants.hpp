@@ -19,7 +19,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-static constexpr uint8_t LAUNCH_MOTOR_COUNT = 6;
+static constexpr uint8_t LAUNCH_MOTOR_COUNT = 5;
 
 /**
  * @brief GIMBAL SETUP

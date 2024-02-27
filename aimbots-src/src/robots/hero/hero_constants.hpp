@@ -256,7 +256,7 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 // clang-format on
 static constexpr uint16_t shooter_speed_array[4] = {
     10,
-    3900,  // {ball m/s, flywheel rpm} //3900
+    8000,  // {ball m/s, flywheel rpm} //3900 //6100
     16,
     6100};  // 6500
 
