@@ -10,14 +10,14 @@ namespace src::Utils::MatrixOperations {
 
     /*
     * Rotate the matrix
-    * @param M      Matrix to rotate
-    * @param theta  angle to rotate about the x axis
-    * @param phi    angle to roate about the y axis
+    * @param M      Vector to rotate
+    * @param theta  angle to rotate about the x axis, in radians
+    * @param phi    angle to roate about the y axis, in radians
     */
-    Matrix4f rotate(Matrix4f M, float theta, float phi);
+    Vector3f rotate(Vector3f M, float theta, float phi);
 
     /*
-    * Rotate the matrix
+    * Translate the matrix
     * @param M  Matrix to transform
     * @param p  Translation vector
     */
