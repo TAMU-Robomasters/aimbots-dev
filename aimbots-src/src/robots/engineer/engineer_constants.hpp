@@ -348,7 +348,7 @@ static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR3;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR8;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, 7.0f/800};
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] { 0.01f, 7.0f/800 };
 static constexpr float SLIDE_MAX_POSITIONS_METERS[] = { 0.5f, 1.5f };
 
 

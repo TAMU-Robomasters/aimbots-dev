@@ -3,6 +3,20 @@
 
 namespace src::Slide {
 
+static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG_temp = {
+    .kp = 150000.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 0.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 SlideSubsystem::SlideSubsystem(Drivers* drivers)
     : Subsystem(drivers),
     motors {
@@ -10,7 +24,7 @@ SlideSubsystem::SlideSubsystem(Drivers* drivers)
         DJIMotor(drivers, SLIDE_Z_MOTOR_ID, SLIDE_BUS, SLIDE_Z_MOTOR_DIRECTION, "slide z motor"),
     },
     motorPIDs {
-        SmoothPID(SLIDE_X_POSITION_PID_CONFIG),
+        SmoothPID(SLIDE_X_POSITION_PID_CONFIG_temp),
         SmoothPID(SLIDE_Z_POSITION_PID_CONFIG)
     }
 {
@@ -21,9 +35,16 @@ void SlideSubsystem::initialize()
     ForAllSlideMotors(&DJIMotor::initialize);
 }
 
+bool isXOnline = false;
+float xOutput = 0.0f;
+float xTarget = 0.0f;
+
 void SlideSubsystem::refresh() 
 {
     ForAllSlideMotors(&SlideSubsystem::refreshDesiredOutput);
+    isXOnline = motors[X].isMotorOnline();
+    xOutput = desiredOutputs[X];
+    xTarget = targetPosesMeters[X];
 }
 
 void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx)
