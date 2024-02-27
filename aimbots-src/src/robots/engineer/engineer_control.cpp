@@ -92,7 +92,7 @@ void registerSubsystems(src::Drivers *drivers) {
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    // chassis.initialize();
+    chassis.initialize();
     slide.initialize();
     wrist.initialize();
     // grabber.initialize();
