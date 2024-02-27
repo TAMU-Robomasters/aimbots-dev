@@ -11,31 +11,28 @@ WristControlCommand::WristControlCommand(
 }
 
 void WristControlCommand::initialize() {
-    joystickReadDelay.restart(500);
+    joystickReadDelay.restart(50);
 }
 
 //Adjust this to change stick sensitivity
-float JOYSTICK_TO_DEGREES = 0.2;
+float JOYSTICK_TO_DEGREES = 3;
 
 float yawDeltaDisplay = 0.0f;
 
 void WristControlCommand::execute() {
+    float yawChangeDegrees = 0;
+    float pitchChangeDegrees = 0;
+    float rollChangeDegrees = 0;
 
     if(joystickReadDelay.execute()) {
-        float yaw_dTheta = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_DEGREES;
-        yawTarget += yaw_dTheta;
-
-        yawDeltaDisplay = yaw_dTheta;
-
-        float pitch_dTheta = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_DEGREES;
-        pitchTarget += pitch_dTheta;
-
-        joystickReadDelay.restart(500); //Adjust this number if motion stutters too much, might need to be lower
+        yawChangeDegrees = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_DEGREES;
+        pitchChangeDegrees = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_DEGREES;
+        joystickReadDelay.restart(50);
     }
 
-    wrist->setTargetAngle(YAW, modm::toRadian(yawTarget));
-    wrist->setTargetAngle(PITCH, modm::toRadian(pitchTarget));
-    wrist->setTargetAngle(ROLL, modm::toRadian(rollTarget));
+    wrist->setTargetAngle(YAW, wrist->getTargetAngle(YAW) + modm::toRadian(yawChangeDegrees));
+    wrist->setTargetAngle(PITCH, wrist->getTargetAngle(PITCH) + modm::toRadian(pitchChangeDegrees));
+    wrist->setTargetAngle(ROLL, wrist->getTargetAngle(ROLL) + modm::toRadian(rollChangeDegrees));
 
     wrist->updateAllPIDs();
 }
