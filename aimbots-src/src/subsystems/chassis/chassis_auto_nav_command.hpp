@@ -6,6 +6,9 @@
 #include "chassis_helper.hpp"
 #include "drivers.hpp"
 
+#include "informants/pathfinding/graph.hpp"
+
+
 #ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
@@ -19,12 +22,12 @@ public:
         SmoothPIDConfig rotationPIDConfig,
         const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
         float linearSettledThreshold = 0.05f,
-        float angularSettledThreshold = modm::toRadian(0.5f));
+        float angularSettledThreshold = modm::toRadian(0.5f),
+        );
     ~ChassisAutoNavCommand() = default;
 
     void initialize() override;
     void execute() override;
-
     void setTargetLocation(const modm::Location2D<float>& targetLocation) {
         autoNavigator.setTargetLocation(targetLocation);
     }
@@ -38,9 +41,26 @@ public:
     bool isFinished() const override;
     void end(bool interrupted) override;
 
+    //load series of points into navigation command
+    void load_path(vector<Vector2f> path){
+        chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); //halt motion
+        this->path = path;
+        pop_path(); //put new point into auto navigator
+    }
+
+    //loads a new point into auto navigator from path
+    void pop_path(){
+
+        //could be wierd pointer stuff at play i dont know what im doing i fear
+        Vector2f pt = path.front();
+        autoNavigator.setTargetLocation(modm::Location2D<float>(pt));
+        path.erase(path.front());
+    }
+
     const char* getName() const override { return "Chassis Auto Nav"; }
 
 private:
+    vector<Vector2f> path;
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 
