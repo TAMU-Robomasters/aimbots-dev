@@ -76,9 +76,9 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 150000.0f,
     .ki = 0.0f,
-    .kd = 0.5f,
+    .kd = 0.0f,
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
