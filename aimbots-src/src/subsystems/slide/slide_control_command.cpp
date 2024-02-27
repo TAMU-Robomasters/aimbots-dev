@@ -5,7 +5,7 @@ namespace src::Slide {
 static constexpr float JOYSTICK_TO_METERS = 5 / 1000.0f; //Adjust sensitivity
 
 static constexpr int JOYSTICK_READS_PER_SECOND = 20;
-static constexpr int JOYSTICK_READ_DELAY_MS = 1000 / JOYSTICK_READS_PER_SECOND;
+static constexpr int JOYSTICK_READ_DELAY_MS = 1000.0f / JOYSTICK_READS_PER_SECOND;
 
 SlideControlCommand::SlideControlCommand(Drivers* drivers, SlideSubsystem* slide)
     : drivers(drivers), slide(slide)
