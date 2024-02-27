@@ -1,5 +1,5 @@
 #include "chassis_auto_nav_command.hpp"
-
+    
 #ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
@@ -37,6 +37,15 @@ void ChassisAutoNavCommand::execute() {
     float yError = 0.0f;
     float rotationError = 0.0f;
 
+    //no points to load and controllers at target
+    if (this->path.empty() && this->isSettled()){
+        return; 
+    }
+
+    if (this->isSettled()){ //if controllers at target load new point
+        this->pop_path();
+    }
+    
     modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getRobotLocation2D();
     modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getRobotVelocity2D();
 
