@@ -3,6 +3,20 @@
 
 namespace src::Slide {
 
+static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG_temp = {
+    .kp = 150000.0f,
+    .ki = 0.0f,
+    .kd = 0.1f,
+    .maxICumulative = 0.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 SlideSubsystem::SlideSubsystem(Drivers* drivers)
     : Subsystem(drivers),
     motors {
@@ -11,7 +25,7 @@ SlideSubsystem::SlideSubsystem(Drivers* drivers)
     },
     motorPIDs {
         SmoothPID(SLIDE_X_POSITION_PID_CONFIG),
-        SmoothPID(SLIDE_Z_POSITION_PID_CONFIG)
+        SmoothPID(SLIDE_Z_POSITION_PID_CONFIG_temp)
     }
 {
 }
@@ -25,6 +39,7 @@ float xOut_disp = 0;
 float zOut_disp = 0;
 float xTargetPos_disp = 0;
 float zTargetPos_disp = 0;
+float zErr_disp = 0;
 bool isZOnline = false;
 
 void SlideSubsystem::refresh() 
@@ -52,6 +67,8 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
     float positionRevs = motors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
     float positionMeters = positionRevs * SLIDE_METERS_PER_REVS_RATIOS[motorIdx];
     float err = targetPosesMeters[motorIdx] - positionMeters;
+    if (motorIdx == Z)
+        zErr_disp = err;
     float errDerivative = motors[motorIdx].getShaftRPM();
 
     int32_t output = motorPIDs[motorIdx].runController(err, errDerivative);
