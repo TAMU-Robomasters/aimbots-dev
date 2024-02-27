@@ -89,9 +89,9 @@ static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
-    .kp = 100000.0f,
+    .kp = 150000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
