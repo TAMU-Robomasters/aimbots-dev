@@ -36,7 +36,7 @@ void RunDartCommand::execute() {
 
     uint16_t flywheelRPM = 0;
 
-    float joySense = 100.0f;
+    float joySense = 500.0f;
 
     float joystickInput = drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * joySense;;
 
