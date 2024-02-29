@@ -9,7 +9,7 @@ namespace src::Feeder {
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
-      targetRPM(0),
+      //targetRPM(0),
       //desiredOutput(0),
       //feederVelocityPID(FEEDER_VELOCITY_PID_CONFIG),
       //feederMotor(drivers, FEEDER_ID, FEED_BUS, FEEDER_DIRECTION, "Feeder Motor"),
@@ -45,7 +45,6 @@ void FeederSubsystem::initialize() {
     }
 }
 
-float feederDesiredOutputDisplay = 0;
 float feederShaftRPMDisplay = 0;
 bool isFeederOnlineDisplay = false;
 
@@ -53,7 +52,6 @@ bool isFeederOnlineDisplay = false;
 void FeederSubsystem::refresh() {
     watchonline = isOnline();
     int feederOnlineCount = 0;
-    feederDesiredOutputDisplay = targetRPM;
     // feederShaftRPMDisplay = feederMotor.getShaftRPM();
 
     // updateMotorVelocityPID();
@@ -83,13 +81,12 @@ void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
      //float err = targetRPM - feederMotor.getShaftRPM();
      //feederVelocityPIDs[FeederIdx].runControllerDerivateError(err);
     float desiredOutput = feederVelocityPIDs[FeederIdx]->runController(
-        targetRPM - feederMotors[FeederIdx]->getShaftRPM(),getFeederMotorTorque(FeederIdx));
+        feederTargetRPMs[FeederIdx] - feederMotors[FeederIdx]->getShaftRPM(),getFeederMotorTorque(FeederIdx));
     setDesiredFeederMotorOutput(FeederIdx, desiredOutput);
 }
 
-float FeederSubsystem::setTargetRPM(float rpm) {
-    this->targetRPM = rpm;
-    return targetRPM;
+void FeederSubsystem::setTargetRPM(float rpm, int FeederIdx) {
+    feederTargetRPMs[FeederIdx] = rpm;
 }
 
 void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {  // takes the input from the velocity PID and sets the motor to that RPM

@@ -273,6 +273,7 @@ static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID fo
 //static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_TARGET_RPMS = {FEEDER_DEFAULT_RPM};
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
