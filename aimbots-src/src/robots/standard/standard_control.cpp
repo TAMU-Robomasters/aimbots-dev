@@ -280,13 +280,13 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&/*chassisToggleDriveCommand*/followGimbalCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&/*chassisTokyoCommand*/followGimbalCommand2, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -303,13 +303,13 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {/*&runFeederCommand,*/ &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runDoubleBarrelFeederCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
@@ -330,7 +330,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
     drivers->commandScheduler.registerSubsystem(&gui);
-    drivers->commandScheduler.registerSubsystem(&barrelManager);
+    // drivers->commandScheduler.registerSubsystem(&barrelManager);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -343,14 +343,14 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     gui.initialize();
-    barrelManager.initialize();
+    // barrelManager.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapperCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
