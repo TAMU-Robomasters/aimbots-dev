@@ -1,4 +1,5 @@
 #include "subsystems/wrist/wrist.hpp"
+
 #include "utils/common_types.hpp"
 
 #ifdef WRIST_COMPATIBLE
@@ -7,32 +8,30 @@ namespace src::Wrist {
 
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-    motors {
-        buildMotor(YAW),
-        buildMotor(PITCH),
-        buildMotor(ROLL)
-    },
-    positionPIDs {
-        SmoothPID(YAW_POSITION_PID_CONFIG),
-        SmoothPID(PITCH_POSITION_PID_CONFIG),
-        SmoothPID(ROLL_POSITION_PID_CONFIG)
-    }
-{
-}
+      motors{buildMotor(YAW), buildMotor(PITCH), buildMotor(ROLL)},
+      positionPIDs{
+          SmoothPID(YAW_POSITION_PID_CONFIG),
+          SmoothPID(PITCH_POSITION_PID_CONFIG),
+          SmoothPID(ROLL_POSITION_PID_CONFIG)},
+      velocityPIDs{
+          SmoothPID(YAW_VELOCITY_PID_CONFIG),
+          SmoothPID(PITCH_VELOCITY_PID_CONFIG),
+          SmoothPID(ROLL_VELOCITY_PID_CONFIG)} {}
 
-void WristSubsystem::initialize() {
-    ForAllWristMotors(&DJIMotor::initialize);
-}
+void WristSubsystem::initialize() { ForAllWristMotors(&DJIMotor::initialize); }
 
-void WristSubsystem::refresh() {
-    ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor);
-}
+void WristSubsystem::refresh() { ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor); }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
 }
 
 void WristSubsystem::updateAllPIDs() {
+    // if (motor_control_setting == VELOCITY) {
+    //     ForAllWristMotors(&WristSubsystem::updateMotorPID_velocity);
+    // } else if (motor_control_setting == POSITION) {
+    //     ForAllWristMotors(&WristSubsystem::updateMotorPID);
+    // }
     ForAllWristMotors(&WristSubsystem::updateMotorPID);
 }
 
@@ -40,8 +39,14 @@ void WristSubsystem::updateMotorPID(MotorIndex idx) {
     float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
     float errorDerivative = getMotorRPM(idx);
     float output = positionPIDs[idx].runController(errorRadians, errorDerivative);
-    
+
     desiredMotorOutputs[idx] = output;
+}
+
+void WristSubsystem::updateMotorPID_velocity(MotorIndex idx) {
+    float motorRpm = getMotorRPM(idx);
+    float rpm_error = targetRPMs[idx] - motorRpm;
+    float output = velocityPIDs[idx].runControllerDerivateError(rpm_error);
 }
 
 float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {

@@ -41,14 +41,17 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
 /* What motor angles ensure that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 186.15
-    wrapTo0To2PIRange(modm::toRadian(0.0f)),  // 196.21
-    wrapTo0To2PIRange(modm::toRadian(0.0f))}; // 196.21
+    wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 186.15
+    wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 196.21
+    wrapTo0To2PIRange(modm::toRadian(0.0f))};  // 196.21
 
 // TODO: SET THESE GEAR RATIOS PLEASE
-static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS {365.0f, 361.0f, 361.0f};
+static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS{365.0f, 361.0f, 361.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {true, false, false};
-static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR1, MotorID::MOTOR4}; // Yaw, Pitch, Roll
+static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {
+    MotorID::MOTOR5,
+    MotorID::MOTOR1,
+    MotorID::MOTOR4};  // Yaw, Pitch, Roll
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -116,8 +119,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f
-};
+    .errorDerivativeFloor = 0.0f};
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .kp = 10000.0f,
@@ -188,8 +190,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f
-};
+    .errorDerivativeFloor = 0.0f};
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .kp = 700.0f,
