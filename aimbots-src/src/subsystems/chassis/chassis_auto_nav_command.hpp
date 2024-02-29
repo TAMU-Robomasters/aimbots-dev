@@ -22,7 +22,7 @@ public:
         SmoothPIDConfig rotationPIDConfig,
         const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
         float linearSettledThreshold = 0.05f,
-        float angularSettledThreshold = modm::toRadian(0.5f),
+        float angularSettledThreshold = modm::toRadian(0.5f)
         );
     ~ChassisAutoNavCommand() = default;
 
@@ -53,8 +53,8 @@ public:
 
         //could be wierd pointer stuff at play i dont know what im doing i fear
         Vector2f pt = path.front();
-        autoNavigator.setTargetLocation(modm::Location2D<float>(pt));
-        path.erase(path.front());
+        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.getX(), pt.getY(), 90));
+        path.erase(path.begin());
     }
 
     const char* getName() const override { return "Chassis Auto Nav"; }
