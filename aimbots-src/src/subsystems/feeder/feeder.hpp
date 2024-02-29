@@ -14,17 +14,18 @@ namespace src::Feeder {
 class FeederSubsystem : public tap::control::Subsystem {
 public:
     FeederSubsystem(src::Drivers* drivers);
-
+    //tagging on building the target RPM array here
     void BuildFeederMotors(){
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
                 new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
+            feederTargetRPMs[i] = FEEDER_TARGET_RPMS[i];
         }
     }
 
     template <class... Args>
     void ForAllFeederMotors(void (DJIMotor::*func)(Args...), Args... args) {
-        for (auto& feederMotor : feederMotors) {
+        for (auto& feederMotor : feederMotors; i++) {
             (feederMotor->*func)(args...);
         }
     }
@@ -75,7 +76,7 @@ public:
 
     void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
 
-    mockable float setTargetRPM(float rpm);
+    void setTargetRPM(float rpm, int FeederIdx);
 
     float getRPM(uint8_t FeederIdx) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ?  - feederMotors[FeederIdx]->getShaftRPM() : 0;
@@ -102,8 +103,9 @@ private:
 
     void setDesiredOutputToFeederMotor(uint8_t FeederIdx);
 
-    float targetRPM;
+    //float targetRPM;
     //float desiredOutput;
+    std::array<float, FEEDER_MOTOR_COUNT> feederTargetRPMs;
 
 
     std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederVelocityPIDs;
