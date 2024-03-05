@@ -6,7 +6,9 @@ namespace src::Utils::MatrixOperations {
     /**
     * @return   3X3 identity matrix
     **/
-    Matrix3f identityMatrix();
+    // Matrix3f identityMatrix(); WE DO NOT NEED THIS BECAUSE A PRE-BUILT IDENTITY MATRIX EXISTS ALREADY
+
+    Matrix4f initialization(Matrix3f R, Vector3f p);
 
     /**
     * Rotate the matrix
@@ -24,4 +26,7 @@ namespace src::Utils::MatrixOperations {
     * @return   Translated column vector
     **/
     Vector3f translate(Vector3f v, Vector3f p);
+
+    Matrix4f invertTransform(Matrix4f transform);
+    
 }
