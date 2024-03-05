@@ -28,6 +28,8 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
 void ChassisAutoNavCommand::initialize() {
     // modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
     // autoNavigator.setTargetLocation(targetLocation);
+    WeightedSquareGraph graph = WeightedSquareGraph(4, 4, 0.5);
+    this->load_path(graph.get_path(Vector2i(0,0), Vector2i(1, 1)));
 }
 
 float rotationErrorDisplay = 0.0f;
