@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "utils/common_types.hpp"
-#include "utils/math/transform_setup.hpp"
+#include "utils/math/transformations.hpp"
 
 namespace src::Informants::Transformers {
 
@@ -10,9 +10,9 @@ class CartesianFrame {
     public:
         //HEHEHE copy pasted from the old code (coordinate frame hpp) - EDIT AS NEEDED
         
-        CartesanFrame();
-        CartesanFrame(Matrix3f orientation, Vector3f origin);
-        ~CartesanFrame() = default;
+        CartesianFrame();
+        CartesianFrame(Matrix3f orientation, Vector3f origin);
+        ~CartesianFrame() = default;
 
         void updateTransform();
 
@@ -28,8 +28,8 @@ class CartesianFrame {
         const Matrix4f& getTransformIn();
         const Matrix4f& getTransformOut();
 
-        Matrix4f getTransformToFrame(CartesanFrame& f);
-        Vector3f getPointInFrame(CartesanFrame& f, Vector3f& v);
+        Matrix4f getTransformToFrame(CartesianFrame& f);
+        Vector3f getPointInFrame(CartesianFrame& f, Vector3f& v);
 
     private:
         /**
@@ -44,10 +44,6 @@ class CartesianFrame {
 
         Matrix4f transformIn;   // Takes inputs in ground frame
         Matrix4f transformOut;  // Returns inputs in ground frame
-}
+};
 
-
-
-
-    
 }
