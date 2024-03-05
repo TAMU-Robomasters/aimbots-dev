@@ -35,6 +35,8 @@ float lVoltage;
 float lPrecent;
 float lPower;
 
+float chargeValueR = 10;
+
 char currentCommand;
 /**
  * @brief Suppercap
@@ -81,29 +83,34 @@ void SupperCapCommunicator::updateSerial() {
                 // received a full message and we can now interpret it
                 //  puts it into lastMessage struct
                 lastMessage = *reinterpret_cast<SupperCapMessageRecieved*>(rawSerialBuffer);
+
+                if (lastMsgTimeDisplay == 0) {
+                    // gets time
+                    lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
+                } else {
+                    msBetweenLastMessageDisplay =
+                        currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
+                    lastMsgTimeDisplay = currTime;
+                }
+
+                // test values
+                lVoltage = lastMessage.voltage;
+                lPower = lastMessage.power;
+                lPrecent = lastMessage.percent;
+
+                nextByteIndex = 0;
+                currentSerialState = SupperCapCommunicatorSerialState::SearchingForMagic;
             }
-            if (lastMsgTimeDisplay == 0) {
-                // gets time
-                lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
-            } else {
-                msBetweenLastMessageDisplay =
-                    currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
-                lastMsgTimeDisplay = currTime;
-            }
-
-            // test values
-            lVoltage = lastMessage.voltage;
-            lPower = lastMessage.power;
-            lPrecent = lastMessage.percent;
-
-            nextByteIndex = 0;
-            currentSerialState = SupperCapCommunicatorSerialState::SearchingForMagic;
-
             break;
         }
     }
     // displayNextByteIndex = nextByteIndex;
-    // currentCommand = command;
+    currentCommand = command;
+    lastSentMessage.magic = 'b';
+    lastSentMessage.command = 'c';
+    chargeValueR = 10;
+    lastSentMessage.charge = chargeValueR;
+
     // switch (command) {
     //     case STOP:
     //         /* code */
@@ -125,11 +132,11 @@ void SupperCapCommunicator::updateSerial() {
     //         break;
     // }
 
-    // // rawSerialBufferSent = *reinterpret_cast<uint8_t*>(&lastSentMessage);
+    rawSerialBufferSent = reinterpret_cast<uint8_t*>(&lastSentMessage);
     // rawSerialBufferSent[0] = lastSentMessage.magic;
     // rawSerialBufferSent[1] = lastSentMessage.command;
     // rawSerialBufferSent[2] = lastSentMessage.charge;
-    // WRITE(rawSerialBufferSent, SUPPER_CAP_MESSAGE_SENT_SIZE);
+    WRITE(rawSerialBufferSent, SUPPER_CAP_MESSAGE_SENT_SIZE);
 }
 
 }  // namespace src::Informants::SupperCap

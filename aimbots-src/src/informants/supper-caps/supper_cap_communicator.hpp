@@ -36,12 +36,13 @@ public:
 
     inline std::string makeChargeMessage(int x) const { return ("CHARGE " + std::to_string(x) + "\n"); }
     inline void setChargeValue(uint8_t x) { chargeValue = x; }
+
 private:
     src::Drivers* drivers;
     // src::Informants::Vision::VisionDataConversion visionDataConverter;
 
     alignas(SupperCapMessageRecieved) uint8_t rawSerialBuffer[sizeof(SupperCapMessageRecieved)];
-    alignas(SupperCapMessageSent) uint8_t rawSerialBufferSent[sizeof(SupperCapMessageSent)];
+    uint8_t* rawSerialBufferSent;
 
     SupperCapCommunicatorSerialState currentSerialState;
     size_t nextByteIndex;

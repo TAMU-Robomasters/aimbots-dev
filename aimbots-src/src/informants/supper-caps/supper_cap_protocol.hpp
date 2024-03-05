@@ -14,18 +14,19 @@ struct SupperCapMessageRecieved {
     float power;
     float percent;
     float inputPower;
+    uint8_t delay = 0;  // this is to help balance out the size of the message
 } __attribute__((packed));
 
 // sent command
 struct SupperCapMessageSent {
     uint8_t magic;
     char command;
-    uint8_t charge;
+    float charge;
 } __attribute__((packed));
 
 // reminder that floats are 4 bytes :)
-static_assert(sizeof(SupperCapMessageRecieved) == 17, "Supper Cap Message Recived is not the correct size");
-static_assert(sizeof(SupperCapMessageSent) == 3, "Supper Cap Message Sent is not the correct size");
+static_assert(sizeof(SupperCapMessageRecieved) == 18, "Supper Cap Message Recived is not the correct size");
+static_assert(sizeof(SupperCapMessageSent) == 6, "Supper Cap Message Sent is not the correct size");
 
 static constexpr uint8_t SUPPER_CAP_MESSAGE_SIZE = sizeof(SupperCapMessageRecieved);
 static constexpr uint8_t SUPPER_CAP_MESSAGE_SENT_SIZE = sizeof(SupperCapMessageSent);
