@@ -25,14 +25,32 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
+float path_x = 0.0f;
+float path_y = 0.0f;
+
 void ChassisAutoNavCommand::initialize() {
     // modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
     // autoNavigator.setTargetLocation(targetLocation);
-    WeightedSquareGraph graph = WeightedSquareGraph(4, 4, 0.5);
+    WeightedSquareGraph graph = WeightedSquareGraph(1, 1, 0.1);
     this->load_path(graph.get_path(Vector2i(0,0), Vector2i(1, 1)));
 }
 
+void ChassisAutoNavCommand::pop_path(){
+        Vector2f pt = path.front();
+        path_x = pt.x;
+        path_y = pt.y;
+        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.getX(), pt.getY(), 90));
+        path.erase(path.begin());
+    }
+
+void ChassisAutoNavCommand::load_path(vector<Vector2f> path){
+    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); //halt motion
+    this->path = path;
+    pop_path(); //put new point into auto navigator
+}
+
 float rotationErrorDisplay = 0.0f;
+
 
 void ChassisAutoNavCommand::execute() {
     float xError = 0.0f;

@@ -32,6 +32,7 @@ public:
         autoNavigator.setTargetLocation(targetLocation);
     }
 
+
     bool isSettled() {
         return xController.isSettled(linearSettledThreshold, 0) && yController.isSettled(linearSettledThreshold, 0) &&
                rotationController.isSettled(angularSettledThreshold, 0);
@@ -42,20 +43,10 @@ public:
     void end(bool interrupted) override;
 
     //load series of points into navigation command
-    void load_path(vector<Vector2f> path){
-        chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); //halt motion
-        this->path = path;
-        pop_path(); //put new point into auto navigator
-    }
+    void load_path(vector<Vector2f> path);
 
     //loads a new point into auto navigator from path
-    void pop_path(){
-
-        //could be wierd pointer stuff at play i dont know what im doing i fear
-        Vector2f pt = path.front();
-        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.getX(), pt.getY(), 90));
-        path.erase(path.begin());
-    }
+    void pop_path();
 
     const char* getName() const override { return "Chassis Auto Nav"; }
 
