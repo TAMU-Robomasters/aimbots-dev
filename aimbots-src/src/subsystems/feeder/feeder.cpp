@@ -69,10 +69,7 @@ void FeederSubsystem::refresh() {
         updateMotorVelocityPID(i);
         setDesiredOutputToFeederMotor(i);
     }
-
-
     //ForAllFeederMotors(&FeederSubsystem::setDesiredFeederMotorOutput);
-
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
