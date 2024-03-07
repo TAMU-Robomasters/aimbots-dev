@@ -30,7 +30,6 @@
 #include "tap/communication/sensors/imu_heater/imu_heater.hpp"
 #include "tap/util_macros.hpp"
 
-#include "modm/math/geometry/vector3.hpp"
 #include "modm/processing/protothread.hpp"
 
 #include "bmi088_data.hpp"
@@ -119,24 +118,10 @@ public:
     /**
      * When this function is called, the bmi088 enters a calibration state during which time,
      * gyro/accel calibration offsets will be computed and the mahony algorithm reset. When
-     * calibrating, angle, accelerometer, and gyroscope values will return 0. This function takes
-     * in a vector of Euler angles that allows the user to specify the orientation of the IMU
-     * during calibration.
-     *
-     *     _____________________
-     *     |                   |
-     *     |         ^ y       |
-     *     |         |         |
-     *     |         |         |
-     *     |         R ---> x  |
-     *     |     ROBOMASTER    |
-     *     |                   |
-     *     |                   |
-     *     |                   |
-     *     |                   |
-     *     |___________________|
+     * calibrating, angle, accelerometer, and gyroscope values will return 0. When calibrating
+     * the BMI088 should be level, otherwise the IMU will be calibrated incorrectly.
      */
-    mockable void requestRecalibration(modm::Vector3f calibrationEulerAngles = {0.0f, 0.0f, 0.0f});
+    mockable void requestRecalibration();
 
     inline const char *getName() const final_mockable { return "bmi088"; }
 
@@ -189,8 +174,6 @@ private:
     imu_heater::ImuHeater imuHeater;
 
     int calibrationSample = 0;
-
-    modm::Vector3f lastCalibrationEulerAngles;
 
     uint32_t prevIMUDataReceivedTime = 0;
 
