@@ -21,6 +21,8 @@ private:
     uint32_t prevUpdateCounterWristYaw = 0;
     uint32_t prevUpdateCounterWristPitch = 0;
     uint32_t prevUpdateCounterWristRoll = 0;
+    uint32_t prevUpdateCounterSlideUpDown = 0;
+    uint32_t prevUpdateCounterSlideFrontBack = 0;
 
     uint32_t lastXInputCallTime = 0;
     uint32_t lastYInputCallTime = 0;
@@ -28,6 +30,8 @@ private:
     uint32_t lastWristYawInputCallTime = 0;
     uint32_t lastWristPitchInputCallTime = 0;
     uint32_t lastWristRollInputCallTime = 0;
+    uint32_t lastSlideUpDownInputCallTime = 0;
+    uint32_t lastSlideFrontBackInputCallTime = 0;
 
     LinearInterpolationPredictor chassisXInput;
     LinearInterpolationPredictor chassisYInput;
@@ -35,6 +39,10 @@ private:
     LinearInterpolationPredictor wristYawInput;
     LinearInterpolationPredictor wristPitchInput;
     LinearInterpolationPredictor wristRollInput;
+    LinearInterpolationPredictor slideUpDownInput;
+    LinearInterpolationPredictor slideFrontBackInput;
+
+    
 
     src::Utils::Filters::EMAFilter mouseXFilter;
     src::Utils::Filters::EMAFilter mouseYFilter;
@@ -45,6 +53,8 @@ private:
     tap::algorithms::Ramp wristYawRotationRamp;
     tap::algorithms::Ramp wristPitchRotationRamp;
     tap::algorithms::Ramp wristRollRotationRamp;
+    tap::algorithms::Ramp slideUpDownRamp;
+    tap::algorithms::Ramp slideFrontBackRamp;
 
 public:
     OperatorInterface(tap::Drivers *drivers)
@@ -63,8 +73,12 @@ public:
     mockable float getWristPitchInput();
     mockable float getWristRollInput();
 
+    mockable float getSlideUpDownInput();
+    mockable float getSlideFrontBackInput();
+    
     mockable float getGimbalYawInput();
     mockable float getGimbalPitchInput();
+
 
     // Think of the maxes like setting a sensitivity for the mouse
     // The max defines an operational range of the mouse velocity

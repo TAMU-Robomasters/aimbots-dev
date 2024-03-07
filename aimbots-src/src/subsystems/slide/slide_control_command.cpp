@@ -2,7 +2,7 @@
 
 namespace src::Slide {
 
-static constexpr float JOYSTICK_TO_METERS = 5 / 1000.0f; //Adjust sensitivity
+static constexpr float JOYSTICK_TO_METERS = 3 / 1000.0f; //Adjust sensitivity
 
 static constexpr int JOYSTICK_READS_PER_SECOND = 20;
 static constexpr int JOYSTICK_READ_DELAY_MS = 1000.0f / JOYSTICK_READS_PER_SECOND;
@@ -18,16 +18,16 @@ void SlideControlCommand::initialize() {
 }
 
 void SlideControlCommand::execute() {
-    float targetX = slide->getTargetXMeters();
-    float targetZ = slide->getTargetZMeters();
+    float targetX = slide->getTargetXMeters() + JOYSTICK_TO_METERS * drivers->controlOperatorInterface.getSlideFrontBackInput();
+    float targetZ = slide->getTargetZMeters() + JOYSTICK_TO_METERS * drivers->controlOperatorInterface.getSlideUpDownInput();
 
-    if (joystickReadDelay.execute()) {
-        float x_dMeters = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_METERS;
-        float z_dMeters = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_METERS;
-        targetX += x_dMeters;
-        targetZ += z_dMeters;
-        joystickReadDelay.restart(JOYSTICK_READ_DELAY_MS); //May need to be lowered, if movement is choppy/lagging
-    }
+    // if (joystickReadDelay.execute()) {
+    //     float x_dMeters = drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL) * JOYSTICK_TO_METERS;
+    //     float z_dMeters = drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * JOYSTICK_TO_METERS;
+    //     targetX += x_dMeters;
+    //     targetZ += z_dMeters;
+    //     joystickReadDelay.restart(JOYSTICK_READ_DELAY_MS); //May need to be lowered, if movement is choppy/lagging
+    // }
 
     slide->setTargetPositionMeters(targetX, targetZ);
     slide->updateAllPIDs();
