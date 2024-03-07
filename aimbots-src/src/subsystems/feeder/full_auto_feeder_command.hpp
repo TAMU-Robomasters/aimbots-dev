@@ -42,10 +42,9 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
 
     int64_t antiOverheatEncoderThreshold;
+    uint8_t projectileBuffer;
 
     float speed;
-
-    uint8_t projectileBuffer;
 
     int UNJAM_TIMER_MS;
 

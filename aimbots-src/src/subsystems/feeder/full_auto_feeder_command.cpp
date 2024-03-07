@@ -15,8 +15,8 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
-      speed(speed),
       projectileBuffer(projectileBuffer),
+      speed(speed),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       unjamSpeed(-unjamSpeed)  //
 {

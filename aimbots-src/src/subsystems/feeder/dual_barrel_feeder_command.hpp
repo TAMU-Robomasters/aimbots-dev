@@ -21,6 +21,7 @@ public:
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
         std::array<BarrelID, 2> BARREL_IDS,
+        uint8_t projectileBuffer,
         float speed,
         float unjamSpeed,
         int UMJAM_TIMER_MS);
@@ -42,6 +43,9 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
 
     std::array<BarrelID, 2> BARREL_IDS;
+
+    int64_t antiOverheatEncoderThreshold;
+    uint8_t projectileBuffer;
 
     float speed;
 
