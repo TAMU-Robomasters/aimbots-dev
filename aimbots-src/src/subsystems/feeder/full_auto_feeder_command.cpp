@@ -10,11 +10,13 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     src::Utils::RefereeHelperTurreted* refHelper,
     float speed,
     float unjamSpeed,
+    int projectileBuffer,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       speed(speed),
+      projectileBuffer(projectileBuffer),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       unjamSpeed(-unjamSpeed)  //
 {
@@ -70,7 +72,15 @@ void FullAutoFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
+        if (unjamTimer.execute()) {
+            feeder->setTargetRPM(speed);
+            startupThreshold.restart(500);
+        }
 
+        lastHeatDisplay = refHelper->getCurrBarrelHeat();
+        heatLimitDisplay = refHelper->getCurrBarrelLimit();
+        lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
+    }
         lastHeatDisplay = refHelper->getCurrBarrelHeat();
         heatLimitDisplay = refHelper->getCurrBarrelLimit();
         lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();

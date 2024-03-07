@@ -43,7 +43,7 @@ public:
     bool canSpecificBarrelShootSafely(BarrelID barrelID);
 
     uint8_t getRemainingProjectiles() {
-        int16_t remainingHeat = getCurrBarrelLimit() - getCurrBarrelHeat();
+        uint16_t remainingHeat = getCurrBarrelLimit() - getCurrBarrelHeat();
         return remainingHeat / 10;
     }
 
