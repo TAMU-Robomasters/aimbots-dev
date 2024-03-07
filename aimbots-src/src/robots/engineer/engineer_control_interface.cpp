@@ -21,6 +21,9 @@ static constexpr float INPUT_WRIST_YAW_INC = 0.003f;
 static constexpr float INPUT_WRIST_PITCH_INC = 0.003f;
 static constexpr float INPUT_WRIST_ROLL_INC = 0.003f;
 
+static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.003f;
+static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.003f;
+
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
@@ -192,6 +195,50 @@ float OperatorInterface::getWristRollInput() {
 
     wristRollRotationRamp.update(INPUT_WRIST_ROLL_INC);
     return wristRollRotationRamp.getValue();
+}
+
+float OperatorInterface::getSlideUpDownInput()
+{
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideUpDownInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideUpDown != updateCounter) {
+        slideUpDownInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+        prevUpdateCounterSlideUpDown = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+
+    float finalRotation = limitVal<float>(slideUpDownInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideUpDownRamp.setTarget(finalRotation);
+
+    slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
+    return slideUpDownRamp.getValue();   
+}
+
+float OperatorInterface::getSlideFrontBackInput()
+{
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideFrontBackInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideFrontBack != updateCounter) {
+        slideFrontBackInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
+        prevUpdateCounterSlideFrontBack = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+
+    float finalRotation = limitVal<float>(slideFrontBackInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideFrontBackRamp.setTarget(finalRotation);
+
+    slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
+    return slideFrontBackRamp.getValue();   
 }
 
 int16_t mouseXDisplay = 0;
