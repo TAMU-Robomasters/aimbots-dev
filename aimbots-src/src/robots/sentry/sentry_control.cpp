@@ -218,13 +218,13 @@ ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearCo
 
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {&chassisAutoNavCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
@@ -250,7 +250,7 @@ HoldCommandMapping leftClickMouse(
     {&dualBarrelsFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
-// HoldCommandMapping leftSwitchMid(
+// HoldCommandMapping leftSwitchMid(ozo
 //     drivers(),
 //     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
