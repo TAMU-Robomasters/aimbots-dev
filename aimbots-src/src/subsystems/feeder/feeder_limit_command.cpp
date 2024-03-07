@@ -44,7 +44,8 @@ FeederLimitCommand::FeederLimitCommand(
 }
 
 void FeederLimitCommand::initialize() {
-    feeder->setTargetRPM(0.0f);
+    feeder->setTargetRPM(0.0f,0);
+    feeder->setTargetRPM(0.0f,1);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     limitswitchInactive.restart(0);
 }
@@ -87,17 +88,20 @@ void FeederLimitCommand::execute() {
     }
     // if the fire mode has been activated (with timer semiauto) then check if your still in the other timers range to keep shooting, else set the feeder to 0 until reset timers
     if(!isFiring){
-        if (!limitpressed)
-            feeder->setTargetRPM(speed);
-        else
-            feeder->setTargetRPM(0.0f);
+        feeder->setTargetRPM(0.0f,1);
+        if (!limitpressed){
+            feeder->setTargetRPM(speed,0);
+            }
+        else{
+            feeder->setTargetRPM(0.0f,0);
+        }
     }
     
     // Checks if the controller is in its semiautomatic state
     //      i.e. controller switch goes from mid to up
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes to mid)
     if (isCurrSemiauto and !isPrevSemiauto){
-        feeder->setTargetRPM(feederFiringRPM);
+        feeder->setTargetRPM(feederFiringRPM, 1);
         isFiring = true;
         limitswitchInactive.restart(limitSwitchDownTime);
     }
@@ -106,7 +110,10 @@ void FeederLimitCommand::execute() {
 
     
 }
-void FeederLimitCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void FeederLimitCommand::end(bool) {
+     feeder->setTargetRPM(0.0f,0); 
+     feeder->setTargetRPM(0.0f,1);
+     }
 
 bool FeederLimitCommand::isReady() {
     return true;

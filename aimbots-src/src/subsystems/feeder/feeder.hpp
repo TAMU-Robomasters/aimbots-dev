@@ -25,7 +25,7 @@ public:
 
     template <class... Args>
     void ForAllFeederMotors(void (DJIMotor::*func)(Args...), Args... args) {
-        for (auto& feederMotor : feederMotors; i++) {
+        for (auto& feederMotor : feederMotors) {
             (feederMotor->*func)(args...);
         }
     }
@@ -76,7 +76,7 @@ public:
 
     void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
 
-    void setTargetRPM(float rpm, int FeederIdx);
+    void setTargetRPM(float rpm, int FeederIdx = 0);
 
     float getRPM(uint8_t FeederIdx) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ?  - feederMotors[FeederIdx]->getShaftRPM() : 0;
