@@ -9,9 +9,9 @@ DualBarrelFeederCommand::DualBarrelFeederCommand(
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
     std::array<BarrelID, 2> BARREL_IDS,
-    uint8_t projectileBuffer,
     float speed,
     float unjamSpeed,
+    uint8_t projectileBuffer,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),

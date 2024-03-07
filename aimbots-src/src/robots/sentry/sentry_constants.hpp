@@ -246,6 +246,9 @@ static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 750.0f;
 
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
+static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
+
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
 
 // CAN Bus 2

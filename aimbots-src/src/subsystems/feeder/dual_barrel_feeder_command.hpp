@@ -21,9 +21,9 @@ public:
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
         std::array<BarrelID, 2> BARREL_IDS,
-        uint8_t projectileBuffer,
         float speed,
         float unjamSpeed,
+        uint8_t projectileBuffer,
         int UMJAM_TIMER_MS);
     void initialize() override;
 
