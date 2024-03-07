@@ -40,7 +40,7 @@ void FullAutoFeederCommand::initialize() {
 
     // When the command is scheduled, calculating the remaining projectiles
     // that can be shot based on heat
-    uint8_t projectilesRemaining = refHelper->getRemainingProjectiles();
+    uint8_t projectilesRemaining = refHelper->getRemainingProjectiles() - projectileBuffer;
 
     // get the maximum rotations the feeder can make based on how many projectiles
     // it shoots in one rotation
@@ -72,15 +72,7 @@ void FullAutoFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
-        if (unjamTimer.execute()) {
-            feeder->setTargetRPM(speed);
-            startupThreshold.restart(500);
-        }
 
-        lastHeatDisplay = refHelper->getCurrBarrelHeat();
-        heatLimitDisplay = refHelper->getCurrBarrelLimit();
-        lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
-    }
         lastHeatDisplay = refHelper->getCurrBarrelHeat();
         heatLimitDisplay = refHelper->getCurrBarrelLimit();
         lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
