@@ -22,7 +22,7 @@ public:
         src::Utils::RefereeHelperTurreted*,
         float speed,
         float unjamSpeed,
-        int projectileBuffer = 0,
+        uint8_t projectileBuffer = 0,
         int UNJAM_TIMER_MS = 300);
     void initialize() override;
 
@@ -45,7 +45,7 @@ private:
 
     float speed;
 
-    int projectileBuffer;
+    uint8_t projectileBuffer;
 
     int UNJAM_TIMER_MS;
 

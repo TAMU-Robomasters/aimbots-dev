@@ -10,7 +10,7 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     src::Utils::RefereeHelperTurreted* refHelper,
     float speed,
     float unjamSpeed,
-    int projectileBuffer,
+    uint8_t projectileBuffer,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
@@ -24,6 +24,10 @@ FullAutoFeederCommand::FullAutoFeederCommand(
 }
 
 bool isCommandRunningDisplay = false;
+uint8_t projectileAllowanceDisplay = 18;
+
+int64_t maxRotationDisplay = 15;
+int64_t currentRotationDisplay = 12;
 
 /*
 On initialization, check the amount of heat that is left, divide that by
@@ -42,6 +46,7 @@ void FullAutoFeederCommand::initialize() {
     // that can be shot based on heat
     uint8_t projectilesRemaining = refHelper->getRemainingProjectiles() - projectileBuffer;
 
+    projectileAllowanceDisplay = projectilesRemaining;
     // get the maximum rotations the feeder can make based on how many projectiles
     // it shoots in one rotation
     float maxRotations = projectilesRemaining / PROJECTILES_PER_FEEDER_ROTATION;
@@ -58,8 +63,13 @@ float lastProjectileSpeedDisplay = 0.0f;
 void FullAutoFeederCommand::execute() {
     isCommandRunningDisplay = true;
 
+     
+
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
+    maxRotationDisplay = antiOverheatEncoderThreshold;
+    currentRotationDisplay = feeder->getEncoderUnwrapped();
+
     if (feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         feeder->setTargetRPM(0.0f);
     } else {
