@@ -288,6 +288,7 @@ static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 //static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR6, MotorID::MOTOR5};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_TARGET_RPMS = {FEEDER_DEFAULT_RPM, FEEDER_DEFAULT_RPM};
 static constexpr MotorID INDEXER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;

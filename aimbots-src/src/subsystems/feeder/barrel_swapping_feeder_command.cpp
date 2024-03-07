@@ -24,7 +24,7 @@ BarrelSwappingFeederCommand::BarrelSwappingFeederCommand(
 }
 
 void BarrelSwappingFeederCommand::initialize() {
-    feeder->setTargetRPM(0.0f);
+    feeder->setTargetRPM(0.0f, 0);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
