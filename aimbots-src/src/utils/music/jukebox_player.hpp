@@ -4,6 +4,8 @@
 
 #include "utils/common_types.hpp"
 
+#include "drivers.hpp"
+
 namespace src {
 class Drivers;
 }  // namespace src
@@ -12,7 +14,7 @@ namespace utils::Jukebox {
 
 enum SongTitle { None = 0, PacMan, WeAreNumberOne, ChainSawMan, Mystery, CrabRave, Zelda };
 
-enum MusicNote {
+enum MusicNote : uint32_t {
     PAUSE = 0,
     E4 = 330,
     F4 = 340,
@@ -48,7 +50,8 @@ enum MusicNote {
 
 struct Song {
     uint32_t Song_BPM;
-    MusicNote* SongNotes[];
+    uint32_t NoteCount;
+    MusicNote SongNotes[];
 };
 
 class JukeboxPlayer {
@@ -60,9 +63,15 @@ public:
 
     void playMusic();
 
-    SongTitle getCurrentSong() { return currentSong; }
+    SongTitle getcurrentSongTitle() { return currentSongTitle; }
 
-    bool isCurrentSongDone() { return currentSong == None; }
+    bool isPaused() { return isCurrSongPaused; }
+    void pause() { isCurrSongPaused = true; }
+    void unpause() { isCurrSongPaused = false; }
+
+    void stopcurrentSong() { currentSongTitle = None; }
+
+    bool iscurrentSongDone() { return currentSongTitle == None; }
 
 private:
     src::Drivers* drivers;
@@ -72,6 +81,8 @@ private:
     uint32_t currNoteIndex = 0;
     uint32_t currentTime = 0;
 
-    SongTitle currentSong = None;
+    bool isCurrSongPaused = false;
+
+    SongTitle currentSongTitle = None;
 };
 }  // namespace utils::Jukebox
