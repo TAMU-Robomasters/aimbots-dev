@@ -73,6 +73,9 @@ private:
     // CVDisplay cvDisplay;
 
     bool run();
+    void restartDisplay();
+
+    bool restarting = true;
 };
 
 }  // namespace src::Utils::ClientDisplay

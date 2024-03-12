@@ -41,6 +41,10 @@ ClientDisplayCommand::ClientDisplayCommand(
 }
 
 void ClientDisplayCommand::initialize() {
+    this->restarting = true;
+}
+
+void ClientDisplayCommand::restartDisplay() {
     // the rest of the commands
     // initalize each of display commands
     HudIndicator::resetGraphicNameGenerator();
@@ -49,24 +53,35 @@ void ClientDisplayCommand::initialize() {
     // cvDisplay.initialize();
     booleanHudIndicators.initialize();
     reticleIndicator.initialize();
+
+    this->restarting = false;
 }
 
-bool isCommandRunningDisplay = false;
+bool isHUDRunningDisplay = false;
 
-void ClientDisplayCommand::execute() { run(); isCommandRunningDisplay = true; }
+void ClientDisplayCommand::execute() { 
+    run(); 
+    isHUDRunningDisplay = true; 
+}
 
 bool ClientDisplayCommand::run() {
+
+    if (!this->isRunning()) {
+        restart();
+        this->restartDisplay();
+    }
+    
     PT_BEGIN();
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
-
-
 
     // PT_CALL(chassisOrientation.sendInitialGraphics());
     // PT_CALL(cvDisplay.sendInitialGraphics());
     PT_CALL(booleanHudIndicators.sendInitialGraphics());
     PT_CALL(reticleIndicator.sendInitialGraphics());
-    while (true) {
+
+    //If a restart is attempted, stop updating
+    while (!this->restarting) {
         // PT_CALL(chassisOrientation.update());
         // PT_CALL(cvDisplay.update());
         PT_CALL(booleanHudIndicators.update());
