@@ -113,7 +113,8 @@ int main() {
             // comms
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
-            utils::Music::playPacMan(drivers);
+            // utils::Music::playPacMan(drivers);
+            drivers->musicPlayer.playMusic();
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }

@@ -4,18 +4,17 @@
 
 #include "utils/common_types.hpp"
 
-#include "drivers.hpp"
-
 namespace src {
 class Drivers;
 }  // namespace src
 
 namespace utils::Jukebox {
 
-enum SongTitle { None = 0, PacMan, WeAreNumberOne, ChainSawMan, Mystery, CrabRave, Zelda };
+
 
 enum MusicNote : uint32_t {
     PAUSE = 0,
+    END = UINT32_MAX,
     E4 = 330,
     F4 = 340,
     Gb4 = 370,
@@ -50,28 +49,28 @@ enum MusicNote : uint32_t {
 
 struct Song {
     uint32_t Song_BPM;
-    uint32_t NoteCount;
     MusicNote SongNotes[];
 };
 
 class JukeboxPlayer {
 public:
     JukeboxPlayer(src::Drivers* drivers);
+    JukeboxPlayer(src::Drivers* drivers, SongTitle initSong);
     ~JukeboxPlayer() = default;
 
     bool requestSong(SongTitle name);
 
     void playMusic();
 
-    SongTitle getcurrentSongTitle() { return currentSongTitle; }
+    SongTitle getCurrentSongTitle() { return currentSongTitle; }
 
     bool isPaused() { return isCurrSongPaused; }
     void pause() { isCurrSongPaused = true; }
     void unpause() { isCurrSongPaused = false; }
 
-    void stopcurrentSong() { currentSongTitle = None; }
+    void stopCurrentSong();
 
-    bool iscurrentSongDone() { return currentSongTitle == None; }
+    bool isCurrentSongDone() { return currentSongTitle == NONE; }
 
 private:
     src::Drivers* drivers;
@@ -83,6 +82,6 @@ private:
 
     bool isCurrSongPaused = false;
 
-    SongTitle currentSongTitle = None;
+    SongTitle currentSongTitle;
 };
 }  // namespace utils::Jukebox
