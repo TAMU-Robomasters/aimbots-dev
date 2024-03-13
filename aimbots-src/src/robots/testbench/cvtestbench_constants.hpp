@@ -4,6 +4,8 @@
 
 #define GIMBAL_UNTETHERED
 
+static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */

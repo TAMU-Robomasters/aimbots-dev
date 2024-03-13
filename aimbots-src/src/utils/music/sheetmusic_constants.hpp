@@ -56,10 +56,10 @@ Song WeAreNumberOneSong = {WeNum1_BPM, {F5,  F5,  F5,  F5,  F5,  F5,  C6,  C6,
 
                                         END}};
 
-//Chainsaw Man Theme
+// Chainsaw Man Theme
 
 static constexpr uint32_t CHNSW_BPM = 350 / 2;  // I think this fixes the fact that we have a hardcoded time signature(?)
-Song ChainSawManSong[] = {CHNSW_BPM, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  Gb5, Gb5, A4,
+Song ChainSawManSong = {CHNSW_BPM, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  Gb5, Gb5, A4,
 
                                       A4,    E5,    E5,    E5,  A4,  A4,  A4,  A4,  Ab4, Ab4,
 
@@ -78,7 +78,7 @@ Song ChainSawManSong[] = {CHNSW_BPM, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  G
 // Mystery Song (hmm...)
 
 static constexpr uint32_t MYST_BPM = 114;
-Song MysterySong[] = {MYST_BPM, {G4, A4, C5, A4, E5, E5, E5, E5, E6, E6, D5,
+Song MysterySong = {MYST_BPM, {G4, A4, C5, A4, E5, E5, E5, E5, E6, E6, D5,
 
                                  D5, D5, D5, G4, A4, C5, A4, D6, D6, D6, D5,
 
@@ -95,7 +95,7 @@ Song MysterySong[] = {MYST_BPM, {G4, A4, C5, A4, E5, E5, E5, E5, E6, E6, D5,
 // Crab Rave
 
 static constexpr uint32_t CRAB_BPM = 125;
-Song CrabRaveSong[] = {CRAB_BPM, {D5, D5, Bb5, Bb5, G6, G6, G6,
+Song CrabRaveSong = {CRAB_BPM, {D5, D5, Bb5, Bb5, G6, G6, G6,
 
                                   D5, D5, D6,  A5,  A5, F5, F5,
 
@@ -107,9 +107,9 @@ Song CrabRaveSong[] = {CRAB_BPM, {D5, D5, Bb5, Bb5, G6, G6, G6,
 
                                   END}};
 
-//Legend of Zelda Overworld Theme
+// Legend of Zelda Overworld Theme
 
-static constexpr LOZ_BPM =
+static constexpr uint32_t LOZ_BPM =
     130 / 2;  // Halving since it's a lot of eighth-notes and we're hard-coded to fourth notes currently
 Song LegendOfZeldaSong = {LOZ_BPM, {B5, B5,    PAUSE, PAUSE, PAUSE, PAUSE, B5, B5, B5, B5,
 
@@ -120,5 +120,28 @@ Song LegendOfZeldaSong = {LOZ_BPM, {B5, B5,    PAUSE, PAUSE, PAUSE, PAUSE, B5, B
                                     B5, F4,    F4,    F4,    F4,    F4,    F4, F4, F4, F4, F4,
 
                                     END}};
+
+// LG Washing Machine
+
+// time signature 6/8
+static constexpr uint32_t LG_BPM = 92;
+// static constexpr uint32_t LG_MS_PER_8TH = (uint32_t)(((1.0f / LG_BPM) * 60.0f * 1000.0f) / 3.0f);
+Song LG_WashSong = {LG_BPM, {Db6, Db6, Db6, Gb6, F6,  Eb6,
+
+                             Db6, Db6, Db6, Bb5, Bb5, Bb5,
+
+                             Cb6, Db6, Eb6, Ab5, Bb5, Cb6,
+
+                             Bb5, Bb5, Bb5, Db6, Db6, Db6,
+
+                             Db6, Db6, Db6, Gb6, F6,  Eb6,
+
+                             Db6, Db6, Db6, Gb6, Gb6, Gb6,
+
+                             Gb6, Ab6, Gb6, F6,  Eb6, F6,
+
+                             Gb6, Gb6, Gb6, Gb6, Gb6, Gb6,
+
+                             END}};
 
 }  // namespace utils::Jukebox
