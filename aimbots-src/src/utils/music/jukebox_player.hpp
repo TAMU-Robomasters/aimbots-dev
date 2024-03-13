@@ -10,8 +10,6 @@ class Drivers;
 
 namespace utils::Jukebox {
 
-
-
 enum MusicNote : uint32_t {
     PAUSE = 0,
     END = UINT32_MAX,

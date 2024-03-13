@@ -5,7 +5,14 @@
 
 namespace utils::Jukebox {
 
-static constexpr Song* songsList[] = {&NothingIsPlayingSong, &PacManSong, &WeAreNumberOneSong};
+static constexpr Song* songsList[] = {
+    &NothingIsPlayingSong,
+    &PacManSong,
+    &WeAreNumberOneSong,
+    &ChainSawManSong,
+    &MysterySong,
+    &CrabRaveSong,
+    &LegendOfZeldaSong};
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}
 
