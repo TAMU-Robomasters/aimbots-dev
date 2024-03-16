@@ -1,9 +1,13 @@
 #pragma once
 
-#include "informants/transformers/coordinate_frame.hpp"
+//#include "informants/transformers/coordinate_frame.hpp"
+#include "informants/transformers/cartesian_frames.hpp"
+
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
-#include "utils/math/transform_setup.hpp"
+
+//#include "utils/math/transform_setup.hpp"
+#include "utils/math/transformations.hpp"
 
 namespace src::Informants::Transformers {
 
@@ -22,7 +26,7 @@ public:
     RobotFrames();
     ~RobotFrames() = default;
 
-    CoordinateFrame& getFrame(FrameType frame) {
+    CartesianFrame& getFrame(FrameType frame) {
         switch (frame) {
             case FIELD_FRAME:
                 return fieldFrame;
@@ -62,15 +66,18 @@ public:
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 
 private:
-    CoordinateFrame fieldFrame;
-    CoordinateFrame chassisFrame;  // "Ground Frame
-    CoordinateFrame gimbalFrame;
-    CoordinateFrame cameraFrame;
-    CoordinateFrame ballisticsFrame;
+
+    // USED FIND + REPLACE (CTRL + H) TO CHANGE CoordinateFrame into CartesianFrame
+
+    CartesianFrame fieldFrame;
+    CartesianFrame chassisFrame;  // "Ground Frame
+    CartesianFrame gimbalFrame;
+    CartesianFrame cameraFrame;
+    CartesianFrame ballisticsFrame;
     // ^ THIS IS NOT THE BARREL FRAME THIS IS DIFFERENT (just chassis frame but moved up to barrel height)
-    CoordinateFrame chassisIMUFrame;
-    CoordinateFrame cameraAtCVUpdateFrame;
-    CoordinateFrame gimbalIMUFrame;
+    CartesianFrame chassisIMUFrame;
+    CartesianFrame cameraAtCVUpdateFrame;
+    CartesianFrame gimbalIMUFrame;
 
     Vector3f chassis_origin_relative_to_world_origin;
     Matrix3f chassis_orientation_relative_to_world_orientation;

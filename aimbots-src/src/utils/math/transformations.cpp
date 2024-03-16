@@ -59,4 +59,14 @@ namespace src::Utils::MatrixOperations {
         return invertedTransform;
     }
 
+    Vector4f homogenousCoordinateExtend(Vector3f origin) {
+        float arr[4] = {origin.getX(), origin.getY(), origin.getZ(), 1.0f};
+        return Vector4f(arr);
+    }
+
+    Vector3f homogenousCoordinateCrop(Vector4f origin) {
+        float arr[3] = {origin.getX(), origin.getY(), origin.getZ()};
+        return Vector3f(arr);
+    }
+
 }

@@ -47,19 +47,18 @@ void CartesianFrame::setOrigin(Vector3f r) {
     updateTransform();
 }
 
-
 // Getters
 Vector3f& CartesianFrame::getOrigin() { return this->origin; }
 Matrix3f& CartesianFrame::getOrientation() { return this->orientation; }
 const Matrix4f& CartesianFrame::getTransformIn() { return this->transformIn; }
 const Matrix4f& CartesianFrame::getTransformOut() { return this->transformOut; }
 
-// Matrix4f CoordinateFrame::getTransformToFrame(CoordinateFrame& f) { return f.getTransformIn() * this->transformOut; } IDK WHAT THIS DOES
+Matrix4f CartesianFrame::getTransformToFrame(CartesianFrame& f) { return f.getTransformIn() * this->transformOut; } //IDK WHAT THIS DOES
 
 // Returns a point in the given frame that is stored in the current frame
-// Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame& f, Vector3f& v) {
-//     return homogenousCoordinateCrop(getTransformToFrame(f) * homogenousCoordinateExtend(v).asMatrix());
-// } 
+Vector3f CartesianFrame::getPointInFrame(CartesianFrame& f, Vector3f& v) {
+    return homogenousCoordinateCrop(getTransformToFrame(f) * homogenousCoordinateExtend(v).asMatrix());
+} 
 // ^ WHAT IS HAPPENING
 
 
