@@ -75,19 +75,19 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     // drivers->kinematicInformant.mirrorPastRobotFrame(27);
 
-    VisionTimedPosition targetPositionWithoutLagCompensation{
-        .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
-        .timestamp_uS = currentData.timestamp_uS,
-    };
+    // VisionTimedPosition targetPositionWithoutLagCompensation{
+    //     .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
+    //     .timestamp_uS = currentData.timestamp_uS,
+    // };
 
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 
-    targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
-    targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
-    targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
+    // targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
+    // targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
+    // targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
     targetPositionXUnfilteredDisplay = transformedData.position.getX();
     targetPositionYUnfilteredDisplay = transformedData.position.getY();
