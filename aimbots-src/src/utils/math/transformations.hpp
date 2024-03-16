@@ -28,5 +28,9 @@ namespace src::Utils::MatrixOperations {
     Vector3f translate(Vector3f v, Vector3f p);
 
     Matrix4f invertTransform(Matrix4f transform);
+
+    Vector4f homogenousCoordinateExtend(Vector3f P);
+    Vector3f homogenousCoordinateCrop(Vector4f P);
+
     
 }

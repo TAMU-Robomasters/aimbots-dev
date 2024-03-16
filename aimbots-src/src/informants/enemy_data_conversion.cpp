@@ -42,22 +42,24 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
-    src::Informants::Transformers::CoordinateFrame gimbalFrame =
+    // USED FIND + REPLACE (CTRL + H) TO CHANGE CoordinateFrame into CartesianFrame
+    
+    src::Informants::Transformers::CartesianFrame gimbalFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame cameraFrame =
+    src::Informants::Transformers::CartesianFrame cameraFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame ballisticsFrame =
+    src::Informants::Transformers::CartesianFrame ballisticsFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame cameraAtCVUpdateFrame =
+    src::Informants::Transformers::CartesianFrame cameraAtCVUpdateFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame chassisFrame =
+    src::Informants::Transformers::CartesianFrame chassisFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame fieldFrame =
+    src::Informants::Transformers::CartesianFrame fieldFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::FIELD_FRAME);
 
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
