@@ -50,6 +50,8 @@ enum MusicNote : uint32_t {
 
 struct Song {
     uint32_t Song_BPM;
+    uint8_t Beats_Per_Measure;
+    uint8_t Notes_Per_Beat;
     MusicNote SongNotes[];
 };
 
