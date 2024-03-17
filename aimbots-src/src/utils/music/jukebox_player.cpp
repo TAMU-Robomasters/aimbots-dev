@@ -8,12 +8,12 @@ namespace utils::Jukebox {
 static constexpr Song* songsList[] = {
     &NothingIsPlayingSong,
     &PacManSong,
-    &WeAreNumberOneSong,
+    /*&WeAreNumberOneSong,
     &ChainSawManSong,
     &MysterySong,
     &CrabRaveSong,
-    &LegendOfZeldaSong,
-    &LG_WashSong};
+    */&LegendOfZeldaSong,/*
+    &LG_WashSong*/};
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}
 
@@ -41,29 +41,30 @@ void JukeboxPlayer::playMusic() {
 
     Song* currentSong = songsList[currentSongTitle];
 
-    // Divide by 4 is a temp fix until I work out how to possibly differentiate between eighth/quarter/half note types.
-    uint32_t Song_MS_PER_BEAT =
-        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) / ((float)((float)currentSong->Beats_Per_Measure / currentSong->Notes_Per_Beat) * 4.0f));
-
     MusicNote currentNote = static_cast<MusicNote>(currentSong->SongNotes[currNoteIndex]);
+
+    // Divide by 4 is a temp fix until I work out how to possibly differentiate between eighth/quarter/half note types.
+    //((float)currentSong->Beats_Per_Measure / currentSong->Notes_Per_Beat) * 4.0f)
+    uint32_t Song_MS_PER_BEAT =
+        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * ((float)currentSong->Notes_Per_Beat / currentNote.type));
 
     if (timeSinceLast >= Song_MS_PER_BEAT) {
         // Done playing, don't continue any further
-        if (currentNote == MusicNote::END) {
-            tap::buzzer::playNote(&drivers->pwm, PAUSE);
+        if (currentNote.frequency == NoteFreq::END) {
+            tap::buzzer::playNote(&drivers->pwm, REST);
             currentSongTitle = NONE;
             return;
         }
 
         prevTime = tap::arch::clock::getTimeMilliseconds();
-        if (prevNote != currentNote) tap::buzzer::playNote(&drivers->pwm, currentNote);
+        if (prevNote.frequency != currentNote.frequency) tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
         prevNote = currentNote;
         currNoteIndex++;
     }
 }
 
 void JukeboxPlayer::stopCurrentSong() {
-    tap::buzzer::playNote(&drivers->pwm, PAUSE);
+    tap::buzzer::playNote(&drivers->pwm, REST);
     currentSongTitle = NONE;
 }
 

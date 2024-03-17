@@ -12,29 +12,29 @@ namespace utils::Jukebox {
 // else undefined behavior will happen
 
 // Default, don't do anything music
-Song NothingIsPlayingSong = {120, 4, 4, {PAUSE, PAUSE, END}};
+Song NothingIsPlayingSong = {120, 4, 4, {{REST, Q_N}, {REST, Q_N}, {END, Q_N}}};
 
 // PacMan Theme
 
-static constexpr uint32_t PM_BPM = 120;
-Song PacManSong = {PM_BPM, 4, 4, {B4,  B5,    Gb5, Eb5,
+static constexpr uint32_t PM_BPM = 120 * 4;
+Song PacManSong = {PM_BPM, 4, 4, {{B4, Q_N},  {B5, Q_N},   {Gb5, Q_N}, {Eb5, Q_N},
 
-                                  B5,  PAUSE, Eb5, PAUSE,
+                                  {B5, Q_N},  {REST, Q_N}, {Eb5, Q_N}, {REST, Q_N},
 
-                                  C5,  C6,    G5,  E5,
+                                  {C5, Q_N},  {C6, Q_N},   {G5, Q_N},  {E5, Q_N},
 
-                                  C6,  PAUSE, E5,  PAUSE,
+                                  {C6, Q_N},  {REST, Q_N}, {E5, Q_N},  {REST, Q_N},
 
-                                  B4,  B5,    G5,  E5,
+                                  {B4, Q_N},  {B5, Q_N},   {G5, Q_N},  {E5, Q_N},
 
-                                  B5,  PAUSE, Eb5, PAUSE,
+                                  {B5, Q_N},  {REST, Q_N}, {Eb5, Q_N}, {REST, Q_N},
 
-                                  Eb5, Eb5,   F5,  F5,
+                                  {Eb5, Q_N}, {Eb5, Q_N},  {F5, Q_N},  {F5, Q_N},
 
-                                  G5,  G5,    B5,  PAUSE,
+                                  {G5, Q_N},  {G5, Q_N},   {B5, Q_N},  {REST, Q_N},
 
-                                  END}};
-
+                                  {END, Q_N}}};
+/*
 // We Are Number One
 
 static constexpr uint32_t WeNum1_BPM = 168;
@@ -65,13 +65,13 @@ Song ChainSawManSong = {CHNSW_BPM, 8, 8, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5
 
                                           Eb5,   Eb5,   Ab4,   Gb4, Gb4, Ab4, Ab4, Db5, Db5, Db5,
 
-                                          PAUSE, PAUSE, Ab4,   Ab4, Gb4, E4,  Gb4, Gb4, Ab4, Ab4,
+                                          REST, REST, Ab4,   Ab4, Gb4, E4,  Gb4, Gb4, Ab4, Ab4,
 
                                           Bb4,   B4,    B4,    A4,  Ab4, Gb4, Gb4, Db5, Db5, Db5,
 
                                           Db5,   B4,    A4,    Ab4, E5,  E5,  Eb5, Eb5, Eb5, Eb5,
 
-                                          Eb5,   PAUSE, PAUSE, Ab5, Ab5, Db5, Db5, Db5, Db5,
+                                          Eb5,   REST, REST, Ab5, Ab5, Db5, Db5, Db5, Db5,
 
                                           END}};
 
@@ -106,21 +106,25 @@ Song CrabRaveSong = {CRAB_BPM, 4, 4, {D5, D5, Bb5, Bb5, G6, G6, G6,
                                       E5, E5, E5,  F5,
 
                                       END}};
-
+*/
 // Legend of Zelda Overworld Theme
+// clang-format off
+static constexpr uint32_t LOZ_BPM = 152;
 
-static constexpr uint32_t LOZ_BPM =
-    130 / 2;  // Halving since it's a lot of eighth-notes and we're hard-coded to fourth notes currently
-Song LegendOfZeldaSong = {LOZ_BPM, 4, 4, {B5, B5,    PAUSE, PAUSE, PAUSE, PAUSE, A5,    Bb5, B5,  C5,
+Song LegendOfZeldaSong = {LOZ_BPM, 4, 4, 
 
-                                          B5, PAUSE, Ab5,   B5,    B5,    PAUSE, PAUSE, A5,  Bb5, B5, C5,
+{{B5, Q_N}, {REST, Q_N}, {REST, Q_N}, {A5, E_N}, {Bb5, TE_N}, {B5, TE_N}, {C5, TE_N},
 
-                                          B5, PAUSE, Ab5,   B5,    B5,    PAUSE, PAUSE, A5,  Bb5, B5, C5,
+{B5, TE_N}, {REST, TE_N}, {Ab5, TE_N}, {B5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {Bb5, TE_N}, {B5, TE_N}, {C5, TE_N},
 
-                                          B5, F4,    Gb4,   F4,    Gb4,   F4,    Gb4,   F4,  Gb4, F4, Gb4,
+{B5, TE_N}, {REST, TE_N}, {Ab5, E_N}, {B5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {Bb5, TE_N}, {B5, E_N}, {C5, E_N},
 
-                                          END}};
+{B5, E_N}, {F5, TE_N}, {Gb5, TE_N}, {F5, E_N}, {Gb5, TE_N}, {F5, TE_N}, {Gb5, E_N}, {F5, TE_N}, {Gb5, TE_N}, {F5, E_N}, {Gb5, E_N},
 
+{END, Q_N}}};
+// clang-format on
+
+/*
 // LG Washing Machine
 
 // time signature 6/8
@@ -142,5 +146,5 @@ Song LG_WashSong = {LG_BPM, 6, 8, {Db6, Db6, Db6, Gb6, F6,  Eb6,
                                    Gb6, Gb6, Gb6, Gb6, Gb6, Gb6,
 
                                    END}};
-
+*/
 }  // namespace utils::Jukebox

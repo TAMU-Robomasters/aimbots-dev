@@ -10,8 +10,17 @@ class Drivers;
 
 namespace utils::Jukebox {
 
-enum MusicNote : uint32_t {
-    PAUSE = 0,
+enum NoteType : uint8_t {
+    W_N = 1,   // Whole Note
+    H_N = 2,   // Half Note
+    Q_N = 4,   // Quarter Note
+    TQ_N = 6,  // Triplet Quarter Note
+    E_N = 8,   // Eighth Note
+    TE_N = 12  // Triplet Eighth Note
+};
+
+enum NoteFreq : uint32_t {
+    REST = 0,
     END = UINT32_MAX,
     E4 = 330,
     F4 = 340,
@@ -48,6 +57,11 @@ enum MusicNote : uint32_t {
     D7 = 2349,
 };
 
+struct MusicNote {
+    NoteFreq frequency;
+    NoteType type;
+};
+
 struct Song {
     uint32_t Song_BPM;
     uint8_t Beats_Per_Measure;
@@ -79,7 +93,7 @@ private:
     src::Drivers* drivers;
 
     uint32_t prevTime = 0;
-    MusicNote prevNote = PAUSE;
+    MusicNote prevNote = {REST, Q_N};
     uint32_t currNoteIndex = 0;
     uint32_t currentTime = 0;
 
