@@ -45,26 +45,11 @@ void JukeboxPlayer::playMusic() {
 
     MusicNote currentNote = static_cast<MusicNote>(currentSong->SongNotes[currNoteIndex]);
 
-    // Divide by 4 is a temp fix until I work out how to possibly differentiate between eighth/quarter/half note types.
-    //((float)currentSong->Beats_Per_Measure / currentSong->Notes_Per_Beat) * 4.0f)
-    uint32_t Song_MS_PER_BEAT =
-        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * ((float)currentSong->Notes_Per_Beat * currentNote.noteTiming));
-
-    /*if (timeSinceLast >= Song_MS_PER_BEAT) {
-        // Done playing, don't continue any further
-        if (currentNote.frequency == NoteFreq::END) {
-            stopCurrentSong();
-            return;
-        }
-
-        prevTime = tap::arch::clock::getTimeMilliseconds();
-        tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
-        prevNote = currentNote;
-        currNoteIndex++;
-    }*/
+    uint32_t MS_HOLD_FOR_NOTE =
+        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * (currentNote.noteTiming / currentSong->NoteType_Per_Beat));
 
     if (holdNote) {
-        if (timeSinceLast >= Song_MS_PER_BEAT) {
+        if (timeSinceLast >= MS_HOLD_FOR_NOTE) {
             currNoteIndex++;
             holdNote = false;
         }
