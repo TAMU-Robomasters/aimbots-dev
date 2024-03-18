@@ -34,30 +34,24 @@ Song PacManSong = {PM_BPM, 4, 4, {{B4, S_N},  {B5, S_N},   {Gb5, S_N}, {Eb5, S_N
                                   {END, S_N}}};
 
 // We Are Number One
-/*
+
+// clang-format off
 static constexpr uint32_t WeNum1_BPM = 168;
-Song WeAreNumberOneSong = {WeNum1_BPM, 4, 4, {F5,  F5,  F5,  F5,  F5,  F5,  C6,  C6,
+Song WeAreNumberOneSong = {WeNum1_BPM, 4, 4, {{F5, QH_N}, {C6, E_N}, {B5, S_N}, {C6, S_N}, {B5, S_N}, {C6, S_N}, {B5, E_N}, {C6, E_N},
 
-                                              B5,  C6,  B5,  C6,  B5,  B5,  C6,  C6,
+                                              {Ab5, Q_N}, {F5, Q_N}, {F5, E_N}, {F5, E_N}, {Ab4, E_N}, {C6, E_N}, 
+                                              
+                                              {Db6, Q_N}, {Ab4, Q_N}, {Db6, Q_N}, {Eb6, Q_N},
 
-                                              Ab5, Ab5, Ab5, Ab5, F5,  F5,  F5,  F5,
+                                              {C6, E_N}, {Db6, E_N}, {C6, E_N}, {Db6, E_N}, {C6, Q_N},  {E6, Q_N},
 
-                                              F5,  F5,  F5,  F5,  Ab4, Ab4, C6,  C6,
-
-                                              Db6, Db6, Db6, Db6, Ab4, Ab4, Ab4, Ab4,
-
-                                              Db6, Db6, Db6, Db6, Eb6, Eb6, Eb6, Eb6,
-
-                                              C6,  C6,  Db6, Db6, C6,  C6,  Db6, Db6,
-
-                                              C6,  C6,  C6,  C6,  E6,  E6,  E6,  E6,
-
-                                              END}};
+                                              {END, Q_N}}};
+// clang-format on
 
 // Chainsaw Man Theme
-
-static constexpr uint32_t CHNSW_BPM = 350 / 2;  // I think this fixes the fact that we have a hardcoded time signature(?)
-Song ChainSawManSong = {CHNSW_BPM, 8, 8, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  Gb5, Gb5, A4,
+/*
+static constexpr uint32_t CHNSW_BPM = 175;
+Song ChainSawManSong = {CHNSW_BPM, 4, 4, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  Gb5, Gb5, A4,
 
                                           A4,    E5,    E5,    E5,  A4,  A4,  A4,  A4,  Ab4, Ab4,
 

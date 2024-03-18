@@ -10,15 +10,14 @@ class Drivers;
 
 namespace utils::Jukebox {
 
-enum NoteType : uint8_t {
-    W_N = 1,    // Whole Note
-    H_N = 2,    // Half Note
-    Q_N = 4,    // Quarter Note
-    TQ_N = 6,   // Triplet Quarter Note
-    E_N = 8,    // Eighth Note
-    TE_N = 12,  // Triplet Eighth Note
-    S_N = 16
-};
+static constexpr float W_N = 1.0f;           // Whole Note
+static constexpr float H_N = 1.0f / 2.0f;    // Half Note
+static constexpr float QH_N = 3.0f / 8.0f;   // Quarter and a Half Note
+static constexpr float Q_N = 1.0f / 4.0f;    // Quarter Note
+static constexpr float TQ_N = 1.0f / 6.0f;   // Triplet Quarter Note
+static constexpr float E_N = 1.0f / 8.0f;    // Eighth Note
+static constexpr float TE_N = 1.0f / 12.0f;  // Triplet Eighth Note
+static constexpr float S_N = 1.0f / 16.0f;   // Sixteenth Note
 
 enum NoteFreq : uint32_t {
     REST = 0,
@@ -60,7 +59,7 @@ enum NoteFreq : uint32_t {
 
 struct MusicNote {
     NoteFreq frequency;
-    NoteType type;
+    float noteTiming;
 };
 
 struct Song {

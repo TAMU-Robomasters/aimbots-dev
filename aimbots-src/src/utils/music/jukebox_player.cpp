@@ -8,8 +8,8 @@ namespace utils::Jukebox {
 static constexpr Song* songsList[] = {
     &NothingIsPlayingSong,
     &PacManSong,
-    /*&WeAreNumberOneSong,
-    &ChainSawManSong,
+    &WeAreNumberOneSong,
+    /*&ChainSawManSong,
     &MysterySong,
     &CrabRaveSong,
     */&LegendOfZeldaSong,/*
@@ -48,7 +48,7 @@ void JukeboxPlayer::playMusic() {
     // Divide by 4 is a temp fix until I work out how to possibly differentiate between eighth/quarter/half note types.
     //((float)currentSong->Beats_Per_Measure / currentSong->Notes_Per_Beat) * 4.0f)
     uint32_t Song_MS_PER_BEAT =
-        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * ((float)currentSong->Notes_Per_Beat / currentNote.type));
+        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * ((float)currentSong->Notes_Per_Beat * currentNote.noteTiming));
 
     if (timeSinceLast >= Song_MS_PER_BEAT) {
         // Done playing, don't continue any further
