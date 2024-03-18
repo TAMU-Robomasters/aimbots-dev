@@ -68,6 +68,9 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
+
+SongTitle playSongWatch = PACMAN;  // Watch variable
+
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -111,6 +114,10 @@ int main() {
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
             // comms
+            if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+                drivers->musicPlayer.requestSong(playSongWatch);
+            }
+
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             // utils::Music::playPacMan(drivers);

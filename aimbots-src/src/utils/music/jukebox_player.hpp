@@ -11,12 +11,13 @@ class Drivers;
 namespace utils::Jukebox {
 
 enum NoteType : uint8_t {
-    W_N = 1,   // Whole Note
-    H_N = 2,   // Half Note
-    Q_N = 4,   // Quarter Note
-    TQ_N = 6,  // Triplet Quarter Note
-    E_N = 8,   // Eighth Note
-    TE_N = 12  // Triplet Eighth Note
+    W_N = 1,    // Whole Note
+    H_N = 2,    // Half Note
+    Q_N = 4,    // Quarter Note
+    TQ_N = 6,   // Triplet Quarter Note
+    E_N = 8,    // Eighth Note
+    TE_N = 12,  // Triplet Eighth Note
+    S_N = 16
 };
 
 enum NoteFreq : uint32_t {

@@ -33,8 +33,10 @@ bool JukeboxPlayer::requestSong(SongTitle name) {
     return false;
 }
 
+uint32_t pauseAtIndexWatch = 1000;  // Change as a Watch Variable
+
 void JukeboxPlayer::playMusic() {
-    if (isCurrentSongDone() || isPaused()) return;
+    if (isCurrentSongDone() || isPaused() || currNoteIndex > pauseAtIndexWatch) return;
 
     currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - prevTime;
@@ -51,13 +53,12 @@ void JukeboxPlayer::playMusic() {
     if (timeSinceLast >= Song_MS_PER_BEAT) {
         // Done playing, don't continue any further
         if (currentNote.frequency == NoteFreq::END) {
-            tap::buzzer::playNote(&drivers->pwm, REST);
-            currentSongTitle = NONE;
+            stopCurrentSong();
             return;
         }
 
         prevTime = tap::arch::clock::getTimeMilliseconds();
-        if (prevNote.frequency != currentNote.frequency) tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
+        tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
         prevNote = currentNote;
         currNoteIndex++;
     }
@@ -65,6 +66,7 @@ void JukeboxPlayer::playMusic() {
 
 void JukeboxPlayer::stopCurrentSong() {
     tap::buzzer::playNote(&drivers->pwm, REST);
+    prevNote = {REST, Q_N};
     currentSongTitle = NONE;
 }
 

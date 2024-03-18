@@ -16,27 +16,25 @@ Song NothingIsPlayingSong = {120, 4, 4, {{REST, Q_N}, {REST, Q_N}, {END, Q_N}}};
 
 // PacMan Theme
 
-static constexpr uint32_t PM_BPM = 120 * 4;
-Song PacManSong = {PM_BPM, 4, 4, {{B4, Q_N},  {B5, Q_N},   {Gb5, Q_N}, {Eb5, Q_N},
+static constexpr uint32_t PM_BPM = 120;
+Song PacManSong = {PM_BPM, 4, 4, {{B4, S_N},  {B5, S_N},   {Gb5, S_N}, {Eb5, S_N},
 
-                                  {B5, Q_N},  {REST, Q_N}, {Eb5, Q_N}, {REST, Q_N},
+                                  {B5, S_N},  {REST, S_N}, {Eb5, S_N}, {REST, S_N},
 
-                                  {C5, Q_N},  {C6, Q_N},   {G5, Q_N},  {E5, Q_N},
+                                  {C5, S_N},  {C6, S_N},   {G5, S_N},  {E5, S_N},
 
-                                  {C6, Q_N},  {REST, Q_N}, {E5, Q_N},  {REST, Q_N},
+                                  {C6, S_N},  {REST, S_N}, {E5, S_N},  {REST, S_N},
 
-                                  {B4, Q_N},  {B5, Q_N},   {G5, Q_N},  {E5, Q_N},
+                                  {B4, S_N},  {B5, S_N},   {G5, S_N},  {E5, S_N},
 
-                                  {B5, Q_N},  {REST, Q_N}, {Eb5, Q_N}, {REST, Q_N},
+                                  {B5, S_N},  {REST, S_N}, {Eb5, S_N}, {REST, S_N},
 
-                                  {Eb5, Q_N}, {Eb5, Q_N},  {F5, Q_N},  {F5, Q_N},
+                                  {Eb5, S_N}, {F5, E_N},   {G5, E_N},  {B5, E_N},
 
-                                  {G5, Q_N},  {G5, Q_N},   {B5, Q_N},  {REST, Q_N},
+                                  {END, S_N}}};
 
-                                  {END, Q_N}}};
-/*
 // We Are Number One
-
+/*
 static constexpr uint32_t WeNum1_BPM = 168;
 Song WeAreNumberOneSong = {WeNum1_BPM, 4, 4, {F5,  F5,  F5,  F5,  F5,  F5,  C6,  C6,
 
@@ -109,17 +107,17 @@ Song CrabRaveSong = {CRAB_BPM, 4, 4, {D5, D5, Bb5, Bb5, G6, G6, G6,
 */
 // Legend of Zelda Overworld Theme
 // clang-format off
-static constexpr uint32_t LOZ_BPM = 152;
+static constexpr uint32_t LOZ_BPM = 130;
 
 Song LegendOfZeldaSong = {LOZ_BPM, 4, 4, 
 
-{{B5, Q_N}, {REST, Q_N}, {REST, Q_N}, {A5, E_N}, {Bb5, TE_N}, {B5, TE_N}, {C5, TE_N},
+{{A5, H_N}, {REST, TQ_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N},
 
-{B5, TE_N}, {REST, TE_N}, {Ab5, TE_N}, {B5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {Bb5, TE_N}, {B5, TE_N}, {C5, TE_N},
+{A5, TQ_N}, {G4, TE_N}, {A5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N},
 
-{B5, TE_N}, {REST, TE_N}, {Ab5, E_N}, {B5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {Bb5, TE_N}, {B5, E_N}, {C5, E_N},
+{A5, TQ_N}, {G4, TE_N}, {A5, Q_N}, {REST, TQ_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N}, {A5, TE_N},
 
-{B5, E_N}, {F5, TE_N}, {Gb5, TE_N}, {F5, E_N}, {Gb5, TE_N}, {F5, TE_N}, {Gb5, E_N}, {F5, TE_N}, {Gb5, TE_N}, {F5, E_N}, {Gb5, E_N},
+{A5, E_N}, {E5, S_N}, {E5, S_N}, {E5, E_N}, {E5, S_N}, {E5, S_N}, {E5, E_N}, {E5, S_N}, {E5, S_N}, {E5, E_N}, {E5, E_N},
 
 {END, Q_N}}};
 // clang-format on
