@@ -29,7 +29,7 @@ Song PacManSong = {PM_BPM, 4, 4, {{B4, S_N},  {B5, S_N},   {Gb5, S_N}, {Eb5, S_N
 
                                   {B5, S_N},  {REST, S_N}, {Eb5, S_N}, {REST, S_N},
 
-                                  {Eb5, S_N}, {F5, E_N},   {G5, E_N},  {B5, E_N},
+                                  {Eb5, E_N}, {F5, E_N},   {G5, E_N},  {B5, S_N},
 
                                   {END, S_N}}};
 
@@ -49,43 +49,44 @@ Song WeAreNumberOneSong = {WeNum1_BPM, 4, 4, {{F5, QH_N}, {C6, E_N}, {B5, S_N}, 
 // clang-format on
 
 // Chainsaw Man Theme
-/*
+
 static constexpr uint32_t CHNSW_BPM = 175;
-Song ChainSawManSong = {CHNSW_BPM, 4, 4, {Ab5,   Ab5,   Db5,   Db5, Eb5, Eb5, E5,  Gb5, Gb5, A4,
+Song ChainSawManSong = {CHNSW_BPM, 4, 4, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {E5, E_N},  {Gb5, Q_N}, {A4, E_N},
 
-                                          A4,    E5,    E5,    E5,  A4,  A4,  A4,  A4,  Ab4, Ab4,
+                                          {A4, E_N},  {E5, QH_N},  {A4, Q_N},   {A4, Q_N},
 
-                                          Eb5,   Eb5,   Ab4,   Gb4, Gb4, Ab4, Ab4, Db5, Db5, Db5,
+                                          {Ab4, Q_N}, {Eb5, Q_N},  {Ab4, E_N},  {Gb4, Q_N}, {Ab4, E_N},
 
-                                          REST, REST, Ab4,   Ab4, Gb4, E4,  Gb4, Gb4, Ab4, Ab4,
+                                          {Ab4, E_N}, {Db5, QH_N}, {REST, Q_N}, {Ab4, Q_N},
 
-                                          Bb4,   B4,    B4,    A4,  Ab4, Gb4, Gb4, Db5, Db5, Db5,
+                                          {Gb4, E_N}, {E4, E_N},   {Gb4, Q_N},  {Ab4, E_N}, {Ab4, E_N},
 
-                                          Db5,   B4,    A4,    Ab4, E5,  E5,  Eb5, Eb5, Eb5, Eb5,
+                                          {Bb4, E_N}, {B4, Q_N},   {A4, E_N},   {Ab4, E_N}, {Gb4, Q_N}, {Db5, Q_N},
 
-                                          Eb5,   REST, REST, Ab5, Ab5, Db5, Db5, Db5, Db5,
+                                          {Db5, Q_N}, {B4, E_N},   {A4, E_N},   {Ab4, E_N}, {E5, Q_N},  {Eb5, E_N},
 
-                                          END}};
+                                          {Eb5, H_N}, {REST, Q_N}, {Ab5, Q_N},  {Db5, H_N},
+
+                                          {END, Q_N}}};
 
 // Mystery Song (hmm...)
 
 static constexpr uint32_t MYST_BPM = 114;
-Song MysterySong = {MYST_BPM, 4, 4, {G4, A4, C5, A4, E5, E5, E5, E5, E6, E6, D5,
+Song MysterySong = {MYST_BPM, 4, 4, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
 
-                                     D5, D5, D5, G4, A4, C5, A4, D6, D6, D6, D5,
+                                     {E5, EH_N}, {E5, S_N}, {E5, E_N}, {D5, E_N}, {D5, Q_N}, {G4, S_N}, {A4, S_N},
+                                     {C5, S_N},  {A4, S_N},
 
-                                     D5, D5, C5, C5, C5, B4, A4, A4, G4, A4, C5,
+                                     {D5, EH_N}, {D5, S_N}, {D5, E_N}, {C5, E_N}, {C5, S_N}, {B4, S_N}, {A4, E_N},
+                                     {G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
 
-                                     A4, C5, C5, C5, C5, D5, D5, B4, B4, B4, A4,
+                                     {C5, Q_N},  {D5, E_N}, {B4, E_N}, {B4, S_N}, {A4, S_N}, {G4, Q_N}, {G4, E_N},
 
-                                     G4, G4, G4, G4, G5, G5, D5, D5, D5, D5, C5,
+                                     {D5, Q_N},  {C5, H_N},
 
-                                     C5, C5, C5, C5, C5, C5, C5,
-
-                                     END}};
-
+                                     {END, Q_N}}};
 // Crab Rave
-
+/*
 static constexpr uint32_t CRAB_BPM = 125;
 Song CrabRaveSong = {CRAB_BPM, 4, 4, {D5, D5, Bb5, Bb5, G6, G6, G6,
 

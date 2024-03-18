@@ -9,9 +9,9 @@ static constexpr Song* songsList[] = {
     &NothingIsPlayingSong,
     &PacManSong,
     &WeAreNumberOneSong,
-    /*&ChainSawManSong,
+    &ChainSawManSong,
     &MysterySong,
-    &CrabRaveSong,
+    /*&CrabRaveSong,
     */&LegendOfZeldaSong,/*
     &LG_WashSong*/};
 
@@ -50,7 +50,7 @@ void JukeboxPlayer::playMusic() {
     uint32_t Song_MS_PER_BEAT =
         (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * ((float)currentSong->Notes_Per_Beat * currentNote.noteTiming));
 
-    if (timeSinceLast >= Song_MS_PER_BEAT) {
+    /*if (timeSinceLast >= Song_MS_PER_BEAT) {
         // Done playing, don't continue any further
         if (currentNote.frequency == NoteFreq::END) {
             stopCurrentSong();
@@ -61,12 +61,31 @@ void JukeboxPlayer::playMusic() {
         tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
         prevNote = currentNote;
         currNoteIndex++;
+    }*/
+
+    if (holdNote) {
+        if (timeSinceLast >= Song_MS_PER_BEAT) {
+            currNoteIndex++;
+            holdNote = false;
+        }
+    } else {
+        // Done playing, don't continue any further
+        if (currentNote.frequency == NoteFreq::END) {
+            stopCurrentSong();
+            return;
+        }
+
+        prevTime = tap::arch::clock::getTimeMilliseconds();
+        tap::buzzer::playNote(&drivers->pwm, currentNote.frequency);
+        prevNote = currentNote;
+        holdNote = true;
     }
 }
 
 void JukeboxPlayer::stopCurrentSong() {
     tap::buzzer::playNote(&drivers->pwm, REST);
     prevNote = {REST, Q_N};
+    holdNote = false;
     currentSongTitle = NONE;
 }
 

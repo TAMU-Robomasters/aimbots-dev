@@ -15,6 +15,7 @@ static constexpr float H_N = 1.0f / 2.0f;    // Half Note
 static constexpr float QH_N = 3.0f / 8.0f;   // Quarter and a Half Note
 static constexpr float Q_N = 1.0f / 4.0f;    // Quarter Note
 static constexpr float TQ_N = 1.0f / 6.0f;   // Triplet Quarter Note
+static constexpr float EH_N = 3.0f / 16.0f;  // Eighth and a Half Note
 static constexpr float E_N = 1.0f / 8.0f;    // Eighth Note
 static constexpr float TE_N = 1.0f / 12.0f;  // Triplet Eighth Note
 static constexpr float S_N = 1.0f / 16.0f;   // Sixteenth Note
@@ -98,6 +99,8 @@ private:
     uint32_t currentTime = 0;
 
     bool isCurrSongPaused = false;
+
+    bool holdNote = false;
 
     SongTitle currentSongTitle;
 };
