@@ -33,6 +33,10 @@ Song PacManSong = {PM_BPM, 4, 4, {{B4, S_N},  {B5, S_N},   {Gb5, S_N}, {Eb5, S_N
 
                                   {END, S_N}}};
 
+// Based on:
+// https://musescore.com/user/85429/scores/107109
+// Measure 1-2
+
 // We Are Number One
 
 // clang-format off
@@ -47,6 +51,10 @@ Song WeAreNumberOneSong = {WeNum1_BPM, 4, 4, {{F5, QH_N}, {C6, E_N}, {B5, S_N}, 
 
                                               {END, Q_N}}};
 // clang-format on
+
+// Based on:
+// https://musescore.com/user/14081071/scores/3082501
+// Measures 1-4
 
 // Chainsaw Man Theme
 
@@ -69,6 +77,10 @@ Song ChainSawManSong = {CHNSW_BPM, 4, 4, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  
 
                                           {END, Q_N}}};
 
+// Based on:
+// https://musescore.com/user/48165141/scores/8812008
+// Measures 42 - 49.5
+
 // Mystery Song (hmm...)
 
 static constexpr uint32_t MYST_BPM = 114;
@@ -85,8 +97,13 @@ Song MysterySong = {MYST_BPM, 4, 4, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N}
                                      {D5, Q_N},  {C5, H_N},
 
                                      {END, Q_N}}};
+
+// Based on:
+// https://musescore.com/punctuationless/never-gonna-give-you-up
+// Measures 18.5 - 22.5
+
 // Crab Rave
-/*
+
 static constexpr uint32_t CRAB_BPM = 125;
 Song CrabRaveSong = {CRAB_BPM, 4, 4, {D5, D5, Bb5, Bb5, G6, G6, G6,
 
@@ -99,7 +116,7 @@ Song CrabRaveSong = {CRAB_BPM, 4, 4, {D5, D5, Bb5, Bb5, G6, G6, G6,
                                       E5, E5, E5,  F5,
 
                                       END}};
-*/
+
 // Legend of Zelda Overworld Theme
 // clang-format off
 static constexpr uint32_t LOZ_BPM = 130;
@@ -117,27 +134,34 @@ Song LegendOfZeldaSong = {LOZ_BPM, 4, 4,
 {END, Q_N}}};
 // clang-format on
 
-/*
+// Based on:
+// https://musescore.com/user/20360426/scores/4880846
+// Measures 1 - 4
+
 // LG Washing Machine
 
 // time signature 6/8
-static constexpr uint32_t LG_BPM = 92;
-Song LG_WashSong = {LG_BPM, 6, 8, {Db6, Db6, Db6, Gb6, F6,  Eb6,
+static constexpr uint32_t LG_BPM = 150;  // 92
+Song LG_WashSong = {LG_BPM, 6, 8, {{Db6, QH_N}, Gb6, F6,  Eb6,
 
-                                   Db6, Db6, Db6, Bb5, Bb5, Bb5,
+                                   Db6,         Db6, Db6, Bb5, Bb5, Bb5,
 
-                                   Cb6, Db6, Eb6, Ab5, Bb5, Cb6,
+                                   Cb6,         Db6, Eb6, Ab5, Bb5, Cb6,
 
-                                   Bb5, Bb5, Bb5, Db6, Db6, Db6,
+                                   Bb5,         Bb5, Bb5, Db6, Db6, Db6,
 
-                                   Db6, Db6, Db6, Gb6, F6,  Eb6,
+                                   Db6,         Db6, Db6, Gb6, F6,  Eb6,
 
-                                   Db6, Db6, Db6, Gb6, Gb6, Gb6,
+                                   Db6,         Db6, Db6, Gb6, Gb6, Gb6,
 
-                                   Gb6, Ab6, Gb6, F6,  Eb6, F6,
+                                   Gb6,         Ab6, Gb6, F6,  Eb6, F6,
 
-                                   Gb6, Gb6, Gb6, Gb6, Gb6, Gb6,
+                                   Gb6,         Gb6, Gb6, Gb6, Gb6, Gb6,
 
                                    END}};
-*/
+
+// Based on:
+// https://musescore.com/user/35424120/scores/6208111
+// Measures 1-8
+
 }  // namespace utils::Jukebox
