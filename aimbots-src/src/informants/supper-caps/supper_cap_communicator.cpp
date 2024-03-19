@@ -104,39 +104,18 @@ void SupperCapCommunicator::updateSerial() {
             break;
         }
     }
-    // displayNextByteIndex = nextByteIndex;
+    displayNextByteIndex = nextByteIndex;
     currentCommand = command;
     lastSentMessage.magic = 'b';
     lastSentMessage.command = 'c';
     chargeValueR = 10;
-    lastSentMessage.charge = chargeValueR;
-
-    // switch (command) {
-    //     case STOP:
-    //         /* code */
-    //         lastSentMessage.command = 's';
-    //         lastSentMessage.charge = 0;
-    //         break;
-    //     case CHARGE:
-    //         /* code */
-    //         lastSentMessage.command = 'c';
-    //         lastSentMessage.charge = 100;  // supperCapSubSystem->getCharge();
-    //         break;
-    //     case DISCHARGE:
-    //         lastSentMessage.command = 'd';
-    //         lastSentMessage.charge = 0;
-    //     default:
-    //         // notify("Invalid command");
-    //         lastSentMessage.command = 's';
-    //         lastSentMessage.charge = 0;
-    //         break;
-    // }
-
+    lastSentMessage.charge = chargeValueR+lastSentMessage.charge;
+    size_t len = static_cast<size_t>(sizeof(lastSentMessage));
     rawSerialBufferSent = reinterpret_cast<uint8_t*>(&lastSentMessage);
     // rawSerialBufferSent[0] = lastSentMessage.magic;
     // rawSerialBufferSent[1] = lastSentMessage.command;
     // rawSerialBufferSent[2] = lastSentMessage.charge;
-    WRITE(rawSerialBufferSent, SUPPER_CAP_MESSAGE_SENT_SIZE);
+    WRITE(rawSerialBufferSent, len);
 }
 
 }  // namespace src::Informants::SupperCap
