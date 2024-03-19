@@ -113,14 +113,14 @@ int main() {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
-            // comms
-            if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
-                drivers->musicPlayer.requestSong(playSongWatch);
-            }
 
+            /*if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+                drivers->musicPlayer.requestSong(playSongWatch);
+            }*/
+
+            // comms
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
-            // utils::Music::playPacMan(drivers);
             drivers->musicPlayer.playMusic();
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
