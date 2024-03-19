@@ -12,11 +12,18 @@ class RefereeHelperInterface {
 public:
     RefereeHelperInterface(src::Drivers* drivers) : drivers(drivers){};
     ~RefereeHelperInterface() = default;
-
     RefSerialRxData::GameStage getGameStage() {
         auto gameData = drivers->refSerial.getGameData();
         return gameData.gameStage;
     }
+    RefSerialRxData::ArmorId getHitPanelID() {
+        auto robotData = drivers->refSerial.getRobotData();
+        return robotData.damagedArmorId;
+    }
+     getTimeDamaged(){
+        auto damageEvent = drivers->refSerial.getDama
+    }
+
 
 protected:
     src::Drivers* drivers;
