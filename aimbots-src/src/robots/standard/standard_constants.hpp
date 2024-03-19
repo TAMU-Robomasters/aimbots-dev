@@ -12,6 +12,8 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
+static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
