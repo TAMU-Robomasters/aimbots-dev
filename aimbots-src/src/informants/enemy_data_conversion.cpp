@@ -85,6 +85,11 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    VisionTimedPosition transformedToGimbal {
+        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
+        .timestamp_uS = currentData.timestamp_uS,
+    };
+
     // targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     // targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     // targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();

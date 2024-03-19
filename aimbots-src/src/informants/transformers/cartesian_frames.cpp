@@ -55,6 +55,16 @@ const Matrix4f& CartesianFrame::getTransformOut() { return this->transformOut; }
 
 Matrix4f CartesianFrame::getTransformToFrame(CartesianFrame& f) { return f.getTransformIn() * this->transformOut; } // change of basis formula
 
+Matrix4f transformedFrame(CartesianFrame& f) { // I made this bc I CANT FKN FIND THE ORIGINAL TRANSFORMATION
+    //rotate first
+    Matrix3f orient = f.getOrientation();
+    Vector3f pos = f.getOrigin();
+
+    // this->orientation * this->origin;
+    //idk what im doing help
+
+}
+
 // Returns a point in the given frame that is stored in the current frame - THIS IS JUST CHANGE OF BASIS
 Vector3f CartesianFrame::getPointInFrame(CartesianFrame& f, Vector3f& v) {
     return homogenousCoordinateCrop(getTransformToFrame(f) * homogenousCoordinateExtend(v).asMatrix());
