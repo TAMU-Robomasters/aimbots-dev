@@ -29,6 +29,14 @@ class CartesianFrame {
         const Matrix4f& getTransformOut();
 
         Matrix4f getTransformToFrame(CartesianFrame& f);
+        
+        /**
+         * Takes in a different frame and transforms and
+         * orients this frame to match the inputted frame
+         * @param f CartesianFrame to transform to
+        */
+        Matrix4f transformedFrame(CartesianFrame& f);
+
         Vector3f getPointInFrame(CartesianFrame& f, Vector3f& v);
 
     private:
@@ -42,7 +50,7 @@ class CartesianFrame {
         **/
         Vector3f origin;
 
-        Matrix4f transformIn;   // Takes inputs in ground frame
+        Matrix4f transformIn;   // Takes inputs in ground frame, inverse of out
         Matrix4f transformOut;  // Returns inputs in ground frame
 };
 
