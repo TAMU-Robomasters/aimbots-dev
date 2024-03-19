@@ -14,6 +14,9 @@
 
 static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
 
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
+static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */

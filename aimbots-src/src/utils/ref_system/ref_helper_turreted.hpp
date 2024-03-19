@@ -41,6 +41,7 @@ public:
     bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
     bool canCurrBarrelShootSafely();
     bool canSpecificBarrelShootSafely(BarrelID barrelID);
+    uint8_t getRemainingProjectiles();
 
     uint16_t getCurrBarrelHeat() {
         auto& turretData = drivers->refSerial.getRobotData().turret;
