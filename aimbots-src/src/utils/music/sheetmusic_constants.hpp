@@ -127,7 +127,6 @@ Song CrabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}
 // Legend of Zelda Overworld Theme
 
 static constexpr uint32_t LOZ_BPM = 130;
-
 Song LegendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},   {A5, TE_N}, {A5, TE_N},
 
                                          {A5, TQ_N}, {G4, TE_N},   {A5, Q_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},
@@ -147,8 +146,7 @@ Song LegendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {
 
 // LG Washing Machine
 
-// time signature 6/8
-static constexpr uint32_t LG_BPM = 150;  // 92
+static constexpr uint32_t LG_BPM = 150;
 Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N},
 
                                   {Db6, QH_N}, {Bb5, QH_N},
