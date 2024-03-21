@@ -399,3 +399,47 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
+/**
+ * @brief Barrel Manager Constants
+ */
+// These are offsets of the lead screw from the hard stop of the slide to lining up the barrel with the flywheels
+// A positive increase provides a bigger gap between hard stop and barrel
+static constexpr float HARD_STOP_OFFSET = 0.5;  // In mm
+
+// this is from edge to edge, aligned center to aligned center,
+static constexpr float BARREL_SWAP_DISTANCE_MM = 45.5;  // In mm
+
+// If the barrel is this close to the flywheel chamber, it is considered aligned
+static constexpr float BARRELS_ALIGNED_TOLERANCE = 2.0;  // In mm
+
+// Conversion ratio from motor encoder ticks to millimeters moved on the lead screw
+static constexpr float LEAD_SCREW_TICKS_PER_MM =
+    tap::motor::DjiMotor::ENC_RESOLUTION * 36.0 /
+    8.0;  //  X encoder ticks per rot. * 36 motor rotations / 8mm of lead ; // ticks/mm
+
+// The value that the torque needs to be greater than to detect running into a wall
+static constexpr int16_t LEAD_SCREW_CURRENT_SPIKE_TORQUE = 650;
+
+// The output to the motor while in calibration mode.
+// When adjusting, also change the constant above to find an appropriate match between the two
+static constexpr int16_t LEAD_SCREW_CALI_OUTPUT = 600;
+
+static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 5.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+
+static const float bruhthebruh[3] = {0,0,1}; // nameing it something reasonble made the compiler mad :(
+static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(bruhthebruh); // Displacement vector from the gimbal to the camera frames
+//^^^change later, in meters
