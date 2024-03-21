@@ -442,6 +442,5 @@ static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
 };
 
 
-static const float bruhthebruh[3] = {0,0,1}; // nameing it something reasonble made the compiler mad :(
-static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(bruhthebruh); // Displacement vector from the gimbal to the camera frames
+static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(0,0,1); // Displacement vector from the gimbal to the camera frames
 //^^^change later, in meters
