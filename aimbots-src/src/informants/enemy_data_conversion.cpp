@@ -79,6 +79,11 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
+    float zero[3] = {0,0,0}; // there has to be somewheer I can get a zero vector
+    gimbalFrame.setOrigin(Vector3f(zero)); // set the origin of the gimbalFrame to (0,0,0)
+    cameraAtCVUpdateFrame.setOrigin(gimbalFrame.getOrientation() * GIMBAL_TO_CAMERA_DISPLACEMENT); // set the camera origin based off the gombal origin
+    cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation()); // gimbal and camera orientation should be the same
+
 
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
