@@ -79,10 +79,12 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
-    float zero[3] = {0,0,0}; // there has to be somewheer I can get a zero vector
-    gimbalFrame.setOrigin(Vector3f(zero)); // set the origin of the gimbalFrame to (0,0,0)
+
+//------------------------------------------------------------------------------------
+    gimbalFrame.setOrigin(Vector3f(0,0,0)); // set the origin of the gimbalFrame to (0,0,0)
     cameraAtCVUpdateFrame.setOrigin(gimbalFrame.getOrientation() * GIMBAL_TO_CAMERA_DISPLACEMENT); // set the camera origin based off the gombal origin
     cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation()); // gimbal and camera orientation should be the same
+//------------------------------------------------------------------------------------
 
 
     VisionTimedPosition transformedData{
@@ -90,8 +92,14 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
-    VisionTimedPosition transformedToGimbal {
-        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
+    // idk
+    // VisionTimedPosition transformedToGimbal {
+    //     .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),
+    //     .timestamp_uS = currentData.timestamp_uS,
+    // };
+
+    VisionTimedPosition cameraPosition{
+        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position), // not sure how to translate the pos
         .timestamp_uS = currentData.timestamp_uS,
     };
 
@@ -99,18 +107,18 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     // targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
-    targetPositionXUnfilteredDisplay = transformedData.position.getX();
-    targetPositionYUnfilteredDisplay = transformedData.position.getY();
-    targetPositionZUnfilteredDisplay = transformedData.position.getZ();
+    targetPositionXUnfilteredDisplay = cameraPosition.position.getX();
+    targetPositionYUnfilteredDisplay = cameraPosition.position.getY();
+    targetPositionZUnfilteredDisplay = cameraPosition.position.getZ();
 
-    targetPositionXDisplay = transformedData.position.getX();
-    targetPositionYDisplay = transformedData.position.getY();
-    targetPositionZDisplay = transformedData.position.getZ();
+    targetPositionXDisplay = cameraPosition.position.getX();
+    targetPositionYDisplay = cameraPosition.position.getY();
+    targetPositionZDisplay = cameraPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    XPositionFilter.update(dt, transformedData.position.getX());
-    YPositionFilter.update(dt, transformedData.position.getY());
-    ZPositionFilter.update(dt, transformedData.position.getZ());
+    XPositionFilter.update(dt, cameraPosition.position.getX()); // transformedData -> cameraPosition
+    YPositionFilter.update(dt, cameraPosition.position.getY());
+    ZPositionFilter.update(dt, cameraPosition.position.getZ());
 
     xDFT.damping_factor = dampingValue;
 
