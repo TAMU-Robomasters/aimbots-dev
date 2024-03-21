@@ -16,13 +16,6 @@ public:
         auto gameData = drivers->refSerial.getGameData();
         return gameData.gameStage;
     }
-    RefSerialRxData::ArmorId getHitPanelID() {
-        auto robotData = drivers->refSerial.getRobotData();
-        return robotData.damagedArmorId;
-    }
-     getTimeDamaged(){
-        auto damageEvent = drivers->refSerial.getDama
-    }
 
 
 protected:
