@@ -242,6 +242,15 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
 
+GimbalToggleAimCommand gimbalToggleAimCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0],
+    modm::toRadian(30.0f));
+
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
@@ -280,19 +289,21 @@ GUI_DisplayCommand guiDisplayCommand(drivers(), &gui);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {/*&chassisToggleDriveCommand,*/ &followGimbalCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ /*&gimbalChaseCommand2*/ &gimbalToggleAimCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
     {&openHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+
 
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
@@ -303,7 +314,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {/*&runFeederCommand,*/ &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
