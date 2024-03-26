@@ -48,6 +48,7 @@ struct WeightedSquareGraph {
 
     // He was a modm::Vector2i. She was a Graph_loc. Will they fall in love?
 
+    
     WeightedSquareGraph(float width_meters, float height_meters, float precision_meters);
 
     // Gets nearest hypothetical node from a given position, no guarantee that node will exist
@@ -72,3 +73,24 @@ struct WeightedSquareGraph {
 
     vector<Vector2f> get_path(Vector2i start, Vector2i goal);
 };
+
+struct Line {
+    //line expressed as  [x, y] = [dx, dy]*t + [bx, by]
+    double bx;
+    double by;
+    double dx;
+    double dy;
+
+    //line segment contraints
+    double domain_max;
+    double domain_min;
+    double range_max;
+    double range_min;
+
+    Line(Vector2f a, Vector2f b);
+
+    bool has_intersection(Line other);
+
+
+}
+vector<Vector2f> pathfind_vizGraph(Vector2f start, Vector2f goal, vector<vector<Vector2f>> vertices); //array of array of points where each array of points defines some closed solid (3 points = triangle, 4 = rectangle, etc..)
