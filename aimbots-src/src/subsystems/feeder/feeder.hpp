@@ -30,6 +30,8 @@ public:
 
     int getTotalLimitCount() const;
 
+    bool isFeederOnline() { return feederMotor.isMotorOnline(); }
+
 #ifndef ENV_UNIT_TESTS
 private:
 #else

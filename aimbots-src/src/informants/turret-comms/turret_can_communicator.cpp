@@ -180,16 +180,25 @@ void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg) {
     }
 }
 #else
+
+bool isTryingToSendDisplay = false;
+int dataSentDisplay = 0;
+
 void TurretCommunicator::sendTurretRequest() {
     if (/*sendToTurretTimer.execute() &&*/ drivers->can.isReadyToSend(bus)) {
+        isTryingToSendDisplay = true;
         modm::can::Message msg(static_cast<uint32_t>(CanID::ChassisToTurret), 1);
         msg.setExtended(false);
+        dataSentDisplay = chassisRequestData;
+
         msg.data[0] = chassisRequestData;
         drivers->can.sendMessage(bus, msg);
 
         chassisRequestData = 0;
 
         sendToTurretTimer.restart();
+    } else {
+        isTryingToSendDisplay = false;
     }
 }
 

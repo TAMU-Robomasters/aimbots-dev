@@ -127,9 +127,17 @@ SentryMatchFiringControlCommand matchFiringControlCommand(
     &ballisticsSolver,
     &gimbalFieldRelativeController,
     chassisMatchState);
-SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
-defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
-matchGimbalControlCommand(
+SentryMatchChassisControlCommand matchChassisControlCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    chassisMatchState,
+    &refHelper,
+    defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
@@ -138,7 +146,7 @@ matchGimbalControlCommand(
     patrolConfig,
     500);
 
-// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), 
+// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
 //     &chassis, ChassisMatchStates::PATROL,&refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
@@ -172,7 +180,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
-//only for when dirving with remote
+// only for when dirving with remote
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
@@ -313,7 +321,7 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
 
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);

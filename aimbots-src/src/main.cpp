@@ -188,7 +188,7 @@ static void updateIo(src::Drivers *drivers) {
 
 #else
     drivers->canRxHandler.pollCanData();
-    //drivers->turretCommunicator.sendIMUData();
+    drivers->turretCommunicator.sendIMUData();
 #endif
 
 #ifdef TURRET_HAS_IMU
