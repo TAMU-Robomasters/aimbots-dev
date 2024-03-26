@@ -136,3 +136,50 @@ vector<Vector2f> WeightedSquareGraph::get_path(Vector2i start, Vector2i goal){
     }
     return path;
 }
+
+
+
+Line::Line(Vector2f a, Vector2f b):
+bx(a[0]),
+by(a[1]),
+dx(a[0]-b[0]),
+dy(a[1]-b[1]),
+domain_max((a[0] > b[0]) ? a[0] : b[0]),
+domain_min((a[0] < b[0]) ? a[0] : b[0]),
+range_max((a[1] > b[1]) ? a[1] : b[1]),
+range_min((a[1] < b[1]) ? a[1] : b[1])
+{}
+
+bool Line::has_intersection(Line other){
+    //this probably makes sense if you have taken linear. Or read this https://stackoverflow.com/questions/73079419/intersection-of-two-vector
+
+    //im too tired to finish this right now 
+}
+
+
+
+
+
+
+vector<Vector2f> pathfind_vizGraph(Vector2f start, Vector2f goal, vector<vector<Vector2f>> vertices){
+    int next_ID = 0; //for arbitrary ID assignment
+    int start_ID = next_ID++;
+    int goal_ID = next_ID++;
+
+    //key = arbitrary vertex ID, value = real world position in meters
+    unordered_map<int, Vector2f> positions;
+
+    // key = vertex id, value = array of vertex IDs visible from key
+    unordered_map<int, vector<int>> neighbors;
+
+    positions[start_ID] = start;
+    positions[goal_ID] = goal;
+
+    //unwrap vertices and assign ID
+    for (int i = 0; i < vertices.size(); i++){
+        for (int j = 0; j < vertices[i].size(); j++){
+            positions[next_ID++] = vertices[i][j];
+        }
+    }
+
+}
