@@ -253,15 +253,9 @@ bool RefSerial::decodeToPowerAndHeat(const ReceivedSerialMessage& message)
     convertFromLittleEndian(&robotData.turret.heat42, message.data + 14);
     return true;
 }
-float chassis_x = 0.0;
-float chassis_y = 0.0;
-float chassis_z = 0.0;
 
 bool RefSerial::decodeToRobotPosition(const ReceivedSerialMessage& message)
 {
-    chassis_x = robotData.chassis.x;
-    chassis_y = robotData.chassis.y;
-    chassis_z = robotData.chassis.z;
     if (message.header.dataLength != 16)
     {
         return false;
@@ -270,9 +264,6 @@ bool RefSerial::decodeToRobotPosition(const ReceivedSerialMessage& message)
     convertFromLittleEndian(&robotData.chassis.y, message.data + 4);
     convertFromLittleEndian(&robotData.chassis.z, message.data + 8);
     convertFromLittleEndian(&robotData.turret.yaw, message.data + 12);
-    // chassis_x = robotData.chassis.x;
-    // chassis_y = robotData.chassis.y;
-    // chassis_z = robotData.chassis.z;
     return true;
 }
 

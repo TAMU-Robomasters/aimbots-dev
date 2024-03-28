@@ -68,6 +68,10 @@ uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 
+float chassis_x = 0.0;
+float chassis_y = 0.0;
+float chassis_z = 0.0;
+
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
 int main() {
@@ -104,6 +108,9 @@ int main() {
             // currHeat = drivers->refSerial.getRobotData().turret.heat42;
             // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+            chassis_x = drivers->refSerial.getRobotData().chassis.x;
+            chassis_y = drivers->refSerial.getRobotData().chassis.y;
+            chassis_z = drivers->refSerial.getRobotData().chassis.z;
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
