@@ -440,5 +440,5 @@ static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
 };
 
 
-static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(0,0,1); // Displacement vector from the gimbal to the camera frames
+static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(0,1,0); // Displacement vector from the gimbal to the camera frames
 //^^^change later, in meters
