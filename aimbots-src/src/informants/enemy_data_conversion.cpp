@@ -23,6 +23,11 @@ float targetPositionXDisplay = 0.0f;
 float targetPositionYDisplay = 0.0f;
 float targetPositionZDisplay = 0.0f;
 
+float cvCameraPosXDisplay = 0.0f;
+float cvCameraPosYDisplay = 0.0f;
+float cvCameraPosZDisplay = 0.0f;
+
+
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -85,7 +90,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     cameraAtCVUpdateFrame.setOrigin(gimbalFrame.getOrientation() * GIMBAL_TO_CAMERA_DISPLACEMENT); // set the camera origin based off the gombal origin
     cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation()); // gimbal and camera orientation should be the same
 //------------------------------------------------------------------------------------
-
+    cvCameraPosXDisplay = cameraAtCVUpdateFrame.getOrigin().getX();
+    cvCameraPosYDisplay = cameraAtCVUpdateFrame.getOrigin().getY();
+    cvCameraPosZDisplay = cameraAtCVUpdateFrame.getOrigin().getZ();
 
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
