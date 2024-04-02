@@ -23,6 +23,7 @@
 #include "tap/drivers.hpp"
 
 #include "informants/kinematic_informant.hpp"
+#include "informants/hitTracker.hpp"
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/turret-comms/turret_can_communicator.hpp"
 #include "informants/vision/jetson_communicator.hpp"
@@ -51,6 +52,7 @@ public:
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
+    Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
     utils::Jukebox::JukeboxPlayer musicPlayer;
 };  // class Drivers

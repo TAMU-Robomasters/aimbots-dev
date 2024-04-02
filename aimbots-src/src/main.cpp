@@ -118,9 +118,12 @@ int main() {
             }*/
 
             // comms
+            drivers->hitTracker.getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             drivers->musicPlayer.playMusic();
+            drivers->hitTracker.getHitAngle_gimbalRelative();
+
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }

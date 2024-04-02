@@ -7,14 +7,25 @@
 
 #include "drivers.hpp"
 
-using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+namespace src {
+class Drivers;
+}
 
+namespace src::Gimbal {
+class GimbalSubsystem;
+}
+
+
+using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+using namespace src::Utils;
 
 namespace src::Informants {
 class HitTracker{
 public:
     HitTracker(src::Drivers* drivers);
-    HitTracker() = default;
+    ~HitTracker() = default;
+    src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
+
     RefSerialRxData::ArmorId getHitPanelID() {
         auto robotData = drivers->refSerial.getRobotData();
         return robotData.damagedArmorId;
@@ -44,6 +55,7 @@ public:
     private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbal;
+    src::Informants::Transformers::RobotFrames robotFrames;
 };
 }
 
