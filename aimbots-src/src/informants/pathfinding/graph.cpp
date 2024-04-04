@@ -123,17 +123,16 @@ void a_star_search
 
 // Translates the unordered map -> vector<Vector2f> of all nodes
 vector<Vector2f> WeightedSquareGraph::get_path(Vector2i start, Vector2i goal){
-    WeightedSquareGraph graph = WeightedSquareGraph(2, 2, 0.1);
     unordered_map<Vector2i, Vector2i> came_from;
     unordered_map<Vector2i, float> aggregate_cost;
-    a_star_search(graph, start, goal, came_from, aggregate_cost);
+    a_star_search(*this, start, goal, came_from, aggregate_cost);
 
     vector<Vector2f> path;
     Vector2i current_vector = goal;
-    path.insert(path.begin(), graph.get_location(current_vector));
+    path.insert(path.begin(), this->get_location(current_vector));
     while (current_vector != start){
         current_vector = came_from.at(current_vector);
-        path.insert(path.begin(), graph.get_location(current_vector));
+        path.insert(path.begin(), this->get_location(current_vector));
     }
     return path;
 }

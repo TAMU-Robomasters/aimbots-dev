@@ -27,21 +27,24 @@ ChassisAutoNavCommand::ChassisAutoNavCommand(
 
 float path_x = 0.0f;
 float path_y = 0.0f;
-int A = 0;
+float myX = 0.0f;
+float myY = 0.0f;
+bool settled = false;
 
 void ChassisAutoNavCommand::initialize() {
     // modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
     // autoNavigator.setTargetLocation(targetLocation);
-    WeightedSquareGraph graph = WeightedSquareGraph(1, 1, 0.1);
-    this->load_path(std::vector<Vector2f> {Vector2f(0, 0.1), Vector2f(0.2, 0.2), Vector2f(0.2, 0), Vector2f(0, 0)});
+    WeightedSquareGraph graph = WeightedSquareGraph(2, 2, 0.1);
+    graph.remove_region(Vector2f(0.2, 0.2), Vector2f(0.9, 0.9));
+    this->load_path(graph.get_path(Vector2i(0, 0), Vector2i(15, 15)));
 }
 
 void ChassisAutoNavCommand::pop_path(){
         if (path.empty()) { return; }
         Vector2f pt = path.front();
         path_x = pt.x;
-        path_y = pt.y;
-        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.getX(), pt.getY(), 0));
+        path_y = pt.x;
+        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.x, pt.y, 0));
         path.erase(path.begin());
     }
 
@@ -58,7 +61,7 @@ void ChassisAutoNavCommand::execute() {
     float xError = 0.0f;
     float yError = 0.0f;
     float rotationError = 0.0f;
-    A++;
+    settled = isSettled();
 
     //no points to load and controllers at target
     if (this->path.empty() && this->isSettled()){
@@ -66,12 +69,13 @@ void ChassisAutoNavCommand::execute() {
         return; 
     }
 
-    if (this->isSettled() && A > 100){ //if controllers at target load new point
+    if (this->isSettled()){ //if controllers at target load new point
         this->pop_path();
-        A = 0;
     }
     
     modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getRobotLocation2D();
+    myX = currentWorldLocation.getX();
+    myY = currentWorldLocation.getY();
     modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getRobotVelocity2D();
 
     autoNavigator.update(currentWorldLocation);
