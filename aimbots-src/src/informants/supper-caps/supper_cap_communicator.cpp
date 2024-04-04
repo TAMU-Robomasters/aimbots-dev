@@ -36,6 +36,7 @@ float lPrecent;
 float lPower;
 
 float chargeValueR = 10;
+float totalCharge = 0;
 
 char currentCommand;
 /**
@@ -110,6 +111,7 @@ void SupperCapCommunicator::updateSerial() {
     lastSentMessage.command = 'c';
     chargeValueR = 10;
     lastSentMessage.charge = chargeValueR+lastSentMessage.charge;
+    totalCharge = lastSentMessage.charge;
     size_t len = static_cast<size_t>(sizeof(lastSentMessage));
     rawSerialBufferSent = reinterpret_cast<uint8_t*>(&lastSentMessage);
     // rawSerialBufferSent[0] = lastSentMessage.magic;

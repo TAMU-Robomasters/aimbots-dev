@@ -2,7 +2,7 @@
 
 namespace src::Informants::SupperCap {
 
-static constexpr uint8_t SUPPER_CAP_MESSAGE_RECIEVED_MAGIC = 'a';
+static constexpr uint8_t SUPPER_CAP_MESSAGE_RECIEVED_MAGIC = 'c';
 
 enum SupperCapCommand : char { CHARGE = 'c', DISCHARGE = 'd', STOP = 's' };
 
