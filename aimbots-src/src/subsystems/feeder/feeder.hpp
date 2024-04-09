@@ -78,11 +78,11 @@ public:
 
     void setTargetRPM(float rpm, int FeederIdx = 0);
 
-    float getRPM(uint8_t FeederIdx) const {
+    float getRPM(uint8_t FeederIdx = 0) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ?  - feederMotors[FeederIdx]->getShaftRPM() : 0;
     }
 
-    inline int16_t getFeederMotorTorque(uint8_t feederIdx) const {
+    inline int16_t getFeederMotorTorque(uint8_t feederIdx = 0) const {
         return feederMotors[feederIdx]->isMotorOnline() ? feederMotors[feederIdx]->getTorque() : 0;
     }
 
@@ -90,7 +90,7 @@ public:
 
    // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
-    int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
+    int64_t getEncoderUnwrapped(uint8_t feederIdx = 0) const { return feederMotors[feederIdx]->getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
 
 
 private:
