@@ -27,7 +27,6 @@ float cvCameraPosXDisplay = 0.0f;
 float cvCameraPosYDisplay = 0.0f;
 float cvCameraPosZDisplay = 0.0f;
 
-
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -48,7 +47,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
     // USED FIND + REPLACE (CTRL + H) TO CHANGE CoordinateFrame into CartesianFrame
-    
+
     src::Informants::Transformers::CartesianFrame gimbalFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
 
@@ -85,11 +84,13 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
 
-//------------------------------------------------------------------------------------
-    gimbalFrame.setOrigin(Vector3f(0,0,0)); // set the origin of the gimbalFrame to (0,0,0)
-    cameraAtCVUpdateFrame.setOrigin(gimbalFrame.getOrientation() * GIMBAL_TO_CAMERA_DISPLACEMENT); // set the camera origin based off the gombal origin
-    cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation()); // gimbal and camera orientation should be the same
-//------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
+    gimbalFrame.setOrigin(Vector3f(0, 0, 0));  // set the origin of the gimbalFrame to (0,0,0)
+    cameraAtCVUpdateFrame.setOrigin(
+        gimbalFrame.getOrientation() *
+        CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gombal origin
+    cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the same
+    //------------------------------------------------------------------------------------
     cvCameraPosXDisplay = cameraAtCVUpdateFrame.getOrigin().getX();
     cvCameraPosYDisplay = cameraAtCVUpdateFrame.getOrigin().getY();
     cvCameraPosZDisplay = cameraAtCVUpdateFrame.getOrigin().getZ();
@@ -106,7 +107,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // };
 
     VisionTimedPosition cameraPosition{
-        .position = cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position), // not sure how to translate the pos
+        .position =
+            cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),  // not sure how to translate the pos
         .timestamp_uS = currentData.timestamp_uS,
     };
 
@@ -123,7 +125,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     targetPositionZDisplay = cameraPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    XPositionFilter.update(dt, cameraPosition.position.getX()); // transformedData -> cameraPosition
+    XPositionFilter.update(dt, cameraPosition.position.getX());  // transformedData -> cameraPosition
     YPositionFilter.update(dt, cameraPosition.position.getY());
     ZPositionFilter.update(dt, cameraPosition.position.getZ());
 
