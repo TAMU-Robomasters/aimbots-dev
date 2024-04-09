@@ -12,6 +12,8 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
+#define GRABBER_COMPATIBLE
+
 static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
 
 /**
@@ -28,6 +30,8 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
+
+static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t WRIST_MOTOR_COUNT = 3;

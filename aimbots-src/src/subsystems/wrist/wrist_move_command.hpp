@@ -29,12 +29,6 @@ private:
     src::Drivers* drivers;
     WristSubsystem* wrist;
     float yaw, pitch, roll;
-
-    //S curve stuff
-    src::Utils::motion::SCurveMotionProfile::Constraints profileConstraints;
-    float movementStartTime;
-    SCurveMotionProfile* yawProfile;
-    int profilerDirection = 1;
 };
 
 };      // namespace src::Wrist

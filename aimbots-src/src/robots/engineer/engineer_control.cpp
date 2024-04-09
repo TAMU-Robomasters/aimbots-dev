@@ -19,6 +19,7 @@
 //
 #include "subsystems/wrist/wrist.hpp"
 #include "subsystems/wrist/wrist_move_command.hpp"
+#include "subsystems/wrist/wrist_control_command.hpp"
 
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
@@ -43,6 +44,7 @@ using namespace tap;
 using namespace tap::control;
 using namespace src::Slide;
 using namespace src::Wrist;
+using namespace src::Grabber;
 
 namespace EngineerControl {
 
@@ -52,43 +54,41 @@ GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
 WristSubsystem wrist(drivers());
 GrabberSubsystem grabber(drivers());
-WristSubsystem wrist(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristMoveCommand wristMoveCommand(drivers(), &wrist, PI, 0.0f, 0.0f);
 WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
 // Define command mappings here -------------------------------------------
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&chassisManualDriveCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {&chassisManualDriveCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
     
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&slideControlCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+// HoldCommandMapping rightSwitchMid(
+//     drivers(),
+//     {&slideControlCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-HoldCommandMapping rightSwitchUp(
-    drivers(),
-    {&wristControlCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+// HoldCommandMapping rightSwitchUp(
+//     drivers(),
+//     {&wristControlCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 
-HoldCommandMapping leftSwitchMid(
-    drivers(),
-    {&goToTestLocation},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+// HoldCommandMapping leftSwitchMid(
+//     drivers(),
+//     {&goToTestLocation},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-HoldCommandMapping leftSwitchDown(
-    drivers(),
-    {&goHome},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+// HoldCommandMapping leftSwitchDown(
+//     drivers(),
+//     {&goHome},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
 
 /* END OF TEMPORARY MAPPINGS */
 
@@ -124,9 +124,9 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchDown);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchDown);
 }
 
 }  // namespace EngineerControl
