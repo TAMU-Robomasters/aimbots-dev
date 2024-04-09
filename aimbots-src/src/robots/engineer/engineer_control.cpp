@@ -24,13 +24,9 @@
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
 //
-#include "subsystems/grabber/grabber.hpp"
 #include "subsystems/grabber/suction_command.hpp"
 
 using namespace src::Chassis;
-using namespace src::Gimbal;
-using namespace src::Wrist;
-using namespace src::Grabber;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -45,6 +41,7 @@ using namespace tap::control;
 using namespace src::Slide;
 using namespace src::Wrist;
 using namespace src::Grabber;
+using namespace src::Gimbal;
 
 namespace EngineerControl {
 
@@ -92,6 +89,13 @@ Suction_Command suctionCommand(drivers(), &grabber);
 
 /* END OF TEMPORARY MAPPINGS */
 
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&wristControlCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+
+    
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);

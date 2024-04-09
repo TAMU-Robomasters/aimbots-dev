@@ -30,7 +30,6 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
-
 static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
@@ -128,7 +127,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .kp = 10000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.7f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -142,7 +141,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig ROLL_POSITION_PID_CONFIG = {
     .kp = 10000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.7f,
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
