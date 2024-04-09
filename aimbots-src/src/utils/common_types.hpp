@@ -22,7 +22,6 @@
 #include "modm/math/matrix.hpp"
 #include "pid/smooth_pid_wrap.hpp"
 
-
 inline float pow2(float x) { return x * x; }
 
 static inline float wrapTo0To2PIRange(float angle) {
@@ -66,6 +65,8 @@ enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 
 // :)
 enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
+
+enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH };
 
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;

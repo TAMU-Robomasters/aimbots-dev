@@ -57,7 +57,6 @@ public:
     MOCK_METHOD(bool, getMouseL, (), (const override));
     MOCK_METHOD(bool, getMouseR, (), (const override));
     MOCK_METHOD(bool, keyPressed, (tap::communication::serial::Remote::Key key), (const override));
-    MOCK_METHOD(int16_t, getWheel, (), (const override));
     MOCK_METHOD(uint32_t, getUpdateCounter, (), (const override));
 };  // class RemoteMock
 }  // namespace mock

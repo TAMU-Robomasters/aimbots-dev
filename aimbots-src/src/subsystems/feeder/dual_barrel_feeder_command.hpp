@@ -23,6 +23,7 @@ public:
         std::array<BarrelID, 2> BARREL_IDS,
         float speed,
         float unjamSpeed,
+        uint8_t projectileBuffer,
         int UMJAM_TIMER_MS);
     void initialize() override;
 
@@ -42,6 +43,9 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
 
     std::array<BarrelID, 2> BARREL_IDS;
+
+    int64_t antiOverheatEncoderThreshold;
+    uint8_t projectileBuffer;
 
     float speed;
 

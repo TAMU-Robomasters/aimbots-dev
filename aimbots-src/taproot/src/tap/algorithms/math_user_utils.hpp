@@ -3,7 +3,7 @@
 /*****************************************************************************/
 
 /*
- * Copyright (c) 2020-2021 Advanced Robotics at the University of Washington <robomstr@uw.edu>
+ * Copyright (c) 2020-2023 Advanced Robotics at the University of Washington <robomstr@uw.edu>
  *
  * This file is part of Taproot.
  *
@@ -24,11 +24,15 @@
 #ifndef TAPROOT_MATH_USER_UTILS_HPP_
 #define TAPROOT_MATH_USER_UTILS_HPP_
 
+#include <array>
 #include <cinttypes>
 #include <cmath>
 #include <cstring>
 
+#include "modm/architecture/interface/assert.hpp"
 #include "modm/math/geometry/angle.hpp"
+
+#include "cmsis_mat.hpp"
 
 namespace tap
 {
@@ -131,6 +135,16 @@ To reinterpretCopy(From from)
 float fastInvSqrt(float x);
 
 /**
+ * Compute the cross product of two 3x1 matrices
+ */
+CMSISMat<3, 1> cross(const CMSISMat<3, 1>& a, const CMSISMat<3, 1>& b);
+
+/**
+ * Generates a 3x3 rotation matrix from euler angles (in radians)
+ */
+CMSISMat<3, 3> fromEulerAngles(const float roll, const float pitch, const float yaw);
+
+/**
  * Performs a rotation matrix on the given x and y components of a vector.
  *
  * @param x the x component of the vector to be rotated.
@@ -159,6 +173,57 @@ template <typename T>
 int getSign(T val)
 {
     return (T(0) < val) - (val < T(0));
+}
+
+/**
+ * @brief Bilinear Interpolation of a regularly-spaced grid of values.
+ * Let x = dimension 1 and y = dimension 2 of the 2D array of values
+ * @param values 2D-array pointer of f(x,y) values
+ * @return approximation of values at (xdes,ydes)
+ */
+template <typename T, size_t xSize, size_t ySize>
+float interpolateLinear2D(
+    const std::array<std::array<T, ySize>, xSize>& values,
+    const float xMin,
+    const float xMax,
+    const float dx,
+    const float yMin,
+    const float yMax,
+    const float dy,
+    float xDes,
+    float yDes)
+{
+    modm_assert((xMax - xMin) / dx == xSize - 1, "Bilinear Interpolator", "x range error");
+    modm_assert((yMax - yMin) / dy == ySize - 1, "Bilinear Interpolator", "y range error");
+    float xDesBounded = limitVal(xDes, xMin, xMax);  // no extrapolation allowed
+    float yDesBounded = limitVal(yDes, yMin, yMax);  // no extrapolation allowed
+
+    // In each dimension, find the index of the closest point in the LUT below the desired point,
+    // then use that index to find the value of the two points which the desired point lies between
+    int xIndex = floor((xDesBounded - xMin) / dx);
+    xIndex = limitVal(xIndex, 0, static_cast<int>(xSize) - 2);  // Prevent OOB errors
+    float x1 = xMin + xIndex * dx;                              // gets value from index
+    float x2 = xMin + (xIndex + 1) * dx;
+
+    int yIndex = floor((yDesBounded - yMin) / dy);
+    yIndex = limitVal(yIndex, 0, static_cast<int>(ySize) - 2);
+    float y1 = yMin + yIndex * dy;
+    float y2 = yMin + (yIndex + 1) * dy;
+
+    float q11, q12, q21, q22;  // values of x1y1, x1y2, x2y1, x2y2
+    q11 = static_cast<float>(values.at(xIndex).at(yIndex));
+    q12 = static_cast<float>(values.at(xIndex).at(yIndex + 1));
+    q21 = static_cast<float>(values.at(xIndex + 1).at(yIndex));
+    q22 = static_cast<float>(values.at(xIndex + 1).at(yIndex + 1));
+
+    float x2x, y2y, yy1, xx1;  // deltas from each pt to sample pt
+    x2x = x2 - xDesBounded;
+    y2y = y2 - yDesBounded;
+    yy1 = yDesBounded - y1;
+    xx1 = xDesBounded - x1;
+    // it's essentially a weighted average
+    return 1.0 / (dx * dy) *
+           (q11 * x2x * y2y + q21 * xx1 * y2y + q12 * x2x * yy1 + q22 * xx1 * yy1);
 }
 
 }  // namespace algorithms

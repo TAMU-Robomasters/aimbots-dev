@@ -90,7 +90,7 @@ public:
 
    // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
-    
+    int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
 
 
 private:

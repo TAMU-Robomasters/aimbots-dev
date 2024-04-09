@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "windows-gcc-x64",
+            "name": "Test",
             "defines": [
                 "${default}",
                 "ENV_UNIT_TESTS",
@@ -9,12 +9,13 @@
                 "RUN_WITH_PROFILING"
             ],
             "includePath": [
-                "${workspaceFolder}/**"
+                "${default}",
+                "aimbots-src/taproot/sim-modm/hosted-linux/modm/src",
+                "aimbots-src/taproot/test",
+                "aimbots-src/test"
             ],
-            "compilerPath": "gcc",
-            "intelliSenseMode": "windows-gcc-x64",
-            "cStandard": "${default}",
-            "cppStandard": "${default}"
+            "compilerPath": "g++",
+            "intelliSenseMode": "gcc-x64"
         },
         {
             "name": "Sim",
@@ -40,8 +41,7 @@
                 "aimbots-src/taproot/modm/ext/cmsis/dsp",
                 "${workspaceFolder}/aimbots-src"
             ],
-            "intelliSenseMode": "gcc-arm",
-            "compilerPath": "D:/RoboMasters/Taproot Libraries/mingw64/bin/gcc.exe"
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4

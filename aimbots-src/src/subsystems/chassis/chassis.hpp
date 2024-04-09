@@ -196,10 +196,10 @@ protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;
 
 public:
-    inline int16_t getLeftFrontRpmActual() const override { return leftFrontWheel.getShaftRPM(); }
-    inline int16_t getLeftBackRpmActual() const override { return leftBackWheel.getShaftRPM(); }
-    inline int16_t getRightFrontRpmActual() const override { return rightFrontWheel.getShaftRPM(); }
-    inline int16_t getRightBackRpmActual() const override { return rightBackWheel.getShaftRPM(); }
+    inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getShaftRPM(); }
+    inline int16_t getLeftBackRpmActual() const /*override*/ { return leftBackWheel.getShaftRPM(); }
+    inline int16_t getRightFrontRpmActual() const /*override*/ { return rightFrontWheel.getShaftRPM(); }
+    inline int16_t getRightBackRpmActual() const /*override*/ { return rightBackWheel.getShaftRPM(); }
 };
 
 };  // namespace src::Chassis

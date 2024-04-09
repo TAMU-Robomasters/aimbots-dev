@@ -200,4 +200,28 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
            (heatGainedPerProjectile[projectileType - 1] >= heatLimit);  //-1 is to align array index with enum values
 }
 
+uint8_t RefereeHelperTurreted::getRemainingProjectiles() {
+    auto projectileType = RefSerialRxData::BulletType::AMMO_17;
+
+    switch (currBarrelID) {
+        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
+            projectileType = RefSerialRxData::AMMO_17;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+            projectileType = RefSerialRxData::AMMO_17;
+            break;
+        }
+        case RefSerialRxData::MechanismID::TURRET_42MM: {
+            projectileType = RefSerialRxData::AMMO_42;
+            break;
+        }
+
+        default:
+            return true;
+    }
+        uint16_t remainingHeat = getCurrBarrelLimit() - getCurrBarrelHeat();
+        return remainingHeat / heatGainedPerProjectile[projectileType - 1];
+    }
+
 }  // namespace src::Utils
