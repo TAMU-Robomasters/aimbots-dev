@@ -97,12 +97,12 @@ void GimbalChaseCommand::execute() {
 
         targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
         targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
-        // targetYawAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->yawAngle;
-        // targetPitchAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->pitchAngle;
+        targetYawAxisAngle =
+            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
+            ballisticsSolution->yawAngle;
+        targetPitchAxisAngle =
+            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
+            ballisticsSolution->pitchAngle;
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
