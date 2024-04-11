@@ -1,7 +1,6 @@
 #ifndef __ROBOT_TYPE_HPP__
 #define __ROBOT_TYPE_HPP__
 #define TARGET_STANDARD
-
 // #define TARGET_HERO
 // #define TARGET_ENGINEER
 // #define TARGET_AERIAL
@@ -12,4 +11,5 @@
 // #define TARGET_1V1_STANDARD
 // #define TARGET_STANDARD_2023
 // #define TARGET_TURRET
+// #define TARGET_DART
 #endif

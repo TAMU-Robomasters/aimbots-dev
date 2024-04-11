@@ -20,7 +20,7 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
 
 // Watch Variables
 int16_t heatCurrentDisplay = 0;
-int16_t barrelDDisplay = 0;
+int16_t barrelDisplay = 0;
 
 int16_t heatMaxDisplay = 0;
 

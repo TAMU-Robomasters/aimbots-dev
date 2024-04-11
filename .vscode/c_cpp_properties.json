@@ -39,9 +39,11 @@
                 "aimbots-src/taproot/modm/ext/cmsis/core",
                 "aimbots-src/taproot/modm/ext/cmsis/device",
                 "aimbots-src/taproot/modm/ext/cmsis/dsp",
-                "${workspaceFolder}/aimbots-src"
+                "${workspaceFolder}/aimbots-src",
+                "${workspaceFolder}"
             ],
-            "intelliSenseMode": "gcc-arm"
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "C:/Apps/winlibs-x86_64-posix-seh-gcc-11.4.0-mingw-w64ucrt-11.0.0-r1/mingw64/bin/g++.exe"
         }
     ],
     "version": 4
