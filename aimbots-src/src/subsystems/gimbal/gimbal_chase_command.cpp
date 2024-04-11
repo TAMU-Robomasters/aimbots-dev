@@ -3,7 +3,6 @@
 #include "utils/ballistics_solver.hpp"
 #ifdef GIMBAL_COMPATIBLE
 
-
 namespace src::Gimbal {
 // feed chassis relative controller for sentry, field relative for ground robots
 GimbalChaseCommand::GimbalChaseCommand(
@@ -95,8 +94,8 @@ void GimbalChaseCommand::execute() {
         pitchRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
-        targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
+        // targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
+        // targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
         targetYawAxisAngle =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
             ballisticsSolution->yawAngle;
@@ -132,8 +131,8 @@ void GimbalChaseCommand::execute() {
         controller->runPitchController();
     }
 
-    targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees); //uncomment later
-    targetPitchAxisAngleDisplay2 = controller->getTargetPitch(AngleUnit::Degrees); //uncomment later
+    targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);      // uncomment later
+    targetPitchAxisAngleDisplay2 = controller->getTargetPitch(AngleUnit::Degrees);  // uncomment later
 
     chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
     chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);

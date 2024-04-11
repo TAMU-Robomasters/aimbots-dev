@@ -27,6 +27,8 @@ float cvCameraPosXDisplay = 0.0f;
 float cvCameraPosYDisplay = 0.0f;
 float cvCameraPosZDisplay = 0.0f;
 
+float DELTA_DISPLAY = 0.0f;
+
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -37,6 +39,12 @@ float dampingValue = 0.999f;
 float spinMagnitude = 0.0f;
 
 uint32_t plateTimeOffsetDisplay = 0;
+
+float previousPositionMag = 0;
+
+float untransformedDataPosXDisplay = 0.0;
+float untransformedDataPosYDisplay = 0.0;
+float untransformedDataPosZDisplay = 0.0;
 
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
@@ -88,7 +96,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     gimbalFrame.setOrigin(Vector3f(0, 0, 0));  // set the origin of the gimbalFrame to (0,0,0)
     cameraAtCVUpdateFrame.setOrigin(
         gimbalFrame.getOrientation() *
-        CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gombal origin
+        CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gimbal origin
     cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the same
     //------------------------------------------------------------------------------------
     cvCameraPosXDisplay = cameraAtCVUpdateFrame.getOrigin().getX();
@@ -112,6 +120,10 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    untransformedDataPosXDisplay = currentData.position.getX();
+    untransformedDataPosYDisplay = currentData.position.getY();
+    untransformedDataPosZDisplay = currentData.position.getZ();
+
     // targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
     // targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     // targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
@@ -125,37 +137,53 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     targetPositionZDisplay = cameraPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    XPositionFilter.update(dt, cameraPosition.position.getX());  // transformedData -> cameraPosition
-    YPositionFilter.update(dt, cameraPosition.position.getY());
-    ZPositionFilter.update(dt, cameraPosition.position.getZ());
 
-    xDFT.damping_factor = dampingValue;
+    float MAX_DIST = 1.5;
+    float MAX_DELTA = 0.1;
 
-    xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+    float currPosMag = sqrt(
+        pow(cameraPosition.position.getX(), 2) + pow(cameraPosition.position.getY(), 2) +
+        pow(cameraPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
-    // if (xDFTValid) {
-    //     spinMagnitude = 0.0f;
-    //     // std::complex<float> DC_bin = xDFT.dft[0];
-    //     uint8_t highestMagIndex = 0;
-    //     float highestMag = 0;
+    DELTA_DISPLAY = abs(currPosMag - previousPositionMag);
 
-    //     for (size_t i = 0; i < 30; i++) {
-    //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
-    //         //     highestMag = std::abs<float>(xDFT.dft[i]);
-    //         //     highestMagIndex = i;
-    //         // }
-    //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
-    //     }
+    if (abs(currPosMag - previousPositionMag) < MAX_DELTA /*abs(cameraPosition.position.getX()) < MAX_DIST && abs(cameraPosition.position.getY()) < MAX_DIST &&
+        abs(cameraPosition.position.getZ()) < MAX_DIST*/) {
+        XPositionFilter.update(dt, cameraPosition.position.getX());  // transformedData -> cameraPosition
+        YPositionFilter.update(dt, cameraPosition.position.getY());
+        ZPositionFilter.update(dt, cameraPosition.position.getZ());
 
-    //     for (size_t i = 1; i < 29; i++) {
-    //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
-    //     }
+        xDFT.damping_factor = dampingValue;
 
-    //     DCBinDisplay = highestMagIndex;
-    //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
-    // }
+        xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
 
-    lastUpdateTimestamp_uS = currentTime_uS;
+        // if (xDFTValid) {
+        //     spinMagnitude = 0.0f;
+        //     // std::complex<float> DC_bin = xDFT.dft[0];
+        //     uint8_t highestMagIndex = 0;
+        //     float highestMag = 0;
+
+        //     for (size_t i = 0; i < 30; i++) {
+        //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
+        //         //     highestMag = std::abs<float>(xDFT.dft[i]);
+        //         //     highestMagIndex = i;
+        //         // }
+        //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
+        //     }
+
+        //     for (size_t i = 1; i < 29; i++) {
+        //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
+        //     }
+
+        //     DCBinDisplay = highestMagIndex;
+        //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
+        // }
+
+        lastUpdateTimestamp_uS = currentTime_uS;
+        // previousPositionMag = currPosMag;  // set the previous position magnitude to the current one to use on the next
+        // cycle
+    }
+    previousPositionMag = currPosMag;  // set the previous position magnitude to the current one to use on the next cycle
 }
 
 float targetPositionXFutureDisplay = 0.0f;

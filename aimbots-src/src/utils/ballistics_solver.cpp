@@ -13,11 +13,24 @@ BallisticsSolver::BallisticsSolver(src::Drivers *drivers, Vector3f barrelOriginF
 
 BallisticsSolver::BallisticsSolution solutionDisplay;
 MeasuredKinematicState plateKinematicStateDisplay;
+
+float solveForXDisplay = 0;
+float solveForYDisplay = 0;
+float solveForZDisplay = 0;
+
+int nothingSeenDisplay = 0;
+int jetsonOnlineDisplay = 0;
+
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
+    nothingSeenDisplay = drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND;
+    jetsonOnlineDisplay = !drivers->cvCommunicator.isJetsonOnline();
     if (!drivers->cvCommunicator.isJetsonOnline() ||
         drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
+        // nothingSeenDisplay = 1;
         return std::nullopt;
     }
+
+    // nothingSeenDisplay = 0;
 
     // If we have already solved for this target, return the same solution
     if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
@@ -36,6 +49,10 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
         .velocity = plateKinematicState.velocity,
         .acceleration = plateKinematicState.acceleration,
     };
+
+    solveForXDisplay = targetKinematicState.position.getX();
+    solveForYDisplay = targetKinematicState.position.getY();
+    solveForZDisplay = targetKinematicState.position.getZ();
 
     plateKinematicStateDisplay = targetKinematicState;
 
