@@ -22,8 +22,8 @@
 
 #include "tap/drivers.hpp"
 
-#include "informants/kinematic_informant.hpp"
 #include "informants/hitTracker.hpp"
+#include "informants/kinematic_informant.hpp"
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/turret-comms/turret_can_communicator.hpp"
 #include "informants/vision/jetson_communicator.hpp"
@@ -44,6 +44,7 @@ public:
           magnetometer(),
           cvCommunicator(this),
           kinematicInformant(this),
+          hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
           musicPlayer(this, STARTUP_SONG) {}
 

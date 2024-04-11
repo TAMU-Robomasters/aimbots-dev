@@ -10,6 +10,9 @@ HitTracker::HitTracker(src::Drivers* drivers)
 {
 }
 
+void HitTracker::initialize() {
+}
+
 
 bool HitTracker::wasHit(){
     return (getPrevHp() > getCurrHP());
