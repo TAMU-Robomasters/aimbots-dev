@@ -139,7 +139,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
     float MAX_DIST = 1.5;
-    float MAX_DELTA = 0.1;
+    float MAX_DELTA = 9;
 
     float currPosMag = sqrt(
         pow(cameraPosition.position.getX(), 2) + pow(cameraPosition.position.getY(), 2) +
@@ -147,7 +147,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     DELTA_DISPLAY = abs(currPosMag - previousPositionMag);
 
-    if (abs(currPosMag - previousPositionMag) < MAX_DELTA /*abs(cameraPosition.position.getX()) < MAX_DIST && abs(cameraPosition.position.getY()) < MAX_DIST &&
+    if (abs(currPosMag) < MAX_DELTA /*abs(cameraPosition.position.getX()) < MAX_DIST && abs(cameraPosition.position.getY()) < MAX_DIST &&
         abs(cameraPosition.position.getZ()) < MAX_DIST*/) {
         XPositionFilter.update(dt, cameraPosition.position.getX());  // transformedData -> cameraPosition
         YPositionFilter.update(dt, cameraPosition.position.getY());
