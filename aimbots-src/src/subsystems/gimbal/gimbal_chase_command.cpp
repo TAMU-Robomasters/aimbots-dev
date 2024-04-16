@@ -74,8 +74,8 @@ void GimbalChaseCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
-    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
-    // projectileSpeed = 30.0f;
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(30.0f);
+    projectileSpeed = 30.0f;
     predictedProjectileSpeedDisplay = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =

@@ -59,9 +59,9 @@ private:
 
 // clang-format off
 static constexpr float KF_P[9] = { // Covariance Matrix
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
+    0.5, 0, 0,
+    0, 0.5, 0,
+    0, 0, 0.5,
 };
 
 static constexpr float KF_H[9] = { // Observation Matrix
