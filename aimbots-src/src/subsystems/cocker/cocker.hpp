@@ -26,19 +26,20 @@ public:
     mockable void initialize() override;
     mockable void refresh() override;
 
+    bool isOnline() const {
+        for(int i = 0; i < COCKER_MOTOR_COUNT; i++)
+        {
+            if(!cockerMotors[i].isMotorOnline()) return false;
+        }
+        return true;
+    }
+
     void setTargetPositionMeters(float x);
     float getTargetPositionMeters() const;
-
-    template<typename... Args>
-    using CockerSubsystemFunc = void (CockerSubsystem::*)(Args...);
-
-    void BuildCockerMotors() {
-        for (auto i = 0; i < COCKER_MOTOR_COUNT; i++) {
-            cockerMotors[i] =
-                new DJIMotor(drivers, COCKER_MOTOR_IDS[i], COCKER_BUS, COCKER_MOTOR_DIRECTIONS[i], COCKER_MOTOR_NAMES[i]);
-        }
-    }
     
+    /**
+    * Call a DJIMotor function on all cocker motors
+    */
     template<class... Args>
     void ForAllCockerMotors(DJIMotorFunc<Args...> func, Args... args)
     {
@@ -46,25 +47,32 @@ public:
             (cockerMotors[i].*func)(args...);
     }
 
+    /**
+     * Calls a CockerSubsystem function on all cocker motors
+    */
     template<class... Args>
-    void ForAllCockerMotors(CockerSubsystemFunc<MotorIndex, Args...> func, Args... args) {
+    void ForAllCockerMotors(void (CockerSubsystem::*func)(MotorIndex, Args...), Args... args) {
         for (auto i = 0; i < COCKER_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
             (this->*func)(mi, args...);
         }
     }
     
-    void updateMotorPositionPID();
-    void refreshDesiredOutput();
+    void updateAllPIDs();
+    void setDesiredOutputToMotor(MotorIndex motorIndex);
 
-
+    
 
 private:
     src::Drivers* drivers;
 
-    std::array<DJIMotor*, COCKER_MOTOR_COUNT> cockerMotors;
+    std::array<DJIMotor, COCKER_MOTOR_COUNT> cockerMotors;
     std::array<SmoothPID, COCKER_MOTOR_COUNT> motorPIDs;
     std::array<int32_t, COCKER_MOTOR_COUNT> desiredOutputs {};
+
+    DJIMotor buildMotor(MotorIndex idx) {
+        return DJIMotor(drivers, COCKER_MOTOR_IDS[idx], COCKER_BUS, COCKER_MOTOR_DIRECTIONS[idx], COCKER_MOTOR_NAMES[idx]);
+    }
 };
 
 }  // namespace src::Indexer
