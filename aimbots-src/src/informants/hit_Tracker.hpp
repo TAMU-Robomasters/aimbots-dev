@@ -2,6 +2,7 @@
 //ref helper and gets updated at driver level
 #pragma once
 
+#include <tap/algorithms/contiguous_float.hpp>
 #include "utils/common_types.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
@@ -15,6 +16,7 @@ namespace src::Gimbal {
 class GimbalSubsystem;
 }
 
+using namespace src::Utils;
 
 using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 using namespace src::Utils;

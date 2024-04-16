@@ -1,6 +1,7 @@
-#include "hitTracker.hpp"
+#include "hit_Tracker.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
+#include "utils/robot_specific_inc.hpp"
 #include "drivers.hpp"
 
 namespace src::Informants {
@@ -10,8 +11,8 @@ HitTracker::HitTracker(src::Drivers* drivers)
 {
 }
 
-void HitTracker::initialize() {
-}
+// void HitTracker::initialize() {
+// }
 
 
 bool HitTracker::wasHit(){
