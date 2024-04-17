@@ -92,8 +92,16 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
 
+    float yawFieldRelative = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
+    float pitchFieldRelative =
+        drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue();
+
+    Matrix3f gimbal_relative_to_field = rotationMatrix(yawFieldRelative, Z_AXIS, AngleUnit::Radians) *
+                                        rotationMatrix(pitchFieldRelative, X_AXIS, AngleUnit::Radians);
+
     //------------------------------------------------------------------------------------
     gimbalFrame.setOrigin(Vector3f(0, 0, 0));  // set the origin of the gimbalFrame to (0,0,0)
+    gimbalFrame.setOrientation(gimbal_relative_to_field);
     cameraAtCVUpdateFrame.setOrigin(
         gimbalFrame.getOrientation() *
         CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gimbal origin
@@ -115,8 +123,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // };
 
     VisionTimedPosition cameraPosition{
-        .position =
-            cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),  // not sure how to translate the pos
+        /*.position =
+            cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),*/
+        .position = gimbalFrame.getPointInFrame(cameraAtCVUpdateFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 

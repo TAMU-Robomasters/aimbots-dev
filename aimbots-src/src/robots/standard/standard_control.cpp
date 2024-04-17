@@ -252,7 +252,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisTokyoCommand,*/ /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {/*&chassisTokyoCommand,*/ &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -263,7 +263,7 @@ HoldCommandMapping rightSwitchDown(
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &toggleHopperCommand},
+    {/*&runShooterCommand, &toggleHopperCommand*/ &chassisTokyoCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
