@@ -74,12 +74,17 @@ void GimbalChaseCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
-    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(30.0f);
-    projectileSpeed = 30.0f;
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
+    // projectileSpeed = 30.0f;
+
+    if (projectileSpeed == 0) {
+        projectileSpeed = 30;
+    }
+
     predictedProjectileSpeedDisplay = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve(refHelper->getPredictedProjectileSpeed());  // returns nullopt if no solution is available
+        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
@@ -94,14 +99,14 @@ void GimbalChaseCommand::execute() {
         pitchRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
-        // targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
-        // targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
-        targetYawAxisAngle =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
-            ballisticsSolution->yawAngle;
-        targetPitchAxisAngle =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-            ballisticsSolution->pitchAngle;
+        targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
+        targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
+        // targetYawAxisAngle =
+        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
+        //     ballisticsSolution->yawAngle;
+        // targetPitchAxisAngle =
+        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
+        //     ballisticsSolution->pitchAngle;
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
