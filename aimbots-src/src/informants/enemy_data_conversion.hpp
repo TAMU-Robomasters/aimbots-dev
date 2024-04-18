@@ -65,9 +65,9 @@ static constexpr float KF_P[9] = { // Covariance Matrix
 };
 
 static constexpr float KF_H[9] = { // Observation Matrix
-    0.1, 0, 0,
-    0, 0.1, 0,
-    0, 0, 0.1,
+    1, 0, 0,
+    0, 1, 0,
+    0, 0, 1,
 };
 
 static constexpr float KF_Q[9] = { // Environment Noise Covariance Matrix

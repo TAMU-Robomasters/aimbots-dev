@@ -7,6 +7,7 @@
 #include "informants/odometry/chassis_kf_odometry.hpp"
 #include "informants/vision/jetson_communicator.hpp"
 #include "transformers/robot_frames.hpp"
+#include "transformers/turret_frames.hpp"
 #include "utils/common_types.hpp"
 #include "utils/kinematic_state_vector.hpp"
 
@@ -34,6 +35,8 @@ public:
     ~KinematicInformant() = default;
 
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
+
+    src::Informants::Transformers::TurretFrames& getTurretFrames() { return turretFrames; }
 
     void registerSubsystems(
         src::Gimbal::GimbalSubsystem* gimbalSubsystem,
@@ -80,6 +83,7 @@ public:
     // Returns lnothing!!!
     void updateChassisAcceleration();
 
+    // This updates more than just the robot frames, so will also update turret frames
     void updateRobotFrames();
 
     tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
@@ -100,6 +104,17 @@ public:
         return chassisIMUHistoryBuffer[index];
     }
 
+    inline std::pair<float, float>& getGimbalFieldOrientation(int index) { return gimbalFieldOrientationBuffer[index]; }
+
+    // put in your time, we get the closest orientation entry at that time.
+    inline std::pair<float, float>& getGimbalFieldOrientationAtTime(uint32_t time_ms) {
+        // assume 2 ms delay between gimbal updates
+        int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
+        return gimbalFieldOrientationBuffer[index];
+    }
+    // just in case?
+    inline void clearGimbalFieldOrientationBuffer() { gimbalFieldOrientationBuffer.clear(); }
+
     modm::Location2D<float> getRobotLocation2D() { return chassisKFOdometry.getCurrentLocation2D(); }
 
     modm::Vector2f getRobotVelocity2D() { return chassisKFOdometry.getCurrentVelocity2D(); }
@@ -110,6 +125,7 @@ private:
     tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
+    src::Informants::Transformers::TurretFrames turretFrames;
 
     static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
     static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
@@ -139,6 +155,10 @@ private:
     KinematicStateVector turretIMUAngularXState;
     KinematicStateVector turretIMUAngularYState;
     KinematicStateVector turretIMUAngularZState;
+
+    static const uint32_t GIMBAL_BUFFER_SIZE = 40;
+
+    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalFieldOrientationBuffer;  // Buffer for turret orientation data
 
     modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
     modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
