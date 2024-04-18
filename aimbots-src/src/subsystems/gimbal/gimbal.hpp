@@ -261,7 +261,7 @@ private:
     static const uint32_t GIMBAL_BUFFER_SIZE = 40;
 
     // gimbal yaw / pitch buffer
-    // pitch, yaw is first, second, respectively in the pair
+    // yaw is first, pitch is second, respectively in the pair
     Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;
 };
 

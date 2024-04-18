@@ -74,6 +74,12 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     src::Informants::Transformers::CartesianFrame fieldFrame =
         drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::FIELD_FRAME);
 
+    src::Informants::Transformers::CoordinateFrame gimbalFrame2 =
+        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_GIMBAL_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame cameraAtCVUpdateFrame2 =
+        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
     VisionTimedPosition currentData{
@@ -92,21 +98,24 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
 
-    float yawFieldRelative = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
-    float pitchFieldRelative =
-        drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue();
+    // float yawFieldRelative =
+    // drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue(); float
+    // pitchFieldRelative =
+    //     drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue();
 
-    Matrix3f gimbal_relative_to_field = rotationMatrix(yawFieldRelative, Z_AXIS, AngleUnit::Radians) *
-                                        rotationMatrix(pitchFieldRelative, X_AXIS, AngleUnit::Radians);
+    // Matrix3f gimbal_relative_to_field = rotationMatrix(yawFieldRelative, Z_AXIS, AngleUnit::Radians) *
+    //                                     rotationMatrix(pitchFieldRelative, X_AXIS, AngleUnit::Radians);
 
-    //------------------------------------------------------------------------------------
-    gimbalFrame.setOrigin(Vector3f(0, 0, 0));  // set the origin of the gimbalFrame to (0,0,0)
-    gimbalFrame.setOrientation(gimbal_relative_to_field);
-    cameraAtCVUpdateFrame.setOrigin(
-        gimbalFrame.getOrientation() *
-        CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gimbal origin
-    cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the same
-    //------------------------------------------------------------------------------------
+    // //------------------------------------------------------------------------------------
+    // gimbalFrame.setOrigin(Vector3f(0, 0, 0));  // set the origin of the gimbalFrame to (0,0,0)
+    // gimbalFrame.setOrientation(gimbal_relative_to_field);
+    // cameraAtCVUpdateFrame.setOrigin(
+    //     gimbalFrame.getOrientation() *
+    //     CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN);                        // set the camera origin based off the gimbal
+    //     origin
+    // cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the
+    // same
+    // //------------------------------------------------------------------------------------
     cvCameraPosXDisplay = cameraAtCVUpdateFrame.getOrigin().getX();
     cvCameraPosYDisplay = cameraAtCVUpdateFrame.getOrigin().getY();
     cvCameraPosZDisplay = cameraAtCVUpdateFrame.getOrigin().getZ();
@@ -122,10 +131,10 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     //     .timestamp_uS = currentData.timestamp_uS,
     // };
 
-    VisionTimedPosition cameraPosition{
+    VisionTimedPosition transformedPosition{
         /*.position =
             cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),*/
-        .position = gimbalFrame.getPointInFrame(cameraAtCVUpdateFrame, currentData.position),
+        .position = cameraAtCVUpdateFrame2.getPointInFrame(gimbalFrame2, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 
@@ -137,13 +146,13 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
     // targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
 
-    targetPositionXUnfilteredDisplay = cameraPosition.position.getX();
-    targetPositionYUnfilteredDisplay = cameraPosition.position.getY();
-    targetPositionZUnfilteredDisplay = cameraPosition.position.getZ();
+    targetPositionXUnfilteredDisplay = transformedPosition.position.getX();
+    targetPositionYUnfilteredDisplay = transformedPosition.position.getY();
+    targetPositionZUnfilteredDisplay = transformedPosition.position.getZ();
 
-    targetPositionXDisplay = cameraPosition.position.getX();
-    targetPositionYDisplay = cameraPosition.position.getY();
-    targetPositionZDisplay = cameraPosition.position.getZ();
+    targetPositionXDisplay = transformedPosition.position.getX();
+    targetPositionYDisplay = transformedPosition.position.getY();
+    targetPositionZDisplay = transformedPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
@@ -151,16 +160,16 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     float MAX_DELTA = 9;
 
     float currPosMag = sqrt(
-        pow(cameraPosition.position.getX(), 2) + pow(cameraPosition.position.getY(), 2) +
-        pow(cameraPosition.position.getZ(), 2));  // magnitude of the current position of camera
+        pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
+        pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
     DELTA_DISPLAY = abs(currPosMag - previousPositionMag);
 
-    if (abs(currPosMag) < MAX_DELTA /*abs(cameraPosition.position.getX()) < MAX_DIST && abs(cameraPosition.position.getY()) < MAX_DIST &&
-        abs(cameraPosition.position.getZ()) < MAX_DIST*/) {
-        XPositionFilter.update(dt, cameraPosition.position.getX());  // transformedData -> cameraPosition
-        YPositionFilter.update(dt, cameraPosition.position.getY());
-        ZPositionFilter.update(dt, cameraPosition.position.getZ());
+    if (abs(currPosMag) < MAX_DELTA /*abs(transformedPosition.position.getX()) < MAX_DIST && abs(transformedPosition.position.getY()) < MAX_DIST &&
+        abs(transformedPosition.position.getZ()) < MAX_DIST*/) {
+        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
+        YPositionFilter.update(dt, transformedPosition.position.getY());
+        ZPositionFilter.update(dt, transformedPosition.position.getZ());
 
         xDFT.damping_factor = dampingValue;
 

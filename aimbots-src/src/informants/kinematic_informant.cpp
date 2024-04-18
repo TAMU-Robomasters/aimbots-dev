@@ -333,6 +333,14 @@ void KinematicInformant::updateRobotFrames() {
         chassisLinearState[X_AXIS].getAcceleration(),
         chassisLinearState[Y_AXIS].getAcceleration());
 
+    // update gimbal orientation buffer
+    std::pair<float, float> orientation;
+    // orientation.first = currentYawAxisAngle.getValue();
+    orientation.first = getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
+    orientation.second = getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue();
+
+    gimbalFieldOrientationBuffer.prependOverwrite(orientation);
+
     modm::Location2D<float> robotLocation = chassisKFOdometry.getCurrentLocation2D();
 
     robotLocationXDisplay = robotLocation.getX();
@@ -345,6 +353,11 @@ void KinematicInformant::updateRobotFrames() {
         {robotLocation.getX(), robotLocation.getY(), 0},
         AngleUnit::Radians);
 
+    turretFrames.updateFrames(
+        getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue(),
+        getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue(),
+        AngleUnit::Radians);
+
     robotLocationDisplay = robotLocation;
 #endif
 }
@@ -353,6 +366,10 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     std::pair<float, float> gimbalAngles = gimbalSubsystem->getGimbalOrientationAtTime(frameDelay_ms);
 
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
+
+    gimbalAngles = getGimbalFieldOrientationAtTime(frameDelay_ms);
+
+    turretFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 }
 
 }  // namespace src::Informants
