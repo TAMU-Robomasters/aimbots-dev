@@ -34,9 +34,6 @@ public:
         return true;
     }
 
-    void setTargetPositionMeters(float x);
-    float getTargetPositionMeters() const;
-    
     /**
     * Call a DJIMotor function on all cocker motors
     */
@@ -58,16 +55,21 @@ public:
         }
     }
     
-    void updateAllPIDs();
-    void setDesiredOutputToMotor(MotorIndex motorIndex);
-
+    void setTargetPositionMeters(MotorIndex motorIndex, float target) {targetPositionsMeters[motorIndex] = target;}
+    float getTargetPositionMeters(MotorIndex motorIndex) const {return targetPositionsMeters[motorIndex];}
     
+    void updateAllPIDs();
+    void updateMotorPID(MotorIndex motorIndex);
+    void setDesiredOutputToMotor(MotorIndex motorIndex) {if(cockerMotors[motorIndex].isMotorOnline()) cockerMotors[motorIndex].setDesiredOutput(desiredOutputs[motorIndex]);}
 
+    float getCurrentPositionMeters(MotorIndex motorIndex) const;
+    int16_t getMotorRPM(MotorIndex motorIndex) const {return cockerMotors[motorIndex].isMotorOnline() ? cockerMotors[motorIndex].getShaftRPM() : 0;}
 private:
     src::Drivers* drivers;
 
     std::array<DJIMotor, COCKER_MOTOR_COUNT> cockerMotors;
     std::array<SmoothPID, COCKER_MOTOR_COUNT> motorPIDs;
+    std::array<float, COCKER_MOTOR_COUNT> targetPositionsMeters;
     std::array<int32_t, COCKER_MOTOR_COUNT> desiredOutputs {};
 
     DJIMotor buildMotor(MotorIndex idx) {

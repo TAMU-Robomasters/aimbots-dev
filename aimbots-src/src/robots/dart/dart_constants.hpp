@@ -27,6 +27,7 @@ static constexpr uint8_t COCKER_MOTOR_COUNT = 2;
 static const std::array<bool, COCKER_MOTOR_COUNT> COCKER_MOTOR_DIRECTIONS = {false, false};
 static const std::array<MotorID, COCKER_MOTOR_COUNT> COCKER_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR6};
 static const std::array<const char*, COCKER_MOTOR_COUNT> COCKER_MOTOR_NAMES = {"Cocker Motor 1", "Cocker Motor 2"};
+static const std::array<float, COCKER_MOTOR_COUNT> COCKER_MOTOR_RADII_METERS = {1.0f, 1.0f};
 static constexpr float COCKER_MOTOR_GEAR_RATIO = 1.0f;
 
 /**
