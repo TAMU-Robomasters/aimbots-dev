@@ -1,4 +1,4 @@
-#if defined(TARGET_STANDARD) || defined(TARGET_1V1_STANDARD)
+#if defined(TARGET_STANDARD) || defined(TARGET_1V1_STANDARD) || defined(TARGET_STANDARD_2023)
 #include "standard_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"

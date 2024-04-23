@@ -9,5 +9,6 @@
 // #define TARGET_SWERVE_ENGINEER
 // #define TARGET_CVTESTBENCH
 // #define TARGET_1V1_STANDARD
+// #define TARGET_STANDARD_2023
 // #define TARGET_TURRET
 #endif

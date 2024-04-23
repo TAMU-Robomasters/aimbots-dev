@@ -1,4 +1,4 @@
-#ifdef TARGET_STANDARD
+#ifdef TARGET_STANDARD_2023
 
 #include "utils/common_types.hpp"
 
@@ -64,9 +64,11 @@ using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
+using namespace src::BarrelManager;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
+using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -76,6 +78,9 @@ using namespace src::Utils::ClientDisplay;
     Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
+
+    Manually Choose Tokyo Direction (Left): F+Q
+    Manually Choose Tokyo Direction (Right): F+E
 
     Decrease Chassis Ground Speed (60%): Shift
     Decrease Chassis Ground Speed (25%): Ctrl
@@ -91,7 +96,13 @@ using namespace src::Utils::ClientDisplay;
     Hopper ------------------------------------------------------------
     Toggle Hopper Position: C
 
+    Barrel Manager ----------------------------------------------------
+    Manually Switch Barrel: R
+    Recalibrate: Hold G for 1 second
+
     UI ----------------------------------------------------------------
+
+
 */
 
 /*
@@ -120,6 +131,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
+BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -225,12 +237,30 @@ FullAutoFeederCommand runFeederCommandFromMouse(
     3000.0f,
     2,
     UNJAM_TIMER_MS);
-
+// Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
+BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    3000.0f,
+    UNJAM_TIMER_MS);
+BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
+    drivers(),
+    &feeder,
+    &refHelper,
+    barrelMovingFlag,
+    FEEDER_DEFAULT_RPM,
+    3000.0f,
+    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
+BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
@@ -309,6 +339,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
+    // barrelManager.initialize();
     // response.initialize();
     clientDisplay.initialize();
 }
@@ -317,6 +348,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    // barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup
