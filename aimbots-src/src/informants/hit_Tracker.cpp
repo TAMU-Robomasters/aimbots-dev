@@ -11,8 +11,8 @@ HitTracker::HitTracker(src::Drivers* drivers)
 {
 }
 
-// void HitTracker::initialize() {
-// }
+void HitTracker::initialize() {
+}
 
 
 bool HitTracker::wasHit(){

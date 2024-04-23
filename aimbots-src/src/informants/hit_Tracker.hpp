@@ -3,6 +3,7 @@
 #pragma once
 
 #include <tap/algorithms/contiguous_float.hpp>
+#include "transformers/robot_frames.hpp"
 #include "utils/common_types.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
@@ -47,10 +48,10 @@ public:
 
     bool wasHit();
 
-    //returns hit angle relative to chassis front as 0
+    returns hit angle relative to chassis front as 0
     float getHitAngle_chassisRelative();
 
-    //returns hit angle relative to gimbal front as 0
+    returns hit angle relative to gimbal front as 0
     float getHitAngle_gimbalRelative();
 
 
