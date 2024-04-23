@@ -4,6 +4,8 @@
 #include "utils/robot_specific_inc.hpp"
 #include "drivers.hpp"
 
+using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
+
 namespace src::Informants {
     
 HitTracker::HitTracker(src::Drivers* drivers)
@@ -11,8 +13,11 @@ HitTracker::HitTracker(src::Drivers* drivers)
 {
 }
 
-void HitTracker::initialize() {
+RefSerialRxData::ArmorId getHitPanelID() {
+    auto robotData = drivers->refSerial.getRobotData();
+    return robotData.damagedArmorId;
 }
+
 
 
 bool HitTracker::wasHit(){

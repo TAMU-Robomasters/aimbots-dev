@@ -7,7 +7,7 @@
 #include "utils/common_types.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 
-#include "drivers.hpp"
+//#include "drivers.hpp"
 
 namespace src {
 class Drivers;
@@ -17,7 +17,6 @@ namespace src::Gimbal {
 class GimbalSubsystem;
 }
 
-using namespace src::Utils;
 
 using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 using namespace src::Utils;
@@ -29,10 +28,8 @@ public:
     ~HitTracker() = default;
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
-    RefSerialRxData::ArmorId getHitPanelID() {
-        auto robotData = drivers->refSerial.getRobotData();
-        return robotData.damagedArmorId;
-    }
+    RefSerialRxData::ArmorId getHitPanelID();
+    //DAAG Continue to move getters with drivers to the cpp
     uint16_t getPrevHp(){
         auto robotData = drivers->refSerial.getRobotData();
         return robotData.previousHp;
@@ -48,10 +45,10 @@ public:
 
     bool wasHit();
 
-    returns hit angle relative to chassis front as 0
+    //returns hit angle relative to chassis front as 0
     float getHitAngle_chassisRelative();
 
-    returns hit angle relative to gimbal front as 0
+    //returns hit angle relative to gimbal front as 0
     float getHitAngle_gimbalRelative();
 
 
