@@ -18,7 +18,6 @@ class GimbalSubsystem;
 }
 
 
-using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 using namespace src::Utils;
 
 namespace src::Informants {
@@ -28,20 +27,12 @@ public:
     ~HitTracker() = default;
     src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
-    RefSerialRxData::ArmorId getHitPanelID();
+    uint8_t getHitPanelID();
     //DAAG Continue to move getters with drivers to the cpp
-    uint16_t getPrevHp(){
-        auto robotData = drivers->refSerial.getRobotData();
-        return robotData.previousHp;
-    }
-    uint16_t getCurrHP(){
-        auto robotData = drivers->refSerial.getRobotData();
-        return robotData.currentHp;
-    }
-    uint32_t getDataTimeStamp(){
-        auto robotData = drivers->refSerial.getRobotData();
-        return robotData.robotDataReceivedTimestamp;
-    }
+    uint16_t getPrevHp();
+    
+    uint16_t getCurrHP();
+    uint32_t getDataTimeStamp();
 
     bool wasHit();
 
