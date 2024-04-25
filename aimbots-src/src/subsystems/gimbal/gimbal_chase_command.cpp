@@ -91,8 +91,13 @@ void GimbalChaseCommand::execute() {
         uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
         Vector3f chassisIMUAngleAtFrameDelay = drivers->kinematicInformant.getChassisIMUOrientationAtTime(frameCaptureDelay);
 
-        yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
-        pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
+        std::pair<float, float> fieldTurretAngleAtFrameDelay =
+            drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
+
+        // yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
+        // pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
+        yawAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.first);
+        pitchAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.second);
 
         yawRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
@@ -111,6 +116,10 @@ void GimbalChaseCommand::execute() {
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
+
+        // Comment when Z axis stops being silly
+        targetPitchAxisAngle =
+            controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);

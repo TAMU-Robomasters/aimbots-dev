@@ -12,11 +12,9 @@
 
 using namespace src::Utils::MatrixHelper;
 namespace src::Informants::Transformers {
-// Look sid Idk how to do this exactly
 
 TurretFrames::TurretFrames() {
 #ifndef TARGET_TURRET
-    // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
     gimbalFrame.setOrigin(Vector3f(0, 0, 0));
     gimbalFrame.setOrientation(Matrix3f::zeroMatrix());
 
