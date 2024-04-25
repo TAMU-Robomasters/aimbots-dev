@@ -53,7 +53,7 @@ public:
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
-    //Informants::HitTracker hitTracker;
+    Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
     utils::Jukebox::JukeboxPlayer musicPlayer;
 };  // class Drivers

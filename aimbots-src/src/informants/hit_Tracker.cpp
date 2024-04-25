@@ -2,39 +2,52 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
-//#include "drivers.hpp"
+#include "drivers.hpp"
+
 
 // namespace src {
 // class Drivers;
 // }
 
 
+
+
 namespace src::Informants {
-    
+   
 HitTracker::HitTracker(src::Drivers* drivers)
     : drivers(drivers)
 {
-};
+}
+
+
+void HitTracker::initalize(){
+}
+
 
 uint8_t HitTracker::getHitPanelID() {
     return static_cast <uint8_t> (this->drivers->refSerial.getRobotData().damagedArmorId);
 };
 
+
 uint16_t HitTracker::getPrevHp(){
         return this->drivers->refSerial.getRobotData().previousHp;
 };
+
 
 uint16_t HitTracker::getCurrHP(){
         return this->drivers->refSerial.getRobotData().currentHp;
 };
 
+
 uint32_t HitTracker::getDataTimeStamp(){
         return this->drivers->refSerial.getRobotData().robotDataReceivedTimestamp;
 };
 
+
 bool HitTracker::wasHit(){
     return (getPrevHp() > getCurrHP());
 };
+
 
 float HitTracker::getHitAngle_chassisRelative(){
     //get armor panel hit
@@ -59,12 +72,17 @@ float HitTracker::getHitAngle_chassisRelative(){
     return hitAngle;
 }
 
+
 float HitTracker::getHitAngle_gimbalRelative(){
     //get chassisRelative angle?
     float chassis_hitAngle = getHitAngle_chassisRelative();
     //get angle btwn gimbal-chassis?
-    float gimbalAngle = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
+    float gimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     //calc and return
     return gimbalAngle + chassis_hitAngle;
 }
 }
+
+
+
+//should be object that acesses robot data through
