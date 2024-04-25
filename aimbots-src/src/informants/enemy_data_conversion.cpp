@@ -116,9 +116,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the
     // same
     // //------------------------------------------------------------------------------------
-    cvCameraPosXDisplay = cameraAtCVUpdateFrame.getOrigin().getX();
-    cvCameraPosYDisplay = cameraAtCVUpdateFrame.getOrigin().getY();
-    cvCameraPosZDisplay = cameraAtCVUpdateFrame.getOrigin().getZ();
+    cvCameraPosXDisplay = cameraAtCVUpdateFrame2.getOrigin().getX();
+    cvCameraPosYDisplay = cameraAtCVUpdateFrame2.getOrigin().getY();
+    cvCameraPosZDisplay = cameraAtCVUpdateFrame2.getOrigin().getZ();
 
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
@@ -150,14 +150,14 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     targetPositionYUnfilteredDisplay = transformedPosition.position.getY();
     targetPositionZUnfilteredDisplay = transformedPosition.position.getZ();
 
-    targetPositionXDisplay = transformedPosition.position.getX();
-    targetPositionYDisplay = transformedPosition.position.getY();
-    targetPositionZDisplay = transformedPosition.position.getZ();
+    // targetPositionXDisplay = transformedPosition.position.getX();
+    // targetPositionYDisplay = transformedPosition.position.getY();
+    // targetPositionZDisplay = transformedPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
     float MAX_DIST = 1.5;
-    float MAX_DELTA = 9;
+    float MAX_DELTA = 9;  //(3 meters)^2
 
     float currPosMag = sqrt(
         pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
