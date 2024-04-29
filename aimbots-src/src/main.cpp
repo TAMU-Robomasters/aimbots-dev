@@ -118,7 +118,7 @@ int main() {
             }*/
 
             // comms
-      //      drivers->hitTracker.getHitAngle_chassisRelative();
+            drivers->hitTracker.getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             drivers->musicPlayer.playMusic();
@@ -168,6 +168,7 @@ static void initializeIo(src::Drivers *drivers) {
 float yawDisplay, pitchDisplay, rollDisplay;
 float gXDisplay, gYDisplay, gZDisplay;
 float aXDisplay, aYDisplay, aZDisplay;
+float hitDisplay;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -208,6 +209,7 @@ static void updateIo(src::Drivers *drivers) {
     // gXDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
     //     AngleUnit::Radians);
+    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);
