@@ -34,8 +34,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(188.90f)),   // 177.8
-    wrapTo0To2PIRange(modm::toRadian(188.75f))};  // 198.5 189.80f
+    wrapTo0To2PIRange(modm::toRadian(64.90f)),    // 177.8
+    wrapTo0To2PIRange(modm::toRadian(175.75f))};  // 198.5 189.80f
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -93,9 +93,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f, //25
+    .kp = 20.0f,  // 25
     .ki = 0.0f,
-    .kd = 0.05f, //0.15
+    .kd = 0.05f,  // 0.15
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
     .tQDerivativeKalman = 1.0f,
@@ -107,9 +107,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f, //30
+    .kp = 30.0f,  // 30
     .ki = 0.0f,
-    .kd = 0.0f, //0
+    .kd = 0.0f,  // 0
     .maxICumulative = 1000.0f,
     .maxOutput = 35,
     .tQDerivativeKalman = 1.0f,
@@ -122,8 +122,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1300.0f, //1800
-    .ki = 20.0f, //20
+    .kp = 1300.0f,  // 1800
+    .ki = 20.0f,    // 20
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -136,8 +136,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f, //500
-    .ki = 17.0f, //17
+    .kp = 500.0f,  // 500
+    .ki = 17.0f,   // 17
     .kd = 0.0f,
     .maxICumulative = 1500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -290,7 +290,7 @@ static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 //
 static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
-static constexpr MotorID INDEXER_ID = MotorID::MOTOR2;
+static constexpr MotorID INDEXER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
@@ -405,7 +405,7 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
