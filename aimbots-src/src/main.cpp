@@ -209,7 +209,7 @@ static void updateIo(src::Drivers *drivers) {
     // gXDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
     //     AngleUnit::Radians);
-    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
+    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative().getValue();
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

@@ -1,4 +1,5 @@
 #include "hit_Tracker.hpp"
+#include "tap/algorithms/math_user_utils.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
@@ -73,13 +74,14 @@ float HitTracker::getHitAngle_chassisRelative(){
 }
 
 
-float HitTracker::getHitAngle_gimbalRelative(){
+ContiguousFloat HitTracker::getHitAngle_gimbalRelative(){
     //get chassisRelative angle?
-    float chassis_hitAngle = getHitAngle_chassisRelative();
+    float chassis_hitAngle = this->drivers->hitTracker.getHitAngle_chassisRelative();
     //get angle btwn gimbal-chassis?
-    float gimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
+    float gimbalAngle = this->drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
     //calc and return
-    return gimbalAngle + chassis_hitAngle;
+    ContiguousFloat hitAngle = ContiguousFloat(gimbalAngle + chassis_hitAngle, -M_PI, M_PI);
+    return hitAngle;
 }
 }
 

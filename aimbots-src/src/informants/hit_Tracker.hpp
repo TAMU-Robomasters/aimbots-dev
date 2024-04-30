@@ -2,7 +2,7 @@
 #pragma once
 
 
-//#include <tap/algorithms/contiguous_float.hpp>
+#include <tap/algorithms/contiguous_float.hpp>
 //#include "transformers/robot_frames.hpp"
 #include "utils/common_types.hpp"
 //#include "subsystems/gimbal/gimbal.hpp"
@@ -60,7 +60,7 @@ public:
 
 
     //returns hit angle relative to gimbal front as 0
-    float getHitAngle_gimbalRelative();
+    tap::algorithms::ContiguousFloat getHitAngle_gimbalRelative();
 
 
 
