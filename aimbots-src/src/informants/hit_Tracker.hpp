@@ -55,7 +55,25 @@ public:
     bool wasHit();
 
 
-    //returns hit angle relative to chassis front as 0
+    //armor IDs:
+    //   Front
+//  _____ 0  ____
+ // |   |___|   |	   
+//	|___| | |___|	    
+// 	 1    |    3 	  
+//	 ___  |  ___ 	  
+//  |   |_|_|   |	  
+//	|___| 2 |___|
+//       Back
+
+//returns hit angle relative to chassis front as 0
+//            0 degrees
+//          _______
+//        |        |
+//   -pi |          |  pi
+//       |          |
+//        |________|
+
     float getHitAngle_chassisRelative();
 
 
