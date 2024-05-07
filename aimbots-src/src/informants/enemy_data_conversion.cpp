@@ -27,6 +27,14 @@ float cvCameraPosXDisplay = 0.0f;
 float cvCameraPosYDisplay = 0.0f;
 float cvCameraPosZDisplay = 0.0f;
 
+float gimPosXDisplay = 0.0f;
+float gimPosYDisplay = 0.0f;
+float gimPosZDisplay = 0.0f;
+
+float gimOriXDisplay = 0.0f;
+float gimOriYDisplay = 0.0f;
+float gimOriZDisplay = 0.0f;
+
 float DELTA_DISPLAY = 0.0f;
 
 uint32_t currentTimeDisplay = 0;
@@ -120,6 +128,14 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     cvCameraPosYDisplay = cameraAtCVUpdateFrame2.getOrigin().getY();
     cvCameraPosZDisplay = cameraAtCVUpdateFrame2.getOrigin().getZ();
 
+    gimPosXDisplay = gimbalFrame2.getOrigin().getX();
+    gimPosYDisplay = gimbalFrame2.getOrigin().getY();
+    gimPosZDisplay = gimbalFrame2.getOrigin().getZ();
+
+    gimOriXDisplay = gimbalFrame2.getOrientation()[0][0];
+    gimOriYDisplay = gimbalFrame2.getOrientation()[1][1];
+    gimOriZDisplay = gimbalFrame2.getOrientation()[2][2];
+
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
@@ -135,6 +151,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         /*.position =
             cameraAtCVUpdateFrame.getPointInFrame(gimbalFrame, currentData.position),*/
         .position = cameraAtCVUpdateFrame2.getPointInFrame(gimbalFrame2, currentData.position),
+        // .position = gimbalFrame2.getPointInFrame(cameraAtCVUpdateFrame2, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 

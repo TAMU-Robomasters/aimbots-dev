@@ -141,8 +141,8 @@ void GimbalChaseCommand::execute() {
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-        controller->runYawController();
-        controller->runPitchController();
+        // controller->runYawController();
+        // controller->runPitchController();
     }
 
     targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);      // uncomment later

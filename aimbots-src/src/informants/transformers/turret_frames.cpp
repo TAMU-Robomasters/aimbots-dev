@@ -34,7 +34,8 @@ void TurretFrames::updateFrames(float yawFieldRelative, float pitchFieldRelative
         rotationMatrix(pitchFieldRelative, X_AXIS, angleUnit);  // gimbal to field rotation
 
     // Don't need to update gimbal frame origin, should be the center of this coordinate framework
-    gimbalFrame.setOrientation(gimbal_orientation_relative_to_world_orientation);
+    // gimbalFrame.setOrientation(gimbal_orientation_relative_to_world_orientation);
+    gimbalFrame.setOrientation(Matrix3f::identityMatrix());
 
 #else
     UNUSED(yawFieldRelative);
