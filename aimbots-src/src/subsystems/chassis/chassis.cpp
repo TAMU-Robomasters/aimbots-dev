@@ -244,30 +244,44 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
 
 
 #ifdef CHASSIS_BALANCING
-float thetaDisplay = 0;
-float vOutDisplay = 0;
-float errorOutputDisplay = 0.0f;
+float out1 = 0;
+float out2 = 0;
+float out3 = 0;
+float out4 = 0.0f;
 
 void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWheelSpeed){
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;
     
-    float SysVelocitySetPoint = y/ 8000.0f * 10;
+    float SysVelocitySetPoint = y/ 8000.0f * 2;
 
-    float SysVelocity = 0.0f;
+    // measure the system velocity
+    float SysAngularVelocity = - drivers->kinematicInformant.getIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS);
+    auto SysEncoderVelocity = getActualVelocityChassisRelative();
 
+    // measures the tilt angle 
+    float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+
+    float SysVelocity = 0;
+
+    if (fabsf(modm::toDegree(ActualTiltAngle)) > 8.0f )
+    {
+        SysVelocity = 4*(SysEncoderVelocity[2][0]);
+    }
+    else
+    {
+        SysVelocity = 3*((SysEncoderVelocity[2][0])*0.9 + (SysAngularVelocity*0.1)); 
+    }
+
+    
     float SysVelocityError = SysVelocitySetPoint - SysVelocity;
 
     balancingVelocityPID.runControllerDerivateError(SysVelocityError);
+    float VelocityAngle = balancingVelocityPID.getOutput();
 
-    // update angle set point with balancingVelocityPID.getOutput() 
-    // this is the output of the outer PID which is the set point for the inner PID
-
-    float AngleSetPoint = -15.0f * y / 8000.0f; // user input to control the tilt angle set point 
-                                                // setPoint scaled between 0 and 15 degrees
-    // measures the tilt angle 
-    float ActualTiltAngle = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float AngleSetPoint = VelocityAngle; //16.0f * y / 8000.0f;  //user input to control the tilt angle set point 
+                                                
     float SysAngleError = AngleSetPoint - modm::toDegree(ActualTiltAngle);
 
     // calculate the angle PID controller
@@ -288,9 +302,20 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     float rotationScaler = 2.0f; // 1/x times the rotation speed, used to slow down the rotation 
     float driftScaler = 2.0f; // 1/x times the x direction speed, used to slow down the x direction movement
 
-    if (fabsf(modm::toDegree(ActualTiltAngle)) < 18.0f )
+    if (fabsf(modm::toDegree(ActualTiltAngle)) < 15.0f )
     {
-        wheelVelocity = balancingAnglePID.getOutput();
+        if (fabsf(SysAngleError)>12)
+        {
+            wheelVelocity = -2.5*balancingAnglePID.getOutput();
+        }
+        else if (fabsf(SysAngleError)>10)
+        {
+            wheelVelocity = -1.5*balancingAnglePID.getOutput();
+        }
+        else
+        {
+            wheelVelocity = -balancingAnglePID.getOutput();
+        }
     }
     else
     {
@@ -298,19 +323,19 @@ void ChassisSubsystem::calculateBalance(float x, float y, float r, float maxWhee
     }
 
     targetRPMs[0][0] =
-        limitVal<float>(-x/driftScaler + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / rotationScaler , -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(x/driftScaler + wheelVelocity + chassisRotateTranslated * leftFrontRotationRatio / rotationScaler , -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[1][0] =
-        limitVal<float>(x/driftScaler + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(-x/driftScaler + wheelVelocity + chassisRotateTranslated * rightFrontRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[2][0] =
-        limitVal<float>(x/driftScaler + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(-x/driftScaler + wheelVelocity - chassisRotateTranslated * leftBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[3][0] =
-        limitVal<float>(-x/driftScaler + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(x/driftScaler + wheelVelocity - chassisRotateTranslated * rightBackRotationRatio / rotationScaler, -maxWheelSpeed, maxWheelSpeed);
 
     // display variables 
-    desiredRotation = r;
-    errorOutputDisplay = SysAngleError;
-    thetaDisplay = modm::toDegree(ActualTiltAngle);
-    vOutDisplay = wheelVelocity;
+    out1 = SysAngleError;
+    out2 = SysVelocity;
+    out3 = VelocityAngle;
+    out4 = modm::toDegree(ActualTiltAngle);
 }
 
 
