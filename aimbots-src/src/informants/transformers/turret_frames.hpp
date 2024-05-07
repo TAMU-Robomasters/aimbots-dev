@@ -32,10 +32,7 @@ public:
         return gimbalFrame;
     }
 
-    void updateFrames(
-        float yawFieldRelative,
-        float pitchFieldRelative,
-        AngleUnit angleUnit);
+    void updateFrames(float fieldYaw, float fieldPitch, float fieldRoll, AngleUnit angleUnit);
 
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 

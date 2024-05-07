@@ -16,26 +16,26 @@ namespace src::Informants::Transformers {
 TurretFrames::TurretFrames() {
 #ifndef TARGET_TURRET
     gimbalFrame.setOrigin(Vector3f(0, 0, 0));
-    gimbalFrame.setOrientation(Matrix3f::zeroMatrix());
+    gimbalFrame.setOrientation(Matrix3f::identityMatrix());
 
     // update frames to initial values
-    updateFrames(YAW_AXIS_START_ANGLE, PITCH_AXIS_START_ANGLE, AngleUnit::Radians);
+    updateFrames(0, 0, 0, AngleUnit::Radians);
 
     cameraFrame.setOrientation(gimbal_orientation_relative_to_world_orientation);
     cameraFrame.setOrigin(camera_origin_relative_to_gimbal_origin);
 #endif
 }
 
-void TurretFrames::updateFrames(float yawFieldRelative, float pitchFieldRelative, AngleUnit angleUnit) {
+void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRoll, AngleUnit angleUnit) {
 #ifndef TARGET_TURRET
 
     this->gimbal_orientation_relative_to_world_orientation =
-        rotationMatrix(yawFieldRelative, Z_AXIS, angleUnit) *
-        rotationMatrix(pitchFieldRelative, X_AXIS, angleUnit);  // gimbal to field rotation
+        rotationMatrix(fieldYaw, Z_AXIS, angleUnit); /* rotationMatrix(fieldPitch, X_AXIS, angleUnit) *
+        rotationMatrix(fieldRoll, Y_AXIS, angleUnit);*/  // gimbal to field rotation
 
     // Don't need to update gimbal frame origin, should be the center of this coordinate framework
-    // gimbalFrame.setOrientation(gimbal_orientation_relative_to_world_orientation);
-    gimbalFrame.setOrientation(Matrix3f::identityMatrix());
+    gimbalFrame.setOrientation(gimbal_orientation_relative_to_world_orientation);
+    // gimbalFrame.setOrientation(Matrix3f::identityMatrix());
 
 #else
     UNUSED(yawFieldRelative);
