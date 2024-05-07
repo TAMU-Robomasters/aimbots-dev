@@ -354,8 +354,9 @@ void KinematicInformant::updateRobotFrames() {
         AngleUnit::Radians);
 
     turretFrames.updateFrames(
-        getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue(),
-        getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue(),
+        getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians),
+        getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians),
         AngleUnit::Radians);
 
     robotLocationDisplay = robotLocation;
