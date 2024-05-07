@@ -209,7 +209,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
-    .kp = 240.0f,
+    .kp = 250.0f,
     .ki = 2.5f,
     .kd = 4.0f,
     .maxICumulative = 700.0f,
@@ -223,11 +223,11 @@ static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig CHASSIS_BALANCE_VELOCITY_PID_CONFIG = {
-    .kp = 250.0f,
-    .ki = 2.6f,
-    .kd = 7.0f,
-    .maxICumulative = 900.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
+    .kp = 1.0f,
+    .ki = 0.01f,
+    .kd = 0.4f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 60,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

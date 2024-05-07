@@ -268,7 +268,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisManualDriveCommand/*, &gimbalToggleAimCommand &gimbalChaseCommand*/},
+    {&chassisManualDriveCommand, & gimbalToggleAimCommand /* & gimbalChaseCommand */ },
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
