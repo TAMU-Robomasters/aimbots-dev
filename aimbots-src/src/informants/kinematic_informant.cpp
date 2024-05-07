@@ -362,7 +362,11 @@ void KinematicInformant::updateRobotFrames() {
 #endif
 }
 
+float frameDelayDisplay = 0;
+
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
+    frameDelayDisplay = frameDelay_ms;
+
     std::pair<float, float> gimbalAngles = gimbalSubsystem->getGimbalOrientationAtTime(frameDelay_ms);
 
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);

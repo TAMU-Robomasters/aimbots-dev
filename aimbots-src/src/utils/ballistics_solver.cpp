@@ -50,6 +50,9 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
         .position = plateKinematicState.position,
         .velocity = plateKinematicState.velocity,
         .acceleration = plateKinematicState.acceleration,
+        /*.position = Vector3f(0.1, 1, -0.1),
+        .velocity = Vector3f(0, 0, 0),
+        .acceleration = Vector3f(0, 0, 0),*/
     };
 
     solveForXDisplay = targetKinematicState.position.getX();
