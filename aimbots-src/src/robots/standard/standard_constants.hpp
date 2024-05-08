@@ -37,7 +37,9 @@ static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
+    wrapTo0To2PIRange(modm::toRadian(184.5f)),
+    wrapTo0To2PIRange(modm::toRadian(187.5f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -439,6 +441,6 @@ static constexpr SmoothPIDConfig BARREL_SWAP_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
-static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT = Vector3f(0,1,0); // Displacement vector from the gimbal to the camera frames
-//^^^change later, in meters
+static const Vector3f GIMBAL_TO_CAMERA_DISPLACEMENT =
+    Vector3f(0, 1, 0);  // Displacement vector from the gimbal to the camera frames
+                        //^^^change later, in meters

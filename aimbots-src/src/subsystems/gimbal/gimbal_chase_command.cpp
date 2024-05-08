@@ -104,8 +104,8 @@ void GimbalChaseCommand::execute() {
         pitchRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
-        targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
+        targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
+        targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;
         // targetYawAxisAngle =
         //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
         //     ballisticsSolution->yawAngle;
