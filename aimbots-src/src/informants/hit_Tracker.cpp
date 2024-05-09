@@ -22,6 +22,7 @@ HitTracker::HitTracker(src::Drivers* drivers)
 
 
 void HitTracker::initalize(){
+    hitTimer.stop();
 }
 
 
@@ -30,7 +31,7 @@ uint8_t HitTracker::getHitPanelID() {
 };
 
 
-uint16_t HitTracker::getPrevHp(){
+uint16_t HitTracker::getPrevHP(){
         return this->drivers->refSerial.getRobotData().previousHp;
 };
 
@@ -46,12 +47,26 @@ uint32_t HitTracker::getDataTimeStamp(){
 
 
 bool HitTracker::wasHit(){
-    return (getPrevHp() > getCurrHP());
+    if(this->drivers->refSerial.getRobotData().receivedDps != 0){
+        return true;
+    }else{
+        return false;
+    }
+};
+
+bool HitTracker::recentlyHit(){
+    if(this->drivers->hitTracker.wasHit()){
+        hitTimer.restart(HIT_EXPIRE_TIME);
+    }
+    return !hitTimer.isExpired();
 };
 
 
 float HitTracker::getHitAngle_chassisRelative(){
     //get armor panel hit
+    if(!this->drivers->hitTracker.recentlyHit()){
+        return 69.0f;
+    }
     uint8_t panel = getHitPanelID();
     float hitAngle = 0.0f;
     switch(panel) {
@@ -74,14 +89,17 @@ float HitTracker::getHitAngle_chassisRelative(){
 }
 
 
-ContiguousFloat HitTracker::getHitAngle_gimbalRelative(){
+float HitTracker::getHitAngle_gimbalRelative() {
     //get chassisRelative angle?
     float chassis_hitAngle = this->drivers->hitTracker.getHitAngle_chassisRelative();
+    if(chassis_hitAngle == 69.0f){
+        return 69.0f;
+    }
     //get angle btwn gimbal-chassis?
     float gimbalAngle = this->drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
     //calc and return
     ContiguousFloat hitAngle = ContiguousFloat(gimbalAngle + chassis_hitAngle, -M_PI, M_PI);
-    return hitAngle;
+    return hitAngle.getValue();
 }
 }
 

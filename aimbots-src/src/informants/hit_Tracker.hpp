@@ -1,6 +1,7 @@
 //ref helper and gets updated at driver level
 #pragma once
 
+#include <optional>
 
 #include <tap/algorithms/contiguous_float.hpp>
 //#include "transformers/robot_frames.hpp"
@@ -46,13 +47,14 @@ public:
 
     uint8_t getHitPanelID();
     //DAAG Continue to move getters with drivers to the cpp
-    uint16_t getPrevHp();
+    uint16_t getPrevHP();
    
     uint16_t getCurrHP();
     uint32_t getDataTimeStamp();
 
 
     bool wasHit();
+    bool recentlyHit();
 
 
     //armor IDs:
@@ -67,9 +69,10 @@ public:
 //       Back
 
 //returns hit angle relative to chassis front as 0
-//            0 degrees
+//          
+//        Front: 0 degrees
 //          _______
-//        |        |
+//        |        |    
 //   -pi |          |  pi
 //       |          |
 //        |________|
@@ -78,7 +81,7 @@ public:
 
 
     //returns hit angle relative to gimbal front as 0
-    tap::algorithms::ContiguousFloat getHitAngle_gimbalRelative();
+    float getHitAngle_gimbalRelative();
 
 
 
@@ -86,6 +89,10 @@ public:
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
+    uint16_t prevHP;
     //src::Informants::Transformers::RobotFrames robotFrames;
+    static const uint32_t HIT_EXPIRE_TIME = 5000;
+
+    MilliTimeout hitTimer;
 };
 }

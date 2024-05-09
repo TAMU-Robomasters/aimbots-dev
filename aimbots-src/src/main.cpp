@@ -25,6 +25,7 @@
 #include "tap/motor/motorsim/sim_handler.hpp"
 #endif
 
+
 #include "tap/board/board.hpp"
 
 #include "modm/architecture/interface/delay.hpp"
@@ -142,6 +143,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->can.initialize();
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    drivers->hitTracker.initalize();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
@@ -169,6 +171,7 @@ float yawDisplay, pitchDisplay, rollDisplay;
 float gXDisplay, gYDisplay, gZDisplay;
 float aXDisplay, aYDisplay, aZDisplay;
 float hitDisplay;
+bool wasHit, recentlyHit;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -209,7 +212,9 @@ static void updateIo(src::Drivers *drivers) {
     // gXDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
     //     AngleUnit::Radians);
-    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative().getValue();
+    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
+    wasHit = drivers->hitTracker.wasHit();
+    recentlyHit = drivers->hitTracker.recentlyHit();
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);
