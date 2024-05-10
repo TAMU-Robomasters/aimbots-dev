@@ -51,7 +51,7 @@ void ClientDisplayCommand::restartDisplay() {
     restart();
     // chassisOrientation.initialize();
     // cvDisplay.initialize();
-    booleanHudIndicators.initialize();
+    // booleanHudIndicators.initialize();
     reticleIndicator.initialize();
 
     this->restarting = false;
@@ -77,14 +77,14 @@ bool ClientDisplayCommand::run() {
 
     // PT_CALL(chassisOrientation.sendInitialGraphics());
     // PT_CALL(cvDisplay.sendInitialGraphics());
-    PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    // PT_CALL(booleanHudIndicators.sendInitialGraphics());
     PT_CALL(reticleIndicator.sendInitialGraphics());
 
     //If a restart is attempted, stop updating
     while (!this->restarting) {
         // PT_CALL(chassisOrientation.update());
         // PT_CALL(cvDisplay.update());
-        PT_CALL(booleanHudIndicators.update());
+        // PT_CALL(booleanHudIndicators.update());
         PT_CALL(reticleIndicator.update());
         PT_YIELD();
     }
