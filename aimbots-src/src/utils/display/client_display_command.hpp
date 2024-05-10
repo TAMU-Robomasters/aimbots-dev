@@ -18,16 +18,8 @@
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/hopper/hopper.hpp"
 
-#include "boolean_hud_indicators.hpp"
-#include "chassis_orientation_indicator.hpp"
 #include "client_display_subsystem.hpp"
-#include "computer_vision_display.hpp"
 #include "reticle_indicator.hpp"
-
-// using namespace src::Hopper;
-using namespace src::Chassis;
-using namespace src::Gimbal;
-using namespace src::Utils::Ballistics;
 
 namespace tap::control {
 class Subsystem;
@@ -44,12 +36,7 @@ public:
     ClientDisplayCommand(
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
-        ClientDisplaySubsystem &clientDisplay,
-        // const HopperSubsystem *hopper,
-        //const GimbalSubsystem &gimbal,
-        const ChassisSubsystem &chassis  //,
-       // BallisticsSolver &ballisticsSolver
-    );
+        ClientDisplaySubsystem &clientDisplay);
 
     const char *getName() const override { return "Client Display"; }
 
@@ -66,11 +53,7 @@ private:
     tap::control::CommandScheduler &commandScheduler;
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
 
-    // hud elements
-    BooleanHUDIndicators booleanHudIndicators;
-    // ChassisOrientationIndicator chassisOrientation;
     ReticleIndicator reticleIndicator;
-    // CVDisplay cvDisplay;
 
     bool run();
     void restartDisplay();

@@ -1,5 +1,3 @@
-
-
 #include "reticle_indicator.hpp"
 
 #include "tap/communication/serial/ref_serial_data.hpp"

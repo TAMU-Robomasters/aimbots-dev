@@ -4,18 +4,8 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/hopper/hopper.hpp"
-
 #include "client_display_subsystem.hpp"
-#include "hud_indicator.hpp"
 #include "reticle_indicator.hpp"
-
-// using namespace src::Hopper;
-using namespace src::Chassis;
-using namespace src::Gimbal;
-using namespace src::Utils::Ballistics;
 
 using namespace tap::control;
 
@@ -24,34 +14,22 @@ namespace src::Utils::ClientDisplay {
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay,
-    // const HopperSubsystem *hopper,
-    //const GimbalSubsystem &gimbal,
-    const ChassisSubsystem &chassis)
+    ClientDisplaySubsystem &clientDisplay)
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicators(commandScheduler, refSerialTransmitter, /*hopper,*/ chassis),
-      /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
-      reticleIndicator(drivers, refSerialTransmitter)  //,
-     /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
-{
+      reticleIndicator(drivers, refSerialTransmitter) {
     addSubsystemRequirement(&clientDisplay);
 }
 
-void ClientDisplayCommand::initialize() {
-    this->restarting = true;
-}
+void ClientDisplayCommand::initialize() { this->restarting = true; }
 
 void ClientDisplayCommand::restartDisplay() {
     // the rest of the commands
     // initalize each of display commands
     HudIndicator::resetGraphicNameGenerator();
     restart();
-    // chassisOrientation.initialize();
-    // cvDisplay.initialize();
-    // booleanHudIndicators.initialize();
     reticleIndicator.initialize();
 
     this->restarting = false;
@@ -59,18 +37,17 @@ void ClientDisplayCommand::restartDisplay() {
 
 bool isHUDRunningDisplay = false;
 
-void ClientDisplayCommand::execute() { 
-    run(); 
-    isHUDRunningDisplay = true; 
+void ClientDisplayCommand::execute() {
+    run();
+    isHUDRunningDisplay = true;
 }
 
 bool ClientDisplayCommand::run() {
-
     if (!this->isRunning()) {
         restart();
         this->restartDisplay();
     }
-    
+
     PT_BEGIN();
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
@@ -80,7 +57,7 @@ bool ClientDisplayCommand::run() {
     // PT_CALL(booleanHudIndicators.sendInitialGraphics());
     PT_CALL(reticleIndicator.sendInitialGraphics());
 
-    //If a restart is attempted, stop updating
+    // If a restart is attempted, stop updating
     while (!this->restarting) {
         // PT_CALL(chassisOrientation.update());
         // PT_CALL(cvDisplay.update());
