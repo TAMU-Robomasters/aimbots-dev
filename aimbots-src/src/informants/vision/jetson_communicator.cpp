@@ -50,6 +50,8 @@ int msBetweenLastMessageDisplay = 0;
  * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a
  * JetsonMessage from our received bytes.
  */
+alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
+
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
@@ -125,7 +127,10 @@ void JetsonCommunicator::updateSerial() {
                 // As we've received a full message, reset the byte index and go back to searching for the magic number.
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            } else {
+                rawSerialDisplay[nextByteIndex] = rawSerialBuffer[nextByteIndex];
             }
+
             break;
         }
     }
