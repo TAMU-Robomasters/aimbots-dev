@@ -1,7 +1,7 @@
-#include "supper_cap_subsystem.hpp"
+#include "super_cap_subsystem.hpp"
 
-namespace src::Informants::SupperCap {
-SupperCapSubsystem::SupperCapSubsystem(src::Drivers* drivers)
+namespace src::Informants::SuperCap {
+SuperCapSubsystem::SuperCapSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
       currentCommand(STOP),
       voltage(0),
@@ -9,7 +9,7 @@ SupperCapSubsystem::SupperCapSubsystem(src::Drivers* drivers)
       percent(0),
       inputPower(0) {}
 
-void SupperCapSubsystem::initialize() { drivers->supperCapCommunicator.setCommand(CHARGE); }
+void SuperCapSubsystem::initialize() { drivers->superCapCommunicator.setCommand(CHARGE); }
 
 float lastVoltage = 0;
 float lastPower = 0;
@@ -18,8 +18,8 @@ float lastInputPower = 0;
 
 char lastCommand = ' ';
 
-void SupperCapSubsystem::refresh() {
-    lastMessage = drivers->supperCapCommunicator.getLastValidMessage();
+void SuperCapSubsystem::refresh() {
+    lastMessage = drivers->superCapCommunicator.getLastValidMessage();
     voltage = lastMessage.voltage;
     power = lastMessage.power;
     percent = lastMessage.percent;
@@ -34,31 +34,31 @@ void SupperCapSubsystem::refresh() {
     switch (currentCommand) {
         case CHARGE:
             if (percent > 95) {
-                // drivers->supperCapCommunicator.setCommand(STOP);
+                // drivers->superCapCommunicator.setCommand(STOP);
                 // currentCommand = STOP;
                 currentCommand = currentCommand;
             } else {
-                drivers->supperCapCommunicator.setCommand(CHARGE);
+                drivers->superCapCommunicator.setCommand(CHARGE);
             }
             // todo set charge amount. tbh idk where its coming from but it is i guess
 
             break;
         case DISCHARGE:
             if (percent < 28) {
-                drivers->supperCapCommunicator.setCommand(CHARGE);
+                drivers->superCapCommunicator.setCommand(CHARGE);
                 currentCommand = CHARGE;
             } else {
-                drivers->supperCapCommunicator.setCommand(DISCHARGE);
+                drivers->superCapCommunicator.setCommand(DISCHARGE);
             }
             break;
         case STOP:
             currentCommand = CHARGE;
-            drivers->supperCapCommunicator.setCommand(CHARGE);
+            drivers->superCapCommunicator.setCommand(CHARGE);
             break;
         default:
-            drivers->supperCapCommunicator.setCommand(CHARGE);
+            drivers->superCapCommunicator.setCommand(CHARGE);
             currentCommand = CHARGE;
             break;
     }
 }
-}  // namespace src::Informants::SupperCap
+}  // namespace src::Informants::SuperCap
