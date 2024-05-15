@@ -23,20 +23,6 @@ float targetPositionXDisplay = 0.0f;
 float targetPositionYDisplay = 0.0f;
 float targetPositionZDisplay = 0.0f;
 
-float cvCameraPosXDisplay = 0.0f;
-float cvCameraPosYDisplay = 0.0f;
-float cvCameraPosZDisplay = 0.0f;
-
-float gimPosXDisplay = 0.0f;
-float gimPosYDisplay = 0.0f;
-float gimPosZDisplay = 0.0f;
-
-float gimOriXDisplay = 0.0f;
-float gimOriYDisplay = 0.0f;
-float gimOriZDisplay = 0.0f;
-
-float DELTA_DISPLAY = 0.0f;
-
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
@@ -124,17 +110,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // cameraAtCVUpdateFrame.setOrientation(gimbalFrame.getOrientation());  // gimbal and camera orientation should be the
     // same
     // //------------------------------------------------------------------------------------
-    cvCameraPosXDisplay = cameraAtCVUpdateFrame2.getOrigin().getX();
-    cvCameraPosYDisplay = cameraAtCVUpdateFrame2.getOrigin().getY();
-    cvCameraPosZDisplay = cameraAtCVUpdateFrame2.getOrigin().getZ();
-
-    gimPosXDisplay = gimbalFrame2.getOrigin().getX();
-    gimPosYDisplay = gimbalFrame2.getOrigin().getY();
-    gimPosZDisplay = gimbalFrame2.getOrigin().getZ();
-
-    gimOriXDisplay = gimbalFrame2.getOrientation()[0][0];
-    gimOriYDisplay = gimbalFrame2.getOrientation()[1][1];
-    gimOriZDisplay = gimbalFrame2.getOrientation()[2][2];
 
     VisionTimedPosition transformedData{
         .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
@@ -173,14 +148,11 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
-    float MAX_DIST = 1.5;
-    float MAX_DELTA = 9;  //(3 meters)^2
+    float MAX_DELTA = 25;  //(5 meters)^2
 
     float currPosMag = sqrt(
         pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
-
-    DELTA_DISPLAY = abs(currPosMag - previousPositionMag);
 
     if (abs(currPosMag) < MAX_DELTA /*abs(transformedPosition.position.getX()) < MAX_DIST && abs(transformedPosition.position.getY()) < MAX_DIST &&
         abs(transformedPosition.position.getZ()) < MAX_DIST*/) {
@@ -215,8 +187,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         // }
 
         lastUpdateTimestamp_uS = currentTime_uS;
-        // previousPositionMag = currPosMag;  // set the previous position magnitude to the current one to use on the next
-        // cycle
     }
     previousPositionMag = currPosMag;  // set the previous position magnitude to the current one to use on the next cycle
 }
@@ -244,7 +214,7 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005);  // bandaid fix
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);
     Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
 
