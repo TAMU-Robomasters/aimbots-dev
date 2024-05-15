@@ -118,16 +118,16 @@ void GimbalChaseCommand::execute() {
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
 
         // Comment when Z axis stops being silly
-        targetPitchAxisAngle =
-            controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
+        // targetPitchAxisAngle =
+        //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
         // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
-        // controller->runYawController(5.0f);
-        // controller->runPitchController(5.0f);
+        controller->runYawController(5.0f);
+        controller->runPitchController(5.0f);
     } else {
         // Yaw counterclockwise is positive angle
         targetYawAxisAngle = controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
@@ -141,8 +141,8 @@ void GimbalChaseCommand::execute() {
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-        // controller->runYawController();
-        // controller->runPitchController();
+        controller->runYawController();
+        controller->runPitchController();
     }
 
     targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);      // uncomment later
