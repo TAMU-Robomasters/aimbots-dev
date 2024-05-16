@@ -1,8 +1,6 @@
 #pragma once
 
 #include "informants/transformers/coordinate_frame.hpp"
-// #include "informants/transformers/cartesian_frames.hpp"
-
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
@@ -12,7 +10,7 @@
 namespace src::Informants::Transformers {
 
 enum TurretFrameType {
-    TURRET_GIMBAL_FRAME = 0,
+    TURRET_FIELD_FRAME = 0,
     TURRET_CAMERA_FRAME = 1,
 };
 class TurretFrames {
@@ -22,14 +20,14 @@ public:
 
     CoordinateFrame& getFrame(TurretFrameType frame) {
         switch (frame) {
-            case TURRET_GIMBAL_FRAME:
-                return gimbalFrame;
+            case TURRET_FIELD_FRAME:
+                return fieldFrame;
                 break;
             case TURRET_CAMERA_FRAME:
                 return cameraFrame;
                 break;
         }
-        return gimbalFrame;
+        return fieldFrame;
     }
 
     void updateFrames(float fieldYaw, float fieldPitch, float fieldRoll, AngleUnit angleUnit);
@@ -37,7 +35,7 @@ public:
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 
 private:
-    CoordinateFrame gimbalFrame;
+    CoordinateFrame fieldFrame;
     CoordinateFrame cameraFrame;
 
     Vector3f chassis_origin_relative_to_world_origin;
@@ -46,8 +44,7 @@ private:
     Vector3f camera_origin_relative_to_chassis_origin;
     Vector3f camera_origin_relative_to_gimbal_origin;
 
-    Matrix3f gimbal_orientation_relative_to_chassis_orientation;
-    Matrix3f gimbal_orientation_relative_to_world_orientation;
+    Matrix3f field_orientation_relative_to_chassis_orientation;
 };
 }  // namespace src::Informants::Transformers
 
@@ -68,7 +65,7 @@ private:
 // _______________                  ___|__
 // |      ^ y    |           ______/   |  \.
 // |      |      |    Gy <- |O|___|----+   |
-// |      +-> x  |                 \______/'
+// | x <- +      |                 \______/'
 // |     /       |           ________|  |_______
 // |    z        |          /TAMU #1 > UW >> CU \.
 // |_____________|         /_____________________\.
@@ -87,4 +84,3 @@ private:
 //       BACK                \__/           \__/
 //
 //
-// Chassis frame is automatically initialized to the ground frame

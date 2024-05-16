@@ -78,7 +78,7 @@ void GimbalChaseCommand::execute() {
     // projectileSpeed = 30.0f;
 
     if (projectileSpeed == 0) {
-        projectileSpeed = 30;
+        projectileSpeed = 25;
     }
 
     predictedProjectileSpeedDisplay = projectileSpeed;
@@ -89,7 +89,6 @@ void GimbalChaseCommand::execute() {
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
         uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
-        Vector3f chassisIMUAngleAtFrameDelay = drivers->kinematicInformant.getChassisIMUOrientationAtTime(frameCaptureDelay);
 
         std::pair<float, float> fieldTurretAngleAtFrameDelay =
             drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
@@ -111,7 +110,7 @@ void GimbalChaseCommand::execute() {
         //     ballisticsSolution->yawAngle;
         // targetPitchAxisAngle =
         //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->pitchAngle;
+        //     ballisticsSolution->pitchAngle; 
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);

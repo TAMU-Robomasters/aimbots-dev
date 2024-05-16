@@ -383,7 +383,7 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     -0.001727f, //x = 0.04498
     0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00587f, //z = 0.01683
+    0.00587f, //z = 0.01683
 };
 // clang-format on
 
