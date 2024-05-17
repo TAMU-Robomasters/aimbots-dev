@@ -147,9 +147,9 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
@@ -167,10 +167,10 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
-        // .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        .velocity = Vector3f(0, 0, 0),
-        // .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
-        .acceleration = Vector3f(0, 0, 0),
+        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
+        // .velocity = Vector3f(0, 0, 0),
+        .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        // .acceleration = Vector3f(0, 0, 0),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
     };
 }
