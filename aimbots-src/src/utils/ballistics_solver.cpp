@@ -42,7 +42,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     }
 
     // How far from now you want to predict? (in us)
-    uint32_t forwardProjectionTime = 100 * 1000;
+    uint32_t forwardProjectionTime = 0 * 1000;
 
     auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
 
@@ -55,6 +55,8 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     solveForXDisplay = targetKinematicState.position.getX();
     solveForYDisplay = targetKinematicState.position.getY();
     solveForZDisplay = targetKinematicState.position.getZ();
+
+
 
     plateKinematicStateDisplay = targetKinematicState;
 
