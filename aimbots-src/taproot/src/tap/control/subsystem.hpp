@@ -127,7 +127,7 @@ public:
 
     virtual void runHardwareTests() { setHardwareTestsComplete(); }
 
-    virtual const char* getName() const;
+    virtual const char* getName();
 
     mockable inline int getGlobalIdentifier() const { return globalIdentifier; }
 

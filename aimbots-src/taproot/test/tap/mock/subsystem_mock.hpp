@@ -47,7 +47,7 @@ public:
     MOCK_METHOD(void, setHardwareTestsComplete, (), (override));
     MOCK_METHOD(void, setHardwareTestsIncomplete, (), (override));
     MOCK_METHOD(void, runHardwareTests, (), (override));
-    MOCK_METHOD(const char *, getName, (), (const override));
+    MOCK_METHOD(const char *, getName, (), (override));
 };  // class SubsystemMock
 }  // namespace mock
 }  // namespace tap

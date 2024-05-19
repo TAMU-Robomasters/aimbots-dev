@@ -21,11 +21,11 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "linear_interpolation_predictor_wrapped.hpp"
+#include "linear_interpolation_predictor_contiguous.hpp"
 
 namespace tap::algorithms
 {
-LinearInterpolationPredictorWrapped::LinearInterpolationPredictorWrapped(
+LinearInterpolationPredictorContiguous::LinearInterpolationPredictorContiguous(
     float lowerBound,
     float upperBound)
     : lastUpdateCallTime(0),
@@ -34,21 +34,21 @@ LinearInterpolationPredictorWrapped::LinearInterpolationPredictorWrapped(
 {
 }
 
-void LinearInterpolationPredictorWrapped::update(float newValue, uint32_t currTime)
+void LinearInterpolationPredictorContiguous::update(float newValue, uint32_t currTime)
 {
     if (currTime <= lastUpdateCallTime)
     {
         slope = 0;
         return;
     }
-    slope = (previousValue.minDifference(newValue)) / (currTime - lastUpdateCallTime);
-    previousValue.setWrappedValue(newValue);
+    slope = (previousValue.difference(newValue)) / (currTime - lastUpdateCallTime);
+    previousValue.setValue(newValue);
     lastUpdateCallTime = currTime;
 }
 
-void LinearInterpolationPredictorWrapped::reset(float initialValue, uint32_t initialTime)
+void LinearInterpolationPredictorContiguous::reset(float initialValue, uint32_t initialTime)
 {
-    previousValue.setWrappedValue(initialValue);
+    previousValue.setValue(initialValue);
     lastUpdateCallTime = initialTime;
     slope = 0.0f;
 }

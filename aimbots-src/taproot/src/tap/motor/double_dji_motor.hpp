@@ -70,13 +70,13 @@ public:
     int16_t getTorque() const override;
     int16_t getShaftRPM() const override;
 
-protected:
+private:
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 public:
     testing::NiceMock<mock::DjiMotorMock> motorOne;
     testing::NiceMock<mock::DjiMotorMock> motorTwo;
 
-protected:
+private:
 #else
     DjiMotor motorOne;
     DjiMotor motorTwo;

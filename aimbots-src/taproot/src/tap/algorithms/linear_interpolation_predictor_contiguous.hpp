@@ -21,27 +21,27 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_WRAPPED_HPP_
-#define TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_WRAPPED_HPP_
+#ifndef TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
+#define TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
 
 #include <cstdint>
 
-#include "wrapped_float.hpp"
+#include "contiguous_float.hpp"
 
 namespace tap::algorithms
 {
 /**
  * An object that is similar in every respect to the `LinearInterpolationPredictor`
- * object except that it uses `WrappedFloat`'s instead.
+ * object except that it uses `ContiguousFloat`'s instead.
  */
-class LinearInterpolationPredictorWrapped
+class LinearInterpolationPredictorContiguous
 {
 public:
     /**
-     * @param[in] lowerBound Lower bound for linear interpolation WrappedFloat.
-     * @param[in] upperBound Upper bound for linear interpolation WrappedFloat.
+     * @param[in] lowerBound Lower bound for linear interpolation contiguous float.
+     * @param[in] upperBound Upper bound for linear interpolation contiguous float.
      */
-    LinearInterpolationPredictorWrapped(float lowerBound, float upperBound);
+    LinearInterpolationPredictorContiguous(float lowerBound, float upperBound);
 
     /**
      * Updates the interpolation using the newValue.
@@ -69,12 +69,12 @@ public:
      */
     float getInterpolatedValue(uint32_t currTime)
     {
-        return WrappedFloat(
+        return ContiguousFloat(
                    slope * static_cast<float>(currTime - lastUpdateCallTime) +
-                       previousValue.getWrappedValue(),
+                       previousValue.getValue(),
                    previousValue.getLowerBound(),
                    previousValue.getUpperBound())
-            .getWrappedValue();
+            .getValue();
     }
 
     /**
@@ -90,11 +90,11 @@ public:
     void reset(float initialValue, uint32_t initialTime);
 
 private:
-    uint32_t lastUpdateCallTime;  ///< The previous timestamp from when update was called.
-    WrappedFloat previousValue;   ///< The previous data value.
+    uint32_t lastUpdateCallTime;    ///< The previous timestamp from when update was called.
+    ContiguousFloat previousValue;  ///< The previous data value.
     float slope;  ///< The current slope, calculated using the previous and most current data.
-};                // class LinearInterpolationPredictorWrapped
+};                // class LinearInterpolationPredictorContiguous
 
 }  // namespace tap::algorithms
 
-#endif  // TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_WRAPPED_HPP_
+#endif  // TAPROOT_LINEAR_INTERPOLATION_PREDICTOR_CONTIGUOUS_HPP_
