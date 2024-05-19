@@ -70,3 +70,25 @@ tap::algorithms::CMSISMat<3, 3> tap::algorithms::fromEulerAngles(
          cosf(pitch) * sinf(roll),
          cosf(pitch) * cosf(roll)});
 }
+
+modm::Vector3f tap::algorithms::eulerAnglesFromQuaternion(modm::Quaternion<float>& q)
+{
+    modm::Vector3f eulerAngles;
+
+    // roll (x-axis rotation)
+    float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+    float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+    eulerAngles.x = std::atan2(sinr_cosp, cosr_cosp);
+
+    // pitch (y-axis rotation)
+    float sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+    float cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+    eulerAngles.y = 2 * std::atan2(sinp, cosp) - M_PI / 2;
+
+    // yaw (z-axis rotation)
+    float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+    float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+    eulerAngles.z = std::atan2(siny_cosp, cosy_cosp);
+
+    return eulerAngles;
+}

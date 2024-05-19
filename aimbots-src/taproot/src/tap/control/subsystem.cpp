@@ -54,7 +54,7 @@ void Subsystem::setDefaultCommand(Command* command)
     }
 }
 
-const char* Subsystem::getName() { return "Subsystem"; }
+const char* Subsystem::getName() const { return "Subsystem"; }
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 Subsystem::Subsystem()

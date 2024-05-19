@@ -86,7 +86,7 @@ public:
     /**
      * The number of samples we take in order to determine the mpu offsets.
      */
-    static constexpr float BMI088_OFFSET_SAMPLES = 1000;
+    float BMI088_OFFSET_SAMPLES = 1000;
 
     Bmi088(tap::Drivers *drivers);
 
@@ -140,6 +140,8 @@ public:
     mockable inline float getTemp() final_mockable { return data.temperature; }
 
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }
+
+    inline void setOffsetSamples(float samples) { BMI088_OFFSET_SAMPLES = samples; }
 
 private:
     static constexpr uint16_t RAW_TEMPERATURE_TO_APPLY_OFFSET = 1023;

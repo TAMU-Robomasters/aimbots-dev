@@ -71,11 +71,28 @@ void RefSerial::messageReceiveCallback(const ReceivedSerialMessage& completeMess
             decodeToAllRobotHP(completeMessage);
             break;
         }
+
+        case REF_MESSAGE_TYPE_SITE_EVENT_DATA:
+        {
+            decodeToSiteEventData(completeMessage);
+            break;
+        }
+        case REF_MESSAGE_TYPE_PROJECTILE_SUPPPLIER_ACTION:
+        {
+            decodeToProjectileSupplierAction(completeMessage);
+            break;
+        }
         case REF_MESSAGE_TYPE_WARNING_DATA:
         {
             decodeToWarningData(completeMessage);
             break;
         }
+        case REF_MESSAGE_TYPE_DART_INFO:
+        {
+            decodeToDartInfo(completeMessage);
+            break;
+        }
+
         case REF_MESSAGE_TYPE_ROBOT_STATUS:
         {
             decodeToRobotStatus(completeMessage);
@@ -121,11 +138,38 @@ void RefSerial::messageReceiveCallback(const ReceivedSerialMessage& completeMess
             decodeToRFIDStatus(completeMessage);
             break;
         }
+        case REF_MESSAGE_TYPE_DART_STATION_INFO:
+        {
+            decodeToDartStation(completeMessage);
+            break;
+        }
+        case REF_MESSAGE_TYPE_GROUND_ROBOT_POSITION:
+        {
+            decodeToGroundPositions(completeMessage);
+            break;
+        }
+        case REF_MESSAGE_TYPE_RADAR_PROGRESS:
+        {
+            decodeToRadarProgress(completeMessage);
+            break;
+        }
+        case REF_MESSAGE_TYPE_SENTRY_INFO:
+        {
+            decodeToSentryInfo(completeMessage);
+            break;
+        }
+        case REF_MESSAGE_TYPE_RADAR_INFO:
+        {
+            decodeToRadarInfo(completeMessage);
+            break;
+        }
+
         case REF_MESSAGE_TYPE_CUSTOM_DATA:
         {
             handleRobotToRobotCommunication(completeMessage);
             break;
         }
+        // TODO: Other Custom Data stuff
         default:
             break;
     }
@@ -193,23 +237,67 @@ bool RefSerial::decodeToAllRobotHP(const ReceivedSerialMessage& message)
     return true;
 }
 
-bool RefSerial::decodeToSiteEventData(const ReceivedSerialMessage&) { return false; }
+bool RefSerial::decodeToSiteEventData(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 4)
+    {
+        return false;
+    }
+
+    uint32_t data = 0;
+    convertFromLittleEndian(&data, message.data);
+
+    gameData.eventData.siteData.value = data;
+    gameData.eventData.virtualShieldRemainingPercent = static_cast<uint8_t>((data >> 12) & 0x3F);
+    gameData.eventData.timeSinceLastDartHit = static_cast<uint8_t>((data >> 19) & 0xFF);
+    gameData.eventData.lastDartHit = static_cast<Rx::SiteDartHit>((data >> 28) & 0x03);
+
+    return true;
+}
+
+bool RefSerial::decodeToProjectileSupplierAction(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 4)
+    {
+        return false;
+    }
+
+    gameData.supplier.reloadingRobot = static_cast<RobotId>(message.data[1]);
+    gameData.supplier.outletStatus = static_cast<Rx::SupplierOutletStatus>(message.data[2]);
+    gameData.supplier.suppliedProjectiles = message.data[3];
+    return true;
+}
 
 bool RefSerial::decodeToWarningData(const ReceivedSerialMessage& message)
 {
-    if (message.header.dataLength != 2)
+    if (message.header.dataLength != 3)
     {
         return false;
     }
     robotData.refereeWarningData.level = message.data[0];
     robotData.refereeWarningData.foulRobotID = static_cast<RobotId>(message.data[1]);
+    robotData.refereeWarningData.count = message.data[2];
     robotData.refereeWarningData.lastReceivedWarningRobotTime = clock::getTimeMilliseconds();
+    return true;
+}
+
+bool RefSerial::decodeToDartInfo(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 3)
+    {
+        return false;
+    }
+
+    gameData.dartInfo.launchCountdown = message.data[0];
+    gameData.dartInfo.lastHit = static_cast<Rx::SiteDartHit>(message.data[1] & 0x03);
+    gameData.dartInfo.hits = (message.data[1] >> 2) & 0x07;
+    gameData.dartInfo.selectedTarget = static_cast<Rx::DartTarget>((message.data[1] >> 5) & 0x03);
     return true;
 }
 
 bool RefSerial::decodeToRobotStatus(const ReceivedSerialMessage& message)
 {
-    if (message.header.dataLength != 27)
+    if (message.header.dataLength != 13)
     {
         return false;
     }
@@ -217,17 +305,10 @@ bool RefSerial::decodeToRobotStatus(const ReceivedSerialMessage& message)
     robotData.robotLevel = message.data[1];
     convertFromLittleEndian(&robotData.currentHp, message.data + 2);
     convertFromLittleEndian(&robotData.maxHp, message.data + 4);
-    convertFromLittleEndian(&robotData.turret.heatCoolingRate17ID1, message.data + 6);
-    convertFromLittleEndian(&robotData.turret.heatLimit17ID1, message.data + 8);
-    convertFromLittleEndian(&robotData.turret.barrelSpeedLimit17ID1, message.data + 10);
-    convertFromLittleEndian(&robotData.turret.heatCoolingRate17ID2, message.data + 12);
-    convertFromLittleEndian(&robotData.turret.heatLimit17ID2, message.data + 14);
-    convertFromLittleEndian(&robotData.turret.barrelSpeedLimit17ID2, message.data + 16);
-    convertFromLittleEndian(&robotData.turret.heatCoolingRate42, message.data + 18);
-    convertFromLittleEndian(&robotData.turret.heatLimit42, message.data + 20);
-    convertFromLittleEndian(&robotData.turret.barrelSpeedLimit42, message.data + 22);
-    convertFromLittleEndian(&robotData.chassis.powerConsumptionLimit, message.data + 24);
-    robotData.robotPower.value = message.data[26] & 0b111;
+    convertFromLittleEndian(&robotData.turret.coolingRate, message.data + 6);
+    convertFromLittleEndian(&robotData.turret.heatLimit, message.data + 8);
+    convertFromLittleEndian(&robotData.chassis.powerConsumptionLimit, message.data + 10);
+    robotData.robotPower.value = message.data[12] & 0b111;
     robotData.robotDataReceivedTimestamp = clock::getTimeMilliseconds();
 
     processReceivedDamage(
@@ -256,24 +337,28 @@ bool RefSerial::decodeToPowerAndHeat(const ReceivedSerialMessage& message)
 
 bool RefSerial::decodeToRobotPosition(const ReceivedSerialMessage& message)
 {
-    if (message.header.dataLength != 16)
+    if (message.header.dataLength != 12)
     {
         return false;
     }
-    convertFromLittleEndian(&robotData.chassis.x, message.data);
-    convertFromLittleEndian(&robotData.chassis.y, message.data + 4);
-    convertFromLittleEndian(&robotData.chassis.z, message.data + 8);
-    convertFromLittleEndian(&robotData.turret.yaw, message.data + 12);
+    convertFromLittleEndian(&robotData.chassis.position.x, message.data);
+    convertFromLittleEndian(&robotData.chassis.position.y, message.data + 4);
+    convertFromLittleEndian(&robotData.turret.yaw, message.data + 8);
     return true;
 }
 
 bool RefSerial::decodeToRobotBuffs(const ReceivedSerialMessage& message)
 {
-    if (message.header.dataLength != 1)
+    if (message.header.dataLength != 6)
     {
         return false;
     }
-    robotData.robotBuffStatus.value = message.data[0] & 0b1111;
+    robotData.robotBuffStatus.recoveryBuff = message.data[0];
+    robotData.robotBuffStatus.coolingBuff = message.data[1];
+    robotData.robotBuffStatus.defenseBuff = message.data[2];
+    robotData.robotBuffStatus.vulnerabilityBuff = message.data[3];
+
+    convertFromLittleEndian(&robotData.robotBuffStatus.attackBuff, message.data + 4);
     return true;
 }
 
@@ -283,7 +368,8 @@ bool RefSerial::decodeToAerialEnergyStatus(const ReceivedSerialMessage& message)
     {
         return false;
     }
-    convertFromLittleEndian(&robotData.aerialEnergyStatus, message.data);
+    gameData.airSupportData.state = static_cast<Rx::AirSupportState>(message.data[0] & 0x03);
+    gameData.airSupportData.remainingStateTime = message.data[1];
     return true;
 }
 
@@ -330,7 +416,85 @@ bool RefSerial::decodeToRFIDStatus(const ReceivedSerialMessage& message)
     {
         return false;
     }
-    robotData.rfidStatus.value = message.data[0];
+    convertFromLittleEndian(&robotData.rfidStatus.value, message.data);
+    return true;
+}
+
+bool RefSerial::decodeToDartStation(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 6)
+    {
+        return false;
+    }
+    gameData.dartStation.state = static_cast<Rx::DartStationState>(message.data[0] & 0x03);
+    convertFromLittleEndian(&gameData.dartStation.targetChangedTime, message.data + 2);
+    convertFromLittleEndian(&gameData.dartStation.lastLaunchedTime, message.data + 4);
+    return true;
+}
+
+bool RefSerial::decodeToGroundPositions(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 40)
+    {
+        return false;
+    }
+    convertFromLittleEndian(&gameData.positions.hero.x, message.data);
+    convertFromLittleEndian(&gameData.positions.hero.y, message.data + 4);
+    convertFromLittleEndian(&gameData.positions.engineer.x, message.data + 8);
+    convertFromLittleEndian(&gameData.positions.engineer.y, message.data + 12);
+    convertFromLittleEndian(&gameData.positions.standard3.x, message.data + 16);
+    convertFromLittleEndian(&gameData.positions.standard3.y, message.data + 20);
+    convertFromLittleEndian(&gameData.positions.standard4.x, message.data + 24);
+    convertFromLittleEndian(&gameData.positions.standard4.y, message.data + 28);
+    convertFromLittleEndian(&gameData.positions.standard5.x, message.data + 32);
+    convertFromLittleEndian(&gameData.positions.standard5.y, message.data + 36);
+    return true;
+}
+
+bool RefSerial::decodeToRadarProgress(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 6)
+    {
+        return false;
+    }
+
+    gameData.radarProgress.hero = message.data[1];
+    gameData.radarProgress.engineer = message.data[2];
+    gameData.radarProgress.standard3 = message.data[3];
+    gameData.radarProgress.standard4 = message.data[4];
+    gameData.radarProgress.standard5 = message.data[5];
+    gameData.radarProgress.sentry = message.data[6];
+
+    return true;
+}
+
+bool RefSerial::decodeToSentryInfo(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 4)
+    {
+        return false;
+    }
+
+    uint32_t data;
+    convertFromLittleEndian(&data, message.data);
+
+    gameData.sentry.projectileAllowance = static_cast<uint16_t>(data & 0x03FF);
+    gameData.sentry.remoteProjectileExchanges = static_cast<uint8_t>((data >> 11) & 0x0F);
+    gameData.sentry.remoteHealthExchanges = static_cast<uint8_t>((data >> 14) & 0x0F);
+
+    return true;
+}
+
+bool RefSerial::decodeToRadarInfo(const ReceivedSerialMessage& message)
+{
+    if (message.header.dataLength != 1)
+    {
+        return false;
+    }
+
+    gameData.radar.availableDoubleVulnerablilityEffects = message.data[0] & 0x03;
+    gameData.radar.activeDoubleVulnerabilityEffect = (message.data[0] >> 2) & 0x01;
+
     return true;
 }
 

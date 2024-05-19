@@ -24,7 +24,7 @@
 #ifndef TAPROOT_TURRET_SUBSYSTEM_INTERFACE_HPP_
 #define TAPROOT_TURRET_SUBSYSTEM_INTERFACE_HPP_
 
-#include "tap/algorithms/contiguous_float.hpp"
+#include "tap/algorithms/wrapped_float.hpp"
 
 #include "subsystem.hpp"
 
@@ -61,11 +61,12 @@ public:
     /**
      * @return The current value of the turret's physical yaw.
      */
-    virtual const tap::algorithms::ContiguousFloat &getCurrentYawValue() const = 0;
+    virtual const tap::algorithms::WrappedFloat &getCurrentYawValue() const = 0;
+
     /**
-     * @see getCurrentYawValue
+     * @return The current physical pitch of the turret.
      */
-    virtual const tap::algorithms::ContiguousFloat &getCurrentPitchValue() const = 0;
+    virtual const tap::algorithms::WrappedFloat &getCurrentPitchValue() const = 0;
 
     /**
      * @return `true` if the turret is online (i.e.: is connected)

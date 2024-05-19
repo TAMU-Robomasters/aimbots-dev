@@ -199,24 +199,24 @@ public:
     float getPitch() const;
 
     /**
-     * Get the pitch of this transformation
+     * Get the yaw of this transformation
      */
     float getYaw() const;
 
     /**
      * Get the x-component of this transform's translation
      */
-    float getX() const;
+    inline float getX() const { return this->translation.data[0]; }
 
     /**
-     * Get the x-component of this transform's translation
+     * Get the y-component of this transform's translation
      */
-    float getY() const;
+    inline float getY() const { return this->translation.data[1]; }
 
     /**
-     * Get the x-component of this transform's translation
+     * Get the z-component of this transform's translation
      */
-    float getZ() const;
+    inline float getZ() const { return this->translation.data[2]; }
 
 private:
     /**
