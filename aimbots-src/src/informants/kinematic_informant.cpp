@@ -245,17 +245,17 @@ void KinematicInformant::updateChassisAcceleration() {
 }
 
 float chassisYawAngleDisplay = 0.0f;
-ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat() {
+WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
-    return ContiguousFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
+    return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
-ContiguousFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat() {
+WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisPitchAngleInGimbalDirection();
-    return ContiguousFloat(currGimbalAngle + currChassisAngle - PITCH_AXIS_START_ANGLE, -M_PI, M_PI);
+    return WrappedFloat(currGimbalAngle + currChassisAngle - PITCH_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {

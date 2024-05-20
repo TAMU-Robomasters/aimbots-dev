@@ -82,8 +82,8 @@ public:
 
     void updateRobotFrames();
 
-    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
-    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
 
     // rad
     float getChassisPitchAngleInGimbalDirection();

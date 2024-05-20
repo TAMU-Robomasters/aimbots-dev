@@ -14,7 +14,7 @@ public:
     ClientDisplaySubsystem(tap::Drivers* drivers);
     virtual ~ClientDisplaySubsystem(){};
 
-    const char* getName() override { return "Client Display"; }
+    const char* getName() const override { return "Client Display"; }
 };
 
 }  // namespace src::Utils::ClientDisplay

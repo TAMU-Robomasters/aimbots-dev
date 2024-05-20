@@ -132,20 +132,20 @@ void GimbalSubsystem::refresh() {
 
     // Set axis angle to be average of all the online motors
     if (yawOnlineCount > 0) {
-        currentYawAxisAngle.setValue(yawAxisAngleSum / yawOnlineCount);
+        currentYawAxisAngle.setWrappedValue(yawAxisAngleSum / yawOnlineCount);
     }
     if (pitchOnlineCount > 0) {
-        currentPitchAxisAngle.setValue(pitchAxisAngleSum / pitchOnlineCount);
+        currentPitchAxisAngle.setWrappedValue(pitchAxisAngleSum / pitchOnlineCount);
     }
 
-    currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getValue());
+    currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getWrappedValue());
     currByFuncYawAngleDisplay = modm::toDegree(this->getCurrentYawAxisAngle(AngleUnit::Radians));
-    currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getValue());
+    currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getWrappedValue());
 
     // update gimbal orientation buffer
     std::pair<float, float> orientation;
-    orientation.first = currentYawAxisAngle.getValue();
-    orientation.second = currentPitchAxisAngle.getValue();
+    orientation.first = currentYawAxisAngle.getWrappedValue();
+    orientation.second = currentPitchAxisAngle.getWrappedValue();
 
     gimbalOrientationBuffer.prependOverwrite(orientation);
 }
@@ -183,4 +183,4 @@ float GimbalSubsystem::getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit un
 
 }  // namespace src::Gimbal
 
-#endif //#ifdef GIMBAL_COMPATIBLE
+#endif  //#ifdef GIMBAL_COMPATIBLE

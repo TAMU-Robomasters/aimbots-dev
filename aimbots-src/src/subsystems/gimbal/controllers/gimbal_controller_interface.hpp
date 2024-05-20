@@ -13,10 +13,10 @@ public:
     virtual void runPitchController(std::optional<float> velocityLimit = std::nullopt) = 0;
 
     virtual void setTargetYaw(AngleUnit unit, float targetYaw) = 0;
-    void setTargetYaw(ContiguousFloat targetYaw) { setTargetYaw(AngleUnit::Radians, targetYaw.getValue()); }
+    void setTargetYaw(WrappedFloat targetYaw) { setTargetYaw(AngleUnit::Radians, targetYaw.getWrappedValue()); }
 
     virtual void setTargetPitch(AngleUnit unit, float targetPitch) = 0;
-    void setTargetPitch(ContiguousFloat targetPitch) { setTargetPitch(AngleUnit::Radians, targetPitch.getValue()); }
+    void setTargetPitch(WrappedFloat targetPitch) { setTargetPitch(AngleUnit::Radians, targetPitch.getWrappedValue()); }
 
     virtual float getTargetYaw(AngleUnit unit) const = 0;
     virtual float getTargetPitch(AngleUnit unit) const = 0;

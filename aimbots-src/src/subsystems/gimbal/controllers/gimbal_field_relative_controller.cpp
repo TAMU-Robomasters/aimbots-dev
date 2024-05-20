@@ -61,9 +61,9 @@ void GimbalFieldRelativeController::runYawController(
     fieldRelativeYawTargetDisplay = this->getTargetYaw(AngleUnit::Degrees);
 
     kinematicYawAngleDisplay =
-        modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue());
+        modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue());
 
-    float yawAngularError = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().difference(
+    float yawAngularError = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().minDifference(
         this->getTargetYaw(AngleUnit::Radians));
 
     // limit error to -180 to 180 because we prefer the gimbal to lag behind the target rather than spin around
@@ -131,7 +131,7 @@ float gravComp = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
     float pitchAngularError =
-        drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().difference(
+        drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
 
     pitchAngularErrorDisplay = pitchAngularError;
@@ -160,7 +160,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
         // Gravity compensation should be positive if the gimbal tips forward, negative if it tips backwards
         float gravityCompensationFeedforward =
             kGRAVITY *
-            cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue());
+            cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
 
         float velocityFeedforward = gravityCompensationFeedforward +
                                     CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
@@ -191,5 +191,5 @@ bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline()
 
 }  // namespace src::Gimbal
 
-#endif // GIMBAL_COMPATIBLE
+#endif  // GIMBAL_COMPATIBLE
 #endif  // GIMBAL_UNTETHERED
