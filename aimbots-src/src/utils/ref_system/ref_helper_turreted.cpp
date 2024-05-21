@@ -21,17 +21,15 @@ float RefereeHelperTurreted::getCurrHealthPercentage() {
 }
 
 std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit() {
-    auto& turretData = drivers->refSerial.getRobotData().turret;
-
     switch (currBarrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return turretData.barrelSpeedLimit17ID1;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_17MM_2:
-            return turretData.barrelSpeedLimit17ID2;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
-            return turretData.barrelSpeedLimit42;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_42MM;
 
         default:
             return std::nullopt;
@@ -39,17 +37,15 @@ std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit
 }
 
 std::optional<uint16_t> RefereeHelperTurreted::getProjectileSpeedLimit(BarrelID barrelID) {
-    auto& turretData = drivers->refSerial.getRobotData().turret;
-
     switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return turretData.barrelSpeedLimit17ID1;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_17MM_2:
-            return turretData.barrelSpeedLimit17ID2;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
-            return turretData.barrelSpeedLimit42;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_42MM;
 
         default:
             return std::nullopt;
