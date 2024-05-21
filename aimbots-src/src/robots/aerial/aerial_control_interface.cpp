@@ -1,5 +1,5 @@
 #if defined(TARGET_AERIAL)
-#include "AERIAL_control_interface.hpp"
+#include "aerial_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
@@ -143,7 +143,7 @@ float OperatorInterface::getGimbalPitchInput() {
     mouseYFilter.update(-drivers->remote.getMouseY());
     mouseYDisplay = mouseYFilter.getValue();
 
-    //mouseYDisplay = drivers->remote.getMouseY();
+    // mouseYDisplay = drivers->remote.getMouseY();
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
            static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;
