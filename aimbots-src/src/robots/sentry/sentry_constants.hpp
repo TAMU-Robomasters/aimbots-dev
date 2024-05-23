@@ -27,24 +27,23 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5, MotorID::MOTOR7};
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(198.2f)), //179.6
-    wrapTo0To2PIRange(modm::toRadian(198.3f))}; //179.4
+    wrapTo0To2PIRange(modm::toRadian(42.58f))}; // 198.2
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (2.0f / 1.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(60.6f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(229.0f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -53,8 +52,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-20.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(11.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-6.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -205,9 +204,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 25.0f,  // 40
+    .kp = 15.0f,  // 40
     .ki = 0.0f,
-    .kd = 0.0f,  // 0.01
+    .kd = 0.8f,  // 0.01
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -237,16 +236,17 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
-// clang-format off
+// clang-format off;
 // Sentry shoots at the speed of death
 static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 750.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
 
-static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19; // total balls in burst
+static constexpr uint8_t FEEDER_GEAR_RATION = 36;
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -274,14 +274,14 @@ static constexpr bool SHOOTER_2_DIRECTION = false;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = true;
+static constexpr bool FEEDER_DIRECTION = false;
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
  */
 static constexpr float WHEEL_RADIUS = 0.07663f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f;  // updated for 2023
+static constexpr float WHEELBASE_WIDTH = 0.357f;
 
 static constexpr float WHEELBASE_LENGTH = 0.357f;
 
@@ -352,9 +352,9 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  */
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.0002f, // x
-    0.04894f, // y
-    0.084879f,  // z
+    -0.017473f, // x
+    0.171927f, // y
+    -0.046239f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
@@ -369,11 +369,11 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
     0.0f, // z
 };
 
-//0.04301 how far apart barrels are
+//0.04341 how far apart barrels are
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.01785f - (0.5f * 0.04301f), //x = 0.04498
-    0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00018f, //z = 0.01683
+    0.015727 - (0.5f * 0.04341f), // x
+    0.187184f, // y 
+    -0.011049f, // z = 0.01683
 };
 // clang-format on
 

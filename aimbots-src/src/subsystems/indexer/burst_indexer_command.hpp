@@ -12,7 +12,7 @@ public:
         IndexerSubsystem*,
         float speed,
         float acceptableHeatThreshold = 0.90f,
-        int burstLength = DEFAULT_BURST_LENGTH);
+        int burstLength = PROJECTILES_PER_FEEDER_ROTATION);
     void initialize() override;
 
     void execute() override;

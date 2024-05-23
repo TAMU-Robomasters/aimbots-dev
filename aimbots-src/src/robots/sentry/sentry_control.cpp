@@ -243,10 +243,10 @@ HoldRepeatCommandMapping rightSwitchUp(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&dualBarrelsFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+// HoldCommandMapping leftClickMouse(
+//     drivers(),
+//     {&dualBarrelsFeederCommandFromMouse},
+//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // HoldCommandMapping leftSwitchMid(
 //     drivers(),
