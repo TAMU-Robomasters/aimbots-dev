@@ -24,7 +24,7 @@ static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
-static constexpr uint8_t YAW_MOTOR_COUNT = 2;
+static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
@@ -35,7 +35,7 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(42.58f))}; // 198.2
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (2.0f / 1.0f);  // for 2024 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -246,7 +246,9 @@ static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
 
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19; // total balls in burst
-static constexpr uint8_t FEEDER_GEAR_RATION = 36;
+static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
+
+static constexpr int DEFAULT_BURST_LENGTH = 10;
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -351,19 +353,21 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  * @brief Transformation Matrices, specific to robot
  */
 // clang-format off
+
+// Updated for 2024 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
     -0.017473f, // x
     0.171927f, // y
     -0.046239f,  // z
 };
 
-static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
+static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
 
-static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
+static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{ // not used
     -2.830f, // x
     -0.730f, // y
     0.0f, // z
@@ -373,7 +377,7 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     0.015727 - (0.5f * 0.04341f), // x
     0.187184f, // y 
-    -0.011049f, // z = 0.01683
+    -0.011049f, // z
 };
 // clang-format on
 

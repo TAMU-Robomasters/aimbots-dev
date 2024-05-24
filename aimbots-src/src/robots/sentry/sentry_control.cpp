@@ -127,9 +127,19 @@ SentryMatchFiringControlCommand matchFiringControlCommand(
     &ballisticsSolver,
     &gimbalFieldRelativeController,
     chassisMatchState);
-SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
-defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
-matchGimbalControlCommand(
+
+SentryMatchChassisControlCommand matchChassisControlCommand(
+    drivers(), 
+    &chassis, 
+    &gimbal, 
+    chassisMatchState, 
+    &refHelper,
+    defaultSnapConfig, 
+    defaultTokyoConfig, 
+    false, 
+    randomizerConfig); 
+
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
@@ -216,7 +226,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {&chassisToggleDriveCommand, /* &gimbalToggleAimCommand */ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
