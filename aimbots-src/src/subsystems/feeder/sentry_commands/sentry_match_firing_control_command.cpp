@@ -8,8 +8,8 @@ namespace src::Control {
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
-static constexpr float MAX_FEEDER_SPEED = 500.0f;
-static constexpr float MIN_FEEDER_SPEED = 70.0f;
+static constexpr float MAX_FEEDER_SPEED = 3000.0f;
+static constexpr float MIN_FEEDER_SPEED = 1500.0f;
 
 float percentageToSpeed(float percentage) { return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED; }
 
