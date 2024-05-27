@@ -335,8 +335,8 @@ void KinematicInformant::updateRobotFrames() {
 
     // update gimbal orientation buffer
     std::pair<float, float> orientation;
-    orientation.first = getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat().getValue();
-    orientation.second = getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat().getValue();
+    orientation.first = getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+    orientation.second = getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
 
     gimbalFieldOrientationBuffer.prependOverwrite(orientation);
 

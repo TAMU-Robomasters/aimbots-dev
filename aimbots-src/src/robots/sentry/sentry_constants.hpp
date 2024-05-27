@@ -251,9 +251,6 @@ static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19; // total balls in burst
-static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
-
 static constexpr int DEFAULT_BURST_LENGTH = 10;
 
 // CAN Bus 2

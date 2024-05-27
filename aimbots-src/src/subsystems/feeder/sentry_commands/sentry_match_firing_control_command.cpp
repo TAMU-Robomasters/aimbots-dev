@@ -31,7 +31,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, 2, UNJAM_TIMER_MS),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -3000, 2, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
