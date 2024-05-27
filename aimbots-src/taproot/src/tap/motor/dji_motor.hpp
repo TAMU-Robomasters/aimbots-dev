@@ -80,6 +80,27 @@ public:
     // 0 - 8191 for dji motors
     static constexpr uint16_t ENC_RESOLUTION = 8192;
 
+    // Maximum values for following motors
+    // Controller for the M2006, in mA output
+    static constexpr uint16_t MAX_OUTPUT_C610 = 10000;
+    // Controller for the M3508, in mA output (Mapped to a 20A range though, not 1:1)
+    static constexpr uint16_t MAX_OUTPUT_C620 = 16384;
+    // Controller for the M3510, in mA output (Not known if mapped to 20A range)
+    static constexpr uint16_t MAX_OUTPUT_820R = 32767;
+
+    // Output is in mV
+    static constexpr uint16_t MAX_OUTPUT_GM6020 = 25000;
+    // Output is in mV
+    static constexpr uint16_t MAX_OUTPUT_GM3510 = 29000;
+
+    // Internal gear ratio of the following motors
+    static constexpr float GEAR_RATIO_M3508 = 3591.0f / 187.0f;
+    static constexpr float GEAR_RATIO_M3510_L1 = 3.7f / 1.0f;
+    static constexpr float GEAR_RATIO_M3510_L2 = 5.2f / 1.0f;
+    static constexpr float GEAR_RATIO_M3510_L3 = 19.0f / 1.0f;
+    static constexpr float GEAR_RATIO_M3510_L4 = 27.0f / 1.0f;
+    static constexpr float GEAR_RATIO_M2006 = 36.0f / 1.0f;
+
     /**
      * @param drivers a pointer to the drivers struct
      * @param desMotorIdentifier the ID of this motor controller

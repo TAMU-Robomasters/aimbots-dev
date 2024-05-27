@@ -52,7 +52,7 @@ Bmi088::Bmi088(tap::Drivers *drivers) : drivers(drivers), imuHeater(drivers) {}
 
 Bmi088::ImuState Bmi088::getImuState() const { return imuState; }
 
-void Bmi088::requestRecalibration()
+void Bmi088::requestRecalibration(modm::Vector3f calibrationEulerAngles) // function param will be lost in taproot regen
 {
     if (imuState == ImuState::IMU_NOT_CALIBRATED || imuState == ImuState::IMU_CALIBRATED)
     {
@@ -68,6 +68,7 @@ void Bmi088::requestRecalibration()
         data.accG[ImuData::X] = 0;
         data.accG[ImuData::Y] = 0;
         data.accG[ImuData::Z] = 0;
+        lastCalibrationEulerAngles = calibrationEulerAngles; // WILL BE LOST IN TAPROOT FUNCTION REGEN
         calibrationSample = 0;
         imuState = ImuState::IMU_CALIBRATING;
     }
@@ -254,6 +255,7 @@ void Bmi088::computeOffsets()
         data.accOffsetRaw[ImuData::Z] /= BMI088_OFFSET_SAMPLES;
         imuState = ImuState::IMU_CALIBRATED;
         mahonyAlgorithm.reset();
+        mahonyAlgorithm.setCalibrationEuler(lastCalibrationEulerAngles);
     }
 }
 

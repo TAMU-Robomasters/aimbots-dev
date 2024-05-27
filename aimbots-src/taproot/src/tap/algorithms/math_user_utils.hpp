@@ -31,6 +31,8 @@
 
 #include "modm/architecture/interface/assert.hpp"
 #include "modm/math/geometry/angle.hpp"
+#include "modm/math/geometry/quaternion.hpp"
+#include "modm/math/geometry/vector3.hpp"
 
 #include "cmsis_mat.hpp"
 
@@ -164,6 +166,11 @@ constexpr int32_t ceil(float num)
                ? static_cast<int32_t>(num)
                : static_cast<int32_t>(num) + ((num > 0) ? 1 : 0);
 }
+
+/**
+ * Returns <roll, pitch, yaw> decoded from q
+ */
+modm::Vector3f eulerAnglesFromQuaternion(modm::Quaternion<float>& q);
 
 /**
  * Returns the sign of the value passed in. Either -1, 0, or 1. Works for all base types and any

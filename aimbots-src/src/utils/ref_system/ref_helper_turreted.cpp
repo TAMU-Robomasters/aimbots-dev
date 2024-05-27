@@ -21,17 +21,15 @@ float RefereeHelperTurreted::getCurrHealthPercentage() {
 }
 
 std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit() {
-    auto& turretData = drivers->refSerial.getRobotData().turret;
-
     switch (currBarrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return turretData.barrelSpeedLimit17ID1;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_17MM_2:
-            return turretData.barrelSpeedLimit17ID2;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
-            return turretData.barrelSpeedLimit42;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_42MM;
 
         default:
             return std::nullopt;
@@ -39,17 +37,15 @@ std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit
 }
 
 std::optional<uint16_t> RefereeHelperTurreted::getProjectileSpeedLimit(BarrelID barrelID) {
-    auto& turretData = drivers->refSerial.getRobotData().turret;
-
     switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return turretData.barrelSpeedLimit17ID1;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_17MM_2:
-            return turretData.barrelSpeedLimit17ID2;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
-            return turretData.barrelSpeedLimit42;
+            return RefSerialRxData::MAX_LAUNCH_SPEED_42MM;
 
         default:
             return std::nullopt;
@@ -79,20 +75,19 @@ bool RefereeHelperTurreted::isCurrBarrelHeatUnderLimit(float percentageOfLimit) 
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
 
+    heatLimit = turretData.heatLimit;
+
     switch (currBarrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
-            heatLimit = turretData.heatLimit42;
             break;
         }
         default:
@@ -108,20 +103,19 @@ bool RefereeHelperTurreted::isBarrelHeatUnderLimit(float percentageOfLimit, Barr
     uint16_t lastHeat = 0;
     uint16_t heatLimit = 0;
 
+    heatLimit = turretData.heatLimit;
+
     switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
-            heatLimit = turretData.heatLimit42;
             break;
         }
         default:
@@ -138,22 +132,21 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     uint16_t heatLimit = 0;
     auto projectileType = RefSerialRxData::BulletType::AMMO_17;
 
+    heatLimit = turretData.heatLimit;
+
     switch (currBarrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
-            heatLimit = turretData.heatLimit42;
             projectileType = RefSerialRxData::AMMO_42;
             break;
         }
@@ -162,7 +155,8 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     }
 
     return ((lastHeat + heatGainedPerProjectile[projectileType - 1] + safetyHeatTolerance) < heatLimit) /*||
-           (heatGainedPerProjectile[projectileType - 1] >= heatLimit)*/;  //-1 is to align array index with enum values
+           (heatGainedPerProjectile[projectileType - 1] >= heatLimit)*/
+        ;  //-1 is to align array index with enum values
 }
 
 bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
@@ -172,22 +166,21 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
     uint16_t heatLimit = 0;
     auto projectileType = RefSerialRxData::BulletType::AMMO_17;
 
+    heatLimit = turretData.heatLimit;
+
     switch (barrelID) {
         case RefSerialRxData::MechanismID::TURRET_17MM_1: {
             lastHeat = turretData.heat17ID1;
-            heatLimit = turretData.heatLimit17ID1;
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_17MM_2: {
             lastHeat = turretData.heat17ID2;
-            heatLimit = turretData.heatLimit17ID2;
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
-            heatLimit = turretData.heatLimit42;
             projectileType = RefSerialRxData::AMMO_42;
             break;
         }
@@ -220,8 +213,8 @@ uint8_t RefereeHelperTurreted::getRemainingProjectiles() {
         default:
             return true;
     }
-        uint16_t remainingHeat = getCurrBarrelLimit() - getCurrBarrelHeat();
-        return remainingHeat / heatGainedPerProjectile[projectileType - 1];
-    }
+    uint16_t remainingHeat = getCurrBarrelLimit() - getCurrBarrelHeat();
+    return remainingHeat / heatGainedPerProjectile[projectileType - 1];
+}
 
 }  // namespace src::Utils

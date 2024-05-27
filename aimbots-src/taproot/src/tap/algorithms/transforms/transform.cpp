@@ -89,4 +89,25 @@ Transform Transform::compose(const Transform& second) const
     CMSISMat<3, 1> newPos = this->translation + this->rotation * second.translation;
     return Transform(newPos, newRot);
 }
+
+float Transform::getRoll() const
+{
+    float jz = rotation.data[2 * 3 + 1];
+    float kz = rotation.data[2 * 3 + 2];
+    return atan2(jz, kz);
+}
+
+float Transform::getPitch() const
+{
+    float iz = rotation.data[2 * 3 + 0];
+    return asinf(-iz);
+}
+
+float Transform::getYaw() const
+{
+    float iy = rotation.data[1 * 3 + 0];
+    float ix = rotation.data[0 * 3 + 0];
+    return atan2(iy, ix);
+}
+
 }  // namespace tap::algorithms::transforms

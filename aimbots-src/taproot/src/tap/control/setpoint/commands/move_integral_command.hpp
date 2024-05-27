@@ -85,7 +85,7 @@ public:
 
     bool isFinished() const override;
 
-private:
+protected:
     Config config;
 
     IntegrableSetpointSubsystem& integrableSetpointSubsystem;

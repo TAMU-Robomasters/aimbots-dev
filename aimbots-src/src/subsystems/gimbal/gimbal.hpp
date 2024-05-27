@@ -1,7 +1,7 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <tap/algorithms/contiguous_float.hpp>
+#include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/common_types.hpp>
 #include <utils/robot_specific_inc.hpp>
@@ -25,7 +25,7 @@ public:
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawMotors[i] =
                 new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
-            currentYawAxisAnglesByMotor[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
+            currentYawAxisAnglesByMotor[i] = new tap::algorithms::WrappedFloat(0.0f, -M_PI, M_PI);
         }
     }
 
@@ -33,7 +33,7 @@ public:
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchMotors[i] =
                 new DJIMotor(drivers, PITCH_MOTOR_IDS[i], PITCH_GIMBAL_BUS, PITCH_MOTOR_DIRECTIONS[i], PITCH_MOTOR_NAMES[i]);
-            currentPitchAxisAnglesByMotor[i] = new tap::algorithms::ContiguousFloat(0.0f, -M_PI, M_PI);
+            currentPitchAxisAnglesByMotor[i] = new tap::algorithms::WrappedFloat(0.0f, -M_PI, M_PI);
         }
     }
 
@@ -80,7 +80,7 @@ public:
     mockable void initialize() override;
     void refresh() override;
 
-    const char* getName() override { return "Gimbal Subsystem"; }
+    const char* getName() const override { return "Gimbal Subsystem"; }
 
     inline bool isOnline() const {
         bool pitchOnline = false;
@@ -161,19 +161,17 @@ public:
     inline void setYawAxisAngleOffset(float offset) { yawAxisOffset = offset; }
 
     inline float getCurrentYawAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getValue() + yawAxisOffset
-                                            : modm::toDegree(currentYawAxisAngle.getValue() + yawAxisOffset);
+        return (unit == AngleUnit::Radians) ? currentYawAxisAngle.getWrappedValue() + yawAxisOffset
+                                            : modm::toDegree(currentYawAxisAngle.getWrappedValue() + yawAxisOffset);
     }
 
     inline float getCurrentPitchAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? currentPitchAxisAngle.getValue()
-                                            : modm::toDegree(currentPitchAxisAngle.getValue());
+        return (unit == AngleUnit::Radians) ? currentPitchAxisAngle.getWrappedValue()
+                                            : modm::toDegree(currentPitchAxisAngle.getWrappedValue());
     }
 
-    inline tap::algorithms::ContiguousFloat const& getCurrentYawAxisAngleAsContiguousFloat() const {
-        return currentYawAxisAngle;
-    }
-    inline tap::algorithms::ContiguousFloat const& getCurrentPitchAxisAngleAsContiguousFloat() const {
+    inline tap::algorithms::WrappedFloat const& getCurrentYawAxisAngleAsWrappedFloat() const { return currentYawAxisAngle; }
+    inline tap::algorithms::WrappedFloat const& getCurrentPitchAxisAngleAsWrappedFloat() const {
         return currentPitchAxisAngle;
     }
 
@@ -193,29 +191,30 @@ public:
     }
 
     inline float getTargetYawAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? targetYawAxisAngle.getValue() : modm::toDegree(targetYawAxisAngle.getValue());
+        return (unit == AngleUnit::Radians) ? targetYawAxisAngle.getWrappedValue()
+                                            : modm::toDegree(targetYawAxisAngle.getWrappedValue());
     }
     inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetYawAxisAngle.setValue(angle);
+        targetYawAxisAngle.setWrappedValue(angle);
     }
 
     inline float getTargetPitchAxisAngle(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.getValue()
-                                            : modm::toDegree(targetPitchAxisAngle.getValue());
+        return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.getWrappedValue()
+                                            : modm::toDegree(targetPitchAxisAngle.getWrappedValue());
     }
     inline void setTargetPitchAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetPitchAxisAngle.setValue(tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
+        targetPitchAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
     }
 
     float getYawSetpointError(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? targetYawAxisAngle.difference(currentYawAxisAngle)
-                                            : modm::toDegree(targetYawAxisAngle.difference(currentYawAxisAngle));
+        return (unit == AngleUnit::Radians) ? targetYawAxisAngle.minDifference(currentYawAxisAngle)
+                                            : modm::toDegree(targetYawAxisAngle.minDifference(currentYawAxisAngle));
     }
     float getPitchSetpointError(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.difference(currentPitchAxisAngle)
-                                            : modm::toDegree(targetPitchAxisAngle.difference(currentPitchAxisAngle));
+        return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.minDifference(currentPitchAxisAngle)
+                                            : modm::toDegree(targetPitchAxisAngle.minDifference(currentPitchAxisAngle));
     }
 
     float getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const;
@@ -239,21 +238,20 @@ private:
     std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
     std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
 
-    std::array<tap::algorithms::ContiguousFloat*, YAW_MOTOR_COUNT>
-        currentYawAxisAnglesByMotor;  // chassis relative, in radians
-    std::array<tap::algorithms::ContiguousFloat*, PITCH_MOTOR_COUNT>
+    std::array<tap::algorithms::WrappedFloat*, YAW_MOTOR_COUNT> currentYawAxisAnglesByMotor;  // chassis relative, in radians
+    std::array<tap::algorithms::WrappedFloat*, PITCH_MOTOR_COUNT>
         currentPitchAxisAnglesByMotor;  // chassis relative, in radians
 
     std::array<float, YAW_MOTOR_COUNT> desiredYawMotorOutputs;
     std::array<float, PITCH_MOTOR_COUNT> desiredPitchMotorOutputs;
 
-    tap::algorithms::ContiguousFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
-    tap::algorithms::ContiguousFloat currentPitchAxisAngle;  // chassis relative, in radians
+    tap::algorithms::WrappedFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
+    tap::algorithms::WrappedFloat currentPitchAxisAngle;  // chassis relative, in radians
 
     float yawAxisOffset = 0;  // in radians
 
-    tap::algorithms::ContiguousFloat targetYawAxisAngle;    // chassis relative, in radians
-    tap::algorithms::ContiguousFloat targetPitchAxisAngle;  // chassis relative, in radians
+    tap::algorithms::WrappedFloat targetYawAxisAngle;    // chassis relative, in radians
+    tap::algorithms::WrappedFloat targetPitchAxisAngle;  // chassis relative, in radians
 
     void setDesiredOutputToYawMotor(uint8_t YawIdx);
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
