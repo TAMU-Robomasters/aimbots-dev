@@ -243,9 +243,9 @@ static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 2550.0f; // 23.6 bps | pre-gearbox rpm
 
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19; // total balls in burst
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 20; // total balls in burst
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;
