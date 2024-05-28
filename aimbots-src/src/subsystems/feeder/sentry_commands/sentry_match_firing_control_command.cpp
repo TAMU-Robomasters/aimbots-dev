@@ -8,8 +8,8 @@ namespace src::Control {
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
-static constexpr float MAX_FEEDER_SPEED = 3000.0f;
-static constexpr float MIN_FEEDER_SPEED = 1500.0f;
+static constexpr float MAX_FEEDER_SPEED = 2550.0f; // 23.6 bps
+static constexpr float MIN_FEEDER_SPEED = 760.0f; // 7 bps
 
 float percentageToSpeed(float percentage) { return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED; }
 
@@ -88,9 +88,9 @@ void SentryMatchFiringControlCommand::execute() {
             float feederSpeed = MAX_FEEDER_SPEED;
             float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage
 
-            if (targetDepth <= 3.0f) {
+            if (targetDepth <= 1.5f) { // meters
                 feederSpeed = MAX_FEEDER_SPEED;
-            } else if (targetDepth <= 4.0f) {
+            } else if (targetDepth <= 3.0f) {
                 feederSpeed = percentageToSpeed(0.75f + healthPressure);
             } else if (targetDepth <= 5.0f) {
                 feederSpeed = percentageToSpeed(0.4f + healthPressure);
