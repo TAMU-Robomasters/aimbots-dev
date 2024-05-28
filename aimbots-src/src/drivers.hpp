@@ -22,7 +22,7 @@
 
 #include "tap/drivers.hpp"
 
-#include "informants/hitTracker.hpp"
+#include "informants/hit_Tracker.hpp"
 #include "informants/kinematic_informant.hpp"
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/turret-comms/turret_can_communicator.hpp"
