@@ -51,7 +51,7 @@ static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wra
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Hero
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Hero
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
@@ -257,21 +257,19 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
 // clang-format on
-static constexpr uint16_t shooter_speed_array[4] = {
-    10,
-    3900,  // {ball m/s, flywheel rpm} //3900
-    16,
+static constexpr uint16_t shooter_speed_array[2] = {
+    16,     // 10 m/s firing removed in 2024
     6100};  // 6500
 
 // clang-format on
 
-static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 static constexpr float INDEXER_DEFAULT_RPM = 4000.0f;
 
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 6;
-static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
+static constexpr uint8_t FEEDER_GEAR_RATIO = 19; // @TODO: turn this into float? 3508 Motor
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
