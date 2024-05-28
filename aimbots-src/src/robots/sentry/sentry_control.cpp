@@ -261,7 +261,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&imuCalibrateCommand, &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
@@ -278,7 +278,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&dualBarrelsFeederCommand, /*&runShooterWithFeederCommand*/&matchFiringControlCommand},
+    {&dualBarrelsFeederCommand, /*&runShooterWithFeederCommand*/ &matchFiringControlCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

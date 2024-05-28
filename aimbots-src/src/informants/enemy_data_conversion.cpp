@@ -62,8 +62,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         // Current time - (how long ago the frame was captured)
     };
 
-    // now that we have enemy position (in METERS), transform to chassis space ! ! !
-    // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
+    // Enemy Position in meters
 
     VisionTimedPosition transformedPosition{
         .position = cameraFrame.getPointInFrame(fieldFrame, currentData.position),
@@ -147,9 +146,9 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(dt / MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
