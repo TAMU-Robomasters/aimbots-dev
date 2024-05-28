@@ -66,12 +66,13 @@ void randomizeSpinCharacteristics(
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
 float findNearestChassisErrorTo(float chassisRelativeTargetAngle, SnapSymmetryConfig snapSymmetryConfig) {
     float angleBetweenCorners = M_TWOPI / static_cast<float>(snapSymmetryConfig.numSnapPositions);
-    ContiguousFloat targetContiguousAngle(chassisRelativeTargetAngle, 0, M_TWOPI);
+    WrappedFloat targetContiguousAngle(chassisRelativeTargetAngle, 0, M_TWOPI);
 
-    float nearestCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle);
+    float nearestCornerError = targetContiguousAngle.minDifference(snapSymmetryConfig.snapAngle);
 
     for (int i = 1; i < snapSymmetryConfig.numSnapPositions; i++) {
-        float currentCornerError = targetContiguousAngle.difference(snapSymmetryConfig.snapAngle + i * angleBetweenCorners);
+        float currentCornerError =
+            targetContiguousAngle.minDifference(snapSymmetryConfig.snapAngle + i * angleBetweenCorners);
 
         if (fabsf(currentCornerError) < fabsf(nearestCornerError)) {
             nearestCornerError = currentCornerError;
@@ -83,4 +84,4 @@ float findNearestChassisErrorTo(float chassisRelativeTargetAngle, SnapSymmetryCo
 
 }  // namespace src::Chassis::Helper
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

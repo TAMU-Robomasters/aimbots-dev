@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tap/algorithms/contiguous_float.hpp>
+#include <tap/algorithms/wrapped_float.hpp>
 
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
@@ -86,8 +86,8 @@ public:
     // This updates more than just the robot frames, so will also update turret frames
     void updateRobotFrames();
 
-    tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
-    tap::algorithms::ContiguousFloat getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
 
     // rad
     float getChassisPitchAngleInGimbalDirection();

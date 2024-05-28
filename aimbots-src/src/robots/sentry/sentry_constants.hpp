@@ -10,6 +10,8 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
+static constexpr SongTitle STARTUP_SONG = SongTitle::WE_ARE_NUMBER_ONE;
+
 /**
  * @brief Defines the number of motors created for the chassis.
  */
@@ -32,7 +34,7 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(42.58f))}; // 198.2
+    wrapTo0To2PIRange(modm::toRadian(42.58f))};  // 198.2
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (34.0f / 70.0f);  // for 2024 Sentry
@@ -43,7 +45,8 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (34.0f / 70.0f);  // for 2024 Sen
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(229.0f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {
+    wrapTo0To2PIRange(modm::toRadian(229.0f))};  // 60.6
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -89,7 +92,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f, //35 
+    .kp = 20.0f,  // 35
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -245,7 +248,7 @@ static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 2550.0f; // 23.6 bps | pre-gearbox rpm
 
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 20; // total balls in burst
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;
@@ -385,7 +388,7 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);

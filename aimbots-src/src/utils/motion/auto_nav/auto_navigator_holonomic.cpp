@@ -10,7 +10,7 @@ void AutoNavigatorHolonomic::update(modm::Location2D<float> currentWorldLocation
     this->worldXError = targetLocation.getX() - currentWorldLocation.getX();
     this->worldYError = targetLocation.getY() - currentWorldLocation.getY();
     this->worldRotationError =
-        ContiguousFloat(targetLocation.getOrientation(), 0, M_TWOPI).difference(currentWorldLocation.getOrientation());
+        WrappedFloat(targetLocation.getOrientation(), 0, M_TWOPI).minDifference(currentWorldLocation.getOrientation());
 }
 
 void AutoNavigatorHolonomic::getDesiredInput(float* worldXError, float* worldYError, float* worldRotationError) {

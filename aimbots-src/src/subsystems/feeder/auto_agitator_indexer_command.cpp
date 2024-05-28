@@ -22,7 +22,7 @@ AutoAgitatorIndexerCommand::AutoAgitatorIndexerCommand(
       refHelper(refHelper),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
       MAX_UNJAM_COUNT(MAX_UNJAM_COUNT),
-      runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1500.0f, UNJAM_TIMER_MS),
+      runFeederCommand(drivers, feeder, refHelper, feederSpeed, 1500.0f, 1, UNJAM_TIMER_MS),
       stopFeederCommand(drivers, feeder),
       runIndexerCommand(drivers, indexer, refHelper, indexerSpeed, acceptableHeatThreshold),
       /*reverseIndexerCommand(drivers, indexer, refHelper, -indexerSpeed * 0.5, 1.0f),*/

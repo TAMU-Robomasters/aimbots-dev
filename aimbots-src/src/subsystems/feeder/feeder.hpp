@@ -28,6 +28,8 @@ public:
 
     float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
+    int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
+
     int getTotalLimitCount() const;
 
 #ifndef ENV_UNIT_TESTS
