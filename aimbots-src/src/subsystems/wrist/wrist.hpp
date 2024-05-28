@@ -14,7 +14,6 @@ enum MotorControlMode { VELOCITY, POSITION };
 
 // Can go to starting angle plus/minus this angle (yaw, pitch, roll)
 static constexpr float WRIST_ANGLE_RANGES[] = {PI / 4, PI / 4, F32_ABSMAX};
-static MotorControlMode motor_control_setting = VELOCITY;
 class WristSubsystem : public tap::control::Subsystem {
 public:
     WristSubsystem(src::Drivers*);
@@ -95,6 +94,8 @@ private:
     std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads{};
     std::array<float, WRIST_MOTOR_COUNT> targetRPMs{};
     std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs{};
+
+    MotorControlMode motor_control_setting = VELOCITY;
 
     // Update motor PIDs to reach target angle. Don't call alongside updateMotorPID_velocity
     void updateMotorPID(MotorIndex);

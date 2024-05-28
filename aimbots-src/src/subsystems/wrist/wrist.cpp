@@ -24,6 +24,9 @@ void WristSubsystem::refresh() { ForAllWristMotors(&WristSubsystem::setDesiredOu
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
+    UNUSED(x);
+    UNUSED(y);
+    UNUSED(z);
 }
 
 void WristSubsystem::updateAllPIDs() {

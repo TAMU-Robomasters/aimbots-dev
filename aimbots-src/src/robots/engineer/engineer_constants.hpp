@@ -7,6 +7,8 @@
 
 #define CV_COMPATIBLE
 
+#define SLIDE_COMPATIBLE
+
 #define WRIST_COMPATIBLE
 
 // #define TURRET_HAS_IMU
@@ -24,7 +26,7 @@ static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-/**                     
+/**
  * @brief GIMBAL SETUP
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
@@ -351,9 +353,8 @@ static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR2;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR8;
 static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_REVS_RATIOS[] {1.0f, (0.7f / 800.0f)};
-static constexpr float SLIDE_MAX_POSITIONS_METERS[] = { 0.5f, 0.5f };
-
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{1.0f, (0.7f / 800.0f)};
+static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {0.5f, 0.5f};
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

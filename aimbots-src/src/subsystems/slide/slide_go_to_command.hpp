@@ -1,12 +1,14 @@
 #pragma once
 
-#include "slide.hpp"
+#include "tap/control/command.hpp"
 
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
-#include "tap/control/command.hpp"
 #include "drivers.hpp"
+#include "slide.hpp"
+
+#ifdef SLIDE_COMPATIBLE
 
 namespace src::Slide {
 
@@ -18,7 +20,7 @@ public:
     void end(bool interrupted) override;
 
     void execute() override;
-    
+
     bool isReady() override;
     bool isFinished() const override;
     const char* getName() const override { return "slide go to command"; };
@@ -29,4 +31,6 @@ private:
     float targetX, targetZ;
 };
 
-};
+};  // namespace src::Slide
+
+#endif

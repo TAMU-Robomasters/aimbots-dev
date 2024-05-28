@@ -1,24 +1,23 @@
 #include "slide_control_command.hpp"
 
+#ifdef SLIDE_COMPATIBLE
+
 namespace src::Slide {
 
-static constexpr float JOYSTICK_TO_METERS = 3 / 1000.0f; //Adjust sensitivity
+static constexpr float JOYSTICK_TO_METERS = 3 / 1000.0f;  // Adjust sensitivity
 
 static constexpr int JOYSTICK_READS_PER_SECOND = 20;
 static constexpr int JOYSTICK_READ_DELAY_MS = 1000.0f / JOYSTICK_READS_PER_SECOND;
 
-SlideControlCommand::SlideControlCommand(Drivers* drivers, SlideSubsystem* slide)
-    : drivers(drivers), slide(slide)
-{
+SlideControlCommand::SlideControlCommand(Drivers* drivers, SlideSubsystem* slide) : drivers(drivers), slide(slide) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(slide));
 };
 
-void SlideControlCommand::initialize() {
-    joystickReadDelay.restart(JOYSTICK_READ_DELAY_MS);
-}
+void SlideControlCommand::initialize() { joystickReadDelay.restart(JOYSTICK_READ_DELAY_MS); }
 
 void SlideControlCommand::execute() {
-    float targetX = slide->getTargetXMeters() + JOYSTICK_TO_METERS * drivers->controlOperatorInterface.getSlideFrontBackInput();
+    float targetX =
+        slide->getTargetXMeters() + JOYSTICK_TO_METERS * drivers->controlOperatorInterface.getSlideFrontBackInput();
     float targetZ = slide->getTargetZMeters() + JOYSTICK_TO_METERS * drivers->controlOperatorInterface.getSlideUpDownInput();
 
     // if (joystickReadDelay.execute()) {
@@ -33,12 +32,12 @@ void SlideControlCommand::execute() {
     slide->updateAllPIDs();
 }
 
-void SlideControlCommand::end(bool interrupted) {
-    slide->idle();
-}
+void SlideControlCommand::end(bool interrupted) { slide->idle(); }
 
 bool SlideControlCommand::isReady() { return true; }
 
 bool SlideControlCommand::isFinished() const { return false; }
 
-};
+};  // namespace src::Slide
+
+#endif

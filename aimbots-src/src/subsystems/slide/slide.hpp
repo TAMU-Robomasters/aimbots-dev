@@ -4,14 +4,14 @@
 
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
+
 #include "drivers.hpp"
+
+#ifdef SLIDE_COMPATIBLE
 
 namespace src::Slide {
 
-enum MotorIndex {
-    X = 0,
-    Z = 1
-};
+enum MotorIndex { X = 0, Z = 1 };
 
 class SlideSubsystem : public tap::control::Subsystem {
 public:
@@ -26,17 +26,15 @@ public:
 
     void updateAllPIDs();
 
-    template<typename... Args>
+    template <typename... Args>
     using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);
 
-    template<class... Args>
-    void ForAllSlideMotors(DJIMotorFunc<Args...> func, Args... args)
-    {
-        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++)
-            (motors[i].*func)(args...);
+    template <class... Args>
+    void ForAllSlideMotors(DJIMotorFunc<Args...> func, Args... args) {
+        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) (motors[i].*func)(args...);
     }
 
-    template<class... Args>
+    template <class... Args>
     void ForAllSlideMotors(SlideSubsystemFunc<MotorIndex, Args...> func, Args... args) {
         for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
@@ -44,19 +42,18 @@ public:
         }
     }
 
-    void idle()
-    {
-        desiredOutputs = {};
-    }
+    void idle() { desiredOutputs = {}; }
 
 private:
     std::array<DJIMotor, SLIDE_MOTOR_COUNT> motors;
     std::array<SmoothPID, SLIDE_MOTOR_COUNT> motorPIDs;
-    std::array<float, SLIDE_MOTOR_COUNT> targetPosesMeters {};
-    std::array<int32_t, SLIDE_MOTOR_COUNT> desiredOutputs {};
+    std::array<float, SLIDE_MOTOR_COUNT> targetPosesMeters{};
+    std::array<int32_t, SLIDE_MOTOR_COUNT> desiredOutputs{};
 
     void updateMotorPositionPID(MotorIndex);
     void refreshDesiredOutput(MotorIndex);
 };
 
-}; // src::Slider
+};  // namespace src::Slide
+
+#endif
