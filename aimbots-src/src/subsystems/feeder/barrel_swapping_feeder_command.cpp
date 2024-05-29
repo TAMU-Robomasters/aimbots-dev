@@ -38,12 +38,12 @@ void BarrelSwappingFeederCommand::execute() {
             feeder->setTargetRPM(speed);
             startupThreshold.restart(500);
         }
-        
-        if (fabs(feeder->getRPM(0)) <= 10.0f && startupThreshold.execute()) {
+
+        if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
             feeder->setTargetRPM(unjamSpeed);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
-        
+
     } else {
         feeder->setTargetRPM(0.0f);
         unjamTimer.restart(0);

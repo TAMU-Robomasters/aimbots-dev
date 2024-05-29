@@ -14,8 +14,8 @@ namespace src::Feeder {
 class FeederSubsystem : public tap::control::Subsystem {
 public:
     FeederSubsystem(src::Drivers* drivers);
-    //tagging on building the target RPM array here
-    void BuildFeederMotors(){
+    // tagging on building the target RPM array here
+    void BuildFeederMotors() {
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
                 new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
@@ -31,34 +31,32 @@ public:
     }
 
     template <class... Args>
-    void ForAllFeederMotors(void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args){
+    void ForAllFeederMotors(void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args) {
         for (uint8_t i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             (this->*func)(i, args...);
         }
     }
 
-    void BuildPIDControllers(){
+    void BuildPIDControllers() {
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
         }
     }
 
-
-
     mockable void initialize() override;
     mockable void refresh() override;
 
-  //  float getMotorSpeed(FeederIdx feederIdx) const;
+    //  float getMotorSpeed(FeederIdx feederIdx) const;
 
     inline bool isOnline() const {
         bool feederOnline = false;
-   
+
         for (auto& feederMotor : feederMotors) {
             if (feederMotor->isMotorOnline()) {
                 feederOnline = true;
             }
         }
-        
+
         return feederOnline;
     }
 
@@ -69,17 +67,16 @@ public:
         return feederMotors[FeederIdx]->isMotorOnline();
     }
 
-
     void updateMotorVelocityPID(uint8_t FeederIdxIdx);
 
-    void setDesiredFeederMotorOutput(uint8_t FeederIdx, float output) {desiredFeederMotorOutputs[FeederIdx] = output;}
+    void setDesiredFeederMotorOutput(uint8_t FeederIdx, float output) { desiredFeederMotorOutputs[FeederIdx] = output; }
 
-    void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output);}
+    void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output); }
 
     void setTargetRPM(float rpm, int FeederIdx = 0);
 
-    float getRPM(uint8_t FeederIdx) const {
-        return (feederMotors[FeederIdx]->isMotorOnline()) ?  - feederMotors[FeederIdx]->getShaftRPM() : 0;
+    float getCurrentRPM(uint8_t FeederIdx = 0) const {
+        return (feederMotors[FeederIdx]->isMotorOnline()) ? -feederMotors[FeederIdx]->getShaftRPM() : 0;
     }
 
     inline int16_t getFeederMotorTorque(uint8_t feederIdx) const {
@@ -88,9 +85,11 @@ public:
 
     bool getPressed();
 
-   // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
+    // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
-    int64_t getEncoderUnwrapped() const { return feederMotor.getEncoderUnwrapped() / FEEDER_GEAR_RATIO; }
+    int64_t getEncoderUnwrapped(uint8_t feederIdx = 0) const {
+        return feederMotors[feederIdx]->getEncoderUnwrapped() / FEEDER_GEAR_RATIOS[feederIdx];
+    }
 
     int getTotalLimitCount() const;
 
@@ -103,16 +102,15 @@ private:
 
     void setDesiredOutputToFeederMotor(uint8_t FeederIdx);
 
-    //float targetRPM;
-    //float desiredOutput;
+    // float targetRPM;
+    // float desiredOutput;
     std::array<float, FEEDER_MOTOR_COUNT> feederTargetRPMs;
-
 
     std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederVelocityPIDs;
     // DJIMotor feederMotor;
 
-    src::Informants::LimitSwitch limitSwitch;  
-//#endif
+    src::Informants::LimitSwitch limitSwitch;
+    //#endif
 
     // commands
 };

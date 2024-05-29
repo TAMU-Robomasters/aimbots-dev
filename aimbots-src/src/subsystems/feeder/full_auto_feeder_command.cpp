@@ -61,16 +61,14 @@ void FullAutoFeederCommand::initialize() {
     antiOverheatEncoderThreshold = feeder->getEncoderUnwrapped() + encoderChangeThreshold;
 }
 
-//uint16_t lastHeatDisplay = 0;
-//uint16_t heatLimitDisplay = 0;
-//float watchpeed;
+uint16_t lastHeatDisplay = 0;
+uint16_t heatLimitDisplay = 0;
+// float watchpeed;
 float lastProjectileSpeedDisplay = 0.0f;
 
 void FullAutoFeederCommand::execute() {
-//    watchpeed = speed;
+    //    watchpeed = speed;
     isCommandRunningDisplay = true;
-
-     
 
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
