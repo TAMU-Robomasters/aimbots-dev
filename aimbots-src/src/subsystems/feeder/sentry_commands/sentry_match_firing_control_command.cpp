@@ -8,8 +8,8 @@ namespace src::Control {
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
-static constexpr float MAX_FEEDER_SPEED = 2550.0f; // 23.6 bps
-static constexpr float MIN_FEEDER_SPEED = 760.0f; // 7 bps
+static constexpr float MAX_FEEDER_SPEED = 2550.0f;  // 23.6 bps
+static constexpr float MIN_FEEDER_SPEED = 760.0f;   // 7 bps
 
 float percentageToSpeed(float percentage) { return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED; }
 
@@ -31,7 +31,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -3000, 2, UNJAM_TIMER_MS),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -3000, 0, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
@@ -45,6 +45,7 @@ void SentryMatchFiringControlCommand::initialize() {
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     scheduleIfNotScheduled(this->comprisedCommandScheduler, &runShooterCommand);
     shootMinimumTime.restart(0);
+    refireTimer.restart(0);
 }
 
 bool timerDisplay = false;
@@ -88,7 +89,7 @@ void SentryMatchFiringControlCommand::execute() {
             float feederSpeed = MAX_FEEDER_SPEED;
             float healthPressure = limitVal((1.0f - healthPercentage), 0.0f, 1.0f);  // inverts health percentage
 
-            if (targetDepth <= 1.5f) { // meters
+            if (targetDepth <= 1.5f) {  // meters
                 feederSpeed = MAX_FEEDER_SPEED;
             } else if (targetDepth <= 3.0f) {
                 feederSpeed = percentageToSpeed(0.75f + healthPressure);
@@ -103,7 +104,11 @@ void SentryMatchFiringControlCommand::execute() {
             feederSpeed = limitVal(feederSpeed, MIN_FEEDER_SPEED, MAX_FEEDER_SPEED);
             fullAutoFeederCommand.setSpeed(feederSpeed);
 
-            scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
+            if (refireTimer.execute()) {
+                descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, false);
+                scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
+                refireTimer.restart(2000);
+            }
 
             // }
         } else {

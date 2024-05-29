@@ -69,6 +69,7 @@ private:
     StopShooterCommand stopShooterCommand;
     RunShooterCommand runShooterCommand;
 
+    MilliTimeout refireTimer;
     MilliTimeout shootMinimumTime;
 };
 
