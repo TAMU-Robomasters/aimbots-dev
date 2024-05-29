@@ -79,7 +79,7 @@ public:
         return (feederMotors[FeederIdx]->isMotorOnline()) ? -feederMotors[FeederIdx]->getShaftRPM() : 0;
     }
 
-    inline int16_t getFeederMotorTorque(uint8_t feederIdx) const {
+    inline int16_t getFeederMotorTorque(uint8_t feederIdx = 0) const {
         return feederMotors[feederIdx]->isMotorOnline() ? feederMotors[feederIdx]->getTorque() : 0;
     }
 
