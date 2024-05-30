@@ -8,7 +8,7 @@ namespace src::Control {
 static constexpr int BASE_BURST_LENGTH = 3;
 static constexpr int ANNOYED_BURST_LENGTH = 10;
 
-static constexpr float MAX_FEEDER_SPEED = 2550.0f;  // 23.6 bps
+static constexpr float MAX_FEEDER_SPEED = 2550f;  // 23.6 bps
 static constexpr float MIN_FEEDER_SPEED = 760.0f;   // 7 bps
 
 float percentageToSpeed(float percentage) { return (MAX_FEEDER_SPEED - MIN_FEEDER_SPEED) * percentage + MIN_FEEDER_SPEED; }
@@ -31,7 +31,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -3000, 0, UNJAM_TIMER_MS),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, 3000, 0, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
