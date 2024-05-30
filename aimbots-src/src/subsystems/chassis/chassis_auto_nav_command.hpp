@@ -7,6 +7,7 @@
 #include "drivers.hpp"
 
 #include "informants/pathfinding/graph.hpp"
+#include "informants/pathfinding/Viz_Graph.h"
 
 
 #ifdef CHASSIS_COMPATIBLE
@@ -43,7 +44,7 @@ public:
     void end(bool interrupted) override;
 
     //load series of points into navigation command
-    void load_path(vector<Vector2f> path);
+    void load_path(vector<Point> path);
 
     //loads a new point into auto navigator from path
     void pop_path();
@@ -51,7 +52,7 @@ public:
     const char* getName() const override { return "Chassis Auto Nav"; }
 
 private:
-    vector<Vector2f> path;
+    vector<Point> path;
     src::Drivers* drivers;
     ChassisSubsystem* chassis;
 

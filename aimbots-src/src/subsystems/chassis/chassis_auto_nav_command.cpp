@@ -34,21 +34,95 @@ bool settled = false;
 void ChassisAutoNavCommand::initialize() {
     // modm::Location2D<float> targetLocation({0.5f, 0.5f}, modm::toRadian(90.0f));  // test
     // autoNavigator.setTargetLocation(targetLocation);
-    WeightedSquareGraph graph = WeightedSquareGraph(2, 2, 0.1);
-    graph.remove_region(Vector2f(0.2, 0.2), Vector2f(0.9, 0.9));
-    this->load_path(graph.get_path(Vector2i(0, 0), Vector2i(15, 15)));
+
+    // 15 inches assumed radius = 0.381 meters
+    double radius = 0.381;
+    vector<Point> redWallHor = {
+        Point(0, 3.05 - radius),
+        Point(1.625 + radius, 3.05 - radius),
+        Point(1.625 + radius, 3.074 + radius),
+        Point(0, 3.074 + radius)
+    };
+
+    vector<Point> redWallVert = {
+        Point(3.079 - radius, 0),
+        Point(3.079 - radius, 1.625 + radius),
+        Point(3.079 + radius, 1.625 + radius),
+        Point(3.079 + radius, 0)
+    };
+
+    vector<Point> redDoohickey = {
+        Point(1 - radius, 1 - radius),
+        Point(1 - radius, 2 + radius),
+        Point(2 + radius, 2 + radius),
+        Point(2 + radius, 1 - radius)
+    };
+
+    vector<Point> centerLeftWall = {
+        Point(4.5 - radius, 2.8 - radius),
+        Point(4.5 - radius, 6 + radius),
+        Point(4.5 + radius, 6 + radius),
+        Point(4.5 + radius, 2.8 - radius)
+    };
+
+    vector<Point> blueWallHor = {
+        Point(12 - 0, 8 - (3.05 - radius)),
+        Point(12 - (1.625 + radius), 8 - (3.05 - radius)),
+        Point(12 - (1.625 + radius), 8 - (3.074 + radius)),
+        Point(12 - 0, 8 - (3.074 + radius))
+    };
+
+    vector<Point> blueWallVert = {
+        Point(12 - (3.079 - radius), 8 - 0),
+        Point(12 - (3.079 - radius), 8 - (1.625 + radius)),
+        Point(12 - (3.079 + radius), 8 - (1.625 + radius)),
+        Point(12 - (3.079 + radius), 8 - 0)
+    };
+
+    vector<Point> blueDoohickey = {
+        Point(12 - (1 - radius), 8 - (1 - radius)),
+        Point(12 -(1 - radius), 8 - (2 + radius)),
+        Point(12 -(2 + radius), 8 - (2 + radius)),
+        Point(12 - (2 + radius), 8 - (1 - radius))
+    };
+
+    vector<Point> centerRightWall = {
+        Point(12 - (4.5 - radius), 8 - (2.8 - radius)),
+        Point(12 - (4.5 - radius), 8 - (6 + radius)),
+        Point(12 - (4.5 + radius), 8 - (6 + radius)),
+        Point(12 - (4.5 + radius), 8 - (2.8 - radius))
+    };
+    
+    vector<vector<Point>> polygons = {
+        redWallHor,
+        redWallVert,
+        redDoohickey,
+        centerLeftWall,
+        blueWallHor,
+        blueWallVert,
+        blueDoohickey,
+        centerRightWall
+    };
+
+
+    
+    VizGraph graph = constructVizGraph(polygons);
+    
+
+    vector<Point> path = graph.search(0.5, 0.5, 3, 3);
+    this->load_path(path);
 }
 
 void ChassisAutoNavCommand::pop_path(){
         if (path.empty()) { return; }
-        Vector2f pt = path.front();
+        Point pt = path.front();
         path_x = pt.x;
         path_y = pt.x;
         autoNavigator.setTargetLocation(modm::Location2D<float>(pt.x, pt.y, 0));
         path.erase(path.begin());
     }
 
-void ChassisAutoNavCommand::load_path(vector<Vector2f> path){
+void ChassisAutoNavCommand::load_path(vector<Point> path){
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); //halt motion
     this->path = path;
     pop_path(); //put new point into auto navigator
