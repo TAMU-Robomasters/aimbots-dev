@@ -21,13 +21,13 @@ public:
     CoordinateFrame& getFrame(TurretFrameType frame) {
         switch (frame) {
             case TURRET_FIELD_FRAME:
-                return fieldFrame;
+                return turretFieldFrame;
                 break;
             case TURRET_CAMERA_FRAME:
-                return cameraFrame;
+                return turretCameraFrame;
                 break;
         }
-        return fieldFrame;
+        return turretFieldFrame;
     }
 
     void updateFrames(float fieldYaw, float fieldPitch, float fieldRoll, AngleUnit angleUnit);
@@ -35,8 +35,8 @@ public:
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 
 private:
-    CoordinateFrame fieldFrame;
-    CoordinateFrame cameraFrame;
+    CoordinateFrame turretFieldFrame;
+    CoordinateFrame turretCameraFrame;
 
     Vector3f chassis_origin_relative_to_world_origin;
     Matrix3f chassis_orientation_relative_to_world_orientation;

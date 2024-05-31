@@ -11,9 +11,12 @@ VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
 {}
 
 // watchable variables
-float targetPositionXDisplayWithoutCompensation = 0.0f;
-float targetPositionYDisplayWithoutCompensation = 0.0f;
-float targetPositionZDisplayWithoutCompensation = 0.0f;
+float cameraOriginXDisplay = 0.0f;
+float cameraOriginYDisplay = 0.0f;
+float cameraOriginZDisplay = 0.0f;
+
+float cameraXYMagDisplay = 0.0f;
+float targetXYMagDisplay = 0.0f;
 
 float targetPositionXUnfilteredDisplay = 0.0f;
 float targetPositionYUnfilteredDisplay = 0.0f;
@@ -48,10 +51,10 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
-    src::Informants::Transformers::CoordinateFrame fieldFrame =
+    src::Informants::Transformers::CoordinateFrame turretFieldFrame =
         drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame cameraFrame =
+    src::Informants::Transformers::CoordinateFrame turretCameraFrame =
         drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
 
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
@@ -65,9 +68,16 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     // Enemy Position in meters
 
     VisionTimedPosition transformedPosition{
-        .position = cameraFrame.getPointInFrame(fieldFrame, currentData.position),
+        .position = turretCameraFrame.getPointInFrame(turretFieldFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
+
+    cameraOriginXDisplay = turretCameraFrame.getOrigin().getX();
+    cameraOriginYDisplay = turretCameraFrame.getOrigin().getY();
+    cameraOriginZDisplay = turretCameraFrame.getOrigin().getZ();
+
+    cameraXYMagDisplay = sqrt(pow2(turretCameraFrame.getOrigin().getX()) + pow2(turretCameraFrame.getOrigin().getY()));
+    targetXYMagDisplay = sqrt(pow2(transformedPosition.position.getX()) + pow2(transformedPosition.position.getY()));
 
     untransformedDataPosXDisplay = currentData.position.getX();
     untransformedDataPosYDisplay = currentData.position.getY();

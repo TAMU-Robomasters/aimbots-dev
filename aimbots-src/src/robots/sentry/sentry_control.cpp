@@ -234,57 +234,57 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // MANUAL ROBOT CONTROL (NON-SERVER USE) ----------------------------------
 // Enables both chassis and gimbal manual control
-HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ /* &gimbalToggleAimCommand */ &gimbalChaseCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-// Enables both chassis and gimbal control and closes hopper
-HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-// HoldCommandMapping rightSwitchDown(
-//     drivers(),
-//     {&openHopperCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
-// Runs shooter only and closes hopper
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
-
-// Autonomous Match Control Switch Mapping -----------------------------
 // HoldCommandMapping leftSwitchMid(
-//     drivers(),
-//     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+//     drivers(),  // gimbalFieldRelativeControlCommand
+//     {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
+// // Enables both chassis and gimbal control and closes hopper
 // HoldCommandMapping leftSwitchUp(
 //     drivers(),
-//     {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand},
+//     {&chassisTokyoCommand, &gimbalChaseCommand2},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// // Runs shooter only
+// // HoldCommandMapping rightSwitchDown(
+// //     drivers(),
+// //     {&openHopperCommand},
+// //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+// // Runs shooter only and closes hopper
 // HoldCommandMapping rightSwitchMid(
 //     drivers(),
 //     {&runShooterCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// // Runs shooter with feeder
-// HoldCommandMapping rightSwitchUp(
+// // Runs shooter with feeder and closes hopper
+// HoldRepeatCommandMapping rightSwitchUp(
 //     drivers(),
-//     {&dualBarrelsFeederCommand, /*&runShooterWithFeederCommand*/ &matchFiringControlCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+//     {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+//     true);
+
+// Autonomous Match Control Switch Mapping -----------------------------
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+// Runs shooter only
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+// Runs shooter with feeder
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&dualBarrelsFeederCommand, /*&runShooterWithFeederCommand*/ &matchFiringControlCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {

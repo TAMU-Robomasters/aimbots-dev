@@ -13,14 +13,14 @@ namespace src::Informants::Transformers {
 
 TurretFrames::TurretFrames() {
 #ifndef TARGET_TURRET
-    fieldFrame.setOrigin(Vector3f(0, 0, 0));
-    fieldFrame.setOrientation(Matrix3f::identityMatrix());
+    turretFieldFrame.setOrigin(Vector3f(0, 0, 0));
+    turretFieldFrame.setOrientation(Matrix3f::identityMatrix());
 
     // update frames to initial values
     updateFrames(0, 0, 0, AngleUnit::Radians);
 
-    cameraFrame.setOrientation(field_orientation_relative_to_chassis_orientation);
-    cameraFrame.setOrigin(camera_origin_relative_to_gimbal_origin);
+    turretCameraFrame.setOrientation(field_orientation_relative_to_chassis_orientation);
+    turretCameraFrame.setOrigin(camera_origin_relative_to_gimbal_origin);
 #endif
 }
 
@@ -29,12 +29,12 @@ void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRol
     UNUSED(fieldRoll);
 
 #ifndef TARGET_TURRET
-    this->field_orientation_relative_to_chassis_orientation =
-        rotationMatrix(fieldYaw, Z_AXIS, angleUnit); /* rotationMatrix(fieldPitch, X_AXIS, angleUnit) *
+    /*this->field_orientation_relative_to_chassis_orientation =
+        rotationMatrix(fieldYaw, Z_AXIS, angleUnit);  rotationMatrix(fieldPitch, X_AXIS, angleUnit) *
         rotationMatrix(fieldRoll, Y_AXIS, angleUnit);*/  // field to chassis rotation
 
     // Don't need to update field frame origin, should be the center of this coordinate framework
-    // fieldFrame.setOrientation(Matrix3f::identityMatrix());
+    // turretFieldFrame.setOrientation(Matrix3f::identityMatrix());
 
 #else
     UNUSED(fieldYaw);
@@ -44,17 +44,28 @@ void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRol
 
 float camera_offset_angle = -0.0f;
 
+float gimbalYawDisplay = 0.0f;
+float gimbalPitchDisplay = 0.0f;
+
+Matrix3f cameraOrientationMatrixDisplay = Matrix3f::zeroMatrix();
+
 void TurretFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
+    gimbalYawDisplay = modm::toDegree(gimbalYawAngle);
+    gimbalPitchDisplay = modm::toDegree(gimbalPitchAngle);
+
 #ifndef TARGET_TURRET
     Matrix3f at_cv_update_field_orientation_relative_to_chassis_orientation =
         rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit) *
         rotationMatrix(camera_offset_angle, Z_AXIS, AngleUnit::Degrees);
 
     Vector3f at_cv_update_camera_origin_relative_to_gimbal_origin =
-        field_orientation_relative_to_chassis_orientation * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
+        /*field_orientation_relative_to_chassis_orientation*/
+        at_cv_update_field_orientation_relative_to_chassis_orientation * CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN;
 
-    cameraFrame.setOrientation(at_cv_update_field_orientation_relative_to_chassis_orientation);
-    cameraFrame.setOrigin(at_cv_update_camera_origin_relative_to_gimbal_origin);
+    cameraOrientationMatrixDisplay = at_cv_update_field_orientation_relative_to_chassis_orientation;
+
+    turretCameraFrame.setOrientation(at_cv_update_field_orientation_relative_to_chassis_orientation);
+    turretCameraFrame.setOrigin(at_cv_update_camera_origin_relative_to_gimbal_origin);
 #else
     UNUSED(gimbalYawAngle);
     UNUSED(gimbalPitchAngle);
