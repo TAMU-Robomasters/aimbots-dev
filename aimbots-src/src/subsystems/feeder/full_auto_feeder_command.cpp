@@ -63,8 +63,6 @@ float lastProjectileSpeedDisplay = 0.0f;
 void FullAutoFeederCommand::execute() {
     isCommandRunningDisplay = true;
 
-     
-
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
     maxRotationDisplay = antiOverheatEncoderThreshold;
