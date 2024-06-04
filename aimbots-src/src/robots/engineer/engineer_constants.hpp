@@ -16,7 +16,7 @@
 
 #define GRABBER_COMPATIBLE
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
+static constexpr SongTitle STARTUP_SONG = SongTitle::CRAB_RAVE;
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -54,9 +54,9 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS{365.0f, 361.0f, 361.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {true, false, false};
 static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {
-    MotorID::MOTOR5,
     MotorID::MOTOR1,
-    MotorID::MOTOR4};  // Yaw, Pitch, Roll
+    MotorID::MOTOR2,
+    MotorID::MOTOR3};  // Yaw, Pitch, Roll
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -83,9 +83,9 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
-    .kp = 150000.0f,
+    .kp = 30000.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 10.0f,
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -97,10 +97,10 @@ static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
-    .kp = 150000.0f,
-    .ki = 0.0f,
-    .kd = 0.1f,
-    .maxICumulative = 0.0f,
+    .kp = 30000.0f,
+    .ki = 10.0f,
+    .kd = 20.0f,
+    .maxICumulative = 3000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -349,12 +349,12 @@ static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 // TODO: set these to what they actually are
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
-static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR2;
-static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR8;
-static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
+static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR4;
+static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR5;
+static constexpr bool SLIDE_X_MOTOR_DIRECTION = false;
 static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{1.0f, (0.7f / 800.0f)};
-static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {0.5f, 0.5f};
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{(0.254f / 46.0f), (0.184f / 130.0f)};
+static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {0.254f, 0.225f};
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -474,7 +474,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 

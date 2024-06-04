@@ -16,7 +16,14 @@ SlideSubsystem::SlideSubsystem(Drivers* drivers)
 
 void SlideSubsystem::initialize() { ForAllSlideMotors(&DJIMotor::initialize); }
 
-void SlideSubsystem::refresh() { ForAllSlideMotors(&SlideSubsystem::refreshDesiredOutput); }
+float xMotorEncDisplay = 0.0f;
+float zMotorEncDisplay = 0.0f;
+
+void SlideSubsystem::refresh() {
+    xMotorEncDisplay = motors[X].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    zMotorEncDisplay = motors[Z].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    ForAllSlideMotors(&SlideSubsystem::refreshDesiredOutput);
+}
 
 void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx) {
     motors[motorIdx].setDesiredOutput(desiredOutputs[motorIdx]);

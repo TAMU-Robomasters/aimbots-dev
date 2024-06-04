@@ -21,8 +21,12 @@ static constexpr float INPUT_WRIST_YAW_INC = 0.003f;
 static constexpr float INPUT_WRIST_PITCH_INC = 0.003f;
 static constexpr float INPUT_WRIST_ROLL_INC = 0.003f;
 
-static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.003f;
-static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.003f;
+static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.006f;
+static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.006f;
+static constexpr float INPUT_SLIDE_STOP_INC = 0.06f;
+
+static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0005;
+static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0005;
 
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
@@ -214,8 +218,12 @@ float OperatorInterface::getSlideUpDownInput() {
 
     slideUpDownRamp.setTarget(finalRotation);
 
-    slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
-    return slideUpDownRamp.getValue();
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideUpDownRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
+
+    return slideUpDownRamp.getValue() * ZAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 float OperatorInterface::getSlideFrontBackInput() {
@@ -235,8 +243,12 @@ float OperatorInterface::getSlideFrontBackInput() {
 
     slideFrontBackRamp.setTarget(finalRotation);
 
-    slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
-    return slideFrontBackRamp.getValue();
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideFrontBackRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
+
+    return slideFrontBackRamp.getValue() * XAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 int16_t mouseXDisplay = 0;
