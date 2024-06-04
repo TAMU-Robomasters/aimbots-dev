@@ -35,8 +35,8 @@ static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTO
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(64.90f)),    // 177.8
-    wrapTo0To2PIRange(modm::toRadian(175.75f))};  // 198.5 189.80f
+    wrapTo0To2PIRange(modm::toRadian(181.36f)),
+    wrapTo0To2PIRange(modm::toRadian(185.75f))};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
@@ -47,7 +47,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(215.12f))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(333.45f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -262,13 +262,13 @@ static constexpr uint16_t shooter_speed_array[4] = {
     10,
     3900,  // {ball m/s, flywheel rpm} //3900
     16,
-    6100};  // 6500
+    6100};  // 6100
 
 // clang-format on
 
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4000.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 12000.0f;
 static constexpr float INDEXER_DEFAULT_RPM = 4000.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
@@ -288,11 +288,12 @@ static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 //
 // static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
-static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR6, MotorID::MOTOR5};
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_TARGET_RPMS = {FEEDER_DEFAULT_RPM, FEEDER_DEFAULT_RPM};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_TARGET_RPMS = {500, FEEDER_DEFAULT_RPM};
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 6;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36, 36};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, false};
 static constexpr MotorID INDEXER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
@@ -300,7 +301,6 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
 
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false, false};
 
 // static constexpr bool FEEDER_DIRECTION = false;
 static constexpr bool INDEXER_DIRECTION = false;

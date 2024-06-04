@@ -34,19 +34,17 @@ uint16_t flywheelCurrentRPMDisplay = 0;
 float currentHeatDisplay = 0.0f;
 float heatLimitDisplay = 0.0f;
 
-void RunShooterCommand::execute() {
+float refSpeedLimitDisplay = 0.0f;
 
+void RunShooterCommand::execute() {
     currentHeatDisplay = refHelper->getCurrBarrelHeat();
     heatLimitDisplay = refHelper->getCurrBarrelLimit();
 
-    
-
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
-    uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(SHOOTER_SPEED_MATRIX[0][0]);
+    uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(/*SHOOTER_SPEED_MATRIX[0][0]*/ 5);
 
-    flywheelRPMDisplay = flywheelRPM;
-    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
+    refSpeedLimitDisplay = refSpeedLimit;
 
     for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
         if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
@@ -54,6 +52,9 @@ void RunShooterCommand::execute() {
             break;
         }
     }
+
+    flywheelRPMDisplay = flywheelRPM;
+    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
 
     shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(flywheelRPM));
     shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
@@ -68,4 +69,4 @@ bool RunShooterCommand::isReady() { return true; }
 bool RunShooterCommand::isFinished() const { return false; }
 }  // namespace src::Shooter
 
-#endif //#ifdef SHOOTER_COMPATIBLE
+#endif  //#ifdef SHOOTER_COMPATIBLE

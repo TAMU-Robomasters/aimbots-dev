@@ -61,21 +61,19 @@ void FullAutoFeederCommand::initialize() {
     antiOverheatEncoderThreshold = feeder->getEncoderUnwrapped() + encoderChangeThreshold;
 }
 
-uint16_t lastHeatDisplay = 0;
-uint16_t heatLimitDisplay = 0;
-// float watchpeed;
+// uint16_t lastHeatDisplay = 0;
+// uint16_t heatLimitDisplay = 0;
 float lastProjectileSpeedDisplay = 0.0f;
 
 void FullAutoFeederCommand::execute() {
-    //    watchpeed = speed;
     isCommandRunningDisplay = true;
 
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
     maxRotationDisplay = antiOverheatEncoderThreshold;
-    currentRotationDisplay = feeder->getEncoderUnwrapped();
+    currentRotationDisplay = feeder->getEncoderUnwrapped(0);
 
-    if (feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+    if (false && feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         feeder->setTargetRPM(0.0f);
     } else {
         if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
@@ -84,18 +82,20 @@ void FullAutoFeederCommand::execute() {
         }
 
         if (unjamTimer.execute()) {
-            feeder->setTargetRPM(speed);
+            feeder->setTargetRPM(500, 0);
+            feeder->setTargetRPM(speed, 1);
             startupThreshold.restart(500);
         }
 
-        lastHeatDisplay = refHelper->getCurrBarrelHeat();
-        heatLimitDisplay = refHelper->getCurrBarrelLimit();
+        // lastHeatDisplay = refHelper->getCurrBarrelHeat();
+        // heatLimitDisplay = refHelper->getCurrBarrelLimit();
         lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
     }
 }
 
 void FullAutoFeederCommand::end(bool) {
-    feeder->setTargetRPM(0.0f);
+    feeder->setTargetRPM(0.0f, 0);
+    feeder->setTargetRPM(0.0f, 1);
     isCommandRunningDisplay = false;
 }
 

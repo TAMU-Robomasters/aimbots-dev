@@ -23,9 +23,9 @@
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/feeder.hpp"
+#include "subsystems/feeder/feeder_limit_command.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
-#include "subsystems/feeder/feeder_limit_command.hpp"
 //
 #include "subsystems/indexer/burst_indexer_command.hpp"
 #include "subsystems/indexer/full_auto_indexer_command.hpp"
@@ -111,7 +111,7 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
-IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
+// IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
 // ClientDisplaySubsystem clientDisplay(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
@@ -120,8 +120,7 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
-
-//Define behavior configs here -----------------------------------------------
+// Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
     .numSnapPositions = CHASSIS_SNAP_POSITIONS,
@@ -147,9 +146,10 @@ SpinRandomizerConfig randomizerConfig = {
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
-    &chassis, 
-    &gimbal, 
+ChassisToggleDriveCommand chassisToggleDriveCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
     defaultSnapConfig,
     defaultTokyoConfig,
     false,
@@ -161,13 +161,20 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(
+    drivers(),
+    &feeder,
+    &refHelper,
+    FEEDER_DEFAULT_RPM,
+    3000.0f,
+    1,
+    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 FeederLimitCommand feederlimitcommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 
-FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
+// FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
+// FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
+// StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
 
 // AutoAgitatorIndexerCommand feederIndexerCommand(
 //     drivers(),
@@ -196,22 +203,20 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&feederlimitcommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {&feederlimitcommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&feederlimitcommand, &runShooterCommand},
+    {/*&feederlimitcommand,*/ &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&feederlimitcommand, &runShooterCommand},//&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand,
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -219,7 +224,7 @@ HoldRepeatCommandMapping rightSwitchUp(
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runFeederCommandFromMouse, &runIndexerCommandFromMouse},
+    {&runFeederCommandFromMouse /*&runIndexerCommandFromMouse*/},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
@@ -230,7 +235,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&response);
     // drivers->commandScheduler.registerSubsystem(&clientDisplay);
-    drivers->commandScheduler.registerSubsystem(&indexer);
+    // drivers->commandScheduler.registerSubsystem(&indexer);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -239,7 +244,7 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     feeder.initialize();
-    indexer.initialize();
+    // indexer.initialize();
     gimbal.initialize();
     shooter.initialize();
     // response.initialize();
@@ -248,8 +253,8 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&feederlimitcommand);
-    indexer.setDefaultCommand(&stopIndexerCommand);
+    feeder.setDefaultCommand(&stopFeederCommand);
+    // indexer.setDefaultCommand(&stopIndexerCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
