@@ -3,7 +3,6 @@
 #include "utils/ballistics_solver.hpp"
 #ifdef GIMBAL_COMPATIBLE
 
-
 namespace src::Gimbal {
 // feed chassis relative controller for sentry, field relative for ground robots
 GimbalChaseCommand::GimbalChaseCommand(
@@ -77,36 +76,49 @@ void GimbalChaseCommand::execute() {
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
     // projectileSpeed = 30.0f;
+
+    if (projectileSpeed == 0) {
+        projectileSpeed = 25;
+    }
+
     predictedProjectileSpeedDisplay = projectileSpeed;
 
     std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve(refHelper->getPredictedProjectileSpeed());  // returns nullopt if no solution is available
+        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
         // Convert ballistics solutions to field-relative angles
         uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
-        Vector3f chassisIMUAngleAtFrameDelay = drivers->kinematicInformant.getChassisIMUOrientationAtTime(frameCaptureDelay);
 
-        yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
-        pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
+        std::pair<float, float> fieldTurretAngleAtFrameDelay =
+            drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
+
+        // yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
+        // pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
+        yawAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.first);
+        pitchAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.second);
 
         yawRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
         pitchRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
-        targetYawAxisAngle = chassisIMUAngleAtFrameDelay.getZ() + ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = chassisIMUAngleAtFrameDelay.getX() + ballisticsSolution->pitchAngle;
+        targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
+        targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;
         // targetYawAxisAngle =
         //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
         //     ballisticsSolution->yawAngle;
         // targetPitchAxisAngle =
         //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->pitchAngle;
+        //     ballisticsSolution->pitchAngle; 
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
         bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
+
+        // Comment when Z axis stops being silly
+        // targetPitchAxisAngle =
+        //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
         controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
@@ -132,8 +144,8 @@ void GimbalChaseCommand::execute() {
         controller->runPitchController();
     }
 
-    targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);
-    targetPitchAxisAngleDisplay2 = controller->getTargetPitch(AngleUnit::Degrees);
+    targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);      // uncomment later
+    targetPitchAxisAngleDisplay2 = controller->getTargetPitch(AngleUnit::Degrees);  // uncomment later
 
     chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
     chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);

@@ -37,7 +37,7 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(42.58f))};  // 198.2
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (34.0f / 70.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -207,9 +207,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 15.0f,  // 40
     .ki = 0.0f,
-    .kd = 0.8f,
+    .kd = 0.8f,  // 0.01
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -239,14 +239,14 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
-// clang-format off
+// clang-format off;
 // Sentry shoots at the speed of death
 static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 2550.0f;  // 23.6 bps | pre-gearbox rpm
 
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
@@ -294,7 +294,7 @@ static constexpr bool FEEDER_DIRECTION = false;
  */
 static constexpr float WHEEL_RADIUS = 0.07663f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f;  // updated for 2023
+static constexpr float WHEELBASE_WIDTH = 0.357f;
 
 static constexpr float WHEELBASE_LENGTH = 0.357f;
 
@@ -364,29 +364,31 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  * @brief Transformation Matrices, specific to robot
  */
 // clang-format off
+
+// Updated for 2024 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.0002f, // x
-    0.04894f, // y
-    0.084879f,  // z
+    -0.017473f, // x
+    0.171927f, // y
+    -0.046239f,  // z
 };
 
-static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
+static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
 
-static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
+static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{ // not used
     -2.830f, // x
     -0.730f, // y
     0.0f, // z
 };
 
-//0.04301 how far apart barrels are
+//0.04341 how far apart barrels are
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.01785f - (0.5f * 0.04301f), //x = 0.04498
-    0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00018f, //z = 0.01683
+    0.015727 - (0.5f * 0.04341f), // x
+    0.187184f, // y 
+    -0.011049f, // z
 };
 // clang-format on
 

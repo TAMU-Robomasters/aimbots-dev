@@ -13,11 +13,26 @@ BallisticsSolver::BallisticsSolver(src::Drivers *drivers, Vector3f barrelOriginF
 
 BallisticsSolver::BallisticsSolution solutionDisplay;
 MeasuredKinematicState plateKinematicStateDisplay;
+
+float solveForXDisplay = 0;
+float solveForYDisplay = 0;
+float solveForZDisplay = 0;
+
+int nothingSeenDisplay = 0;
+int jetsonOnlineDisplay = 0;
+
+int failedToFindIntersectionDisplay = 0;
+
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
+    nothingSeenDisplay = drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND;
+    jetsonOnlineDisplay = !drivers->cvCommunicator.isJetsonOnline();
     if (!drivers->cvCommunicator.isJetsonOnline() ||
         drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
+        // nothingSeenDisplay = 1;
         return std::nullopt;
     }
+
+    // nothingSeenDisplay = 0;
 
     // If we have already solved for this target, return the same solution
     if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
@@ -27,7 +42,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     }
 
     // How far from now you want to predict? (in us)
-    uint32_t forwardProjectionTime = 0 * 1000;
+    uint32_t forwardProjectionTime = 100 * 1000; // first val is num milliseconds
 
     auto plateKinematicState = drivers->cvCommunicator.getPlatePrediction(forwardProjectionTime);
 
@@ -37,11 +52,17 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
         .acceleration = plateKinematicState.acceleration,
     };
 
+    solveForXDisplay = targetKinematicState.position.getX();
+    solveForYDisplay = targetKinematicState.position.getY();
+    solveForZDisplay = targetKinematicState.position.getZ();
+
+
+
     plateKinematicStateDisplay = targetKinematicState;
 
     lastBallisticsSolution = BallisticsSolution();
     lastBallisticsSolution->distanceToTarget = targetKinematicState.position.getLength();
-
+    failedToFindIntersectionDisplay = 0;
     if (!findTargetProjectileIntersection(
             targetKinematicState,
             projectileSpeed.value_or(defaultProjectileSpeed),
@@ -51,11 +72,17 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
             &lastBallisticsSolution->timeToTarget,
             0.0f)) {
         lastBallisticsSolution = std::nullopt;
+        failedToFindIntersectionDisplay = 1;
     }
+
     solutionDisplay = *lastBallisticsSolution;
 
     return lastBallisticsSolution;
 }
+
+float projectedTargetPositionXDisp = 0.0;
+float projectedTargetPositionYDisp = 0.0;
+float projectedTargetPositionZDisp = 0.0;
 
 bool BallisticsSolver::findTargetProjectileIntersection(
     MeasuredKinematicState targetInitialState,
@@ -66,6 +93,10 @@ bool BallisticsSolver::findTargetProjectileIntersection(
     float *projectedTravelTime,
     const float pitchAxisOffset) {
     modm::Vector3f projectedTargetPosition = targetInitialState.position;
+
+    projectedTargetPositionXDisp = projectedTargetPosition.x;
+    projectedTargetPositionYDisp = projectedTargetPosition.y;
+    projectedTargetPositionZDisp = projectedTargetPosition.z;
 
     if (projectedTargetPosition.x == 0 && projectedTargetPosition.y == 0 && projectedTargetPosition.z == 0) {
         return false;
@@ -94,12 +125,20 @@ bool BallisticsSolver::findTargetProjectileIntersection(
     return !isnan(*turretPitch) && !isnan(*turretYaw);
 }
 
+float targetPositionXDisp = 0.0;
+float targetPositionYDisp = 0.0;
+float targetPositionzDisp = 0.0;
+
 bool BallisticsSolver::computeTravelTime(
     const modm::Vector3f &targetPosition,
     float bulletVelocity,
     float *travelTime,
     float *turretPitch,
     const float pitchAxisOffset) {
+    targetPositionXDisp = targetPosition.x;
+    targetPositionYDisp = targetPosition.y;
+    targetPositionzDisp = targetPosition.z;
+
     float horizontalDist = hypot(targetPosition.x, targetPosition.y) + pitchAxisOffset;
     float bulletVelocitySquared = pow2(bulletVelocity);
     float sqrtTerm =

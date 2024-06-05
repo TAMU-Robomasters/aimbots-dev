@@ -3,7 +3,9 @@
 #include "informants/transformers/coordinate_frame.hpp"
 #include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
-#include "utils/math/transform_setup.hpp"
+
+//#include "utils/math/transform_setup.hpp"
+#include "utils/math/transformations.hpp"
 
 namespace src::Informants::Transformers {
 
@@ -62,6 +64,8 @@ public:
     void mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit);
 
 private:
+    // USED FIND + REPLACE (CTRL + H) TO CHANGE CoordinateFrame into CoordinateFrame
+
     CoordinateFrame fieldFrame;
     CoordinateFrame chassisFrame;  // "Ground Frame
     CoordinateFrame gimbalFrame;

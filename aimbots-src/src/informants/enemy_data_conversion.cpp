@@ -11,9 +11,12 @@ VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
 {}
 
 // watchable variables
-float targetPositionXDisplayWithoutCompensation = 0.0f;
-float targetPositionYDisplayWithoutCompensation = 0.0f;
-float targetPositionZDisplayWithoutCompensation = 0.0f;
+float cameraOriginXDisplay = 0.0f;
+float cameraOriginYDisplay = 0.0f;
+float cameraOriginZDisplay = 0.0f;
+
+float cameraXYMagDisplay = 0.0f;
+float targetXYMagDisplay = 0.0f;
 
 float targetPositionXUnfilteredDisplay = 0.0f;
 float targetPositionYUnfilteredDisplay = 0.0f;
@@ -34,6 +37,12 @@ float spinMagnitude = 0.0f;
 
 uint32_t plateTimeOffsetDisplay = 0;
 
+float previousPositionMag = 0;
+
+float untransformedDataPosXDisplay = 0.0;
+float untransformedDataPosYDisplay = 0.0;
+float untransformedDataPosZDisplay = 0.0;
+
 // gather data, transform data,
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
@@ -42,23 +51,11 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
-    src::Informants::Transformers::CoordinateFrame gimbalFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME);
+    src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
 
-    src::Informants::Transformers::CoordinateFrame cameraFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_FRAME);
-
-    src::Informants::Transformers::CoordinateFrame ballisticsFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::BALLISTICS_FRAME);
-
-    src::Informants::Transformers::CoordinateFrame cameraAtCVUpdateFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CAMERA_AT_CV_UPDATE_FRAME);
-
-    src::Informants::Transformers::CoordinateFrame chassisFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME);
-
-    src::Informants::Transformers::CoordinateFrame fieldFrame =
-        drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::FIELD_FRAME);
+    src::Informants::Transformers::CoordinateFrame turretCameraFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
 
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
@@ -68,65 +65,72 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         // Current time - (how long ago the frame was captured)
     };
 
-    // now that we have enemy position (in METERS), transform to chassis space ! ! !
-    // THE DESIGN IS VERY HUMAN-CENTERED. THE ROBOT IS THE CENTER OF THE UNIVERSE. THE ENEMY IS THE CENTER OF THE ROBOT.
+    // Enemy Position in meters
 
-    // drivers->kinematicInformant.mirrorPastRobotFrame(27);
-
-    VisionTimedPosition targetPositionWithoutLagCompensation{
-        .position = cameraFrame.getPointInFrame(chassisFrame, currentData.position),
+    VisionTimedPosition transformedPosition{
+        .position = turretCameraFrame.getPointInFrame(turretFieldFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
 
-    VisionTimedPosition transformedData{
-        .position = cameraAtCVUpdateFrame.getPointInFrame(chassisFrame, currentData.position),
-        .timestamp_uS = currentData.timestamp_uS,
-    };
+    cameraOriginXDisplay = turretCameraFrame.getOrigin().getX();
+    cameraOriginYDisplay = turretCameraFrame.getOrigin().getY();
+    cameraOriginZDisplay = turretCameraFrame.getOrigin().getZ();
 
-    targetPositionXDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getX();
-    targetPositionYDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getY();
-    targetPositionZDisplayWithoutCompensation = targetPositionWithoutLagCompensation.position.getZ();
+    cameraXYMagDisplay = sqrt(pow2(turretCameraFrame.getOrigin().getX()) + pow2(turretCameraFrame.getOrigin().getY()));
+    targetXYMagDisplay = sqrt(pow2(transformedPosition.position.getX()) + pow2(transformedPosition.position.getY()));
 
-    targetPositionXUnfilteredDisplay = transformedData.position.getX();
-    targetPositionYUnfilteredDisplay = transformedData.position.getY();
-    targetPositionZUnfilteredDisplay = transformedData.position.getZ();
+    untransformedDataPosXDisplay = currentData.position.getX();
+    untransformedDataPosYDisplay = currentData.position.getY();
+    untransformedDataPosZDisplay = currentData.position.getZ();
 
-    targetPositionXDisplay = transformedData.position.getX();
-    targetPositionYDisplay = transformedData.position.getY();
-    targetPositionZDisplay = transformedData.position.getZ();
+    targetPositionXUnfilteredDisplay = transformedPosition.position.getX();
+    targetPositionYUnfilteredDisplay = transformedPosition.position.getY();
+    targetPositionZUnfilteredDisplay = transformedPosition.position.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
-    XPositionFilter.update(dt, transformedData.position.getX());
-    YPositionFilter.update(dt, transformedData.position.getY());
-    ZPositionFilter.update(dt, transformedData.position.getZ());
 
-    xDFT.damping_factor = dampingValue;
+    // This is just a preventative measure against bad CV data corrupting the kalman filters.
+    // Lower the value if issues continue to happen
+    float MAX_DELTA = 25;  //(5 meters)^2
 
-    xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+    float currPosMag = sqrt(
+        pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
+        pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
-    // if (xDFTValid) {
-    //     spinMagnitude = 0.0f;
-    //     // std::complex<float> DC_bin = xDFT.dft[0];
-    //     uint8_t highestMagIndex = 0;
-    //     float highestMag = 0;
+    if (abs(currPosMag) < MAX_DELTA) {
+        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
+        YPositionFilter.update(dt, transformedPosition.position.getY());
+        ZPositionFilter.update(dt, transformedPosition.position.getZ());
 
-    //     for (size_t i = 0; i < 30; i++) {
-    //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
-    //         //     highestMag = std::abs<float>(xDFT.dft[i]);
-    //         //     highestMagIndex = i;
-    //         // }
-    //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
-    //     }
+        xDFT.damping_factor = dampingValue;
 
-    //     for (size_t i = 1; i < 29; i++) {
-    //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
-    //     }
+        xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
 
-    //     DCBinDisplay = highestMagIndex;
-    //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
-    // }
+        // if (xDFTValid) {
+        //     spinMagnitude = 0.0f;
+        //     // std::complex<float> DC_bin = xDFT.dft[0];
+        //     uint8_t highestMagIndex = 0;
+        //     float highestMag = 0;
 
-    lastUpdateTimestamp_uS = currentTime_uS;
+        //     for (size_t i = 0; i < 30; i++) {
+        //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
+        //         //     highestMag = std::abs<float>(xDFT.dft[i]);
+        //         //     highestMagIndex = i;
+        //         // }
+        //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
+        //     }
+
+        //     for (size_t i = 1; i < 29; i++) {
+        //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
+        //     }
+
+        //     DCBinDisplay = highestMagIndex;
+        //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
+        // }
+
+        lastUpdateTimestamp_uS = currentTime_uS;
+    }
+    previousPositionMag = currPosMag;
 }
 
 float targetPositionXFutureDisplay = 0.0f;
@@ -152,9 +156,9 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(-0.005);  // bandaid fix
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
@@ -172,10 +176,10 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
-        // .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        .velocity = Vector3f(0, 0, 0),
-        // .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
-        .acceleration = Vector3f(0, 0, 0),
+        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
+        // .velocity = Vector3f(0, 0, 0),
+        .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
+        // .acceleration = Vector3f(0, 0, 0),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
     };
 }

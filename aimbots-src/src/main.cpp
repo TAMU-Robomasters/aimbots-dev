@@ -190,8 +190,8 @@ static void updateIo(src::Drivers *drivers) {
 
     // imuStatus = drivers->kinematicInformant.getIMUState();
 
-    // yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
-    // AngleUnit::Degrees); pitchDisplay =
+    yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+    // pitchDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
     // rollDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);

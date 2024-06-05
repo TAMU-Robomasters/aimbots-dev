@@ -52,9 +52,9 @@ Vector3f& CoordinateFrame::getOrigin() { return this->origin; }
 Matrix3f& CoordinateFrame::getOrientation() { return this->orientation; }
 const Matrix4f& CoordinateFrame::getTransformIn() { return this->transformIn; }
 const Matrix4f& CoordinateFrame::getTransformOut() { return this->transformOut; }
-Matrix4f CoordinateFrame::getTransformToFrame(CoordinateFrame& f) { return f.getTransformIn() * this->transformOut; }
+Matrix4f CoordinateFrame::getTransformToFrame(CoordinateFrame& f) { return f.getTransformIn() * this->transformOut; } //basis change??????????????
 
-// Returns a point in the given frame that is stored in the current frame
+// Returns a point in the given frame that is stored in the current frame, basis change bruh
 Vector3f CoordinateFrame::getPointInFrame(CoordinateFrame& f, Vector3f& v) {
     return homogenousCoordinateCrop(getTransformToFrame(f) * homogenousCoordinateExtend(v).asMatrix());
 }

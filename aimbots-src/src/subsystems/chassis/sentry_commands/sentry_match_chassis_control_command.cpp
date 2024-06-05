@@ -46,7 +46,7 @@ void SentryMatchChassisControlCommand::initialize() {
     waypointTarget.setPosition(SENTRY_WAYPOINTS[waypointName::SENTRY_START]);
     autoNavCommand.setTargetLocation(waypointTarget);
 
-    modm::Location2D<float> targetLocation({-4.0f, 1.0f}, 0);
+    modm::Location2D<float> targetLocation({0.0f, 0.0f}, 0);
     autoNavTokyoCommand.setTargetLocation(targetLocation);
 
     // scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
@@ -126,5 +126,5 @@ bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE
 #endif
