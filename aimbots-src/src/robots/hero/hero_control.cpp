@@ -27,11 +27,6 @@
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
 //
-#include "subsystems/indexer/burst_indexer_command.hpp"
-#include "subsystems/indexer/full_auto_indexer_command.hpp"
-#include "subsystems/indexer/indexer.hpp"
-#include "subsystems/indexer/stop_indexer_command.hpp"
-//
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
@@ -53,7 +48,6 @@
 
 using namespace src::Chassis;
 using namespace src::Feeder;
-using namespace src::Indexer;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 // using namespace src::Communication;
@@ -80,7 +74,7 @@ using namespace src::Shooter;
 
     Shooter -----------------------------------------------------------
 
-    Feeder/Indexer ------------------------------------------------------------
+    Feeder ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
     Force Reload: B
 
@@ -111,7 +105,6 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
-// IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
 // ClientDisplaySubsystem clientDisplay(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
@@ -160,32 +153,10 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    1,
-    UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-FeederLimitCommand feederlimitcommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-
-// FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-// FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-// StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
-
-// AutoAgitatorIndexerCommand feederIndexerCommand(
-//     drivers(),
-//     &feeder,
-//     &indexer,
-//     &refHelper,
-//     FEEDER_DEFAULT_RPM,
-//     INDEXER_DEFAULT_RPM,
-//     0.5f,
-//     UNJAM_TIMER_MS,
-//     1);
+FeederLimitCommand feederlimitcommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
@@ -224,7 +195,7 @@ HoldRepeatCommandMapping rightSwitchUp(
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runFeederCommandFromMouse /*&runIndexerCommandFromMouse*/},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
@@ -235,7 +206,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&response);
     // drivers->commandScheduler.registerSubsystem(&clientDisplay);
-    // drivers->commandScheduler.registerSubsystem(&indexer);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -244,7 +214,6 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     feeder.initialize();
-    // indexer.initialize();
     gimbal.initialize();
     shooter.initialize();
     // response.initialize();
@@ -254,12 +223,12 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    // indexer.setDefaultCommand(&stopIndexerCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
+    UNUSED(drivers);
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
     // drivers->commandScheduler.addCommand(&clientDisplayCommand);
 

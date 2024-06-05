@@ -217,4 +217,21 @@ uint8_t RefereeHelperTurreted::getRemainingProjectiles() {
     return remainingHeat / heatGainedPerProjectile[projectileType - 1];
 }
 
+int projectileAllowanceDisplay = 0;
+float maxRotationsDisplay = 0;
+
+uint64_t RefereeHelperTurreted::getAllowableFeederRotation(int projectileBuffer) {
+    // Calculating the remaining projectiles that can be shot based on heat
+    uint8_t projectilesRemaining = getRemainingProjectiles() - projectileBuffer;
+
+    projectileAllowanceDisplay = projectilesRemaining;
+    // get the maximum rotations the feeder can make based on how many projectiles
+    // it shoots in one rotation
+    float maxRotations = ((float)projectilesRemaining) / PROJECTILES_PER_FEEDER_ROTATION;
+    maxRotationsDisplay = maxRotations;
+    // Get the maximum absolute position the motor can get to
+    int64_t encoderChangeThreshold = DJIMotor::ENC_RESOLUTION * maxRotations;
+    return encoderChangeThreshold;
+}
+
 }  // namespace src::Utils

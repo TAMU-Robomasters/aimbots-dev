@@ -226,20 +226,6 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 
 static constexpr int UNJAM_TIMER_MS = 100;
 
-static constexpr SmoothPIDConfig INDEXER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 30.0f,
     .ki = 0.10f,
@@ -269,7 +255,6 @@ static constexpr uint16_t shooter_speed_array[4] = {
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 12000.0f;
-static constexpr float INDEXER_DEFAULT_RPM = 4000.0f;
 
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
@@ -287,23 +272,20 @@ static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 
 //
-// static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_TARGET_RPMS = {500, FEEDER_DEFAULT_RPM};
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 6;
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500, 12000};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000, 3000};  // Absolute values
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {SECONDARY, PRIMARY};
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0.5;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36, 36};
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, false};
-static constexpr MotorID INDEXER_ID = MotorID::MOTOR8;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
 
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
-
-// static constexpr bool FEEDER_DIRECTION = false;
-static constexpr bool INDEXER_DIRECTION = false;
 
 // Mechanical chassis constants, all in m
 /**

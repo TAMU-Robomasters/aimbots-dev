@@ -9,22 +9,18 @@ BarrelSwappingFeederCommand::BarrelSwappingFeederCommand(
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
     bool& barrelMovingFlag,
-    float speed,
-    float unjamSpeed,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       barrelMovingFlag(barrelMovingFlag),
-      speed(speed),
-      UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      unjamSpeed(-unjamSpeed)  //
+      UNJAM_TIMER_MS(UNJAM_TIMER_MS)//
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 void BarrelSwappingFeederCommand::initialize() {
-    feeder->setTargetRPM(0.0f, 0);
+    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 }
@@ -35,17 +31,17 @@ float swappableCurrentHeatDisplay = 0;
 void BarrelSwappingFeederCommand::execute() {
     if (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag) {
         if (unjamTimer.execute()) {
-            feeder->setTargetRPM(speed);
+            feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
             startupThreshold.restart(500);
         }
 
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
-            feeder->setTargetRPM(unjamSpeed);
+            feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
 
     } else {
-        feeder->setTargetRPM(0.0f);
+        feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
         unjamTimer.restart(0);
     }
 
@@ -53,7 +49,7 @@ void BarrelSwappingFeederCommand::execute() {
     swappableCurrentHeatDisplay = refHelper->getCurrBarrelHeat();
 }
 
-void BarrelSwappingFeederCommand::end(bool) { feeder->setTargetRPM(0.0f); }
+void BarrelSwappingFeederCommand::end(bool) { feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor); }
 
 bool BarrelSwappingFeederCommand::isReady() { return (refHelper->canCurrBarrelShootSafely() && !barrelMovingFlag); }
 

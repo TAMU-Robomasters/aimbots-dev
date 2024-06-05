@@ -68,6 +68,13 @@ enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
 enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH };
 
+enum FeederGroup : uint8_t {
+    ALL = 0,    // Command goes to all feeder motors
+    PRIMARY,    // Motors closest to the action of shooting a projectile
+    SECONDARY,  // Motors slightly further away from shooting, feeding towards primaries
+    TERTIARY    // Unused currently, but motors that feed towards secondary feeders
+};
+
 static constexpr float DS3218_MIN_PWM = 0.1325f;
 static constexpr float DS3218_MAX_PWM = 0.85f;
 

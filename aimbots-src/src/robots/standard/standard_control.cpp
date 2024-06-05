@@ -216,15 +216,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    2,
-    UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 

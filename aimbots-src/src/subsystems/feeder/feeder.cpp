@@ -71,7 +71,7 @@ void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
     setDesiredFeederMotorOutput(FeederIdx, desiredOutput);
 }
 
-void FeederSubsystem::setTargetRPM(float rpm, int FeederIdx) { feederTargetRPMs[FeederIdx] = rpm; }
+void FeederSubsystem::setTargetRPM(uint8_t FeederIdx, float rpm) { feederTargetRPMs[FeederIdx] = rpm; }
 
 void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {
     // takes the input from the velocity PID and sets the motor to that RPM

@@ -251,6 +251,14 @@ static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
 static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
+static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 10;
+static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {2550.0f};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
+
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
 
 // CAN Bus 2

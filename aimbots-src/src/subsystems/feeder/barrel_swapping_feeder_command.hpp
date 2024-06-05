@@ -21,8 +21,6 @@ public:
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
         bool& barrelMovingFlag,
-        float speed,
-        float unjamSpeed,
         int UMJAM_TIMER_MS);
     void initialize() override;
 
@@ -32,8 +30,6 @@ public:
 
     bool isFinished() const override;
 
-    void setSpeed(float speed) { this->speed = speed; }
-
     const char* getName() const override { return "run feeder"; }
 
 private:
@@ -42,13 +38,11 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
 
     bool& barrelMovingFlag;
-    float speed;
 
     int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
-    float unjamSpeed = 0.0f;
 };
 
 }  // namespace src::Feeder

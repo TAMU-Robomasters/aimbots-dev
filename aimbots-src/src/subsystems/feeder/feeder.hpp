@@ -19,7 +19,8 @@ public:
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
                 new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
-            feederTargetRPMs[i] = FEEDER_TARGET_RPMS[i];
+            feederTargetRPMs[i] = 0.0f;
+            feederCustomSpeedActive[i] = false;
         }
     }
 
@@ -34,6 +35,15 @@ public:
     void ForAllFeederMotors(void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args) {
         for (uint8_t i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             (this->*func)(i, args...);
+        }
+    }
+
+    template <class... Args>
+    void ForFeederMotorGroup(FeederGroup groupID, void (FeederSubsystem::*func)(uint8_t FeederIdx, Args...), Args... args) {
+        for (uint8_t i = 0; i < FEEDER_MOTOR_COUNT; i++) {
+            if (groupID == ALL || FEEDER_MOTOR_GROUPS[i] == groupID) {
+                (this->*func)(i, args...);
+            }
         }
     }
 
@@ -73,7 +83,7 @@ public:
 
     void setAllDesiredFeederMotorOutputs(uint16_t output) { desiredFeederMotorOutputs.fill(output); }
 
-    void setTargetRPM(float rpm, int FeederIdx = 0);
+    void setTargetRPM(uint8_t FeederIdx, float rpm);
 
     float getCurrentRPM(uint8_t FeederIdx = 0) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ? -feederMotors[FeederIdx]->getShaftRPM() : 0;
@@ -93,6 +103,21 @@ public:
 
     int getTotalLimitCount() const;
 
+    // Group commands: These are to be used with ForFeederMotorGroup
+    void activateFeederMotor(uint8_t feederIdx = 0) {
+        if (!feederCustomSpeedActive[feederIdx]) {  // Ignore the default RPM for a custom speed setting
+            setTargetRPM(feederIdx, FEEDER_NORMAL_RPMS[feederIdx]);
+        }
+    }
+
+    inline void setFeederCustomStatus(uint8_t feederIdx, bool customStatus) {
+        feederCustomSpeedActive[feederIdx] = customStatus;
+    }
+
+    void deactivateFeederMotor(uint8_t feederIdx = 0) { setTargetRPM(feederIdx, 0.0f); }
+
+    void unjamFeederMotor(uint8_t feederIdx = 0) { setTargetRPM(feederIdx, -abs(FEEDER_UNJAM_RPMS[feederIdx])); }
+
 private:
     src::Drivers* drivers;
 
@@ -107,6 +132,8 @@ private:
     std::array<float, FEEDER_MOTOR_COUNT> feederTargetRPMs;
 
     std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederVelocityPIDs;
+
+    std::array<bool, FEEDER_MOTOR_COUNT> feederCustomSpeedActive;
     // DJIMotor feederMotor;
 
     src::Informants::LimitSwitch limitSwitch;

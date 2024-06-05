@@ -20,8 +20,6 @@ public:
         src::Drivers*,
         FeederSubsystem*,
         src::Utils::RefereeHelperTurreted*,
-        float speed,
-        float unjamSpeed,
         uint8_t projectileBuffer = 0,
         int UNJAM_TIMER_MS = 300);
     void initialize() override;
@@ -31,8 +29,6 @@ public:
     bool isReady() override;
 
     bool isFinished() const override;
-
-    void setSpeed(float speed) { this->speed = speed; }
 
     const char* getName() const override { return "run feeder"; }
 
@@ -44,13 +40,10 @@ private:
     int64_t antiOverheatEncoderThreshold;
     uint8_t projectileBuffer;
 
-    float speed;
-
     int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
-    float unjamSpeed = 0.0f;
 };
 
 }  // namespace src::Feeder

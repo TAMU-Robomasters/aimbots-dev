@@ -31,7 +31,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, 2, UNJAM_TIMER_MS),
+      fullAutoFeederCommand(drivers, feeder, refHelper, 1, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
@@ -101,16 +101,15 @@ void SentryMatchFiringControlCommand::execute() {
             // healthBasedFeederSpeed = (healthPercentage < 0.35f) ? MAX_FEEDER_SPEED : healthBasedFeederSpeed;
             // healthBasedFeederSpeed = (healthPercentage < 0.35f) ? MAX_FEEDER_SPEED : MIN_FEEDER_SPEED;
             feederSpeed = limitVal(feederSpeed, MIN_FEEDER_SPEED, MAX_FEEDER_SPEED);
-            fullAutoFeederCommand.setSpeed(feederSpeed);
+            // fullAutoFeederCommand.setSpeed(feederSpeed);
 
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
 
             // }
         } else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
-            fullAutoFeederCommand.setSpeed(0.0f);
+            // fullAutoFeederCommand.setSpeed(0.0f);
         }
-        // if (shootMinimumTime)
     } else {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
     }

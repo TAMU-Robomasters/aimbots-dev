@@ -8,25 +8,20 @@ FullAutoFeederCommand::FullAutoFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
-    float speed,
-    float unjamSpeed,
     uint8_t projectileBuffer,
     int UNJAM_TIMER_MS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       projectileBuffer(projectileBuffer),
-      speed(speed),
-      UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      unjamSpeed(-unjamSpeed)  //
+      UNJAM_TIMER_MS(UNJAM_TIMER_MS)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
 bool isCommandRunningDisplay = false;
-uint8_t projectileAllowanceDisplay = 18;
 
-int64_t maxRotationDisplay = 15;
+int64_t overheatThresholdDisplay = 15;
 int64_t currentRotationDisplay = 12;
 
 /*
@@ -43,21 +38,14 @@ When initializing, check how much "heat" we have left,
 */
 
 void FullAutoFeederCommand::initialize() {
-    feeder->setTargetRPM(0.0f);
+    feeder->setTargetRPM(0, 0.0f);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
 
     // When the command is scheduled, calculating the remaining projectiles
     // that can be shot based on heat
-    uint8_t projectilesRemaining = refHelper->getRemainingProjectiles() - projectileBuffer;
-
-    projectileAllowanceDisplay = projectilesRemaining;
-    // get the maximum rotations the feeder can make based on how many projectiles
-    // it shoots in one rotation
-    float maxRotations = projectilesRemaining / PROJECTILES_PER_FEEDER_ROTATION;
-
-    // Get the maximum absolute position the motor can get to
-    int64_t encoderChangeThreshold = DJIMotor::ENC_RESOLUTION * maxRotations;
+    uint64_t encoderChangeThreshold = refHelper->getAllowableFeederRotation(projectileBuffer);
+    overheatThresholdDisplay = encoderChangeThreshold;
     antiOverheatEncoderThreshold = feeder->getEncoderUnwrapped() + encoderChangeThreshold;
 }
 
@@ -70,20 +58,18 @@ void FullAutoFeederCommand::execute() {
 
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
-    maxRotationDisplay = antiOverheatEncoderThreshold;
     currentRotationDisplay = feeder->getEncoderUnwrapped(0);
 
-    if (false && feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
-        feeder->setTargetRPM(0.0f);
+    if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+        feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     } else {
-        if (fabs(feeder->getCurrentRPM()) <= 10.0f && startupThreshold.execute()) {
-            feeder->setTargetRPM(unjamSpeed);
+        if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
+            feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
 
         if (unjamTimer.execute()) {
-            feeder->setTargetRPM(500, 0);
-            feeder->setTargetRPM(speed, 1);
+            feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
             startupThreshold.restart(500);
         }
 
@@ -94,8 +80,7 @@ void FullAutoFeederCommand::execute() {
 }
 
 void FullAutoFeederCommand::end(bool) {
-    feeder->setTargetRPM(0.0f, 0);
-    feeder->setTargetRPM(0.0f, 1);
+    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     isCommandRunningDisplay = false;
 }
 
