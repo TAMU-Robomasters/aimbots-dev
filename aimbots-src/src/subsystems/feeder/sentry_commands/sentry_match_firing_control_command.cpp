@@ -30,7 +30,6 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       fieldRelativeGimbalController(fieldRelativeGimbalController),
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
-      burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
       fullAutoFeederCommand(drivers, feeder, refHelper, 1, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //

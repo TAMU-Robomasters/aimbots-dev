@@ -7,7 +7,6 @@
 
 //
 #include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
-#include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/stop_feeder_command.hpp"
@@ -63,7 +62,6 @@ private:
     src::Chassis::ChassisMatchStates& chassisState;
 
     StopFeederCommand stopFeederCommand;
-    BurstFeederCommand burstFeederCommand;
     FullAutoFeederCommand fullAutoFeederCommand;
 
     StopShooterCommand stopShooterCommand;

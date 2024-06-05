@@ -1,4 +1,6 @@
-#ifdef TARGET_STANDARD
+#include "utils/robot_specific_defines.hpp"
+
+#if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023)
 
 #include "utils/common_types.hpp"
 
@@ -173,15 +175,8 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
-    
-ChassisTokyoCommand chassisTokyoCommand(
-        drivers(), 
-        &chassis, 
-        &gimbal, 
-        defaultTokyoConfig, 
-        0, 
-        false, 
-        randomizerConfig);
+
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
 ChassisAutoNavCommand chassisAutoNavCommand(
     drivers(),

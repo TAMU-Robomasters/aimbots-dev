@@ -1,4 +1,6 @@
-#ifdef TARGET_HERO
+#include "utils/robot_specific_defines.hpp"
+
+#if defined(ALL_HEROES)
 
 #include "utils/common_types.hpp"
 

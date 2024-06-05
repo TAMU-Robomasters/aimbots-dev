@@ -24,17 +24,13 @@
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
-#elif defined(TARGET_1V1_STANDARD)
+#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE)
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
 #elif defined(TARGET_STANDARD_2023)
 #include "robots/standard/standard_2023_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
-
-#elif defined(TARGET_SWERVE_STANDARD)
-#include "robots/standard/swerve_standard_constants.hpp"
-#include "robots/standard/swerve_standard_control_interface.hpp"
 
 #elif defined(TARGET_CVTESTBENCH)
 #include "robots/testbench/cvtestbench_constants.hpp"

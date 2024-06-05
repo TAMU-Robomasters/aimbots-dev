@@ -1,4 +1,6 @@
-#ifdef TARGET_SENTRY
+#include "utils/robot_specific_defines.hpp"
+
+#if defined(ALL_SENTRIES)
 
 #include "informants/transformers/robot_frames.hpp"
 #include "utils/ballistics_solver.hpp"
@@ -21,7 +23,6 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
-#include "subsystems/feeder/burst_feeder_command.hpp"
 #include "subsystems/feeder/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/feeder.hpp"
 #include "subsystems/feeder/full_auto_feeder_command.hpp"
@@ -195,25 +196,9 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 
-DualBarrelFeederCommand dualBarrelsFeederCommand(
-    drivers(),
-    &feeder,
-    &refHelper,
-    BARREL_IDS,
-    FEEDER_DEFAULT_RPM,
-    1500,
-    1,
-    UNJAM_TIMER_MS);
+DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
-DualBarrelFeederCommand dualBarrelsFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    BARREL_IDS,
-    FEEDER_DEFAULT_RPM,
-    1500,
-    1,
-    UNJAM_TIMER_MS);
+DualBarrelFeederCommand dualBarrelsFeederCommandFromMouse(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 

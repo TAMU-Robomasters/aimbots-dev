@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "feeder_limit_command.hpp"
 
 #include "tap/communication/gpio/leds.hpp"
