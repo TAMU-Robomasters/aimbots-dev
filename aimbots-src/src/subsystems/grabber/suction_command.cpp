@@ -22,7 +22,7 @@ void Suction_Command::execute() {
     // } else if (duty_cycle < 0.0f) {
     //     duty_cycle = 0.0f;
     // }
-    bool isCommandRunningDisplay = true;
+    isCommandRunningDisplay = true;
     grabber->activate();
     // grabber->unknown();
 }

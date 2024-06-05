@@ -90,16 +90,17 @@ HoldCommandMapping leftSwitchMid(
 
 /* END OF TEMPORARY MAPPINGS */
 
-// HoldCommandMapping rightSwitchUp(
-//     drivers(),
-//     {&wristControlCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&suctionCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&slide);
     drivers->commandScheduler.registerSubsystem(&wrist);
+    drivers->commandScheduler.registerSubsystem(&grabber);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -107,7 +108,7 @@ void initializeSubsystems() {
     chassis.initialize();
     slide.initialize();
     wrist.initialize();
-    // grabber.initialize();
+    grabber.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -129,7 +130,8 @@ void startupCommands(src::Drivers *) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    // drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchMid);
+
     // drivers->commandMapper.addMap(&leftSwitchDown);
 }
 
