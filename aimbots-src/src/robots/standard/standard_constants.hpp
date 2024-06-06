@@ -33,7 +33,7 @@ static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
 #ifdef TARGET_STANDARD_BLASTOISE
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(46.32f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
 
 #elif TARGET_STANDARD_WARTORTLE

@@ -41,12 +41,24 @@ float feederTargetRPMDisplay = 0;
 int feederWatchIdx = 0;  // don't change, only in debug
 bool isFeederOnlineDisplay = false;
 
+bool limitSwitchDisplay = false;
+
+bool rightMouseDisplay = false;
+bool eKeyDisplay = false;
+bool wKeyDisplay = false;
+
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
     watchonline = isOnline();
     int feederOnlineCount = 0;
 
     limitSwitch.refresh();
+
+    wKeyDisplay = drivers->remote.keyPressed(Remote::Key::W);
+    eKeyDisplay = drivers->remote.keyPressed(Remote::Key::E);
+    rightMouseDisplay = drivers->remote.getMouseR();
+
+    limitSwitchDisplay = limitSwitch.readSwitch();
     MotorOnline = feederMotors[0]->isMotorOnline();
 
     for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {

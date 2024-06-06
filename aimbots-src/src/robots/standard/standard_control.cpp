@@ -146,7 +146,7 @@ SnapSymmetryConfig defaultSnapConfig = {
 TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 0.6f,
     .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedFractionOfMax = 0.75f,  // 0.75
     .rotationalSpeedMultiplierWhenTranslating = 0.7f,
     .rotationalSpeedIncrement = 30.0f,
 };
@@ -242,13 +242,13 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {/*&chassisToggleDriveCommand,*/ &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {/*&chassisToggleDriveCommand,*/ /*&chassisManualDriveCommand,*/ /*&chassisTokyoCommand,*/ &gimbalChaseCommand2},
+    {&chassisTokyoCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -259,7 +259,7 @@ HoldCommandMapping rightSwitchDown(
 // Runs shooter only and closes hopper
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand, &toggleHopperCommand /*&chassisTokyoCommand*/},
+    {&runShooterCommand, &toggleHopperCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
