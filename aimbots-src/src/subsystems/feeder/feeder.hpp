@@ -114,6 +114,15 @@ public:
         feederCustomSpeedActive[feederIdx] = customStatus;
     }
 
+    void setFeederCustomMulti(uint8_t feederIdx, float mul) {
+        if (mul == 1.0) {
+            setFeederCustomStatus(feederIdx, false);
+        } else {
+            setFeederCustomStatus(feederIdx, true);
+            setTargetRPM(feederIdx, FEEDER_NORMAL_RPMS[feederIdx] * mul);
+        }
+    }
+
     void deactivateFeederMotor(uint8_t feederIdx = 0) { setTargetRPM(feederIdx, 0.0f); }
 
     void unjamFeederMotor(uint8_t feederIdx = 0) { setTargetRPM(feederIdx, -abs(FEEDER_UNJAM_RPMS[feederIdx])); }

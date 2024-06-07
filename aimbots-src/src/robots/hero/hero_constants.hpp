@@ -10,7 +10,7 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
+static constexpr SongTitle STARTUP_SONG = SongTitle::MYSTERY;
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -241,7 +241,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // clang-format on
 static constexpr uint16_t shooter_speed_array[4] = {
@@ -274,7 +274,7 @@ static constexpr CANBus INDEX_BUS = CANBus::CAN_BUS1;
 //
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500, 12000};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500, 4000};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000, 3000};  // Absolute values
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {SECONDARY, PRIMARY};
 static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0.5;

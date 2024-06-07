@@ -9,7 +9,7 @@ namespace src::Feeder {
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
-      limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING) {
+      limitSwitch(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING) {
     BuildFeederMotors();
     BuildPIDControllers();
 }
@@ -37,15 +37,15 @@ void FeederSubsystem::initialize() {
     }
 }
 
+bool rightMouseDisplay = false;
+bool eKeyDisplay = false;
+bool wKeyDisplay = false;
+
 float feederTargetRPMDisplay = 0;
 int feederWatchIdx = 0;  // don't change, only in debug
 bool isFeederOnlineDisplay = false;
 
 bool limitSwitchDisplay = false;
-
-bool rightMouseDisplay = false;
-bool eKeyDisplay = false;
-bool wKeyDisplay = false;
 
 // refreshes the velocity PID given the target RPM and the current RPM
 void FeederSubsystem::refresh() {
@@ -53,10 +53,6 @@ void FeederSubsystem::refresh() {
     int feederOnlineCount = 0;
 
     limitSwitch.refresh();
-
-    wKeyDisplay = drivers->remote.keyPressed(Remote::Key::W);
-    eKeyDisplay = drivers->remote.keyPressed(Remote::Key::E);
-    rightMouseDisplay = drivers->remote.getMouseR();
 
     limitSwitchDisplay = limitSwitch.readSwitch();
     MotorOnline = feederMotors[0]->isMotorOnline();
@@ -74,6 +70,10 @@ void FeederSubsystem::refresh() {
         updateMotorVelocityPID(i);
         setDesiredOutputToFeederMotor(i);
     }
+
+    wKeyDisplay = drivers->remote.keyPressed(Remote::Key::W);
+    eKeyDisplay = drivers->remote.keyPressed(Remote::Key::E);
+    rightMouseDisplay = drivers->remote.getMouseR();
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {

@@ -158,7 +158,7 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
-FeederLimitCommand feederlimitcommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
+FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
@@ -167,7 +167,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&chassisToggleDriveCommand,*/ &feederLimitCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -189,7 +189,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
+    {/*&runFeederCommand,*/ &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
@@ -225,6 +225,7 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
+    // feeder.setDefaultCommand(&feederLimitCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
@@ -249,7 +250,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&bCtrlPressed);
-    drivers->commandMapper.addMap(&leftClickMouse);
+    // drivers->commandMapper.addMap(&leftClickMouse);
 }
 
 }  // namespace HeroControl

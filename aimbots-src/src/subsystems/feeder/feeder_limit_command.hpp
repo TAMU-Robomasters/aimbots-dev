@@ -35,7 +35,6 @@ private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
-    bool isPressed;  // might be deletable but we keeping it just in case ig :shrug:
     int UNJAM_TIMER_MS;
 
     MilliTimeout startupThreshold;

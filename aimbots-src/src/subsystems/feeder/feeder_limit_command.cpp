@@ -13,10 +13,11 @@
 
 namespace src::Feeder {
 
-bool limitpressed = false;
-bool isCurrSemiauto = false;
-bool isPrevSemiauto = false;
+bool limitPressed = false;
+bool currFireState = false;
+bool prevFireState = false;
 bool isFiring = false;
+bool loaderDormant = false;
 int limitSwitchDownTime;
 
 FeederLimitCommand::FeederLimitCommand(
@@ -27,7 +28,6 @@ FeederLimitCommand::FeederLimitCommand(
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
-      isPressed(false),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
@@ -35,41 +35,60 @@ FeederLimitCommand::FeederLimitCommand(
 void FeederLimitCommand::initialize() {
     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
+    unjamTimer.restart(0);
     limitswitchInactive.restart(0);
 }
 
 void FeederLimitCommand::execute() {
     // Updates the limit switch state (is pressed or not)
-    limitpressed = feeder->getPressed();
+    limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
     // Updates the previous controller switch state (is up or not)
-    isPrevSemiauto = isCurrSemiauto;
+    prevFireState = currFireState;
     // Updates the current controller switch state
-    isCurrSemiauto = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
+    currFireState = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 350;
     // States the speed of the feeder wheel when firing
     // Checks if the limit switch is pressed & is "not killed" (refer to )
+
     if (limitswitchInactive.isExpired()) {
         isFiring = false;
+        // feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
     }
+
     // if the fire mode has been activated (with timer semiauto) then check if your still in the other timers range to keep
     // shooting, else set the feeder to 0 until reset timers
-    if (!isFiring) {
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
-        if (!limitpressed) {
-            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
-        } else {
-            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
+    // if (!isFiring) {
+    // }
+
+    if (!limitPressed && !loaderDormant) {
+        if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
+            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::unjamFeederMotor);
+            unjamTimer.restart(UNJAM_TIMER_MS);
         }
+
+        if (unjamTimer.execute()) {
+            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+            startupThreshold.restart(500);
+        }
+    } else {
+        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
+        if (!isFiring) {
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+        }
+        loaderDormant = true;
     }
 
     // Checks if the controller is in its semiautomatic state
     //      i.e. controller switch goes from mid to up
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes
     // to mid)
-    if (isCurrSemiauto and !isPrevSemiauto) {
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+    if (currFireState && !prevFireState) {
+        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
         isFiring = true;
+        loaderDormant = false;
         limitswitchInactive.restart(limitSwitchDownTime);
     }
 }
