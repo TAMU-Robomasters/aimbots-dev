@@ -108,7 +108,8 @@
     "xhash": "cpp",
     "xstring": "cpp",
     "xtree": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "xlocbuf": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,

@@ -29,9 +29,7 @@ public:
 
     void initialize() override;
     void execute() override;
-    void setTargetLocation(const modm::Location2D<float>& targetLocation) {
-        autoNavigator.setTargetLocation(targetLocation);
-    }
+    void setTargetLocation(double x, double y);
 
 
     bool isSettled() {
@@ -70,9 +68,78 @@ private:
 
     float linearVelocityRampValue = 1.0f;
     float rotationVelocityRampValue = modm::toRadian(1.0f / 500);
+    
+    double radius = 0.381;
+    vector<Point> redWallHor = {
+        Point(0, 3.05 - radius),
+        Point(1.625 + radius, 3.05 - radius),
+        Point(1.625 + radius, 3.074 + radius),
+        Point(0, 3.074 + radius)
+    };
+
+    vector<Point> redWallVert = {
+        Point(3.079 - radius, 0),
+        Point(3.079 - radius, 1.625 + radius),
+        Point(3.079 + radius, 1.625 + radius),
+        Point(3.079 + radius, 0)
+    };
+
+    vector<Point> redDoohickey = {
+        Point(1 - radius, 1 - radius),
+        Point(1 - radius, 2 + radius),
+        Point(2 + radius, 2 + radius),
+        Point(2 + radius, 1 - radius)
+    };
+
+    vector<Point> centerLeftWall = {
+        Point(4.5 - radius, 2.8 - radius),
+        Point(4.5 - radius, 6 + radius),
+        Point(4.5 + radius, 6 + radius),
+        Point(4.5 + radius, 2.8 - radius)
+    };
+
+    vector<Point> blueWallHor = {
+        Point(12 - 0, 8 - (3.05 - radius)),
+        Point(12 - (1.625 + radius), 8 - (3.05 - radius)),
+        Point(12 - (1.625 + radius), 8 - (3.074 + radius)),
+        Point(12 - 0, 8 - (3.074 + radius))
+    };
+
+    vector<Point> blueWallVert = {
+        Point(12 - (3.079 - radius), 8 - 0),
+        Point(12 - (3.079 - radius), 8 - (1.625 + radius)),
+        Point(12 - (3.079 + radius), 8 - (1.625 + radius)),
+        Point(12 - (3.079 + radius), 8 - 0)
+    };
+
+    vector<Point> blueDoohickey = {
+        Point(12 - (1 - radius), 8 - (1 - radius)),
+        Point(12 -(1 - radius), 8 - (2 + radius)),
+        Point(12 -(2 + radius), 8 - (2 + radius)),
+        Point(12 - (2 + radius), 8 - (1 - radius))
+    };
+
+    vector<Point> centerRightWall = {
+        Point(12 - (4.5 - radius), 8 - (2.8 - radius)),
+        Point(12 - (4.5 - radius), 8 - (6 + radius)),
+        Point(12 - (4.5 + radius), 8 - (6 + radius)),
+        Point(12 - (4.5 + radius), 8 - (2.8 - radius))
+    };
+    
+    vector<vector<Point>> polygons = {
+        redWallHor,
+        redWallVert,
+        redDoohickey,
+        centerLeftWall,
+        blueWallHor,
+        blueWallVert,
+        blueDoohickey,
+        centerRightWall
+    };    
 
     float linearSettledThreshold;
     float angularSettledThreshold;
+    VizGraph pathfinder = constructVizGraph(polygons);
 };
 
 static constexpr SmoothPIDConfig defaultLinearConfig = {

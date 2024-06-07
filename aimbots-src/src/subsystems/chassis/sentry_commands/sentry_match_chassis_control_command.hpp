@@ -29,6 +29,14 @@ enum ChassisMatchStates {
     EVADE
 };
 
+enum States {
+    MOVE_TO_RESUPPLY,
+    MOVE_TO_GUARD,
+    RESUPPLYING,
+    GUARDING,
+    START
+};
+
 class SentryMatchChassisControlCommand : public TapComprisedCommand {
 public:
     SentryMatchChassisControlCommand(
@@ -40,7 +48,8 @@ public:
         const SnapSymmetryConfig& snapSymmetryConfig,
         const TokyoConfig& tokyoConfig,
         bool randomizeSpinRate,
-        const SpinRandomizerConfig& randomizerConfig);
+        const SpinRandomizerConfig& randomizerConfig,
+        States state);
 
     void initialize() override;
     void execute() override;

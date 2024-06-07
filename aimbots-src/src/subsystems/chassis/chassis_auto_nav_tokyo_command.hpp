@@ -26,8 +26,8 @@ public:
     void initialize() override;
     void execute() override;
 
-    void setTargetLocation(const modm::Location2D<float>& targetLocation) {
-        autoNavigator.setTargetLocation(targetLocation);
+    void setTargetLocation(double x, double y) {
+        //autoNavigator.setTargetLocation(targetLocation);
     }
 
     bool isSettled() {
