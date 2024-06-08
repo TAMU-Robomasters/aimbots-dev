@@ -27,6 +27,8 @@ public:
 
     void reset();
 
+    void resetAtNewLocation(float newXPos = 0.0f, float newYPos = 0.0f);
+
 private:
     float initialXPos;
     float initialYPos;

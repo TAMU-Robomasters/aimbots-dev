@@ -47,7 +47,7 @@ void SentryMatchChassisControlCommand::initialize() {
     autoNavCommand.setTargetLocation(waypointTarget.getX(), waypointTarget.getY());
 
     modm::Location2D<float> targetLocation({-4.0f, 1.0f}, 0);
-    //autoNavTokyoCommand.setTargetLocation(targetLocation);
+    // autoNavTokyoCommand.setTargetLocation(targetLocation);
 
     state = States::START;
 
@@ -59,25 +59,28 @@ float dpsDisplay = 0.0f;
 void SentryMatchChassisControlCommand::execute() {
     if (refHelper->getGameStage() == GamePeriod::IN_GAME) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-        
-        switch(state) {
+
+        switch (state) {
             case States::START:
                 autoNavCommand.setTargetLocation(3.0f, 5.0f);
                 state = States::GUARDING;
                 break;
             case States::GUARDING:
-                if (drivers->refSerial.getRobotData().turret.bulletsRemaining17 < 30 || drivers->refSerial.getRobotData().currentHp < 200) {
+                if (drivers->refSerial.getRobotData().turret.bulletsRemaining17 < 30 ||
+                    drivers->refSerial.getRobotData().currentHp < 200) {
                     state = States::MOVE_TO_RESUPPLY;
                 }
                 break;
             case States::RESUPPLYING:
-                if ((drivers->refSerial.getRobotData().turret.bulletsRemaining17 > 100 || drivers->refSerial.getRobotData().currentHp > 500) || false) {
-                    state = STATES::MOVE_TO_GUARD;
+                if ((drivers->refSerial.getRobotData().turret.bulletsRemaining17 > 100 ||
+                     drivers->refSerial.getRobotData().currentHp > 500) ||
+                    false) {
+                    state = States::MOVE_TO_GUARD;
                 }
                 break;
             case States::MOVE_TO_RESUPPLY:
                 autoNavCommand.setTargetLocation(0.5, 7.0f);
-                state = STATES::RESUPPLYING;
+                state = States::RESUPPLYING;
                 break;
             case States::MOVE_TO_GUARD:
                 autoNavCommand.setTargetLocation(3.0f, 5.0f);
@@ -85,10 +88,8 @@ void SentryMatchChassisControlCommand::execute() {
                 break;
             default:
                 break;
-
-
         }
-        
+
         /*matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (engageTokyo) {
@@ -158,5 +159,5 @@ bool SentryMatchChassisControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE
 #endif
