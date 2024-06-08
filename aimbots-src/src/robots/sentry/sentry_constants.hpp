@@ -6,6 +6,7 @@
 #define CHASSIS_COMPATIBLE
 #define SHOOTER_COMPATIBLE
 #define FEEDER_COMPATIBLE
+#define HOPPER_LID_COMPATIBLE
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
@@ -237,7 +238,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // clang-format off;
 // Sentry shoots at the speed of death
@@ -258,6 +259,22 @@ static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
+
+// Hopper constants
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+
+static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
+
+static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
+static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
+
+static constexpr float HOPPER_MIN_ANGLE = 0.0f;
+static constexpr float HOPPER_MAX_ANGLE = 270.0f;
+
+static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
+
+static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

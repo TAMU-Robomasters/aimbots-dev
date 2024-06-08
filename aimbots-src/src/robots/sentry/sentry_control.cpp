@@ -45,6 +45,11 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
+#include "subsystems/hopper/close_hopper_command.hpp"
+#include "subsystems/hopper/hopper.hpp"
+#include "subsystems/hopper/open_hopper_command.hpp"
+#include "subsystems/hopper/toggle_hopper_command.hpp"
+//
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"
 
@@ -54,6 +59,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 // using namespace src::Communication;
 using namespace src::Control;
+using namespace src::Hopper;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -82,6 +88,7 @@ FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 // CommunicationResponseSubsytem response(*drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
+HopperSubsystem hopper(drivers());
 
 // Informant Controllers
 src::Informants::IMUCalibrateCommand imuCalibrateCommand(drivers(), &chassis, &gimbal);
@@ -205,6 +212,12 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+
+OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
+CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
+ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // CommunicationResponseHandler responseHandler(*drivers());
 
