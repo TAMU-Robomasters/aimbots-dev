@@ -58,7 +58,7 @@ namespace tap::communication::serial
  * Receive information from the referee serial by continuously calling `messageReceiveCallback`.
  * Access data sent by the referee serial by calling `getRobotData` or `getGameData`.
  */
-class  RefSerial : public DJISerial, public RefSerialData
+class RefSerial : public DJISerial, public RefSerialData
 {
 private:
     /**
@@ -79,18 +79,21 @@ public:
      * Protocol Appendix. Ignored message types commented out because they are not handled by this
      * parser yet. They are values that are used in message headers to indicate the type of message
      * we have received.
+     *
+     * Current Ref Serial Version: 1.6.1
+     * Updated April 2024.
      */
     enum MessageType
     {
         REF_MESSAGE_TYPE_GAME_STATUS = 0x1,
         REF_MESSAGE_TYPE_GAME_RESULT = 0x2,
         REF_MESSAGE_TYPE_ALL_ROBOT_HP = 0x3,
-        // REF_MESSAGE_TYPE_DART_LAUNCHING_STATUS = 0x4,
-        REF_MESSAGE_TYPE_SITE_EVENT_DATA = 0X101,
-        // REF_MESSAGE_TYPE_PROJECTILE_SUPPPLIER_SITE_ACTION = 0x102,
-        // REF_MESSAGE_TYPE_PROJECTILE_SUPPLY_REQUESTED = 0x103,
+
+        REF_MESSAGE_TYPE_SITE_EVENT_DATA = 0x101,
+        REF_MESSAGE_TYPE_PROJECTILE_SUPPPLIER_ACTION = 0x102,
         REF_MESSAGE_TYPE_WARNING_DATA = 0x104,
-        // REF_MESSAGE_TYPE_DART_LAUNCH_OPENING_COUNT = 0x105,
+        REF_MESSAGE_TYPE_DART_INFO = 0x105,
+
         REF_MESSAGE_TYPE_ROBOT_STATUS = 0x201,
         REF_MESSAGE_TYPE_POWER_AND_HEAT = 0x202,
         REF_MESSAGE_TYPE_ROBOT_POSITION = 0x203,
@@ -100,10 +103,16 @@ public:
         REF_MESSAGE_TYPE_PROJECTILE_LAUNCH = 0x207,
         REF_MESSAGE_TYPE_BULLETS_REMAIN = 0x208,
         REF_MESSAGE_TYPE_RFID_STATUS = 0x209,
-        // REF_MESSAGE_TYPE_DART_INSTRUCTIONS = 0x20A,
+        REF_MESSAGE_TYPE_DART_STATION_INFO = 0x20A,
+        REF_MESSAGE_TYPE_GROUND_ROBOT_POSITION = 0x20B,
+        REF_MESSAGE_TYPE_RADAR_PROGRESS = 0x20C,
+        REF_MESSAGE_TYPE_SENTRY_INFO = 0x20D,
+        REF_MESSAGE_TYPE_RADAR_INFO = 0x20E,
+
         REF_MESSAGE_TYPE_CUSTOM_DATA = 0x301,
         // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER = 0x302,
-        // REF_MESSAGE_TYPE_SMALL_MAP = 0x303;
+        // REF_MESSAGE_TYPE_SMALL_MAP = 0x303,
+        // REF_MESSAGE_TYPE_VTM_INPUT_DATA = 0x304
     };
 
     /**
@@ -146,12 +155,24 @@ public:
         RobotToRobotMessageHandler* handler);
 
     /**
-     * Used by `RefSerialTransmitter`. It is necessary to acquire this lock to coordinate sending
-     * ref serial data from different protothreads.
+     * Used by `RefSerialTransmitter`. Attempts to acquire transmission semaphore.
+     *
+     * @note should be called only using RF_WAIT_UNTIL to block until acquiring semaphore.
      */
-    mockable void acquireTransmissionSemaphore() { transmissionSemaphore.acquire(); }
+    mockable bool acquireTransmissionSemaphore()
+    {
+        if (transmissionDelayTimer.isExpired() || transmissionDelayTimer.isStopped())
+        {
+            return transmissionSemaphore.acquire();
+        }
+        return false;
+    }
 
-    mockable void releaseTransmissionSemaphore() { transmissionSemaphore.release(); }
+    mockable void releaseTransmissionSemaphore(uint32_t sentMsgLen)
+    {
+        transmissionSemaphore.release();
+        transmissionDelayTimer.restart(sentMsgLen * 1'000 / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S);
+    }
 
     /**
      * @return True if the robot operator is blinded, false otherwise. Also return false if the
@@ -175,6 +196,7 @@ private:
     arch::MilliTimeout refSerialOfflineTimeout;
     std::unordered_map<uint16_t, RobotToRobotMessageHandler*> msgIdToRobotToRobotHandlerMap;
     modm::pt::Semaphore transmissionSemaphore;
+    tap::arch::MilliTimeout transmissionDelayTimer;
 
     /**
      * Decodes ref serial message containing the game stage and time remaining
@@ -194,10 +216,18 @@ private:
      */
     bool decodeToSiteEventData(const ReceivedSerialMessage& message);
     /**
+     * Decodes ref serial message containing projectile supplier information.
+     */
+    bool decodeToProjectileSupplierAction(const ReceivedSerialMessage& message);
+    /**
      * Decodes ref serial message containing warning information (if a robot on your team received a
      * yellow or red card).
      */
     bool decodeToWarningData(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing information about own dart system.
+     */
+    bool decodeToDartInfo(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing the firing/driving heat limits and cooling
      * rates for the robot.
@@ -241,6 +271,27 @@ private:
      * Decodes ref serial message containing which RFID buff zones are currently activated.
      */
     bool decodeToRFIDStatus(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing information about the dart station.
+     */
+    bool decodeToDartStation(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing warning information about the ground robot locations.
+     */
+    bool decodeToGroundPositions(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing information about the radar station progress.
+     */
+    bool decodeToRadarProgress(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing information about the sentry's actions.
+     */
+    bool decodeToSentryInfo(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing information about the radar station's actions.
+     */
+    bool decodeToRadarInfo(const ReceivedSerialMessage& message);
+
     bool handleRobotToRobotCommunication(const ReceivedSerialMessage& message);
 
     void updateReceivedDamage();

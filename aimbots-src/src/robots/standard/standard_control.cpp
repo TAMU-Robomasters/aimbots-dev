@@ -61,16 +61,15 @@
 #include "informants/pathfinding/graph.hpp"
 
 
+
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::BarrelManager;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
-using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -80,9 +79,6 @@ using namespace src::BarrelManager;
     Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
     Quick 90-deg Turn Gimbal Yaw (Left): Q
     Quick 90-deg Turn Gimbal Yaw (Right): E
-
-    Manually Choose Tokyo Direction (Left): F+Q
-    Manually Choose Tokyo Direction (Right): F+E
 
     Decrease Chassis Ground Speed (60%): Shift
     Decrease Chassis Ground Speed (25%): Ctrl
@@ -98,13 +94,7 @@ using namespace src::BarrelManager;
     Hopper ------------------------------------------------------------
     Toggle Hopper Position: C
 
-    Barrel Manager ----------------------------------------------------
-    Manually Switch Barrel: R
-    Recalibrate: Hold G for 1 second
-
     UI ----------------------------------------------------------------
-
-
 */
 
 /*
@@ -133,7 +123,6 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
-BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -230,32 +219,21 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-// Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(
     drivers(),
     &feeder,
     &refHelper,
-    barrelMovingFlag,
     FEEDER_DEFAULT_RPM,
     3000.0f,
+    2,
     UNJAM_TIMER_MS);
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
+
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
-BarrelSwapCommand barrelSwapperCommand(drivers(), &barrelManager, &refHelper, barrelMovingFlag, barrelCaliDoneFlag);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
@@ -294,19 +272,19 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runDoubleBarrelFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runDoubleBarrelFeederCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
 
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
@@ -321,7 +299,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-    drivers->commandScheduler.registerSubsystem(&barrelManager);
+    // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
@@ -334,7 +312,6 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     hopper.initialize();
-    barrelManager.initialize();
     // response.initialize();
     clientDisplay.initialize();
 }
@@ -343,7 +320,6 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
-    barrelManager.setDefaultCommand(&barrelSwapperCommand);
 }
 
 // Set commands scheduled on startup

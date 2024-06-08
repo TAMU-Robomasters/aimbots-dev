@@ -41,7 +41,7 @@ public:
 
     void setTargetYaw(AngleUnit unit, float targetYaw) override {
         targetYaw = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
-        fieldRelativeYawTarget.setValue(targetYaw);
+        fieldRelativeYawTarget.setWrappedValue(targetYaw);
     }
 
     void setTargetPitch(AngleUnit unit, float targetPitch) override {
@@ -54,7 +54,7 @@ public:
 
         targetPitch =
             tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
-        fieldRelativePitchTarget.setValue(targetPitch);
+        fieldRelativePitchTarget.setWrappedValue(targetPitch);
     }
 
     bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
@@ -78,21 +78,21 @@ public:
     }
 
     float getTargetYaw(AngleUnit unit) const override {
-        return (unit == AngleUnit::Radians) ? fieldRelativeYawTarget.getValue()
-                                            : modm::toDegree(fieldRelativeYawTarget.getValue());
+        return (unit == AngleUnit::Radians) ? fieldRelativeYawTarget.getWrappedValue()
+                                            : modm::toDegree(fieldRelativeYawTarget.getWrappedValue());
     }
 
     float getTargetPitch(AngleUnit unit) const override {
-        return (unit == AngleUnit::Radians) ? fieldRelativePitchTarget.getValue()
-                                            : modm::toDegree(fieldRelativePitchTarget.getValue());
+        return (unit == AngleUnit::Radians) ? fieldRelativePitchTarget.getWrappedValue()
+                                            : modm::toDegree(fieldRelativePitchTarget.getWrappedValue());
     }
 
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
-    tap::algorithms::ContiguousFloat fieldRelativeYawTarget;
-    tap::algorithms::ContiguousFloat fieldRelativePitchTarget;
+    tap::algorithms::WrappedFloat fieldRelativeYawTarget;
+    tap::algorithms::WrappedFloat fieldRelativePitchTarget;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;

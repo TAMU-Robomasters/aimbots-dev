@@ -19,9 +19,9 @@
 #define MAHONY_AHRS_H_
 
 #include <cmath>
-#include <optional>
+#include <optional> // added in manually WILL BE LOST ON TAPROOT REGEN
 
-#include "modm/math/geometry/vector3.hpp"
+#include "modm/math/geometry/vector3.hpp" // added in manually WILL BE LOST ON TAPROOT REGEN
 
 //--------------------------------------------------------------------------------------------
 // Variable declaration
@@ -44,7 +44,10 @@ private:
 
 public:
     Mahony();
-
+    /* 
+        setCalibrationEuler manually added in
+        THIS WILL BE LOST ON TAPROOT GENERATION
+    */
     void setCalibrationEuler(modm::Vector3f calibrationEuler)
     {
         float x_over_two = calibrationEuler.getX() * 0.5f;

@@ -44,8 +44,9 @@
 #include "tap/architecture/clock.hpp"
 //
 #include "robots/robot_control.hpp"
-#include "utils/music/player.hpp"
+#include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
+#include "informants/pathfinding/graph.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -67,6 +68,9 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
+
+SongTitle playSongWatch = PACMAN;  // Watch variable
+
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -100,7 +104,19 @@ int main() {
             drivers->bmi088.periodicIMUUpdate();
             // currHeat = drivers->refSerial.getRobotData().turret.heat42;
             // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+            // path = wsg_test();
+            // auto it = path.begin();
+            // x1 = it->first[0];
+            // y1 = it->first[1];
+            // it++;
+            // x2 = it->first[0];
+            // y2 = it->first[1];
+            // it++;
+            // x3 = it->first[0];
+            // y3 = it->first[1];
+            
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -109,10 +125,15 @@ int main() {
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
             // PROFILE(drivers->profiler, drivers->terminalSerial.update, ()); // don't turn this on, it slows down UART
+
+            /*if (drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP) {
+                drivers->musicPlayer.requestSong(playSongWatch);
+            }*/
+
             // comms
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
-            utils::Music::playPacMan(drivers);
+            drivers->musicPlayer.playMusic();
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }

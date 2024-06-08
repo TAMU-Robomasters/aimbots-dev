@@ -64,6 +64,12 @@ public:
     virtual void initialize() {}
 
     /**
+     * Calls initialize and registers the subsystem with the command scheduler passed
+     *  in through the driver.
+     */
+    void registerAndInitialize();
+
+    /**
      * Sets the default Command of the Subsystem. The default Command will be
      * automatically scheduled when no other Commands are scheduled that require
      * the Subsystem. Default Commands should generally not end on their own, i.e.
@@ -97,6 +103,14 @@ public:
      */
     virtual void refresh() {}
 
+    /**
+     * Called in the scheduler's run function before removing commands
+     * when safe disconnecting. This function should contain code that
+     * safely shuts down the subsystem (i.e. shutting off motors). All
+     * subsystems must implement this virtual function.
+     */
+    virtual void refreshSafeDisconnect() {}
+
     mockable inline bool isHardwareTestComplete() const { return hardwareTestsComplete; }
 
     mockable inline void setHardwareTestsIncomplete()
@@ -113,7 +127,7 @@ public:
 
     virtual void runHardwareTests() { setHardwareTestsComplete(); }
 
-    virtual const char* getName();
+    virtual const char* getName() const;
 
     mockable inline int getGlobalIdentifier() const { return globalIdentifier; }
 

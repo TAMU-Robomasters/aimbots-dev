@@ -22,6 +22,7 @@ public:
         src::Utils::RefereeHelperTurreted*,
         float speed,
         float unjamSpeed,
+        uint8_t projectileBuffer = 0,
         int UNJAM_TIMER_MS = 300);
     void initialize() override;
 
@@ -39,6 +40,9 @@ private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
+
+    int64_t antiOverheatEncoderThreshold;
+    uint8_t projectileBuffer;
 
     float speed;
 

@@ -28,7 +28,7 @@ public:
     mockable void initialize() override;
     void refresh() override;
 
-    const char* getName() override { return "Barrel Manager Subsystem"; }
+    const char* getName() const override { return "Barrel Manager Subsystem"; }
 
     inline bool isOnline() const { return swapMotor.isMotorOnline(); }
 

@@ -84,7 +84,7 @@ public:
     /// Set the maximum times each of commands should be re-scheduled.
     inline mockable void setMaxTimesToSchedule(int maxTimes) { maxTimesToSchedule = maxTimes; }
 
-private:
+protected:
     bool held;
     bool endCommandsWhenNotHeld;
     int maxTimesToSchedule;

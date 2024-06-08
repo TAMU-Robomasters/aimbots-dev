@@ -43,3 +43,52 @@ void tap::algorithms::rotateVector(float* x, float* y, float radians)
     *x = (*x) * cosf(radians) - *y * sinf(radians);
     *y = x_temp * sinf(radians) + *y * cosf(radians);
 }
+
+tap::algorithms::CMSISMat<3, 1> tap::algorithms::cross(
+    const tap::algorithms::CMSISMat<3, 1>& a,
+    const tap::algorithms::CMSISMat<3, 1>& b)
+{
+    return tap::algorithms::CMSISMat<3, 1>(
+        {a.data[1] * b.data[2] - a.data[2] * b.data[1],
+         a.data[2] * b.data[0] - a.data[0] * b.data[2],
+         a.data[0] * b.data[1] - a.data[1] * b.data[0]});
+}
+
+tap::algorithms::CMSISMat<3, 3> tap::algorithms::fromEulerAngles(
+    const float roll,
+    const float pitch,
+    const float yaw)
+{
+    return tap::algorithms::CMSISMat<3, 3>(
+        {cosf(yaw) * cosf(pitch),
+         (cosf(yaw) * sinf(pitch) * sinf(roll)) - (sinf(yaw) * cosf(roll)),
+         (cosf(yaw) * sinf(pitch) * cosf(roll)) + sinf(yaw) * sinf(roll),
+         sinf(yaw) * cosf(pitch),
+         sinf(yaw) * sinf(pitch) * sinf(roll) + cosf(yaw) * cosf(roll),
+         sinf(yaw) * sinf(pitch) * cosf(roll) - cosf(yaw) * sinf(roll),
+         -sinf(pitch),
+         cosf(pitch) * sinf(roll),
+         cosf(pitch) * cosf(roll)});
+}
+
+modm::Vector3f tap::algorithms::eulerAnglesFromQuaternion(modm::Quaternion<float>& q)
+{
+    modm::Vector3f eulerAngles;
+
+    // roll (x-axis rotation)
+    float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+    float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+    eulerAngles.x = std::atan2(sinr_cosp, cosr_cosp);
+
+    // pitch (y-axis rotation)
+    float sinp = std::sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+    float cosp = std::sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+    eulerAngles.y = 2 * std::atan2(sinp, cosp) - M_PI / 2;
+
+    // yaw (z-axis rotation)
+    float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+    float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+    eulerAngles.z = std::atan2(siny_cosp, cosy_cosp);
+
+    return eulerAngles;
+}

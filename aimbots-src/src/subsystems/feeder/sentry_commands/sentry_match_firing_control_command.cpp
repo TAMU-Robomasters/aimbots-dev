@@ -31,7 +31,7 @@ SentryMatchFiringControlCommand::SentryMatchFiringControlCommand(
       chassisState(chassisState),
       stopFeederCommand(drivers, feeder),
       burstFeederCommand(drivers, feeder, refHelper, BASE_BURST_LENGTH),
-      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, UNJAM_TIMER_MS),
+      fullAutoFeederCommand(drivers, feeder, refHelper, FEEDER_DEFAULT_RPM, -1500, 2, UNJAM_TIMER_MS),
       stopShooterCommand(drivers, shooter),
       runShooterCommand(drivers, shooter, refHelper)  //
 {
@@ -60,16 +60,16 @@ void SentryMatchFiringControlCommand::execute() {
 
         if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FOUND) {
             float yawTargetGimbal = fieldRelativeGimbalController->getTargetYaw(AngleUnit::Radians);
-            tap::algorithms::ContiguousFloat yawCurrentGimbal =
-                drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsContiguousFloat();
+            tap::algorithms::WrappedFloat yawCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
 
             float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
-            tap::algorithms::ContiguousFloat pitchCurrentGimbal =
-                drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsContiguousFloat();
+            tap::algorithms::WrappedFloat pitchCurrentGimbal =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
 
             isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
-                yawCurrentGimbal.difference(yawTargetGimbal),
-                pitchCurrentGimbal.difference(pitchTargetGimbal),
+                yawCurrentGimbal.minDifference(yawTargetGimbal),
+                pitchCurrentGimbal.minDifference(pitchTargetGimbal),
                 targetDepth);
         }
 
@@ -104,7 +104,7 @@ void SentryMatchFiringControlCommand::execute() {
             fullAutoFeederCommand.setSpeed(feederSpeed);
 
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand);
-            
+
             // }
         } else {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);

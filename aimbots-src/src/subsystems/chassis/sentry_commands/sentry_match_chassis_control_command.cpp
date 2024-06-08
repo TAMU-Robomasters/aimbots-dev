@@ -44,10 +44,12 @@ void SentryMatchChassisControlCommand::initialize() {
 
     // Because this is set in intialize, only waypointTarget should need to be updated to move the robot
     waypointTarget.setPosition(SENTRY_WAYPOINTS[waypointName::SENTRY_START]);
-    autoNavCommand.setTargetLocation(waypointTarget);
+    autoNavCommand.setTargetLocation(waypointTarget.getX(), waypointTarget.getY());
 
     modm::Location2D<float> targetLocation({-4.0f, 1.0f}, 0);
-    autoNavTokyoCommand.setTargetLocation(targetLocation);
+    //autoNavTokyoCommand.setTargetLocation(targetLocation);
+
+    state = States::START;
 
     // scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
 }
@@ -56,7 +58,37 @@ float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
     if (refHelper->getGameStage() == GamePeriod::IN_GAME) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
+        
+        switch(state) {
+            case States::START:
+                autoNavCommand.setTargetLocation(3.0f, 5.0f);
+                state = States::GUARDING;
+                break;
+            case States::GUARDING:
+                if (drivers->refSerial.getRobotData().turret.bulletsRemaining17 < 30 || drivers->refSerial.getRobotData().currentHp < 200) {
+                    state = States::MOVE_TO_RESUPPLY;
+                }
+                break;
+            case States::RESUPPLYING:
+                if ((drivers->refSerial.getRobotData().turret.bulletsRemaining17 > 100 || drivers->refSerial.getRobotData().currentHp > 500) || false) {
+                    state = STATES::MOVE_TO_GUARD;
+                }
+                break;
+            case States::MOVE_TO_RESUPPLY:
+                autoNavCommand.setTargetLocation(0.5, 7.0f);
+                state = STATES::RESUPPLYING;
+                break;
+            case States::MOVE_TO_GUARD:
+                autoNavCommand.setTargetLocation(3.0f, 5.0f);
+                state = States::GUARDING;
+                break;
+            default:
+                break;
+
+
+        }
+        
         /*matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (engageTokyo) {

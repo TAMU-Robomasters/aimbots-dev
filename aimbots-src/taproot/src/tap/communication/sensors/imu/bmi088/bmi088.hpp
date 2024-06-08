@@ -30,8 +30,8 @@
 #include "tap/communication/sensors/imu_heater/imu_heater.hpp"
 #include "tap/util_macros.hpp"
 
-#include "modm/math/geometry/vector3.hpp"
 #include "modm/processing/protothread.hpp"
+#include "modm/math/geometry/vector3.hpp" // LOST ON TAPROOT REGEN
 
 #include "bmi088_data.hpp"
 
@@ -87,7 +87,7 @@ public:
     /**
      * The number of samples we take in order to determine the mpu offsets.
      */
-    static constexpr float BMI088_OFFSET_SAMPLES = 1000;
+    float BMI088_OFFSET_SAMPLES = 1000;
 
     Bmi088(tap::Drivers *drivers);
 
@@ -136,7 +136,7 @@ public:
      *     |                   |
      *     |___________________|
      */
-    mockable void requestRecalibration(modm::Vector3f calibrationEulerAngles = {0.0f, 0.0f, 0.0f});
+    mockable void requestRecalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f} ); // added in manually WILL BE LOST ON TAPROOT REGEN
 
     inline const char *getName() const final_mockable { return "bmi088"; }
 
@@ -155,6 +155,8 @@ public:
     mockable inline float getTemp() final_mockable { return data.temperature; }
 
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }
+
+    inline void setOffsetSamples(float samples) { BMI088_OFFSET_SAMPLES = samples; }
 
 private:
     static constexpr uint16_t RAW_TEMPERATURE_TO_APPLY_OFFSET = 1023;
@@ -190,7 +192,7 @@ private:
 
     int calibrationSample = 0;
 
-    modm::Vector3f lastCalibrationEulerAngles;
+    modm::Vector3f lastCalibrationEulerAngles; // added in manually WILL BE LOST ON TAPROOT REGEN
 
     uint32_t prevIMUDataReceivedTime = 0;
 

@@ -26,8 +26,10 @@
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "informants/turret-comms/turret_can_communicator.hpp"
 #include "informants/vision/jetson_communicator.hpp"
+#include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/robot_specific_inc.hpp"
+// graphing elsewhere lol
 
 namespace src {
 class Drivers : public tap::Drivers {
@@ -42,7 +44,8 @@ public:
           magnetometer(),
           cvCommunicator(this),
           kinematicInformant(this),
-          turretCommunicator(this, CANBus::CAN_BUS1) {}
+          turretCommunicator(this, CANBus::CAN_BUS1),
+          musicPlayer(this, STARTUP_SONG) {}
 
 public:
     Control::OperatorInterface controlOperatorInterface;
@@ -50,6 +53,7 @@ public:
     Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
+    utils::Jukebox::JukeboxPlayer musicPlayer;
 };  // class Drivers
 
 }  // namespace src

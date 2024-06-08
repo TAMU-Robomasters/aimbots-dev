@@ -5,7 +5,6 @@
 #include "projectile_launch_speed_predictor.hpp"
 #include "ref_helper_interface.hpp"
 
-
 using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 
 namespace src::Utils {
@@ -41,6 +40,7 @@ public:
     bool isBarrelHeatUnderLimit(float percentageOfLimit, BarrelID barrelID);
     bool canCurrBarrelShootSafely();
     bool canSpecificBarrelShootSafely(BarrelID barrelID);
+    uint8_t getRemainingProjectiles();
 
     uint16_t getCurrBarrelHeat() {
         auto& turretData = drivers->refSerial.getRobotData().turret;
@@ -71,22 +71,8 @@ public:
 
         uint16_t heatLimit = 0;
 
-        switch (currBarrelID) {
-            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-                heatLimit = turretData.heatLimit17ID1;
-                break;
-            }
-            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-                heatLimit = turretData.heatLimit17ID2;
-                break;
-            }
-            case RefSerialRxData::MechanismID::TURRET_42MM: {
-                heatLimit = turretData.heatLimit42;
-                break;
-            }
-            default:
-                return 1;
-        }
+        heatLimit = turretData.heatLimit;
+
         return heatLimit;
     }
 
