@@ -39,7 +39,7 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
 }
 
 void SentryMatchChassisControlCommand::initialize() {
-    // chassis->setDefaultCommand(dynamic_cast<TapCommand*>(&chassisAutoNavCommand));
+    // This is a necessary step, do not question it.
     updateChassisState(ChassisMatchStates::GUARDING);
     updateChassisState(ChassisMatchStates::START);
     // chassisState = ChassisMatchStates::START;
