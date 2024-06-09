@@ -72,7 +72,7 @@ BarrelID currentBarrel = BARREL_IDS[0];
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 
-ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::SETUP;
+ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::START;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
@@ -127,9 +127,19 @@ SentryMatchFiringControlCommand matchFiringControlCommand(
     &ballisticsSolver,
     &gimbalFieldRelativeController,
     chassisMatchState);
-SentryMatchChassisControlCommand matchChassisControlCommand(drivers(), &chassis, &gimbal, chassisMatchState, &refHelper,
-defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig); SentryMatchGimbalControlCommand
-matchGimbalControlCommand(
+
+SentryMatchChassisControlCommand matchChassisControlCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    chassisMatchState,
+    &refHelper,
+    defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
@@ -138,7 +148,7 @@ matchGimbalControlCommand(
     patrolConfig,
     500);
 
-// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(), 
+// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
 //     &chassis, ChassisMatchStates::PATROL,&refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
@@ -172,8 +182,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
-//only for when dirving with remote
-
+// only for when dirving with remote
 
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
@@ -184,7 +193,14 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 1500, 2, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(
+    drivers(),
+    &feeder,
+    &refHelper,
+    FEEDER_DEFAULT_RPM,
+    3000.0f,
+    2,
+    UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(
     drivers(),
@@ -228,7 +244,8 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisAutoNavCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {/*&chassisAutoNavCommand, &chassisAutoNavTokyoCommand, &gimbalChaseCommand2*/ &matchChassisControlCommand,
+     &matchGimbalControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

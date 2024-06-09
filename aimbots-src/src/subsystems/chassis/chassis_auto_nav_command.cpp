@@ -1,5 +1,5 @@
 #include "chassis_auto_nav_command.hpp"
-    
+
 #ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
@@ -36,22 +36,23 @@ void ChassisAutoNavCommand::initialize() {
     // autoNavigator.setTargetLocation(targetLocation);
 
     // 15 inches assumed radius = 0.381 meters
-    
 }
 
-void ChassisAutoNavCommand::pop_path(){
-        if (path.empty()) { return; }
-        Point pt = path.front();
-        path_x = pt.x;
-        path_y = pt.x;
-        autoNavigator.setTargetLocation(modm::Location2D<float>(pt.x, pt.y, 0));
-        path.erase(path.begin());
+void ChassisAutoNavCommand::pop_path() {
+    if (path.empty()) {
+        return;
     }
+    Point pt = path.front();
+    path_x = pt.x;
+    path_y = pt.x;
+    autoNavigator.setTargetLocation(modm::Location2D<float>(pt.x, pt.y, 0));
+    path.erase(path.begin());
+}
 
-void ChassisAutoNavCommand::load_path(vector<Point> path){
-    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); //halt motion
+void ChassisAutoNavCommand::load_path(vector<Point> path) {
+    chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);  // halt motion
     this->path = path;
-    pop_path(); //put new point into auto navigator
+    pop_path();  // put new point into auto navigator
 }
 
 void ChassisAutoNavCommand::setTargetLocation(double x, double y) {
@@ -59,10 +60,7 @@ void ChassisAutoNavCommand::setTargetLocation(double x, double y) {
     load_path(pathfinder.search(currentWorldLocation.getX(), currentWorldLocation.getY(), x, y));
 }
 
-
-
 float rotationErrorDisplay = 0.0f;
-
 
 void ChassisAutoNavCommand::execute() {
     float xError = 0.0f;
@@ -70,18 +68,16 @@ void ChassisAutoNavCommand::execute() {
     float rotationError = 0.0f;
     settled = isSettled();
 
-    //no points to load and controllers at target
-    if (this->path.empty() && this->isSettled()){
+    // no points to load and controllers at target
+    if (this->path.empty() && this->isSettled()) {
         chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
-        return; 
+        return;
     }
 
-
-    if (this->isSettled()){ //if controllers at target load new point
+    if (this->isSettled()) {  // if controllers at target load new point
         this->pop_path();
     }
 
-    
     modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getRobotLocation2D();
     myX = currentWorldLocation.getX();
     myY = currentWorldLocation.getY();
@@ -97,7 +93,7 @@ void ChassisAutoNavCommand::execute() {
 
     float desiredX = xController.runController(xError, currentWorldVelocity.getX());
     float desiredY = yController.runController(yError, currentWorldVelocity.getY());
-    float desiredR = 0; 
+    float desiredR = 0;
     // float desiredR = rotationController.runController(
     //     rotationError,
     //     -RADPS_TO_RPM(drivers->kinematicInformant.getChassisIMUAngularVelocity(
@@ -123,4 +119,4 @@ void ChassisAutoNavCommand::end(bool interrupted) {
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

@@ -91,7 +91,7 @@ void ChassisKFOdometry::reset() {
     kf.init(initialX);
 }
 
-void ChassisKFOdometry::resetAtNewLocation(float newXPos = 0.0f, float newYPos = 0.0f) {
+void ChassisKFOdometry::resetAtNewLocation(float newXPos, float newYPos) {
     float initialX[int(OdomState::NUM_STATES)] = {newXPos, 0.0f, 0.0f, newYPos, 0.0f, 0.0f};
     kf.init(initialX);
 }
