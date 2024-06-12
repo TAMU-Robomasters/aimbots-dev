@@ -91,4 +91,9 @@ void ChassisKFOdometry::reset() {
     kf.init(initialX);
 }
 
+void ChassisKFOdometry::resetAtNewLocation(float newXPos, float newYPos) {
+    float initialX[int(OdomState::NUM_STATES)] = {newXPos, 0.0f, 0.0f, newYPos, 0.0f, 0.0f};
+    kf.init(initialX);
+}
+
 }  // namespace src::Informants::Odometry

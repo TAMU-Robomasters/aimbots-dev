@@ -43,6 +43,7 @@
 /* control includes ---------------------------------------------------------*/
 #include "tap/architecture/clock.hpp"
 //
+#include "informants/pathfinding/graph.hpp"
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
