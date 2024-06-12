@@ -97,7 +97,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
-    if (abs(currPosMag) < MAX_DELTA) {
+    if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
         XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
         YPositionFilter.update(dt, transformedPosition.position.getY());
         ZPositionFilter.update(dt, transformedPosition.position.getZ());

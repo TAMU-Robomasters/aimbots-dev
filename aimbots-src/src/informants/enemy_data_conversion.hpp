@@ -55,6 +55,8 @@ private:
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;
+
+    float BASE_HEIGHT_THRESHOLD = 0.01;
 };
 
 // clang-format off
