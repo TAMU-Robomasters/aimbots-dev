@@ -27,7 +27,9 @@ public:
     void execute() override;
 
     void setTargetLocation(double x, double y) {
-        //autoNavigator.setTargetLocation(targetLocation);
+        UNUSED(x);
+        UNUSED(y);
+        // autoNavigator.setTargetLocation(targetLocation);
     }
 
     bool isSettled() {
@@ -73,4 +75,4 @@ private:
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

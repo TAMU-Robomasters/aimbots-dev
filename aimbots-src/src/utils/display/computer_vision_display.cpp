@@ -13,7 +13,7 @@ using namespace tap::communication::referee;
 
 namespace src::Utils::ClientDisplay {
 CVDisplay::CVDisplay(
-    tap::communication::serial::RefSerialTransmitter &RefSerialTransmitter,
+    tap::communication::serial::RefSerialTransmitter &refSerialTransmitter,
     BallisticsSolver &ballisticsSolver)
     : HudIndicator(refSerialTransmitter),
       balasticSolver(ballisticsSolver) {}

@@ -67,59 +67,12 @@ void SentryMatchChassisControlCommand::initialize() {
 float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
-    if (refHelper->getGameStage() == GamePeriod::IN_GAME || true) {  // Remove the true later
-        /*if (chassisState == lastChassisState) {
-            switch (chassisState) {
-                case ChassisMatchStates::START:
-                    scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-                    autoNavCommand.setTargetLocation(3.5f, 3.5f);  // 3.0, 5.0
-                    updateChassisState(ChassisMatchStates::GUARDING);
-                    break;
-                case ChassisMatchStates::GUARDING:
-                    if (aggroTimer.execute()) {
-                        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-                        updateChassisState(ChassisMatchStates::MOVE_TO_RESUPPLY);
-                        autoNavCommand.setTargetLocation(3.5f, 4.0f);  // 0.5, 1
-                    }
-                    break;
-                    // if (drivers->refSerial.getRobotData().turret.bulletsRemaining17 < 30 ||
-                    //     drivers->refSerial.getRobotData().currentHp < 200) {
-                    //     chassisState = ChassisMatchStates::MOVE_TO_RESUPPLY;
-                    // }
-                    // break;
-
-                case ChassisMatchStates::RESUPPLYING:
-                    // if ((drivers->refSerial.getRobotData().turret.bulletsRemaining17 > 100 ||
-                    //      drivers->refSerial.getRobotData().currentHp > 500) ||
-                    //     false) {
-                    //     chassisState = ChassisMatchStates::MOVE_TO_GUARD;
-                    // }
-                    break;
-                case ChassisMatchStates::CAPTURE:
-                    if () {
-                        scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-                        autoNavCommand.setTargetLocation(6.0f, 4.0f);
-                        updateChassisState(ChassisMatchStates::GUARDING);
-                        break;
-                    }
-
-                case ChassisMatchStates::AGGRO:
-                    // autoNavCommand.setTargetLocation(3.0f, 5.0f);
-                    // chassisState = ChassisMatchStates::GUARDING;
-                    break;
-                default:
-                    break;
-            }
-        } else if (autoNavCommand.isSettled()) {
-            updateChassisState(chassisState);
-            scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
-            aggroTimer.restart(5000);
-        }*/
+    if (refHelper->getGameStage() == GamePeriod::IN_GAME /*|| true*/) {  // Remove the true later
 
         matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (activeMovement) {
-            // Do nothing, administration only
+            // Do nothing, upkeep only
 
             if (autoNavCommand.isSettled()) {
                 activeMovement = false;
@@ -153,6 +106,12 @@ void SentryMatchChassisControlCommand::execute() {
                                 updateChassisState(ChassisMatchStates::GUARDING);
                             }
                             break;
+                        case ChassisMatchStates::RESUPPLYING:
+                        case ChassisMatchStates::EVADE:
+                        case ChassisMatchStates::RETREAT:
+                        default:
+                            updateChassisState(ChassisMatchStates::GUARDING);
+                            break;
                     }
                 }
             }
@@ -178,6 +137,10 @@ void SentryMatchChassisControlCommand::execute() {
                         break;
                     case ChassisMatchStates::RETREAT:
                         autoNavCommand.setTargetLocation(1.5f, 5.0f);
+                        break;
+                    case ChassisMatchStates::RESUPPLYING:
+                    case ChassisMatchStates::EVADE:
+                    default:
                         break;
                 }
 
