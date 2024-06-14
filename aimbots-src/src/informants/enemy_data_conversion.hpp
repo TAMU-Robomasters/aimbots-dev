@@ -7,6 +7,8 @@
 #include "utils/filters/kinematic_kalman.hpp"
 #include "utils/math/dft_helper.hpp"
 
+#include "utils/filters/ema.hpp"
+
 namespace src {
 class Drivers;
 }
@@ -49,9 +51,13 @@ private:
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
 
-    // 1s sample, 30ms per sample = 33 samples
-    SlidingDFT<float, 30> xDFT;
+    // 1s sample, 30ms per sample = 33 samples ?? outdated now - sid
+    size_t x_dft_size = 15;
+    SlidingDFT<float, 15> xDFT;
     bool xDFTValid = false;
+
+    EMAFilter xDFT_Filter = EMAFilter(0.1f);
+    EMAFilter xPlateSpinningFilter = EMAFilter(0.05f);
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;

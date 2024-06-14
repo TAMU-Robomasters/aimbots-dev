@@ -29,11 +29,10 @@ float targetPositionZDisplay = 0.0f;
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
-uint8_t DCBinDisplay = 0;
-float xDFTMagDisplay[30];
-
 float dampingValue = 0.999f;
 float spinMagnitude = 0.0f;
+
+float xPlatePositionSpinRemoved = 0.0f;
 
 uint32_t plateTimeOffsetDisplay = 0;
 
@@ -98,35 +97,51 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
     if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
-        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
+        // XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition (Moved below, after DFT)
         YPositionFilter.update(dt, transformedPosition.position.getY());
         ZPositionFilter.update(dt, transformedPosition.position.getZ());
 
         xDFT.damping_factor = dampingValue;
 
-        xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+        // Giving the DFT the unfiltered x position, not sure if this is a good idea
+        xDFT.update(transformedPosition.position.getX());
+        xDFTValid = xDFT.is_data_valid();
 
-        // if (xDFTValid) {
-        //     spinMagnitude = 0.0f;
-        //     // std::complex<float> DC_bin = xDFT.dft[0];
-        //     uint8_t highestMagIndex = 0;
-        //     float highestMag = 0;
+        if (xDFTValid) {
+            spinMagnitude = 0.0f;
 
-        //     for (size_t i = 0; i < 30; i++) {
-        //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
-        //         //     highestMag = std::abs<float>(xDFT.dft[i]);
-        //         //     highestMagIndex = i;
-        //         // }
-        //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
-        //     }
+            float magnitude_avg_middle_half = 0.0f;
 
-        //     for (size_t i = 1; i < 29; i++) {
-        //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
-        //     }
+            static const size_t dft_threshold_1 = (x_dft_size / 4);
+            static const size_t dft_threshold_2 = 3 * (x_dft_size / 4);
 
-        //     DCBinDisplay = highestMagIndex;
-        //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
-        // }
+            // We use the DFT to check for frequencies that may indicate spinning
+            for (size_t i = 0; i < x_dft_size; i++) {
+                float magnitude = sqrt(xDFT.dft[i].real() * xDFT.dft[i].real() + xDFT.dft[i].imag() * xDFT.dft[i].imag());
+                if (i >= dft_threshold_1 && i < dft_threshold_2) {
+                    magnitude_avg_middle_half += magnitude;
+                }
+            }
+            // Average the magnitudes in the frequencies we're looking for
+            magnitude_avg_middle_half /= (dft_threshold_2 - dft_threshold_1);
+
+            // Filter the spin magnitude just to make it easier to compare to a threshold
+            spinMagnitude = xDFT_Filter.update(magnitude_avg_middle_half);
+
+            // Seemed like a good threshold for detecting spinning from CSV data, but you can tune this
+            if (spinMagnitude > 0.15f) {
+                // If the spinning is detected, we want to heavily filter the plate position to get the "averaged" plate position without the spinning
+                xPlatePositionSpinRemoved = xPlateSpinningFilter.update(transformedPosition.position.getX());
+                // Use the "spin removed" plate position to update the kalman filter
+                XPositionFilter.update(dt, xPlatePositionSpinRemoved);
+            } else {
+                // If no spinning is detected, we just filter the plate position normally
+                XPositionFilter.update(dt, transformedPosition.position.getX());
+            }
+        } else {
+            // If the DFT is not valid yet, we just filter the plate position normally
+            XPositionFilter.update(dt, transformedPosition.position.getX());
+        }
 
         lastUpdateTimestamp_uS = currentTime_uS;
     }
