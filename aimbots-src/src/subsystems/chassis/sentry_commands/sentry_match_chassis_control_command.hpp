@@ -71,14 +71,21 @@ private:
     MilliTimeout holdPositionTimer;
     MilliTimeout buffPointTimer;
     MilliTimeout startingTimer;
+    MilliTimeout delayTimer;
+    MilliTimeout lockoutTimer;
+
+    static const std::array<ChassisMatchStates, 6> STATE_LOCKOUT_TIMES = {0, 3000, 0, 0, 5000, 10000};
 
     int BUFF_POINT_REFRESH_TIME = 7500;  // in milliseconds
 
     bool activeMovement = false;
 
     void inline updateChassisState(ChassisMatchStates newState) {
-        lastChassisState = chassisState;
-        chassisState = newState;
+        if (chassisState != newState) {
+            lastChassisState = chassisState;
+            chassisState = newState;
+            activeMovement = true;
+        }
     }
 
     bool inline isNavSettled() {

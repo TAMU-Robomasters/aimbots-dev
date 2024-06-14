@@ -40,16 +40,15 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
 
 void SentryMatchChassisControlCommand::initialize() {
     // This is a necessary step, do not question it.
-    updateChassisState(ChassisMatchStates::GUARDING);
-    updateChassisState(ChassisMatchStates::START);
+    // updateChassisState(ChassisMatchStates::GUARDING);
+    // updateChassisState(ChassisMatchStates::START);
+    chassisState = ChassisMatchStates::GUARDING;
     // chassisState = ChassisMatchStates::START;
+    updateChassisState(ChassisMatchStates::START);
 
-    // Because this is set in intialize, only waypointTarget should need to be updated to move the robot
-    waypointTarget.setPosition(SENTRY_WAYPOINTS[waypointName::SENTRY_START]);
-    // autoNavCommand.setTargetLocation(waypointTarget.getX(), waypointTarget.getY());
-    autoNavCommand.setTargetLocation(3.5f, 3.5f);  // 3.5, 3.5
-    startingTimer.restart(700);
-    activeMovement = false;
+    // autoNavCommand.setTargetLocation(3.5f, 3.5f);  // 3.5, 3.5
+    // startingTimer.restart(700);
+    // activeMovement = false;
     /*
      * Reload
      *  Zone
@@ -67,85 +66,70 @@ void SentryMatchChassisControlCommand::initialize() {
 float dpsDisplay = 0.0f;
 
 void SentryMatchChassisControlCommand::execute() {
-    if (refHelper->getGameStage() == GamePeriod::IN_GAME /*|| true*/) {  // Remove the true later
+    if (refHelper->getGameStage() == GamePeriod::IN_GAME || true) {  // Remove the true later
 
         matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
         if (activeMovement) {
             // Do nothing, upkeep only
-
-            if (autoNavCommand.isSettled()) {
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
+            if (autoNavCommand.isSettled() && delayTimer.isExpired()) {
                 activeMovement = false;
-                updateChassisState(chassisState);
-                scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
+                lockoutTimer.restart(STATE_LOCKOUT_TIMES[chassisMatchState]);
+                // updateChassisState(chassisState);
             }
         } else {
-            if (chassisState == lastChassisState) {
-                // Decide what state to enter
-                if (drivers->refSerial.getRobotData().currentHp < 400) {
-                    updateChassisState(ChassisMatchStates::RETREAT);
-                } else {
-                    switch (chassisState) {
-                        case ChassisMatchStates::START:
-                            if (startingTimer.execute()) {
-                                updateChassisState(ChassisMatchStates::AGGRO);
-                            }
-                            break;
-                        case ChassisMatchStates::GUARDING:
-                            if (holdPositionTimer.execute()) {
-                                updateChassisState(ChassisMatchStates::CAPTURE);
-                            }
-                            break;
-                        case ChassisMatchStates::CAPTURE:
-                            if (buffPointTimer.execute()) {
-                                updateChassisState(ChassisMatchStates::RETREAT);
-                            }
-                            break;
-                        case ChassisMatchStates::AGGRO:
-                            if (aggroTimer.execute()) {
-                                updateChassisState(ChassisMatchStates::GUARDING);
-                            }
-                            break;
-                        case ChassisMatchStates::RESUPPLYING:
-                        case ChassisMatchStates::EVADE:
-                        case ChassisMatchStates::RETREAT:
-                        default:
-                            updateChassisState(ChassisMatchStates::GUARDING);
-                            break;
-                    }
-                }
-            }
-            if (chassisState != lastChassisState) {
-                // Perform setup for the next state
-                scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
-                switch (chassisState) {
-                    case ChassisMatchStates::START:
-                        autoNavCommand.setTargetLocation(3.5f, 3.0f);  // 3.0, 5.0
-                        startingTimer.restart(700);
-                        break;
-                    case ChassisMatchStates::GUARDING:
-                        autoNavCommand.setTargetLocation(3.5f, 4.0f);
-                        holdPositionTimer.restart(5000);
-                        break;
-                    case ChassisMatchStates::CAPTURE:
-                        autoNavCommand.setTargetLocation(6.0f, 4.0f);
-                        buffPointTimer.restart(BUFF_POINT_REFRESH_TIME);
-                        break;
-                    case ChassisMatchStates::AGGRO:
-                        autoNavCommand.setTargetLocation(6.0f, 2.5f);  // 9.0, 1.5
-                        aggroTimer.restart(5000);
-                        break;
-                    case ChassisMatchStates::RETREAT:
-                        autoNavCommand.setTargetLocation(1.5f, 5.0f);
-                        break;
-                    case ChassisMatchStates::RESUPPLYING:
-                    case ChassisMatchStates::EVADE:
-                    default:
-                        break;
-                }
+            delayTimer.restart(500);
+            scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
+        }
 
-                activeMovement = true;
+        // Logic for which state to use
+        if (drivers->refSerial.getRobotData().currentHp < 400) {
+            updateChassisState(ChassisMatchStates::RETREAT);
+        } else if (lockoutTimer.isExpired()) {
+            if (chassisState == ChassisMatchStates::START) {
+                updateChassisState(ChassisMatchStates::AGGRO);
+            } else if (chassisState == ChassisMatchStates::AGGRO) {
+                updateChassisState(ChassisMatchStates::CAPTURE);
+            } else if (chassisState == ChassisMatchStates::RETREAT && matchTimer > (60 * 4)) {
+                updateChassisState(ChassisMatchStates::RESUPPLYING);
+            } else if (
+                (chassisState == ChassisMatchStates::RETREAT || chassisState == ChassisMatchStates::RESUPPLYING) &&
+                drivers->refSerial.getRobotData().currentHp >= 400) {
+                updateChassisState(ChassisMatchStates::CAPTURE);
             }
+        }
+
+        if (chassisState != lastChassisState) {
+            // Perform setup for the next state
+
+            switch (chassisState) {
+                case ChassisMatchStates::START:
+                    autoNavCommand.setTargetLocation(3.5f, 3.0f);  // 3.0, 5.0
+                    startingTimer.restart(700);
+                    break;
+                case ChassisMatchStates::GUARDING:
+                    autoNavCommand.setTargetLocation(3.5f, 4.0f);
+                    holdPositionTimer.restart(5000);
+                    break;
+                case ChassisMatchStates::CAPTURE:
+                    autoNavCommand.setTargetLocation(6.4f, 3.7f);
+                    buffPointTimer.restart(BUFF_POINT_REFRESH_TIME);
+                    break;
+                case ChassisMatchStates::AGGRO:
+                    autoNavCommand.setTargetLocation(6.0f, 2.5f);  // 9.0, 1.5
+                    aggroTimer.restart(5000);
+                    break;
+                case ChassisMatchStates::RETREAT:
+                    autoNavCommand.setTargetLocation(1.5f, 5.0f);
+                    break;
+                case ChassisMatchStates::RESUPPLYING:
+                    autoNavCommand.setTargetLocation(0.5f, 5.0f);
+                case ChassisMatchStates::EVADE:
+                default:
+                    break;
+            }
+            lastChassisState = chassisState;
         }
 
     } else {
