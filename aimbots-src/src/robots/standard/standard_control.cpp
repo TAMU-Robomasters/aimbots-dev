@@ -62,8 +62,6 @@
 //
 #include "informants/pathfinding/graph.hpp"
 
-
-
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
@@ -220,7 +218,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+    SHOOTER_SPEED_MATRIX[0][0],
+    modm::toRadian(30.0f));
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
