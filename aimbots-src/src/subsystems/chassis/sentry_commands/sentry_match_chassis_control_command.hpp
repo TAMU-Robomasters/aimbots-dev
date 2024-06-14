@@ -67,10 +67,6 @@ private:
     int CENTRAL_BUFF_OPEN = 75;
     int matchTimer = 0;  // in seconds
 
-    MilliTimeout aggroTimer;
-    MilliTimeout holdPositionTimer;
-    MilliTimeout buffPointTimer;
-    MilliTimeout startingTimer;
     MilliTimeout delayTimer;
     MilliTimeout lockoutTimer;
 

@@ -167,7 +167,7 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&chassisToggleDriveCommand,*/ &feederLimitCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, /*&feederLimitCommand,*/ &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
@@ -189,7 +189,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {/*&runFeederCommand,*/ &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 

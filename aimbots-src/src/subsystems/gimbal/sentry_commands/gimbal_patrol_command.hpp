@@ -6,6 +6,7 @@
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
 
+#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 
@@ -19,7 +20,12 @@ struct GimbalPatrolConfig {
 
 class GimbalPatrolCommand : public tap::control::Command {
 public:
-    GimbalPatrolCommand(src::Drivers*, GimbalSubsystem*, GimbalFieldRelativeController*, GimbalPatrolConfig);
+    GimbalPatrolCommand(
+        src::Drivers*,
+        GimbalSubsystem*,
+        GimbalFieldRelativeController*,
+        GimbalPatrolConfig,
+        src::Chassis::ChassisMatchStates&);
 
     char const* getName() const override { return "Gimbal Patrol Command"; }
 
@@ -54,11 +60,19 @@ private:
 
     GimbalPatrolConfig patrolConfig;
 
+    src::Chassis::ChassisMatchStates& chassisState;
+
     uint32_t commandStartTime = 0;
 
     static constexpr size_t NUM_PATROL_LOCATIONS = 4;
-    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> patrolCoordinates;
-    std::array<uint32_t, NUM_PATROL_LOCATIONS> patrolCoordinateTimes;
+    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> safePatrolCoordinates;
+    std::array<uint32_t, NUM_PATROL_LOCATIONS> safePatrolCoordinateTimes;
+
+    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> capPatrolCoordinates;
+    std::array<uint32_t, NUM_PATROL_LOCATIONS> capPatrolCoordinateTimes;
+
+    std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> aggroPatrolCoordinates;
+    std::array<uint32_t, NUM_PATROL_LOCATIONS> aggroPatrolCoordinateTimes;
 
     MilliTimeout patrolTimer;
     int patrolCoordinateIndex = 0;

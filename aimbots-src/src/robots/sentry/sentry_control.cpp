@@ -121,8 +121,8 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
+    .pitchPatrolAmplitude = modm::toRadian(7.0f),
+    .pitchPatrolFrequency = 1.0f * M_PI,
     .pitchPatrolOffset = -modm::toRadian(11.0f),
 };
 
@@ -154,6 +154,7 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(
     &refHelper,
     &ballisticsSolver,
     patrolConfig,
+    chassisMatchState,
     500);
 
 // SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
@@ -172,7 +173,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
+GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -225,58 +226,58 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Define command mappings here -------------------------------------------
 
 // MANUAL ROBOT CONTROL (NON-SERVER USE) ----------------------------------
-// Enables both chassis and gimbal manual control
-HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-// Enables both chassis and gimbal control and closes hopper
-HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-// HoldCommandMapping rightSwitchDown(
-//     drivers(),
-//     {&openHopperCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
-// Runs shooter only and closes hopper
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
-
-// Autonomous Match Control Switch Mapping -----------------------------
+// // Enables both chassis and gimbal manual control
 // HoldCommandMapping leftSwitchMid(
-//     drivers(),
-//     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+//     drivers(),  // gimbalFieldRelativeControlCommand
+//     {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
+// // Enables both chassis and gimbal control and closes hopper
 // HoldCommandMapping leftSwitchUp(
 //     drivers(),
-//     {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand},
+//     {&chassisTokyoCommand, &gimbalChaseCommand2},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// // Runs shooter only
+// // HoldCommandMapping rightSwitchDown(
+// //     drivers(),
+// //     {&openHopperCommand},
+// //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+// // Runs shooter only and closes hopper
 // HoldCommandMapping rightSwitchMid(
 //     drivers(),
 //     {&runShooterCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// // Runs shooter with feeder
-// HoldCommandMapping rightSwitchUp(
+// // Runs shooter with feeder and closes hopper
+// HoldRepeatCommandMapping rightSwitchUp(
 //     drivers(),
-//     {&dualBarrelsFeederCommand, /*&runShooterWithFeederCommand*/ &matchFiringControlCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+//     {&runFeederCommand, &runShooterWithFeederCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+//     true);
+
+// Autonomous Match Control Switch Mapping -----------------------------
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping leftSwitchUp(
+    drivers(),
+    {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+// Runs shooter only
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+// Runs shooter with feeder
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {/*&dualBarrelsFeederCommand,*/ /*&runShooterWithFeederCommand*/ &matchFiringControlCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {

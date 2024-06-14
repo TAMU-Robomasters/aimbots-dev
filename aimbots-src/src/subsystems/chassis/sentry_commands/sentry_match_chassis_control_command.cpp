@@ -45,6 +45,8 @@ void SentryMatchChassisControlCommand::initialize() {
     chassisState = ChassisMatchStates::GUARDING;
     // chassisState = ChassisMatchStates::START;
     updateChassisState(ChassisMatchStates::START);
+    delayTimer.restart(500);
+    lockoutTimer.restart(0);
 
     // autoNavCommand.setTargetLocation(3.5f, 3.5f);  // 3.5, 3.5
     // startingTimer.restart(700);
@@ -65,8 +67,15 @@ void SentryMatchChassisControlCommand::initialize() {
 
 float dpsDisplay = 0.0f;
 
+int stateDisplay = 7;
+bool activeDisplay = false;
+bool activeDisplay2 = false;
+
 void SentryMatchChassisControlCommand::execute() {
     if (refHelper->getGameStage() == GamePeriod::IN_GAME || true) {  // Remove the true later
+
+        stateDisplay = chassisState;
+        activeDisplay = activeMovement;
 
         matchTimer = MATCH_TIME_LENGTH - drivers->refSerial.getGameData().stageTimeRemaining;
 
@@ -83,13 +92,17 @@ void SentryMatchChassisControlCommand::execute() {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &tokyoCommand);
         }
 
+        activeDisplay2 = activeMovement;
+
         // Logic for which state to use
         if (drivers->refSerial.getRobotData().currentHp < 400) {
             updateChassisState(ChassisMatchStates::RETREAT);
-        } else if (lockoutTimer.isExpired()) {
+        }
+
+        if (lockoutTimer.isExpired()) {
             if (chassisState == ChassisMatchStates::START) {
                 updateChassisState(ChassisMatchStates::AGGRO);
-            } else if (chassisState == ChassisMatchStates::AGGRO) {
+            } else if (chassisState == ChassisMatchStates::AGGRO && !activeMovement) {
                 updateChassisState(ChassisMatchStates::CAPTURE);
             } else if (chassisState == ChassisMatchStates::RETREAT && matchTimer > (60 * 4)) {
                 updateChassisState(ChassisMatchStates::RESUPPLYING);
@@ -105,26 +118,22 @@ void SentryMatchChassisControlCommand::execute() {
 
             switch (chassisState) {
                 case ChassisMatchStates::START:
-                    autoNavCommand.setTargetLocation(3.5f, 3.0f);  // 3.0, 5.0
-                    startingTimer.restart(700);
+                    autoNavCommand.setTargetLocation(3.5f, 4.0f);  // 3.0, 3.0
                     break;
                 case ChassisMatchStates::GUARDING:
-                    autoNavCommand.setTargetLocation(3.5f, 4.0f);
-                    holdPositionTimer.restart(5000);
+                    autoNavCommand.setTargetLocation(3.5f, 4.0f);  // 3.5, 4.0
                     break;
                 case ChassisMatchStates::CAPTURE:
-                    autoNavCommand.setTargetLocation(6.4f, 3.7f);
-                    buffPointTimer.restart(BUFF_POINT_REFRESH_TIME);
+                    autoNavCommand.setTargetLocation(6.4f, 3.7f);  // 6.4, 3.7
                     break;
                 case ChassisMatchStates::AGGRO:
-                    autoNavCommand.setTargetLocation(6.0f, 2.5f);  // 9.0, 1.5
-                    aggroTimer.restart(5000);
+                    autoNavCommand.setTargetLocation(9.0f, 1.5f);  // 9.0, 1.5
                     break;
                 case ChassisMatchStates::RETREAT:
-                    autoNavCommand.setTargetLocation(1.5f, 5.0f);
+                    autoNavCommand.setTargetLocation(1.5f, 5.0f);  // 1.5, 5.0
                     break;
                 case ChassisMatchStates::RESUPPLYING:
-                    autoNavCommand.setTargetLocation(0.5f, 5.0f);
+                    autoNavCommand.setTargetLocation(0.5f, 5.0f);  // 0.5, 5.0
                 case ChassisMatchStates::EVADE:
                 default:
                     break;

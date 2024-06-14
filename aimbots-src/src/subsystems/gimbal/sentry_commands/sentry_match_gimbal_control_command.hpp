@@ -1,5 +1,6 @@
 #pragma once
 
+#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
@@ -18,6 +19,7 @@ public:
         src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         GimbalPatrolConfig patrolConfig,
+        src::Chassis::ChassisMatchStates& chassisState,
         int chaseTimeoutMillis);
 
     void initialize() override;
@@ -39,6 +41,8 @@ private:
 
     GimbalPatrolCommand patrolCommand;
     GimbalChaseCommand chaseCommand;
+
+    src::Chassis::ChassisMatchStates& chassisState;
 
     MilliTimeout chaseTimeout;
     int chaseTimeoutMillis = 0;

@@ -8,19 +8,32 @@ GimbalPatrolCommand::GimbalPatrolCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalFieldRelativeController* gimbalController,
-    GimbalPatrolConfig patrolConfig)
+    GimbalPatrolConfig patrolConfig,
+    src::Chassis::ChassisMatchStates& chassisState)
     : tap::control::Command(),
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
       patrolConfig(patrolConfig),
-      patrolCoordinates(
-          {modm::Location2D<float>({-1.5f, -2.75f}, 0.0f), //5, -3, 0
-           modm::Location2D<float>({-2.0f, -0.5f}, 0.0f), // -1.425, -1.131, 0
-           modm::Location2D<float>({-3.0f, 3.0f}, 0.0f),
-           modm::Location2D<float>({-4.75f, 1.5f}, 0.0f)   // -3.25, 2.5, 0
-           }), //-2, -0.5
-      patrolCoordinateTimes({1500, 600, 1000, 1500})
+      chassisState(chassisState),
+      safePatrolCoordinates(
+          {modm::Location2D<float>({3.0f, 7.0f}, 0.0f),
+           modm::Location2D<float>({4.7f, 7.0f}, 0.0f),
+           modm::Location2D<float>({4.7f, 5.0f}, 0.0f),
+           modm::Location2D<float>({4.5f, 1.5f}, 0.0f)}),
+      safePatrolCoordinateTimes({1500, 1000, 600, 1500}),
+      capPatrolCoordinates(
+          {modm::Location2D<float>({5.5f, 4.0f}, 0.0f),
+           modm::Location2D<float>({6.0f, 7.0f}, 0.0f),
+           modm::Location2D<float>({7.5f, 4.0f}, 0.0f),
+           modm::Location2D<float>({6.0f, 1.5f}, 0.0f)}),
+      capPatrolCoordinateTimes({800, 1000, 800, 1000}),
+      aggroPatrolCoordinates(
+          {modm::Location2D<float>({11.0f, 1.0f}, 0.0f),
+           modm::Location2D<float>({10.5f, 1.3f}, 0.0f),
+           modm::Location2D<float>({9.5f, 3.0f}, 0.0f),
+           modm::Location2D<float>({9.0f, 4.0f}, 0.0f)}),
+      aggroPatrolCoordinateTimes({1000, 1500, 600, 1000})
 //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -46,7 +59,7 @@ void GimbalPatrolCommand::execute() {
 
     patrolIndexDisplay = patrolCoordinateIndex;
 
-    patrolTimingDisplay = patrolCoordinateTimes[patrolCoordinateIndex];
+    // patrolTimingDisplay = patrolCoordinateTimes[patrolCoordinateIndex];
 
     patrolTimerDisplay = patrolTimer.isExpired();
     patrolRunningDisplay = patrolTimer.isStopped();
@@ -89,7 +102,13 @@ void GimbalPatrolCommand::updateYawPatrolTarget() {
         } else if (patrolTimer.isExpired() || patrolTimer.isStopped()) {
             // if we're settled at the target angle, and the timer has already expired or hasn't ever been started, start the
             // timer
-            patrolTimer.restart(static_cast<uint32_t>(patrolCoordinateTimes[patrolCoordinateIndex]));
+            if (chassisState == src::Chassis::ChassisMatchStates::CAPTURE) {
+                patrolTimer.restart(static_cast<uint32_t>(capPatrolCoordinateTimes[patrolCoordinateIndex]));
+            } else if (chassisState == src::Chassis::ChassisMatchStates::AGGRO) {
+                patrolTimer.restart(static_cast<uint32_t>(aggroPatrolCoordinateTimes[patrolCoordinateIndex]));
+            } else {
+                patrolTimer.restart(static_cast<uint32_t>(safePatrolCoordinateTimes[patrolCoordinateIndex]));
+            }
         }
     }
 }
@@ -101,24 +120,32 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
     this->updateYawPatrolTarget();
     // needs to target XY positions on the field from patrolCoordinates.getRow(patrolCoordinateIndex)
     // convert that to an angle relative to the field's positive x axis
-    currPatrolCoordinateXDisplay = patrolCoordinates[patrolCoordinateIndex].getX();
-    currPatrolCoordinateYDisplay = patrolCoordinates[patrolCoordinateIndex].getY();
-    currPatrolCoordinateTimeDisplay = patrolCoordinateTimes[patrolCoordinateIndex];
+    // currPatrolCoordinateXDisplay = patrolCoordinates[patrolCoordinateIndex].getX();
+    // currPatrolCoordinateYDisplay = patrolCoordinates[patrolCoordinateIndex].getY();
+    // currPatrolCoordinateTimeDisplay = patrolCoordinateTimes[patrolCoordinateIndex];
 
-    // Matrix<float, 1, 3> demoPosition1 = Matrix<float, 1, 3>::zeroMatrix();
-    // demoPosition1[0][0] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][X];
-    // demoPosition1[0][1] = drivers->fieldRelativeInformant.getFieldRelativeRobotPosition()[0][Y];
+    // float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
+    //     drivers->kinematicInformant.getRobotLocation2D(),
+    //     patrolCoordinates[patrolCoordinateIndex],
+    //     AngleUnit::Radians);
+    float zAngle = 0.0f;
 
-    // Matrix<float, 1, 3> demoPosition2 = Matrix<float, 1, 3>::zeroMatrix();
-    // demoPosition2[0][0] = -3.6675f + 1.0f;
-    // demoPosition2[0][1] = -1.6675f + 1.0f;
-
-    // This function doesn't exist anymore, presumably a transformation helper function now
-    float zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-        /*drivers->kinematicInformant.getRobotLocation2D()*/{-2.83,-0.73,0},
-        patrolCoordinates[patrolCoordinateIndex],
-        AngleUnit::Radians);
-
+    if (chassisState == src::Chassis::ChassisMatchStates::CAPTURE) {
+        zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
+            drivers->kinematicInformant.getRobotLocation2D(),
+            capPatrolCoordinates[patrolCoordinateIndex],
+            AngleUnit::Radians);
+    } else if (chassisState == src::Chassis::ChassisMatchStates::AGGRO) {
+        zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
+            drivers->kinematicInformant.getRobotLocation2D(),
+            aggroPatrolCoordinates[patrolCoordinateIndex],
+            AngleUnit::Radians);
+    } else {
+        zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
+            drivers->kinematicInformant.getRobotLocation2D(),
+            safePatrolCoordinates[patrolCoordinateIndex],
+            AngleUnit::Radians);
+    }
 
     xy_angleDisplay = modm::toDegree(zAngle);
 
