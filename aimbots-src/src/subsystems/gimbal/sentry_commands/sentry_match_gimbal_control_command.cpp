@@ -1,5 +1,7 @@
 #include "sentry_match_gimbal_control_command.hpp"
 
+#ifdef ALL_SENTRIES
+
 namespace src::Gimbal {
 
 SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
@@ -61,3 +63,5 @@ bool SentryMatchGimbalControlCommand::isReady() { return true; }
 bool SentryMatchGimbalControlCommand::isFinished() const { return false; }
 
 }  // namespace src::Gimbal
+
+#endif

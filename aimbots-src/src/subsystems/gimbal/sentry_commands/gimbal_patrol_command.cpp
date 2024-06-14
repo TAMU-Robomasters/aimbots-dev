@@ -2,6 +2,8 @@
 
 #include "utils/robot_specific_inc.hpp"
 
+#ifdef ALL_SENTRIES
+
 namespace src::Gimbal {
 
 GimbalPatrolCommand::GimbalPatrolCommand(
@@ -156,3 +158,5 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 }
 
 };  // namespace src::Gimbal
+
+#endif

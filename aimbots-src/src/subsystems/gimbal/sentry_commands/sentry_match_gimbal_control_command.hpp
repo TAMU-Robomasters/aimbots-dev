@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef ALL_SENTRIES
+
 #include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
 #include "subsystems/gimbal/gimbal_chase_command.hpp"
@@ -49,3 +51,5 @@ private:
 };
 
 }  // namespace src::Gimbal
+
+#endif

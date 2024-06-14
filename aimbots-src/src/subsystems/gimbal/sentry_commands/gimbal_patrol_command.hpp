@@ -2,6 +2,8 @@
 
 #pragma once
 
+#ifdef ALL_SENTRIES
+
 #include <drivers.hpp>
 #include <subsystems/gimbal/gimbal.hpp>
 #include <tap/control/command.hpp>
@@ -80,3 +82,5 @@ private:
 };
 
 }  // namespace src::Gimbal
+
+#endif
