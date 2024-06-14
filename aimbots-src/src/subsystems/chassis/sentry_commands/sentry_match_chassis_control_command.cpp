@@ -75,7 +75,7 @@ void SentryMatchChassisControlCommand::execute() {
             scheduleIfNotScheduled(this->comprisedCommandScheduler, &autoNavCommand);
             if (autoNavCommand.isSettled() && delayTimer.isExpired()) {
                 activeMovement = false;
-                lockoutTimer.restart(STATE_LOCKOUT_TIMES[chassisMatchState]);
+                lockoutTimer.restart(STATE_LOCKOUT_TIMES[chassisState]);
                 // updateChassisState(chassisState);
             }
         } else {

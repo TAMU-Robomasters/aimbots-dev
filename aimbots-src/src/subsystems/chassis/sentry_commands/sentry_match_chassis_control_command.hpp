@@ -74,7 +74,7 @@ private:
     MilliTimeout delayTimer;
     MilliTimeout lockoutTimer;
 
-    static const std::array<ChassisMatchStates, 6> STATE_LOCKOUT_TIMES = {0, 3000, 0, 0, 5000, 10000};
+    static constexpr std::array<int, 6> STATE_LOCKOUT_TIMES = {0, 3000, 0, 0, 5000, 10000};
 
     int BUFF_POINT_REFRESH_TIME = 7500;  // in milliseconds
 
