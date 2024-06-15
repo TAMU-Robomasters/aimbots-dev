@@ -97,7 +97,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
     if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
-        // XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition (Moved below, after DFT)
+        // XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition (Moved
+        // below, after DFT)
         YPositionFilter.update(dt, transformedPosition.position.getY());
         ZPositionFilter.update(dt, transformedPosition.position.getZ());
 
@@ -130,7 +131,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
             // Seemed like a good threshold for detecting spinning from CSV data, but you can tune this
             if (spinMagnitude > 0.15f) {
-                // If the spinning is detected, we want to heavily filter the plate position to get the "averaged" plate position without the spinning
+                // If the spinning is detected, we want to heavily filter the plate position to get the "averaged" plate
+                // position without the spinning
                 xPlatePositionSpinRemoved = xPlateSpinningFilter.update(transformedPosition.position.getX());
                 // Use the "spin removed" plate position to update the kalman filter
                 XPositionFilter.update(dt, xPlatePositionSpinRemoved);

@@ -4,10 +4,9 @@
 #include <utils/math/transform_setup.hpp>
 
 #include "utils/common_types.hpp"
+#include "utils/filters/ema.hpp"
 #include "utils/filters/kinematic_kalman.hpp"
 #include "utils/math/dft_helper.hpp"
-
-#include "utils/filters/ema.hpp"
 
 namespace src {
 class Drivers;
@@ -56,13 +55,13 @@ private:
     SlidingDFT<float, 15> xDFT;
     bool xDFTValid = false;
 
-    EMAFilter xDFT_Filter = EMAFilter(0.1f);
-    EMAFilter xPlateSpinningFilter = EMAFilter(0.05f);
+    src::Utils::Filters::EMAFilter xDFT_Filter = src::Utils::Filters::EMAFilter(0.1f);
+    src::Utils::Filters::EMAFilter xPlateSpinningFilter = src::Utils::Filters::EMAFilter(0.05f);
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;
 
-    float BASE_HEIGHT_THRESHOLD = 0.01;
+    float BASE_HEIGHT_THRESHOLD = 0.00;
 };
 
 // clang-format off
