@@ -121,9 +121,9 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(7.0f),
+    .pitchPatrolAmplitude = modm::toRadian(8.0f),
     .pitchPatrolFrequency = 1.0f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
+    .pitchPatrolOffset = -modm::toRadian(6.0f),
 };
 
 // Match Controllers ------------------------------------------------

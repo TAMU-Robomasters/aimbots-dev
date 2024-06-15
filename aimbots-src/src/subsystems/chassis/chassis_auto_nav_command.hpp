@@ -65,18 +65,18 @@ private:
     float linearVelocityRampValue = 1.0f;
     float rotationVelocityRampValue = modm::toRadian(1.0f / 500);
 
-    float radius = 0.381;
+    float radius = 0.385;
     vector<Point> redWallHor = {
-        Point(0, 3.05 - radius),
-        Point(1.625 + radius, 3.05 - radius),
-        Point(1.625 + radius, 3.074 + radius),
-        Point(0, 3.074 + radius)};
+        Point(0, 2.945 - radius),
+        Point(1.9 + radius, 2.945 - radius),
+        Point(1.9 + radius, 3.35 + radius),
+        Point(0, 3.35 + radius)};
 
     vector<Point> redWallVert = {
-        Point(3.079 - radius, 0),
-        Point(3.079 - radius, 1.625 + radius),
-        Point(3.079 + radius, 1.625 + radius),
-        Point(3.079 + radius, 0)};
+        Point(2.945 - radius, 0),
+        Point(2.945 - radius, 1.9 + radius),
+        Point(3.35 + radius, 1.9 + radius),
+        Point(3.35 + radius, 0)};
 
     vector<Point> redDoohickey = {
         Point(1 - radius, 1 - radius),
@@ -85,22 +85,22 @@ private:
         Point(2 + radius, 1 - radius)};
 
     vector<Point> centerLeftWall = {
-        Point(5 - radius, 2.8 - radius),
-        Point(5 - radius, 6 + radius),
-        Point(5 + radius, 6 + radius),
-        Point(5 + radius, 2.8 - radius)};
+        Point(4.475 - radius, 3.0 - radius),
+        Point(4.475 - radius, 6.0 + radius),
+        Point(4.675 + radius, 6.0 + radius),
+        Point(4.675 + radius, 3.0 - radius)};
 
     vector<Point> blueWallHor = {
-        Point(12 - 0, 8 - (3.05 - radius)),
-        Point(12 - (1.625 + radius), 8 - (3.05 - radius)),
-        Point(12 - (1.625 + radius), 8 - (3.074 + radius)),
-        Point(12 - 0, 8 - (3.074 + radius))};
+        Point(12 - 0, 8 - (2.95 - radius)),
+        Point(12 - (1.9 + radius), 8 - (2.95 - radius)),
+        Point(12 - (1.9 + radius), 8 - (3.35 + radius)),
+        Point(12 - 0, 8 - (3.35 + radius))};
 
     vector<Point> blueWallVert = {
-        Point(12 - (3.079 - radius), 8 - 0),
-        Point(12 - (3.079 - radius), 8 - (1.625 + radius)),
-        Point(12 - (3.079 + radius), 8 - (1.625 + radius)),
-        Point(12 - (3.079 + radius), 8 - 0)};
+        Point(12 - (2.945 - radius), 8),
+        Point(12 - (2.945 - radius), 8 - (1.625 + radius)),
+        Point(12 - (3.35 + radius), 8 - (1.625 + radius)),
+        Point(12 - (3.35 + radius), 8)};
 
     vector<Point> blueDoohickey = {
         Point(12 - (1 - radius), 8 - (1 - radius)),
@@ -109,10 +109,10 @@ private:
         Point(12 - (2 + radius), 8 - (1 - radius))};
 
     vector<Point> centerRightWall = {
-        Point(12 - (4.5 - radius), 8 - (2.8 - radius)),
-        Point(12 - (4.5 - radius), 8 - (6 + radius)),
-        Point(12 - (4.5 + radius), 8 - (6 + radius)),
-        Point(12 - (4.5 + radius), 8 - (2.8 - radius))};
+        Point(5.05 - radius, 7.425 + radius),
+        Point(5.05 - radius, 7.225 - radius),
+        Point(8.05 + radius, 7.225 - radius),
+        Point(8.05 + radius, 7.425 + radius)};
 
     vector<vector<Point>> polygons =
         {redWallHor, redWallVert, redDoohickey, centerLeftWall, blueWallHor, blueWallVert, blueDoohickey, centerRightWall};

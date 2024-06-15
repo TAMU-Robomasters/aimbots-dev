@@ -1,3 +1,5 @@
+#include "utils/robot_specific_defines.hpp"
+
 #pragma once
 
 #ifdef ALL_SENTRIES

@@ -72,7 +72,7 @@ bool activeDisplay = false;
 bool activeDisplay2 = false;
 
 void SentryMatchChassisControlCommand::execute() {
-    if (refHelper->getGameStage() == GamePeriod::IN_GAME || true) {  // Remove the true later
+    if (refHelper->getGameStage() == GamePeriod::IN_GAME) {  // Remove the true later
 
         stateDisplay = chassisState;
         activeDisplay = activeMovement;
@@ -118,10 +118,10 @@ void SentryMatchChassisControlCommand::execute() {
 
             switch (chassisState) {
                 case ChassisMatchStates::START:
-                    autoNavCommand.setTargetLocation(3.5f, 4.0f);  // 3.0, 3.0
+                    autoNavCommand.setTargetLocation(3.1f, 3.5f);  // 3.1, 3.5
                     break;
                 case ChassisMatchStates::GUARDING:
-                    autoNavCommand.setTargetLocation(3.5f, 4.0f);  // 3.5, 4.0
+                    autoNavCommand.setTargetLocation(3.0f, 4.0f);  // 3.0, 4.0
                     break;
                 case ChassisMatchStates::CAPTURE:
                     autoNavCommand.setTargetLocation(6.4f, 3.7f);  // 6.4, 3.7

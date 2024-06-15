@@ -1,4 +1,5 @@
 #include "utils/robot_specific_inc.hpp"
+#include "utils/robot_specific_defines.hpp"
 
 #pragma once
 

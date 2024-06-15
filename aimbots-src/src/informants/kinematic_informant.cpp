@@ -16,7 +16,7 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers)
 #ifndef TARGET_TURRET
       ,
       // chassisKFOdometry(-2.830f, -0.730f)
-      chassisKFOdometry(3.5f, 3.5f)
+      chassisKFOdometry(3.1f, 3.5f)
 #warning "don't hardcode these values"
 #endif
 {
