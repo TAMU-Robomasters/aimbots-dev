@@ -65,7 +65,7 @@ private:
     float linearVelocityRampValue = 1.0f;
     float rotationVelocityRampValue = modm::toRadian(1.0f / 500);
 
-    float radius = 0.385;
+    float radius = 0.4;
     vector<Point> redWallHor = {
         Point(0, 2.945 - radius),
         Point(1.9 + radius, 2.945 - radius),
