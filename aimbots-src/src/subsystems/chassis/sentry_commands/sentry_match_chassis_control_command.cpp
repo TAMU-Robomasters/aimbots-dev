@@ -101,8 +101,8 @@ void SentryMatchChassisControlCommand::execute() {
 
         if (lockoutTimer.isExpired()) {
             if (chassisState == ChassisMatchStates::START) {
-                //updateChassisState(ChassisMatchStates::AGGRO);
-                updateChassisState(ChassisMatchStates::GUARDING);
+                updateChassisState(ChassisMatchStates::AGGRO);
+                // updateChassisState(ChassisMatchStates::GUARDING);
             } else if (chassisState == ChassisMatchStates::AGGRO && !activeMovement) {
                 updateChassisState(ChassisMatchStates::CAPTURE);
             } else if (chassisState == ChassisMatchStates::RETREAT && matchTimer > (60 * 4)) {
@@ -128,10 +128,10 @@ void SentryMatchChassisControlCommand::execute() {
                     autoNavCommand.setTargetLocation(7.0f, 3.7f);  // 6.4, 3.7
                     break;
                 case ChassisMatchStates::AGGRO:
-                    autoNavCommand.setTargetLocation(9.0f, 1.5f);  // 9.0, 1.5
+                    autoNavCommand.setTargetLocation(9.0f, 0.75f);  // 9.0, 1.5
                     break;
                 case ChassisMatchStates::RETREAT:
-                    autoNavCommand.setTargetLocation(1.5f, 5.0f);  // 1.5, 5.0
+                    autoNavCommand.setTargetLocation(1.0f, 6.0f);  // 1.5, 5.0
                     break;
                 case ChassisMatchStates::RESUPPLYING:
                     autoNavCommand.setTargetLocation(0.5f, 5.0f);  // 0.5, 5.0
@@ -139,6 +139,8 @@ void SentryMatchChassisControlCommand::execute() {
                 default:
                     break;
             }
+
+            
             lastChassisState = chassisState;
         }
 
