@@ -76,6 +76,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    Vector3f posVecMath = turretCameraFrame.getOrigin() + currentData.position;
+
     cameraOriginXDisplay = turretCameraFrame.getOrigin().getX();
     cameraOriginYDisplay = turretCameraFrame.getOrigin().getY();
     cameraOriginZDisplay = turretCameraFrame.getOrigin().getZ();
@@ -90,6 +92,10 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     targetPositionXUnfilteredDisplay = transformedPosition.position.getX();
     targetPositionYUnfilteredDisplay = transformedPosition.position.getY();
     targetPositionZUnfilteredDisplay = transformedPosition.position.getZ();
+
+    targetPositionXDisplay = posVecMath.getX();
+    targetPositionYDisplay = posVecMath.getY();
+    targetPositionZDisplay = posVecMath.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
