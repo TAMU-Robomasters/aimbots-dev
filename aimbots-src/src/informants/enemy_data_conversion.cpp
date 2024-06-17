@@ -59,6 +59,10 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 
+    // position.setX(-position.getX());
+
+    // Vector3f position2 = Vector3f(position.getX(), position.getY(), position.getZ());
+
     VisionTimedPosition currentData{
         .position = position,
         .timestamp_uS = lastFrameCaptureTimestamp_uS,

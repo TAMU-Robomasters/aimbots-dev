@@ -109,10 +109,10 @@ private:
         Point(12 - (2 + radius), 8 - (1 - radius))};
 
     vector<Point> centerRightWall = {
-        Point(5.05 - radius, 7.425 + radius),
-        Point(5.05 - radius, 7.225 - radius),
-        Point(8.05 + radius, 7.225 - radius),
-        Point(8.05 + radius, 7.425 + radius)};
+        Point(7.425 + radius, 5.05 + radius),
+        Point(7.225 - radius, 5.05 + radius),
+        Point(7.225 - radius, 2.1 - radius),
+        Point(7.425 + radius, 2.1 - radius)};
 
     vector<vector<Point>> polygons =
         {redWallHor, redWallVert, redDoohickey, centerLeftWall, blueWallHor, blueWallVert, blueDoohickey, centerRightWall};

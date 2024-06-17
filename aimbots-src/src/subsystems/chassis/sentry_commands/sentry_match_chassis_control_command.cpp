@@ -125,10 +125,10 @@ void SentryMatchChassisControlCommand::execute() {
                     autoNavCommand.setTargetLocation(3.0f, 4.0f);  // 3.0, 4.0
                     break;
                 case ChassisMatchStates::CAPTURE:
-                    autoNavCommand.setTargetLocation(7.0f, 3.7f);  // 6.4, 3.7
+                    autoNavCommand.setTargetLocation(6.5f, 3.7f);  // 6.4, 3.7
                     break;
                 case ChassisMatchStates::AGGRO:
-                    autoNavCommand.setTargetLocation(9.0f, 0.75f);  // 9.0, 1.5
+                    autoNavCommand.setTargetLocation(9.0f, 0.5f);  // 9.0, 1.5
                     break;
                 case ChassisMatchStates::RETREAT:
                     autoNavCommand.setTargetLocation(1.0f, 6.0f);  // 1.5, 5.0
@@ -140,7 +140,6 @@ void SentryMatchChassisControlCommand::execute() {
                     break;
             }
 
-            
             lastChassisState = chassisState;
         }
 
