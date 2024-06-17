@@ -377,9 +377,9 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 // Updated for 2024 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.013f, // x //-0.017473
-    0.1755f, // y  //0.171927
-    -0.044f,  // z  //0.046239
+    -0.001498f, // x camera is basically centered in X on the robot
+    0.171927f, // y camera is 17cm in front of the yaw rotation axis of the turret
+    -0.046239f,  // z camera is 4.6cm below the pitch rotation axis of the turret
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
@@ -396,9 +396,9 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{ // not used
 
 //0.04341 how far apart barrels are
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.015727 - (0.5f * 0.04341f), // x
-    0.187184f, // y 
-    -0.011049f, // z
+    0.000f, // x for simplicity, assume barrel is centered in X relative to the yaw axis
+    0.000f, // y barrel is an "infinitely long" line facing forwards, so this doesn't exist
+    -0.011049f, // z barrel is 1.1cm below the pitch rotation axis of the turret
 };
 // clang-format on
 
