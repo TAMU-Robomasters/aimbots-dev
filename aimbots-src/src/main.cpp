@@ -190,6 +190,7 @@ static void updateIo(src::Drivers *drivers) {
     // utils::Music::continuePlayingXPStartupTune(drivers);
 
     // imuStatus = drivers->kinematicInformant.getIMUState();
+    //pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
 
     yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
     // pitchDisplay =
