@@ -30,12 +30,13 @@ void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRol
 
 #ifndef TARGET_TURRET
     /*this->field_orientation_relative_to_chassis_orientation =
-        rotationMatrix(fieldYaw, Z_AXIS, angleUnit);  rotationMatrix(fieldPitch, X_AXIS, angleUnit) *
+        rotationMatrix(fieldYaw, Z_AXIS, angleUnit);*/ /* rotationMatrix(fieldPitch, X_AXIS, angleUnit) *
         rotationMatrix(fieldRoll, Y_AXIS, angleUnit);*/  // field to chassis rotation
     UNUSED(fieldYaw);
     UNUSED(angleUnit);
-    // Don't need to update field frame origin, should be the center of this coordinate framework
+    //  Don't need to update field frame origin, should be the center of this coordinate framework
     // turretFieldFrame.setOrientation(Matrix3f::identityMatrix());
+    // turretFieldFrame.setOrientation(field_orientation_relative_to_chassis_orientation);
 
 #else
     UNUSED(fieldYaw);

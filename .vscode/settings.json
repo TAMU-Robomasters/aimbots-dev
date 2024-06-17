@@ -111,7 +111,8 @@
     "xutility": "cpp",
     "strstream": "cpp",
     "cfenv": "cpp",
-    "typeindex": "cpp"
+    "typeindex": "cpp",
+    "*.ipp": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,
