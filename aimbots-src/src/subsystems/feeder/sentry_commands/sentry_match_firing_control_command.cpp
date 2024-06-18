@@ -51,6 +51,11 @@ bool timerDisplay = false;
 bool timerStopped = false;
 bool conditionDisplay = false;
 
+float balYawErrorDisplay = 0.0f;
+float balYawAtanDisplay = 0.0f;
+float balPitchErrorDisplay = 0.0f;
+float balPitchAtanDisplay = 0.0f;
+
 void SentryMatchFiringControlCommand::execute() {
     // if (1) {
     if (drivers->cvCommunicator.isJetsonOnline() && (refHelper->getGameStage()) == GamePeriod::IN_GAME) {
@@ -71,6 +76,12 @@ void SentryMatchFiringControlCommand::execute() {
                 yawCurrentGimbal.minDifference(yawTargetGimbal),
                 pitchCurrentGimbal.minDifference(pitchTargetGimbal),
                 targetDepth);
+
+            balYawErrorDisplay = abs(yawCurrentGimbal.minDifference(yawTargetGimbal));
+            balYawAtanDisplay = atan2f(0.35f, 2.0f * targetDepth);
+
+            balPitchErrorDisplay = abs(pitchCurrentGimbal.minDifference(pitchTargetGimbal));
+            balPitchAtanDisplay = atan2f(1.0f, 2.0f * targetDepth);
         }
 
         timerDisplay = !shootMinimumTime.isExpired();
@@ -78,7 +89,7 @@ void SentryMatchFiringControlCommand::execute() {
         conditionDisplay = isErrorCloseEnoughToShoot;
 
         if (isErrorCloseEnoughToShoot) {
-            shootMinimumTime.restart(500);
+            shootMinimumTime.restart(1000);
         }
 
         if (chassisState != src::Chassis::ChassisMatchStates::EVADE && !shootMinimumTime.isExpired()) {

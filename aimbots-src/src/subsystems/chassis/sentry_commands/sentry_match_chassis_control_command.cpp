@@ -95,14 +95,14 @@ void SentryMatchChassisControlCommand::execute() {
         activeDisplay2 = activeMovement;
 
         // Logic for which state to use
-        if (drivers->refSerial.getRobotData().currentHp < 400) {
-            updateChassisState(ChassisMatchStates::RETREAT);
-        }
+        // if (drivers->refSerial.getRobotData().currentHp < 400 && updateChassisState(ChassisMatchStates::RESUPPLYING)) {
+        //     updateChassisState(ChassisMatchStates::RETREAT);
+        // }
 
         if (lockoutTimer.isExpired()) {
             if (chassisState == ChassisMatchStates::START) {
-                updateChassisState(ChassisMatchStates::AGGRO);
-                // updateChassisState(ChassisMatchStates::GUARDING);
+                // updateChassisState(ChassisMatchStates::AGGRO);
+                updateChassisState(ChassisMatchStates::GUARDING);
             } else if (chassisState == ChassisMatchStates::AGGRO && !activeMovement) {
                 updateChassisState(ChassisMatchStates::CAPTURE);
             } else if (chassisState == ChassisMatchStates::RETREAT && matchTimer > (60 * 4)) {
@@ -122,7 +122,7 @@ void SentryMatchChassisControlCommand::execute() {
                     autoNavCommand.setTargetLocation(3.1f, 3.5f);  // 3.1, 3.5
                     break;
                 case ChassisMatchStates::GUARDING:
-                    autoNavCommand.setTargetLocation(3.0f, 4.0f);  // 3.0, 4.0
+                    autoNavCommand.setTargetLocation(3.0f, 4.5f);  // 3.0, 4.0
                     break;
                 case ChassisMatchStates::CAPTURE:
                     autoNavCommand.setTargetLocation(6.5f, 3.7f);  // 6.4, 3.7
@@ -131,7 +131,7 @@ void SentryMatchChassisControlCommand::execute() {
                     autoNavCommand.setTargetLocation(9.0f, 0.5f);  // 9.0, 1.5
                     break;
                 case ChassisMatchStates::RETREAT:
-                    autoNavCommand.setTargetLocation(1.0f, 6.0f);  // 1.5, 5.0
+                    autoNavCommand.setTargetLocation(1.5f, 6.0f);  // 1.5, 5.0
                     break;
                 case ChassisMatchStates::RESUPPLYING:
                     autoNavCommand.setTargetLocation(0.5f, 5.0f);  // 0.5, 5.0

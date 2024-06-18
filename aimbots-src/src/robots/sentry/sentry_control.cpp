@@ -121,9 +121,9 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(8.0f),
+    .pitchPatrolAmplitude = modm::toRadian(4.0f),
     .pitchPatrolFrequency = 1.0f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(6.0f),
+    .pitchPatrolOffset = -modm::toRadian(2.0f),
 };
 
 // Match Controllers ------------------------------------------------
@@ -259,7 +259,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&imuCalibrateCommand,*/ /*&chassisToggleDriveCommand,*/ &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
