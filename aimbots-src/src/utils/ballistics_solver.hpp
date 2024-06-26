@@ -126,8 +126,9 @@ public:
             return false;
         }
 
-        return (abs(yawAngleError) < atan2f(PLATE_WIDTH_TOLERANCE, 2.0f * targetDistance)) &&
-               (abs(pitchAngleError) < atan2f(PLATE_HEIGHT_TOLERANCE, 2.0f * targetDistance));
+        return (abs(yawAngleError) < atan2f(PLATE_WIDTH_TOLERANCE, 2.0f * targetDistance)) /*&&
+               (abs(pitchAngleError) < atan2f(PLATE_HEIGHT_TOLERANCE, 2.0f * targetDistance))*/
+            ;
     }
 
     /**
