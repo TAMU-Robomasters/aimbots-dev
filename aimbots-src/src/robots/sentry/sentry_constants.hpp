@@ -377,7 +377,7 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 // Updated for 2024 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.001498, // x //-0.017473 //-0.013f  //-0.001498,
+    -0.001498f, // x //-0.017473 //-0.013f  //-0.001498,
     0.171927f, // y  //0.171927 //0.1755f  //0.171927f,
     -0.046239f,  // z  //0.046239 //-0.044f  //-0.046239f
 };
