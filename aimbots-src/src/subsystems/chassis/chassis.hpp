@@ -97,10 +97,14 @@ public:
 
     void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 
-#ifdef CHASSIS_BALANCING
-    void calculateBalance(float x, float y, float r, float maxWheelSpeed);  // calculates the balancing motion for balancing standard
-
     void setZeroVelocity();
+
+#ifdef CHASSIS_BALANCING
+    void calculateBalance(
+        float x,
+        float y,
+        float r,
+        float maxWheelSpeed);  // calculates the balancing motion for balancing standard
 
 #endif
 
@@ -218,4 +222,4 @@ public:
 
 };  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

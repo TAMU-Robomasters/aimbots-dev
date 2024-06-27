@@ -1,6 +1,6 @@
 #include "utils/robot_specific_defines.hpp"
 
-#if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023)
+#if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023) /*&& !defined(TARGET_STANDARD_BALANCE)*/
 
 #include "utils/common_types.hpp"
 
@@ -22,6 +22,7 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
+#include "subsystems/chassis/chassis_idle_command.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
@@ -161,6 +162,9 @@ SpinRandomizerConfig randomizerConfig = {
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+
+#if defined(CHASSIS_BALANCING)
+// TODO: Replace this with the balancing version of this command, give it the same chassisToggleDriveCommand name
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
@@ -169,6 +173,17 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+
+#else
+ChassisToggleDriveCommand chassisToggleDriveCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+#endif
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
@@ -186,6 +201,8 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+
+ChassisIdleCommand idleChassisCommand(drivers(), &chassis);
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -307,6 +324,7 @@ void initializeSubsystems() {
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    chassis.setDefaultCommand(&idleChassisCommand);
 }
 
 // Set commands scheduled on startup

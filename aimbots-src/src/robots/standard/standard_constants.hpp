@@ -8,6 +8,10 @@
 #define FEEDER_COMPATIBLE
 #define HOPPER_LID_COMPATIBLE
 
+#ifdef TARGET_STANDARD_BALANCE
+#define CHASSIS_BALANCING
+#endif
+
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
@@ -31,17 +35,22 @@ static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
-#ifdef TARGET_STANDARD_BLASTOISE
+#if defined(TARGET_STANDARD_BLASTOISE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(46.32f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-5.23f)};
 
-#elif TARGET_STANDARD_WARTORTLE
+#elif defined(TARGET_STANDARD_WARTORTLE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
 
-#elif TARGET_STANDARD_SQUIRTLE
+#elif defined(TARGET_STANDARD_SQUIRTLE)
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
+
+#elif defined(TARGET_STANDARD_BALANCE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
@@ -68,9 +77,18 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
+#ifdef TARGET_STANDARD_BALANCE
+
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-22.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
+// LOW should be lesser than HIGH, otherwise switch the motor direction
+
+#else
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
+
+#endif
 
 /**
  * @brief Position PID constants
@@ -220,6 +238,36 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+#ifdef TARGET_STANDARD_BALANCE
+static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
+    .kp = 250.0f,
+    .ki = 2.5f,
+    .kd = 4.0f,
+    .maxICumulative = 700.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig CHASSIS_BALANCE_VELOCITY_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.01f,
+    .kd = 0.4f,
+    .maxICumulative = 10.0f,
+    .maxOutput = 60,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+#endif
+
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
     .ki = 0.0f,
@@ -271,10 +319,17 @@ static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 
+#if defined(TARGET_STANDARD_BALANCE)
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
+#else
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+#endif
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;

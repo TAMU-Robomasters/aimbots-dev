@@ -24,7 +24,8 @@
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
-#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE)
+#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE) || \
+    defined(TARGET_STANDARD_BALANCE)
 #include "robots/standard/standard_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
