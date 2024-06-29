@@ -15,7 +15,7 @@ ChassisIdleCommand::ChassisIdleCommand(src::Drivers* drivers, ChassisSubsystem* 
 
 void ChassisIdleCommand::initialize() {}
 
-void ChassisIdleCommand::execute() { chassis->setTargetRPMs(0.0f, 0.0f, 0.0f); }
+void ChassisIdleCommand::execute() { chassis->setZeroVelocity(); }
 
 void ChassisIdleCommand::end(bool) {}
 

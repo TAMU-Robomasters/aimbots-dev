@@ -17,6 +17,9 @@ PowerLimiter::PowerLimiter(
       prevRobotDataReceivedTimestamp(0)
 //
 {}
+float energyBufferDisplay = 0.0f;
+float limitRatioDisplay = 0.0f;
+
 
 float PowerLimiter::getPowerLimitRatio() {
     if (!drivers->refSerial.getRefSerialReceivingData()) {
@@ -24,16 +27,19 @@ float PowerLimiter::getPowerLimitRatio() {
     }
 
     updatePowerAndEnergyBuffer();
+    limitRatioDisplay = static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold;
 
     if (energyBuffer < energyBufferLimitThreshold) {
-        return limitVal(
-            static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold,
-            0.0f,
-            1.0f);
+        return 1.0f;
+        // return limitVal(
+        //     static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold,
+        //     0.0f,
+        //     1.0f);
     } else {
         return 1.0f;
     }
 }
+
 
 void PowerLimiter::updatePowerAndEnergyBuffer() {
     const auto &robotData = drivers->refSerial.getRobotData();
@@ -50,6 +56,8 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
         energyBuffer = chassisData.powerBuffer;
         prevRobotDataReceivedTimestamp = robotData.robotDataReceivedTimestamp;
     }
+
+    energyBufferDisplay = chassisData.power;
 
     consumedPower = newChassisPower;
 }

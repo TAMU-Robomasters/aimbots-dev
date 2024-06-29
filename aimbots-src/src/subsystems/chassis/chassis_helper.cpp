@@ -10,6 +10,7 @@ int8_t chassisXDesiredWheelspeedWatch = 0;
 
 namespace src::Chassis::Helper {
 
+float yInputDisplay = 0.0f;
 void getUserDesiredInput(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
@@ -23,6 +24,7 @@ void getUserDesiredInput(
 
     *desiredXInput = drivers->controlOperatorInterface.getChassisXInput();
     *desiredYInput = drivers->controlOperatorInterface.getChassisYInput();
+    yInputDisplay = abs(drivers->controlOperatorInterface.getChassisYInput());
     *desiredRotationInput = drivers->controlOperatorInterface.getChassisRotationInput();
 }
 

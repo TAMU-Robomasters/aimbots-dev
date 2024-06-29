@@ -261,7 +261,7 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
 
         // measures the tilt angle
         float ActualTiltAngle =
-            drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+            drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
         float SysVelocity = 0;
 
