@@ -201,13 +201,13 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalToggleAimCommand2, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalToggleAimCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
