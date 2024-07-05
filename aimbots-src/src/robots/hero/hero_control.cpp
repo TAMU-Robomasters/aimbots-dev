@@ -32,8 +32,10 @@
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/gimbal_control_command.hpp"
 #include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -115,6 +117,9 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
+// Ballistics Solver ---------------------------------------------------------
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
+
 // Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
@@ -154,6 +159,34 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTok
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalChaseCommand gimbalChaseCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalChaseCommand gimbalChaseCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalToggleAimCommand gimbalToggleAimCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalToggleAimCommand gimbalToggleAimCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
@@ -165,15 +198,16 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
+// Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, /*&feederLimitCommand,*/ &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables both chassis and gimbal control and closes hopper
+// Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalToggleAimCommand2, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
