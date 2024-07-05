@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tap/architecture/timeout.hpp>
+#include <tap/architecture/periodic_timer.hpp>
 #include <tap/util_macros.hpp>
 #include <utils/common_types.hpp>
 
@@ -20,50 +21,65 @@ enum class JetsonCommunicatorSerialState : uint8_t {
 };
 
 class JetsonCommunicator {
-public:
-    JetsonCommunicator(src::Drivers* drivers);
-    DISALLOW_COPY_AND_ASSIGN(JetsonCommunicator);
-    ~JetsonCommunicator() = default;
+    public:
+        JetsonCommunicator(src::Drivers* drivers);
+        DISALLOW_COPY_AND_ASSIGN(JetsonCommunicator);
+        ~JetsonCommunicator() = default;
 
-    void initialize();
-    void updateSerial();
+        void initialize();
+        void updateSerial();
 
-    inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
+        inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
-    inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
+        inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+        PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
-    uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
+        inline uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
-    uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
+        inline uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
 
-    bool isLastFrameStale() const;
+        bool isLastFrameStale() const;
 
-private:
-    src::Drivers* drivers;
-    src::Informants::Vision::VisionDataConversion visionDataConverter;
+        void sendRobotID();
+        void sendMatchTime();
+        void sendMatchState();
 
-    alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
+    private:
+        src::Drivers* drivers;
+        src::Informants::Vision::VisionDataConversion visionDataConverter;
 
-    JetsonCommunicatorSerialState currentSerialState;
-    size_t nextByteIndex;
+        alignas(JetsonMessage) uint8_t rawSerialBuffer[sizeof(JetsonMessage)];
 
-    tap::arch::MilliTimeout jetsonOfflineTimeout;
+        JetsonCommunicatorSerialState currentSerialState;
+        size_t nextByteIndex;
 
-    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
-    static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+        tap::arch::MilliTimeout jetsonOfflineTimeout;
 
-    JetsonMessage lastMessage;
-    uint32_t lastFoundTargetTime;
+        static constexpr uint32_t JETSON_BAUD_RATE = 115200;
+        static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
+        static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
-    float fieldRelativeYawAngleAtVisionUpdate;
-    float chassisRelativePitchAngleAtVisionUpdate;
+        JetsonMessage lastMessage;
+        uint32_t lastFoundTargetTime;
 
-    PlateKinematicState lastPlateKinematicState;
+        float fieldRelativeYawAngleAtVisionUpdate;
+        float chassisRelativePitchAngleAtVisionUpdate;
 
-    Matrix<float, 1, 2> visionTargetAngles;
-    Vector3f visionTargetPosition;
-};
+        PlateKinematicState lastPlateKinematicState;
+
+        Matrix<float, 1, 2> visionTargetAngles;
+        Vector3f visionTargetPosition;
+
+        enum TxMessageID
+        { 
+            TX_MESSAGE_REFEREE_MATCH_TIME = 0,
+            TX_MESSAGE_REFEERE_MATCH_RESULT = 1,
+            TX_MESSAGE_ROBOT_ID = 2,
+        };
+
+        static constexpr uint32_t TIME_ROBOTID_FREQ = 3'000;
+
+        tap::arch::PeriodicMilliTimer sendRobotIdTimeout{TIME_ROBOTID_FREQ};
+    };
 }  // namespace src::Informants::Vision

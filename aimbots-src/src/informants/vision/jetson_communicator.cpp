@@ -148,4 +148,12 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
+void JetsonCommunicator::sendRobotID()
+{
+    if (sendRobotIdTimeout.execute())
+    {
+        
+    }
+}
+
 }  // namespace src::Informants::Vision
