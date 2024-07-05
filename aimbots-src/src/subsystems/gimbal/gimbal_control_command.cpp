@@ -4,7 +4,6 @@
 #include <tap/communication/gpio/leds.hpp>
 
 #include "informants/vision/jetson_communicator.hpp"
-#include "informants/vision/jetson_protocol.hpp"
 
 #include "drivers.hpp"
 #ifdef GIMBAL_COMPATIBLE
