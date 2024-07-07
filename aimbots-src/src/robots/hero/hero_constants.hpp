@@ -10,7 +10,7 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
+static constexpr SongTitle STARTUP_SONG = SongTitle::NONE;
 
 /**
  * @brief Defines the number of motors created for the chassis.

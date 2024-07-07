@@ -163,7 +163,7 @@ GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), 
 ClientDisplayCommand clientDisplayCommand(
     *drivers(),
     drivers()->commandScheduler,
-    clientDisplay,
+    clientDisplay
     // chassis
 );
 
