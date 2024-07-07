@@ -47,8 +47,8 @@
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"
 //
-// #include "utils/display/client_display_command.hpp"
-// #include "utils/display/client_display_subsystem.hpp"
+ #include "utils/display/client_display_command.hpp"
+ #include "utils/display/client_display_subsystem.hpp"
 //
 
 using namespace src::Chassis;
@@ -58,7 +58,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
-// using namespace src::Utils::ClientDisplay;
+ using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -113,7 +113,7 @@ ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
 IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
-// ClientDisplaySubsystem clientDisplay(*drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
@@ -159,6 +159,13 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTok
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+
+ClientDisplayCommand clientDisplayCommand(
+    *drivers(),
+    drivers()->commandScheduler,
+    clientDisplay,
+    chassis
+);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
@@ -222,7 +229,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&response);
-    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->commandScheduler.registerSubsystem(&indexer);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
@@ -236,7 +243,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     shooter.initialize();
     // response.initialize();
-    // clientDisplay.initialize();
+    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -249,7 +256,7 @@ void setDefaultCommands(src::Drivers *) {
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
+     drivers->commandScheduler.addCommand(&clientDisplayCommand);
 
     // test
     //  no startup commands should be set

@@ -26,8 +26,9 @@ ClientDisplayCommand::ClientDisplayCommand(
     tap::control::CommandScheduler &commandScheduler,
     ClientDisplaySubsystem &clientDisplay,
     // const HopperSubsystem *hopper,
-    //const GimbalSubsystem &gimbal,
-    const ChassisSubsystem &chassis)
+    // const GimbalSubsystem &gimbal,
+    const ChassisSubsystem &chassis
+    )
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
