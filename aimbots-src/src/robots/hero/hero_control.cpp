@@ -58,7 +58,7 @@ using namespace src::Gimbal;
 using namespace src::Shooter;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
- using namespace src::Utils::ClientDisplay;
+using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -85,7 +85,7 @@ using namespace src::Shooter;
     Force Reload: B
 
     UI ----------------------------------------------------------------
-
+    Force Update: Ctrl + B
 
 */
 
@@ -164,7 +164,7 @@ ClientDisplayCommand clientDisplayCommand(
     *drivers(),
     drivers()->commandScheduler,
     clientDisplay,
-    chassis
+    // chassis
 );
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
@@ -215,7 +215,10 @@ HoldRepeatCommandMapping rightSwitchUp(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+PressCommandMapping bCtrlPressed(
+    drivers(), 
+    {&clientDisplayCommand}, 
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 HoldCommandMapping leftClickMouse(
     drivers(),
@@ -272,10 +275,9 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&bCtrlPressed);
     drivers->commandMapper.addMap(&leftClickMouse);
 }
-
 }  // namespace HeroControl
 
 namespace src::Control {
