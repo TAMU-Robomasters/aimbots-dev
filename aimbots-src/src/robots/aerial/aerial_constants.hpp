@@ -239,16 +239,10 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
-    15,
-    4300,  // {ball m/s, flywheel rpm}
-    18,
-    4850,
-    30,
-    7050};
+static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 // clang-format on
 
-static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
 static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
