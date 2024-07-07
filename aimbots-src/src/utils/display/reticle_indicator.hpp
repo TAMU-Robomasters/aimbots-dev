@@ -34,15 +34,15 @@ private:
     using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
 
     static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{
-        ReticleTuple(40, 500, Tx::GraphicColor::CYAN),  // 2 m
-        ReticleTuple(60, 495, Tx::GraphicColor::CYAN),
-        ReticleTuple(40, 490, Tx::GraphicColor::CYAN),
-        ReticleTuple(10, 455, Tx::GraphicColor::CYAN),  // 4 m
-        ReticleTuple(30, 450, Tx::GraphicColor::CYAN),
-        ReticleTuple(10, 445, Tx::GraphicColor::CYAN),
-        ReticleTuple(10, 485, Tx::GraphicColor::ORANGE),  // 8 m
-        ReticleTuple(30, 480, Tx::GraphicColor::ORANGE),
-        ReticleTuple(10, 475, Tx::GraphicColor::ORANGE),
+        ReticleTuple(40, 500, Tx::GraphicColor::PURPLISH_RED),  // 2 m
+        ReticleTuple(60, 495, Tx::GraphicColor::PURPLISH_RED),
+        ReticleTuple(40, 490, Tx::GraphicColor::PURPLISH_RED),
+        ReticleTuple(10, 455, Tx::GraphicColor::PURPLISH_RED),  // 4 m
+        ReticleTuple(30, 450, Tx::GraphicColor::PURPLISH_RED),
+        ReticleTuple(10, 445, Tx::GraphicColor::PURPLISH_RED),
+        ReticleTuple(10, 485, Tx::GraphicColor::WHITE),  // 8 m
+        ReticleTuple(30, 480, Tx::GraphicColor::WHITE),
+        ReticleTuple(10, 475, Tx::GraphicColor::WHITE)
     };
     /** Size of TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES (so its easier to understand when used
      * in context). */
