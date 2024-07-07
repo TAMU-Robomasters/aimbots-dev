@@ -7,7 +7,7 @@ namespace src::Utils::ClientDisplay {
 uint32_t HudIndicator::currGraphicName = 0;
 
 HudIndicator::HudIndicator(tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
-    : refSerialTransmitter(refSerialTransmitter)  //
+    : refSerialTransmitter(refSerialTransmitter)
 {}
 
 void HudIndicator::resetGraphicNameGenerator() { currGraphicName = 0; }

@@ -7,7 +7,7 @@
 
 namespace tap::communication::serial {
 class RefSerialTransmitter;
-}  // namespace tap::communication::serial
+}
 
 namespace src::Utils::ClientDisplay {
 class HudIndicator : protected tap::communication::serial::RefSerialData {

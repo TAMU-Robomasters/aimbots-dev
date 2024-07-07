@@ -22,7 +22,7 @@ public:
 
     modm::ResumableResult<bool> update() override final;
 
-    void initialize() override;
+    void initialize() override final;
 
 private:
     /** Line thickness of the reticle, in pixels. */
