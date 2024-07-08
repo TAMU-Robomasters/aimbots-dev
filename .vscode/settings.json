@@ -112,7 +112,16 @@
     "xlocmes": "cpp",
     "xlocmon": "cpp",
     "xlocnum": "cpp",
-    "xloctime": "cpp"
+    "xloctime": "cpp",
+    "charconv": "cpp",
+    "xfacet": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocbuf": "cpp",
+    "xlocinfo": "cpp",
+    "xmemory": "cpp",
+    "xtr1common": "cpp",
+    "cfenv": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,
