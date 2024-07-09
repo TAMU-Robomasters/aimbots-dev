@@ -23,7 +23,9 @@
 // #include "chassis_orientation_indicator.hpp"
 // #include "client_display_subsystem.hpp"
 // #include "computer_vision_display.hpp"
-#include "reticle_indicator.hpp"
+#ifndef TARGET_ENGINEER
+    #include "reticle_indicator.hpp"
+#endif
 
 // using namespace src::Hopper;
 // using namespace src::Chassis;
@@ -76,7 +78,9 @@ private:
     /* Actual hud elements */
     // BooleanHUDIndicators booleanHudIndicators;
     // ChassisOrientationIndicator chassisOrientation;
-    ReticleIndicator reticleIndicator;
+    #ifndef TARGET_ENGINEER
+        ReticleIndicator reticleIndicator;
+    #endif
     // CVDisplay cvDisplay;
 
     bool restarting = true;

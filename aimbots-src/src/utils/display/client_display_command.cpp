@@ -10,7 +10,9 @@
 
 #include "client_display_subsystem.hpp"
 #include "hud_indicator.hpp"
-// #include "reticle_indicator.hpp"
+#ifndef TARGET_ENGINEER
+    #include "reticle_indicator.hpp"
+#endif
 
 // using namespace src::Hopper;
 // using namespace src::Chassis;
@@ -32,10 +34,12 @@ ClientDisplayCommand::ClientDisplayCommand(
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
-      refSerialTransmitter(&drivers),
+      refSerialTransmitter(&drivers)
     // booleanHudIndicators(commandScheduler, refSerialTransmitter, /*hopper,*/ chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
-      reticleIndicator(drivers, refSerialTransmitter)  //,
+        #ifndef TARGET_ENGINEER
+            ,reticleIndicator(drivers, refSerialTransmitter)  //,
+        #endif
      /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
 {
     addSubsystemRequirement(&clientDisplay);
@@ -48,7 +52,9 @@ void ClientDisplayCommand::restartHud()
 {
     // add more indicators here in the future when restart occurs
     HudIndicator::resetGraphicNameGenerator();
-    reticleIndicator.initialize();
+    #ifndef TARGET_ENGINEER
+        reticleIndicator.initialize();
+    #endif
 
     this->restarting = false;
 }
@@ -74,7 +80,9 @@ bool ClientDisplayCommand::run()
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
         // PT_CALL(booleanHudIndicators.sendInitialGraphics());
-        PT_CALL(reticleIndicator.sendInitialGraphics());
+        #ifndef TARGET_ENGINEER
+            PT_CALL(reticleIndicator.sendInitialGraphics());
+        #endif
         PT_YIELD();
     }
 

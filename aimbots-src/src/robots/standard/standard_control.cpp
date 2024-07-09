@@ -241,7 +241,13 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
+ClientDisplayCommand clientDisplayCommand(
+    *drivers(),
+    drivers()->commandScheduler,
+    clientDisplay
+    // chassis
+);
+
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -281,7 +287,10 @@ HoldCommandMapping leftClickMouse(
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+PressCommandMapping bCtrlPressed(
+    drivers(), 
+    {&clientDisplayCommand}, 
+    RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 // This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
 /*PressCommandMapping ctrlC(
@@ -327,7 +336,7 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
@@ -338,7 +347,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
 }  // namespace StandardControl
