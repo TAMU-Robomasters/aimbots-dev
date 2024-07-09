@@ -15,7 +15,7 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+static constexpr SongTitle STARTUP_SONG = SongTitle::CRAB_RAVE;
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -53,7 +53,7 @@ static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {w
 #elif defined(TARGET_STANDARD_BALANCE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(230.0f))};
 
 #endif
 

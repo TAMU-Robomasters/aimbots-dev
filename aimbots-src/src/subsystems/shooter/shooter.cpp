@@ -59,6 +59,9 @@ float FWTopLeft = 0.0f;  // TOP_LEFT
 float FWBotLeft = 0.0f;  // BOT_LEFT
 #endif
 
+int fly1OnlineCount=0;
+int fly2OnlineCount=0;
+
 // Update the actual RPMs of the motors; the calculation is called from ShooterCommand
 void ShooterSubsystem::refresh() {
     // Debug info
@@ -67,9 +70,13 @@ void ShooterSubsystem::refresh() {
         PIDoutDisplay = flywheel1PID.getOutput();
 
         FWRight1 = flywheel1.getShaftRPM();
+
+        fly1OnlineCount++;
     }
     if (flywheel2.isMotorOnline()) {
         FWLeft1 = flywheel2.getShaftRPM();
+
+        fly2OnlineCount++;
     }
 #ifdef TARGET_SENTRY
     if (flywheel3.isMotorOnline()) {

@@ -253,7 +253,7 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand, &gimbalToggleAimCommand*/ &chassisManualDriveCommand},
+    {/*&chassisToggleDriveCommand,*/ &gimbalToggleAimCommand, &chassisManualDriveCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
