@@ -15,14 +15,14 @@ class Drivers;
 namespace src::Utils::ClientDisplay {
 class ReticleIndicator : public HudIndicator, protected modm::Resumable<2> {
 public:
-    static constexpr int RETICLE_CENTER_X_OFFSET = 15;
+    static constexpr int RETICLE_CENTER_X_OFFSET = 1;
 
     ReticleIndicator(tap::Drivers &drivers, tap::communication::serial::RefSerialTransmitter &refSerialTransmitter);
-    modm::ResumableResult<bool> update() override;
+    modm::ResumableResult<bool> sendInitialGraphics() override final;
 
-    modm::ResumableResult<bool> sendInitialGraphics() override;
+    modm::ResumableResult<bool> update() override final;
 
-    void initialize() override;
+    void initialize() override final;
 
 private:
     /** Line thickness of the reticle, in pixels. */

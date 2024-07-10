@@ -10,7 +10,7 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
+static constexpr SongTitle STARTUP_SONG = SongTitle::NONE;
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -40,7 +40,7 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = 0.5f;  // for 2023 Hero
-/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
+/* Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 

@@ -14,6 +14,8 @@ public:
     ClientDisplaySubsystem(tap::Drivers* drivers);
     virtual ~ClientDisplaySubsystem(){};
 
+    void refreshSafeDisconnect() override {}
+
     const char* getName() const override { return "Client Display"; }
 };
 
