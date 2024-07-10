@@ -33,18 +33,24 @@ static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
 #ifdef TARGET_STANDARD_BLASTOISE
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(46.32f))};
+// static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-5.23f)};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #elif TARGET_STANDARD_WARTORTLE
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0.0f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #elif TARGET_STANDARD_SQUIRTLE
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #endif
 
@@ -68,9 +74,6 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
-// LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
  * @brief Position PID constants
@@ -260,7 +263,7 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
     18,
     4850,
     30,
-    7050};
+    7150};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
