@@ -56,7 +56,6 @@ enum WheelRPMIndex {  // index used to easily navigate wheel matrices
 };
 
 
-
 // Power limiting constants, will explain later
 static constexpr float MAX_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 40.0f;
