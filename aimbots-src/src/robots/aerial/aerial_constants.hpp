@@ -7,6 +7,8 @@
 #define SHOOTER_COMPATIBLE
 #define FEEDER_COMPATIBLE
 
+static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 

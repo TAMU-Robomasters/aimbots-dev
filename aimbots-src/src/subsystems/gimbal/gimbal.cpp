@@ -16,7 +16,7 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
       targetYawAxisAngle(YAW_AXIS_START_ANGLE, -M_PI, M_PI),
-      targetPitchAxisAngle(PITCH_AXIS_START_ANGLE, -M_PI, M_PI)  //
+      targetPitchAxisAngle(PITCH_AXIS_START_ANGLE, -M_PI, M_PI)
 {
     BuildYawMotors();
     BuildPitchMotors();
