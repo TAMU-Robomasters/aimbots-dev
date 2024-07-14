@@ -5,7 +5,7 @@
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
 
-#define CV_COMPATIBLE
+// #define CV_COMPATIBLE
 
 #define SLIDE_COMPATIBLE
 
@@ -345,6 +345,7 @@ static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
 static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
+static constexpr int PROJECTILES_PER_FEEDER_ROTATION = 1; // Engineer with a glock
 
 // TODO: set these to what they actually are
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
