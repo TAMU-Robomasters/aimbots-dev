@@ -17,6 +17,7 @@ private:
     uint32_t prevUpdateCounterX = 0;
     uint32_t prevUpdateCounterY = 0;
     uint32_t prevUpdateCounterRotation = 0;
+
     uint32_t prevUpdateCounterWristYaw = 0;
     uint32_t prevUpdateCounterWristPitch = 0;
     uint32_t prevUpdateCounterWristRoll = 0;
@@ -26,6 +27,7 @@ private:
     uint32_t lastXInputCallTime = 0;
     uint32_t lastYInputCallTime = 0;
     uint32_t lastRInputCallTime = 0;
+
     uint32_t lastWristYawInputCallTime = 0;
     uint32_t lastWristPitchInputCallTime = 0;
     uint32_t lastWristRollInputCallTime = 0;
@@ -35,6 +37,7 @@ private:
     LinearInterpolationPredictor chassisXInput;
     LinearInterpolationPredictor chassisYInput;
     LinearInterpolationPredictor chassisRotationInput;
+
     LinearInterpolationPredictor wristYawInput;
     LinearInterpolationPredictor wristPitchInput;
     LinearInterpolationPredictor wristRollInput;
@@ -47,6 +50,7 @@ private:
     tap::algorithms::Ramp chassisXRamp;
     tap::algorithms::Ramp chassisYRamp;
     tap::algorithms::Ramp chassisRotationRamp;
+    
     tap::algorithms::Ramp wristYawRotationRamp;
     tap::algorithms::Ramp wristPitchRotationRamp;
     tap::algorithms::Ramp wristRollRotationRamp;
