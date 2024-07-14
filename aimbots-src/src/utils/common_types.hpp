@@ -52,6 +52,10 @@ using DJIMotor = tap::mock::DjiMotorMock;
 using DJIMotor = tap::motor::DjiMotor;
 #endif
 
+static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+}
+
 enum class AngleUnit : uint8_t {
     Degrees,
     Radians,

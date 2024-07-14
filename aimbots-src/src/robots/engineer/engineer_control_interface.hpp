@@ -11,20 +11,35 @@ using namespace tap::algorithms;
 namespace src::Control {
 
 class OperatorInterface {
-   private:
+private:
     tap::Drivers *drivers;
 
     uint32_t prevUpdateCounterX = 0;
     uint32_t prevUpdateCounterY = 0;
     uint32_t prevUpdateCounterRotation = 0;
+    uint32_t prevUpdateCounterWristYaw = 0;
+    uint32_t prevUpdateCounterWristPitch = 0;
+    uint32_t prevUpdateCounterWristRoll = 0;
+    uint32_t prevUpdateCounterSlideUpDown = 0;
+    uint32_t prevUpdateCounterSlideFrontBack = 0;
 
     uint32_t lastXInputCallTime = 0;
     uint32_t lastYInputCallTime = 0;
     uint32_t lastRInputCallTime = 0;
+    uint32_t lastWristYawInputCallTime = 0;
+    uint32_t lastWristPitchInputCallTime = 0;
+    uint32_t lastWristRollInputCallTime = 0;
+    uint32_t lastSlideUpDownInputCallTime = 0;
+    uint32_t lastSlideFrontBackInputCallTime = 0;
 
     LinearInterpolationPredictor chassisXInput;
     LinearInterpolationPredictor chassisYInput;
     LinearInterpolationPredictor chassisRotationInput;
+    LinearInterpolationPredictor wristYawInput;
+    LinearInterpolationPredictor wristPitchInput;
+    LinearInterpolationPredictor wristRollInput;
+    LinearInterpolationPredictor slideUpDownInput;
+    LinearInterpolationPredictor slideFrontBackInput;
 
     src::Utils::Filters::EMAFilter mouseXFilter;
     src::Utils::Filters::EMAFilter mouseYFilter;
@@ -32,19 +47,31 @@ class OperatorInterface {
     tap::algorithms::Ramp chassisXRamp;
     tap::algorithms::Ramp chassisYRamp;
     tap::algorithms::Ramp chassisRotationRamp;
+    tap::algorithms::Ramp wristYawRotationRamp;
+    tap::algorithms::Ramp wristPitchRotationRamp;
+    tap::algorithms::Ramp wristRollRotationRamp;
+    tap::algorithms::Ramp slideUpDownRamp;
+    tap::algorithms::Ramp slideFrontBackRamp;
 
-   public:
-    OperatorInterface(tap::Drivers *drivers) 
-        : 
-        drivers(drivers),
-        mouseXFilter(0.5f),
-        mouseYFilter(0.5f)  {}
+public:
+    OperatorInterface(tap::Drivers *drivers)
+        :  //
+          drivers(drivers),
+          mouseXFilter(0.5f),
+          mouseYFilter(0.5f) {}
     DISALLOW_COPY_AND_ASSIGN(OperatorInterface)
     mockable ~OperatorInterface() = default;
 
     mockable float getChassisXInput();
     mockable float getChassisYInput();
     mockable float getChassisRotationInput();
+
+    mockable float getWristYawInput();
+    mockable float getWristPitchInput();
+    mockable float getWristRollInput();
+
+    mockable float getSlideUpDownInput();
+    mockable float getSlideFrontBackInput();
 
     mockable float getGimbalYawInput();
     mockable float getGimbalPitchInput();
