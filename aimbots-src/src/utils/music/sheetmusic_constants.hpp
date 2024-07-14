@@ -169,4 +169,46 @@ Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_
 // https://musescore.com/user/35424120/scores/6208111
 // Measures 1 - 8
 
+// FreeBird
+
+static constexpr uint32_t FreeBPM = 148;
+Song FreeBird = {FreeBPM, Q_N, {{G5, E_N}, {D5, E_N}, {F5, E_N}, {G5, E_N}, {G5, Q_N}, {G5, Q_N},
+
+                                {F5, E_N}, {D5, E_N}, {F5, E_N}, {G5, E_N}, {F5, E_N}, {D5, E_N}, {G5, Q_N},
+
+                                {F5, E_N}, {D5, E_N}, {G5, E_N}, {G5, Q_N}, {Bb5, E_N}, {G5, Q_N},
+
+                                {Bb5, E_N}, {G5, Q_N}, {Bb5, E_N}, {G5, Q_N}, {G5, Q_N},
+                                
+                                {G5, E_N}, {D5, E_N}, {F5, E_N}, {G5, E_N}, {G5, Q_N}, {G5, Q_N},
+
+                                {F5, E_N}, {D5, E_N}, {F5, E_N}, {G5, E_N}, {F5, E_N}, {D5, E_N}, {G5, Q_N},
+
+                                {F5, E_N}, {D5, E_N}, {G5, E_N}, {G5, Q_N}, {Bb5, E_N}, {G5, Q_N},
+                                
+                                {Bb5, E_N}, {G5, Q_N}, {Bb5, E_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N},
+
+                                {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N},
+
+                                {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N},
+
+                                {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N}, {G5, TQ_N}, {Bb5, TE_N},
+
+                                {G5, TQ_N}, {Bb5, TE_N}, {G5, Q_N}, {G5, Q_N}, {G5, Q_N},
+
+                                {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N},
+
+                                {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N},
+
+                                {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {D5, S_N}, {D5, S_N}, {F5, S_N}, {G5, S_N}, {G5, E_N},
+
+                                {F5, S_N}, {E5, S_N}, {D5, S_N}, {G5, Q_N}, {G5, Q_N},
+
+
+                                {END, Q_N}}};
+
+// Based on:
+// https://onlinesequencer.net/4099703
+// All custom made for this
+
 }  // namespace utils::Jukebox
