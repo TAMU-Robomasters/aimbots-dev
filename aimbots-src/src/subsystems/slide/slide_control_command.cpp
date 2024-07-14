@@ -26,7 +26,10 @@ void SlideControlCommand::execute() {
     slide->updateAllPIDs();
 }
 
-void SlideControlCommand::end(bool interrupted) { slide->idle(); }
+void SlideControlCommand::end(bool interrupted) {
+    UNUSED(interrupted);
+    slide->idle();
+}
 
 bool SlideControlCommand::isReady() { return true; }
 

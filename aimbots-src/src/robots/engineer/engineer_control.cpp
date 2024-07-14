@@ -20,6 +20,7 @@
 #include "subsystems/slide/slide.hpp"
 #include "subsystems/slide/slide_control_command.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
+#include "subsystems/slide/slide_hold_command.hpp"
 //
 #include "subsystems/wrist/wrist.hpp"
 #include "subsystems/wrist/wrist_control_command.hpp"
@@ -55,9 +56,12 @@ GrabberSubsystem grabber(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 800);
+//
+SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 0.5f);
 SlideGoToCommand goHome(drivers(), &slide, 0, 0);
 SlideControlCommand slideControlCommand(drivers(), &slide);
+SlideHoldCommand slideHoldCommand(drivers(), &slide);
+//
 WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristControlCommand wristControlCommand(drivers(), &wrist);
 
@@ -80,19 +84,17 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisManualDriveCommand},
+    {&chassisManualDriveCommand, &slideHoldCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// HoldCommandMapping leftSwitchDown(
-//     drivers(),
-//     {&goHome},
-//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
-
-/* END OF TEMPORARY MAPPINGS */
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&goHome},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&suctionCommand},
+    {&goToTestLocation},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
@@ -128,9 +130,10 @@ void startupCommands(src::Drivers *) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchDown);
 
     // drivers->commandMapper.addMap(&leftSwitchDown);
 }

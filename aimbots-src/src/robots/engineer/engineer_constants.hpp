@@ -14,7 +14,6 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
-
 static constexpr SongTitle STARTUP_SONG = SongTitle::CRAB_RAVE;
 
 /**
@@ -43,7 +42,7 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
-/* What motor angles ensure that the barrel is pointing straight forward and level relative to the robot chassis? */
+    
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 186.15
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 196.21
@@ -58,6 +57,7 @@ static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {
     MotorID::MOTOR3};  // Yaw, Pitch, Roll
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
 
+// Ignore all of these gimbal constants, last year's refactor did an oopsie and requires these for non-gimbal robots
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
@@ -80,6 +80,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
+//----------------------------------------------------------------------------------------------------------------
 
 static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
     .kp = 30000.0f,
@@ -297,54 +298,10 @@ static constexpr SmoothPIDConfig WRIST_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
-static constexpr int UNJAM_TIMER_MS = 300;
-
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 40.0f,
-    .ki = 0.10f,  // 0.10f;
-    .kd = 0.00f,
-    .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
-// clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
-    15,
-    4300,  // {ball m/s, flywheel rpm}
-    18,
-    4850,
-    30,
-    7050};
-// clang-format on
-
-static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
-
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
-static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
-static constexpr int PROJECTILES_PER_FEEDER_ROTATION = 1; // Engineer with a glock
+static constexpr int PROJECTILES_PER_FEEDER_ROTATION = 1;  // Engineer with a glock
 
 // TODO: set these to what they actually are
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
@@ -363,26 +320,6 @@ static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
-
-// CAN Bus 1
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus BARREL_BUS = CANBus::CAN_BUS1;  // TODO: check CAN ID for Barrel Swap
-
-//
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
-//
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
-//
-static constexpr MotorID SWAP_MOTOR_ID = MotorID::MOTOR1;  // TODO: check motor ID for Barrel Swap
-
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = true;
-
-static constexpr bool FEEDER_DIRECTION = false;
-
-static constexpr bool BARREL_SWAP_DIRECTION = true;
 
 // Mechanical chassis constants, all in m
 /**
@@ -483,6 +420,6 @@ static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 // This array holds the IDs of all speed monitor barrels on the robot
-static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;

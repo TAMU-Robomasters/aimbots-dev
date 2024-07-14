@@ -35,7 +35,6 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
     float positionRevs = motors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
     float positionMeters = positionRevs * SLIDE_METERS_PER_REVS_RATIOS[motorIdx];
     float err = targetPosesMeters[motorIdx] - positionMeters;
-    float errDerivative = motors[motorIdx].getShaftRPM();
 
     motorPIDs[motorIdx].runControllerDerivateError(err);
 

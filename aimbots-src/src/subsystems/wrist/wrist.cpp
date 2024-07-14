@@ -50,6 +50,8 @@ void WristSubsystem::updateMotorPID_velocity(MotorIndex idx) {
     float motorRpm = getMotorRPM(idx);
     float rpm_error = targetRPMs[idx] - motorRpm;
     float output = velocityPIDs[idx].runControllerDerivateError(rpm_error);
+
+    output = output;  //Suppressing a warning
 }
 
 float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {

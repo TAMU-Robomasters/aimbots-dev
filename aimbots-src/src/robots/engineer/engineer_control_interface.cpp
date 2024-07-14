@@ -223,7 +223,7 @@ float OperatorInterface::getSlideUpDownInput() {
     else
         slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
 
-    return slideUpDownRamp.getValue() * ZAXIS_JOYSTICK_INPUT_SENSITIVITY;
+    return /*slideUpDownRamp.getValue()*/ finalRotation * ZAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 float OperatorInterface::getSlideFrontBackInput() {
@@ -248,7 +248,7 @@ float OperatorInterface::getSlideFrontBackInput() {
     else
         slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
 
-    return slideFrontBackRamp.getValue() * XAXIS_JOYSTICK_INPUT_SENSITIVITY;
+    return /*slideFrontBackRamp.getValue() */ finalRotation * XAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 int16_t mouseXDisplay = 0;
