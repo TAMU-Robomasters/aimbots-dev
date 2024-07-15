@@ -15,20 +15,20 @@
 #include "modm/math/utils/misc.hpp"
 #include "modm/processing/protothread.hpp"
 //
-// #include "subsystems/chassis/chassis.hpp"
+ #include "subsystems/chassis/chassis.hpp"
 // #include "subsystems/gimbal/gimbal.hpp"
-// #include "subsystems/hopper/hopper.hpp"
+ #include "subsystems/hopper/hopper.hpp"
 
-// #include "boolean_hud_indicators.hpp"
-// #include "chassis_orientation_indicator.hpp"
+ #include "boolean_hud_indicators.hpp"
+ #include "chassis_orientation_indicator.hpp"
 // #include "client_display_subsystem.hpp"
 // #include "computer_vision_display.hpp"
 #ifndef TARGET_ENGINEER
     #include "reticle_indicator.hpp"
 #endif
 
-// using namespace src::Hopper;
-// using namespace src::Chassis;
+ using namespace src::Hopper;
+ using namespace src::Chassis;
 // using namespace src::Gimbal;
 // using namespace src::Utils::Ballistics;
 
@@ -53,11 +53,11 @@ public:
     ClientDisplayCommand(
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
-        ClientDisplaySubsystem &clientDisplay
-        // const HopperSubsystem *hopper,
+        ClientDisplaySubsystem &clientDisplay,
+         const HopperSubsystem *hopper,
         // const GimbalSubsystem &gimbal,
-        // const ChassisSubsystem &chassis  //,
-        // BallisticsSolver &ballisticsSolver
+         const ChassisSubsystem &chassis  //,
+         //BallisticsSolver &ballisticsSolver
     );
 
     const char *getName() const override { return "Client Display"; }
@@ -76,7 +76,7 @@ private:
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
 
     /* Actual hud elements */
-    // BooleanHUDIndicators booleanHudIndicators;
+    BooleanHUDIndicators booleanHudIndicators;
     // ChassisOrientationIndicator chassisOrientation;
     #ifndef TARGET_ENGINEER
         ReticleIndicator reticleIndicator;

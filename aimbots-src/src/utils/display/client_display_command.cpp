@@ -4,9 +4,9 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
-// #include "subsystems/chassis/chassis.hpp"
+ #include "subsystems/chassis/chassis.hpp"
 // #include "subsystems/gimbal/gimbal.hpp"
-// #include "subsystems/hopper/hopper.hpp"
+ #include "subsystems/hopper/hopper.hpp"
 
 #include "client_display_subsystem.hpp"
 #include "hud_indicator.hpp"
@@ -14,8 +14,8 @@
     #include "reticle_indicator.hpp"
 #endif
 
-// using namespace src::Hopper;
-// using namespace src::Chassis;
+ using namespace src::Hopper;
+ using namespace src::Chassis;
 // using namespace src::Gimbal;
 // using namespace src::Utils::Ballistics;
 
@@ -26,20 +26,20 @@ namespace src::Utils::ClientDisplay {
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay
-    // const HopperSubsystem *hopper,
+    ClientDisplaySubsystem &clientDisplay,
+     const HopperSubsystem *hopper,
     // const GimbalSubsystem &gimbal,
-    // const ChassisSubsystem &chassis
+     const ChassisSubsystem &chassis
     )
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
-      refSerialTransmitter(&drivers)
-    // booleanHudIndicators(commandScheduler, refSerialTransmitter, /*hopper,*/ chassis),
+      refSerialTransmitter(&drivers),
+      booleanHudIndicators( commandScheduler, refSerialTransmitter, hopper, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
-        #ifndef TARGET_ENGINEER
-            ,reticleIndicator(drivers, refSerialTransmitter)  //,
-        #endif
+    #ifndef TARGET_ENGINEER
+        reticleIndicator(drivers, refSerialTransmitter)  //,
+    #endif
      /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
 {
     addSubsystemRequirement(&clientDisplay);
@@ -52,6 +52,7 @@ void ClientDisplayCommand::restartHud()
 {
     // add more indicators here in the future when restart occurs
     HudIndicator::resetGraphicNameGenerator();
+    booleanHudIndicators.initialize();
     #ifndef TARGET_ENGINEER
         reticleIndicator.initialize();
     #endif
@@ -74,16 +75,19 @@ bool ClientDisplayCommand::run()
     PT_BEGIN();
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
+  //  PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    #ifndef TARGET_ENGINEER
+        PT_CALL(reticleIndicator.sendInitialGraphics());
+    #endif
 
     while (!this->restarting)
     {
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
-        // PT_CALL(booleanHudIndicators.sendInitialGraphics());
-        #ifndef TARGET_ENGINEER
-            PT_CALL(reticleIndicator.sendInitialGraphics());
-        #endif
-        PT_YIELD();
+      //   PT_CALL(booleanHudIndicators.update());
+         PT_CALL(reticleIndicator.update());
+         PT_YIELD();
+        
     }
 
     PT_END();

@@ -244,8 +244,9 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 ClientDisplayCommand clientDisplayCommand(
     *drivers(),
     drivers()->commandScheduler,
-    clientDisplay
-    // chassis
+    clientDisplay,
+    &hopper,
+    chassis
 );
 
 
