@@ -319,6 +319,7 @@ void startupCommands(src::Drivers *drivers) {
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
     drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
@@ -329,6 +330,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&bCtrlPressed);
     drivers->commandMapper.addMap(&bCtrlPressed);
 }
 

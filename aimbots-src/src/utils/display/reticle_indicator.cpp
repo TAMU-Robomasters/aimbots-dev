@@ -27,6 +27,10 @@ modm::ResumableResult<bool> ReticleIndicator::sendInitialGraphics() {
 
 modm::ResumableResult<bool> ReticleIndicator::update() {
     RF_BEGIN(1);
+    // send reticle
+    for (reticleIndex = 0; reticleIndex < MODM_ARRAY_SIZE(reticleMsg); reticleIndex++) {
+        RF_CALL(refSerialTransmitter.sendGraphic(&reticleMsg[reticleIndex]));
+    }
     RF_END();
 }
 
