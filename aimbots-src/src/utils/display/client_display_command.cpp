@@ -4,18 +4,18 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
- #include "subsystems/chassis/chassis.hpp"
+ //#include "subsystems/chassis/chassis.hpp"
 // #include "subsystems/gimbal/gimbal.hpp"
- #include "subsystems/hopper/hopper.hpp"
+// #include "subsystems/hopper/hopper.hpp"
 
 #include "client_display_subsystem.hpp"
 #include "hud_indicator.hpp"
-#ifndef TARGET_ENGINEER
+//#ifndef TARGET_ENGINEER
     #include "reticle_indicator.hpp"
-#endif
+//#endif
 
- using namespace src::Hopper;
- using namespace src::Chassis;
+// using namespace src::Hopper;
+// using namespace src::Chassis;
 // using namespace src::Gimbal;
 // using namespace src::Utils::Ballistics;
 
@@ -26,20 +26,20 @@ namespace src::Utils::ClientDisplay {
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay,
-     const HopperSubsystem *hopper,
+    ClientDisplaySubsystem &clientDisplay//,
+//     const HopperSubsystem *hopper,
     // const GimbalSubsystem &gimbal,
-     const ChassisSubsystem &chassis
+ //    const ChassisSubsystem &chassis
     )
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicators( commandScheduler, refSerialTransmitter, hopper, chassis),
+    //  booleanHudIndicators( commandScheduler, refSerialTransmitter, hopper, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
-    #ifndef TARGET_ENGINEER
+    //#ifndef TARGET_ENGINEER
         reticleIndicator(drivers, refSerialTransmitter)  //,
-    #endif
+    //#endif
      /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
 {
     addSubsystemRequirement(&clientDisplay);
@@ -52,10 +52,10 @@ void ClientDisplayCommand::restartHud()
 {
     // add more indicators here in the future when restart occurs
     HudIndicator::resetGraphicNameGenerator();
-    booleanHudIndicators.initialize();
-    #ifndef TARGET_ENGINEER
+   // booleanHudIndicators.initialize();
+    //#ifndef TARGET_ENGINEER
         reticleIndicator.initialize();
-    #endif
+   // #endif
 
     this->restarting = false;
 }
@@ -76,16 +76,18 @@ bool ClientDisplayCommand::run()
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
   //  PT_CALL(booleanHudIndicators.sendInitialGraphics());
-    #ifndef TARGET_ENGINEER
+   // #ifndef TARGET_ENGINEER
         PT_CALL(reticleIndicator.sendInitialGraphics());
-    #endif
+    //#endif
 
     while (!this->restarting)
     {
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
       //   PT_CALL(booleanHudIndicators.update());
-         PT_CALL(reticleIndicator.update());
+     // #ifndef TARGET_ENGINEER
+            PT_CALL(reticleIndicator.update());
+       // #endif
          PT_YIELD();
         
     }

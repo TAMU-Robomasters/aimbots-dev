@@ -27,6 +27,9 @@
 #include "subsystems/wrist/wrist_move_command.hpp"
 //
 #include "subsystems/grabber/suction_command.hpp"
+//
+#include "utils/display/client_display_command.hpp"
+#include "utils/display/client_display_subsystem.hpp"
 
 using namespace src::Chassis;
 
@@ -44,6 +47,7 @@ using namespace src::Slide;
 using namespace src::Wrist;
 using namespace src::Grabber;
 using namespace src::Gimbal;
+using namespace src::Utils::ClientDisplay;
 
 namespace EngineerControl {
 
@@ -53,6 +57,7 @@ GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
 WristSubsystem wrist(drivers());
 GrabberSubsystem grabber(drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -66,6 +71,14 @@ WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
 WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
+
+// client display
+ClientDisplayCommand clientDisplayCommand(
+    *drivers(), 
+    drivers()->commandScheduler, 
+    clientDisplay
+);
+
 // Define command mappings here -------------------------------------------
 // HoldCommandMapping rightSwitchDown(
 //     drivers(),
@@ -76,6 +89,10 @@ Suction_Command suctionCommand(drivers(), &grabber);
 //     drivers(),
 //     {&slideControlCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+PressCommandMapping bCtrlPressed(
+    drivers(), 
+    {&clientDisplayCommand}, 
+    RemoteMapState({Remote::Key::CTRL,Remote::Key::B}));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -97,12 +114,14 @@ HoldCommandMapping rightSwitchMid(
     {&goToTestLocation},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&slide);
     drivers->commandScheduler.registerSubsystem(&wrist);
     drivers->commandScheduler.registerSubsystem(&grabber);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -111,6 +130,7 @@ void initializeSubsystems() {
     slide.initialize();
     wrist.initialize();
     grabber.initialize();
+    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -118,14 +138,17 @@ void setDefaultCommands(src::Drivers *) {
     // no default commands should be set
     // wrist.setDefaultCommand(&wristHomeCommand);
 }
+//}
 
 // Set commands scheduled on startup
-void startupCommands(src::Drivers *) {
+void startupCommands(src::Drivers *drivers) {
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
