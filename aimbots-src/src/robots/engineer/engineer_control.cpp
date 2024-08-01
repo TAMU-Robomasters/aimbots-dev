@@ -111,7 +111,7 @@ HoldCommandMapping rightSwitchDown(
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&goToTestLocation},
+    {/*&goToTestLocation*/ &suctionCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 
@@ -153,10 +153,10 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    // drivers->commandMapper.addMap(&leftSwitchUp);
-    // drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&leftSwitchUp); //
+    drivers->commandMapper.addMap(&leftSwitchMid); //
     drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
+    // drivers->commandMapper.addMap(&rightSwitchDown);
 
     // drivers->commandMapper.addMap(&leftSwitchDown);
 }

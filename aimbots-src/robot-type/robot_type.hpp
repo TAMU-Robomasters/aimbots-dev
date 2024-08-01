@@ -6,8 +6,8 @@
 // #define TARGET_STANDARD_2023
 // #define TARGET_HERO
 // #define TARGET_AERIAL
-#define TARGET_SENTRY
-// #define TARGET_ENGINEER
+// #define TARGET_SENTRY
+#define TARGET_ENGINEER
 // #define TARGET_SWERVE_ENGINEER
 // #define TARGET_CVTESTBENCH
 // #define TARGET_TURRET
