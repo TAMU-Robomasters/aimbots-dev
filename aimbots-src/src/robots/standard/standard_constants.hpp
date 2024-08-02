@@ -33,22 +33,22 @@ static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
 #if defined(TARGET_STANDARD_BLASTOISE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(90.61f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-5.23f)};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(309.199f)};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #elif defined(TARGET_STANDARD_WARTORTLE)
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(10.85f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-193.3f))};
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(84.73f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(180.0f))};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #elif defined(TARGET_STANDARD_SQUIRTLE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(254.75f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-110.64f))};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 #endif

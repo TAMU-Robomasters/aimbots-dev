@@ -5,6 +5,8 @@
 #include "utils/common_types.hpp"
 #include "utils/robot_specific_inc.hpp"
 
+#include "drivers.hpp"
+
 #ifdef GRABBER_COMPATIBLE
 
 namespace src::Grabber {

@@ -182,8 +182,13 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             gimbal->getPitchMotorTorque(i));
 
         pitchOutputVelocityDisplay = velocityFeedforward + velocityControllerOutput;
-
-        gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+        if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873 && gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW - 0.0873) {
+            gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+        }
+        else {
+            gimbal->setDesiredPitchMotorOutput(i, 10000 * sgn(kGRAVITY));
+        }
+        
     }
 }
 

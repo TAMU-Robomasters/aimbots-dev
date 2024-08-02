@@ -23,6 +23,7 @@ GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
 void GimbalFieldRelativeControlCommand::initialize() {}
 
 float gimbalYawInputDisplay = 0.0f;
+float targetPitchAngleDisplay = 0;
 
 void GimbalFieldRelativeControlCommand::execute() {
     /*if (drivers->remote.keyPressed(Remote::Key::V) && !wasVPressed) wasVPRessed = true;
@@ -54,6 +55,8 @@ void GimbalFieldRelativeControlCommand::execute() {
     }
 
     gimbalYawInputDisplay = drivers->controlOperatorInterface.getGimbalYawInput();
+    targetPitchAngleDisplay = controller->getTargetPitch(AngleUnit::Radians);
+
 
     controller->setTargetYaw(
         AngleUnit::Radians,

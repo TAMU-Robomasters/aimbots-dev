@@ -25,8 +25,8 @@ static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.006f;
 static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.006f;
 static constexpr float INPUT_SLIDE_STOP_INC = 0.06f;
 
-static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0005;
-static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0005;
+static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
 
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
@@ -211,7 +211,7 @@ float OperatorInterface::getSlideUpDownInput() {
         prevUpdateCounterSlideUpDown = updateCounter;
     }
 
-    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::R) - drivers->remote.keyPressed(Remote::Key::F);
 
     float finalRotation = limitVal<float>(slideUpDownInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
@@ -236,7 +236,7 @@ float OperatorInterface::getSlideFrontBackInput() {
         prevUpdateCounterSlideFrontBack = updateCounter;
     }
 
-    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::C) - drivers->remote.keyPressed(Remote::Key::V);
 
     float finalRotation = limitVal<float>(slideFrontBackInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;

@@ -62,8 +62,8 @@ ClientDisplaySubsystem clientDisplay(drivers());
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 //
-SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 0.5f);
-SlideGoToCommand goHome(drivers(), &slide, 0, 0);
+SlideGoToCommand goToTestLocation(drivers(), &slide, 0, 0.3f);
+SlideGoToCommand goHome(drivers(), &slide, 0, 0.05f);
 SlideControlCommand slideControlCommand(drivers(), &slide);
 SlideHoldCommand slideHoldCommand(drivers(), &slide);
 //
@@ -106,12 +106,12 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&goHome},
+    {/*&goHome*/},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {/*&goToTestLocation*/ &suctionCommand},
+    {/*&goToTestLocation*/&suctionCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 
