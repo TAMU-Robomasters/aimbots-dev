@@ -49,7 +49,7 @@ void ChassisFollowGimbalCommand::execute() {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
 
         float chassisErrorAngle = Helper::findNearestChassisErrorTo(yawAngleFromChassisCenter, snapSymmetryConfig);
-
+        yawAngleFromChassisCenter -= modm::toRadian(90);
         chassisErrorAngleDisplay = chassisErrorAngle;
 
         // Find rotation correction power
@@ -62,7 +62,11 @@ void ChassisFollowGimbalCommand::execute() {
         rotationControllerOutputDisplay = rotationController.getOutput();
 
         // overwrite desired rotation with rotation controller output, range [-1, 1]
-        desiredRotation = rotationController.getOutput();
+        if (abs(chassisErrorAngle) > modm::toRadian(2.0f)) {
+            desiredRotation = rotationController.getOutput();
+        } else {
+        desiredRotation = 0.0f;
+        }
 
         Chassis::Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 

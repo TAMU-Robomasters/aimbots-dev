@@ -50,12 +50,16 @@ float OperatorInterface::getChassisXInput() {
     }
 
     float digitalX = drivers->remote.keyPressed(Remote::Key::D) - drivers->remote.keyPressed(Remote::Key::A);
+    
+    if (!drivers->remote.keyPressed(Remote::Key::SHIFT)) {
+        digitalX *= 0.25f;
+    }
 
     float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + digitalX, -1.0f, 1.0f);
 
     // Scales analog values by values defined in hero_constants.hpp to speedshift input
     finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+    // finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
     chassisXRamp.setTarget(finalX);
 
@@ -85,12 +89,15 @@ float OperatorInterface::getChassisYInput() {
     }
 
     float digitalY = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
+    if (!drivers->remote.keyPressed(Remote::Key::SHIFT)) {
+        digitalY *= 0.25f;
+    }
 
     float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + digitalY, -1.0f, 1.0f);
 
     // Scales analog values by values defined in hero_constants.hpp to speedshift input
     finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+    // finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
     chassisYRamp.setTarget(finalY);
 

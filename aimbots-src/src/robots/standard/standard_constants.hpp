@@ -52,7 +52,7 @@ static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {w
 
 #elif defined(TARGET_STANDARD_BALANCE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(23.5f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(230.0f))};
 
 #endif
@@ -240,9 +240,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 
 #ifdef TARGET_STANDARD_BALANCE
 static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
-    .kp = 250.0f,
-    .ki = 2.5f,
-    .kd = 4.0f,
+    .kp = 200.0f,
+    .ki = 2.0f,
+    .kd = 3.0f,
     .maxICumulative = 700.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -254,9 +254,9 @@ static constexpr SmoothPIDConfig CHASSIS_BALANCE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig CHASSIS_BALANCE_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 0.9f,
     .ki = 0.01f,
-    .kd = 0.4f,
+    .kd = 0.3f,
     .maxICumulative = 10.0f,
     .maxOutput = 60,
     .tQDerivativeKalman = 1.0f,
@@ -414,9 +414,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 50.0f, // 1.65f,  // 1.25f //1.65
-    .ki = 0.5f, // 0.0f,
-    .kd = 0.0f, // 0.002f, // 0.005f,  // 0.03f //0.005
+    .kp = 1.25f, // 1.65f,  // 1.25f //1.65
+    .ki = 0.02f, // 0.0f,
+    .kd = 0.005f, // 0.002f, // 0.005f,  // 0.03f //0.005
     .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
