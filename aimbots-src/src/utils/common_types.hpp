@@ -70,7 +70,7 @@ enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 // :)
 enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
-enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH };
+enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH, SIMPLEBOOT };
 
 enum FeederGroup : uint8_t {
     ALL = 0,    // Command goes to all feeder motors
@@ -88,8 +88,8 @@ static constexpr float GM6020_MAX_OUTPUT = 30'000.0f;
 
 static constexpr float GM6020_VELOCITY_FILTER_ALPHA = 1.0f;
 
-static constexpr uint32_t MICROSECONDS_PER_SECOND = 1000000;
-static constexpr uint32_t MICROSECONDS_PER_MS = 1000;
+static constexpr uint32_t MICROSECONDS_PER_SECOND = 1'000'000;
+static constexpr uint32_t MICROSECONDS_PER_MS = 1'000;
 
 using StockPID = modm::Pid<float>;
 using SmoothPID = src::Utils::SmoothPIDWrapper;

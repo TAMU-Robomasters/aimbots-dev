@@ -169,4 +169,13 @@ Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_
 // https://musescore.com/user/35424120/scores/6208111
 // Measures 1 - 8
 
+// simple boot sound for testing so I don't lose my damn mind
+static constexpr uint32_t SIMBOOT_BPM = 160;
+Song SimpleBoot = {SIMBOOT_BPM, Q_N, 
+                  {{A5, TE_N}, {C6, TE_N}, {F6, TE_N}, {END,Q_N}}
+                  };
+
+// Source: I made it tf up
+
+
 }  // namespace utils::Jukebox

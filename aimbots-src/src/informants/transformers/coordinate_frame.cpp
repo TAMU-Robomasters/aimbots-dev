@@ -5,7 +5,6 @@
 
 using namespace src::Utils::MatrixHelper;
 
-
 // so much of this is about to change
 namespace src::Informants::Transformers {
 

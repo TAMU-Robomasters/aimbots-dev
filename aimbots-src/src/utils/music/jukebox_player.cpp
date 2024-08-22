@@ -13,7 +13,8 @@ static constexpr Song* songsList[] = {
     &MysterySong,
     &CrabRaveSong,
     &LegendOfZeldaSong,
-    &LG_WashSong};
+    &LG_WashSong,
+    &SimpleBoot};
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}
 

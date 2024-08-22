@@ -111,9 +111,9 @@ public:
         const float pitchAxisOffset = 0);
 
     // The width tolerance of where a predicted shot needs to land on a plate be considered "on target"
-    static constexpr float PLATE_WIDTH_TOLERANCE = 0.15f;  // 0.15
+    static constexpr float PLATE_WIDTH_TOLERANCE = 0.15f;
     // The height tolerance of where a predicted shot needs to land on a plate be considered "on target"
-    static constexpr float PLATE_HEIGHT_TOLERANCE = 0.1f;  // 0.1
+    static constexpr float PLATE_HEIGHT_TOLERANCE = 0.1f;
     // (Same tolerance for both types of armor panels)
 
     /**
