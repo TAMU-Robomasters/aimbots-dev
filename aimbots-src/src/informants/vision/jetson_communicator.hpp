@@ -1,8 +1,12 @@
 #pragma once
 
 #include <tap/architecture/timeout.hpp>
-#include <tap/util_macros.hpp>
-#include <utils/common_types.hpp>
+#include <tap/architecture/periodic_timer.hpp>
+#include <tap/architecture/timeout.hpp>
+// #include <tap/util_macros.hpp>
+#include <tap/communication/serial/dji_serial.hpp>
+#include <tap/communication/serial/ref_serial_data.hpp>
+#include <tap/drivers.hpp>
 
 #include "informants/enemy_data_conversion.hpp"
 

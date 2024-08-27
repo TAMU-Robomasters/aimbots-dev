@@ -107,7 +107,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
-    if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
+    if (abs(currPosMag) < MAX_DELTA) {
         XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
         YPositionFilter.update(dt, transformedPosition.position.getY());
         ZPositionFilter.update(dt, transformedPosition.position.getZ());
@@ -166,9 +166,9 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
@@ -187,9 +187,7 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
         .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        // .velocity = Vector3f(0, 0, 0),
         .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
-        // .acceleration = Vector3f(0, 0, 0),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
     };
 }
