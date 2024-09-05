@@ -4,7 +4,7 @@
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/gpio/digital.hpp"
 #include "tap/communication/gpio/pwm.hpp"
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 // sentry ultrasonic settings
 static constexpr bool ORIGIN_SIDE = false;                   // false is 'left' origin, true is 'right' origin... still need to make sure left/right are actually left/right but should work regardless

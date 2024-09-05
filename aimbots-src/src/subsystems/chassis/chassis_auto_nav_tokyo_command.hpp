@@ -1,6 +1,6 @@
 #pragma once
 
-#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
 #include "chassis.hpp"

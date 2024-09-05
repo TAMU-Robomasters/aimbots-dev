@@ -1,5 +1,5 @@
 #pragma once
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_COMPATIBLE

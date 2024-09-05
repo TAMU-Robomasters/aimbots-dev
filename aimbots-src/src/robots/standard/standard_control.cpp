@@ -1,15 +1,15 @@
-#include "utils/robot_specific_defines.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023)
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
 
 //
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
+#include "informants/kinematics/robot_frames.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
@@ -26,18 +26,18 @@
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
-#include "subsystems/feeder/barrel_swapping_feeder_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/gimbal/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -45,10 +45,10 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
-#include "subsystems/hopper/close_hopper_command.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "subsystems/hopper/open_hopper_command.hpp"
-#include "subsystems/hopper/toggle_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
+#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
+#include "subsystems/hopper/control/hopper.hpp"
 //
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
@@ -56,10 +56,9 @@
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
 //
-#include "utils/display/client_display_command.hpp"
-#include "utils/display/client_display_subsystem.hpp"
+#include "subsystems/display/basic_commands/client_display_command.hpp"
+#include "subsystems/display/control/client_display_subsystem.hpp"
 //
-#include "informants/pathfinding/graph.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -231,11 +230,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(
-    *drivers(), 
-    drivers()->commandScheduler, 
-    clientDisplay
-);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -275,10 +270,7 @@ HoldCommandMapping leftClickMouse(
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(
-    drivers(), 
-    {&clientDisplayCommand}, 
-    RemoteMapState({Remote::Key::CTRL,Remote::Key::B}));
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {

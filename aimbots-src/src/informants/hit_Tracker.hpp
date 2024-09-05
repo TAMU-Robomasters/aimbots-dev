@@ -4,9 +4,9 @@
 #include <optional>
 
 #include <tap/algorithms/wrapped_float.hpp>
-//#include "transformers/robot_frames.hpp"
-#include "utils/common_types.hpp"
-//#include "subsystems/gimbal/gimbal.hpp"
+//#include "kinematics/robot_frames.hpp"
+#include "utils/tools/common_types.hpp"
+//#include "subsystems/gimbal/control/gimbal.hpp"
 
 //#include "drivers.hpp"
 

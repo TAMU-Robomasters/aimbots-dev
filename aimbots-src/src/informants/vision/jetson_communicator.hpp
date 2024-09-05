@@ -2,7 +2,7 @@
 
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
-#include <utils/common_types.hpp>
+#include <utils/tools/common_types.hpp>
 
 #include "informants/enemy_data_conversion.hpp"
 

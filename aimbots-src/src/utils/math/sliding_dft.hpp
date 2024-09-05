@@ -15,22 +15,22 @@ that recalculating the DFT from scratch each time.
 This is a header-only C++ library. Simply copy sliding_dft.hpp into your
 project, and use it as follows:
 
-	// Use double precision arithmetic and a 512-length DFT
-	static SlidingDFT<double, 512> dft;
-	// avoid allocating on the stack because the object is large
+        // Use double precision arithmetic and a 512-length DFT
+        static SlidingDFT<double, 512> dft;
+        // avoid allocating on the stack because the object is large
 
-	// When a new time sample arrives, update the DFT with:
-	dft.update(x);
+        // When a new time sample arrives, update the DFT with:
+        dft.update(x);
 
-	// After at least 512 samples have been processed:
-	std::complex<double> DC_bin = dft.dft[0];
+        // After at least 512 samples have been processed:
+        std::complex<double> DC_bin = dft.dft[0];
 
 Your application should call update() as each time domain sample arrives. Output
 data is an array of `std::complex` values in the `dft` field. The length of this
 array is the length of the DFT.
 
 The output data is not valid until at least *N* samples have been processed. You
-can detect this using the `is_data_valid()` method, or by storing the return
+can detect this using the `rotaisDataValid()` method, or by storing the return
 value of the `update()` method.
 
 This is a header-only C++ library. Simply copy sliding_dft.hpp into your
@@ -78,90 +78,86 @@ SOFTWARE.
 #pragma once
 
 #define _USE_MATH_DEFINES
-#include <complex>
 #include <math.h>
 
-template <class NumberFormat, size_t DFT_Length>
-class SlidingDFT
-{
+#include <complex>
+
+template <class NumberFormat, size_t DFTLength>
+class SlidingDFT {
 private:
-	/// Are the frequency domain values valid? (i.e. have at elast DFT_Length data
-	/// points been seen?)
-	bool data_valid = false;
+    /// Are the frequency domain values valid? (i.e. have at elast DFTLength data
+    /// points been seen?)
+    bool dataValid = false;
 
-	/// Time domain samples are stored in this circular buffer.
-	NumberFormat x[DFT_Length] = { 0 };
+    /// Time domain samples are stored in this circular buffer.
+    NumberFormat x[DFTLength] = {0};
 
-	/// Index of the next item in the buffer to be used. Equivalently, the number
-	/// of samples that have been seen so far modulo DFT_Length.
-	size_t x_index = 0;
+    /// Index of the next item in the buffer to be used. Equivalently, the number
+    /// of samples that have been seen so far modulo DFTLength.
+    size_t xIndex = 0;
 
-	/// Twiddle factors for the update algorithm
-	std::complex<NumberFormat> twiddle[DFT_Length];
+    /// Twiddle factors for the update algorithm
+    std::complex<NumberFormat> twiddle[DFTLength];
 
-	/// Frequency domain values (unwindowed!)
-	std::complex<NumberFormat> S[DFT_Length];
+    /// Frequency domain values (unwindowed!)
+    std::complex<NumberFormat> S[DFTLength];
 
 public:
-	/// Frequency domain values (windowed)
-	std::complex<NumberFormat> dft[DFT_Length];
+    /// Frequency domain values (windowed)
+    std::complex<NumberFormat> dft[DFTLength];
 
-	/// A damping factor introduced into the recursive DFT algorithm to guarantee
-	/// stability.
-	NumberFormat damping_factor = std::nexttoward((NumberFormat)1, (NumberFormat)0);
+    /// A damping factor introduced into the recursive DFT algorithm to guarantee
+    /// stability.
+    NumberFormat damping_factor = std::nexttoward((NumberFormat)1, (NumberFormat)0);
 
-	/// Constructor
-	SlidingDFT()
-	{
-		const std::complex<NumberFormat> j(0.0, 1.0);
-		const NumberFormat N = DFT_Length;
+    /// Constructor
+    SlidingDFT() {
+        const std::complex<NumberFormat> j(0.0, 1.0);
+        const NumberFormat N = DFTLength;
 
-		// Compute the twiddle factors, and zero the x and S arrays
-		for (size_t k = 0; k < DFT_Length; k++) {
-			NumberFormat factor = (NumberFormat)(2.0 * M_PI) * k / N;
-			this->twiddle[k] = std::exp(j * factor);
-			this->S[k] = 0;
-			this->x[k] = 0;
-		}
-	}
+        // Compute the twiddle factors, and zero the x and S arrays
+        for (size_t k = 0; k < DFTLength; k++) {
+            NumberFormat factor = (NumberFormat)(2.0 * M_PI) * k / N;
+            this->twiddle[k] = std::exp(j * factor);
+            this->S[k] = 0;
+            this->x[k] = 0;
+        }
+    }
 
-	/// Determine whether the output data is valid
-	bool is_data_valid()
-	{
-		return this->data_valid;
-	}
+    /// Determine whether the output data is valid
+    bool rotaisDataValid() { return this->dataValid; }
 
-	/// Update the calculation with a new sample
-	/// Returns true if the data are valid (because enough samples have been
-	/// presented), or false if the data are invalid.
-	bool update(NumberFormat new_x)
-	{
-		// Update the storage of the time domain values
-		const NumberFormat old_x = this->x[this->x_index];
-		this->x[this->x_index] = new_x;
+    /// Update the calculation with a new sample
+    /// Returns true if the data are valid (because enough samples have been
+    /// presented), or false if the data are invalid.
+    bool update(NumberFormat newX) {
+        // Update the storage of the time domain values
+        const NumberFormat oldX = this->x[this->xIndex];
+        this->x[this->xIndex] = newX;
 
-		// Update the DFT
-		const NumberFormat r = this->damping_factor;
-		const NumberFormat r_to_N = pow(r, (NumberFormat)DFT_Length);
-		for (size_t k = 0; k < DFT_Length; k++) {
-			this->S[k] = this->twiddle[k] * (r * this->S[k] - r_to_N * old_x + new_x);
-		}
+        // Update the DFT
+        const NumberFormat r = this->damping_factor;
+        const NumberFormat rToN = pow(r, (NumberFormat)DFTLength);
+        for (size_t k = 0; k < DFTLength; k++) {
+            this->S[k] = this->twiddle[k] * (r * this->S[k] - rToN * oldX + newX);
+        }
 
-		// Apply the Hanning window
-		this->dft[0] = (NumberFormat)0.5*this->S[0] - (NumberFormat)0.25*(this->S[DFT_Length - 1] + this->S[1]);
-		for (size_t k = 1; k < (DFT_Length - 1); k++) {
-			this->dft[k] = (NumberFormat)0.5*this->S[k] - (NumberFormat)0.25*(this->S[k - 1] + this->S[k + 1]);
-		}
-		this->dft[DFT_Length - 1] = (NumberFormat)0.5*this->S[DFT_Length - 1] - (NumberFormat)0.25*(this->S[DFT_Length - 2] + this->S[0]);
+        // Apply the Hanning window
+        this->dft[0] = (NumberFormat)0.5 * this->S[0] - (NumberFormat)0.25 * (this->S[DFTLength - 1] + this->S[1]);
+        for (size_t k = 1; k < (DFTLength - 1); k++) {
+            this->dft[k] = (NumberFormat)0.5 * this->S[k] - (NumberFormat)0.25 * (this->S[k - 1] + this->S[k + 1]);
+        }
+        this->dft[DFTLength - 1] =
+            (NumberFormat)0.5 * this->S[DFTLength - 1] - (NumberFormat)0.25 * (this->S[DFTLength - 2] + this->S[0]);
 
-		// Increment the counter
-		this->x_index++;
-		if (this->x_index >= DFT_Length) {
-			this->data_valid = true;
-			this->x_index = 0;
-		}
+        // Increment the counter
+        this->xIndex++;
+        if (this->xIndex >= DFTLength) {
+            this->dataValid = true;
+            this->xIndex = 0;
+        }
 
-		// Done.
-		return this->data_valid;
-	}
+        // Done.
+        return this->dataValid;
+    }
 };

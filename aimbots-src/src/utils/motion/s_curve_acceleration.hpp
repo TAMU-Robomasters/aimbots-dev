@@ -67,13 +67,13 @@ public:
 
         // no closed form solution for dispalcement paramaterization of the third segment, so quadratic interpolation works
         // really nicely
-        float t3_mid = t3 / 2.0f;
-        float d3_mid = -constraints.jerk * (t3_mid * t3_mid * t3_mid) / 6.0f +
-                       constraints.acceleration * (t3_mid * t3_mid) / 2.0f + v2 * t3_mid;
-        float denominator = d3_mid * d3 * (d3_mid - d3);
+        float t3Mid = t3 / 2.0f;
+        float d3Mid = -constraints.jerk * (t3Mid * t3Mid * t3Mid) / 6.0f +
+                       constraints.acceleration * (t3Mid * t3Mid) / 2.0f + v2 * t3Mid;
+        float denominator = d3Mid * d3 * (d3Mid - d3);
 
-        distInterpA = (d3 * t3_mid - d3_mid * t3) / denominator;
-        distInterpB = ((d3_mid * d3_mid) * t3 - (d3 * d3) * t3_mid) / denominator;
+        distInterpA = (d3 * t3Mid - d3Mid * t3) / denominator;
+        distInterpB = ((d3Mid * d3Mid) * t3 - (d3 * d3) * t3Mid) / denominator;
     }
 
     Step stepAtT(float t) {

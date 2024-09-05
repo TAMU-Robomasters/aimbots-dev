@@ -48,14 +48,14 @@ struct MusicNote {
 static bool isSongDone = false;
 // We Are Number One
 
-static constexpr uint32_t WeNum1_BPM = 168;
-static constexpr uint32_t WeNum1_MS_PER_16th = (uint32_t)(((1.0f / WeNum1_BPM) * 60.0f * 1000.0f) / 4.0f);
+static constexpr uint32_t WENUM1_BPM = 168;
+static constexpr uint32_t WENUM1_MS_PER_16TH = (uint32_t)(((1.0f / WENUM1_BPM) * 60.0f * 1000.0f) / 4.0f);
 
 static uint32_t lastWeNum1Time = 0;
 static uint32_t currentWeNum1Note = 0;
 static uint32_t lastWeNum1Freq = 0;
 
-static MusicNote WeAreNumberOneNotes[] = {
+static MusicNote weAreNumberOneNotes[] = {
     {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_C6},  {NOTE_C6},  {NOTE_B5},  {NOTE_C6},
     {NOTE_B5},  {NOTE_C6},  {NOTE_B5},  {NOTE_B5},  {NOTE_C6},  {NOTE_C6},  {NOTE_Ab5}, {NOTE_Ab5}, {NOTE_Ab5}, {NOTE_Ab5},
     {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_F5},  {NOTE_Ab4}, {NOTE_Ab4},
@@ -64,7 +64,7 @@ static MusicNote WeAreNumberOneNotes[] = {
     {NOTE_Db6}, {NOTE_Db6}, {NOTE_C6},  {NOTE_C6},  {NOTE_Db6}, {NOTE_Db6}, {NOTE_C6},  {NOTE_C6},  {NOTE_C6},  {NOTE_C6},
     {NOTE_E6},  {NOTE_E6},  {NOTE_E6},  {NOTE_E6},  {0}};
 
-static constexpr size_t WeNum1_NOTE_COUNT = sizeof(WeAreNumberOneNotes) / sizeof(MusicNote);
+static constexpr size_t WENUM1_NOTE_COUNT = sizeof(weAreNumberOneNotes) / sizeof(MusicNote);
 
 void playWeAreNumberOne(src::Drivers* drivers) {
     if (isSongDone) return;
@@ -72,20 +72,20 @@ void playWeAreNumberOne(src::Drivers* drivers) {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastWeNum1Time;
 
-    if (timeSinceLast >= WeNum1_MS_PER_16th) {
+    if (timeSinceLast >= WENUM1_MS_PER_16TH) {
         lastWeNum1Time = tap::arch::clock::getTimeMilliseconds();
-        if (lastWeNum1Freq != WeAreNumberOneNotes[currentWeNum1Note].frequency)
-            tap::buzzer::playNote(&drivers->pwm, WeAreNumberOneNotes[currentWeNum1Note].frequency);
-        lastWeNum1Freq = WeAreNumberOneNotes[currentWeNum1Note].frequency;
+        if (lastWeNum1Freq != weAreNumberOneNotes[currentWeNum1Note].frequency)
+            tap::buzzer::playNote(&drivers->pwm, weAreNumberOneNotes[currentWeNum1Note].frequency);
+        lastWeNum1Freq = weAreNumberOneNotes[currentWeNum1Note].frequency;
         currentWeNum1Note++;
-        isSongDone = currentWeNum1Note == WeNum1_NOTE_COUNT;
+        isSongDone = currentWeNum1Note == WENUM1_NOTE_COUNT;
     }
 }
 
 // PacMan Theme
 
 static constexpr uint32_t PM_BPM = 130;
-static constexpr uint32_t PM_MS_PER_16th = (uint32_t)(((1.0f / PM_BPM) * 60.0f * 1000.0f) / 4.0f);
+static constexpr uint32_t PM_MS_PER_16TH = (uint32_t)(((1.0f / PM_BPM) * 60.0f * 1000.0f) / 4.0f);
 
 static uint32_t lastPMTime = 0;
 static uint32_t currentPMNote = 0;
@@ -115,7 +115,7 @@ void playPacMan(src::Drivers* drivers) {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastPMTime;
 
-    if (timeSinceLast >= PM_MS_PER_16th) {
+    if (timeSinceLast >= PM_MS_PER_16TH) {
         lastPMTime = tap::arch::clock::getTimeMilliseconds();
         if (lastPMFreq != pacManNotes[currentPMNote].frequency)
             tap::buzzer::playNote(&drivers->pwm, pacManNotes[currentPMNote].frequency);
@@ -128,7 +128,7 @@ void playPacMan(src::Drivers* drivers) {
 // Chainsaw Man theme
 
 static constexpr uint32_t CHNSW_BPM = 350;
-static constexpr uint32_t CHNSW_MS_PER_8th =
+static constexpr uint32_t CHNSW_MS_PER_8TH =
     (uint32_t)(((1.0f / CHNSW_BPM) * 60.0f * 1000.0f) / 2.0f);  // halves the overall size of the note array
 
 static uint32_t lastCHNSWTime = 0;
@@ -154,7 +154,7 @@ void playChainSawMan(src::Drivers* drivers) {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastCHNSWTime;
 
-    if (timeSinceLast >= CHNSW_MS_PER_8th) {
+    if (timeSinceLast >= CHNSW_MS_PER_8TH) {
         lastCHNSWTime = tap::arch::clock::getTimeMilliseconds();
         if (lastCHNSWFreq != chainSawNotes[currentCHNSWNote].frequency)
             tap::buzzer::playNote(&drivers->pwm, chainSawNotes[currentCHNSWNote].frequency);
@@ -167,7 +167,7 @@ void playChainSawMan(src::Drivers* drivers) {
 // Mystery Song
 
 static constexpr uint32_t MYST_BPM = 114;
-static constexpr uint32_t MYST_MS_PER_16th = (uint32_t)(((1.0f / MYST_BPM) * 60.0f * 1000.0f) / 4.0f);
+static constexpr uint32_t MYST_MS_PER_16TH = (uint32_t)(((1.0f / MYST_BPM) * 60.0f * 1000.0f) / 4.0f);
 
 static uint32_t lastMYSTTime = 0;
 static uint32_t currentMYSTNote = 0;
@@ -189,7 +189,7 @@ void playMystery(src::Drivers* drivers) {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastMYSTTime;
 
-    if (timeSinceLast >= MYST_MS_PER_16th) {
+    if (timeSinceLast >= MYST_MS_PER_16TH) {
         lastMYSTTime = tap::arch::clock::getTimeMilliseconds();
         if (lastMYSTFreq != mysteryNotes[currentMYSTNote].frequency)
             tap::buzzer::playNote(&drivers->pwm, mysteryNotes[currentMYSTNote].frequency);
@@ -200,7 +200,7 @@ void playMystery(src::Drivers* drivers) {
 }
 
 static constexpr uint32_t CRAB_BPM = 125;
-static constexpr uint32_t CRAB_MS_PER_16th =
+static constexpr uint32_t CRAB_MS_PER_16TH =
     (uint32_t)(((1.0f / CRAB_BPM) * 60.0f * 1000.0f) / 4.0f);  // halves the overall size of the note array
 
 static uint32_t lastCRABTime = 0;
@@ -221,7 +221,7 @@ void playCrabRave(src::Drivers* drivers) {
     uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
     uint32_t timeSinceLast = currentTime - lastCRABTime;
 
-    if (timeSinceLast >= CRAB_MS_PER_16th) {
+    if (timeSinceLast >= CRAB_MS_PER_16TH) {
         lastCRABTime = tap::arch::clock::getTimeMilliseconds();
         if (lastCRABFreq != crabRaveNotes[currentCRABNote].frequency)
             tap::buzzer::playNote(&drivers->pwm, crabRaveNotes[currentCRABNote].frequency);

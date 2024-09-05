@@ -3,11 +3,11 @@
 #include "tap/control/command.hpp"
 
 #include "subsystems/chassis/chassis.hpp"
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 #include "utils/motion/s_curve_acceleration.hpp"
 #include "utils/motion/s_curve_motion_profile.hpp"
 #include "utils/motion/settled_util.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 

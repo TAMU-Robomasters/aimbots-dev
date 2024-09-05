@@ -14,7 +14,7 @@ VizGraph::VizGraph(unordered_map<Point*, vector<Point*>> neighbors, vector<vecto
           [](Point* a, Point* b) -> double { return sqrt((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y)); }),
       polygons(polygons) {}
 
-bool hasLOS(Point a, Point b, const vector<vector<Point>>& polygons) {
+bool has_LOS(Point a, Point b, const vector<vector<Point>>& polygons) {
     // arbitrarily define a as our base point
     double x1 = a.x;
     double y1 = a.y;
@@ -84,7 +84,7 @@ VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
             // add points on other polygons, LOS is two way so dont have to double check polygons so start at it not begin
             for (auto xt = it + 1; xt != polygons.end(); xt++) {
                 for (auto yt = xt->begin(); yt != xt->end(); yt++) {
-                    if (hasLOS(*jt, *yt, polygons)) {
+                    if (has_LOS(*jt, *yt, polygons)) {
                         neighbors[&*jt].push_back(&*yt);
                         neighbors[&*yt].push_back(&*jt);
                     }
@@ -101,17 +101,17 @@ vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
     Point goal(x2, y2);
     vector<Point> path;
 
-    if (hasLOS(start, goal, polygons)) {
+    if (has_LOS(start, goal, polygons)) {
         return {start, goal};
     }
 
     for (auto it = polygons.begin(); it != polygons.end(); it++) {
         for (auto jt = it->begin(); jt != it->end(); jt++) {
-            if (hasLOS(start, *jt, polygons)) {
+            if (has_LOS(start, *jt, polygons)) {
                 pathfinder.neighbors[&start].push_back(&*jt);
             }
 
-            if (hasLOS(goal, *jt, polygons)) {
+            if (has_LOS(goal, *jt, polygons)) {
                 pathfinder.neighbors[&*jt].push_back(&goal);
                 pathfinder.neighbors[&goal].push_back(&*jt);  // used to remove goal after search
             }

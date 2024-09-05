@@ -1,6 +1,6 @@
 #include "subsystems/wrist/wrist.hpp"
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #ifdef WRIST_COMPATIBLE
 

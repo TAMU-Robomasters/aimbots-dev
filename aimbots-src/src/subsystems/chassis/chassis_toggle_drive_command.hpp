@@ -3,8 +3,8 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "utils/common_types.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "chassis_helper.hpp"
 #include "drivers.hpp"

@@ -6,13 +6,13 @@
 namespace utils::Jukebox {
 
 static constexpr Song* songsList[] = {
-    &NothingIsPlayingSong,
-    &PacManSong,
-    &WeAreNumberOneSong,
-    &ChainSawManSong,
-    &MysterySong,
-    &CrabRaveSong,
-    &LegendOfZeldaSong,
+    &nothingIsPlayingSong,
+    &pacManSong,
+    &weAreNumberOneSong,
+    &chainSawManSong,
+    &mysterySong,
+    &crabRaveSong,
+    &legendOfZeldaSong,
     &LG_WashSong};
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}
@@ -43,10 +43,10 @@ void JukeboxPlayer::playMusic() {
 
     Song* currentSong = songsList[currentSongTitle];
 
-    MusicNote currentNote = static_cast<MusicNote>(currentSong->SongNotes[currNoteIndex]);
+    MusicNote currentNote = static_cast<MusicNote>(currentSong->songNotes[currNoteIndex]);
 
     uint32_t MS_HOLD_FOR_NOTE =
-        (uint32_t)(((1.0f / currentSong->Song_BPM) * 60.0f * 1000.0f) * (currentNote.noteTiming / currentSong->NoteType_Per_Beat));
+        (uint32_t)(((1.0f / currentSong->songBPM) * 60.0f * 1000.0f) * (currentNote.noteTiming / currentSong->noteTypePerBeat));
 
     if (holdNote) {
         if (timeSinceLast >= MS_HOLD_FOR_NOTE) {

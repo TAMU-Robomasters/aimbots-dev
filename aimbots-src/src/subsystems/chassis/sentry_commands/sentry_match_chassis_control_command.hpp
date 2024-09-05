@@ -6,8 +6,8 @@
 #include "subsystems/chassis/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "utils/common_types.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "utils/tools/common_types.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 

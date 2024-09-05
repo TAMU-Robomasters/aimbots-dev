@@ -1,4 +1,4 @@
-#include "utils/robot_specific_defines.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
 
@@ -6,7 +6,7 @@
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
 
-#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 
 #include "sentry_control_interface.hpp"
 

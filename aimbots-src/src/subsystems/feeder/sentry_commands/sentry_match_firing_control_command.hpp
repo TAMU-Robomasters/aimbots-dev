@@ -1,21 +1,21 @@
 #pragma once
 
-#include "utils/ballistics_solver.hpp"
-#include "utils/common_types.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 
 //
 #include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/shooter/run_shooter_command.hpp"
 #include "subsystems/shooter/shooter.hpp"
 #include "subsystems/shooter/stop_shooter_command.hpp"
 //
-#include <subsystems/gimbal/controllers/gimbal_controller_interface.hpp>
+#include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
 
 namespace src::Control {
 

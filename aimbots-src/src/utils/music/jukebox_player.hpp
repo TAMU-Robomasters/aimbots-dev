@@ -2,7 +2,7 @@
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src {
 class Drivers;
@@ -64,9 +64,9 @@ struct MusicNote {
 };
 
 struct Song {
-    uint32_t Song_BPM;
-    float NoteType_Per_Beat;
-    MusicNote SongNotes[];
+    uint32_t songBPM;
+    float noteTypePerBeat;
+    MusicNote songNotes[];
 };
 
 class JukeboxPlayer {

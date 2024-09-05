@@ -1,6 +1,8 @@
-#ifdef TARGET_ENGINEER
+#include "utils/tools/robot_specific_defines.hpp"
 
-#include "utils/common_types.hpp"
+#ifdef ALL_ENGINEERS
+
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
@@ -15,9 +17,9 @@
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 //
-#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 //
-#include "subsystems/slide/slide.hpp"
+#include "subsystems/slide/control/slide.hpp"
 #include "subsystems/slide/slide_control_command.hpp"
 #include "subsystems/slide/slide_go_to_command.hpp"
 #include "subsystems/slide/slide_hold_command.hpp"
@@ -28,8 +30,8 @@
 //
 #include "subsystems/grabber/suction_command.hpp"
 //
-#include "utils/display/client_display_command.hpp"
-#include "utils/display/client_display_subsystem.hpp"
+#include "subsystems/display/basic_commands/client_display_command.hpp"
+#include "subsystems/display/control/client_display_subsystem.hpp"
 
 using namespace src::Chassis;
 
@@ -73,11 +75,7 @@ WristControlCommand wristControlCommand(drivers(), &wrist);
 Suction_Command suctionCommand(drivers(), &grabber);
 
 // client display
-ClientDisplayCommand clientDisplayCommand(
-    *drivers(), 
-    drivers()->commandScheduler, 
-    clientDisplay
-);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
 // HoldCommandMapping rightSwitchDown(
@@ -89,10 +87,7 @@ ClientDisplayCommand clientDisplayCommand(
 //     drivers(),
 //     {&slideControlCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-PressCommandMapping bCtrlPressed(
-    drivers(), 
-    {&clientDisplayCommand}, 
-    RemoteMapState({Remote::Key::CTRL,Remote::Key::B}));
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
@@ -111,9 +106,8 @@ HoldCommandMapping rightSwitchDown(
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {/*&goToTestLocation*/&suctionCommand},
+    {/*&goToTestLocation*/ &suctionCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -153,8 +147,8 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp); //
-    drivers->commandMapper.addMap(&leftSwitchMid); //
+    drivers->commandMapper.addMap(&leftSwitchUp);   //
+    drivers->commandMapper.addMap(&leftSwitchMid);  //
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&rightSwitchDown);
 

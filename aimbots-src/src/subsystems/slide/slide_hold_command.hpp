@@ -2,11 +2,11 @@
 
 #include "tap/control/command.hpp"
 
-#include "utils/common_types.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "control/slide.hpp"
+#include "utils/tools/common_types.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
-#include "slide.hpp"
 
 #ifdef SLIDE_COMPATIBLE
 

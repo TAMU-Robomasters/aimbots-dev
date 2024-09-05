@@ -1,7 +1,7 @@
 #pragma once
 
-#include "informants/kinematic_informant.hpp"
-#include "utils/common_types.hpp"
+#include "informants/kinematics/kinematic_informant.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src {
 class Drivers;

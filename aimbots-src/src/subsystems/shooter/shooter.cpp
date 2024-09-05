@@ -5,7 +5,7 @@
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #ifdef SHOOTER_COMPATIBLE
 

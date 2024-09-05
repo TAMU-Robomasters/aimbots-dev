@@ -2,9 +2,9 @@
 
 #include "tap/algorithms/math_user_utils.hpp"
 
-#include "subsystems/gimbal/gimbal.hpp"
-#include "utils/common_types.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "utils/tools/common_types.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 

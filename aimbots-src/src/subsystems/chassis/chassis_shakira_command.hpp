@@ -1,7 +1,7 @@
 #pragma once
 
 #include "subsystems/chassis/chassis.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 
 #include "chassis_helper.hpp"
 #include "drivers.hpp"

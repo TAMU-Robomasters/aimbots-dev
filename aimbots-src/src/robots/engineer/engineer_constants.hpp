@@ -1,6 +1,6 @@
 #pragma once
-#include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
@@ -42,7 +42,7 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
-    
+
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 186.15
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 196.21

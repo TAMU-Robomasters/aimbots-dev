@@ -1,5 +1,5 @@
 #pragma once
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #ifdef REF_COMM_COMPATIBLE
 

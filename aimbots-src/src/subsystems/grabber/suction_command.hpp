@@ -3,7 +3,7 @@
 #include "tap/control/subsystem.hpp"
 
 #include "subsystems/grabber/grabber.hpp"
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "grabber.hpp"

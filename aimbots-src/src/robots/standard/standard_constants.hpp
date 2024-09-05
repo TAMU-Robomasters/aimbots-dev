@@ -1,6 +1,6 @@
 #pragma once
-#include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
@@ -72,7 +72,6 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2024 
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
 
 /**
  * @brief Position PID constants

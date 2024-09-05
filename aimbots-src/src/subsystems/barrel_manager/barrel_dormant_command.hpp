@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #include "barrel_manager.hpp"
 #include "drivers.hpp"

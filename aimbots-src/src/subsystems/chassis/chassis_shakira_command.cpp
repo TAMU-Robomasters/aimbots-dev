@@ -1,5 +1,5 @@
-#include "utils/ballistics_solver.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
@@ -111,5 +111,5 @@ void ChassisShakiraCommand::end(bool interrupted) { UNUSED(interrupted); }
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
-#endif //#ifdef GIMBAL_UNTETHERED
+#endif  //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef GIMBAL_UNTETHERED

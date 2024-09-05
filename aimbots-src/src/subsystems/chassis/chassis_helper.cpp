@@ -1,7 +1,7 @@
 #include "chassis_helper.hpp"
 
 #include "utils/math/random.hpp"
-#include "utils/robot_specific_inc.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
 
 #ifdef CHASSIS_COMPATIBLE
 

@@ -22,19 +22,19 @@ namespace utils::Jukebox {
  * and a mention of which measures are recorded in the code
  *
  * After defining the song, there are two more modifications needed to make it useable:
- * 1) Song Title: Go to common_types.hpp, and find the SongTitle enum.
+ * 1) Song Title: Go to tools/common_types.hpp, and find the SongTitle enum.
  *    Add a new entry at the bottom of the list with a short title for your song.
  * 2) Song Pointer: Go to the top of jukebox_player.cpp, and add a reference to your song in the songsList array,
  *    This should match the order that your song title is in the enum as well. (ie &insertNewSongHere)
  */
 
 // Default, don't do anything music
-Song NothingIsPlayingSong = {120, Q_N, {{REST, Q_N}, {REST, Q_N}, {END, Q_N}}};
+Song nothingIsPlayingSong = {120, Q_N, {{REST, Q_N}, {REST, Q_N}, {END, Q_N}}};
 
 // PacMan Theme
 
 static constexpr uint32_t PM_BPM = 120;
-Song PacManSong = {PM_BPM, Q_N, {{B4, S_N},   {B5, S_N},   {Gb5, S_N}, {Eb5, S_N}, {B5, S_N}, {REST, S_N}, {Eb5, S_N},
+Song pacManSong = {PM_BPM, Q_N, {{B4, S_N},   {B5, S_N},   {Gb5, S_N}, {Eb5, S_N}, {B5, S_N}, {REST, S_N}, {Eb5, S_N},
                                  {REST, S_N}, {C5, S_N},   {C6, S_N},  {G5, S_N},  {E5, S_N}, {C6, S_N},   {REST, S_N},
                                  {E5, S_N},   {REST, S_N},
 
@@ -47,8 +47,8 @@ Song PacManSong = {PM_BPM, Q_N, {{B4, S_N},   {B5, S_N},   {Gb5, S_N}, {Eb5, S_N
 
 // We Are Number One
 
-static constexpr uint32_t WeNum1_BPM = 168;
-Song WeAreNumberOneSong = {WeNum1_BPM, Q_N, {{F5, QH_N}, {C6, E_N},  {B5, S_N},  {C6, S_N},  {B5, S_N},  {C6, S_N},
+static constexpr uint32_t WENUM1_BPM = 168;
+Song weAreNumberOneSong = {WENUM1_BPM, Q_N, {{F5, QH_N}, {C6, E_N},  {B5, S_N},  {C6, S_N},  {B5, S_N},  {C6, S_N},
                                              {B5, E_N},  {C6, E_N},
 
                                              {Ab5, Q_N}, {F5, Q_N},  {F5, E_N},  {F5, E_N},  {Ab4, E_N}, {C6, E_N},
@@ -66,7 +66,7 @@ Song WeAreNumberOneSong = {WeNum1_BPM, Q_N, {{F5, QH_N}, {C6, E_N},  {B5, S_N}, 
 // Chainsaw Man Theme
 
 static constexpr uint32_t CHNSW_BPM = 175;
-Song ChainSawManSong = {CHNSW_BPM, Q_N, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {E5, E_N},  {Gb5, Q_N}, {A4, E_N},
+Song chainSawManSong = {CHNSW_BPM, Q_N, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {E5, E_N},  {Gb5, Q_N}, {A4, E_N},
 
                                          {A4, E_N},  {E5, QH_N},  {A4, Q_N},   {A4, Q_N},
 
@@ -91,7 +91,7 @@ Song ChainSawManSong = {CHNSW_BPM, Q_N, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {
 // Mystery Song (hmm...)
 
 static constexpr uint32_t MYST_BPM = 114;
-Song MysterySong = {MYST_BPM, Q_N, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
+Song mysterySong = {MYST_BPM, Q_N, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
 
                                     {E5, EH_N}, {E5, S_N}, {E5, E_N}, {D5, E_N}, {D5, Q_N}, {G4, S_N}, {A4, S_N},
                                     {C5, S_N},  {A4, S_N},
@@ -112,7 +112,7 @@ Song MysterySong = {MYST_BPM, Q_N, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
 // Crab Rave
 
 static constexpr uint32_t CRAB_BPM = 125;
-Song CrabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}, {D5, E_N},
+Song crabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}, {D5, E_N},
                                      {D6, S_N}, {A5, E_N},  {F5, E_N}, {F5, E_N},
 
                                      {D5, E_N}, {D6, S_N},  {A5, E_N}, {F5, E_N}, {F5, S_N},
@@ -127,7 +127,7 @@ Song CrabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}
 // Legend of Zelda Overworld Theme
 
 static constexpr uint32_t LOZ_BPM = 130;
-Song LegendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},   {A5, TE_N}, {A5, TE_N},
+Song legendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},   {A5, TE_N}, {A5, TE_N},
 
                                          {A5, TQ_N}, {G4, TE_N},   {A5, Q_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},
                                          {A5, TE_N}, {A5, TE_N},

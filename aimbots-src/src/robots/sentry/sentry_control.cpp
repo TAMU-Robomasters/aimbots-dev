@@ -1,10 +1,10 @@
-#include "utils/robot_specific_defines.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
 
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
-#include "utils/common_types.hpp"
+#include "informants/kinematics/robot_frames.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
@@ -16,28 +16,27 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "informants/calibrate_imu_command.hpp"
+#include "informants/imu/calibrate_imu_command.hpp"
 //
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/chassis/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/chassis_tokyo_command.hpp"
 //
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 #include "subsystems/feeder/dual_barrel_feeder_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/sentry_commands/sentry_match_firing_control_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
 //
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/gimbal/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
-#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
-#include "subsystems/gimbal/sentry_commands/sentry_match_gimbal_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/complex_commands/sentry_match_gimbal_control_command.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/brake_shooter_command.hpp"
 #include "subsystems/shooter/run_shooter_command.hpp"
@@ -45,10 +44,10 @@
 #include "subsystems/shooter/stop_shooter_command.hpp"
 #include "subsystems/shooter/stop_shooter_comprised_command.hpp"
 //
-#include "subsystems/hopper/close_hopper_command.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "subsystems/hopper/open_hopper_command.hpp"
-#include "subsystems/hopper/toggle_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
+#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
+#include "subsystems/hopper/control/hopper.cpp"
 //
 #include "informants/communication/communication_response_handler.hpp"
 #include "informants/communication/communication_response_subsytem.hpp"

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "drivers.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 
 using ::testing::NiceMock;
 

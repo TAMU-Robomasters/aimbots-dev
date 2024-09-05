@@ -1,7 +1,6 @@
 #pragma once
 
 #include "informants/pathfinding/Viz_Graph.h"
-#include "informants/pathfinding/graph.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
 #include "chassis.hpp"

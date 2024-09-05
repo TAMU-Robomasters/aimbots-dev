@@ -5,7 +5,7 @@
 #include "tap/algorithms/odometry/odometry_2d_interface.hpp"
 #include "tap/control/chassis/chassis_subsystem_interface.hpp"
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::Informants::Odometry {
 
