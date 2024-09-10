@@ -39,11 +39,11 @@
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
-#include "subsystems/shooter/brake_shooter_command.hpp"
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
+#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
+#include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
 //
 #include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
 #include "subsystems/hopper/basic_commands/open_hopper_command.hpp"

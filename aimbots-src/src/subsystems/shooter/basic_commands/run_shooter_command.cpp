@@ -1,4 +1,4 @@
-#include "subsystems/shooter/run_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
 
 #include "tap/communication/gpio/leds.hpp"
 #include "tap/control/subsystem.hpp"

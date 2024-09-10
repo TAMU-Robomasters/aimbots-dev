@@ -11,9 +11,9 @@
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
+#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
 //
 #include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
 
