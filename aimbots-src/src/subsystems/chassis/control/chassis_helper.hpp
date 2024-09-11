@@ -1,7 +1,7 @@
 #pragma once
 
 #include <drivers.hpp>
-#include <subsystems/chassis/chassis.hpp>
+#include <subsystems/chassis/control/chassis.hpp>
 
 #ifdef CHASSIS_COMPATIBLE
 

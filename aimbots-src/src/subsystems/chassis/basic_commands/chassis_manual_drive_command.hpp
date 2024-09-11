@@ -1,7 +1,7 @@
 #pragma once
 
 #include "drivers.hpp"
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 #include "tap/control/command.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_inc.hpp"

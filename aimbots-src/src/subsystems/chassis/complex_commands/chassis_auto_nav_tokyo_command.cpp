@@ -1,6 +1,6 @@
 #include "chassis_auto_nav_tokyo_command.hpp"
 
-#include "chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 
 #ifdef CHASSIS_COMPATIBLE
 

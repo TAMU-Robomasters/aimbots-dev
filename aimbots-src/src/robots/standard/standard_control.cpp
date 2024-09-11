@@ -19,12 +19,12 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_auto_nav_command.hpp"
-#include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"

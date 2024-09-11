@@ -4,7 +4,7 @@
 #include <gmock/gmock.h>
 
 #include "drivers.hpp"
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 
 namespace src::mock {
 class chassisSubsystemMock : public src::Chassis::ChassisSubsystem {

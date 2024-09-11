@@ -1,4 +1,4 @@
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 
 #include "tap/communication/gpio/leds.hpp"
 

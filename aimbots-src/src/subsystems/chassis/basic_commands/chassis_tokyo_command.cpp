@@ -1,18 +1,17 @@
 #include "utils/tools/robot_specific_inc.hpp"
 #ifdef GIMBAL_UNTETHERED
-
 #ifdef CHASSIS_COMPATIBLE
 
-#include <subsystems/chassis/chassis_helper.hpp>
+#include <subsystems/chassis/control/chassis_helper.hpp>
 
-#include "chassis_helper.hpp"
-#include "chassis_kansei_command.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
+#include "chassis_tokyo_command.hpp"
 
 #warning "tokyo compatible"
 
 namespace src::Chassis {
 
-ChassisKanseiCommand::ChassisKanseiCommand(
+ChassisTokyoCommand::ChassisTokyoCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
     src::Gimbal::GimbalSubsystem* gimbal,
@@ -31,7 +30,7 @@ ChassisKanseiCommand::ChassisKanseiCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisKanseiCommand::initialize() {
+void ChassisTokyoCommand::initialize() {
     // picks a random direction to begin rotation
     if (spinDirectionOverride != 0) {
         rotationDirection = spinDirectionOverride > 0 ? 1 : -1;
@@ -40,13 +39,14 @@ void ChassisKanseiCommand::initialize() {
     }
 
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
-
+    
     if (randomizeSpinRate) {
         spinRateModifierTimer.restart(0);
     }
 }
 
-void ChassisKanseiCommand::execute() {
+void ChassisTokyoCommand::execute() {
+    chassis->setTokyoDrift(true);
     float desiredX = 0.0f;
     float desiredY = 0.0f;
     float desiredRotation = 0.0f;
@@ -100,17 +100,16 @@ void ChassisKanseiCommand::execute() {
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
-void ChassisKanseiCommand::end(bool interrupted) {
+void ChassisTokyoCommand::end(bool interrupted) {
     UNUSED(interrupted);
     chassis->setTargetRPMs(0.0f, 0.0f, 0.0f);
 }
 
-bool ChassisKanseiCommand::isReady() { return true; }
+bool ChassisTokyoCommand::isReady() { return true; }
 
-bool ChassisKanseiCommand::isFinished() const { return false; }
+bool ChassisTokyoCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
 #endif //#ifdef CHASSIS_COMPATIBLE
-
-#endif // #ifdef GIMBAL_UNTETHERED
+#endif //#ifdef GIMBAL_UNTETHERED

@@ -4,8 +4,8 @@
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
 
-#include "subsystems/chassis/chassis_helper.hpp"
-#include "subsystems/chassis/chassis_shakira_command.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
+#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 
 namespace src::Chassis {
 

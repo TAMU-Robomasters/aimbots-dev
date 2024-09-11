@@ -2,7 +2,7 @@
 
 #include "tap/control/command.hpp"
 
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 
 #include "drivers.hpp"
 

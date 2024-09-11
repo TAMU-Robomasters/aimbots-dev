@@ -1,6 +1,6 @@
 #include "chassis_manual_drive_command.hpp"
 
-#include "subsystems/chassis/chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 
 #ifdef CHASSIS_COMPATIBLE
 

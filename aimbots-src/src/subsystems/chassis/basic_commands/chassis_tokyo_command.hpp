@@ -2,12 +2,12 @@
 
 #include "tap/algorithms/ramp.hpp"
 
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_inc.hpp"
 
-#include "chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 #include "drivers.hpp"
 
 #ifdef GIMBAL_UNTETHERED
@@ -15,9 +15,9 @@
 
 namespace src::Chassis {
 
-class ChassisKanseiCommand : public TapCommand {
+class ChassisTokyoCommand : public TapCommand {
 public:
-    ChassisKanseiCommand(
+    ChassisTokyoCommand(
         src::Drivers*,
         ChassisSubsystem*,
         src::Gimbal::GimbalSubsystem*,
@@ -61,5 +61,3 @@ private:
 
 #endif //#ifdef CHASSIS_COMPATIBLE
 #endif //#ifdef GIMBAL_UNTETHERED
-
-

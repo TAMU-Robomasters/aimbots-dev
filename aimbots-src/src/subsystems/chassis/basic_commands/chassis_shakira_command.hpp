@@ -1,9 +1,9 @@
 #pragma once
 
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 
-#include "chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 #include "drivers.hpp"
 
 #ifdef CHASSIS_COMPATIBLE

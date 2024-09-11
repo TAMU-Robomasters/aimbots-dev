@@ -14,8 +14,8 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 //
 #include "subsystems/gimbal/control/gimbal.hpp"
 //

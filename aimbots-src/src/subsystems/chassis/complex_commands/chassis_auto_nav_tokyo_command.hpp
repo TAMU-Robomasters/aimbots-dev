@@ -3,8 +3,8 @@
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 
-#include "chassis.hpp"
-#include "chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 #include "drivers.hpp"
 
 #ifdef CHASSIS_COMPATIBLE
