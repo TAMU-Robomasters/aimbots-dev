@@ -18,9 +18,9 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
           SmoothPID(PITCH_VELOCITY_PID_CONFIG),
           SmoothPID(ROLL_VELOCITY_PID_CONFIG)} {}
 
-void WristSubsystem::initialize() { ForAllWristMotors(&DJIMotor::initialize); }
+void WristSubsystem::initialize() { forAllWristMotors(&DJIMotor::initialize); }
 
-void WristSubsystem::refresh() { ForAllWristMotors(&WristSubsystem::setDesiredOutputToMotor); }
+void WristSubsystem::refresh() { forAllWristMotors(&WristSubsystem::setDesiredOutputToMotor); }
 
 void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
     // TODO: not implemented at the moment
@@ -31,11 +31,11 @@ void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
 
 void WristSubsystem::updateAllPIDs() {
     // if (motor_control_setting == VELOCITY) {
-    //     ForAllWristMotors(&WristSubsystem::updateMotorPID_velocity);
+    //     forAllWristMotors(&WristSubsystem::updateMotorPIDVelocity);
     // } else if (motor_control_setting == POSITION) {
-    //     ForAllWristMotors(&WristSubsystem::updateMotorPID);
+    //     forAllWristMotors(&WristSubsystem::updateMotorPID);
     // }
-    ForAllWristMotors(&WristSubsystem::updateMotorPID);
+    forAllWristMotors(&WristSubsystem::updateMotorPID);
 }
 
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
@@ -46,7 +46,7 @@ void WristSubsystem::updateMotorPID(MotorIndex idx) {
     desiredMotorOutputs[idx] = output;
 }
 
-void WristSubsystem::updateMotorPID_velocity(MotorIndex idx) {
+void WristSubsystem::updateMotorPIDVelocity(MotorIndex idx) {
     float motorRpm = getMotorRPM(idx);
     float rpm_error = targetRPMs[idx] - motorRpm;
     float output = velocityPIDs[idx].runControllerDerivateError(rpm_error);

@@ -34,12 +34,12 @@ public:
     }
 
     template <class... Args>
-    void ForAllWristMotors(DJIMotorFunc<Args...> func, Args... args) {
+    void forAllWristMotors(DJIMotorFunc<Args...> func, Args... args) {
         for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++) (motors[i].*func)(args...);
     }
 
     template <class... Args>
-    void ForAllWristMotors(WristFunc<MotorIndex, Args...> wristFunc, Args... args) {
+    void forAllWristMotors(WristFunc<MotorIndex, Args...> wristFunc, Args... args) {
         for (size_t i = 0; i < WRIST_MOTOR_COUNT; i++) {
             auto mi = static_cast<MotorIndex>(i);
             (this->*wristFunc)(mi, args...);
@@ -97,11 +97,11 @@ private:
 
     MotorControlMode motor_control_setting = VELOCITY;
 
-    // Update motor PIDs to reach target angle. Don't call alongside updateMotorPID_velocity
+    // Update motor PIDs to reach target angle. Don't call alongside updateMotorPIDVelocity
     void updateMotorPID(MotorIndex);
 
     // Update motor PIDs to reach target velocity. Don't call alongside updateMotorPID!
-    void updateMotorPID_velocity(MotorIndex);
+    void updateMotorPIDVelocity(MotorIndex);
 
     DJIMotor buildMotor(MotorIndex idx) {
         return DJIMotor(drivers, WRIST_MOTOR_IDS[idx], WRIST_BUS, WRIST_MOTOR_DIRECTIONS[idx], WRIST_MOTOR_NAMES[idx]);
