@@ -1,7 +1,7 @@
 #pragma once
 
+#include "communicators/devboard/turret_can_communicator.hpp"
 #include "informants/kinematics/kinematic_informant.hpp"
-#include "informants/turret-comms/turret_can_communicator.hpp"
 #include "subsystems/chassis/chassis.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"

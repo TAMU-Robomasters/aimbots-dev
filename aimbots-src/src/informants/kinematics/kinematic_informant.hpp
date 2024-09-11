@@ -4,12 +4,13 @@
 
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
+#include "communicators/jetson/jetson_communicator.hpp"
 #include "informants/odometry/chassis_kf_odometry.hpp"
-#include "informants/vision/jetson_communicator.hpp"
+#include "utils/kinematics/kinematic_state_vector.hpp"
+#include "utils/tools/common_types.hpp"
+
 #include "robot_frames.hpp"
 #include "turret_frames.hpp"
-#include "utils/tools/common_types.hpp"
-#include "utils/kinematics/kinematic_state_vector.hpp"
 
 namespace src {
 class Drivers;

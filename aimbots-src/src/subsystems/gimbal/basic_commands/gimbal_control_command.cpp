@@ -3,12 +3,11 @@
 #include <tap/architecture/clock.hpp>
 #include <tap/communication/gpio/leds.hpp>
 
-#include "informants/vision/jetson_communicator.hpp"
-#include "informants/vision/jetson_protocol.hpp"
+#include "communicators/jetson/jetson_communicator.hpp"
+#include "communicators/jetson/jetson_protocol.hpp"
 
 #include "drivers.hpp"
 #ifdef GIMBAL_COMPATIBLE
-
 
 namespace src::Gimbal {
 
