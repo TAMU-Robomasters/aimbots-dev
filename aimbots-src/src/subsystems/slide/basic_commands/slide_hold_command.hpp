@@ -2,7 +2,7 @@
 
 #include "tap/control/command.hpp"
 
-#include "control/slide.hpp"
+#include "subsystems/slide/control/slide.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_inc.hpp"
 
@@ -12,9 +12,9 @@
 
 namespace src::Slide {
 
-class SlideGoToCommand : public TapCommand {
+class SlideHoldCommand : public TapCommand {
 public:
-    SlideGoToCommand(Drivers*, SlideSubsystem*, float targetX, float targetZ);
+    SlideHoldCommand(Drivers*, SlideSubsystem*);
 
     void initialize() override;
     void end(bool interrupted) override;
@@ -23,12 +23,11 @@ public:
 
     bool isReady() override;
     bool isFinished() const override;
-    const char* getName() const override { return "slide go to command"; };
+    const char* getName() const override { return "slide hold position command"; };
 
 private:
     Drivers* drivers;
     SlideSubsystem* slide;
-    float targetX, targetZ;
 };
 
 };  // namespace src::Slide

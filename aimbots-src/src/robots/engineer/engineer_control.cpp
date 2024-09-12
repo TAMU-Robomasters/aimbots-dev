@@ -20,9 +20,9 @@
 #include "subsystems/gimbal/control/gimbal.hpp"
 //
 #include "subsystems/slide/control/slide.hpp"
-#include "subsystems/slide/slide_control_command.hpp"
-#include "subsystems/slide/slide_go_to_command.hpp"
-#include "subsystems/slide/slide_hold_command.hpp"
+#include "subsystems/slide/basic_commands/slide_control_command.hpp"
+#include "subsystems/slide/basic_commands/slide_go_to_command.hpp"
+#include "subsystems/slide/basic_commands/slide_hold_command.hpp"
 //
 #include "subsystems/wrist/wrist.hpp"
 #include "subsystems/wrist/wrist_control_command.hpp"
