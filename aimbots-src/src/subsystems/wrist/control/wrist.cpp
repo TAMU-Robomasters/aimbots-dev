@@ -1,4 +1,4 @@
-#include "subsystems/wrist/wrist.hpp"
+#include "subsystems/wrist/control/wrist.hpp"
 
 #include "utils/tools/common_types.hpp"
 

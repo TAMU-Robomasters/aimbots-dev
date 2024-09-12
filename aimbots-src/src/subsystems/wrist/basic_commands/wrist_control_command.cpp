@@ -1,4 +1,4 @@
-#include "subsystems/wrist/wrist_control_command.hpp"
+#include "subsystems/wrist/basic_commands/wrist_control_command.hpp"
 
 #ifdef WRIST_COMPATIBLE
 

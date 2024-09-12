@@ -24,9 +24,9 @@
 #include "subsystems/slide/basic_commands/slide_go_to_command.hpp"
 #include "subsystems/slide/basic_commands/slide_hold_command.hpp"
 //
-#include "subsystems/wrist/wrist.hpp"
-#include "subsystems/wrist/wrist_control_command.hpp"
-#include "subsystems/wrist/wrist_move_command.hpp"
+#include "subsystems/wrist/control/wrist.hpp"
+#include "subsystems/wrist/basic_commands/wrist_control_command.hpp"
+#include "subsystems/wrist/basic_commands/wrist_move_command.hpp"
 //
 #include "subsystems/grabber/suction_command.hpp"
 //

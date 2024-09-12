@@ -2,7 +2,7 @@
 
 #include "tap/control/subsystem.hpp"
 
-#include "subsystems/wrist/wrist.hpp"
+#include "subsystems/wrist/control/wrist.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_inc.hpp"
 
@@ -13,9 +13,9 @@
 using namespace src::Utils::motion;
 
 namespace src::Wrist {
-class WristMoveCommand : public TapCommand {
+class WristControlCommand : public TapCommand {
 public:
-    WristMoveCommand(src::Drivers* drivers, WristSubsystem* wrist, float yaw, float pitch, float roll);
+    WristControlCommand(src::Drivers* drivers, WristSubsystem* wrist);
 
     void initialize() override;
     void execute() override;
@@ -23,12 +23,17 @@ public:
 
     bool isReady() override { return true; };
     bool isFinished() const override { return false; };
-    const char* getName() const override { return "move wrist command"; }
+    const char* getName() const override { return "control wrist command"; }
 
 private:
     src::Drivers* drivers;
     WristSubsystem* wrist;
-    float yaw, pitch, roll;
+
+    float yawTarget = 0;
+    float pitchTarget = 0;
+    float rollTarget = 0;
+
+    MilliTimeout joystickReadDelay;
 };
 
 };      // namespace src::Wrist
