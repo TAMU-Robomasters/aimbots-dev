@@ -18,16 +18,16 @@
 //
 #include "informants/imu/calibrate_imu_command.hpp"
 //
-#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
+#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/complex_commands/sentry_match_firing_control_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
-#include "subsystems/feeder/dual_barrel_feeder_command.hpp"
-#include "subsystems/feeder/sentry_commands/sentry_match_firing_control_command.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
@@ -40,17 +40,14 @@
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
 #include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
-#include "subsystems/shooter/control/shooter.hpp"
 #include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
 #include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
 #include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
 #include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
-#include "subsystems/hopper/control/hopper.cpp"
-//
-#include "informants/communication/communication_response_handler.hpp"
-#include "informants/communication/communication_response_subsytem.hpp"
+#include "subsystems/hopper/control/hopper.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;

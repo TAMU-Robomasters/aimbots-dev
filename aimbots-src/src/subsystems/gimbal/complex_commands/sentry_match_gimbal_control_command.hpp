@@ -4,8 +4,9 @@
 
 #ifdef ALL_SENTRIES
 
-#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
+#include "subsystems/chassis/complex_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/tools/common_types.hpp"
 

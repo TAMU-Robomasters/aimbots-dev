@@ -14,21 +14,21 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/gimbal/control/gimbal.hpp"
 //
-#include "subsystems/slide/control/slide.hpp"
 #include "subsystems/slide/basic_commands/slide_control_command.hpp"
 #include "subsystems/slide/basic_commands/slide_go_to_command.hpp"
 #include "subsystems/slide/basic_commands/slide_hold_command.hpp"
+#include "subsystems/slide/control/slide.hpp"
 //
-#include "subsystems/wrist/control/wrist.hpp"
 #include "subsystems/wrist/basic_commands/wrist_control_command.hpp"
 #include "subsystems/wrist/basic_commands/wrist_move_command.hpp"
+#include "subsystems/wrist/control/wrist.hpp"
 //
-#include "subsystems/grabber/suction_command.hpp"
+#include "subsystems/grabber/basic_commands/suction_command.hpp"
 //
 #include "subsystems/display/basic_commands/client_display_command.hpp"
 #include "subsystems/display/control/client_display_subsystem.hpp"

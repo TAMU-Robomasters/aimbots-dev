@@ -1,4 +1,4 @@
-#include "subsystems/grabber/suction_command.hpp"
+#include "suction_command.hpp"
 
 #ifdef GRABBER_COMPATIBLE
 

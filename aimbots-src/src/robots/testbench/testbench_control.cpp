@@ -17,11 +17,11 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
@@ -35,14 +35,14 @@
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
 #include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
-#include "subsystems/shooter/control/shooter.hpp"
 #include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
 #include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
 #include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
 #include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
-#include "subsystems/hopper/control/hopper.cpp"
+#include "subsystems/hopper/control/hopper.hpp"
 //
 #include "subsystems/gui/gui_display.hpp"
 #include "subsystems/gui/gui_display_command.hpp"

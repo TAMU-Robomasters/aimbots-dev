@@ -9,7 +9,7 @@
 #include <subsystems/gimbal/control/gimbal.hpp>
 #include <tap/control/command.hpp>
 
-#include "subsystems/chassis/sentry_commands/sentry_match_chassis_control_command.hpp"
+#include "subsystems/chassis/complex_commands/sentry_match_chassis_control_command.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 

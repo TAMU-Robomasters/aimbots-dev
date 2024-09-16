@@ -1,4 +1,4 @@
-#include "subsystems/grabber/grabber.hpp"
+#include "grabber.hpp"
 
 #include "tap/communication/gpio/pwm.hpp"
 
@@ -18,7 +18,6 @@
  * GrabberSubsystem::initialize()
  */
 namespace src::Grabber {
-
 
 GrabberSubsystem::GrabberSubsystem(tap::Drivers* drivers) : Subsystem(drivers), pwm(&drivers->pwm) {}
 
