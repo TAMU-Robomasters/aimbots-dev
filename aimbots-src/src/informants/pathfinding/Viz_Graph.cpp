@@ -1,4 +1,4 @@
-#include "Viz_Graph.h"
+#include "viz_graph.h"
 
 #include <algorithm>
 #include <cmath>

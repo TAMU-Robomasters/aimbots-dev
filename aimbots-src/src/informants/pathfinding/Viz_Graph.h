@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "A_star.h"
-#include "Point.h"
+#include "a_star.h"
+#include "point.h"
 using std::vector;
 
 class VizGraph {

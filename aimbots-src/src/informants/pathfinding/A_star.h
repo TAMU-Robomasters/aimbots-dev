@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "prioQueue.h"
+#include "prio_queue.h"
 using std::unordered_map, std::vector;
 template <typename NodeType>
 class AStar {

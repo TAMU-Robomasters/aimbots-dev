@@ -1,11 +1,8 @@
-#include "informants/limit_switch.hpp"
+#include "limit_switch.hpp"
 
 namespace src::Informants {
 
-LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge)
-    : rxPin(rxPin),
-      counter(0),
-      edge(edge){};
+LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge) : rxPin(rxPin), counter(0), edge(edge){};
 
 void LimitSwitch::initialize() {  // awesome
     C6::configure(modm::platform::Gpio::InputType::PullDown);
@@ -56,12 +53,8 @@ bool LimitSwitch::isFalling() const {
     return (currSwitchState == LimitSwitchState::RELEASED) && (prevSwitchState == LimitSwitchState::PRESSED);
 }
 
-bool LimitSwitch::isStateChanged() const {
-    return (currSwitchState != prevSwitchState);
-}
+bool LimitSwitch::isStateChanged() const { return (currSwitchState != prevSwitchState); }
 
-int LimitSwitch::getCurrentCount() const {
-    return counter;
-}
+int LimitSwitch::getCurrentCount() const { return counter; }
 
 }  // namespace src::Informants

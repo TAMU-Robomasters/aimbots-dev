@@ -1,10 +1,10 @@
 #pragma once
 
-#include "informants/pathfinding/Viz_Graph.h"
-#include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
-
+#include "informants/pathfinding/viz_graph.h"
 #include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/chassis/control/chassis_helper.hpp"
+#include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
+
 #include "drivers.hpp"
 
 #ifdef CHASSIS_COMPATIBLE

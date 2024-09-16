@@ -4,7 +4,7 @@
 #include <tap/util_macros.hpp>
 #include <utils/tools/common_types.hpp>
 
-#include "informants/enemy_data_conversion.hpp"
+#include "informants/kinematics/enemy_data_conversion.hpp"
 
 #include "jetson_protocol.hpp"
 
