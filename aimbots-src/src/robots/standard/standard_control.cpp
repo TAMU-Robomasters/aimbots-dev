@@ -53,9 +53,6 @@
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
-// #include "informants/communication/communication_response_handler.hpp"
-// #include "informants/communication/communication_response_subsytem.hpp"
-//
 #include "utils/display/client_display_command.hpp"
 #include "utils/display/client_display_subsystem.hpp"
 //
@@ -66,8 +63,6 @@ using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-// using namespace src::Communication;
-// using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
@@ -123,12 +118,6 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 
-// Command Flags ----------------------------
-bool barrelMovingFlag = true;
-bool barrelCaliDoneFlag = false;
-
-// CommunicationResponseSubsytem response(*drivers());
-
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
@@ -138,147 +127,9 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 
 // Define behavior configs here --------------------------------------------
 
-SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = 2,
-    .snapAngle = modm::toRadian(0.0f),
-};
-
-TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
-    .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,  // 0.75
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
-    .rotationalSpeedIncrement = 30.0f,
-};
-
-SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
-    .maxSpinRateModifier = 1.0f,
-    .minSpinRateModifierDuration = 500,
-    .maxSpinRateModifierDuration = 3000,
-};
-
 // Define commands here ---------------------------------------------------
 
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(
-    drivers(),
-    &chassis,
-    &gimbal,
-    defaultSnapConfig,
-    defaultTokyoConfig,
-    false,
-    randomizerConfig);
-
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
-
-ChassisAutoNavCommand chassisAutoNavCommand(
-    drivers(),
-    &chassis,
-    defaultLinearConfig,
-    defaultRotationConfig,
-    defaultSnapConfig);
-
-ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
-    drivers(),
-    &chassis,
-    defaultLinearConfig,
-    defaultTokyoConfig,
-    false,
-    randomizerConfig);
-
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalToggleAimCommand gimbalToggleAimCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0],
-    modm::toRadian(30.0f));
-
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
-
-RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
-StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
-OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
-CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
-ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
-
-// CommunicationResponseHandler responseHandler(*drivers());
-
-// client display
-ClientDisplayCommand clientDisplayCommand(
-    *drivers(), 
-    drivers()->commandScheduler, 
-    clientDisplay
-);
-
 // Define command mappings here -------------------------------------------
-HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-// Enables both chassis and gimbal control and closes hopper
-HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&openHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
-// Runs shooter only and closes hopper
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand, &toggleHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
-
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-// The user can press b+ctrl when the remote right switch is in the down position to restart the
-// client display command. This is necessary since we don't know when the robot is connected to the
-// server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(
-    drivers(), 
-    {&clientDisplayCommand}, 
-    RemoteMapState({Remote::Key::CTRL,Remote::Key::B}));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -301,14 +152,11 @@ void initializeSubsystems() {
     shooter.initialize();
     hopper.initialize();
     // response.initialize();
-    clientDisplay.initialize();
+    // clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
-    shooter.setDefaultCommand(&stopShooterComprisedCommand);
-}
+void setDefaultCommands(src::Drivers *) {}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -317,22 +165,10 @@ void startupCommands(src::Drivers *drivers) {
     // TODO: Possibly add some sort of hardware test command
     //       that will move all the parts so we
     //       can make sure they're fully operational.
-    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
-    drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-}
+void registerIOMappings(src::Drivers *drivers) {}
 
 }  // namespace StandardControl
 
