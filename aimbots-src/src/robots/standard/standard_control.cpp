@@ -128,8 +128,47 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 // Define behavior configs here --------------------------------------------
 
 // Define commands here ---------------------------------------------------
+FullAutoFeederCommand fullAutoFeederCommand(
+    drivers(),
+    &feeder,
+    &refHelper,
+    0,
+    300
+);
+
+RunShooterCommand runShooterCommand(
+    drivers(),
+    &shooter,
+    &refHelper
+);
+
+RunShooterCommand runShooterCommandTwo(
+    drivers(),
+    &shooter,
+    &refHelper
+);
+
+StopFeederCommand stopFeederCommand(
+    drivers(),
+    &feeder
+);
+
+StopShooterComprisedCommand stopShooterComprisedCommand (
+    drivers(),
+    &shooter
+);
 
 // Define command mappings here -------------------------------------------
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&fullAutoFeederCommand, &runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP)
+);
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommandTwo},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID)
+);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -156,7 +195,10 @@ void initializeSubsystems() {
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {}
+void setDefaultCommands(src::Drivers *) {
+    feeder.setDefaultCommand(&stopFeederCommand);
+    shooter.setDefaultCommand(&stopShooterComprisedCommand);
+}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -168,8 +210,10 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {}
-
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
+}
 }  // namespace StandardControl
 
 namespace src::Control {
