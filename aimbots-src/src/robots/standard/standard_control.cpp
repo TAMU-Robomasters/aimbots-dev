@@ -85,11 +85,16 @@ using namespace src::Utils::ClientDisplay;
     Feeder ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
 
+    
+
     Hopper ------------------------------------------------------------
     Toggle Hopper Position: C
 
     UI ----------------------------------------------------------------
 */
+
+
+
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -129,9 +134,76 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 
 // Define behavior configs here --------------------------------------------
 
+
+
 // Define commands here ---------------------------------------------------
 
+FullAutoFeederCommand fullAutoFeederCommand(
+    drivers(),
+    &feeder,        // Reference feeder subsystem for use-- sends balls to ballpath from hopper
+    &refHelper,     // Acesses refree system
+    0,              // Projectile buffer -- Allowable barrel heat
+    300             // Unjam timer (ms)
+    )
+{}
+
+RunShooterCommand runShooterCommandUp(
+    drivers(),
+    &shooter,
+    &refHelper,
+
+)
+
+RunShooterCommand runShooterCommandMid(
+    drivers(),
+    &shooter,
+    &refHelper,
+
+)
+
+StopFeederCommand stopFeederCommand(
+    drivers(),
+    &shooter   
+){}
+
+ChassisToggleDriveCommand
+
+
+
+
 // Define command mappings here -------------------------------------------
+
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&fullAutoFeederCommand, &runShooterCommandUp},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP)
+){}
+
+HoldCommandMapping rightSwitchMid(
+        drivers(),
+        {&runShooterCommandMid, &stopFeederCommand},  // Run shooter when Right Switch is MID
+        RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID)
+);
+
+HoldCommandMapping rightSwitchDown(
+        drivers(),
+        {&stopShooterCommand, &stopFeederCommand},  // Stop shooter and feeder when Right Switch is DOWN
+        RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN)
+);
+
+// StopCommandMapping stopSwitch(
+//     drivers(),
+//     {&stopFeederCommand}
+// ){}
+
+
+// HoldCommandMapping leftSwitch(
+//         drivers(),
+//         {},
+//         RemoteMapState(Remote::Switch::LEFT_SWITCH)
+// );
+
+
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
