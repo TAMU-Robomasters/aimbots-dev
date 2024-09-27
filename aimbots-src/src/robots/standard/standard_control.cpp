@@ -304,6 +304,8 @@ void initializeSubsystems() {
     clientDisplay.initialize();
 }
 
+
+
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);

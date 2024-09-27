@@ -47,8 +47,8 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 
 #elif defined(TARGET_STANDARD_SQUIRTLE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(254.75f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-110.64f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(135.75f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(217.00f))};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 #endif
@@ -72,7 +72,6 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2024 
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
 
 /**
  * @brief Position PID constants
