@@ -5,7 +5,7 @@
 #include "tap/algorithms/odometry/odometry_2d_interface.hpp"
 #include "tap/control/chassis/chassis_subsystem_interface.hpp"
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::Informants::Odometry {
 
@@ -26,6 +26,8 @@ public:
     void update(float chassisYaw, float xChassisAccel, float yChassisAccel);
 
     void reset();
+
+    void resetAtNewLocation(float newXPos = 0.0f, float newYPos = 0.0f);
 
 private:
     float initialXPos;

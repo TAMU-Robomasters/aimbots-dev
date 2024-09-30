@@ -1,11 +1,12 @@
 #pragma once
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
 #define SHOOTER_COMPATIBLE
 #define FEEDER_COMPATIBLE
+#define HOPPER_LID_COMPATIBLE
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
@@ -37,7 +38,7 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(42.58f))};  // 198.2
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -55,7 +56,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-6.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-2.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -207,9 +208,9 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
+    .kp = 15.0f,  // 40
     .ki = 0.0f,
-    .kd = 0.8f,
+    .kd = 0.8f,  // 0.01
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -237,21 +238,43 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
-// clang-format off
+// clang-format off;
 // Sentry shoots at the speed of death
 static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;
+static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 19;
-static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
+static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 10;
+static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {2550.0f};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 static constexpr int DEFAULT_BURST_LENGTH = 10;  // total balls in burst
+
+// Hopper constants
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+
+static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
+
+static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
+static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
+
+static constexpr float HOPPER_MIN_ANGLE = 0.0f;
+static constexpr float HOPPER_MAX_ANGLE = 270.0f;
+
+static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
+
+static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -263,10 +286,7 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-
-//
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
+static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
@@ -278,15 +298,13 @@ static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = true;
-
-static constexpr bool FEEDER_DIRECTION = false;
 // Mechanical chassis constants, all in m
 /**
  * Radius of the wheels (m).
  */
 static constexpr float WHEEL_RADIUS = 0.07663f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f;  // updated for 2023
+static constexpr float WHEELBASE_WIDTH = 0.357f;
 
 static constexpr float WHEELBASE_LENGTH = 0.357f;
 
@@ -356,29 +374,31 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
  * @brief Transformation Matrices, specific to robot
  */
 // clang-format off
+
+// Updated for 2024 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    0.0002f, // x
-    0.04894f, // y
-    0.084879f,  // z
+    -0.001498f, // x //-0.017473 //-0.013f  //-0.001498,
+    0.171927f, // y  //0.171927 //0.1755f  //0.171927f,
+    -0.046239f,  // z  //0.046239 //-0.044f  //-0.046239f
 };
 
-static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
+static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
 
-static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
+static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{ // not used
     -2.830f, // x
     -0.730f, // y
     0.0f, // z
 };
 
-//0.04301 how far apart barrels are
+//0.04341 how far apart barrels are
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    0.01785f - (0.5f * 0.04301f), //x = 0.04498
-    0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00018f, //z = 0.01683
+    0.0f, // x //0.015727 - (0.5f * 0.04341f)
+    0.0f, // y //This doesn't matter, is infinitely long for ballistics purposes
+    -0.011049f, // z //-0.011049f
 };
 // clang-format on
 

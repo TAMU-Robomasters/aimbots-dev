@@ -2,8 +2,8 @@
 
 #include <optional>
 
-#include "utils/common_types.hpp"
-#include "utils/kinematic_state_vector.hpp"
+#include "utils/tools/common_types.hpp"
+#include "utils/kinematics/kinematic_state_vector.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
 using namespace src::Utils::MatrixHelper;

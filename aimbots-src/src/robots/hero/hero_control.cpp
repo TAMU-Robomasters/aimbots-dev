@@ -1,13 +1,15 @@
-#ifdef TARGET_HERO
+#include "utils/tools/robot_specific_defines.hpp"
 
-#include "utils/common_types.hpp"
+#if defined(ALL_HEROES)
+
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
 
 //
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
+#include "informants/kinematics/robot_frames.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
@@ -17,48 +19,41 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
-#include "subsystems/feeder/auto_agitator_indexer_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/indexer/burst_indexer_command.hpp"
-#include "subsystems/indexer/full_auto_indexer_command.hpp"
-#include "subsystems/indexer/indexer.hpp"
-#include "subsystems/indexer/stop_indexer_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
+#include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
+#include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
-#include "subsystems/shooter/brake_shooter_command.hpp"
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
-//
-#include "informants/communication/communication_response_handler.hpp"
-#include "informants/communication/communication_response_subsytem.hpp"
-//
-// #include "utils/display/client_display_command.hpp"
-// #include "utils/display/client_display_subsystem.hpp"
+#include "subsystems/display/basic_commands/client_display_command.hpp"
+#include "subsystems/display/control/client_display_subsystem.hpp"
 //
 
 using namespace src::Chassis;
 using namespace src::Feeder;
-using namespace src::Indexer;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
-// using namespace src::Utils::ClientDisplay;
+using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -80,12 +75,12 @@ using namespace src::Shooter;
 
     Shooter -----------------------------------------------------------
 
-    Feeder/Indexer ------------------------------------------------------------
+    Feeder ------------------------------------------------------------
     Full Auto Shooting: Left Mouse Button
     Force Reload: B
 
     UI ----------------------------------------------------------------
-
+    Force Update: Ctrl + B
 
 */
 
@@ -111,17 +106,18 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 FeederSubsystem feeder(drivers());
-IndexerSubsystem indexer(drivers(), INDEXER_ID, INDEX_BUS, INDEXER_DIRECTION, INDEXER_VELOCITY_PID_CONFIG);
 GimbalSubsystem gimbal(drivers());
-// ClientDisplaySubsystem clientDisplay(*drivers());
+ClientDisplaySubsystem clientDisplay(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
+// Ballistics Solver ---------------------------------------------------------
+src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
-//Define behavior configs here -----------------------------------------------
+// Define behavior configs here -----------------------------------------------
 
 SnapSymmetryConfig defaultSnapConfig = {
     .numSnapPositions = CHASSIS_SNAP_POSITIONS,
@@ -147,9 +143,10 @@ SpinRandomizerConfig randomizerConfig = {
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 
-ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), 
-    &chassis, 
-    &gimbal, 
+ChassisToggleDriveCommand chassisToggleDriveCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
     defaultSnapConfig,
     defaultTokyoConfig,
     false,
@@ -160,59 +157,86 @@ GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRela
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 1, UNJAM_TIMER_MS);
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
-
-FullAutoIndexerCommand runIndexerCommand(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-FullAutoIndexerCommand runIndexerCommandFromMouse(drivers(), &indexer, &refHelper, INDEXER_DEFAULT_RPM, 0.50f);
-StopIndexerCommand stopIndexerCommand(drivers(), &indexer);
-
-AutoAgitatorIndexerCommand feederIndexerCommand(
+GimbalChaseCommand gimbalChaseCommand(
     drivers(),
-    &feeder,
-    &indexer,
+    &gimbal,
+    &gimbalFieldRelativeController,
     &refHelper,
-    FEEDER_DEFAULT_RPM,
-    INDEXER_DEFAULT_RPM,
-    0.5f,
-    UNJAM_TIMER_MS,
-    1);
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalChaseCommand gimbalChaseCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalToggleAimCommand gimbalToggleAimCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+GimbalToggleAimCommand gimbalToggleAimCommand2(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    SHOOTER_SPEED_MATRIX[0][0]);
+
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
+FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
+ClientDisplayCommand clientDisplayCommand(
+    *drivers(),
+    drivers()->commandScheduler,
+    clientDisplay
+    // chassis
+);
+
 // Define command mappings here -------------------------------------------
+// Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand, &feederIndexerCommand},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables both chassis and gimbal control and closes hopper
+// Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalToggleAimCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// HoldCommandMapping rightSwitchDown(
+//     drivers(),
+//     {&feederlimitcommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand},
+    {/*&feederlimitcommand,*/ &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runIndexerCommand, &runShooterWithFeederCommand},
+    {&runFeederCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
-// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 HoldCommandMapping leftClickMouse(
     drivers(),
-    {&runFeederCommandFromMouse, &runIndexerCommandFromMouse},
+    {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
@@ -222,8 +246,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&response);
-    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
-    drivers->commandScheduler.registerSubsystem(&indexer);
+    drivers->commandScheduler.registerSubsystem(&clientDisplay);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -232,24 +255,24 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     feeder.initialize();
-    indexer.initialize();
     gimbal.initialize();
     shooter.initialize();
     // response.initialize();
-    // clientDisplay.initialize();
+    clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    indexer.setDefaultCommand(&stopIndexerCommand);
+    // feeder.setDefaultCommand(&feederLimitCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
+    UNUSED(drivers);
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 
     // test
     //  no startup commands should be set
@@ -265,10 +288,9 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&bCtrlPressed);
     drivers->commandMapper.addMap(&leftClickMouse);
 }
-
 }  // namespace HeroControl
 
 namespace src::Control {

@@ -1,0 +1,34 @@
+#pragma once
+
+#include "tap/control/subsystem.hpp"
+
+#include "subsystems/grabber/control/grabber.hpp"
+#include "utils/tools/common_types.hpp"
+
+#include "drivers.hpp"
+
+#ifdef GRABBER_COMPATIBLE
+
+namespace src::Grabber {
+
+class Suction_Command : public TapCommand {
+public:
+    Suction_Command(tap::Drivers* drivers, GrabberSubsystem* grabber);
+    void initialize() override;
+
+    void execute() override;
+    void end(bool interrupted) override;
+    bool isReady() override;
+
+    bool isFinished() const override;
+
+    const char* getName() const override { return "suction command"; }
+
+private:
+    tap::Drivers* drivers;
+    GrabberSubsystem* grabber;
+};
+
+}  // namespace src::Grabber
+
+#endif  //#ifdef GRABBER_COMPATIBLE

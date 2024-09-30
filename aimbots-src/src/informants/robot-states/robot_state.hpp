@@ -2,7 +2,7 @@
 
 #ifdef REF_COMM_COMPATIBLE
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::RobotStates {
 enum Team { RED = 0, BLUE = 1 };

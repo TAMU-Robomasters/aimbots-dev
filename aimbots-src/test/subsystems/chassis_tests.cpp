@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "drivers.hpp"
-#include "subsystems/chassis/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 
 using ::testing::NiceMock;
 

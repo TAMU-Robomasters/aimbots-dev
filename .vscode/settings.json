@@ -108,7 +108,11 @@
     "xhash": "cpp",
     "xstring": "cpp",
     "xtree": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "strstream": "cpp",
+    "cfenv": "cpp",
+    "typeindex": "cpp",
+    "*.ipp": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,

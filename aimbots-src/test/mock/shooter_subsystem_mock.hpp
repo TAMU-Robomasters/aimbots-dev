@@ -1,6 +1,6 @@
 #include <gmock/gmock.h>
 
-#include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 
 #include "drivers.hpp"
 

@@ -17,6 +17,17 @@ static constexpr float INPUT_Y_INC = 0.003f;
 static constexpr float INPUT_XY_STOP_INC = 0.03f;
 static constexpr float INPUT_R_INC = 0.003f;
 
+static constexpr float INPUT_WRIST_YAW_INC = 0.003f;
+static constexpr float INPUT_WRIST_PITCH_INC = 0.003f;
+static constexpr float INPUT_WRIST_ROLL_INC = 0.003f;
+
+static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.006f;
+static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.006f;
+static constexpr float INPUT_SLIDE_STOP_INC = 0.06f;
+
+static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
@@ -39,6 +50,7 @@ namespace src::Control {
 float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+
     lastXInputCallTime = currTime;
 
     if (prevUpdateCounterX != updateCounter) {
@@ -116,13 +128,127 @@ float OperatorInterface::getChassisRotationInput() {
 
     float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
 
-    float finalRotation = limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    float finalRotation =
+        limitVal<float>(chassisRotationInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
     finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
 
     chassisRotationRamp.setTarget(finalRotation);
 
     chassisRotationRamp.update(INPUT_R_INC);
     return chassisRotationRamp.getValue();
+}
+
+float OperatorInterface::getWristYawInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastWristYawInputCallTime = currTime;
+
+    if (prevUpdateCounterWristYaw != updateCounter) {
+        wristYawInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+        prevUpdateCounterWristYaw = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+
+    float finalRotation = limitVal<float>(wristYawInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    wristYawRotationRamp.setTarget(finalRotation);
+
+    wristYawRotationRamp.update(INPUT_WRIST_YAW_INC);
+    return wristYawRotationRamp.getValue();
+}
+
+float OperatorInterface::getWristPitchInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastWristPitchInputCallTime = currTime;
+
+    if (prevUpdateCounterWristPitch != updateCounter) {
+        wristPitchInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_HORIZONTAL), currTime);
+        prevUpdateCounterWristPitch = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+
+    float finalRotation = limitVal<float>(wristPitchInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    wristPitchRotationRamp.setTarget(finalRotation);
+
+    wristPitchRotationRamp.update(INPUT_WRIST_PITCH_INC);
+    return wristPitchRotationRamp.getValue();
+}
+
+float OperatorInterface::getWristRollInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastWristRollInputCallTime = currTime;
+
+    if (prevUpdateCounterWristRoll != updateCounter) {
+        wristRollInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
+        prevUpdateCounterWristRoll = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::Z) - drivers->remote.keyPressed(Remote::Key::X);
+
+    float finalRotation = limitVal<float>(wristRollInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    wristRollRotationRamp.setTarget(finalRotation);
+
+    wristRollRotationRamp.update(INPUT_WRIST_ROLL_INC);
+    return wristRollRotationRamp.getValue();
+}
+
+float OperatorInterface::getSlideUpDownInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideUpDownInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideUpDown != updateCounter) {
+        slideUpDownInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+        prevUpdateCounterSlideUpDown = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::R) - drivers->remote.keyPressed(Remote::Key::F);
+
+    float finalRotation = limitVal<float>(slideUpDownInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideUpDownRamp.setTarget(finalRotation);
+
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideUpDownRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
+
+    return /*slideUpDownRamp.getValue()*/ finalRotation * ZAXIS_JOYSTICK_INPUT_SENSITIVITY;
+}
+
+float OperatorInterface::getSlideFrontBackInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideFrontBackInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideFrontBack != updateCounter) {
+        slideFrontBackInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
+        prevUpdateCounterSlideFrontBack = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::C) - drivers->remote.keyPressed(Remote::Key::V);
+
+    float finalRotation = limitVal<float>(slideFrontBackInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideFrontBackRamp.setTarget(finalRotation);
+
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideFrontBackRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
+
+    return /*slideFrontBackRamp.getValue() */ finalRotation * XAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 int16_t mouseXDisplay = 0;
@@ -132,12 +258,8 @@ float OperatorInterface::getGimbalYawInput() {
     // mouseXDisplay = drivers->remote.getMouseX();
     mouseXDisplay = mouseXFilter.getValue();
 
-
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseXFilter.getValue(),
-               -MOUSE_YAW_MAX,
-               MOUSE_YAW_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
                YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
@@ -145,11 +267,9 @@ float OperatorInterface::getGimbalPitchInput() {
     mouseYFilter.update(-drivers->remote.getMouseY());
     mouseYDisplay = mouseYFilter.getValue();
 
+    // mouseYDisplay = drivers->remote.getMouseY();
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseYFilter.getValue(),
-               -MOUSE_PITCH_MAX,
-               MOUSE_PITCH_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 

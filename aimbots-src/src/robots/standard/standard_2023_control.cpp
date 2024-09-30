@@ -1,13 +1,13 @@
 #ifdef TARGET_STANDARD_2023
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
 
 //
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
+#include "informants/kinematics/robot_frames.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
@@ -17,37 +17,36 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_auto_nav_command.hpp"
-#include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
-#include "subsystems/feeder/barrel_swapping_feeder_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/gimbal/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
-#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
-#include "subsystems/shooter/brake_shooter_command.hpp"
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
+#include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
-#include "subsystems/hopper/close_hopper_command.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "subsystems/hopper/open_hopper_command.hpp"
-#include "subsystems/hopper/toggle_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
+#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
+#include "subsystems/hopper/control/hopper.hpp"
 //
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
@@ -55,8 +54,8 @@
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
 //
-#include "utils/display/client_display_command.hpp"
-#include "utils/display/client_display_subsystem.hpp"
+#include "subsystems/display/basic_commands/client_display_command.hpp"
+#include "subsystems/display/control/client_display_subsystem.hpp"
 //
 
 using namespace src::Chassis;
@@ -168,12 +167,6 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
-};
-
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -202,7 +195,6 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -228,32 +220,9 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    2,
-    UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 2, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 2, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
@@ -269,9 +238,6 @@ CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // CommunicationResponseHandler responseHandler(*drivers());
-
-// client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -328,7 +294,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&hopper);
     // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
@@ -341,7 +307,7 @@ void initializeSubsystems() {
     hopper.initialize();
     // barrelManager.initialize();
     // response.initialize();
-    clientDisplay.initialize();
+    // clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------

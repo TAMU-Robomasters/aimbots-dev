@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "drivers.hpp"
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 
 using ::testing::NiceMock;
 TEST(shooter, TEST_CALCULATE_FLYWHEEL) {

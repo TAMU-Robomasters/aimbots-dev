@@ -1,13 +1,15 @@
-#ifdef TARGET_STANDARD
+#include "utils/tools/robot_specific_defines.hpp"
 
-#include "utils/common_types.hpp"
+#if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023)
+
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
 
 //
-#include "informants/transformers/robot_frames.hpp"
-#include "utils/ballistics_solver.hpp"
+#include "informants/kinematics/robot_frames.hpp"
+#include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
@@ -17,37 +19,36 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/chassis.hpp"
-#include "subsystems/chassis/chassis_auto_nav_command.hpp"
-#include "subsystems/chassis/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 //
-#include "subsystems/feeder/barrel_swapping_feeder_command.hpp"
-#include "subsystems/feeder/feeder.hpp"
-#include "subsystems/feeder/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
-#include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
-#include "subsystems/gimbal/gimbal.hpp"
-#include "subsystems/gimbal/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/gimbal_control_command.hpp"
-#include "subsystems/gimbal/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/gimbal_toggle_aiming_command.hpp"
-#include "subsystems/gimbal/sentry_commands/gimbal_patrol_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
+#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
-#include "subsystems/shooter/brake_shooter_command.hpp"
-#include "subsystems/shooter/run_shooter_command.hpp"
-#include "subsystems/shooter/shooter.hpp"
-#include "subsystems/shooter/stop_shooter_command.hpp"
-#include "subsystems/shooter/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
+#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
+#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
+#include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
 //
-#include "subsystems/hopper/close_hopper_command.hpp"
-#include "subsystems/hopper/hopper.hpp"
-#include "subsystems/hopper/open_hopper_command.hpp"
-#include "subsystems/hopper/toggle_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
+#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
+#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
+#include "subsystems/hopper/control/hopper.hpp"
 //
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
@@ -55,8 +56,8 @@
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
 //
-#include "utils/display/client_display_command.hpp"
-#include "utils/display/client_display_subsystem.hpp"
+#include "subsystems/display/basic_commands/client_display_command.hpp"
+#include "subsystems/display/control/client_display_subsystem.hpp"
 //
 
 using namespace src::Chassis;
@@ -144,7 +145,7 @@ SnapSymmetryConfig defaultSnapConfig = {
 TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 0.6f,
     .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
+    .rotationalSpeedFractionOfMax = 0.75f,  // 0.75
     .rotationalSpeedMultiplierWhenTranslating = 0.7f,
     .rotationalSpeedIncrement = 30.0f,
 };
@@ -154,12 +155,6 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifier = 1.0f,
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
-};
-
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
 };
 
 // Define commands here ---------------------------------------------------
@@ -173,6 +168,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
 ChassisAutoNavCommand chassisAutoNavCommand(
@@ -190,7 +186,6 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -214,17 +209,11 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+    SHOOTER_SPEED_MATRIX[0][0],
+    modm::toRadian(30.0f));
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    2,
-    UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
@@ -241,18 +230,18 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
+ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, /*&chassisAutoNavTokyoCommand,*/ &gimbalChaseCommand2},
+    {&chassisTokyoCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -281,13 +270,7 @@ HoldCommandMapping leftClickMouse(
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
 // server and thus don't know when to start sending the initial HUD graphics.
-// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::B}));
-
-// This is the command for starting up the GUI.  Uncomment once subsystem does something more useful.
-/*PressCommandMapping ctrlC(
-    drivers(),
-    {&guiDisplayCommand},
-    RemoteMapState({Remote::Key::CTRL, Remote::Key::C}));*/
+PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -327,7 +310,8 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
@@ -338,7 +322,8 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
     drivers->commandMapper.addMap(&leftClickMouse);
-    // drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
 }  // namespace StandardControl
@@ -353,7 +338,5 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
     StandardControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
-
-// temp
 
 #endif  // TARGET_STANDARD

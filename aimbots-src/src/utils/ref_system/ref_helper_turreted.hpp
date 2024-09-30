@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "projectile_launch_speed_predictor.hpp"
 #include "ref_helper_interface.hpp"
@@ -41,6 +41,7 @@ public:
     bool canCurrBarrelShootSafely();
     bool canSpecificBarrelShootSafely(BarrelID barrelID);
     uint8_t getRemainingProjectiles();
+    uint64_t getAllowableFeederRotation(int projectileBuffer);
 
     uint16_t getCurrBarrelHeat() {
         auto& turretData = drivers->refSerial.getRobotData().turret;

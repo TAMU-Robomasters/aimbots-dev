@@ -2,8 +2,8 @@
 
 #include "informants/odometry/chassis_kf_odometry.hpp"
 #include "modm/math/geometry/location_2d.hpp"
-#include "subsystems/chassis/chassis_helper.hpp"
-#include "utils/common_types.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::Chassis::AutoNav {
 

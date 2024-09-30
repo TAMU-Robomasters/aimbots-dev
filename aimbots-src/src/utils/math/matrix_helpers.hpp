@@ -6,7 +6,7 @@
 #include "tap/algorithms/cmsis_mat.hpp"
 
 #include "modm/math/geometry/location_2d.hpp"
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 using Matrix3f_CMSIS = tap::algorithms::CMSISMat<3, 3>;
 namespace src::Utils::MatrixHelper {
@@ -34,7 +34,7 @@ inline Matrix3f rotationMatrix(float angle, LinearAxis axis, AngleUnit unit) {
     float c = cosf(angle);
     float s = sinf(angle);
     // clang-format off
-    float rotation_array[9] = {
+    float rotationArray[9] = {
         1.0f, 0.0f, 0.0f, 
         0.0f, 1.0f, 0.0f, 
         0.0f, 0.0f, 1.0f};
@@ -44,9 +44,9 @@ inline Matrix3f rotationMatrix(float angle, LinearAxis axis, AngleUnit unit) {
             // Create X-axis rotation matrix
             // In ground robots this is the "roll" and does not exist
             // clang-format off
-             rotation_array[0] = 1.0f; rotation_array[1] = 0.0f; rotation_array[2] = 0.0f;
-             rotation_array[3] = 0.0f; rotation_array[4] = c; rotation_array[5] = -s;
-             rotation_array[6] = 0.0f; rotation_array[7] = s; rotation_array[8] = c;
+             rotationArray[0] = 1.0f; rotationArray[1] = 0.0f; rotationArray[2] = 0.0f;
+             rotationArray[3] = 0.0f; rotationArray[4] = c; rotationArray[5] = -s;
+             rotationArray[6] = 0.0f; rotationArray[7] = s; rotationArray[8] = c;
             // clang-format on
             break;
         }
@@ -54,9 +54,9 @@ inline Matrix3f rotationMatrix(float angle, LinearAxis axis, AngleUnit unit) {
             // Create Y-Axis Rotation Matrix
             // In ground robots this is the "pitch"
             // clang-format off
-            rotation_array[0] = c;    rotation_array[1] = 0.0f; rotation_array[2] = s;
-            rotation_array[3] = 0.0f; rotation_array[4] = 1.0;  rotation_array[5] = 0.0f;
-            rotation_array[6] = -s;   rotation_array[7] = 0.0f; rotation_array[8] = c;
+            rotationArray[0] = c;    rotationArray[1] = 0.0f; rotationArray[2] = s;
+            rotationArray[3] = 0.0f; rotationArray[4] = 1.0;  rotationArray[5] = 0.0f;
+            rotationArray[6] = -s;   rotationArray[7] = 0.0f; rotationArray[8] = c;
             // clang-format on
             break;
         }
@@ -64,14 +64,14 @@ inline Matrix3f rotationMatrix(float angle, LinearAxis axis, AngleUnit unit) {
             // Creates a Z-Axis rotation matrix
             // In Ground robots and sentry this is "yaw"
             // clang-format off
-            rotation_array[0] = c;    rotation_array[1] = -s;   rotation_array[2] = 0.0f;
-            rotation_array[3] = s;    rotation_array[4] = c;    rotation_array[5] = 0.0f;
-            rotation_array[6] = 0.0f; rotation_array[7] = 0.0f; rotation_array[8] = 1.0f;
+            rotationArray[0] = c;    rotationArray[1] = -s;   rotationArray[2] = 0.0f;
+            rotationArray[3] = s;    rotationArray[4] = c;    rotationArray[5] = 0.0f;
+            rotationArray[6] = 0.0f; rotationArray[7] = 0.0f; rotationArray[8] = 1.0f;
             // clang-format on
             break;
         }
     }
-    return Matrix3f(rotation_array);
+    return Matrix3f(rotationArray);
 }
 
 // war crimes

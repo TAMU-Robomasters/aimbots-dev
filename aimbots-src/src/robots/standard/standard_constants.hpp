@@ -1,6 +1,6 @@
 #pragma once
-#include "utils/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
@@ -12,9 +12,6 @@
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
 static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
-
-static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
-static constexpr uint8_t FEEDER_GEAR_RATIO = 36;
 
 /**
  * @brief Defines the number of motors created for the chassis.
@@ -32,34 +29,49 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
+static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
+
+#if defined(TARGET_STANDARD_BLASTOISE)
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(309.199f)};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
+
+#elif defined(TARGET_STANDARD_WARTORTLE)
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(84.73f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(180.0f))};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
+
+#elif defined(TARGET_STANDARD_SQUIRTLE)
+/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(254.75f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-110.64f))};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
+#endif
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-315.39f))};
+
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2023 Standard
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Standard
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
-
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(102.20f))};
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Standard
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2024 Standard
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
-
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-16.5f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(45.0f);
-// LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
  * @brief Position PID constants
@@ -249,7 +261,7 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
     18,
     4850,
     30,
-    7050};
+    7150};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -267,10 +279,16 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
 //
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR7;
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
+static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 10;
+static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {4150};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
@@ -279,7 +297,7 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr bool FEEDER_DIRECTION = false;
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -292,8 +310,8 @@ static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
 static constexpr float HOPPER_MIN_ANGLE = 0.0f;
 static constexpr float HOPPER_MAX_ANGLE = 270.0f;
 
-static constexpr float HOPPER_OPEN_ANGLE = 10.0f;
-static constexpr float HOPPER_CLOSED_ANGLE = 80.0f;
+static constexpr float HOPPER_OPEN_ANGLE = 33.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 77.0f;
 
 static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
 
@@ -381,7 +399,7 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     -0.001727f, //x = 0.04498
     0.0f, //y - does not matter too much because projectile comes out this axis
-    -0.00587f, //z = 0.01683
+    0.00587f, //z = 0.01683
 };
 // clang-format on
 

@@ -1,10 +1,12 @@
-#if defined(TARGET_STANDARD) || defined(TARGET_1V1_STANDARD) || defined(TARGET_STANDARD_2023)
-#include "standard_control_interface.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
+#if defined(ALL_STANDARDS)
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
+
+#include "standard_control_interface.hpp"
 
 using namespace tap::communication::serial;
 using namespace tap::algorithms;
@@ -143,7 +145,7 @@ float OperatorInterface::getGimbalPitchInput() {
     mouseYFilter.update(-drivers->remote.getMouseY());
     mouseYDisplay = mouseYFilter.getValue();
 
-    //mouseYDisplay = drivers->remote.getMouseY();
+    // mouseYDisplay = drivers->remote.getMouseY();
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
            static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;

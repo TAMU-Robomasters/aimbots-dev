@@ -6,7 +6,7 @@
 
 #include "informants/communication/communication_message.hpp"
 // #include "informants/communication/communication_response_handler.hpp"
-// #include "utils/common_types.hpp"
+// #include "utils/tools/common_types.hpp"
 #include "tap/control/subsystem.hpp"
 
 #include "informants/communication/communication_response_handler.hpp"

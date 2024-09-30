@@ -3,12 +3,13 @@
 
 #include <gmock/gmock.h>
 
+#include "subsystems/feeder/control/feeder.hpp"
+
 #include "drivers.hpp"
-#include "subsystems/feeder/feeder.hpp"
 
 namespace src::mock {
 class feeder_test : public src::Feeder::FeederSubsystem {
-   public:
+public:
     feeder_test(src::Drivers *drivers);
     virtual ~feeder_test();
 

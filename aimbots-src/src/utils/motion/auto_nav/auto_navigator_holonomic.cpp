@@ -1,6 +1,6 @@
 #include "auto_navigator_holonomic.hpp"
 
-#include "subsystems/chassis/chassis_helper.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 
 namespace src::Chassis::AutoNav {
 

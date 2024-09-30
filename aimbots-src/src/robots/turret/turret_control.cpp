@@ -1,6 +1,6 @@
 #ifdef TARGET_TURRET
 
-#include "utils/common_types.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"

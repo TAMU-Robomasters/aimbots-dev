@@ -101,8 +101,8 @@ int main() {
 
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
-            // currHeat = drivers->refSerial.getRobotData().turret.heat42;
-            // currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit42;
+            currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
+            currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
         }
         // every 2ms...
@@ -118,9 +118,12 @@ int main() {
             }*/
 
             // comms
+            drivers->hitTracker.getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             drivers->musicPlayer.playMusic();
+            drivers->hitTracker.getHitAngle_gimbalRelative();
+
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
@@ -139,6 +142,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->can.initialize();
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
+    drivers->hitTracker.initalize();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
@@ -165,6 +169,8 @@ static void initializeIo(src::Drivers *drivers) {
 float yawDisplay, pitchDisplay, rollDisplay;
 float gXDisplay, gYDisplay, gZDisplay;
 float aXDisplay, aYDisplay, aZDisplay;
+float hitDisplay;
+bool wasHit, recentlyHit;
 tap::communication::sensors::imu::ImuInterface::ImuState imuStatus;
 
 static void updateIo(src::Drivers *drivers) {
@@ -189,9 +195,11 @@ static void updateIo(src::Drivers *drivers) {
     // utils::Music::continuePlayingXPStartupTune(drivers);
 
     // imuStatus = drivers->kinematicInformant.getIMUState();
+    // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS,
+    // AngleUnit::Degrees);
 
-    // yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS,
-    // AngleUnit::Degrees); pitchDisplay =
+    yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+    // pitchDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
     // rollDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
@@ -205,6 +213,9 @@ static void updateIo(src::Drivers *drivers) {
     // gXDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS,
     //     AngleUnit::Radians);
+    hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
+    wasHit = drivers->hitTracker.wasHit();
+    recentlyHit = drivers->hitTracker.recentlyHit();
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

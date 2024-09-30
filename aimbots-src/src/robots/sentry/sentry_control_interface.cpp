@@ -1,10 +1,14 @@
-#ifdef TARGET_SENTRY
-#include "sentry_control_interface.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
-#include "subsystems/gimbal/gimbal.hpp"
+#if defined(ALL_SENTRIES)
+
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
+
+#include "subsystems/gimbal/control/gimbal.hpp"
+
+#include "sentry_control_interface.hpp"
 
 using namespace tap::communication::serial;
 using namespace tap::algorithms;
@@ -109,12 +113,8 @@ float OperatorInterface::getGimbalYawInput() {
     // mouseXDisplay = drivers->remote.getMouseX();
     // mouseXDisplay = mouseXFilter.getValue();
 
-
     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseXFilter.getValue(),
-               -MOUSE_YAW_MAX,
-               MOUSE_YAW_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
                YAW_MOUSE_INPUT_SENSITIVITY;
 }
 
@@ -123,10 +123,7 @@ float OperatorInterface::getGimbalPitchInput() {
     // mouseYDisplay = mouseYFilter.getValue();
 
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(
-               mouseYFilter.getValue(),
-               -MOUSE_PITCH_MAX,
-               MOUSE_PITCH_MAX)) *
+           static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
                PITCH_MOUSE_INPUT_SENSITIVITY;
 }
 

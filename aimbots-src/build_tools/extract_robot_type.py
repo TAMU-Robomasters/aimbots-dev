@@ -18,17 +18,16 @@
 from SCons.Script import *
 
 ROBOT_TYPE_FILE     = "robot-type/robot_type.hpp"
-VALID_ROBOT_TYPES   = [ "TARGET_STANDARD",
-                        "TARGET_SWERVE_STANDARD",
-                        "TARGET_AERIAL",
-                        "TARGET_ENGINEER",
-                        "TARGET_SWERVE_ENGINEER",
-                        "TARGET_SENTRY",
-                        "TARGET_HERO",
-                        "TARGET_CVTESTBENCH",
-                        "TARGET_TURRET",
-                        "TARGET_1V1_STANDARD",
-                        "TARGET_STANDARD_2023" ]
+VALID_ROBOT_TYPES   = [ "STANDARD_2023",
+                        "STANDARD_BLASTOISE",
+                        "STANDARD_WARTORTLE",
+                        "STANDARD_SQUIRTLE",
+                        "AERIAL",
+                        "ENGINEER",
+                        "SENTRY",
+                        "HERO",
+                        "CVTESTBENCH",
+                        "TURRET" ]
 
 def get_robot_type():
     robot_type = ARGUMENTS.get("robot")
@@ -43,4 +42,4 @@ def get_robot_type():
     if robot_type not in VALID_ROBOT_TYPES:
         raise Exception(f"\n\n{robot_type} is not one of the valid robot types: {VALID_ROBOT_TYPES}\n\n")
 
-    return robot_type
+    return "TARGET_" + robot_type
