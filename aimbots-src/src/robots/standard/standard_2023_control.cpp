@@ -30,8 +30,8 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
@@ -167,12 +167,6 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
-};
-
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -201,7 +195,6 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -227,32 +220,9 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, 2, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    2,
-    UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 2, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 2, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommand(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
-BarrelSwappingFeederCommand runDoubleBarrelFeederCommandFromMouse(
-    drivers(),
-    &feeder,
-    &refHelper,
-    barrelMovingFlag,
-    FEEDER_DEFAULT_RPM,
-    3000.0f,
-    UNJAM_TIMER_MS);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
@@ -268,9 +238,6 @@ CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // CommunicationResponseHandler responseHandler(*drivers());
-
-// client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay, /*&hopper,*/ chassis);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
@@ -327,7 +294,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&hopper);
     // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
+    // drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
@@ -340,7 +307,7 @@ void initializeSubsystems() {
     hopper.initialize();
     // barrelManager.initialize();
     // response.initialize();
-    clientDisplay.initialize();
+    // clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
