@@ -9,9 +9,11 @@ The comprehensive controls library for Texas A&M Robomaster Robotics; the premie
 
 ### Toolchain/Library Installation
 
-All setup guides are covered by the Taproot wiki. Select the guide appropriate for the platform you are using.
+Setup is derived from the following guides within the Taproot wiki. Select the guide appropriate for the platform you are using.
 
-**Note**: You will not be able to download the ST-Link driver. For TAMU RM members, you need to download Ozone and the respective J-Link drivers. We use exclusively J-Link's for live debugging and flashing of code to our main control boards.
+**Note**: ***You will not be able to download the ST-Link driver***. For TAMU RM members, you need to download Ozone and the respective J-Link drivers. We use exclusively J-Link's for live debugging and flashing of code to our main control boards.
+
+**Second Note** You will not be able to install ClangFormat Version 10. This will be fixed in the future but your code should still be able to compile without issue
 
 - Debian/Ubuntu: <https://gitlab.com/aruw/controls/taproot/-/wikis/Debian-Linux-Setup>
 - macOS: <https://gitlab.com/aruw/controls/taproot/-/wikis/macOS-Setup>
@@ -19,7 +21,7 @@ All setup guides are covered by the Taproot wiki. Select the guide appropriate f
 
 After installing all the required toolchains listed in the above guides as well as updating PATH variables, you will clone this repository. You can do this through VSCode, or by running:
 
-`git clone https://github.com/TAMU-Robomasters/aimbots-dev.git`
+`git clone https://github.com/TAMU-Robomasters/aimbots-dev`
 
 Be sure you clone the repository into a sensible place on your computer (ie. not Downloads or in your OneDrive)
 
@@ -30,11 +32,9 @@ Pipenv is a Python tool that creates a virtual environment as well as manages pa
 Run:
 
 ```bash
-
 pip3 install pipenv
-cd path/to/head/of/project
+cd path/to/repo/aimbots-dev
 pipenv install
-
 ```
 
 This will install all necessary python packages that will assist in building code
