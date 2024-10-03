@@ -279,7 +279,7 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS2;
 
 //
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR1};
@@ -291,11 +291,11 @@ static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
 //
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
 //
 
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 

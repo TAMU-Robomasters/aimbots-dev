@@ -1,7 +1,6 @@
 #pragma once
 
 #include "tap/control/subsystem.hpp"
-
 #include "subsystems/shooter/control/shooter.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"

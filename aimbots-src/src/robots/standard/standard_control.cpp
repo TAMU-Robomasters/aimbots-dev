@@ -215,12 +215,49 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+RunShooterCommand runShooterCommand1(
+    drivers(),
+    &shooter);
+RunShooterCommand runShooterCommand2(
+    drivers(),
+    &shooter);
+StopShooterCommand stopShooterCommand(
+    drivers(),
+    &shooter);
+StopFeederCommand stopFeederCommand1(
+    drivers(),
+    &feeder);
+StopFeederCommand stopFeederCommand2(
+    drivers(),
+    &feeder);
+    
+FullAutoFeederCommand fullAutoFeederCommand(
+    drivers(),
+    &feeder);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
 ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
+
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&fullAutoFeederCommand, &runShooterCommand1},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    
+
+
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&runShooterCommand2, &stopFeederCommand1},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&stopShooterCommand, &stopFeederCommand2},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -229,7 +266,6 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
-
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
@@ -261,8 +297,11 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {}
-
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchDown);
+}
 }  // namespace StandardControl
 
 namespace src::Control {
