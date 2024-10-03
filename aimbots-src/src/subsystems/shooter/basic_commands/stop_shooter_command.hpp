@@ -1,4 +1,3 @@
-#pragma once
 
 #include "tap/control/subsystem.hpp"
 
