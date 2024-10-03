@@ -9,7 +9,7 @@
 #define HOPPER_LID_COMPATIBLE
 
 // #define TURRET_HAS_IMU
-#define GIMBAL_UNTETHERED
+#define GIMBAL_UNTETHERED //
 
 static constexpr SongTitle STARTUP_SONG = SongTitle::WE_ARE_NUMBER_ONE;
 
@@ -59,6 +59,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-2.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
+
 
 /**
  * @brief Position PID constants
@@ -148,6 +149,7 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
 
 static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
@@ -319,6 +321,12 @@ static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 15.0f;
 
+//
+//
+// REFACTOR TODO CHKPT
+//
+//
+
 /**
  * @brief Power constants for chassis
  */
@@ -423,30 +431,3 @@ static constexpr float PITCH_PATROL_AMPLITUDE = modm::toRadian(12.5f);
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
-
-// Sentry Chassis Travel Waypoints
-static constexpr int NUMBER_OF_WAYPOINTS = 5;
-
-enum waypointName { SENTRY_START = 0, SOUTHEAST_CORRIDOR, EAST_MIDLINE, NORTHEAST_CORRIDOR, BUFF_POINT };
-
-static const Vector<float, 2> SENTRY_WAYPOINTS[NUMBER_OF_WAYPOINTS] = {
-    {CHASSIS_START_POSITION_RELATIVE_TO_WORLD[0], CHASSIS_START_POSITION_RELATIVE_TO_WORLD[1]},  // Starting Location
-    {-2.50f, -1.75f},  // North-East of starting location
-    {-2.50f, 0.0f},    // Midline on East side of field
-    {-2.50f, 1.75f},   // Just past midline of the field, can shoot at enemy reload zone
-    {0.0f, 0.0f}};     // Central Buff Zone
-
-static const std::array<waypointName, 3> SETUP_TO_AGGRO = {
-    waypointName::SENTRY_START,
-    waypointName::SOUTHEAST_CORRIDOR,
-    waypointName::NORTHEAST_CORRIDOR};
-
-static const std::array<waypointName, 3> AGGRO_TO_CAPTURE = {
-    waypointName::NORTHEAST_CORRIDOR,
-    waypointName::EAST_MIDLINE,
-    waypointName::BUFF_POINT};
-
-static const std::array<waypointName, 3> CAPTURE_TO_AGGRO = {
-    waypointName::BUFF_POINT,
-    waypointName::EAST_MIDLINE,
-    waypointName::NORTHEAST_CORRIDOR};
