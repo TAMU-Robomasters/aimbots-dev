@@ -281,8 +281,8 @@ static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0.5;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36, 36};
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, false};
 //
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
