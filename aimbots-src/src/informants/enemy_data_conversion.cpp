@@ -166,9 +166,9 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(totalForwardProjectionTime);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(dt/MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(dt/MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(dt/MICROSECONDS_PER_SECOND);  // dt / MICROSECONDS_PER_SECOND
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
@@ -176,12 +176,10 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     targetPositionYFutureDisplay = yPlate.getX();
     targetVelocityYFutureDisplay = yPlate.getY();
-
     targetAccelerationYFutureDisplay = yPlate.getZ();
 
     targetPositionZFutureDisplay = zPlate.getX();
     targetVelocityZFutureDisplay = zPlate.getY();
-
     targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
