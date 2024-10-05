@@ -156,6 +156,26 @@ SpinRandomizerConfig randomizerConfig = {
 
 // Define commands here ---------------------------------------------------
 
+RunShooterCommand runShooterCommand(
+    drivers(),
+    &shooter
+);
+
+StopShooterCommand stopShooterCommand(
+    drivers(),
+    &shooter
+);
+
+FullAutoFeederCommand fullAutoFeederCommand(
+    drivers(),
+    &feeder
+);
+
+StopFeederCommand stopFeederCommand(
+    drivers(),
+    &feeder
+);
+
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
@@ -222,6 +242,13 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 
 // Define command mappings here -------------------------------------------
 
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&fullAutoFeederCommand, &runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN)
+);
+
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
@@ -246,7 +273,10 @@ void initializeSubsystems() {
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {}
+void setDefaultCommands(src::Drivers *) {
+    feeder.setDefaultCommand(&stopFeederCommand);
+    shooter.setDefaultCommand(&stopShooterCommand);
+}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -261,7 +291,9 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {}
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&rightSwitchDown);
+}
 
 }  // namespace StandardControl
 

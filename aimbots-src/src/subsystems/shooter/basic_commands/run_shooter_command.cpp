@@ -18,7 +18,7 @@ void RunShooterCommand::initialize() {
 }
 
 void RunShooterCommand::execute() {
-    shooter->ForAllShooterMotor(&ShooterSubsystem::updateMotorVelocityPID)
+    shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }
 
 void RunShooterCommand::end(bool interrupted) { }

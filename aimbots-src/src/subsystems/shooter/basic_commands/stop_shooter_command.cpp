@@ -14,23 +14,23 @@ StopShooterCommand::StopShooterCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void initialize() {
-    Shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(0));
+void StopShooterCommand::initialize() {
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(0));
 }
 
-void execute() {
-    Shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+void StopShooterCommand::execute() {
+    shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
 }
 
-void end(bool interrupted) {
-    Shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutputToMotor, static_cast<float>(0))
+void StopShooterCommand::end(bool interrupted) {
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(0));
 }
 
-bool isFinished() const {
-    return Shooter->getHighestMotorSpeed() < 60;
+bool StopShooterCommand::isFinished() const {
+    return shooter->getHighestMotorSpeed() < 1;
 }
 
-bool isReady() { 
+bool StopShooterCommand::isReady() { 
     return true;
 }
 }

@@ -11,25 +11,25 @@ namespace src::Feeder {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
     }
     
-    void FullAutoFeederCommand::initialize() {
-        feeder->ForAllShooterMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
+    void StopFeederCommand::initialize() {
+        feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
     }
     
-    void FullAutoFeederCommand::execute() {
-        feeder->ForAllShooterMotors(&FeederSubsystem::updateMotorVelocityPID);
+    void StopFeederCommand::execute() {
+        feeder->ForAllFeederMotors(&FeederSubsystem::updateMotorVelocityPID);
     }
 
-    void FullAutoFeederCommand::end(bool interrupted) {
+    void StopFeederCommand::end(bool interrupted) {
         if (interrupted) {
-            feeder->ForAllShooterMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
+            feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
         }
     }
     
-    bool FullAutoFeederCommand::isReady() {
+    bool StopFeederCommand::isReady() {
         return false;
     }
 
-    bool FullAutoFeederCommand::isFinished() {
+    bool StopFeederCommand::isFinished() const {
         return true;
     }
 }  // namespace src::Feeder

@@ -3,7 +3,7 @@
 
 #ifdef FEEDER_COMPATIBLE
 
-namespace::Feeder {
+namespace src::Feeder {
 
     FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder)
     : drivers(drivers), feeder(feeder)
@@ -12,16 +12,16 @@ namespace::Feeder {
     }
     
     void FullAutoFeederCommand::initialize() {
-        feeder->ForAllShooterMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(15));
+        feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(15));
     }
     
     void FullAutoFeederCommand::execute() {
-        feeder->ForAllShooterMotors(&FeederSubsystem::updateMotorVelocityPID);
+        feeder->ForAllFeederMotors(&FeederSubsystem::updateMotorVelocityPID);
     }
 
     void FullAutoFeederCommand::end(bool interrupted) {
         if (interrupted) {
-            feeder->ForAllShooterMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
+            feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
         }
     }
     
@@ -29,7 +29,7 @@ namespace::Feeder {
         return true;
     }
 
-    bool FullAutoFeederCommand::isFinished() {
+    bool FullAutoFeederCommand::isFinished() const {
         return false;
     }
 }
