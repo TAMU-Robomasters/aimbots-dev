@@ -12,7 +12,7 @@ namespace src::Feeder {
     }
     
     void FullAutoFeederCommand::initialize() {
-        feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(15));
+        feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(4150));
     }
     
     void FullAutoFeederCommand::execute() {

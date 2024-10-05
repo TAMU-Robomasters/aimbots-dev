@@ -26,11 +26,11 @@ namespace src::Feeder {
     }
     
     bool StopFeederCommand::isReady() {
-        return false;
+        return true;
     }
 
     bool StopFeederCommand::isFinished() const {
-        return true;
+        return false;
     }
 }  // namespace src::Feeder
 
