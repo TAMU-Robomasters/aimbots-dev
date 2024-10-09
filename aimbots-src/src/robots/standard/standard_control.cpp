@@ -50,8 +50,8 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 //
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+//#include "subsystems/barrel_manager/barrel_manager.hpp"
+//#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"

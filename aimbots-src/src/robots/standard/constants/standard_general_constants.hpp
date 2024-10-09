@@ -2,7 +2,7 @@
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
-#define BARREL_SWAP_COMPATIBLE
+//#define BARREL_SWAP_COMPATIBLE
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
