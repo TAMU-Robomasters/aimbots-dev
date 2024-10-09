@@ -29,7 +29,16 @@
 #include "robots/standard/standard_control_interface.hpp"
 
 #elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE)
-#include "robots/standard/standard_constants.hpp"
+#include "robots/standard/constants/standard_chassis_constants.hpp"
+#include "robots/standard/constants/standard_display_constants.hpp"
+#include "robots/standard/constants/standard_feeder_constants.hpp"
+#include "robots/standard/constants/standard_general_constants.hpp"
+#include "robots/standard/constants/standard_gimbal_constants.hpp"
+#include "robots/standard/constants/standard_grabber_constants.hpp"
+#include "robots/standard/constants/standard_hopper_constants.hpp"
+#include "robots/standard/constants/standard_shooter_constants.hpp"
+#include "robots/standard/constants/standard_slide_constants.hpp"
+#include "robots/standard/constants/standard_wrist_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 
 #elif defined(TARGET_STANDARD_2023)
