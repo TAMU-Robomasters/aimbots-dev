@@ -19,14 +19,13 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
-#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
@@ -39,11 +38,9 @@
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
-#include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
 #include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
-#include "subsystems/shooter/control/shooter.hpp"
 #include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
-#include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
 #include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
 #include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
@@ -61,9 +58,7 @@
 //
 
 using namespace src::Chassis;
-using namespace src::Feeder;
 using namespace src::Gimbal;
-using namespace src::Shooter;
 using namespace src::Hopper;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
@@ -116,9 +111,7 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
-FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
-ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 
@@ -212,15 +205,6 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
-
-RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
-StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
@@ -244,40 +228,10 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-HoldCommandMapping rightSwitchDown(
-    drivers(),
-    {&openHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
-// Runs shooter only and closes hopper
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {&runShooterCommand, &toggleHopperCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
-
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
-
-// The user can press b+ctrl when the remote right switch is in the down position to restart the
-// client display command. This is necessary since we don't know when the robot is connected to the
-// server and thus don't know when to start sending the initial HUD graphics.
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
-
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
-    drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
-    drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->commandScheduler.registerSubsystem(&hopper);
     // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
@@ -288,19 +242,14 @@ void registerSubsystems(src::Drivers *drivers) {
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    feeder.initialize();
     gimbal.initialize();
-    shooter.initialize();
     hopper.initialize();
     // response.initialize();
     clientDisplay.initialize();
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
-    shooter.setDefaultCommand(&stopShooterComprisedCommand);
-}
+void setDefaultCommands(src::Drivers *) {}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -310,20 +259,12 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchDown);
-    drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-    drivers->commandMapper.addMap(&bCtrlPressed);
 }
 
 }  // namespace StandardControl

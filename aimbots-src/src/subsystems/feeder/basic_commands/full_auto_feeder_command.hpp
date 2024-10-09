@@ -18,10 +18,7 @@ class FullAutoFeederCommand : public TapCommand {
 public:
     FullAutoFeederCommand(
         src::Drivers*,
-        FeederSubsystem*,
-        src::Utils::RefereeHelperTurreted*,
-        uint8_t projectileBuffer = 0,
-        int UNJAM_TIMER_MS = 300);
+        FeederSubsystem*);
     void initialize() override;
 
     void execute() override;
@@ -35,15 +32,6 @@ public:
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
-    src::Utils::RefereeHelperTurreted* refHelper;
-
-    int64_t antiOverheatEncoderThreshold;
-    uint8_t projectileBuffer;
-
-    int UNJAM_TIMER_MS;
-
-    MilliTimeout startupThreshold;
-    MilliTimeout unjamTimer;
 };
 
 }  // namespace src::Feeder

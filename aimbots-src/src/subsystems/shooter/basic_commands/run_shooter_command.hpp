@@ -15,7 +15,7 @@ namespace src::Shooter {
 
 class RunShooterCommand : public TapCommand {
 public:
-    RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter, src::Utils::RefereeHelperTurreted* refHelper);
+    RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter);
     void initialize() override;
 
     void execute() override;
@@ -29,8 +29,6 @@ public:
 private:
     src::Drivers* drivers;
     ShooterSubsystem* shooter;
-
-    src::Utils::RefereeHelperTurreted* refHelper;
 };
 
 }  // namespace src::Shooter

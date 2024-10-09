@@ -8,9 +8,9 @@ StopFeederCommand::StopFeederCommand(src::Drivers* drivers, FeederSubsystem* fee
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void StopFeederCommand::initialize() { feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor); }
+void StopFeederCommand::initialize() {  }
 
-void StopFeederCommand::execute() { feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor); }
+void StopFeederCommand::execute() {  }
 
 void StopFeederCommand::end(bool interrupted) { UNUSED(interrupted); }
 

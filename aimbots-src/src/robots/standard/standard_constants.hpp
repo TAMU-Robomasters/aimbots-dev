@@ -19,8 +19,6 @@ static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
-static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
-
 /**
  * @brief GIMBAL SETUP
  */
@@ -29,7 +27,6 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
-static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
 #if defined(TARGET_STANDARD_BLASTOISE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
@@ -221,50 +218,8 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
-static constexpr int UNJAM_TIMER_MS = 300;
-
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 40.0f,
-    .ki = 0.10f,  // 0.10f;
-    .kd = 0.00f,
-    .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
-
-// clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
-    15,
-    4300,  // {ball m/s, flywheel rpm}
-    18,
-    4850,
-    30,
-    7150};
-// clang-format on
-
-static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
 static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
@@ -278,26 +233,6 @@ static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
 
 // CAN Bus 1
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
-
-//
-static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
-static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
-static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 10;
-static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {4150};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
-static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
-//
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
-//
-
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = true;
-
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
@@ -417,3 +352,64 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 19;
+
+// Feeder Constants -----------------------------------------------------------------------------------
+static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M2006_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
+
+static constexpr MotorID FEEDER_MOTOR_ID = MotorID::MOTOR1;
+
+static constexpr bool FEEDER_DIRECTION = false;
+
+// Shooter Constants -----------------------------------------------------------------------------
+
+static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.00f,
+    .kd = 0.00f,
+    .maxICumulative = 10.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// clang-format off
+static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
+    15,
+    4300,  // {ball m/s, flywheel rpm}
+    18,
+    4850,
+    30,
+    7150};
+// clang-format on
+
+static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
+
+static constexpr bool SHOOTER_1_DIRECTION = false;
+static constexpr bool SHOOTER_2_DIRECTION = false;
+
+static constexpr uint8_t SHOOTER_MOTOR_COUNT = 0;

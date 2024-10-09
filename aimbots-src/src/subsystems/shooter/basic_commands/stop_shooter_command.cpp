@@ -20,8 +20,7 @@ StopShooterCommand::StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* 
 
 void StopShooterCommand::initialize() {}
 
-// set the flywheel to a certain speed once the command is called
-void StopShooterCommand::execute() { shooter->ForAllShooterMotors(&ShooterSubsystem::setDesiredOutput, 0.0f); }
+void StopShooterCommand::execute() {}
 
 void StopShooterCommand::end(bool) {}
 
@@ -31,4 +30,4 @@ bool StopShooterCommand::isFinished() const { return false; }
 
 }  // namespace src::Shooter
 
-#endif //#ifdef SHOOTER_COMPATIBLE
+#endif  //#ifdef SHOOTER_COMPATIBLE
