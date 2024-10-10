@@ -39,7 +39,8 @@
                 "aimbots-src/taproot/modm/ext/cmsis/core",
                 "aimbots-src/taproot/modm/ext/cmsis/device",
                 "aimbots-src/taproot/modm/ext/cmsis/dsp",
-                "${workspaceFolder}/aimbots-src"
+                "${workspaceFolder}/aimbots-src",
+                "${workspaceFolder}/aimbots-src/src/subsystems/feeder"
             ],
             "intelliSenseMode": "gcc-arm"
         }

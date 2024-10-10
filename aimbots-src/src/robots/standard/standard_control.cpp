@@ -215,12 +215,25 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+//shooter commands
+StopShooterCommand stopShooterCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter);
+//feeder commands
+FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
+
+
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
 ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&runShooterCommand, &fullAutoFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN)
+);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -246,7 +259,10 @@ void initializeSubsystems() {
 }
 
 // Set default command here -----------------------------------------------
-void setDefaultCommands(src::Drivers *) {}
+void setDefaultCommands(src::Drivers *) {
+    feeder.setDefaultCommand(&stopFeederCommand);
+    shooter.setDefaultCommand(&stopShooterCommand);
+}
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
@@ -261,7 +277,9 @@ void startupCommands(src::Drivers *drivers) {
 }
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) {}
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&rightSwitchDown);
+}
 
 }  // namespace StandardControl
 

@@ -1,34 +1,43 @@
-#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "stop_feeder_command.hpp"
 #include "utils/tools/robot_specific_inc.hpp"
-#include "drivers.hpp"
+
+#ifdef FEEDER_COMPATIBLE
 
 
-#include "tap/control/subsystem.hpp"
-#include "tap/motor/m3508_constants.hpp"
-#include "utils/tools/common_types.hpp"
-
-
-
-namespace src::Feeder{
-
+namespace src::Feeder {
     StopFeederCommand::StopFeederCommand(
         src::Drivers* drivers,
         FeederSubsystem* feeder)
-    :   drivers(drivers),
-        feeder(feeder)
+        :   drivers(drivers),
+            feeder(feeder)
     {
-        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
+            addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
     }
 
-void StopFeederCommand::initialize() override;
+    void StopFeederCommand::initialize() 
+    {
+        feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));
+    }
 
-    void StopFeederCommand::execute() override;
-    void StopFeederCommand::end(bool interrupted) override;
-    bool StopFeederCommand::isReady() { return true; };
+    void StopFeederCommand::execute() 
+    {
+        // Idk what to do here I think its this again
+        feeder->ForAllFeederMotors(&FeederSubsystem::updateMotorVelocityPID);
+    }
 
-    bool StopFeederCommand::isFinished() const override;
+    void StopFeederCommand::end(bool interrupted) 
+    {
+        if(interrupted)
+        {
+            feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, static_cast<float>(0));   
+        }
+    }
+    bool StopFeederCommand::isReady() { return true; }
 
-    const char* StopFeederCommand::getName() const override { return "stop feeder"; }
-
+    bool StopFeederCommand::isFinished() const 
+    {
+        return false;
+    }
 }
 
+#endif

@@ -3,29 +3,37 @@
 #include "subsystems/shooter/control/shooter.hpp"
 #include "drivers.hpp"
 
-
+#ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter{
+    RunShooterCommand::RunShooterCommand(
+        src::Drivers* drivers,
+        ShooterSubsystem* shooter)
+        : drivers(drivers)
+        shooter(shooter)
+    {
+        addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
+    }
 
-RunShooterCommand::RunShooterCommand(
-    src::Drivers* drivers,
-    ShooterSubsystem* shooter)
-    : drivers(drivers)
-      shooter(shooter)
+    void RunShooterCommand::initialize() {
+        shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(400000));
+    }
 
-{
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
+    void RunShooterCommand::execute() {
+        shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+    }
+
+    void RunShooterCommand::end(bool interrupted) {
+        
+    }
+
+    bool RunShooterCommand::isReady() {
+        return true;
+    }
+
+    bool RunShooterCommand::isFinished() const {
+        return false;
+    }
 }
 
-void RunShooterCommand::initialize() {};
-
-    void RunShooterCommand::execute() override;
-    void RunShooterCommand::end(bool interrupted) override;
-    bool RunShooterCommand::isReady() override;
-
-    bool RunShooterCommand::isFinished() const override;
-
-    const char* RunShooterCommand::getName() const override { return "run shooter"; }
-
-
-}
+#endif
