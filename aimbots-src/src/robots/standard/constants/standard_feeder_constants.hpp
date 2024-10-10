@@ -37,4 +37,4 @@ static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  
 
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
-static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+

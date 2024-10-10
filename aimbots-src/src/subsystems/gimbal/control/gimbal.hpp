@@ -4,7 +4,6 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
-#include <utils/tools/robot_specific_inc.hpp>
 
 #ifdef GIMBAL_COMPATIBLE
 

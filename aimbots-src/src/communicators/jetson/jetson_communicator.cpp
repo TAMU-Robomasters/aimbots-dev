@@ -15,9 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-      lastMessage(),
-      fieldRelativeYawAngleAtVisionUpdate(0.0f),
-      chassisRelativePitchAngleAtVisionUpdate(modm::toRadian(PITCH_AXIS_START_ANGLE))  //
+      lastMessage()
 {}
 
 void JetsonCommunicator::initialize() {

@@ -58,9 +58,6 @@ private:
     JetsonMessage lastMessage;
     uint32_t lastFoundTargetTime;
 
-    float fieldRelativeYawAngleAtVisionUpdate;
-    float chassisRelativePitchAngleAtVisionUpdate;
-
     PlateKinematicState lastPlateKinematicState;
 
     Matrix<float, 1, 2> visionTargetAngles;

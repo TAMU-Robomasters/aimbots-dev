@@ -9,6 +9,10 @@
 #include "utils/kinematics/kinematic_state_vector.hpp"
 #include "utils/tools/common_types.hpp"
 
+#include "utils/tools/robot_specific_defines.hpp"
+#include "subsystems/gimbal/gimbal_constants.hpp"
+#include "subsystems/chassis/chassis_constants.hpp"
+
 #include "robot_frames.hpp"
 #include "turret_frames.hpp"
 

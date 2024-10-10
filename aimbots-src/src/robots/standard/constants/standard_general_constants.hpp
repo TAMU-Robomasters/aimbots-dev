@@ -62,6 +62,7 @@ static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
+static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};

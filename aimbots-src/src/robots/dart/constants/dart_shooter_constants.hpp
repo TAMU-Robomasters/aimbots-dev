@@ -39,5 +39,4 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
 
-static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 

@@ -1,7 +1,6 @@
 #include "informants/kinematics/coordinate_frame.hpp"
 
 #include "utils/math/transform_setup.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
 
 using namespace src::Utils::MatrixHelper;
 

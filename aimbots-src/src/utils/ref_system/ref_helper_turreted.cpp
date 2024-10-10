@@ -1,6 +1,8 @@
 #include "ref_helper_turreted.hpp"
 
-#include "utils/tools/robot_specific_inc.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
+#include "subsystems/gimbal/gimbal_constants.hpp"
+#include "subsystems/chassis/chassis_constants.hpp"
 
 namespace src::Utils {
 

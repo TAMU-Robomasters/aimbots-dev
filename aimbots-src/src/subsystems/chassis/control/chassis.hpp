@@ -5,7 +5,6 @@
 
 #include "utils/tools/common_types.hpp"
 #include "utils/motion/power_limiter/power_limiter.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
 
 #include "drivers.hpp"
 

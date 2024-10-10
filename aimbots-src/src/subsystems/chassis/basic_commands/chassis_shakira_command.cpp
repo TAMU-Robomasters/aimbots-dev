@@ -1,5 +1,5 @@
 #include "utils/ballistics/ballistics_solver.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
+
 
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
