@@ -5,12 +5,13 @@
 
 #ifdef FEEDER_COMPATIBLE
 
+bool currentTimer = 0;
 
 namespace src::Feeder {
 
 FullAutoFeederCommand::FullAutoFeederCommand(
-    src::Drivers *drivers,
-    FeederSubsystem *feeder   
+    src::Drivers* drivers,
+    FeederSubsystem* feeder   
 ) : drivers(drivers),
     feeder(feeder)
   {
@@ -18,12 +19,28 @@ FullAutoFeederCommand::FullAutoFeederCommand(
   }  
 
 void FullAutoFeederCommand::initialize() {
-    feeder->initialize();
-    feeder->setTargetRPM(FEEDER_MOTOR_IDS[0], 300);
+    jamTimer.execute();
+    reverseTimer.execute();
+    feeder->setTargetRPM(0, 4000);
+    jamTimer.restart(500);
 }
 
 void FullAutoFeederCommand::execute() {
-    feeder->refresh();
+    
+    if(reverseTimer.isExpired()){
+        feeder->setTargetRPM(0, 4000);
+    }
+
+    if(jamTimer.isExpired()){
+        
+        if (abs(feeder->getCurrentRPM(0)) < 20){
+
+            feeder->setTargetRPM(0, -1000);
+            reverseTimer.restart(1000);
+            jamTimer.restart(500);
+        }
+    
+    }
 }
 
 void FullAutoFeederCommand::end(bool interrupted){

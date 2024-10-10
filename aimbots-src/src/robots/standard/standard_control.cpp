@@ -243,7 +243,9 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&fullAutoFeederCommand, &runShooterCommand1},
+    {&fullAutoFeederCommand
+    ,&runShooterCommand1
+    },
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
     
 
@@ -302,7 +304,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
 }
-}  // namespace StandardControl
+}  // namespace StandardControl 
 
 namespace src::Control {
 // Initialize subsystems ---------------------------------------------------

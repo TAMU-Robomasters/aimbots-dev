@@ -19,12 +19,12 @@ StopFeederCommand::StopFeederCommand(
   }  
 
 void StopFeederCommand::initialize(){
-    feeder->initialize();
-    feeder->setTargetRPM(FEEDER_MOTOR_IDS[0], 0);
+    
+    feeder->setTargetRPM(0, 0);
 }
 
 void StopFeederCommand::execute() {
-    feeder->refresh();
+    
 }
 
 void StopFeederCommand::end(bool interrupted){

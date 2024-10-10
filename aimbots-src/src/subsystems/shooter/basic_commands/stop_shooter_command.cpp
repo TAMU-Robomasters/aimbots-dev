@@ -17,13 +17,16 @@ namespace src::Shooter {
     }
 
 void StopShooterCommand::initialize(){
-    shooter->initialize();
-    shooter->setTargetRPM(RIGHT, 0);
-    shooter->setTargetRPM(RIGHT, 0);
+
+    //shooter->setTargetRPM(LEFT, 0);
+    //shooter->setTargetRPM(RIGHT, 0);
 }
 
 void StopShooterCommand::execute(){
-    shooter->refresh();
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 0.0f);
+    shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+    //shooter->updateMotorVelocityPID(LEFT);
+    //shooter->updateMotorVelocityPID(RIGHT);
 }
 
 void StopShooterCommand::end(bool interrupted){

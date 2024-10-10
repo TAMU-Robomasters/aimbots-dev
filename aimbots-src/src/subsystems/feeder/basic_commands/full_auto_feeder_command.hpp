@@ -30,6 +30,8 @@ public:
 private:
     src::Drivers* drivers;
     FeederSubsystem* feeder;
+    MilliTimeout jamTimer;
+    MilliTimeout reverseTimer;
 };
 
 }  // namespace src::Feeder

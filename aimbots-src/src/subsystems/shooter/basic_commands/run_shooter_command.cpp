@@ -16,13 +16,15 @@ namespace src::Shooter {
     }
 
 void RunShooterCommand::initialize() {
-    shooter->initialize();
-    shooter->setTargetRPM(LEFT, 3000);
-    shooter->setTargetRPM(LEFT, 3000);
+    shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 5000.0f);
+    // shooter->setTargetRPM(LEFT, 5000);
+    // shooter->setTargetRPM(RIGHT, 5000);
 }
 
 void RunShooterCommand::execute() {
-    shooter->refresh();
+    shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+    // shooter->updateMotorVelocityPID(LEFT);
+    // shooter->updateMotorVelocityPID(RIGHT);
 }
 
 void RunShooterCommand::end(bool interrupted){
