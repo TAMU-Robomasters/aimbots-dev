@@ -9,14 +9,14 @@ namespace src::Shooter{
     RunShooterCommand::RunShooterCommand(
         src::Drivers* drivers,
         ShooterSubsystem* shooter)
-        : drivers(drivers)
+        : drivers(drivers),
         shooter(shooter)
     {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
     }
 
     void RunShooterCommand::initialize() {
-        shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(400000));
+        shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(4000));
     }
 
     void RunShooterCommand::execute() {
