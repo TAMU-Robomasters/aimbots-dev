@@ -1,8 +1,16 @@
 #include "full_auto_feeder_command.hpp"
+#include "utils/tools/robot_specific_inc.hpp"
+#include "drivers.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
 
 #ifdef FEEDER_COMPATIBLE
 
+
 namespace src::Feeder {
+
+//debug variables
+    bool isRunningDisplay = false;
+
 
 FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsystem* feeder)
     : drivers(drivers),
@@ -11,11 +19,18 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void FullAutoFeederCommand::initialize() {}
+void FullAutoFeederCommand::initialize() {
+    isRunningDisplay = true;
+    feeder->setTargetRPM(4000);
+}
 
-void FullAutoFeederCommand::execute() {}
+void FullAutoFeederCommand::execute() {
+    //feeder->setTargetRPM(4000);
+}
 
-void FullAutoFeederCommand::end(bool) {}
+void FullAutoFeederCommand::end(bool) {
+    isRunningDisplay = false;
+}
 
 bool FullAutoFeederCommand::isReady() { return true; }
 

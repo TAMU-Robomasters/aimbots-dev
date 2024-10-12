@@ -23,9 +23,9 @@ public:
 
     void updateMotorVelocityPID();
 
-    void setDesiredFeederMotorOutput() {}
+    void setDesiredFeederMotorOutput();
 
-    void setTargetRPM();
+    void setTargetRPM(int input);
 
     float getCurrentRPM() { return 0; }
 

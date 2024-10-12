@@ -20,7 +20,10 @@ StopShooterCommand::StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* 
 
 void StopShooterCommand::initialize() {}
 
-void StopShooterCommand::execute() {}
+void StopShooterCommand::execute() {
+    //shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 0.0f);
+    //shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+}
 
 void StopShooterCommand::end(bool) {}
 

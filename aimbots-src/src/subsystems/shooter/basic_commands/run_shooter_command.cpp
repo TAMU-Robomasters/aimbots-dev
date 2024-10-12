@@ -16,9 +16,13 @@ RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* sh
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void RunShooterCommand::initialize() {}
+void RunShooterCommand::initialize() {
+    //shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 5000.0f);
+}
 
-void RunShooterCommand::execute() {}
+void RunShooterCommand::execute() {
+    //shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+}
 
 void RunShooterCommand::end(bool) {}
 

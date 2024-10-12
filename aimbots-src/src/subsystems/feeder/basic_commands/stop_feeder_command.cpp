@@ -8,9 +8,13 @@ StopFeederCommand::StopFeederCommand(src::Drivers* drivers, FeederSubsystem* fee
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void StopFeederCommand::initialize() {  }
+void StopFeederCommand::initialize() {
+     feeder->setTargetRPM(0);
+  }
 
-void StopFeederCommand::execute() {  }
+void StopFeederCommand::execute() { 
+   
+}
 
 void StopFeederCommand::end(bool interrupted) { UNUSED(interrupted); }
 

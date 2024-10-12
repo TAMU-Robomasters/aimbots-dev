@@ -60,6 +60,8 @@
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Hopper;
+using namespace src::Feeder;
+using namespace src::Shooter;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
@@ -114,7 +116,7 @@ ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
-
+FeederSubsystem feeder(drivers());
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
@@ -211,6 +213,15 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+FullAutoFeederCommand fullAutoFeederCommand(
+    drivers(),
+    &feeder
+);
+
+StopFeederCommand stopFeederCommand(
+    drivers(),
+    &feeder
+);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
@@ -228,15 +239,28 @@ HoldCommandMapping leftSwitchUp(
     {&chassisTokyoCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&fullAutoFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&stopFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID)); 
+
+
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&hopper);
+    drivers->commandScheduler.registerSubsystem(&feeder);
+    //drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -244,8 +268,11 @@ void initializeSubsystems() {
     chassis.initialize();
     gimbal.initialize();
     hopper.initialize();
+    feeder.initialize();
+    //shooter.initialize();
     // response.initialize();
     clientDisplay.initialize();
+    
 }
 
 // Set default command here -----------------------------------------------
@@ -263,8 +290,10 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
+    //drivers->commandMapper.addMap(&rightSwitchDown);
+    
 }
 
 }  // namespace StandardControl
