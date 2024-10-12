@@ -11,11 +11,17 @@ FullAutoFeederCommand::FullAutoFeederCommand(src::Drivers* drivers, FeederSubsys
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
-void FullAutoFeederCommand::initialize() {}
+void FullAutoFeederCommand::initialize() {
+    feeder->setTargetRPM(0);
+}
 
-void FullAutoFeederCommand::execute() {}
+void FullAutoFeederCommand::execute() {
+    feeder->setTargetRPM(FEEDER_DEFAULT_RPM);
+}
 
-void FullAutoFeederCommand::end(bool) {}
+void FullAutoFeederCommand::end(bool) {
+    feeder->setTargetRPM(0);
+}
 
 bool FullAutoFeederCommand::isReady() { return true; }
 

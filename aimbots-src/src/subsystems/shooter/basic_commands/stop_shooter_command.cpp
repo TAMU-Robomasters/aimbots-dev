@@ -18,7 +18,11 @@ StopShooterCommand::StopShooterCommand(src::Drivers* drivers, ShooterSubsystem* 
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
-void StopShooterCommand::initialize() {}
+void StopShooterCommand::initialize() {
+        for (int i = 0; i < 2; i++) {
+        shooter->setTargetRPM(i, 0);
+    }
+}
 
 void StopShooterCommand::execute() {}
 

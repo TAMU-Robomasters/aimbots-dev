@@ -29,6 +29,8 @@ public:
     bool isOnline() const { return false; }
 
 private:
+    tap::Drivers* drivers;
+    
     DJIMotor flywheel1, flywheel2;
     SmoothPID flywheel1PID, flywheel2PID;
 

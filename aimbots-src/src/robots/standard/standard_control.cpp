@@ -60,6 +60,8 @@
 using namespace src::Chassis;
 using namespace src::Gimbal;
 using namespace src::Hopper;
+using namespace src::Feeder;
+using namespace src::Shooter;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
@@ -114,6 +116,8 @@ ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
+ShooterSubsystem shooter(drivers());
+FeederSubsystem feeder(drivers());
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -211,6 +215,12 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+StopShooterCommand stopShooterCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter);
+
+FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
+StopFeederCommand stopFeederCommand(drivers(), &feeder);
+
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
@@ -227,6 +237,16 @@ HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
     {&chassisTokyoCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&runShooterCommand, &fullAutoFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&stopShooterCommand, &stopFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -265,6 +285,7 @@ void startupCommands(src::Drivers *drivers) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchDown);
 }
 
 }  // namespace StandardControl

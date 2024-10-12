@@ -372,7 +372,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
-static constexpr MotorID FEEDER_MOTOR_ID = MotorID::MOTOR1;
+static constexpr MotorID FEEDER_MOTOR_ID = MotorID::MOTOR7;
 
 static constexpr bool FEEDER_DIRECTION = false;
 
@@ -406,10 +406,10 @@ static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
+static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 0;
