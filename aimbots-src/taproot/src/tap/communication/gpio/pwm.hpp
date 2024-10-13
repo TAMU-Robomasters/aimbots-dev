@@ -56,6 +56,7 @@ public:
     enum Pin
     {
         C1,
+        C2,
         Buzzer,
         ImuHeater,
     };
@@ -99,6 +100,7 @@ private:
     enum Ch
     {
         Ch1 = 1,
+        Ch2 = 2,
         Ch3 = 3,
     };
 

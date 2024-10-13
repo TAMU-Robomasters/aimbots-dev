@@ -28,6 +28,7 @@
 
 namespace tap::algorithms::transforms
 {
+// Forward declaration to avoid circular dependency
 class Vector;
 
 class Position
@@ -54,11 +55,26 @@ public:
     inline float z() const { return coordinates_.data[2]; }
 
     /* Operators */
-    inline Vector operator-(const Vector& other) const;
+    Position operator-(const Vector& other) const;
 
-    inline Position operator+(const Position& vector) const;
+    Vector operator-(const Position& other) const;
+
+    Position operator+(const Position& vector) const;
+
+    Position operator*(const float scalar) const;
+
+    Position& operator=(const Position& other);
+
+    bool operator==(const Position& other) const;
 
     inline CMSISMat<3, 1> coordinates() const { return this->coordinates_; }
+
+    static inline Position interpolate(const Position& a, const Position& b, const float t)
+    {
+        return a * (1 - t) + b * t;
+    }
+
+    static float distance(const Position& a, const Position& b);
 
 private:
     CMSISMat<3, 1> coordinates_;

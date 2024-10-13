@@ -33,11 +33,11 @@ MoveUnjamIntegralComprisedCommand::MoveUnjamIntegralComprisedCommand(
     tap::Drivers &drivers,
     IntegrableSetpointSubsystem &subsystem,
     MoveIntegralCommand &moveIntegralCommand,
-    UnjamIntegralCommand &unjamIntegralCommand)
+    UnjamCommandInterface &unjamCommand)
     : tap::control::ComprisedCommand(&drivers),
       subsystem(subsystem),
       moveIntegralCommand(moveIntegralCommand),
-      unjamCommand(unjamIntegralCommand),
+      unjamCommand(unjamCommand),
       unjamSequenceCommencing(false)
 {
     comprisedCommandScheduler.registerSubsystem(&subsystem);

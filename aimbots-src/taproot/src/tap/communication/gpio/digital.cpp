@@ -60,6 +60,9 @@ void Digital::configureInputPullMode(Digital::InputPin pin, Digital::InputPullMo
         case Digital::InputPin::B12:
             DigitalInPinB12::configure(mode);
             break;
+        case Digital::InputPin::C5:
+            DigitalInPinC5::configure(mode);
+            break;
         case Digital::InputPin::C6:
             DigitalInPinC6::configure(mode);
             break;
@@ -78,8 +81,8 @@ void Digital::set(Digital::OutputPin pin, bool isSet)
 #else
     switch (pin)
     {
-        case Digital::OutputPin::C2:
-            DigitalOutPinC2::set(isSet);
+        case Digital::OutputPin::C3:
+            DigitalOutPinC3::set(isSet);
             break;
         case Digital::OutputPin::C4:
             DigitalOutPinC4::set(isSet);
@@ -114,6 +117,8 @@ bool Digital::read(Digital::InputPin pin) const
             return DigitalInPinPF0::read();
         case Digital::InputPin::B12:
             return DigitalInPinB12::read();
+        case Digital::InputPin::C5:
+            return DigitalInPinC5::read();
         case Digital::InputPin::C6:
             return DigitalInPinC6::read();
         case Digital::InputPin::C7:

@@ -59,6 +59,7 @@ public:
         PF1,
         PF0,
         B12,
+        C5,
         C6,
         C7,
     };
@@ -68,7 +69,7 @@ public:
      */
     enum OutputPin
     {
-        C2,
+        C3,
         C4,
         B13,
         B14,

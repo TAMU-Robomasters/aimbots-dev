@@ -24,6 +24,7 @@
 #ifndef TAPROOT_REF_SERIAL_HPP_
 #define TAPROOT_REF_SERIAL_HPP_
 
+#include <cmath>
 #include <cstdint>
 #include <unordered_map>
 
@@ -171,7 +172,8 @@ public:
     mockable void releaseTransmissionSemaphore(uint32_t sentMsgLen)
     {
         transmissionSemaphore.release();
-        transmissionDelayTimer.restart(sentMsgLen * 1'000 / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S);
+        transmissionDelayTimer.restart(
+            std::ceil(sentMsgLen * 1000.0f / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S));
     }
 
     /**

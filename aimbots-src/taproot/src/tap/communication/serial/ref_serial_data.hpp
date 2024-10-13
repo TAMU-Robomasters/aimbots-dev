@@ -655,8 +655,10 @@ public:
          * You cannot send messages faster than this speed to the referee system.
          *
          * Source: https://bbs.robomaster.com/forum.php?mod=viewthread&tid=9120
+         *
+         * Changed from 1280 to 1000 as the HUD was still unreliable.
          */
-        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1280;
+        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1000;
 
         /**
          * Get the min wait time after which you can send more data to the client. Sending faster

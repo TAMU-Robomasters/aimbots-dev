@@ -25,7 +25,6 @@
 #define TAPROOT_VECTOR_HPP_
 
 #include "tap/algorithms/cmsis_mat.hpp"
-#include "tap/algorithms/transforms/position.hpp"
 
 namespace tap::algorithms::transforms
 {
@@ -51,15 +50,30 @@ public:
 
     inline float z() const { return coordinates_.data[2]; }
 
+    inline Vector& operator=(const Vector& other)
+    {
+        this->coordinates_ = other.coordinates_;
+        return *this;
+    }
+
     inline Vector operator+(const Vector& other) const;
 
     inline Vector operator+(const Position& other) const;
 
     inline Vector operator*(const float scale) const { return Vector(this->coordinates_ * scale); }
 
+    inline static float dot(const Vector& a, const Vector& b)
+    {
+        return a.x() * b.x() + a.y() * b.y() + a.z() * b.z();
+    }
+
+    inline float dot(const Vector& other) const { return dot(*this, other); }
+
     inline Vector operator/(const float scale) const { return Vector(this->coordinates_ / scale); }
 
     const inline CMSISMat<3, 1>& coordinates() const { return coordinates_; }
+
+    inline float magnitude() const { return sqrt(dot(*this, *this)); }
 
 private:
     CMSISMat<3, 1> coordinates_;

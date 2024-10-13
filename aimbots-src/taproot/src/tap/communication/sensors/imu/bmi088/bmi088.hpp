@@ -31,7 +31,6 @@
 #include "tap/util_macros.hpp"
 
 #include "modm/processing/protothread.hpp"
-#include "modm/math/geometry/vector3.hpp" // LOST ON TAPROOT REGEN
 
 #include "bmi088_data.hpp"
 
@@ -97,12 +96,17 @@ public:
     mockable void initialize(float sampleFrequency, float mahonyKp, float mahonyKi);
 
     /**
-     * Call this function at 500 Hz. Reads IMU data and performs the mahony AHRS algorithm to
-     * compute pitch/roll/yaw.
+     * Call this function at same rate as intialized sample frequency.
+     * Performs the mahony AHRS algorithm to compute pitch/roll/yaw.
+     */
+    mockable void periodicIMUUpdate();
+
+    /**
+     * This function reads the IMU data from SPI
      *
      * @note This function blocks for 129 microseconds to read registers from the BMI088.
      */
-    mockable void periodicIMUUpdate();
+    mockable void read();
 
     /**
      * Returns the state of the IMU. Can be not connected, connected but not calibrated, or
@@ -119,24 +123,10 @@ public:
     /**
      * When this function is called, the bmi088 enters a calibration state during which time,
      * gyro/accel calibration offsets will be computed and the mahony algorithm reset. When
-     * calibrating, angle, accelerometer, and gyroscope values will return 0. This function takes
-     * in a vector of Euler angles that allows the user to specify the orientation of the IMU
-     * during calibration.
-     *
-     *     _____________________
-     *     |                   |
-     *     |         ^ y       |
-     *     |         |         |
-     *     |         |         |
-     *     |         R ---> x  |
-     *     |     ROBOMASTER    |
-     *     |                   |
-     *     |                   |
-     *     |                   |
-     *     |                   |
-     *     |___________________|
+     * calibrating, angle, accelerometer, and gyroscope values will return 0. When calibrating
+     * the BMI088 should be level, otherwise the IMU will be calibrated incorrectly.
      */
-    mockable void requestRecalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f} ); // added in manually WILL BE LOST ON TAPROOT REGEN
+    mockable void requestRecalibration();
 
     inline const char *getName() const final_mockable { return "bmi088"; }
 
@@ -157,6 +147,14 @@ public:
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }
 
     inline void setOffsetSamples(float samples) { BMI088_OFFSET_SAMPLES = samples; }
+
+    inline void setAccOversampling(Acc::AccBandwidth oversampling)
+    {
+        accOversampling = oversampling;
+    }
+    inline void setAccOutputRate(Acc::AccOutputRate outputRate) { accOutputRate = outputRate; }
+
+    inline void setGyroOutputRate(Gyro::GyroBandwidth outputRate) { gyroOutputRate = outputRate; }
 
 private:
     static constexpr uint16_t RAW_TEMPERATURE_TO_APPLY_OFFSET = 1023;
@@ -192,11 +190,14 @@ private:
 
     int calibrationSample = 0;
 
-    modm::Vector3f lastCalibrationEulerAngles; // added in manually WILL BE LOST ON TAPROOT REGEN
-
     uint32_t prevIMUDataReceivedTime = 0;
 
+    Acc::AccBandwidth accOversampling = Acc::AccBandwidth::NORMAL;
+    Acc::AccOutputRate accOutputRate = Acc::AccOutputRate::Hz800;
+
     void initializeAcc();
+
+    Gyro::GyroBandwidth gyroOutputRate = Gyro::GyroBandwidth::ODR1000_BANDWIDTH116;
     void initializeGyro();
 
     void computeOffsets();

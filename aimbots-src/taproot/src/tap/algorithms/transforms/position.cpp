@@ -27,14 +27,37 @@
 
 namespace tap::algorithms::transforms
 {
-inline Vector Position::operator-(const Vector& other) const
+Position Position::operator-(const Vector& other) const
+{
+    return Position(this->coordinates_ - other.coordinates());
+}
+
+Vector Position::operator-(const Position& other) const
 {
     return Vector(this->coordinates_ - other.coordinates());
 }
 
-inline Position Position::operator+(const Position& vector) const
+Position Position::operator+(const Position& vector) const
 {
     return Position(this->coordinates_ + vector.coordinates_);
 }
+
+Position Position::operator*(const float scalar) const
+{
+    return Position(this->coordinates_ * scalar);
+}
+
+Position& Position::operator=(const Position& other)
+{
+    this->coordinates_ = other.coordinates_;
+    return *this;
+}
+
+bool Position::operator==(const Position& other) const
+{
+    return this->coordinates_.data == other.coordinates_.data;
+}
+
+float Position::distance(const Position& a, const Position& b) { return (b - a).magnitude(); }
 
 }  // namespace tap::algorithms::transforms
