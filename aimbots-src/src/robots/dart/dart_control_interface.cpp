@@ -1,5 +1,5 @@
 #if defined(TARGET_DART)
-#include "aerial_control_interface.hpp"
+#include "dart_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
@@ -19,6 +19,13 @@ static constexpr float INPUT_R_INC = 0.003f;
 
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.008f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
+
+static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+
+static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.006f;
+static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.006f;
+static constexpr float INPUT_SLIDE_STOP_INC = 0.06f;
 
 static constexpr int16_t MOUSE_YAW_MAX = 1000;
 static constexpr int16_t MOUSE_PITCH_MAX = 1000;
@@ -125,6 +132,56 @@ float OperatorInterface::getChassisRotationInput() {
 
     chassisRotationRamp.update(INPUT_R_INC);
     return chassisRotationRamp.getValue();
+}
+
+float OperatorInterface::getSlideUpDownInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideUpDownInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideUpDown != updateCounter) {
+        slideUpDownInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+        prevUpdateCounterSlideUpDown = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::R) - drivers->remote.keyPressed(Remote::Key::F);
+
+    float finalRotation = limitVal<float>(slideUpDownInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideUpDownRamp.setTarget(finalRotation);
+
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideUpDownRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideUpDownRamp.update(INPUT_SLIDE_UPDOWN_INC);
+
+    return /*slideUpDownRamp.getValue()*/ finalRotation * ZAXIS_JOYSTICK_INPUT_SENSITIVITY;
+}
+
+float OperatorInterface::getSlideFrontBackInput() {
+    uint32_t updateCounter = drivers->remote.getUpdateCounter();
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastSlideFrontBackInputCallTime = currTime;
+
+    if (prevUpdateCounterSlideFrontBack != updateCounter) {
+        slideFrontBackInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
+        prevUpdateCounterSlideFrontBack = updateCounter;
+    }
+
+    float digitalRotation = drivers->remote.keyPressed(Remote::Key::C) - drivers->remote.keyPressed(Remote::Key::V);
+
+    float finalRotation = limitVal<float>(slideFrontBackInput.getInterpolatedValue(currTime) + digitalRotation, -1.0f, 1.0f);
+    finalRotation *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
+
+    slideFrontBackRamp.setTarget(finalRotation);
+
+    if (slideUpDownRamp.getTarget() == 0.0f)
+        slideFrontBackRamp.update(INPUT_SLIDE_STOP_INC);
+    else
+        slideFrontBackRamp.update(INPUT_SLIDE_FRONTBACK_INC);
+
+    return /*slideFrontBackRamp.getValue() */ finalRotation * XAXIS_JOYSTICK_INPUT_SENSITIVITY;
 }
 
 int16_t mouseXDisplay = 0;

@@ -1,13 +1,14 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
 #define CHASSIS_COMPATIBLE
-#define SHOOTER_COMPATIBLE
-#define FEEDER_COMPATIBLE
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+#define HOPPER_LID_COMPATIBLE
+#define SLIDE_COMPATIBLE
+
+static constexpr SongTitle STARTUP_SONG = SongTitle::ZELDA;
 
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
@@ -17,8 +18,6 @@ static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
  */
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
-
-static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 /**
  * @brief GIMBAL SETUP
@@ -207,47 +206,8 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.0f,
-    .kd = 0.8f,
-    .maxICumulative = 10.0f,
-    .maxOutput = M2006_MAX_OUTPUT,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
-static constexpr int UNJAM_TIMER_MS = 300;
-
-static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 40.0f,
-    .ki = 0.10f,  // 0.10f;
-    .kd = 0.00f,
-    .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
-    .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
-    .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
-    .errorDerivativeFloor = 0.0f,
-};
-
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
-
-// clang-format off
-static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
-// clang-format on
-
-static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
-
-static constexpr float FEEDER_DEFAULT_RPM = 4150.0f;  // 4500
-static constexpr int DEFAULT_BURST_LENGTH = 5;        // balls
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -256,22 +216,6 @@ static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
-
-// CAN Bus 1
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus FEED_BUS = CANBus::CAN_BUS1;
-
-//
-static constexpr MotorID FEEDER_ID = MotorID::MOTOR8;
-//
-static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR2;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
-//
-
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = true;
-
-static constexpr bool FEEDER_DIRECTION = true;
 
 // Mechanical chassis constants, all in m
 /**
@@ -375,3 +319,59 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
+static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
+    .kp = 30000.0f,
+    .ki = 0.0f,
+    .kd = 10.0f,
+    .maxICumulative = 0.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
+    .kp = 60000.0f,
+    .ki = 10.0f,
+    .kd = 8.0f,
+    .maxICumulative = 3000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// TODO: set these to what they actually are
+static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
+static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
+static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR4;
+static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR5;
+static constexpr bool SLIDE_X_MOTOR_DIRECTION = false;
+static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{(0.254f / 46.0f), (0.184f / 130.0f)};
+static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {0.254f, 0.18f};
+
+// Hopper constants
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+
+static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
+
+static constexpr float HOPPER_MIN_PWM = DS3218_MIN_PWM;
+static constexpr float HOPPER_MAX_PWM = DS3218_MAX_PWM;
+
+static constexpr float HOPPER_MIN_ANGLE = 0.0f;
+static constexpr float HOPPER_MAX_ANGLE = 270.0f;
+
+static constexpr float HOPPER_OPEN_ANGLE = 33.0f;
+static constexpr float HOPPER_CLOSED_ANGLE = 77.0f;
+
+static constexpr uint32_t HOPPER_MIN_ACTION_DELAY = 1000;  // Minimum time in ms between hopper lid flips
+
+static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 10;
