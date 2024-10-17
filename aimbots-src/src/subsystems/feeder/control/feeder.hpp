@@ -21,13 +21,13 @@ public:
 
     inline bool isOnline() const { return false; }
 
-    void updateMotorVelocityPID();
+    void updateMotorVelocityPID(float rpm); // pid.runControllerDerivateError(targetRPm - currentRPM)
 
-    void setDesiredFeederMotorOutput() {}
+    void setDesiredFeederMotorOutput(); // motor.setOutput(pid.getOutput())
 
-    void setTargetRPM();
+    void setTargetRPM(float rpm);
 
-    float getCurrentRPM() { return 0; }
+    float getCurrentRPM();
 
 private:
     src::Drivers* drivers;
