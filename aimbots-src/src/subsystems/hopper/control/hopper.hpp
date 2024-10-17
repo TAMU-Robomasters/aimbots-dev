@@ -17,8 +17,7 @@ enum HopperState : uint8_t {
 
 class HopperSubsystem : public tap::control::Subsystem {
 public:
-    HopperSubsystem(
-        tap::Drivers* drivers);
+    HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin hopperPin);
 
     mockable void initialize() override;
     void refresh() override;

@@ -11,10 +11,10 @@
 
 namespace src::Hopper {
 
-HopperSubsystem::HopperSubsystem(tap::Drivers* drivers)
+HopperSubsystem::HopperSubsystem(tap::Drivers* drivers, tap::gpio::Pwm::Pin hopperPin)
     : Subsystem(drivers),
       drivers(drivers),
-      hopperMotor(drivers, HOPPER_PIN, HOPPER_MAX_PWM, HOPPER_MIN_PWM, HOPPER_PWM_RAMP_SPEED),
+      hopperMotor(drivers, hopperPin, HOPPER_MAX_PWM, HOPPER_MIN_PWM, HOPPER_PWM_RAMP_SPEED),
       hopperState(CLOSED) {}
 
 void HopperSubsystem::initialize() {

@@ -12,7 +12,7 @@ SlideSubsystem::SlideSubsystem(Drivers* drivers)
           DJIMotor(drivers, SLIDE_X_MOTOR_ID, SLIDE_BUS, SLIDE_X_MOTOR_DIRECTION, "slide x motor"),
           DJIMotor(drivers, SLIDE_Z_MOTOR_ID, SLIDE_BUS, SLIDE_Z_MOTOR_DIRECTION, "slide z motor"),
       },
-      motorPIDs{SmoothPID(SLIDE_X_POSITION_PID_CONFIG), SmoothPID(SLIDE_Z_POSITION_PID_CONFIG)} {}
+      motorPIDs{SmoothPID(SLIDE_X_POSITION_PID_CONFIG), SmoothPID(SLIDE_X_POSITION_PID_CONFIG)} {}
 
 void SlideSubsystem::initialize() { ForAllSlideMotors(&DJIMotor::initialize); }
 
@@ -42,8 +42,8 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
 }
 
 void SlideSubsystem::setTargetPositionMeters(float x, float z) {
-    targetPosesMeters[X] = std::clamp(x, 0.0f, SLIDE_MAX_POSITIONS_METERS[X]);
-    targetPosesMeters[Z] = std::clamp(z, 0.0f, SLIDE_MAX_POSITIONS_METERS[Z]);
+    targetPosesMeters[X] = std::clamp(x, -1000.0f, SLIDE_MAX_POSITIONS_METERS[X]);  // Disabling clamping because dart bad
+    targetPosesMeters[Z] = std::clamp(z, -1000.0f, SLIDE_MAX_POSITIONS_METERS[Z]);
 }
 
 float SlideSubsystem::getTargetXMeters() const { return targetPosesMeters[X]; }

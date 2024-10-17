@@ -321,9 +321,9 @@ static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
-    .kp = 30000.0f,
+    .kp = 5000.0f,
     .ki = 0.0f,
-    .kd = 10.0f,
+    .kd = 80.0f,
     .maxICumulative = 0.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -334,6 +334,7 @@ static constexpr SmoothPIDConfig SLIDE_X_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+// USUSED, Z pid is given the same config as X
 static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
     .kp = 60000.0f,
     .ki = 10.0f,
@@ -348,15 +349,15 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// TODO: set these to what they actually are
+// X is left, Z is right
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
 static constexpr MotorID SLIDE_X_MOTOR_ID = MotorID::MOTOR4;
 static constexpr MotorID SLIDE_Z_MOTOR_ID = MotorID::MOTOR5;
-static constexpr bool SLIDE_X_MOTOR_DIRECTION = false;
-static constexpr bool SLIDE_Z_MOTOR_DIRECTION = true;
-static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{(0.254f / 46.0f), (0.184f / 130.0f)};
-static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {0.254f, 0.18f};
+static constexpr bool SLIDE_X_MOTOR_DIRECTION = true;
+static constexpr bool SLIDE_Z_MOTOR_DIRECTION = false;
+static constexpr float SLIDE_METERS_PER_REVS_RATIOS[]{(0.005f), (0.005f)};
+static constexpr float SLIDE_MAX_POSITIONS_METERS[] = {1000.0f, 1000.0f};
 
 // Hopper constants
 static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;

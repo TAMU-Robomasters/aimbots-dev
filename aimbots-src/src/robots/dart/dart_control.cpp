@@ -62,8 +62,8 @@ using namespace tap::communication::serial;
 namespace DartControl {
 
 // Define subsystems here ------------------------------------------------
-HopperSubsystem leftServo(drivers());
-HopperSubsystem rightServo(drivers());
+HopperSubsystem leftServo(drivers(), tap::gpio::Pwm::C2);
+HopperSubsystem rightServo(drivers(), tap::gpio::Pwm::C1);
 SlideSubsystem slide(drivers());
 
 // Robot Specific Controllers ------------------------------------------------
@@ -74,11 +74,34 @@ SlideSubsystem slide(drivers());
 
 // Define commands here ---------------------------------------------------
 
+OpenHopperCommand openLeftServo(drivers(), &leftServo, 270.0f);
+CloseHopperCommand closeLeftServo(drivers(), &leftServo, 125.0f);
+OpenHopperCommand openRightServo(drivers(), &rightServo, 0.0f);
+CloseHopperCommand closeRightServo(drivers(), &rightServo, 145.0f);
+
+SlideControlCommand slideControlCommand(drivers(), &slide);
+SlideHoldCommand slideHoldCommand(drivers(), &slide);
+
 // Define command mappings here -------------------------------------------
 // HoldCommandMapping leftSwitchMid(
 //     drivers(),  // gimbalFieldRelativeControlCommand
 //     {&gimbalToggleAimCommand},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping rightSwitchUp(
+    drivers(),  // gimbalFieldRelativeControlCommand
+    {&closeLeftServo, &closeRightServo},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping rightSwitchMid(
+    drivers(),
+    {&openLeftServo, &openRightServo},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+
+HoldCommandMapping leftSwitchMid(
+    drivers(),
+    {&slideControlCommand},
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -96,7 +119,7 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    // feeder.setDefaultCommand(&stopFeederCommand);
+    // leftServo.setDefaultCommand(&openLeftServo);
 }
 
 // Set commands scheduled on startup
@@ -112,7 +135,9 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    // drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(&leftSwitchMid);
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchMid);
 }
 
 }  // namespace DartControl

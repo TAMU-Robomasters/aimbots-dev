@@ -20,8 +20,8 @@ static constexpr float INPUT_R_INC = 0.003f;
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.008f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
-static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
-static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.0001;
+static constexpr float XAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.001;
+static constexpr float ZAXIS_JOYSTICK_INPUT_SENSITIVITY = 0.001;
 
 static constexpr float INPUT_SLIDE_UPDOWN_INC = 0.006f;
 static constexpr float INPUT_SLIDE_FRONTBACK_INC = 0.006f;
@@ -140,7 +140,7 @@ float OperatorInterface::getSlideUpDownInput() {
     lastSlideUpDownInputCallTime = currTime;
 
     if (prevUpdateCounterSlideUpDown != updateCounter) {
-        slideUpDownInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
+        slideUpDownInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
         prevUpdateCounterSlideUpDown = updateCounter;
     }
 
@@ -165,7 +165,7 @@ float OperatorInterface::getSlideFrontBackInput() {
     lastSlideFrontBackInputCallTime = currTime;
 
     if (prevUpdateCounterSlideFrontBack != updateCounter) {
-        slideFrontBackInput.update(drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL), currTime);
+        slideFrontBackInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
         prevUpdateCounterSlideFrontBack = updateCounter;
     }
 
