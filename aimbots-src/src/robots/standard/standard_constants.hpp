@@ -379,7 +379,7 @@ static constexpr bool FEEDER_DIRECTION = false;
 // Shooter Constants -----------------------------------------------------------------------------
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 10.0f,
     .ki = 0.00f,
     .kd = 0.00f,
     .maxICumulative = 10.0f,

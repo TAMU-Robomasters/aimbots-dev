@@ -117,6 +117,7 @@ GimbalSubsystem gimbal(drivers());
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 FeederSubsystem feeder(drivers());
+ShooterSubsystem shooter(drivers());
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
 bool barrelCaliDoneFlag = false;
@@ -222,6 +223,21 @@ StopFeederCommand stopFeederCommand(
     drivers(),
     &feeder
 );
+
+RunShooterCommand runShooterCommand(
+    drivers(),
+    &shooter
+);
+
+RunShooterCommand runShooterCommand2(
+    drivers(),
+    &shooter
+);
+
+StopShooterCommand stopShooterCommand(
+    drivers(),
+    &shooter
+);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
@@ -241,13 +257,16 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&fullAutoFeederCommand},
+    {&fullAutoFeederCommand, &runShooterCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&stopFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID)); 
-
+    {&stopFeederCommand, &runShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&stopShooterCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -255,7 +274,7 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&hopper);
     drivers->commandScheduler.registerSubsystem(&feeder);
-    //drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&shooter);
     // drivers->commandScheduler.registerSubsystem(&barrelManager);
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
@@ -269,7 +288,7 @@ void initializeSubsystems() {
     gimbal.initialize();
     hopper.initialize();
     feeder.initialize();
-    //shooter.initialize();
+    shooter.initialize();
     // response.initialize();
     clientDisplay.initialize();
     
@@ -292,7 +311,7 @@ void startupCommands(src::Drivers *drivers) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
-    //drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&rightSwitchDown);
     
 }
 

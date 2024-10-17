@@ -12,16 +12,22 @@
 
 namespace src::Shooter {
 
+     //bool runShooterisRunningDisplay = false;
+
 RunShooterCommand::RunShooterCommand(src::Drivers* drivers, ShooterSubsystem* shooter) : drivers(drivers), shooter(shooter) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(shooter));
 }
 
 void RunShooterCommand::initialize() {
-    //shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, 5000.0f);
+    shooter->setTargetRPM(0, 4000);
+    shooter->setTargetRPM(1, 4000);
 }
 
 void RunShooterCommand::execute() {
     //shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);
+    //runShooterisRunningDisplay = true;
+    shooter->setTargetRPM(0, 4000);
+    shooter->setTargetRPM(1, 4000);
 }
 
 void RunShooterCommand::end(bool) {}
