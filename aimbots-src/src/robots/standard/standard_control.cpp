@@ -116,7 +116,7 @@ ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
-ShooterSubsystem shooter(drivers());
+// ShooterSubsystem shooter(drivers());
 FeederSubsystem feeder(drivers());
 
 // Command Flags ----------------------------
@@ -215,8 +215,8 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
-StopShooterCommand stopShooterCommand(drivers(), &shooter);
-RunShooterCommand runShooterCommand(drivers(), &shooter);
+// StopShooterCommand stopShooterCommand(drivers(), &shooter);
+// RunShooterCommand runShooterCommand(drivers(), &shooter);
 
 FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -240,12 +240,12 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&runShooterCommand, &fullAutoFeederCommand},
+    {&fullAutoFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&stopShooterCommand, &stopFeederCommand},
+    {&stopFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
@@ -266,6 +266,8 @@ void initializeSubsystems() {
     hopper.initialize();
     // response.initialize();
     clientDisplay.initialize();
+    // shooter.initialize();
+    feeder.initialize();
 }
 
 // Set default command here -----------------------------------------------
@@ -286,6 +288,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchDown);
+    drivers->commandMapper.addMap(&rightSwitchMid);
 }
 
 }  // namespace StandardControl
