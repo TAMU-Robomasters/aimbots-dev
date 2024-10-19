@@ -1,10 +1,12 @@
-#ifdef TARGET_ENGINEER
-#include "engineer_control_interface.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
+#ifdef TARGET_ENGINEER
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
+
+#include "engineer_control_interface.hpp"
 
 using namespace tap::communication::serial;
 using namespace tap::algorithms;

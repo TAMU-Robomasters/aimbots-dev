@@ -1,6 +1,8 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
+
+#define FEEDER_COMPATIBLE
 
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;
 

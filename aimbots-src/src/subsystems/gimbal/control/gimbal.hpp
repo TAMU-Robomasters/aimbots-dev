@@ -5,6 +5,8 @@
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
 
+#include "subsystems/gimbal/gimbal_constants.hpp"
+
 #ifdef GIMBAL_COMPATIBLE
 
 // static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
@@ -204,7 +206,8 @@ public:
     }
     inline void setTargetPitchAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetPitchAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
+        targetPitchAxisAngle.setWrappedValue(
+            tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
     }
 
     float getYawSetpointError(AngleUnit unit) const {

@@ -4,9 +4,9 @@
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
 
-#include "utils/tools/common_types.hpp"
+#include "subsystems/shooter/shooter_constants.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
-
+#include "utils/tools/common_types.hpp"
 
 #ifdef SHOOTER_COMPATIBLE
 
@@ -128,4 +128,4 @@ public:
 };
 };  // namespace src::Shooter
 
-#endif //#ifdef SHOOTER_COMPATIBLE
+#endif  //#ifdef SHOOTER_COMPATIBLE

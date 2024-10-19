@@ -1,9 +1,7 @@
-
+#include "gimbal_field_relative_controller.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 #ifdef GIMBAL_UNTETHERED
-
-#include "gimbal_field_relative_controller.hpp"
 
 namespace src::Gimbal {
 

@@ -1,3 +1,4 @@
+#include "chassis_tokyo_command.hpp"
 
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
@@ -5,7 +6,6 @@
 #include <subsystems/chassis/control/chassis_helper.hpp>
 
 #include "subsystems/chassis/control/chassis_helper.hpp"
-#include "chassis_tokyo_command.hpp"
 
 #warning "tokyo compatible"
 
@@ -39,7 +39,7 @@ void ChassisTokyoCommand::initialize() {
     }
 
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
-    
+
     if (randomizeSpinRate) {
         spinRateModifierTimer.restart(0);
     }
@@ -111,5 +111,5 @@ bool ChassisTokyoCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
-#endif //#ifdef GIMBAL_UNTETHERED
+#endif  //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef GIMBAL_UNTETHERED

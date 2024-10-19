@@ -2,8 +2,8 @@
 
 #include "tap/control/subsystem.hpp"
 
+#include "subsystems/slide/slide_constants.hpp"
 #include "utils/tools/common_types.hpp"
-
 
 #include "drivers.hpp"
 

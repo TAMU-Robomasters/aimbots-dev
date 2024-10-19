@@ -1,10 +1,12 @@
-#if defined(TARGET_AERIAL)
-#include "aerial_control_interface.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
+#if defined(ALL_AERIALS)
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/serial/remote.hpp"
 #include "tap/drivers.hpp"
+
+#include "aerial_control_interface.hpp"
 
 using namespace tap::communication::serial;
 using namespace tap::algorithms;

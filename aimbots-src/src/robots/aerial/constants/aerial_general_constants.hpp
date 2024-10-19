@@ -1,23 +1,15 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
-
+#include "utils/tools/common_types.hpp"
 
 static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
 
 // #define TURRET_HAS_IMU
 
-
-
-
-
 static Vector3f IMU_MOUNT_POSITION{0.0992f, 0.0f, 0.0534f};
-
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
-
-
 
 /**
  * @brief Transformation Matrices, specific to robot

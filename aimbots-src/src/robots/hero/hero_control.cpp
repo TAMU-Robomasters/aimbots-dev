@@ -19,10 +19,10 @@
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
-#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
@@ -30,6 +30,7 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
@@ -38,12 +39,9 @@
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
 #include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
-#include "subsystems/shooter/control/shooter.hpp"
 #include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
 #include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
-//
-#include "informants/communication/communication_response_handler.hpp"
-#include "informants/communication/communication_response_subsytem.hpp"
+#include "subsystems/shooter/control/shooter.hpp"
 //
 #include "subsystems/display/basic_commands/client_display_command.hpp"
 #include "subsystems/display/control/client_display_subsystem.hpp"

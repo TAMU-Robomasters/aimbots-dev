@@ -3,3 +3,5 @@
 #include "utils/tools/common_types.hpp"
 
 #define GRABBER_COMPATIBLE
+
+static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;

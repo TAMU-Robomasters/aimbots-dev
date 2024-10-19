@@ -1,4 +1,4 @@
-
+#include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
 

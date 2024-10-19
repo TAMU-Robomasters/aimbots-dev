@@ -1,13 +1,10 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define SHOOTER_COMPATIBLE
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
-
-static constexpr float kGRAVITY = 0.0f;
-static constexpr float HORIZON_OFFSET = 0.0f;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 40.0f,

@@ -2,7 +2,6 @@
 
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "tap/util_macros.hpp"
-#include "robots/standard/standard_control_interface.hpp"
 
 #include "utils/filters/ema.hpp"
 

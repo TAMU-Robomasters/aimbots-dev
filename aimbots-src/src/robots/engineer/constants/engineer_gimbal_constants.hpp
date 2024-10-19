@@ -5,17 +5,15 @@
 #define GIMBAL_COMPATIBLE
 #define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
 
-
 /**
  * @brief GIMBAL SETUP
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
-static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
-static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
+
+
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 2;
-static constexpr uint8_t WRIST_MOTOR_COUNT = 3;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
@@ -24,7 +22,6 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(186.15f)),
     wrapTo0To2PIRange(modm::toRadian(196.21f))};
-
 
 // Ignore all of these gimbal constants, last year's refactor did an oopsie and requires these for non-gimbal robots
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -50,8 +47,6 @@ static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 //----------------------------------------------------------------------------------------------------------------
-
-
 
 /**
  * @brief Position PID constants
@@ -168,7 +163,6 @@ static constexpr SmoothPIDConfig ROLL_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
 // clang-format off
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
                                                                     {0.0f, 0.0f},
@@ -202,3 +196,11 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
+
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
+
+static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+
+static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
+static constexpr float HORIZON_OFFSET = 0.0f;

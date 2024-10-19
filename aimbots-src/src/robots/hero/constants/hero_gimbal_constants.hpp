@@ -1,8 +1,9 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define GIMBAL_UNTETHERED
+#define GIMBAL_COMPATIBLE
 
 /**
  * @brief GIMBAL SETUP
@@ -134,36 +135,41 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
 };
 
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
-                                                                    {0.0f, 0.0f},
-                                                                    {1.75f, 3'000.0f},
-                                                                    {6.0f, 6'000.0f},
-                                                                    {10.2f, 9'000.0f},
-                                                                    {14.4f, 12'000.0f},
-                                                                    {18.8f, 15'000.0f},
-                                                                    {23.05f, 18'000.0f},
-                                                                    {27.30f, 21'000.0f},
-                                                                    {31.5f, 24'000.0f},
-                                                                    {32.71f, 27'000.0f},
-                                                                    {32.72f, 30'000.0f}
-                                                                    };
-
+    {0.0f, 0.0f},
+    {1.75f, 3'000.0f},
+    {6.0f, 6'000.0f},
+    {10.2f, 9'000.0f},
+    {14.4f, 12'000.0f},
+    {18.8f, 15'000.0f},
+    {23.05f, 18'000.0f},
+    {27.30f, 21'000.0f},
+    {31.5f, 24'000.0f},
+    {32.71f, 27'000.0f},
+    {32.72f, 30'000.0f}};
 
 const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
-                                                                    {0.0f, 0.0f},
-                                                                    {3.75f, 3'000.0f},
-                                                                    {8.5f, 6'000.0f},
-                                                                    {12.75f, 9'000.0f},
-                                                                    {17.67f, 12'000.0f},
-                                                                    {22.5f, 15'000.0f},
-                                                                    {26.75f, 18'000.0f},
-                                                                    {31.5f, 21'000.0f},
-                                                                    {35.5f, 24'000.0f},
-                                                                    {36.15f, 27'000.0f},
-                                                                    {36.35f, 30'000.0f}
-                                                                    };
+    {0.0f, 0.0f},
+    {3.75f, 3'000.0f},
+    {8.5f, 6'000.0f},
+    {12.75f, 9'000.0f},
+    {17.67f, 12'000.0f},
+    {22.5f, 15'000.0f},
+    {26.75f, 18'000.0f},
+    {31.5f, 21'000.0f},
+    {35.5f, 24'000.0f},
+    {36.15f, 27'000.0f},
+    {36.35f, 30'000.0f}};
 
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
 static constexpr float GIMBAL_X_OFFSET = 0.0f;
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;
+
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
+
+static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
+
+static constexpr float kGRAVITY = 4500.0f;
+static constexpr float HORIZON_OFFSET = -0.0f;
