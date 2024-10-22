@@ -1,7 +1,7 @@
 #include "subsystems/feeder/control/feeder.hpp"
 #include "utils/tools/robot_specific_inc.hpp"
 
-#ifdef SHOOTER_COMPATIBLE
+#ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
     FeederSubsystem::FeederSubsystem(src::Drivers* drivers) : 
