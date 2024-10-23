@@ -6,7 +6,6 @@
 
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
-static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 

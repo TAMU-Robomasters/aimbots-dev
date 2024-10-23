@@ -1,4 +1,6 @@
-#ifdef TARGET_STANDARD_2023
+#include "utils/tools/robot_specific_defines.hpp"
+
+#ifdef BRUH 
 
 #include "utils/tools/common_types.hpp"
 
@@ -48,8 +50,8 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 //
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+//#include "subsystems/barrel_manager/barrel_manager.hpp"
+//#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
@@ -58,16 +60,18 @@
 #include "subsystems/display/control/client_display_subsystem.hpp"
 //
 
+
+
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 using namespace src::Hopper;
-using namespace src::BarrelManager;
+//using namespace src::BarrelManager;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
 using namespace src::Utils::ClientDisplay;
-using namespace src::BarrelManager;
+//using namespace src::BarrelManager;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -130,7 +134,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
-BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
+//BarrelManagerSubsystem barrelManager(drivers(), currentBarrel);
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -167,11 +171,11 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
-};
+// GimbalPatrolConfig patrolConfig = {
+//     .pitchPatrolAmplitude = modm::toRadian(11.0f),
+//     .pitchPatrolFrequency = 1.5f * M_PI,
+//     .pitchPatrolOffset = -modm::toRadian(11.0f),
+// };
 
 // Define commands here ---------------------------------------------------
 
@@ -201,8 +205,8 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
+// GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
+//GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalChaseCommand gimbalChaseCommand(

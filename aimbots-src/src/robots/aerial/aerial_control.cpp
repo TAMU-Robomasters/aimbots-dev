@@ -44,13 +44,7 @@
 #include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
 #include "subsystems/shooter/control/shooter.hpp"
 //
-#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
-#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
-#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
-#include "subsystems/hopper/control/hopper.hpp"
-//
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"

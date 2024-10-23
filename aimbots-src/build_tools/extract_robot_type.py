@@ -26,6 +26,7 @@ VALID_ROBOT_TYPES   = [ "STANDARD_2023",
                         "ENGINEER",
                         "SENTRY",
                         "HERO",
+                        "DART",
                         "CVTESTBENCH",
                         "TURRET" ]
 
