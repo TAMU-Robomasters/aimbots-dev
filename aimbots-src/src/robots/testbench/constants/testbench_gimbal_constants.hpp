@@ -3,6 +3,8 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define GIMBAL_UNTETHERED
+#define GIMBAL_COMPATIBLE
+
 
 
 /**

@@ -2,6 +2,8 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+// #de SHOOTER_COMPATIBLE
+
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {

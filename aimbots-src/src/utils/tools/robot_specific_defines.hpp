@@ -30,14 +30,14 @@
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS
 
-#elif defined(TARGET_CVTESTBENCH)
+#elif defined(TARGET_CVTEST_HAN) || defined(TARGET_CVTEST_CHEWIE) || defined(TARGET_CVTEST_LUKE)
 #include "robots/testbench/constants/testbench_general_constants.hpp"
 #include "robots/testbench/testbench_control_interface.hpp"
 #define ALL_TESTBENCHES
 
 #elif defined(TARGET_TURRET)
 #include "robots/turret/constants/turret_general_constants.hpp"
-#include "robots/turret/turrer_control_interface.hpp"
+#include "robots/turret/turret_control_interface.hpp"
 #define ALL_TURRETS
 
 #endif

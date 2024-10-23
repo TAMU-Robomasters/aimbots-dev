@@ -2,7 +2,6 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
-
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .kp = 15.0f,
     .ki = 0.0f,
@@ -17,7 +16,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-
+static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
 static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
 static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 
@@ -29,3 +28,5 @@ static constexpr MotorID FEEDER_ID = MotorID::MOTOR2;
 //
 
 static constexpr bool FEEDER_DIRECTION = false;
+
+// #endif

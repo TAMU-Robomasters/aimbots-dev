@@ -2,6 +2,8 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#define CHASSIS_COMPATIBLE
+
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 

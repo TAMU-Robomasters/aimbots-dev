@@ -1,4 +1,6 @@
-#ifdef TARGET_CVTESTBENCH
+#include "utils/tools/robot_specific_defines.hpp"
+
+#ifdef ALL_TESTBENCHES
 #include "testbench_control_interface.hpp"
 
 #include "tap/algorithms/ramp.hpp"
