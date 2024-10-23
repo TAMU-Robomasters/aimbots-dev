@@ -116,7 +116,7 @@ ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
-// ShooterSubsystem shooter(drivers());
+ShooterSubsystem shooter(drivers());
 FeederSubsystem feeder(drivers());
 
 // Command Flags ----------------------------
@@ -215,8 +215,8 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
-// StopShooterCommand stopShooterCommand(drivers(), &shooter);
-// RunShooterCommand runShooterCommand(drivers(), &shooter);
+StopShooterCommand stopShooterCommand(drivers(), &shooter);
+RunShooterCommand runShooterCommand(drivers(), &shooter);
 
 FullAutoFeederCommand fullAutoFeederCommand(drivers(), &feeder);
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
@@ -240,12 +240,12 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&fullAutoFeederCommand},
+    {&fullAutoFeederCommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&stopFeederCommand},
+    {&stopFeederCommand, &stopShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Register subsystems here -----------------------------------------------
@@ -257,6 +257,8 @@ void registerSubsystems(src::Drivers *drivers) {
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    drivers->commandScheduler.registerSubsystem(&shooter);
+    drivers->commandScheduler.registerSubsystem(&feeder);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -266,7 +268,7 @@ void initializeSubsystems() {
     hopper.initialize();
     // response.initialize();
     clientDisplay.initialize();
-    // shooter.initialize();
+    shooter.initialize();
     feeder.initialize();
 }
 

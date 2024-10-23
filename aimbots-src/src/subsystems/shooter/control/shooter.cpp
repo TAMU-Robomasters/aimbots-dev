@@ -4,6 +4,20 @@
 #ifdef SHOOTER_COMPATIBLE
 
 namespace src::Shooter {
+    static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
+        .kp = 6.5f,
+        .ki = 0.00f,
+        .kd = 0.00f,
+        .maxICumulative = 10.0f,
+        .maxOutput = M3508_MAX_OUTPUT,
+        .tQDerivativeKalman = 1.0f,
+        .tRDerivativeKalman = 1.0f,
+        .tQProportionalKalman = 1.0f,
+        .tRProportionalKalman = 1.0f,
+        .errDeadzone = 0.0f,
+        .errorDerivativeFloor = 0.0f,
+    };
+
     ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers) : 
         Subsystem(drivers),
         drivers(drivers),
@@ -25,6 +39,9 @@ namespace src::Shooter {
         desiredOutputs[1] = 0;
     }
 
+    float shooterCurrentRPMDisplay = 0;
+    float shooterTargetRPMDisplay = 0;
+
     void ShooterSubsystem::initialize() {
         motors[0]->initialize();
         motors[1]->initialize();
@@ -35,6 +52,8 @@ namespace src::Shooter {
             updateMotorVelocityPID(i);
             setDesiredOutputToMotor(i);
         }
+        shooterCurrentRPMDisplay = getMotorRPM(0);
+        shooterTargetRPMDisplay = targetRPMs[0];
     }
 
     float ShooterSubsystem::getMotorRPM(uint8_t motorIdx) const {

@@ -29,6 +29,8 @@ public:
 
     float getCurrentRPM() { return 0; }
 
+    float currentTargetRPM;
+
 private:
     src::Drivers* drivers;
 

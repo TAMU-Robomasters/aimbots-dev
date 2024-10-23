@@ -357,7 +357,7 @@ static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 19;
 
 // Feeder Constants -----------------------------------------------------------------------------------
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 1.5f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
