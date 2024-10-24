@@ -3,7 +3,7 @@
 #include "tap/algorithms/linear_interpolation_predictor.hpp"
 #include "tap/util_macros.hpp"
 
-#include "utils/tools/robot_specific_inc.hpp"
+
 #include "utils/filters/ema.hpp"
 
 using namespace tap::algorithms;

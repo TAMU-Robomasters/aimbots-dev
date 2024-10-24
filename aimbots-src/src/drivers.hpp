@@ -29,7 +29,7 @@
 #include "communicators/jetson/jetson_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 // graphing elsewhere lol
 
 namespace src {

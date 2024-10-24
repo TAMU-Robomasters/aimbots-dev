@@ -4,7 +4,8 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
-#include <utils/tools/robot_specific_inc.hpp>
+
+#include "subsystems/gimbal/gimbal_constants.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 
@@ -205,7 +206,8 @@ public:
     }
     inline void setTargetPitchAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetPitchAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
+        targetPitchAxisAngle.setWrappedValue(
+            tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
     }
 
     float getYawSetpointError(AngleUnit unit) const {

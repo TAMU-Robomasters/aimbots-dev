@@ -1,6 +1,10 @@
 #pragma once
 
+#include "subsystems/chassis/chassis_constants.hpp"
+#include "subsystems/feeder/feeder_constants.hpp"
+#include "subsystems/gimbal/gimbal_constants.hpp"
 #include "utils/tools/common_types.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
 #include "projectile_launch_speed_predictor.hpp"
 #include "ref_helper_interface.hpp"

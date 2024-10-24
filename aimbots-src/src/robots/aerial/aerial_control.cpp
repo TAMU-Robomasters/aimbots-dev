@@ -30,6 +30,7 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
@@ -43,13 +44,7 @@
 #include "subsystems/shooter/complex_commands/stop_shooter_comprised_command.hpp"
 #include "subsystems/shooter/control/shooter.hpp"
 //
-#include "subsystems/hopper/basic_commands/close_hopper_command.hpp"
-#include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
-#include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
-#include "subsystems/hopper/control/hopper.hpp"
-//
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
@@ -134,61 +129,7 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 
 // Define behavior configs here --------------------------------------------
 
-SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = 2,
-    .snapAngle = modm::toRadian(0.0f),
-};
-
-TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
-    .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
-    .rotationalSpeedIncrement = 30.0f,
-};
-
-SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
-    .maxSpinRateModifier = 1.0f,
-    .minSpinRateModifierDuration = 500,
-    .maxSpinRateModifierDuration = 3000,
-};
-
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
-};
-
 // Define commands here ---------------------------------------------------
-
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-ChassisToggleDriveCommand chassisToggleDriveCommand(
-    drivers(),
-    &chassis,
-    &gimbal,
-    defaultSnapConfig,
-    defaultTokyoConfig,
-    false,
-    randomizerConfig);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
-
-ChassisAutoNavCommand chassisAutoNavCommand(
-    drivers(),
-    &chassis,
-    defaultLinearConfig,
-    defaultRotationConfig,
-    defaultSnapConfig);
-
-ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
-    drivers(),
-    &chassis,
-    defaultLinearConfig,
-    defaultTokyoConfig,
-    false,
-    randomizerConfig);
-
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -214,9 +155,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-// Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
+FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 

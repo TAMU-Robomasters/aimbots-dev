@@ -6,10 +6,8 @@
 /**
  * @brief Defines the number of motors created for the chassis.
  */
-static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
-static constexpr uint8_t MOTORS_PER_WHEEL = 1;
-
-static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
+static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4; //
+static constexpr uint8_t MOTORS_PER_WHEEL = 1;//
 
 /**
  * @brief GIMBAL SETUP
@@ -179,7 +177,7 @@ static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------
 
-static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
+static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f}; // genereaal
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 5.0f,
@@ -223,17 +221,11 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {
-    15, 3900,  // {ball m/s, flywheel rpm}
-    18, 4500,
-    30, 9000};
-// clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
-static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
+// balls
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

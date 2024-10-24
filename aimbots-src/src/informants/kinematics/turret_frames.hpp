@@ -3,6 +3,7 @@
 #include "informants/kinematics/coordinate_frame.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/robot_specific_defines.hpp"
 
 //#include "utils/math/transform_setup.hpp"
 #include "utils/math/transformations.hpp"

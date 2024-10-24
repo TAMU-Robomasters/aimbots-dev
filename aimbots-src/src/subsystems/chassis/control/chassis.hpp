@@ -3,9 +3,9 @@
 #include "tap/control/chassis/chassis_subsystem_interface.hpp"
 #include "tap/motor/m3508_constants.hpp"
 
-#include "utils/tools/common_types.hpp"
+#include "subsystems/chassis/chassis_constants.hpp"
 #include "utils/motion/power_limiter/power_limiter.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 
@@ -204,4 +204,4 @@ public:
 
 };  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

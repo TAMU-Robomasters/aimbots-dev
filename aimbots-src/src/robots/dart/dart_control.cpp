@@ -24,10 +24,10 @@
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
-#include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
-#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
-#include "subsystems/feeder/control/feeder.hpp"
+// #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
+// #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+// #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+// #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
@@ -59,13 +59,13 @@
 //
 
 using namespace src::Chassis;
-using namespace src::Feeder;
+// using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
-/*  AERIAL Control Scheme:
+/*  DART Control Scheme:
 
     Chassis -----------------------------------------------------------
     Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
@@ -110,7 +110,7 @@ using namespace tap;
 using namespace tap::control;
 using namespace tap::communication::serial;
 
-namespace AerialControl {
+namespace DartControl {
 
 // This is technically a command flag, but it needs to be defined before the barrel manager subsystem
 BarrelID currentBarrel = BARREL_IDS[0];
@@ -119,7 +119,7 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
-FeederSubsystem feeder(drivers());
+// FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
@@ -154,11 +154,11 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-GimbalPatrolConfig patrolConfig = {
-    .pitchPatrolAmplitude = modm::toRadian(11.0f),
-    .pitchPatrolFrequency = 1.5f * M_PI,
-    .pitchPatrolOffset = -modm::toRadian(11.0f),
-};
+// GimbalPatrolConfig patrolConfig = {
+//     .pitchPatrolAmplitude = modm::toRadian(11.0f),
+//     .pitchPatrolFrequency = 1.5f * M_PI,
+//     .pitchPatrolOffset = -modm::toRadian(11.0f),
+// };
 
 // Define commands here ---------------------------------------------------
 
@@ -188,8 +188,8 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
-GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
+//GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
+//GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalChaseCommand gimbalChaseCommand(
@@ -214,14 +214,14 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
 
-FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
-FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
+// FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
+// FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, FEEDER_DEFAULT_RPM, 3000.0f, UNJAM_TIMER_MS);
 // Raise the acceptable threshold on the feeder to let it trust the barrel manager will prevent overheat
 
-StopFeederCommand stopFeederCommand(drivers(), &feeder);
+// StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
-RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
+// RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
@@ -248,21 +248,21 @@ HoldCommandMapping rightSwitchMid(
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
+// HoldRepeatCommandMapping rightSwitchUp(
+//     drivers(),
+//     {&runFeederCommand, &runShooterWithFeederCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+//     true);
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+// HoldCommandMapping leftClickMouse(
+//     drivers(),
+//     {&runFeederCommandFromMouse},
+//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
-    drivers->commandScheduler.registerSubsystem(&feeder);
+    // drivers->commandScheduler.registerSubsystem(&feeder);
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
@@ -271,14 +271,14 @@ void registerSubsystems(src::Drivers *drivers) {
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
     chassis.initialize();
-    feeder.initialize();
+    // feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
+    // feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
@@ -297,25 +297,25 @@ void startupCommands(src::Drivers *drivers) {
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    //drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     // drivers->commandMapper.addMap(&rightSwitchDown);
-    drivers->commandMapper.addMap(&leftClickMouse);
+    //drivers->commandMapper.addMap(&leftClickMouse);
 }
 
-}  // namespace AerialControl
+}  // namespace DartControl
 
 namespace src::Control {
 // Initialize subsystems ---------------------------------------------------
 void initializeSubsystemCommands(src::Drivers *drivers) {
-    AerialControl::initializeSubsystems();
-    AerialControl::registerSubsystems(drivers);
-    AerialControl::setDefaultCommands(drivers);
-    AerialControl::startupCommands(drivers);
-    AerialControl::registerIOMappings(drivers);
+    DartControl::initializeSubsystems();
+    DartControl::registerSubsystems(drivers);
+    DartControl::setDefaultCommands(drivers);
+    DartControl::startupCommands(drivers);
+    DartControl::registerIOMappings(drivers);
 }
 }  // namespace src::Control
 
 // temp
 
-#endif  // TARGET_AERIAL
+#endif  // TARGET_DART

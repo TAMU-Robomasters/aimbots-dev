@@ -2,8 +2,8 @@
 
 #include "tap/control/subsystem.hpp"
 
+#include "subsystems/hopper/hopper_constants.hpp"
 #include "utils/tools/common_types.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
 
 #ifdef HOPPER_LID_COMPATIBLE
 
@@ -17,8 +17,7 @@ enum HopperState : uint8_t {
 
 class HopperSubsystem : public tap::control::Subsystem {
 public:
-    HopperSubsystem(
-        tap::Drivers* drivers);
+    HopperSubsystem(tap::Drivers* drivers);
 
     mockable void initialize() override;
     void refresh() override;

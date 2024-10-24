@@ -26,7 +26,10 @@ VALID_ROBOT_TYPES   = [ "STANDARD_2023",
                         "ENGINEER",
                         "SENTRY",
                         "HERO",
-                        "CVTESTBENCH",
+                        "DART",
+                        "CVTEST_HAN",
+                        "CVTEST_LUKE",
+                        "CVTEST_CHEWIE",
                         "TURRET" ]
 
 def get_robot_type():

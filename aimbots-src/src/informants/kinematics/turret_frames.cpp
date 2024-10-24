@@ -4,9 +4,13 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
+#include "utils/tools/robot_specific_defines.hpp"
+#include "subsystems/gimbal/gimbal_constants.hpp"
+#include "subsystems/chassis/chassis_constants.hpp"
+
 //#include "utils/math/transform_setup.hpp"
 #include "utils/math/transformations.hpp"
-#include "utils/tools/robot_specific_inc.hpp"
+
 
 using namespace src::Utils::MatrixHelper;
 namespace src::Informants::Transformers {

@@ -1,10 +1,10 @@
-#include "utils/tools/robot_specific_inc.hpp"
+
+#include "chassis_follow_gimbal_command.hpp"
+
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
 
 #include "subsystems/chassis/control/chassis_helper.hpp"
-
-#include "chassis_follow_gimbal_command.hpp"
 
 namespace src::Chassis {
 
@@ -22,9 +22,7 @@ ChassisFollowGimbalCommand::ChassisFollowGimbalCommand(
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
-void ChassisFollowGimbalCommand::initialize() {
-    
-}
+void ChassisFollowGimbalCommand::initialize() {}
 
 // Debug variables
 float yawAngleFromChassisCenterDisplay2 = 0.0f;
@@ -84,6 +82,6 @@ bool ChassisFollowGimbalCommand::isReady() { return true; }
 bool ChassisFollowGimbalCommand::isFinished() const { return false; }
 
 }  // namespace src::Chassis
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE
 
-#endif //#ifdef GIMBAL_UNTETHERED
+#endif  //#ifdef GIMBAL_UNTETHERED

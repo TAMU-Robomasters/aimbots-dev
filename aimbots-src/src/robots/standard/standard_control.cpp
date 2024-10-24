@@ -1,6 +1,6 @@
 #include "utils/tools/robot_specific_defines.hpp"
 
-#if defined(ALL_STANDARDS) && !defined(TARGET_STANDARD_2023)
+#if defined(ALL_STANDARDS)
 
 #include "utils/tools/common_types.hpp"
 
@@ -50,8 +50,8 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 //
-#include "subsystems/barrel_manager/barrel_manager.hpp"
-#include "subsystems/barrel_manager/barrel_swap_command.hpp"
+//#include "subsystems/barrel_manager/barrel_manager.hpp"
+//#include "subsystems/barrel_manager/barrel_swap_command.hpp"
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
