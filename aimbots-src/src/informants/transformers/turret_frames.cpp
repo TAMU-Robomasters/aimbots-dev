@@ -57,7 +57,8 @@ void TurretFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitch
 
 #ifndef TARGET_TURRET
     Matrix3f at_cv_update_field_orientation_relative_to_chassis_orientation =
-        rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit) *
+        rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * 
+        rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit) *
         rotationMatrix(camera_offset_angle, Z_AXIS, AngleUnit::Degrees);
 
     Vector3f at_cv_update_camera_origin_relative_to_gimbal_origin =

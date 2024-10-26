@@ -2,7 +2,7 @@
 
 #include "tap/control/command.hpp"
 
-#include "informants/enemy_data_conversion.hpp"
+#include "informants/vision/enemy_data_conversion.hpp"
 #include "subsystems/gimbal/controllers/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/controllers/gimbal_field_relative_controller.hpp"
 #include "subsystems/gimbal/gimbal.hpp"

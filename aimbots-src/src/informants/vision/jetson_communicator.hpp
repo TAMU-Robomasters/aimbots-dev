@@ -8,7 +8,7 @@
 #include <tap/communication/serial/ref_serial_data.hpp>
 #include <tap/drivers.hpp>
 
-#include "informants/enemy_data_conversion.hpp"
+#include "informants/vision/enemy_data_conversion.hpp"
 
 #include "jetson_protocol.hpp"
 
