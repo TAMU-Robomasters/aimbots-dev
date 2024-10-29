@@ -34,12 +34,13 @@ Song nothingIsPlayingSong = {120, Q_N, {{REST, Q_N}, {REST, Q_N}, {END, Q_N}}};
 // PacMan Theme
 
 static constexpr uint32_t PM_BPM = 120;
-Song pacManSong = {PM_BPM, Q_N, {{B4, S_N},   {B5, S_N},   {Gb5, S_N}, {Eb5, S_N}, {B5, S_N}, {REST, S_N}, {Eb5, S_N},
-                                 {REST, S_N}, {C5, S_N},   {C6, S_N},  {G5, S_N},  {E5, S_N}, {C6, S_N},   {REST, S_N},
-                                 {E5, S_N},   {REST, S_N},
+Song pacManSong = {PM_BPM, Q_N, {{B4_N, S_N},  {B5_N, S_N}, {Gb5_N, S_N}, {Eb5_N, S_N}, {B5_N, S_N}, {REST, S_N},
+                                 {Eb5_N, S_N}, {REST, S_N}, {C5_N, S_N},  {C6_N, S_N},  {G5_N, S_N}, {E5_N, S_N},
+                                 {C6_N, S_N},  {REST, S_N}, {E5_N, S_N},  {REST, S_N},
 
-                                 {B4, S_N},   {B5, S_N},   {G5, S_N},  {E5, S_N},  {B5, S_N}, {REST, S_N}, {Eb5, S_N},
-                                 {REST, S_N}, {Eb5, E_N},  {F5, E_N},  {G5, E_N},  {B5, S_N}, {END, S_N}}};
+                                 {B4_N, S_N},  {B5_N, S_N}, {G5_N, S_N},  {E5_N, S_N},  {B5_N, S_N}, {REST, S_N},
+                                 {Eb5_N, S_N}, {REST, S_N}, {Eb5_N, E_N}, {F5_N, E_N},  {G5_N, E_N}, {B5_N, S_N},
+                                 {END, S_N}}};
 
 // Based on:
 // https://musescore.com/user/85429/scores/107109
@@ -48,16 +49,18 @@ Song pacManSong = {PM_BPM, Q_N, {{B4, S_N},   {B5, S_N},   {Gb5, S_N}, {Eb5, S_N
 // We Are Number One
 
 static constexpr uint32_t WENUM1_BPM = 168;
-Song weAreNumberOneSong = {WENUM1_BPM, Q_N, {{F5, QH_N}, {C6, E_N},  {B5, S_N},  {C6, S_N},  {B5, S_N},  {C6, S_N},
-                                             {B5, E_N},  {C6, E_N},
+Song weAreNumberOneSong = {
+    WENUM1_BPM,
+    Q_N,
+    {{F5_N, QH_N}, {C6_N, E_N},  {B5_N, S_N},  {C6_N, S_N},  {B5_N, S_N},  {C6_N, S_N}, {B5_N, E_N}, {C6_N, E_N},
 
-                                             {Ab5, Q_N}, {F5, Q_N},  {F5, E_N},  {F5, E_N},  {Ab4, E_N}, {C6, E_N},
+     {Ab5_N, Q_N}, {F5_N, Q_N},  {F5_N, E_N},  {F5_N, E_N},  {Ab4_N, E_N}, {C6_N, E_N},
 
-                                             {Db6, Q_N}, {Ab4, Q_N}, {Db6, Q_N}, {Eb6, Q_N},
+     {Db6_N, Q_N}, {Ab4_N, Q_N}, {Db6_N, Q_N}, {Eb6_N, Q_N},
 
-                                             {C6, E_N},  {Db6, E_N}, {C6, E_N},  {Db6, E_N}, {C6, Q_N},  {E6, Q_N},
+     {C6_N, E_N},  {Db6_N, E_N}, {C6_N, E_N},  {Db6_N, E_N}, {C6_N, Q_N},  {E6_N, Q_N},
 
-                                             {END, Q_N}}};
+     {END, Q_N}}};
 
 // Based on:
 // https://musescore.com/user/14081071/scores/3082501
@@ -66,21 +69,21 @@ Song weAreNumberOneSong = {WENUM1_BPM, Q_N, {{F5, QH_N}, {C6, E_N},  {B5, S_N}, 
 // Chainsaw Man Theme
 
 static constexpr uint32_t CHNSW_BPM = 175;
-Song chainSawManSong = {CHNSW_BPM, Q_N, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {E5, E_N},  {Gb5, Q_N}, {A4, E_N},
+Song chainSawManSong = {CHNSW_BPM, Q_N, {{Ab5_N, Q_N}, {Db5_N, Q_N},  {Eb5_N, Q_N}, {E5_N, E_N},  {Gb5_N, Q_N}, {A4_N, E_N},
 
-                                         {A4, E_N},  {E5, QH_N},  {A4, Q_N},   {A4, Q_N},
+                                         {A4_N, E_N},  {E5_N, QH_N},  {A4_N, Q_N},  {A4_N, Q_N},
 
-                                         {Ab4, Q_N}, {Eb5, Q_N},  {Ab4, E_N},  {Gb4, Q_N}, {Ab4, E_N},
+                                         {Ab4_N, Q_N}, {Eb5_N, Q_N},  {Ab4_N, E_N}, {Gb4_N, Q_N}, {Ab4_N, E_N},
 
-                                         {Ab4, E_N}, {Db5, QH_N}, {REST, Q_N}, {Ab4, Q_N},
+                                         {Ab4_N, E_N}, {Db5_N, QH_N}, {REST, Q_N},  {Ab4_N, Q_N},
 
-                                         {Gb4, E_N}, {E4, E_N},   {Gb4, Q_N},  {Ab4, E_N}, {Ab4, E_N},
+                                         {Gb4_N, E_N}, {E4_N, E_N},   {Gb4_N, Q_N}, {Ab4_N, E_N}, {Ab4_N, E_N},
 
-                                         {Bb4, E_N}, {B4, Q_N},   {A4, E_N},   {Ab4, E_N}, {Gb4, Q_N}, {Db5, Q_N},
+                                         {Bb4_N, E_N}, {B4_N, Q_N},   {A4_N, E_N},  {Ab4_N, E_N}, {Gb4_N, Q_N}, {Db5_N, Q_N},
 
-                                         {Db5, Q_N}, {B4, E_N},   {A4, E_N},   {Ab4, E_N}, {E5, Q_N},  {Eb5, E_N},
+                                         {Db5_N, Q_N}, {B4_N, E_N},   {A4_N, E_N},  {Ab4_N, E_N}, {E5_N, Q_N},  {Eb5_N, E_N},
 
-                                         {Eb5, H_N}, {REST, Q_N}, {Ab5, Q_N},  {Db5, H_N},
+                                         {Eb5_N, H_N}, {REST, Q_N},   {Ab5_N, Q_N}, {Db5_N, H_N},
 
                                          {END, Q_N}}};
 
@@ -91,17 +94,18 @@ Song chainSawManSong = {CHNSW_BPM, Q_N, {{Ab5, Q_N}, {Db5, Q_N},  {Eb5, Q_N},  {
 // Mystery Song (hmm...)
 
 static constexpr uint32_t MYST_BPM = 114;
-Song mysterySong = {MYST_BPM, Q_N, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
+Song mysterySong = {MYST_BPM, Q_N, {{G4_N, S_N},  {A4_N, S_N}, {C5_N, S_N}, {A4_N, S_N},
 
-                                    {E5, EH_N}, {E5, S_N}, {E5, E_N}, {D5, E_N}, {D5, Q_N}, {G4, S_N}, {A4, S_N},
-                                    {C5, S_N},  {A4, S_N},
+                                    {E5_N, EH_N}, {E5_N, S_N}, {E5_N, E_N}, {D5_N, E_N}, {D5_N, Q_N}, {G4_N, S_N},
+                                    {A4_N, S_N},  {C5_N, S_N}, {A4_N, S_N},
 
-                                    {D5, EH_N}, {D5, S_N}, {D5, E_N}, {C5, E_N}, {C5, S_N}, {B4, S_N}, {A4, E_N},
-                                    {G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
+                                    {D5_N, EH_N}, {D5_N, S_N}, {D5_N, E_N}, {C5_N, E_N}, {C5_N, S_N}, {B4_N, S_N},
+                                    {A4_N, E_N},  {G4_N, S_N}, {A4_N, S_N}, {C5_N, S_N}, {A4_N, S_N},
 
-                                    {C5, Q_N},  {D5, E_N}, {B4, E_N}, {B4, S_N}, {A4, S_N}, {G4, Q_N}, {G4, E_N},
+                                    {C5_N, Q_N},  {D5_N, E_N}, {B4_N, E_N}, {B4_N, S_N}, {A4_N, S_N}, {G4_N, Q_N},
+                                    {G4_N, E_N},
 
-                                    {D5, Q_N},  {C5, H_N},
+                                    {D5_N, Q_N},  {C5_N, H_N},
 
                                     {END, Q_N}}};
 
@@ -112,11 +116,11 @@ Song mysterySong = {MYST_BPM, Q_N, {{G4, S_N},  {A4, S_N}, {C5, S_N}, {A4, S_N},
 // Crab Rave
 
 static constexpr uint32_t CRAB_BPM = 125;
-Song crabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}, {D5, E_N},
-                                     {D6, S_N}, {A5, E_N},  {F5, E_N}, {F5, E_N},
+Song crabRaveSong = {CRAB_BPM, Q_N, {{D5_N, E_N}, {Bb5_N, E_N}, {G6_N, E_N}, {G6_N, S_N}, {D5_N, E_N},
+                                     {D6_N, S_N}, {A5_N, E_N},  {F5_N, E_N}, {F5_N, E_N},
 
-                                     {D5, E_N}, {D6, S_N},  {A5, E_N}, {F5, E_N}, {F5, S_N},
-                                     {C5, E_N}, {C5, E_N},  {E5, E_N}, {E5, S_N}, {F5, S_N},
+                                     {D5_N, E_N}, {D6_N, S_N},  {A5_N, E_N}, {F5_N, E_N}, {F5_N, S_N},
+                                     {C5_N, E_N}, {C5_N, E_N},  {E5_N, E_N}, {E5_N, S_N}, {F5_N, S_N},
 
                                      {END, Q_N}}};
 
@@ -127,16 +131,16 @@ Song crabRaveSong = {CRAB_BPM, Q_N, {{D5, E_N}, {Bb5, E_N}, {G6, E_N}, {G6, S_N}
 // Legend of Zelda Overworld Theme
 
 static constexpr uint32_t LOZ_BPM = 130;
-Song legendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},   {A5, TE_N}, {A5, TE_N},
+Song legendOfZeldaSong = {LOZ_BPM, Q_N, {{A5_N, H_N},  {REST, TQ_N}, {A5_N, TE_N}, {A5_N, TE_N}, {A5_N, TE_N}, {A5_N, TE_N},
 
-                                         {A5, TQ_N}, {G4, TE_N},   {A5, Q_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},
-                                         {A5, TE_N}, {A5, TE_N},
+                                         {A5_N, TQ_N}, {G4_N, TE_N}, {A5_N, Q_N},  {REST, TQ_N}, {A5_N, TE_N}, {A5_N, TE_N},
+                                         {A5_N, TE_N}, {A5_N, TE_N},
 
-                                         {A5, TQ_N}, {G4, TE_N},   {A5, Q_N},  {REST, TQ_N}, {A5, TE_N}, {A5, TE_N},
-                                         {A5, TE_N}, {A5, TE_N},
+                                         {A5_N, TQ_N}, {G4_N, TE_N}, {A5_N, Q_N},  {REST, TQ_N}, {A5_N, TE_N}, {A5_N, TE_N},
+                                         {A5_N, TE_N}, {A5_N, TE_N},
 
-                                         {A5, E_N},  {E5, S_N},    {E5, S_N},  {E5, E_N},    {E5, S_N},  {E5, S_N},
-                                         {E5, E_N},  {E5, S_N},    {E5, S_N},  {E5, E_N},    {E5, E_N},
+                                         {A5_N, E_N},  {E5_N, S_N},  {E5_N, S_N},  {E5_N, E_N},  {E5_N, S_N},  {E5_N, S_N},
+                                         {E5_N, E_N},  {E5_N, S_N},  {E5_N, S_N},  {E5_N, E_N},  {E5_N, E_N},
 
                                          {END, Q_N}}};
 
@@ -146,27 +150,94 @@ Song legendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {
 
 // LG Washing Machine
 
-static constexpr uint32_t LG_BPM = 160;
-Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N},
+static constexpr uint32_t LG_BPM = 600;
+Song LG_WashSong = {LG_BPM, Q_N, {{Db6_N, QH_N}, {Gb6_N, E_N},  {F6_N, E_N},  {Eb6_N, E_N},
 
-                                  {Db6, QH_N}, {Bb5, QH_N},
+                                  {Db6_N, QH_N}, {Bb5_N, QH_N},
 
-                                  {Cb6, E_N},  {Db6, E_N},  {Eb6, E_N}, {Ab5, E_N}, {Bb5, E_N}, {Cb6, E_N},
+                                  {Cb6_N, E_N},  {Db6_N, E_N},  {Eb6_N, E_N}, {Ab5_N, E_N}, {Bb5_N, E_N}, {Cb6_N, E_N},
 
-                                  {Bb5, QH_N}, {Db6, QH_N},
+                                  {Bb5_N, QH_N}, {Db6_N, QH_N},
 
-                                  {Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N},
+                                  {Db6_N, QH_N}, {Gb6_N, E_N},  {F6_N, E_N},  {Eb6_N, E_N},
 
-                                  {Db6, QH_N}, {Gb6, QH_N},
+                                  {Db6_N, QH_N}, {Gb6_N, QH_N},
 
-                                  {Gb6, E_N},  {Ab6, E_N},  {Gb6, E_N}, {F6, E_N},  {Eb6, E_N}, {F6, E_N},
+                                  {Gb6_N, E_N},  {Ab6_N, E_N},  {Gb6_N, E_N}, {F6_N, E_N},  {Eb6_N, E_N}, {F6_N, E_N},
 
-                                  {Gb6, H_N},
+                                  {Gb6_N, H_N},
 
                                   {END, Q_N}}};
 
 // Based on:
 // https://musescore.com/user/35424120/scores/6208111
 // Measures 1 - 8
+
+static constexpr uint32_t DomSongBPM = 600;
+Song DomSong = {
+    DomSongBPM,
+    Q_N,
+    {{REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {C3_N, QH_N}, {E4_N, QH_N}, {G4_N, QH_N}, {C3_N, QH_N}, {A3_N, QH_N},
+     {G3_N, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {C3_N, QH_N}, {E4_N, QH_N}, {D5_N, QH_N}, {G4_N, QH_N}, {G3_N, QH_N}, {D5_N, QH_N}, {G4_N, QH_N},
+     {D5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N}, {G4_N, QH_N},
+     {D5_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {C5_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N},
+     {C5_N, QH_N}, {C4_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {C5_N, QH_N}, {A3_N, QH_N}, {E3_N, QH_N},
+     {G4_N, QH_N}, {B4_N, QH_N}, {E5_N, QH_N}, {D5_N, QH_N}, {E3_N, QH_N}, {D5_N, QH_N}, {E5_N, QH_N}, {D5_N, QH_N},
+     {G4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {F4_N, QH_N}, {B4_N, QH_N}, {C5_N, QH_N},
+     {G4_N, QH_N}, {B4_N, QH_N}, {F4_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {D5_N, QH_N}, {C5_N, QH_N},
+     {G4_N, QH_N}, {C5_N, QH_N}, {A4_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {A5_N, QH_N}, {G3_N, QH_N}, {D4_N, QH_N},
+     {F4_N, QH_N}, {A5_N, QH_N}, {A4_N, QH_N}, {D5_N, QH_N}, {D4_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {G3_N, QH_N},
+     {D5_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N},
+     {A4_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {C5_N, QH_N}, {D5_N, QH_N}, {G4_N, QH_N},
+     {D5_N, QH_N}, {G3_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {A4_N, QH_N}, {C5_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {A3_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N}, {A3_N, QH_N},
+     {D3_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {B4_N, QH_N}, {G4_N, QH_N}, {E3_N, QH_N}, {G4_N, QH_N},
+     {F4_N, QH_N}, {B4_N, QH_N}, {F4_N, QH_N}, {B4_N, QH_N}, {A4_N, QH_N}, {B4_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N},
+     {B4_N, QH_N}, {F4_N, QH_N}, {B4_N, QH_N}, {A4_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {D3_N, QH_N}, {D5_N, QH_N},
+     {E3_N, QH_N}, {G4_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {A4_N, QH_N}, {D5_N, QH_N}, {D3_N, QH_N},
+     {A4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {E3_N, QH_N},
+     {D3_N, QH_N}, {E3_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N},
+     {D3_N, QH_N}, {F4_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N}, {D3_N, QH_N}, {G4_N, QH_N}, {E3_N, QH_N}, {G5_N, QH_N},
+     {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {A5_N, QH_N}, {A4_N, QH_N}, {A5_N, QH_N}, {B4_N, QH_N}, {A5_N, QH_N},
+     {A4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {D6_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N}, {A3_N, QH_N}, {E3_N, QH_N},
+     {D3_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {D3_N, QH_N}, {G4_N, QH_N}, {D3_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N},
+     {F4_N, QH_N}, {C5_N, QH_N}, {C3_N, QH_N}, {A3_N, QH_N}, {C5_N, QH_N}, {C6_N, QH_N}, {F4_N, QH_N}, {D5_N, QH_N},
+     {D3_N, QH_N}, {D5_N, QH_N}, {D3_N, QH_N}, {E3_N, QH_N}, {G4_N, QH_N}, {C3_N, QH_N}, {E3_N, QH_N}, {A3_N, QH_N},
+     {A4_N, QH_N}, {D3_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N},
+     {D5_N, QH_N}, {E3_N, QH_N}, {D3_N, QH_N}, {E3_N, QH_N}, {D3_N, QH_N}, {E3_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N},
+     {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {F4_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N},
+     {D3_N, QH_N}, {F4_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {G5_N, QH_N}, {D6_N, QH_N},
+     {G5_N, QH_N}, {D6_N, QH_N}, {A5_N, QH_N}, {G4_N, QH_N}, {F4_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N}, {G4_N, QH_N},
+     {E3_N, QH_N}, {B4_N, QH_N}, {A4_N, QH_N}, {B4_N, QH_N}, {C5_N, QH_N}, {D5_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N},
+     {A5_N, QH_N}, {A4_N, QH_N}, {A5_N, QH_N}, {F4_N, QH_N}, {C3_N, QH_N}, {A4_N, QH_N}, {A3_N, QH_N}, {E4_N, QH_N},
+     {D4_N, QH_N}, {B4_N, QH_N}, {G4_N, QH_N}, {E3_N, QH_N}, {B4_N, QH_N}, {F4_N, QH_N}, {B4_N, QH_N}, {D3_N, QH_N},
+     {B4_N, QH_N}, {D3_N, QH_N}, {F3_N, QH_N}, {B4_N, QH_N}, {D3_N, QH_N}, {A4_N, QH_N}, {B4_N, QH_N}, {C3_N, QH_N},
+     {B4_N, QH_N}, {A4_N, QH_N}, {D5_N, QH_N}, {D4_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {F4_N, QH_N},
+     {G5_N, QH_N}, {G4_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {G5_N, QH_N}, {G4_N, QH_N}, {F4_N, QH_N},
+     {G4_N, QH_N}, {D5_N, QH_N}, {D3_N, QH_N}, {F4_N, QH_N}, {G4_N, QH_N}, {F4_N, QH_N}, {G4_N, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {D5_N, QH_N}, {REST, QH_N},
+     {D5_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {A5_N, QH_N},
+     {A4_N, QH_N}, {F4_N, QH_N}, {G4_N, QH_N}, {REST, QH_N}, {F4_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N},
+     {G5_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {C5_N, QH_N}, {A4_N, QH_N}, {C5_N, QH_N},
+     {A4_N, QH_N}, {F4_N, QH_N}, {REST, QH_N}, {REST, QH_N}, {C5_N, QH_N}, {A4_N, QH_N}, {F4_N, QH_N}, {A4_N, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {G3_N, QH_N}, {G5_N, QH_N}, {B4_N, QH_N}, {G4_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N},
+     {E3_N, QH_N}, {D5_N, QH_N}, {E5_N, QH_N}, {D5_N, QH_N}, {G4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N},
+     {B4_N, QH_N}, {A4_N, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {B5_N, QH_N}, {E4_N, QH_N},
+     {F4_N, QH_N}, {B4_N, QH_N}, {A4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {D5_N, QH_N}, {F4_N, QH_N}, {C5_N, QH_N},
+     {G4_N, QH_N}, {C5_N, QH_N}, {B4_N, QH_N}, {D5_N, QH_N}, {A5_N, QH_N}, {G4_N, QH_N}, {A5_N, QH_N}, {G3_N, QH_N},
+     {A3_N, QH_N}, {D4_N, QH_N}, {A4_N, QH_N}, {D4_N, QH_N}, {F4_N, QH_N}, {A5_N, QH_N}, {A4_N, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {F4_N, QH_N}, {D4_N, QH_N}, {G4_N, QH_N}, {REST, QH_N}, {D5_N, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N}, {REST, QH_N},
+     {REST, QH_N}, {REST, QH_N}, {END, Q_N}}};
 
 }  // namespace utils::Jukebox

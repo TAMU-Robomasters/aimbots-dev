@@ -70,7 +70,7 @@ enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 // :)
 enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
-enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH };
+enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH, DomSong};
 
 enum FeederGroup : uint8_t {
     ALL = 0,    // Command goes to all feeder motors
