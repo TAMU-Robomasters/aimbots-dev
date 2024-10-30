@@ -17,7 +17,7 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers, src::Utils::RefereeHel
       flywheel2(drivers, SHOOTER_2_ID, SHOOTER_BUS, SHOOTER_2_DIRECTION, "Flywheel Two"),
       flywheel1PID(SHOOTER_VELOCITY_PID_CONFIG),
       flywheel2PID(SHOOTER_VELOCITY_PID_CONFIG),
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
       flywheel3(drivers, SHOOTER_3_ID, SHOOTER_BUS, SHOOTER_3_DIRECTION, "Flywheel Three"),
       flywheel4(drivers, SHOOTER_4_ID, SHOOTER_BUS, SHOOTER_4_DIRECTION, "Flywheel Four"),
       flywheel3PID(SHOOTER_VELOCITY_PID_CONFIG),
@@ -35,7 +35,7 @@ ShooterSubsystem::ShooterSubsystem(tap::Drivers* drivers, src::Utils::RefereeHel
     motors[LEFT][0] = &flywheel2;   // BOT_RIGHT == LEFT
     velocityPIDs[RIGHT][0] = &flywheel1PID;
     velocityPIDs[LEFT][0] = &flywheel2PID;
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
     motors[TOP_LEFT][0] = &flywheel3;
     motors[BOT_LEFT][0] = &flywheel4;
     velocityPIDs[TOP_LEFT][0] = &flywheel3PID;
@@ -54,7 +54,7 @@ float shaftSpeedDisplay = 0.0f;
 
 float FWRight1 = 0.0f;  // RIGHT / TOP_RIGHT
 float FWLeft1 = 0.0f;   // LEFT / BOT_LEFT
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
 float FWTopLeft = 0.0f;  // TOP_LEFT
 float FWBotLeft = 0.0f;  // BOT_LEFT
 #endif
@@ -71,7 +71,7 @@ void ShooterSubsystem::refresh() {
     if (flywheel2.isMotorOnline()) {
         FWLeft1 = flywheel2.getShaftRPM();
     }
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
     if (flywheel3.isMotorOnline()) {
         FWTopLeft = flywheel3.getShaftRPM();
     }

@@ -206,38 +206,38 @@ ClientDisplayCommand clientDisplayCommand(
 // Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {&runShooterCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
-HoldCommandMapping leftSwitchUp(
-    drivers(),
-    {&chassisTokyoCommand, &gimbalToggleAimCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+// HoldCommandMapping leftSwitchUp(
+//     drivers(),
+//     {&chassisTokyoCommand, &gimbalToggleAimCommand2},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
 //     drivers(),
 //     {&feederlimitcommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
-HoldCommandMapping rightSwitchMid(
-    drivers(),
-    {/*&feederlimitcommand,*/ &runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+// HoldCommandMapping rightSwitchMid(
+//     drivers(),
+//     {/*&feederlimitcommand,*/ &runShooterCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
-    drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
+// // Runs shooter with feeder and closes hopper
+// HoldRepeatCommandMapping rightSwitchUp(
+//     drivers(),
+//     {&runFeederCommand, &runShooterWithFeederCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+//     true);
 
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
+// PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+// HoldCommandMapping leftClickMouse(
+//     drivers(),
+//     {&runFeederCommandFromMouse},
+//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -264,15 +264,13 @@ void initializeSubsystems() {
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     feeder.setDefaultCommand(&stopFeederCommand);
-    // feeder.setDefaultCommand(&feederLimitCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
     UNUSED(drivers);
-    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+    // drivers->commandScheduler.addCommand(&clientDisplayCommand);
 
     // test
     //  no startup commands should be set
@@ -285,11 +283,11 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-    drivers->commandMapper.addMap(&leftClickMouse);
+    // drivers->commandMapper.addMap(&leftSwitchUp);
+    // drivers->commandMapper.addMap(&rightSwitchUp);
+    // drivers->commandMapper.addMap(&rightSwitchMid);
+    // drivers->commandMapper.addMap(&bCtrlPressed);
+    // drivers->commandMapper.addMap(&leftClickMouse);
 }
 }  // namespace HeroControl
 

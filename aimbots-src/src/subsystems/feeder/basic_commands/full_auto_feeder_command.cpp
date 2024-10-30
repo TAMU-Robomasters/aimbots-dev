@@ -60,7 +60,20 @@ void FullAutoFeederCommand::execute() {
     // overheat, set the RPM to 0, otherwise run as normal
     currentRotationDisplay = feeder->getEncoderUnwrapped(0);
 
-    if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+    if (wasNeutral && drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) != Remote::SwitchState::MID) {
+        wasNeutral = false;
+        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+            speedIncrement++;
+        } else {
+            speedIncrement--;
+        }
+    } else if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
+        wasNeutral = true;
+    }
+
+    customSpeed += speedIncrement * 100;
+
+    if (false && feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     } else {
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {

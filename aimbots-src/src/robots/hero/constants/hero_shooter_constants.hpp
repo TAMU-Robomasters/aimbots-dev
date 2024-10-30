@@ -22,7 +22,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 
 static constexpr uint16_t shooter_speed_array[4] = {
     10,
-    3900,  // {ball m/s, flywheel rpm} //3900
+    6100,  // {ball m/s, flywheel rpm} //3900
     16,
     6100};  // 6100
 
@@ -33,10 +33,14 @@ static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
 
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR1;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
+static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
+static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
 
 static constexpr bool SHOOTER_1_DIRECTION = true;
 static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_3_DIRECTION = false;
+static constexpr bool SHOOTER_4_DIRECTION = true;
 
 // This array holds the IDs of all speed monitor barrels on the robot
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_42MM};

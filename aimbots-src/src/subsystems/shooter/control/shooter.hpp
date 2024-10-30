@@ -15,7 +15,7 @@ namespace src::Shooter {
 enum MotorIndex {
     RIGHT = 0,
     LEFT = 1,
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
     TOP_RIGHT = 0,
     BOT_RIGHT = 1,
     TOP_LEFT = 2,
@@ -113,7 +113,7 @@ public:
     DJIMotor flywheel1, flywheel2;
     SmoothPID flywheel1PID, flywheel2PID;
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_HEROES
     DJIMotor flywheel3, flywheel4;
     SmoothPID flywheel3PID, flywheel4PID;
 #endif

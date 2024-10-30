@@ -7,7 +7,6 @@
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/tools/common_types.hpp"
 
-
 #include "drivers.hpp"
 
 #ifdef FEEDER_COMPATIBLE
@@ -41,6 +40,10 @@ private:
     uint8_t projectileBuffer;
 
     int UNJAM_TIMER_MS;
+
+    bool wasNeutral = false;
+    int speedIncrement = 0;
+    int customSpeed = 0;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;

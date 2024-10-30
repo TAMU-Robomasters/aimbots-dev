@@ -5,7 +5,6 @@
 
 #include "utils/tools/common_types.hpp"
 
-
 #include "drivers.hpp"
 
 #ifdef SHOOTER_COMPATIBLE
@@ -24,6 +23,8 @@ RunShooterCommand::RunShooterCommand(
 
 void RunShooterCommand::initialize() {
     // No initialization needed
+    wasNeutral = true;
+    speedIncrement = 0;
 }
 
 tap::communication::serial::RefSerialData::Rx::TurretData refSysRobotTurretDataDisplay;
@@ -52,6 +53,22 @@ void RunShooterCommand::execute() {
             break;
         }
     }
+
+    // Increases or decreases flywheel speed by 100 RPM per Right Switch click.
+    // Changes are removed if flywheel is turned off
+
+    if (wasNeutral && drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) != Remote::SwitchState::MID) {
+        wasNeutral = false;
+        if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP) {
+            speedIncrement++;
+        } else {
+            speedIncrement--;
+        }
+    } else if (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::MID) {
+        wasNeutral = true;
+    }
+
+    flywheelRPM += speedIncrement * 100;
 
     flywheelRPMDisplay = flywheelRPM;
     flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
