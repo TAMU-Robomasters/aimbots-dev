@@ -58,6 +58,9 @@ float currentYawAxisAngleByMotorDisplay = 0;
 
 float pitchLimitedOutputDisplay = 0;
 
+float currentYawAxisAngleUnwrappedDisplay = 0.0f;
+float unmodifiedYawDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
     float yawAxisAngleSum = 0.0f;
@@ -138,6 +141,11 @@ void GimbalSubsystem::refresh() {
     }
 
     currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getWrappedValue());
+    
+    // Temp debugging
+    currentYawAxisAngleUnwrappedDisplay = modm::toDegree(GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(yawMotors[0]->getEncoderUnwrapped()))); 
+    unmodifiedYawDisplay = yawMotors[0]->getEncoderUnwrapped();
+
     currByFuncYawAngleDisplay = modm::toDegree(this->getCurrentYawAxisAngle(AngleUnit::Radians));
     currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getWrappedValue());
 
