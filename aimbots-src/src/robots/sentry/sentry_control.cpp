@@ -49,10 +49,13 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 
+#include "sentry_intelligence.hpp"
+
 using namespace src::Chassis;
 using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+
 // using namespace src::Communication;
 using namespace src::Control;
 using namespace src::Hopper;
@@ -123,6 +126,9 @@ GimbalPatrolConfig patrolConfig = {
 };
 
 // Match Controllers ------------------------------------------------
+SentryIntelligenceCommand SentryIntelligenceCommand(
+    drivers()
+);
 SentryMatchFiringControlCommand matchFiringControlCommand(
     drivers(),
     &feeder,
