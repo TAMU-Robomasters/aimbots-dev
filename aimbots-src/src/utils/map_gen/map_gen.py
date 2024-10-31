@@ -115,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         all_xs = []
         all_ys = []
         
-
+        polygons = []
         for tab in range(self.tabs.count()):
             widget = self.tabs.widget(tab)
             table = widget.table
@@ -245,6 +245,8 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def export_obstacles(self):
         output = "// Auto-generated list of obstacles using map generation utility\n\n"
+        
+        polygons = []
         for tab in range(self.tabs.count()):
             widget = self.tabs.widget(tab)
             table = widget.table
@@ -255,29 +257,39 @@ class MainWindow(QtWidgets.QMainWindow):
                 if item_x and item_y and item_x.text() and item_y.text():
                     vertices.append((float(item_x.text()), float(item_y.text())))
 
-            # Expand the polygon
-            radius = 0 
-            try:
-                radius = float(self.robot_radius.text())
-            except ValueError:
-                pass
-            x, y = expand_polygon(vertices, radius)  # Adjust the distance as needed
-
-            if x and y:
-                output += f"vector<Point> {self.tabs.tabText(tab).replace(' ', '_')} = {{\n"
-                for i in range(len(x)):
-                    output += f"  Point({x[i]}, {y[i]}),\n"
+            if vertices:
+                polygon = sg.Polygon(vertices)
+                polygons.append(polygon)
+        
+        polygons = sg.MultiPolygon(polygons)
+        radius = 0 
+        try:
+            radius = float(self.robot_radius.text())
+        except ValueError:
+            pass
+        polygons.buffer(radius, cap_style=2, join_style=2, mitre_limit=1)
+        # check if polygons is a muiltipolygon
+        if isinstance(polygons, sg.MultiPolygon):
+            for i, polygon in enumerate(polygons.geoms): 
+                x, y = polygon.exterior.xy
+                output += f"vector<Point> {i} = {{\n"
+                for j in range(len(x)):
+                    output += f"  Point({x[j]}, {y[j]}),\n"
                 output += "};\n\n"
-            else:
-                output += f"// Could not expand polygon for {self.tabs.tabText(tab).replace(' ', '_')}\n\n"
+        else:
+            output += f"vector<Point> obstacle = {{\n"
+            for x, y in polygons.exterior.xy:
+                output += f"  Point({x}, {y}),\n"
 
         clipboard = QtGui.QGuiApplication.clipboard()
         clipboard.setText(output)
         QtWidgets.QMessageBox.information(self, "", "Obstacles copied to clipboard")
         
-def expand_polygon(vertices, distance):
+def expand_polygon(vertices, distance, get_poly=False):
     polygon = sg.Polygon(vertices)
     expanded_polygon = polygon.buffer(distance, cap_style=2, join_style=2, mitre_limit=1)
+    if get_poly:
+        return expanded_polygon
     return expanded_polygon.exterior.coords.xy
     
 
