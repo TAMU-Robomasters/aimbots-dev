@@ -1,7 +1,7 @@
 #pragma once
 
-#include "informants/kinematics/kinematic_informant.hpp"
-#include "utils/tools/common_types.hpp"
+#include "informants/kinematic_informant.hpp"
+#include "utils/common_types.hpp"
 
 namespace src {
 class Drivers;
@@ -107,6 +107,8 @@ private:
     uint8_t sendSequence = 0;
 
     RXHandler chassisRequestRXHandler;
+
+    AngularAxis sendState = YAW_AXIS;
 #endif
 };
 
