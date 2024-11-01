@@ -45,6 +45,7 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
+#include "utils/music/record_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
@@ -69,6 +70,7 @@ uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
+RecordTitle playRecordWatch = DomSongRecord; // Watch variable
 
 int main() {
 #ifdef PLATFORM_HOSTED
@@ -122,6 +124,7 @@ int main() {
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             drivers->musicPlayer.playMusic();
+            drivers->recordPlayer.playMusic();
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
 #endif

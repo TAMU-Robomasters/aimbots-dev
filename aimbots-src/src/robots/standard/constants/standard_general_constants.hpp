@@ -7,7 +7,9 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+static constexpr SongTitle STARTUP_SONG = SongTitle::DomSong;
+//static constexpr RecordTitle STARTUP_RECORD = RecordTitle::DomSongRecord;
+
 
 /**
  * @brief Defines the number of motors created for the chassis.

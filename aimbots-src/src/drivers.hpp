@@ -28,6 +28,7 @@
 #include "communicators/devboard/turret_can_communicator.hpp"
 #include "communicators/jetson/jetson_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
+#include "utils/music/record_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 // graphing elsewhere lol
@@ -47,7 +48,8 @@ public:
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
-          musicPlayer(this, STARTUP_SONG) {}
+          musicPlayer(this, STARTUP_SONG),
+          recordPlayer(this, NA) {}
 
 public:
     Control::OperatorInterface controlOperatorInterface;
@@ -57,6 +59,7 @@ public:
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
     utils::Jukebox::JukeboxPlayer musicPlayer;
+    utils::Record::RecordPlayer recordPlayer;
 };  // class Drivers
 
 }  // namespace src
