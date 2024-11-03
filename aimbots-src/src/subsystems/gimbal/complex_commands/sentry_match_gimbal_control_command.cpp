@@ -20,7 +20,7 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
       ballisticsSolver(ballisticsSolver),
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
       chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
-      chassisState(chassisState),
+      chassisState(chassisState), 
       chaseTimeout(0),
       chaseTimeoutMillis(chaseTimeoutMillis)  //
 {
