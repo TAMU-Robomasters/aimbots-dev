@@ -67,18 +67,44 @@ VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
 
         // make consecutive points neighbors NOTE DOES NOT CHECK NON-CONSECUTIVE POINTS, CONCAVE POLYGONS WILL NOT WORK
         // CORRECTLY
+        
+        //find the overall ccw/cw direction of the polygon using the shoelace formula, store this as a z unit vector
+        double z_dir = shoelace(*it);
+        z_dir = z_dir < 0 ? -1 : 1;
+        
         for (auto jt = it->begin(); jt != it->end(); jt++) {
-            // iterate through individual polygon, jt is an iterator to a vector of points, *jt is a point
-            auto next = jt + 1;                              // next point
-            if (next == it->end()) {                         // if last point
-                neighbors[&*jt].push_back(&*(it->begin()));  // address of first point
-                neighbors[&*(it->begin())].push_back(&*jt);
-            }
+            Point last = jt == it->begin() ? it->back() : *(jt - 1);
+            Point next = jt == it->end() - 1 ? it->front() : *(jt + 1);
 
-            // not the end
-            else {
-                neighbors[&*jt].push_back(&*next);
-                neighbors[&*next].push_back(&*jt);
+            // vector from last to current
+            Point V1 = Point(jt->x - last.x, jt->y - last.y);
+
+            // vector from current to next
+            Point V2 = Point(next.x - jt->x, next.y - jt->y);
+
+            normalize(V1);
+            normalize(V2);
+            //vectors normal to V1 and V2, pointing outside of the polygon
+            Point normal1 = Point(V1.y*z_dir, -V1.x*z_dir);
+            Point normal2 = Point(V2.y*z_dir, -V2.x*z_dir);
+
+            //vector will be in the middle of the the two vectors starting at current and pointing to next and last
+            //vector will be pointing outside of the polygon
+            Point mid = Point(normal1.x + normal2.x, normal1.y + normal2.y);
+
+            normalize(mid);
+
+            //any vector with a dot product with the middle smaller then the rejection dot will pass through the area of polygon, reject it
+            double rejection_dot = mid.x * V2.x + mid.y * V2.y;
+
+            for (auto kt = jt + 1; kt != it->end(); kt++) {
+                if (has_LOS(*jt, *kt, polygons)) {
+                    Point los_vector = Point(kt->x - jt->x, kt->y - jt->y);
+                    normalize(los_vector);
+                    if (los_vector.x * mid.x + los_vector.y * mid.y >= rejection_dot) {
+                        neighbors[&*jt].push_back(&*kt);
+                        neighbors[&*kt].push_back(&*jt);
+                }
             }
 
             // add points on other polygons, LOS is two way so dont have to double check polygons so start at it not begin
@@ -92,9 +118,10 @@ VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
             }
         }
     }
-
+    }
     return VizGraph(neighbors, polygons);
 }
+
 
 vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
     Point start(x1, y1);
@@ -132,4 +159,19 @@ vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
     pathfinder.neighbors.erase(pathfinder.neighbors.find(&goal));
 
     return path;
+}
+
+double shoelace(const vector<Point>& polygon) {
+    double sum = 0;
+    for (size_t i = 0; i < polygon.size() - 1; i++) {
+        sum += polygon[i].x * polygon[i + 1].y - polygon[i + 1].x * polygon[i].y;
+    }
+    sum += polygon.back().x * polygon.front().y - polygon.front().x * polygon.back().y;
+    return sum / 2;
+}
+
+void normalize(Point& pt) {
+    double mag = sqrt(pt.x * pt.x + pt.y * pt.y);
+    pt.x /= mag;
+    pt.y /= mag;
 }
