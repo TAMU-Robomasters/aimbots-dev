@@ -18,7 +18,7 @@
 #ifdef CHASSIS_COMPATIBLE
 
 
-
+namespace SentryControl{
 
 class SentryIntelligenceCommand : public TapComprisedCommand {
 public:
@@ -32,13 +32,16 @@ public:
     bool isReady() override;
     bool isFinished() const override;
 
+    const char* getName() const override { return "Sentry Match Intelligence Command"; }
+
 private:
     src::Drivers* drivers;
-
+    
 
 
 };
 
+}
 
 
 #endif
