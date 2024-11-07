@@ -26,7 +26,12 @@ public:
     ~JetsonCommunicator() = default;
 
     void initialize();
+    
+    // communcation from jetson (devboard <- jetson)
     void updateSerial();
+    
+    // communcation to the jetson (devboard -> jetson)
+    void sendSimpleMessage();
 
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 

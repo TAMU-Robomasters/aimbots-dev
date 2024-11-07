@@ -145,4 +145,16 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
+void JetsonCommunicator::sendSimpleMessage() {
+    // 0000 0000  ...  1111 1111
+    // 6 more bytes ^ (zeros)
+    uint8_t simpleData = 255;
+    
+    WRITE(&simpleData, 1);  // attempts to send one byte from the buffer
+
+    // receive response from jetson (CV) over UART
+    // updateSerial();
+}
+
+
 }  // namespace src::Informants::Vision
