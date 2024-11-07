@@ -5,13 +5,10 @@
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 
 #include "communicators/jetson/jetson_communicator.hpp"
-#include "informants/odometry/chassis_kf_odometry.hpp"
 #include "utils/kinematics/kinematic_state_vector.hpp"
 #include "utils/tools/common_types.hpp"
 
 #include "utils/tools/robot_specific_defines.hpp"
-#include "subsystems/gimbal/gimbal_constants.hpp"
-#include "subsystems/chassis/chassis_constants.hpp"
 
 #include "robot_frames.hpp"
 #include "turret_frames.hpp"
@@ -19,14 +16,6 @@
 namespace src {
 class Drivers;
 }  // namespace src
-
-namespace src::Gimbal {
-class GimbalSubsystem;
-}
-
-namespace src::Chassis {
-class ChassisSubsystem;
-}  // namespace src::Chassis
 
 using namespace src::Utils;
 
@@ -39,30 +28,31 @@ public:
     KinematicInformant(src::Drivers* drivers);
     ~KinematicInformant() = default;
 
-    src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
+    // Gets raw IMU values, in our coordinate system XYZ (Pitch, Roll, Yaw)
+    Vector3f getLocalIMUAngles();
+    float getLocalIMUAngle(AngularAxis axis);
 
-    src::Informants::Transformers::TurretFrames& getTurretFrames() { return turretFrames; }
+    Vector3f getIMUAngularVelocities();
+    float getIMUAngularVelocity(AngularAxis axis);
 
-    void registerSubsystems(
-        src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-        tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) {
-        this->gimbalSubsystem = gimbalSubsystem;
-        this->chassisSubsystem = chassisSubsystem;
+    Vector3f getIMULinearAccelerations();
+    float getIMULinearAcceleration(LinearAxis axis);
 
-        chassisKFOdometry.registerChassisSubsystem(chassisSubsystem);
-    }
+    void updateIMUKinematicStateVector();
 
-    tap::communication::sensors::imu::ImuInterface::ImuState getIMUState();
+    void updateIMUAngles();
 
-    void initialize(float imuFrequency, float imukP, float imukI);
+    // Returns angle in rad or deg
+    float getIMUAngle(AngularAxis axis, AngleUnit unit);
 
-    void recalibrateIMU(Vector3f imuCalibrationEuler = {0.0f, 0.0f, 0.0f});
+    // Returns angular velocity in rad/s or deg/s
+    float getIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
-
+    Vector3f getIMUAngularAccelerations();
+    float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
+    // Returns lnothing!!!
 private:
     src::Drivers* drivers;
-    src::Gimbal::GimbalSubsystem* gimbalSubsystem;
-    tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
 
     src::Informants::Transformers::RobotFrames robotFrames;
     src::Informants::Transformers::TurretFrames turretFrames;
@@ -80,14 +70,6 @@ private:
     KinematicStateVector imuAngularYState;
     KinematicStateVector imuAngularZState;
 
-    KinematicStateVector chassisLinearXState;
-    KinematicStateVector chassisLinearYState;
-    KinematicStateVector chassisLinearZState;
-
-    KinematicStateVector chassisAngularXState;
-    KinematicStateVector chassisAngularYState;
-    KinematicStateVector chassisAngularZState;
-
     KinematicStateVector turretIMULinearXState;
     KinematicStateVector turretIMULinearYState;
     KinematicStateVector turretIMULinearZState;
@@ -96,22 +78,11 @@ private:
     KinematicStateVector turretIMUAngularYState;
     KinematicStateVector turretIMUAngularZState;
 
-    static const uint32_t GIMBAL_BUFFER_SIZE = 40;
-
-    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalFieldOrientationBuffer;  // Buffer for turret orientation data
-
+    
     modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
     modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
 
-    modm::Vector<KinematicStateVector, 3> chassisLinearState = {
-        chassisLinearXState,
-        chassisLinearYState,
-        chassisLinearZState};
-    modm::Vector<KinematicStateVector, 3> chassisAngularState = {
-        chassisAngularXState,
-        chassisAngularYState,
-        chassisAngularZState};
-
+    
     modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
         turretIMULinearXState,
         turretIMULinearYState,
@@ -120,8 +91,6 @@ private:
         turretIMUAngularXState,
         turretIMUAngularYState,
         turretIMUAngularZState};
-
-    
 };
 
 }  // namespace src::Informants

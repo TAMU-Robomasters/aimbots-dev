@@ -230,7 +230,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // client display
-ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
+ClientDisplayC  ommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
