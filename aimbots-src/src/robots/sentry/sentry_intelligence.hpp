@@ -1,4 +1,4 @@
-/*
+
 #pragma once
 
 #ifdef TARGET_SENTRY
@@ -50,24 +50,33 @@ public:
         src::Feeder::FeederSubsystem*,
         src::Chassis::ChassisSubsystem*,
         src::Shooter::ShooterSubsystem*,
+        src::Utils::RefereeHelperTurreted*
+        src::Chassis::ChassisAutoNavCommand*);
+
+        /*
 
         //Gimbal
         src::Gimbal::GimbalFieldRelativeController*,
         src::Utils::Ballistics::BallisticsSolver*,
         src::Gimbal::GimbalPatrolCommand*,
         src::Gimbal::GimbalChaseCommand*,
+        src::Gimbal::GimbalPatrolConfig*,
 
         src::Utils::RefereeHelperTurreted*,
         src::Chassis::ChassisAutoNavCommand*,
         src::Chassis::ChassisAutoNavTokyoCommand*,
         src::Chassis::ChassisTokyoCommand*,
+        const defaultLinearConfig& defaultLinearConfig,
+        const defaultRotationConfig& defaultRotationConfig,
+        const SnapSymmetryConfig& snapSymmetryConfig,
 
         //feeder
         src::Gimbal::GimbalControllerInterface*,
         src::Feeder::StopFeederCommand*,
         src::Feeder::FullAutoFeederCommand*,
         src::Shooter::StopShooterCommand*,
-        src::Shooter::RunShooterCommand*);
+        src::Shooter::RunShooterCommand*)
+        */
 
     void initialize() override;
     void execute() override;
@@ -84,18 +93,24 @@ private:
     src::Feeder::FeederSubsystem* feeder;
     src::Chassis::ChassisSubsystem* chassis;
     src::Shooter::ShooterSubsystem* shooter;
+    src::Utils::RefereeHelperTurreted* refHelper;
+    src::Chassis::ChassisAutoNavCommand* autoNavCommand;
 
     //Gimbal
+    /*
     src::Gimbal::GimbalFieldRelativeController* controller;
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
     src::Gimbal::GimbalPatrolCommand* patrolCommand;
     src::Gimbal::GimbalChaseCommand* chaseCommand;
-
+    src::Gimbal::GimbalPatrolConfig patrolConfig,
     src::Utils::RefereeHelperTurreted* refHelper;
     modm::Location2D<float> waypointTarget;
     src::Chassis::ChassisAutoNavCommand* autoNavCommand;
     src::Chassis::ChassisAutoNavTokyoCommand* autoNavTokyoCommand;
     src::Chassis::ChassisTokyoCommand* tokyoCommand;
+    const defaultLinearConfig& defaultLinearConfig;
+    const defaultRotationConfig& defaultRotationConfig,
+    const SnapSymmetryConfig& snapSymmetryConfig,
     
     //feeder
     src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController;
@@ -103,7 +118,15 @@ private:
     src::Feeder::FullAutoFeederCommand* fullAutoFeederCommand;
     src::Shooter::StopShooterCommand* stopShooterCommand;
     src::Shooter::RunShooterCommand* runShooterCommand;
-
+    */
+    float proportional_HP = 0;
+    float proportional_Ammo = 0;
+    float current_HP = 0;
+    float current_Time = 0;
+    float previous_HP = 400; //starting HP
+    float previous_time = 300; // 5:00 in seconds
+    float previous_Ammo = 750; // 750 starting ammo 
+    
 
 
 };
@@ -114,4 +137,3 @@ private:
 #endif
 #endif
 
-*/

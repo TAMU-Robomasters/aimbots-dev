@@ -1,4 +1,4 @@
-/*
+
 #include "sentry_intelligence.hpp"
 
 #ifdef TARGET_SENTRY
@@ -16,22 +16,42 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Drivers* drivers,
     src::Gimbal::GimbalSubsystem* gimbal,
     src::Feeder::FeederSubsystem* feeder,
-    src::Shooter::ShooterSubsystem* shooter,
     src::Chassis::ChassisSubsystem* chassis,
-    //gimball
-    src::Gimbal::GimbalFieldRelativeController* gimbalController,
+    src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelper,
+    src::Chassis::ChassisAutoNavCommand* autoNavCommand)
+    /*
+    //Gimbal
+    src::Gimbal::GimbalFieldRelativeController* controller,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
-    src::Gimbal::GimbalPatrolConfig patrolConfig,
+    src::Gimbal::GimbalPatrolCommand* patrolCommand,
+    src::Gimbal::GimbalChaseCommand* chaseCommand,
+    src::Gimbal::GimbalPatrolConfig* patrolConfig,
+
+    
+    src::Chassis::ChassisAutoNavCommand* autoNavCommand,
+    src::Chassis::ChassisAutoNavTokyoCommand* autoNavTokyoCommand,
+    src::Chassis::ChassisTokyoCommand* tokyoCommand,
+    const defaultLinearConfig7 defaultLinearConfig,
+    const defaultRotationConfig& defaultRotationConfig,
+    const SnapSymmetryConfig& snapSymmetryConfig,
 
     //feeder
-    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController) 
+    src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController,
+    src::Feeder::StopFeederCommand* stopFeederCommand,
+    src::Feeder::FullAutoFeederCommand* fullAutoFeederCommand,
+    src::Shooter::StopShooterCommand* stopShooterCommand,
+    src::Shooter::RunShooterCommand* runShooterCommand) 
+    */
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       feeder(feeder),
-      chassis(chassis),
-      controller(gimbalController),
+      chassis(chassis)
+      //autoNavCommand(drivers, chassis, //defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig)
+      //controller(controller)
+
+      /*
       ballisticsSolver(ballisticsSolver),
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
       chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
@@ -54,7 +74,8 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
         randomizeSpinRate,
         randomizerConfig),  // velocity ramp value
     tokyoCommand(drivers, chassis, gimbal, tokyoConfig, 0, randomizeSpinRate, randomizerConfig),
-    evadeTimeout(EVADE_DURATION_MS) 
+    evadeTimeout(EVADE_DURATION_MS)
+    */
 {
 
   addSubsystemRequirement(chassis);
@@ -75,12 +96,10 @@ float balPitchAtanDisplay = 0.0f;
 void SentryIntelligenceCommand::initialize() {
   
 
-  float previous_HP = 400; //starting HP
-  float previous_time = 300; // 5:00 in seconds
-  float previous_Ammo = 750; // 750 starting ammo 
+  
 
   //initialize gimabal command
-  scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
+  //scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
 
 }
    
@@ -89,23 +108,23 @@ void SentryIntelligenceCommand::initialize() {
 
 void SentryIntelligenceCommand::execute() {
 
-  current_HP = drivers->refSerial.getRobotData().currentHP;
-  current_Ammo = drivers->refSerial.getRobotData().currentHP;
-  current_Time = drivers->ref_system.getRobotData().currentTime;
+  current_HP = drivers->refSerial.getRobotData().currentHp;
+  //current_Ammo = drivers->refSerial.getRobotData().current;
+  current_Time = drivers->refSerial.getGameData().stageTimeRemaining;
 
-  proportional_Ammo = (previous_Ammo-current_Ammo)/(previous_time-current_Time)
-  proportional_HP = (previous_HP-current_HP)/(previous_time-current_Time)
-
-
+  //proportional_Ammo = (previous_Ammo-current_Ammo)/(previous_time-current_Time)
+  proportional_HP = (previous_HP-current_HP)/(previous_time-current_Time);
+  
+  /*
   if (!drivers->cvCommunicator.isJetsonOnline()) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
         this->comprisedCommandScheduler.run();
         return;
     }
 
     if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
         drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, chaseCommand);
         chaseTimeout.restart(chaseTimeoutMillis);
 
         /*
@@ -128,37 +147,41 @@ void SentryIntelligenceCommand::execute() {
             balPitchErrorDisplay = abs(pitchCurrentGimbal.minDifference(pitchTargetGimbal));
             balPitchAtanDisplay = atan2f(1.0f, 2.0f * targetDepth);
 
-          
-
+          */
+    /*
     }else if (chaseTimeout.isExpired()) {
-        scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
     }
 
     this->comprisedCommandScheduler.run();
-
-
-  if proportional_HP > 1.00:
+  */
+  
+  if(proportional_HP > 1.00){
     //evade
     autoNavCommand.setTargetLocation(1.5f, 6.0f); // fake target location 
-  else if proportional_HP < 0:
+  }
+  if(proportional_HP < 0){
     //attack
     autoNavCommand.setTargetLocation(9.0f, 0.5f); // fake target loaction 
-  
+  }
   
    
 }
 
 void SentryIntelligenceCommand::end(bool interrupted) {
+
+  /*
   // feeder
-    descheduleIfScheduled(this->comprisedCommandScheduler, &fullAutoFeederCommand, interrupted);
-    scheduleIfNotScheduled(this->comprisedCommandScheduler, &stopFeederCommand);
+    descheduleIfScheduled(this->comprisedCommandScheduler, fullAutoFeederCommand, interrupted);
+    scheduleIfNotScheduled(this->comprisedCommandScheduler, stopFeederCommand);
   //gimbal
-    descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &chaseCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, patrolCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, chaseCommand, interrupted);
   //chasis
-     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, interrupted);
-    descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, interrupted);
+     descheduleIfScheduled(this->comprisedCommandScheduler, autoNavCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, autoNavTokyoCommand, interrupted);
+    descheduleIfScheduled(this->comprisedCommandScheduler, tokyoCommand, interrupted);
+  */
 }
 
 bool SentryIntelligenceCommand::isReady() { return true; }
@@ -174,4 +197,3 @@ bool SentryIntelligenceCommand::isFinished() const {
 
 #endif
 
-*/
