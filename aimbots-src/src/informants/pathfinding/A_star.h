@@ -4,30 +4,27 @@
 #include <vector>
 
 #include "prio_queue.h"
-using std::unordered_map, std::vector;
+using std::unordered_map, std::vector, std::pair;
 template <typename NodeType>
 class AStar {
 public:
     AStar(
-        unordered_map<NodeType*, vector<NodeType*>> neighbors,
-        std::function<double(NodeType*, NodeType*)> heuristic,
-        std::function<double(NodeType*, NodeType*)> travel_cost)
+        unordered_map<NodeType*, vector<std::pair<NodeType*, double>>> neighbors,
+        std::function<double(NodeType*, NodeType*)> heuristic)
         : neighbors(neighbors),
-          heuristic(heuristic),
-          travel_cost(travel_cost) {}
+          heuristic(heuristic) {}
 
-    AStar(AStar<NodeType>& other) : neighbors(other.neighbors), heuristic(other.heuristic), travel_cost(other.travel_cost) {}
+    AStar(AStar<NodeType>& other) : neighbors(other.neighbors), heuristic(other.heuristic) {}
 
     AStar& operator=(AStar<NodeType>& other) {
         if (this != &other) {
             neighbors = other.neighbors;
             heuristic = other.heuristic;
-            travel_cost = other.travel_cost;
         }
         return *this;
     }
 
-    unordered_map<NodeType*, vector<NodeType*>> neighbors;
+    unordered_map<NodeType*, vector<std::pair<NodeType*, double>>> neighbors;
 
     vector<NodeType*> search(NodeType* start, NodeType* goal) {
         vector<NodeType*> path;
@@ -53,12 +50,12 @@ public:
             }
 
             for (auto it = neighbors[curr].begin(); it != neighbors[curr].end(); it++) {
-                double tentative_gScore = g_score[curr] + travel_cost(curr, *it);
-                if (g_score.find(*it) == g_score.end() || tentative_gScore < g_score[*it]) {
-                    came_from[*it] = curr;
-                    g_score[*it] = tentative_gScore;
-                    f_score[*it] = tentative_gScore + heuristic(*it, goal);
-                    open_set.put(*it, f_score[*it]);
+                double tentative_gScore = g_score[curr] + it->second;
+                if (g_score.find(it->first) == g_score.end() || tentative_gScore < g_score[it->first]) {
+                    came_from[it->first] = curr;
+                    g_score[it->first] = tentative_gScore;
+                    f_score[it->first] = tentative_gScore + heuristic(it->first, goal);
+                    open_set.put(it->first, f_score[it->first]);
                 }
             }
         }
@@ -66,6 +63,5 @@ public:
     }
 
 private:
-    std::function<double(NodeType*, NodeType*)> heuristic;
-    std::function<double(NodeType*, NodeType*)> travel_cost;
+    std::function<double(NodeType*, NodeType*)> heuristic;    
 };
