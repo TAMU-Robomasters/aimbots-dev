@@ -58,7 +58,7 @@ float balPitchAtanDisplay = 0.0f;
 
 void SentryMatchFiringControlCommand::execute() {
     // if (1) {
-    if (drivers->cvCommunicator.isJetsonOnline() && (refHelper->getGameStage()) == GamePeriod::IN_GAME) {
+    if (drivers->cvCommunicator.isJetsonOnline()){ //&& (refHelper->getGameStage()) == GamePeriod::IN_GAME) {
         // Assuming the cvState is found, we need to determine if the turret is within an armor panel's distance
         bool isErrorCloseEnoughToShoot = false;
         float targetDepth = drivers->cvCommunicator.getLastValidMessage().targetY;

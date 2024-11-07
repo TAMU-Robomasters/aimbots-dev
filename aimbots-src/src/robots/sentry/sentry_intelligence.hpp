@@ -1,4 +1,4 @@
-
+/*
 #pragma once
 
 #ifdef TARGET_SENTRY
@@ -113,3 +113,5 @@ private:
 
 #endif
 #endif
+
+*/

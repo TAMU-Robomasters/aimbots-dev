@@ -1,3 +1,4 @@
+/*
 #include "sentry_intelligence.hpp"
 
 #ifdef TARGET_SENTRY
@@ -127,7 +128,7 @@ void SentryIntelligenceCommand::execute() {
             balPitchErrorDisplay = abs(pitchCurrentGimbal.minDifference(pitchTargetGimbal));
             balPitchAtanDisplay = atan2f(1.0f, 2.0f * targetDepth);
 
-          */
+          
 
     }else if (chaseTimeout.isExpired()) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
@@ -172,3 +173,5 @@ bool SentryIntelligenceCommand::isFinished() const {
 
 
 #endif
+
+*/

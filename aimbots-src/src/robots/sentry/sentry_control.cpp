@@ -49,7 +49,7 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 
-#include "sentry_intelligence.hpp"
+//#include "sentry_intelligence.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -126,9 +126,9 @@ GimbalPatrolConfig patrolConfig = {
 };
 
 // Match Controllers ------------------------------------------------
-SentryIntelligenceCommand SentryIntelligenceCommand(
-    drivers()
-);
+//SentryIntelligenceCommand SentryIntelligenceCommand(
+//    drivers()
+//);
 SentryMatchFiringControlCommand matchFiringControlCommand(
     drivers(),
     &feeder,
@@ -159,7 +159,7 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(
     chassisMatchState,
     500);
 
-// SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
+ //SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
 //     &chassis, ChassisMatchStates::PATROL,&refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
 
 // Define commands here ---------------------------------------------------
