@@ -12,6 +12,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
+from shapely.geometry import Polygon, MultiPolygon
+from shapely.ops import unary_union
+from shapely.validation import explain_validity
+
 class MyWidget(QtWidgets.QWidget):
     def __init__(self, redraw_func = None):
         super().__init__()
@@ -108,14 +112,16 @@ class MainWindow(QtWidgets.QMainWindow):
         if current_index != -1:
             self.tabs.removeTab(current_index)
             self.regenerate_plot()
-    
+
     def regenerate_plot(self):
-        self.ax.clear()
-        
+        self.ax.clear()  # Clear previous plots
+
         all_xs = []
         all_ys = []
-        
-        polygons = []
+        original_polygons = []
+        buffered_polygons = []
+
+        # Collect polygons from each tab
         for tab in range(self.tabs.count()):
             widget = self.tabs.widget(tab)
             table = widget.table
@@ -137,26 +143,54 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if xs and ys:
                 vertices = list(zip(xs, ys))
-                radius = 0  # Default value for radius en
+                radius = 0  # Default value for radius
                 try:
                     radius = float(self.robot_radius.text())
                 except ValueError:
-                    pass
-                
-                xse, yse = expand_polygon(vertices, radius)
-                
-                edge_color = 'black' if tab != self.tabs.currentIndex() else 'red'
-                face_color = 'gray' if tab != self.tabs.currentIndex() else 'lightcoral'
-                edge_color_expanded = 'blue' if tab != self.tabs.currentIndex() else 'lightblue'
-                face_color_expanded = 'lightgray' if tab != self.tabs.currentIndex() else 'lightblue'
-                
+                    print("Invalid robot radius input.")
 
-                self.ax.add_patch(plt.Polygon(list(zip(xs, ys)), closed=True, fill=True, edgecolor=edge_color, facecolor=face_color))
-                self.ax.add_patch(plt.Polygon(list(zip(xse, yse)), closed=True, fill=True, edgecolor=edge_color_expanded, facecolor=face_color_expanded, alpha=0.3))
+                # Create the original polygon
+                original_polygon = Polygon(vertices)
 
+                # Check if the original polygon is valid
+                if not original_polygon.is_valid:
+                    print("Original polygon is invalid:", explain_validity(original_polygon))
+                    # Optionally fix it
+                    original_polygon = original_polygon.buffer(0)  # This can sometimes fix the geometry
+
+                if original_polygon.is_valid:
+                    original_polygons.append(original_polygon)  # Store the original polygon
+                    # Buffer the polygon
+                    buffered_polygon = original_polygon.buffer(radius, cap_style=2, join_style=2, mitre_limit=1)
+                    buffered_polygons.append(buffered_polygon)  # Store the buffered polygon
+
+        # Combine original and buffered polygons
+        if original_polygons:
+            combined_original = unary_union(original_polygons)
+            combined_buffered = unary_union(buffered_polygons)
+
+            # Draw the combined original polygon in a different color
+            if isinstance(combined_original, MultiPolygon):
+                for poly in combined_original.geoms:
+                    x_orig, y_orig = poly.exterior.xy
+                    self.ax.add_patch(plt.Polygon(list(zip(x_orig, y_orig)), closed=True, fill=True, edgecolor='black', facecolor='blue', alpha=0.5))
+            else:
+                x_orig, y_orig = combined_original.exterior.xy
+                self.ax.add_patch(plt.Polygon(list(zip(x_orig, y_orig)), closed=True, fill=True, edgecolor='black', facecolor='blue', alpha=0.5))
+
+            # Draw the combined buffered polygon without edges
+            if isinstance(combined_buffered, MultiPolygon):
+                for poly in combined_buffered.geoms:
+                    x_buff, y_buff = poly.exterior.xy
+                    self.ax.add_patch(plt.Polygon(list(zip(x_buff, y_buff)), closed=True, fill=True, edgecolor=None, facecolor='gray', alpha=0.5))
+            else:
+                x_buff, y_buff = combined_buffered.exterior.xy
+                self.ax.add_patch(plt.Polygon(list(zip(x_buff, y_buff)), closed=True, fill=True, edgecolor=None, facecolor='gray', alpha=0.5))
+
+        # Set plot limits
         try:
             field_x = float(self.field_x.text())
-            field_y = float(self.field_y.text())
+            field_y = float(self.field_y.text ())
             self.ax.set_xlim(0, field_x)
             self.ax.set_ylim(0, field_y)
         except ValueError:
@@ -242,7 +276,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     polygon.table.setItem(row_position, 0, QtWidgets.QTableWidgetItem(str(x)))
                     polygon.table.setItem(row_position, 1, QtWidgets.QTableWidgetItem(str(y)))
             self.regenerate_plot()
-    
+
     def export_obstacles(self):
         output = "// Auto-generated list of obstacles using map generation utility\n\n"
         
@@ -261,25 +295,36 @@ class MainWindow(QtWidgets.QMainWindow):
                 polygon = sg.Polygon(vertices)
                 polygons.append(polygon)
         
-        polygons = sg.MultiPolygon(polygons)
-        radius = 0 
-        try:
-            radius = float(self.robot_radius.text())
-        except ValueError:
-            pass
-        polygons.buffer(radius, cap_style=2, join_style=2, mitre_limit=1)
-        # check if polygons is a muiltipolygon
-        if isinstance(polygons, sg.MultiPolygon):
-            for i, polygon in enumerate(polygons.geoms): 
-                x, y = polygon.exterior.xy
-                output += f"vector<Point> {i} = {{\n"
+        # Combine all polygons into a single geometry
+        if polygons:
+            combined_polygon = unary_union(polygons)  # Combine overlapping polygons
+        else:
+            combined_polygon = None
+
+        # Prepare output based on the combined polygon
+        if combined_polygon and isinstance(combined_polygon, sg.Polygon):
+            # Get the exterior coordinates as a list of tuples
+            exterior_coords = list(combined_polygon.exterior.coords)
+            if len(exterior_coords) >= 4:  # Ensure we have enough points to form a polygon
+                expanded_boundary = expand_polygon(exterior_coords, distance=1.0)  # Adjust distance as needed
+                x, y = expanded_boundary
+                output += "vector<Point> obstacle = {\n"
                 for j in range(len(x)):
                     output += f"  Point({x[j]}, {y[j]}),\n"
                 output += "};\n\n"
+        elif combined_polygon and isinstance(combined_polygon, sg.MultiPolygon):
+            for i, polygon in enumerate(combined_polygon.geoms):
+                # Get the exterior coordinates as a list of tuples
+                exterior_coords = list(polygon.exterior.coords)
+                if len(exterior_coords) >= 4:  # Ensure we have enough points to form a polygon
+                    expanded_boundary = expand_polygon(exterior_coords, distance=1.0)  # Adjust distance as needed
+                    x, y = expanded_boundary
+                    output += f"vector<Point> obstacle_{i} = {{\n"
+                    for j in range(len(x)):
+                        output += f"  Point({x[j]}, {y[j]}),\n"
+                    output += "};\n\n"
         else:
-            output += f"vector<Point> obstacle = {{\n"
-            for x, y in polygons.exterior.xy:
-                output += f"  Point({x}, {y}),\n"
+            output += "vector<Point> obstacle = {};\n\n"  # No obstacles
 
         clipboard = QtGui.QGuiApplication.clipboard()
         clipboard.setText(output)
