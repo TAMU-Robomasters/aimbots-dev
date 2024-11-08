@@ -44,7 +44,11 @@ float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
 
 // gather data, transform data,
-void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
+void VisionDataConversion::updateTargetInfo(
+    Vector3f position,
+    Vector3f velocity,
+    Vector3f acceleration,
+    uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
 
@@ -75,6 +79,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         .position = turretCameraFrame.getPointInFrame(turretFieldFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,
     };
+
+    Vector3f transformedVelocity = turretCameraFrame.getPointInFrame(turretFieldFrame, velocity);
+    Vector3f transformedAcceleration = turretCameraFrame.getPointInFrame(turretFieldFrame, acceleration);
 
     Vector3f posVecMath = turretCameraFrame.getOrigin() + currentData.position;
 
@@ -108,13 +115,13 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
 
     if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
-        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
-        YPositionFilter.update(dt, transformedPosition.position.getY());
-        ZPositionFilter.update(dt, transformedPosition.position.getZ());
+        // XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
+        // YPositionFilter.update(dt, transformedPosition.position.getY());
+        // ZPositionFilter.update(dt, transformedPosition.position.getZ());
 
-        xDFT.damping_factor = dampingValue;
+        // xDFT.damping_factor = dampingValue;
 
-        xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
+        // xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
 
         // if (xDFTValid) {
         //     spinMagnitude = 0.0f;
@@ -137,6 +144,15 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         //     DCBinDisplay = highestMagIndex;
         //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
         // }
+
+        XPlateState =
+            Vector3f(transformedPosition.position.getX(), transformedVelocity.getX(), transformedAcceleration.getX());
+
+        YPlateState =
+            Vector3f(transformedPosition.position.getY(), transformedVelocity.getY(), transformedAcceleration.getY());
+
+        ZPlateState =
+            Vector3f(transformedPosition.position.getZ(), transformedVelocity.getZ(), transformedAcceleration.getZ());
 
         lastUpdateTimestamp_uS = currentTime_uS;
     }
@@ -166,9 +182,13 @@ PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const 
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    // Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    // Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    // Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+
+    Vector3f xPlate = Vector3f(XPlateState.getX(), XPlateState.getY(), XPlateState.getZ());
+    Vector3f yPlate = Vector3f(YPlateState.getX(), YPlateState.getY(), YPlateState.getZ());
+    Vector3f zPlate = Vector3f(ZPlateState.getX(), ZPlateState.getY(), ZPlateState.getZ());
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();

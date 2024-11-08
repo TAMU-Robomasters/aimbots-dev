@@ -15,11 +15,17 @@ struct JetsonMessage {
     float targetX;
     float targetY;
     float targetZ;
+    float targetVX;
+    float targetVY;
+    float targetVZ;
+    float targetAX;
+    float targetAY;
+    float targetAZ;
     uint8_t delay;  // ms
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 39, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::Vision

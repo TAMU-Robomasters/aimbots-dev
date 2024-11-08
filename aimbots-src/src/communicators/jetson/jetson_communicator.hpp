@@ -62,5 +62,7 @@ private:
 
     Matrix<float, 1, 2> visionTargetAngles;
     Vector3f visionTargetPosition;
+    Vector3f visionTargetVelocity;
+    Vector3f visionTargetAcceleration;
 };
 }  // namespace src::Informants::Vision

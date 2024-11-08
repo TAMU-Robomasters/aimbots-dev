@@ -15,8 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-      lastMessage()
-{}
+      lastMessage() {}
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
@@ -109,7 +108,19 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setY(lastMessage.targetY);
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
+                    visionTargetVelocity.setX(lastMessage.targetVX);
+                    visionTargetVelocity.setY(lastMessage.targetVY);
+                    visionTargetVelocity.setZ(lastMessage.targetVZ);
+
+                    visionTargetAcceleration.setX(lastMessage.targetAX);
+                    visionTargetAcceleration.setY(lastMessage.targetAY);
+                    visionTargetAcceleration.setZ(lastMessage.targetAZ);
+
+                    visionDataConverter.updateTargetInfo(
+                        visionTargetPosition,
+                        visionTargetVelocity,
+                        visionTargetAcceleration,
+                        lastMessage.delay);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 

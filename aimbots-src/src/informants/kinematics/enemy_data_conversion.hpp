@@ -3,9 +3,9 @@
 
 #include <utils/math/transform_setup.hpp>
 
-#include "utils/tools/common_types.hpp"
 #include "utils/filters/kinematic_kalman.hpp"
 #include "utils/math/dft_helper.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src {
 class Drivers;
@@ -32,7 +32,7 @@ public:
      * @brief Gets latest valid enemy target data from CV, converts it to a chassis-relative kinematic state, and filters it.
      * Should be called on every CV update.
      */
-    void updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay);
+    void updateTargetInfo(Vector3f position, Vector3f velocity, Vector3f acceleration, uint32_t frameCaptureDelay);
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
@@ -48,6 +48,8 @@ private:
     uint32_t lastFrameCaptureDelay = 0;
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
+
+    Vector3f XPlateState, YPlateState, ZPlateState;  // position, velocity, acceleration per plate
 
     // 1s sample, 30ms per sample = 33 samples
     SlidingDFT<float, 30> xDFT;
