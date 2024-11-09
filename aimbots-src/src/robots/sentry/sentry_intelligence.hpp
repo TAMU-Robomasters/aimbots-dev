@@ -7,30 +7,16 @@
 #include "tap/architecture/clock.hpp"
 #include "tap/control/subsystem.hpp"
 
-#include "subsystems/shooter/shooter_constants.hpp"
+
 #include "utils/ref_system/ref_helper_turreted.hpp"
 #include "utils/tools/common_types.hpp"
 
-#include "subsystems/feeder/control/feeder.hpp"
-#include "subsystems/chassis/complex_commands/sentry_match_chassis_control_command.hpp"
-#include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
-#include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
-//
-#include "subsystems/shooter/basic_commands/run_shooter_command.hpp"
-#include "subsystems/shooter/basic_commands/stop_shooter_command.hpp"
 #include "subsystems/shooter/control/shooter.hpp"
-//
-#include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
-
-
-#include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
-
-#include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/feeder/control/feeder.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
+#
 
 
 #include "drivers.hpp"
@@ -51,7 +37,8 @@ public:
         src::Chassis::ChassisSubsystem*,
         src::Shooter::ShooterSubsystem*,
         src::Utils::RefereeHelperTurreted*
-        src::Chassis::ChassisAutoNavCommand*);
+        src::Chassis::ChassisAutoNavCommand*,
+        const SnapSymmetryConfig& snapSymmetryConfig);
 
         /*
 

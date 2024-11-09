@@ -11,6 +11,7 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     GimbalPatrolConfig* patrolConfig,
+    src::Chassis::ChassisMatchStates& chassisState,
     int chaseTimeoutMillis)
     : TapComprisedCommand(drivers),
       drivers(drivers),

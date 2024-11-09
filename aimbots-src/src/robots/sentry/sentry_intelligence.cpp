@@ -19,7 +19,8 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Chassis::ChassisSubsystem* chassis,
     src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelper,
-    src::Chassis::ChassisAutoNavCommand* autoNavCommand)
+    src::Chassis::ChassisAutoNavCommand* autoNavCommand,
+    const SnapSymmetryConfig& snapSymmetryConfig)
     /*
     //Gimbal
     src::Gimbal::GimbalFieldRelativeController* controller,
@@ -34,7 +35,7 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Chassis::ChassisTokyoCommand* tokyoCommand,
     const defaultLinearConfig7 defaultLinearConfig,
     const defaultRotationConfig& defaultRotationConfig,
-    const SnapSymmetryConfig& snapSymmetryConfig,
+    
 
     //feeder
     src::Gimbal::GimbalControllerInterface* fieldRelativeGimbalController,
@@ -48,7 +49,7 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
       gimbal(gimbal),
       feeder(feeder),
       chassis(chassis)
-      //autoNavCommand(drivers, chassis, //defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig)
+      autoNavCommand(drivers, chassis, defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig)
       //controller(controller)
 
       /*
@@ -158,11 +159,11 @@ void SentryIntelligenceCommand::execute() {
   
   if(proportional_HP > 1.00){
     //evade
-    autoNavCommand.setTargetLocation(1.5f, 6.0f); // fake target location 
+    autoNavCommand->setTargetLocation(1.5f, 6.0f); // fake target location 
   }
   if(proportional_HP < 0){
     //attack
-    autoNavCommand.setTargetLocation(9.0f, 0.5f); // fake target loaction 
+    autoNavCommand->setTargetLocation(9.0f, 0.5f); // fake target loaction 
   }
   
    
