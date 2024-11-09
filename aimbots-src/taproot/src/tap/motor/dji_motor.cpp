@@ -169,9 +169,18 @@ float DjiMotor::getPositionWrapped() const
     return getEncoderWrapped() * M_TWOPI / ENC_RESOLUTION;
 }
 
+void DjiMotor::setDiedTrue() 
+{
+    died = true;
+}
+
 void DjiMotor::updateEncoderValue(uint16_t newEncWrapped)
 {
     int16_t enc_dif = newEncWrapped - encoderWrapped;
+    if (died && isMotorOnline()) {
+        enc_dif = 0;
+        died = false;
+    }
     if (enc_dif < -ENC_RESOLUTION / 2)
     {
         encoderRevolutions++;

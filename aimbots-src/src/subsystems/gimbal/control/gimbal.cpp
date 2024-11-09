@@ -69,6 +69,8 @@ bool yawMotorIsOnlineDisplay = false;
 
 float wrappedYawDisplay = 0.0f;
 
+float unwrappedAngleWithOffsetDisplay = 0.0f;
+
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
     float yawAxisAngleSum = 0.0f;
@@ -166,6 +168,10 @@ void GimbalSubsystem::refresh() {
     fixedYawAngleDisplay = getYawEncoderUnwrapped(0);
 
     wrappedYawDisplay = yawMotors[0]->getEncoderWrapped();
+
+    unwrappedAngleWithOffsetDisplay = modm::toDegree(GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(yawMotors[0]->getEncoderUnwrapped()) - YAW_MOTOR_OFFSET_ANGLES[0]));
+
+    if(!yawMotors[0]->isMotorOnline()) {yawMotors[0]->setDiedTrue();}
 
     // update gimbal orientation buffer
     std::pair<float, float> orientation;

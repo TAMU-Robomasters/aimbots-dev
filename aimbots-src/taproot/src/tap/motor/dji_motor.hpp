@@ -222,6 +222,8 @@ public:
         return (360.0f * static_cast<float>(encoder)) / ENC_RESOLUTION;
     }
 
+    void setDiedTrue();
+
 private:
     // wait time before the motor is considered disconnected, in milliseconds
     static const uint32_t MOTOR_DISCONNECT_TIME = 100;
@@ -277,6 +279,7 @@ private:
     uint16_t encoderHomePosition;
 
     tap::arch::MilliTimeout motorDisconnectTimeout;
+    bool died = false;
 };
 
 }  // namespace tap::motor
