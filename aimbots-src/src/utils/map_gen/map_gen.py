@@ -310,7 +310,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 x, y = expanded_boundary
                 output += "vector<Point> obstacle = {\n"
                 for j in range(len(x)):
-                    output += f"  Point({x[j]}, {y[j]}),\n"
+                    output += f"  Point({x[j]:.3f}, {y[j]:.3f}),\n"
                 output += "};\n\n"
         elif combined_polygon and isinstance(combined_polygon, sg.MultiPolygon):
             for i, polygon in enumerate(combined_polygon.geoms):
@@ -321,7 +321,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     x, y = expanded_boundary
                     output += f"vector<Point> obstacle_{i} = {{\n"
                     for j in range(len(x)):
-                        output += f"  Point({x[j]}, {y[j]}),\n"
+                        output += f"  Point({x[j]:.3f}, {y[j]:.3f}),\n"
                     output += "};\n\n"
         else:
             output += "vector<Point> obstacle = {};\n\n"  # No obstacles
