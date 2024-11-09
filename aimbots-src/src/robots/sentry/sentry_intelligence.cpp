@@ -20,7 +20,9 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Chassis::ChassisAutoNavCommand* autoNavCommand,
-    const SnapSymmetryConfig& snapSymmetryConfig)
+    //const src::Chassis::ChassisAutoNavCommand::defaultLinearConfig& defaultLinearConfig,
+    //const src::Chassis::defaultRotationConfig& defaultRotationConfig,
+    const src::Chassis::SnapSymmetryConfig& snapSymmetryConfig)
     /*
     //Gimbal
     src::Gimbal::GimbalFieldRelativeController* controller,
@@ -48,36 +50,8 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
       drivers(drivers),
       gimbal(gimbal),
       feeder(feeder),
-      chassis(chassis)
-      autoNavCommand(drivers, chassis, defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig)
-      //controller(controller)
-
-      /*
-      ballisticsSolver(ballisticsSolver),
-      patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
-      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
-  //feeder
-      shooter(shooter),
-      refHelper(refHelper),
-      fieldRelativeGimbalController(fieldRelativeGimbalController),
-      stopFeederCommand(drivers, feeder),
-      fullAutoFeederCommand(drivers, feeder, refHelper, 1, UNJAM_TIMER_MS),
-      stopShooterCommand(drivers, shooter),
-      runShooterCommand(drivers, shooter, refHelper),
-
-    //chasis
-    autoNavCommand(drivers, chassis, defaultLinearConfig, defaultRotationConfig, snapSymmetryConfig),
-    autoNavTokyoCommand(
-        drivers,
-        chassis,
-        defaultLinearConfig,
-        tokyoConfig,
-        randomizeSpinRate,
-        randomizerConfig),  // velocity ramp value
-    tokyoCommand(drivers, chassis, gimbal, tokyoConfig, 0, randomizeSpinRate, randomizerConfig),
-    evadeTimeout(EVADE_DURATION_MS)
-    */
-{
+      chassis(chassis),
+      autoNavCommand(drivers, chassis, src::Chassis::defaultLinearConfig, src::Chassis::defaultRotationConfig, snapSymmetryConfig){
 
   addSubsystemRequirement(chassis);
   this->comprisedCommandScheduler.registerSubsystem(chassis);

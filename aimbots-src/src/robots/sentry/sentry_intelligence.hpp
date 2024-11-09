@@ -15,6 +15,7 @@
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/control/chassis_helper.hpp"
 #
 
@@ -36,9 +37,11 @@ public:
         src::Feeder::FeederSubsystem*,
         src::Chassis::ChassisSubsystem*,
         src::Shooter::ShooterSubsystem*,
-        src::Utils::RefereeHelperTurreted*
+        src::Utils::RefereeHelperTurreted*,
         src::Chassis::ChassisAutoNavCommand*,
-        const SnapSymmetryConfig& snapSymmetryConfig);
+        //const src::Chassis::ChassisAutoNavCommand::defaultLinearConfig& defaultLinearConfig,
+        //const src::Chassis::defaultRotationConfig& defaultRotationConfig,
+        const src::Chassis::SnapSymmetryConfig& snapSymmetryConfig);
 
         /*
 
