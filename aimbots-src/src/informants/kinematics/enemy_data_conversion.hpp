@@ -49,7 +49,7 @@ private:
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
 
-    Vector3f XPlateState, YPlateState, ZPlateState;  // position, velocity, acceleration per plate
+    Vector3f XPlateState, YPlateState, ZPlateState;  // position, velocity, acceleration per plate axis
 
     // 1s sample, 30ms per sample = 33 samples
     SlidingDFT<float, 30> xDFT;
