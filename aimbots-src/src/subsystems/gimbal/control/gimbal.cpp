@@ -16,7 +16,8 @@ GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
       targetYawAxisAngle(YAW_AXIS_START_ANGLE, -M_PI, M_PI),
-      targetPitchAxisAngle(PITCH_AXIS_START_ANGLE, -M_PI, M_PI)
+      targetPitchAxisAngle(PITCH_AXIS_START_ANGLE, -M_PI, M_PI),
+      yawAxisBeforeResetDebug(0.0f, -M_PI, M_PI)
 {
     BuildYawMotors();
     BuildPitchMotors();
@@ -60,6 +61,13 @@ float pitchLimitedOutputDisplay = 0;
 
 float currentYawAxisAngleUnwrappedDisplay = 0.0f;
 float unmodifiedYawDisplay = 0.0f;
+float yawAxisAngleBeforeResetDebugDisplay = 0.0f;
+
+int fixedYawAngleDisplay = 0;  // Self-tracking how many rotations the yaw gimbal motor has taken
+
+bool yawMotorIsOnlineDisplay = false;
+
+float wrappedYawDisplay = 0.0f;
 
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
@@ -135,12 +143,14 @@ void GimbalSubsystem::refresh() {
     // Set axis angle to be average of all the online motors
     if (yawOnlineCount > 0) {
         currentYawAxisAngle.setWrappedValue(yawAxisAngleSum / yawOnlineCount);
+        yawAxisBeforeResetDebug.setWrappedValue(currentYawAxisAngle.getWrappedValue());
     }
     if (pitchOnlineCount > 0) {
         currentPitchAxisAngle.setWrappedValue(pitchAxisAngleSum / pitchOnlineCount);
     }
 
     currentYawAxisAngleDisplay = modm::toDegree(currentYawAxisAngle.getWrappedValue());
+    yawAxisAngleBeforeResetDebugDisplay = yawAxisBeforeResetDebug.getWrappedValue();
     
     // Temp debugging
     currentYawAxisAngleUnwrappedDisplay = modm::toDegree(GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(yawMotors[0]->getEncoderUnwrapped()))); 
@@ -148,6 +158,14 @@ void GimbalSubsystem::refresh() {
 
     currByFuncYawAngleDisplay = modm::toDegree(this->getCurrentYawAxisAngle(AngleUnit::Radians));
     currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getWrappedValue());
+
+    yawMotorIsOnlineDisplay = yawMotors[0]->isMotorOnline();
+
+    fullYawRotations = (yawMotors[0]->getEncoderUnwrapped() - yawMotors[0]->getEncoderWrapped()) /  DJIMotor::ENC_RESOLUTION;
+
+    fixedYawAngleDisplay = getYawEncoderUnwrapped(0);
+
+    wrappedYawDisplay = yawMotors[0]->getEncoderWrapped();
 
     // update gimbal orientation buffer
     std::pair<float, float> orientation;
@@ -186,6 +204,13 @@ float GimbalSubsystem::getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit un
         currentPitchAxisAnglesByMotor[PitchIdx]->minDifference(targetPitchAxisAngle) / GIMBAL_PITCH_GEAR_RATIO;
 
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
+}
+
+// Correct Unwrapped Yaw encoder position that may have been lost after shutdown
+int64_t GimbalSubsystem::getYawEncoderUnwrapped(uint8_t yawIdx)
+{
+    // Return Unwrapped value of yaw motor + number of tracked yaw rotations * DJI Encoder Resolution Constant
+    return ( yawMotors[yawIdx]->getEncoderWrapped() + fullYawRotations * DJIMotor::ENC_RESOLUTION);
 }
 
 }  // namespace src::Gimbal

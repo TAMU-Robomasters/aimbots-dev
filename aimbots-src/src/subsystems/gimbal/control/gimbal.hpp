@@ -234,6 +234,8 @@ public:
     // just in case?
     inline void clearGimbalOrientationBuffer() { gimbalOrientationBuffer.clear(); }
 
+    int64_t getYawEncoderUnwrapped(uint8_t yawIdx);
+
 private:
     src::Drivers* drivers;
 
@@ -247,6 +249,8 @@ private:
     std::array<float, YAW_MOTOR_COUNT> desiredYawMotorOutputs;
     std::array<float, PITCH_MOTOR_COUNT> desiredPitchMotorOutputs;
 
+    tap::algorithms::WrappedFloat yawAxisBeforeResetDebug; // TEMP DEBUG VARIABLE
+
     tap::algorithms::WrappedFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
     tap::algorithms::WrappedFloat currentPitchAxisAngle;  // chassis relative, in radians
 
@@ -259,6 +263,8 @@ private:
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 
     static const uint32_t GIMBAL_BUFFER_SIZE = 40;
+
+    int fullYawRotations = 0;
 
     // gimbal yaw / pitch buffer
     // yaw is first, pitch is second, respectively in the pair
