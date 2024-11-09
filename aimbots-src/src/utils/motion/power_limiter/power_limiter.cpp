@@ -4,22 +4,24 @@ namespace src::Utils::Control::PowerLimiting {
 PowerLimiter::PowerLimiter(
     const src::Drivers *drivers,
     float startingEnergyBuffer,
-    float energyBufferLimitThreshold,
-    float energyBufferCritThreshold,
-    float safetyFactor)
+    float energyBufferLimitThreshold,  
+    float energyBufferCritThreshold,   
+    float safetyFactor)               
     : drivers(drivers),
-      startingEnergyBuffer(startingEnergyBuffer),
+      energyBuffer( startingEnergyBuffer ), 
+      startingEnergyBuffer( startingEnergyBuffer ),
       energyBufferLimitThreshold(energyBufferLimitThreshold),
       energyBufferCritThreshold(energyBufferCritThreshold),
       consumedPower(0.0f),
       safetyFactor(safetyFactor),
       prevTime(0),
-      prevRobotDataReceivedTimestamp(0)
+      prevRobotDataReceivedTimestamp(0),
+      hasRampBonus(false)
 //
 {}
 
 float PowerLimiter::getPowerLimitRatio() {
-    // Catch for finding new ref info
+    // Catch for not having connection to ref system
     if (!drivers->refSerial.getRefSerialReceivingData()) {
         return 1.0f;
     }
@@ -27,7 +29,8 @@ float PowerLimiter::getPowerLimitRatio() {
     // Updates power expended since previous local refresh & energy buffer
     updatePowerAndEnergyBuffer();
 
-    // Checks if we are cutting close to breaking the 60/250J limit
+    // TODO: confirm & update documentation below for returns
+    // Checks if we are cutting close to burning thru our energy buffer ()
     //    If we're close, it cuts down on power
     //    If we're not, robot keeps truckin' along
     if (energyBuffer < energyBufferLimitThreshold) {
@@ -35,25 +38,43 @@ float PowerLimiter::getPowerLimitRatio() {
             static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold,
             0.0f,
             1.0f);
-    } else {
+    } 
+    else {
         return 1.0f;
     }
 }
 
 void PowerLimiter::updatePowerAndEnergyBuffer() {
 
-    // Calculates power consumed between local refresh
-    const auto &robotData = drivers->refSerial.getRobotData();                 // Pulls current data
-    const auto &chassisData = robotData.chassis;                               //
+    // Calculates power consumed between local refreshes
+    const auto &robotData = drivers->refSerial.getRobotData();                 // Pulls electrical current data from chassis
+    const auto &chassisData = robotData.chassis;                               //   & calculates power consumed since last time stamp
     const float current = chassisData.current;                                 //
-    const float newChassisPower = (chassisData.volt * current) / 1'000'000.0f; // *1'000'000.0f = convert microwatts to watts
+    const float newChassisPower = (chassisData.volt * current) / 1'000'000.0f; // div by 1'000'000.0f = convert microwatts to watts
     
-    // Calculates energy buffer in between ref info updates
-    const float dt = tap::arch::clock::getTimeMilliseconds() - prevTime;
-    prevTime = tap::arch::clock::getTimeMilliseconds();
-    energyBuffer -= ((consumedPower * safetyFactor) - chassisData.powerConsumptionLimit) * dt / 1000.0f;
+    // Calculates energy buffer between ref info updates
+    const float dt = tap::arch::clock::getTimeMilliseconds() - prevTime;                                 // Calculates time passed between local cycles
+    prevTime = tap::arch::clock::getTimeMilliseconds();                                                  // 
+    energyBuffer -= ((consumedPower * safetyFactor) - chassisData.powerConsumptionLimit) * dt / 1000.0f; // Recalculates energy buffer
 
-    // Checks for ref info update. If ref info update is available, it resets our energy buffer
+    // Accounts for ramp bonus
+    if(energyBuffer > startingEnergyBuffer && !hasRampBonus)          // Checks if we have > 60J && we don't have a bonus
+    {
+        rampBonusStartTime = tap::arch::clock::getTimeMilliseconds(); // Starts ramp bonus clock
+        hasRampBonus = true;                                          // Local indicator stating robot have ramp bonus
+    }
+    rampBonusTimeDuration = 20'000 
+            - (tap::arch::clock::getTimeMillisecconds() - rampBonusStartTime); // Calculate time remaining of ramp bonus
+    if(hasRampBonus && rampBonusTimeDuration < 0)    // Checks if our duration has expired
+    {
+        if(energyBuffer > startingEnergyBuffer)      // If we have more than 60J buffer
+            energyBuffer = startingEnergyBuffer;     //   -> set to 60J
+        hasRampBonus = false;                        // Local indicator stating robot does not have ramp bonus
+    }
+
+
+    // Checks for ref info update.
+    //   If ref info update is available, it updates our energy buffer
     if (robotData.robotDataReceivedTimestamp != prevRobotDataReceivedTimestamp) {
         energyBuffer = chassisData.powerBuffer;
         prevRobotDataReceivedTimestamp = robotData.robotDataReceivedTimestamp;
@@ -63,4 +84,4 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
     consumedPower = newChassisPower;
 }
 
-}  // namespace src::Utils::Control::PowerLimiting
+}  // namespace src::Utils::Control::PowerLimiting 

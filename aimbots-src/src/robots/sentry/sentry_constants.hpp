@@ -313,7 +313,7 @@ static constexpr float GIMBAL_Y_OFFSET = 0.0f;  //-0.05
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (187.0f / 3591.0f);
 
-// Power limiting constants, will explain later
+// Power limiting variables, explained in power_limiter.hpp
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
 static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
