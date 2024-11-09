@@ -4,7 +4,7 @@
 
 #define SHOOTER_COMPATIBLE
 
-static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
+static constexpr uint8_t SHOOTER_MOTOR_COUNT = 4;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .kp = 30.0f,
