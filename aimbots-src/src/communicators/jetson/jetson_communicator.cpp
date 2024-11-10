@@ -51,87 +51,93 @@ int msBetweenLastMessageDisplay = 0;
 alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 
 void JetsonCommunicator::updateSerial() {
-    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    // 0000 0000  ...  1111 1111
+    // 6 more bytes ^ (zeros)
+    uint8_t simpleData = 255;
+    
+    WRITE(&simpleData, 1);  // attempts to send one byte from the buffer
+    
+    // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
-    size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
-    if (bytesRead != 1) return;
+    // size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
+    // if (bytesRead != 1) return;
 
-    // We've successfully read a new byte from the Jetson, so we can restart this.
-    jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+    // // We've successfully read a new byte from the Jetson, so we can restart this.
+    // jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
-    displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
-    displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
+    // displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
+    // displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
 
-    switch (currentSerialState) {
-        // ...looking for message start...
-        case JetsonCommunicatorSerialState::SearchingForMagic: {
-            // Check if the byte we just read is the byte we expected in the magic number.
-            if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
-                nextByteIndex++;
-            } else {
-                nextByteIndex = 0;  // if not, reset the index and start over.
-            }
+    // switch (currentSerialState) {
+    //     // ...looking for message start...
+    //     case JetsonCommunicatorSerialState::SearchingForMagic: {
+    //         // Check if the byte we just read is the byte we expected in the magic number.
+    //         if (rawSerialBuffer[nextByteIndex] == ((JETSON_MESSAGE_MAGIC >> (8 * nextByteIndex)) & 0xff)) {
+    //             nextByteIndex++;
+    //         } else {
+    //             nextByteIndex = 0;  // if not, reset the index and start over.
+    //         }
 
-            // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
-            // we wouldn't have gotten this far.
-            if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
-                currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
-            }
-            break;
-        }
-        // ...found message start, assemble message...
-        case JetsonCommunicatorSerialState::AssemblingMessage: {
-            nextByteIndex++;
+    //         // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
+    //         // we wouldn't have gotten this far.
+    //         if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
+    //             currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
+    //         }
+    //         break;
+    //     }
+    //     // ...found message start, assemble message...
+    //     case JetsonCommunicatorSerialState::AssemblingMessage: {
+    //         nextByteIndex++;
 
-            // Increment the byte index until we reach the expected end of a message, then parse the message.
-            if (nextByteIndex == JETSON_MESSAGE_SIZE) {
-                // Reinterpret the received bytes into a JetsonMessage
-                lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
+    //         // Increment the byte index until we reach the expected end of a message, then parse the message.
+    //         if (nextByteIndex == JETSON_MESSAGE_SIZE) {
+    //             // Reinterpret the received bytes into a JetsonMessage
+    //             lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
 
-                // Update last message time and time between last message and now.
-                if (lastMsgTimeDisplay == 0) {
-                    lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
-                } else {
-                    msBetweenLastMessageDisplay =
-                        currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
-                    lastMsgTimeDisplay = currTime;
-                }
+    //             // Update last message time and time between last message and now.
+    //             if (lastMsgTimeDisplay == 0) {
+    //                 lastMsgTimeDisplay = tap::arch::clock::getTimeMilliseconds();
+    //             } else {
+    //                 msBetweenLastMessageDisplay =
+    //                     currTime - lastMsgTimeDisplay;  // Should be pretty close to the message send rate.
+    //                 lastMsgTimeDisplay = currTime;
+    //             }
 
-                targetXDisplay = lastMessage.targetX;
-                targetYDisplay = lastMessage.targetY;
-                cvStateDisplay = lastMessage.cvState;
+    //             targetXDisplay = lastMessage.targetX;
+    //             targetYDisplay = lastMessage.targetY;
+    //             cvStateDisplay = lastMessage.cvState;
 
-                if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
-                    // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
+    //             if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
+    //                 // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    // position is relative to camera
-                    visionTargetPosition.setX(lastMessage.targetX);
-                    visionTargetPosition.setY(lastMessage.targetY);
-                    visionTargetPosition.setZ(lastMessage.targetZ);
+    //                 // position is relative to camera
+    //                 visionTargetPosition.setX(lastMessage.targetX);
+    //                 visionTargetPosition.setY(lastMessage.targetY);
+    //                 visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
-                    lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
-                }
+    //                 visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
+    //                 lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
+    //             }
 
-                // Auditory indicator that helps debug our vision pipeline.
-                if (lastMessage.cvState == CVState::FOUND) {
-                    tap::buzzer::playNote(&drivers->pwm, 466);
-                } else if (lastMessage.cvState == CVState::FIRE) {
-                    tap::buzzer::playNote(&drivers->pwm, 932);
-                } else {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
-                }
+    //             // Auditory indicator that helps debug our vision pipeline.
+    //             if (lastMessage.cvState == CVState::FOUND) {
+    //                 tap::buzzer::playNote(&drivers->pwm, 466);
+    //             } else if (lastMessage.cvState == CVState::FIRE) {
+    //                 tap::buzzer::playNote(&drivers->pwm, 932);
+    //             } else {
+    //                 tap::buzzer::playNote(&drivers->pwm, 0);
+    //             }
 
-                // As we've received a full message, reset the byte index and go back to searching for the magic number.
-                nextByteIndex = 0;
-                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
-            } else {
-                rawSerialDisplay[nextByteIndex] = rawSerialBuffer[nextByteIndex];
-            }
+    //             // As we've received a full message, reset the byte index and go back to searching for the magic number.
+    //             nextByteIndex = 0;
+    //             currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+    //         } else {
+    //             rawSerialDisplay[nextByteIndex] = rawSerialBuffer[nextByteIndex];
+    //         }
 
-            break;
-        }
-    }
+    //         break;
+    //     }
+    // }
 
     // if (!isJetsonOnline()) {
     //     lastMessage.targetX = 0.0f;
