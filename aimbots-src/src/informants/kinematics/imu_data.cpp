@@ -1,4 +1,5 @@
 #include "kinematic_informant.hpp"
+#include "imu_data.hpp"
 
 #include "tap/algorithms/math_user_utils.hpp"
 
@@ -9,14 +10,16 @@
 
 namespace src::Informants {
 
-Vector3f KinematicInformant::getLocalIMUAngles() {
+IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
+ 
+Vector3f KinematicInformant::getRawLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
         drivers->bmi088.getRoll(),
         drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
     return imuAngles * (M_PI / 180.0f);      // Convert to rad
 }
-float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
+float KinematicInformant::getRawLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
             return -modm::toRadian(drivers->bmi088.getPitch());
@@ -28,12 +31,12 @@ float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angl
     return 0;
 }
 
-Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
+Vector3f KinematicInformant::getRawIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
     Vector3f imuAngularVelocities = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
     return imuAngularVelocities * (M_PI / 180.0f);  // Convert to rad/s
 }
 
-float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
+float KinematicInformant::getRawIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
             return -modm::toRadian(drivers->bmi088.getGy());
@@ -70,7 +73,7 @@ Vector3f KinematicInformant::getIMUAngularAccelerations() {
     return alpha;
 }
 
-Vector3f KinematicInformant::getIMULinearAccelerations() {
+Vector3f KinematicInformant::getRawIMULinearAccelerations() {
     float ax = -drivers->bmi088.getAy();
     float ay = drivers->bmi088.getAx();
     float az = drivers->bmi088.getAz();
@@ -79,7 +82,7 @@ Vector3f KinematicInformant::getIMULinearAccelerations() {
     return a;
 }
 
-float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets IMU accel in IMU Frame
+float KinematicInformant::getRawIMULinearAcceleration(LinearAxis axis) {  // Gets IMU accel in IMU Frame
     switch (axis) {
         case X_AXIS:
             return drivers->bmi088.getAx();
@@ -143,5 +146,10 @@ float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit 
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
+void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
+    // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
+    UNUSED(imuCalibrationEuler);
+    drivers->bmi088.requestRecalibration();
+};
 } //informants namespace
 

@@ -39,87 +39,43 @@ public:
     KinematicInformant(src::Drivers* drivers);
     ~KinematicInformant() = default;
 
-    src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
-
-    src::Informants::Transformers::TurretFrames& getTurretFrames() { return turretFrames; }
-
     void registerSubsystems(
         src::Gimbal::GimbalSubsystem* gimbalSubsystem,
         tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) {
         this->gimbalSubsystem = gimbalSubsystem;
         this->chassisSubsystem = chassisSubsystem;
 
-        chassisKFOdometry.registerChassisSubsystem(chassisSubsystem);
+        chassisKFOdometry->registerChassisSubsystem(chassisSubsystem);
     }
 
     tap::communication::sensors::imu::ImuInterface::ImuState getIMUState();
 
     void initialize(float imuFrequency, float imukP, float imukI);
-
-    void recalibrateIMU(Vector3f imuCalibrationEuler = {0.0f, 0.0f, 0.0f});
-
-
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
     tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
+    src::Informants::Odometry::ChassisKFOdometry* chassisKFOdometry;
 
     src::Informants::Transformers::RobotFrames robotFrames;
     src::Informants::Transformers::TurretFrames turretFrames;
 
-    static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
-    static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
+    // KinematicStateVector turretIMULinearXState;
+    // KinematicStateVector turretIMULinearYState;
+    // KinematicStateVector turretIMULinearZState;
 
-    Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;
+    // KinematicStateVector turretIMUAngularXState;
+    // KinematicStateVector turretIMUAngularYState;
+    // KinematicStateVector turretIMUAngularZState;
 
-    KinematicStateVector imuLinearXState;
-    KinematicStateVector imuLinearYState;
-    KinematicStateVector imuLinearZState;
-
-    KinematicStateVector imuAngularXState;
-    KinematicStateVector imuAngularYState;
-    KinematicStateVector imuAngularZState;
-
-    KinematicStateVector chassisLinearXState;
-    KinematicStateVector chassisLinearYState;
-    KinematicStateVector chassisLinearZState;
-
-    KinematicStateVector chassisAngularXState;
-    KinematicStateVector chassisAngularYState;
-    KinematicStateVector chassisAngularZState;
-
-    KinematicStateVector turretIMULinearXState;
-    KinematicStateVector turretIMULinearYState;
-    KinematicStateVector turretIMULinearZState;
-
-    KinematicStateVector turretIMUAngularXState;
-    KinematicStateVector turretIMUAngularYState;
-    KinematicStateVector turretIMUAngularZState;
-
-    static const uint32_t GIMBAL_BUFFER_SIZE = 40;
-
-    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalFieldOrientationBuffer;  // Buffer for turret orientation data
-
-    modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
-    modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
-
-    modm::Vector<KinematicStateVector, 3> chassisLinearState = {
-        chassisLinearXState,
-        chassisLinearYState,
-        chassisLinearZState};
-    modm::Vector<KinematicStateVector, 3> chassisAngularState = {
-        chassisAngularXState,
-        chassisAngularYState,
-        chassisAngularZState};
-
-    modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
-        turretIMULinearXState,
-        turretIMULinearYState,
-        turretIMULinearZState};
-    modm::Vector<KinematicStateVector, 3> turretIMUAngularState = {
-        turretIMUAngularXState,
-        turretIMUAngularYState,
-        turretIMUAngularZState};
+    // modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
+    //     turretIMULinearXState,
+    //     turretIMULinearYState,
+    //     turretIMULinearZState};
+    // modm::Vector<KinematicStateVector, 3> turretIMUAngularState = {
+    //     turretIMUAngularXState,
+    //     turretIMUAngularYState,
+    //     turretIMUAngularZState};
 
     
 };

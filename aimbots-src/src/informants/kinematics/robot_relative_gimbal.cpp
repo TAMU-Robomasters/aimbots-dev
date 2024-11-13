@@ -1,4 +1,4 @@
-
+#include "robot_relative_gimbal.hpp"
 #include "kinematic_informant.hpp"
 
 #include "tap/algorithms/math_user_utils.hpp"
@@ -12,6 +12,8 @@
 
 namespace src::Informants {
     
+RobotRelativeGimbal::RobotRelativeGimbal(src::Drivers* drivers) : drivers(drivers) // rewrite to go to kinematic informants instead of drivers
+
     void updateRobotFrames(); //PUT THIS BACK
     // This updates more than just the robot frames, so will also update turret frames
     
@@ -43,6 +45,10 @@ namespace src::Informants {
         gimbalFieldOrientationBuffer.prependOverwrite(orientation);
 
         modm::Location2D<float> robotLocation = chassisKFOdometry.getCurrentLocation2D();
+
+        modm::Location2D<float> robotLocationDisplay;
+        float robotLocationXDisplay = 0.0f;
+        float robotLocationYDisplay = 0.0f;
 
         robotLocationXDisplay = robotLocation.getX();
         robotLocationYDisplay = robotLocation.getY();

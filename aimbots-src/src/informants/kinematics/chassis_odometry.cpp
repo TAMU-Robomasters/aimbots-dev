@@ -1,6 +1,4 @@
-#include "chassis_odmetry.hpp"
-
-#pragma once
+#include "chassis_odometry.hpp"
 
 #include <tap/algorithms/wrapped_float.hpp>
 
@@ -29,7 +27,27 @@ using namespace src::Utils;
 
 namespace src::Informants {
 
-    void KinematicInformant::updateChassisAcceleration() {
+    ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
+
+    float chassisAngleXDisplay = 0.0f;
+    float chassisAngleYDisplay = 0.0f;
+    float chassisAngleZDisplay = 0.0f;
+
+    Vector3f linearIMUAccelerationDisplay;
+    float linearIMUAccelerationXDisplay = 0.0f;
+    float linearIMUAccelerationYDisplay = 0.0f;
+    float linearIMUAccelerationZDisplay = 0.0f;
+
+    Vector3f wDisplay = {0.0f, 0.0f, 0.0f};
+    Vector3f alphaDisplay = {0.0f, 0.0f, 0.0f};
+    Vector3f rDisplay = {0.0f, 0.0f, 0.0f};
+    Vector3f aDisplay = {0.0f, 0.0f, 0.0f};
+
+    float aXDisplay = 0.0f;
+    float aYDisplay = 0.0f;
+    float aZDisplay = 0.0f;
+
+    void updateChassisAcceleration() {
         chassisAngleXDisplay = chassisAngularState[X_AXIS].getPosition();
         chassisAngleYDisplay = chassisAngularState[Y_AXIS].getPosition();
         chassisAngleZDisplay = chassisAngularState[Z_AXIS].getPosition();
@@ -53,7 +71,7 @@ namespace src::Informants {
         chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
     }
 
-    Vector3f KinematicInformant::removeFalseAcceleration(
+    Vector3f removeFalseAcceleration(
         Vector<KinematicStateVector, 3> imuLinearKSV,
         Vector<KinematicStateVector, 3> imuAngularKSV,
         Vector3f r) {
@@ -87,7 +105,4 @@ namespace src::Informants {
         Vector3f linearIMUAcceleration = a - (alpha ^ r) - (w ^ (w ^ r));
         return linearIMUAcceleration;
     }
-
-
-
 } //namespace Informants

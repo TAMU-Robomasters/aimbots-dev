@@ -31,6 +31,13 @@ class ChassisSubsystem;
 using namespace src::Utils;
 
 namespace src::Informants {
+
+class FieldRelativeGimbal{
+
+public:
+    FieldRelativeGimbal(src::Drivers* drivers);         //move to kinematics informant instead of drivers
+    ~FieldRelativeGimbal() = default;
+
     inline std::pair<float, float>& getGimbalFieldOrientation(int index) { return gimbalFieldOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
@@ -52,5 +59,11 @@ namespace src::Informants {
     // m/s
     float getChassisLinearAccelerationInGimbalDirection();
 
-    void mirrorPastRobotFrame(uint32_t frameDelay_ms);
+    void mirrorPastRobotFrame(uint32_t frameDelay_ms);\
+
+    private:
+    
+    static const uint32_t GIMBAL_BUFFER_SIZE = 40;
+    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalFieldOrientationBuffer;  // Buffer for turret orientation data
+};
 }

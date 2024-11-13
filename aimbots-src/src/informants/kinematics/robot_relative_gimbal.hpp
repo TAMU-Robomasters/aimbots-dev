@@ -26,5 +26,17 @@ class GimbalSubsystem;
 using namespace src::Utils;
 
 namespace src::Informants {
+class RobotRelativeGimbal {
+public:
+    RobotRelativeGimbal(src::Drivers* drivers);
+    ~RobotRelativeGimbal() = default;
 
+    src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
+
+    src::Informants::Transformers::TurretFrames& getTurretFrames() { return turretFrames; }
+
+
+private:
+
+};
 } //namespace Informants

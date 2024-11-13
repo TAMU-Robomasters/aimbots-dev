@@ -14,7 +14,7 @@
 
 namespace src::Informants {
 
-HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {}
+HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
 
 void HitTracker::initalize() { hitTimer.stop(); }
 

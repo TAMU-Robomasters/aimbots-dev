@@ -23,20 +23,20 @@ namespace src::Informants {
 
 enum AngularAxis { PITCH_AXIS = 0, ROLL_AXIS = 1, YAW_AXIS = 2 };
 
-class KinematicInformant {
+class IMUData {
 public:
-    KinematicInformant(src::Drivers* drivers);
-    ~KinematicInformant() = default;
+    IMUData(src::Drivers* drivers);
+    ~IMUData() = default;
 
     // Gets raw IMU values, in our coordinate system XYZ (Pitch, Roll, Yaw)
-    Vector3f getLocalIMUAngles();
-    float getLocalIMUAngle(AngularAxis axis);
+    Vector3f getRawLocalIMUAngles();
+    float getRawLocalIMUAngle(AngularAxis axis);
 
-    Vector3f getIMUAngularVelocities();
-    float getIMUAngularVelocity(AngularAxis axis);
+    Vector3f getRawIMUAngularVelocities();
+    float getRawIMUAngularVelocity(AngularAxis axis);
 
-    Vector3f getIMULinearAccelerations();
-    float getIMULinearAcceleration(LinearAxis axis);
+    Vector3f getRawIMULinearAccelerations();
+    float getRawIMULinearAcceleration(LinearAxis axis);
 
     void updateIMUKinematicStateVector();
 
@@ -51,46 +51,9 @@ public:
     Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
+    void recalibrateIMU(Vector3f imuCalibrationEuler = {0.0f, 0.0f, 0.0f});
 private:
-    src::Drivers* drivers;
 
-    src::Informants::Transformers::RobotFrames robotFrames;
-    src::Informants::Transformers::TurretFrames turretFrames;
-
-    static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
-    static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
-
-    Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;
-
-    KinematicStateVector imuLinearXState;
-    KinematicStateVector imuLinearYState;
-    KinematicStateVector imuLinearZState;
-
-    KinematicStateVector imuAngularXState;
-    KinematicStateVector imuAngularYState;
-    KinematicStateVector imuAngularZState;
-
-    KinematicStateVector turretIMULinearXState;
-    KinematicStateVector turretIMULinearYState;
-    KinematicStateVector turretIMULinearZState;
-
-    KinematicStateVector turretIMUAngularXState;
-    KinematicStateVector turretIMUAngularYState;
-    KinematicStateVector turretIMUAngularZState;
-
-    
-    modm::Vector<KinematicStateVector, 3> imuLinearState = {imuLinearXState, imuLinearYState, imuLinearZState};
-    modm::Vector<KinematicStateVector, 3> imuAngularState = {imuAngularXState, imuAngularYState, imuAngularZState};
-
-    
-    modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
-        turretIMULinearXState,
-        turretIMULinearYState,
-        turretIMULinearZState};
-    modm::Vector<KinematicStateVector, 3> turretIMUAngularState = {
-        turretIMUAngularXState,
-        turretIMUAngularYState,
-        turretIMUAngularZState};
 };
 
 }  // namespace src::Informants
