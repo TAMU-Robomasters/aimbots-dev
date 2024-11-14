@@ -38,10 +38,10 @@ public:
         src::Chassis::ChassisSubsystem*,
         src::Shooter::ShooterSubsystem*,
         src::Utils::RefereeHelperTurreted*,
-        src::Chassis::ChassisAutoNavCommand*,
+        src::Chassis::ChassisAutoNavCommand&);
         //const src::Chassis::ChassisAutoNavCommand::defaultLinearConfig& defaultLinearConfig,
         //const src::Chassis::defaultRotationConfig& defaultRotationConfig,
-        const src::Chassis::SnapSymmetryConfig& snapSymmetryConfig);
+        //const src::Chassis::SnapSymmetryConfig& snapSymmetryConfig);
 
         /*
 
@@ -84,7 +84,7 @@ private:
     src::Chassis::ChassisSubsystem* chassis;
     src::Shooter::ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
-    src::Chassis::ChassisAutoNavCommand* autoNavCommand;
+    src::Chassis::ChassisAutoNavCommand& autoNavCommand;
 
     //Gimbal
     /*
@@ -113,7 +113,7 @@ private:
     float proportional_Ammo = 0;
     float current_HP = 0;
     float current_Time = 0;
-    float previous_HP = 400; //starting HP
+    float previous_HP = 150; //starting HP
     float previous_time = 300; // 5:00 in seconds
     float previous_Ammo = 750; // 750 starting ammo 
     

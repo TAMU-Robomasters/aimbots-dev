@@ -49,7 +49,8 @@
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
 
-//#include "sentry_intelligence.hpp"
+
+#include "sentry_intelligence.hpp"
 
 using namespace src::Chassis;
 using namespace src::Feeder;
@@ -126,9 +127,7 @@ GimbalPatrolConfig patrolConfig = {
 };
 
 // Match Controllers ------------------------------------------------
-//SentryIntelligenceCommand SentryIntelligenceCommand(
-//    drivers()
-//);
+
 SentryMatchFiringControlCommand matchFiringControlCommand(
     drivers(),
     &feeder,
@@ -223,6 +222,15 @@ CloseHopperCommand closeHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
+
+SentryIntelligenceCommand SentryIntelligenceCommand(
+    drivers(),
+    &gimbal,
+    &feeder,
+    &chassis,
+    &shooter,
+    &refHelper,
+    chassisAutoNavCommand);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // Define command mappings here -------------------------------------------
@@ -262,11 +270,12 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 HoldCommandMapping leftSwitchMid(
     drivers(),
     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    //hellow
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
+    {&SentryIntelligenceCommand/*&chassisTokyoCommand,*/ //&matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
      /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
