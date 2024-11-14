@@ -15,66 +15,58 @@
 #include "robot_frames.hpp"
 #include "turret_frames.hpp"
 
-namespace src {
-class Drivers;
-}  // namespace src
-
-namespace src::Chassis {
-class ChassisSubsystem;
-}  // namespace src::Chassis
-
 using namespace src::Utils;
 
-namespace src::Informants {
+namespace src::Informants::Kinematics {
 
-    ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
+ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
 
-    float chassisAngleXDisplay = 0.0f;
-    float chassisAngleYDisplay = 0.0f;
-    float chassisAngleZDisplay = 0.0f;
+float chassisAngleXDisplay = 0.0f;
+float chassisAngleYDisplay = 0.0f;
+float chassisAngleZDisplay = 0.0f;
 
-    Vector3f linearIMUAccelerationDisplay;
-    float linearIMUAccelerationXDisplay = 0.0f;
-    float linearIMUAccelerationYDisplay = 0.0f;
-    float linearIMUAccelerationZDisplay = 0.0f;
+Vector3f linearIMUAccelerationDisplay;
+float linearIMUAccelerationXDisplay = 0.0f;
+float linearIMUAccelerationYDisplay = 0.0f;
+float linearIMUAccelerationZDisplay = 0.0f;
 
-    Vector3f wDisplay = {0.0f, 0.0f, 0.0f};
-    Vector3f alphaDisplay = {0.0f, 0.0f, 0.0f};
-    Vector3f rDisplay = {0.0f, 0.0f, 0.0f};
-    Vector3f aDisplay = {0.0f, 0.0f, 0.0f};
+Vector3f wDisplay = {0.0f, 0.0f, 0.0f};
+Vector3f alphaDisplay = {0.0f, 0.0f, 0.0f};
+Vector3f rDisplay = {0.0f, 0.0f, 0.0f};
+Vector3f aDisplay = {0.0f, 0.0f, 0.0f};
 
-    float aXDisplay = 0.0f;
-    float aYDisplay = 0.0f;
-    float aZDisplay = 0.0f;
+float aXDisplay = 0.0f;
+float aYDisplay = 0.0f;
+float aZDisplay = 0.0f;
 
-    void updateChassisAcceleration() {
-        chassisAngleXDisplay = chassisAngularState[X_AXIS].getPosition();
-        chassisAngleYDisplay = chassisAngularState[Y_AXIS].getPosition();
-        chassisAngleZDisplay = chassisAngularState[Z_AXIS].getPosition();
+void updateChassisAcceleration() {
+    chassisAngleXDisplay = chassisAngularState[X_AXIS].getPosition();
+    chassisAngleYDisplay = chassisAngularState[Y_AXIS].getPosition();
+    chassisAngleZDisplay = chassisAngularState[Z_AXIS].getPosition();
 
-        Vector3f linearIMUAcceleration = removeFalseAcceleration(imuLinearState, imuAngularState, IMU_MOUNT_POSITION);
+    Vector3f linearIMUAcceleration = removeFalseAcceleration(imuLinearState, imuAngularState, IMU_MOUNT_POSITION);
 
-        Vector3f linearChassisAcceleration =
-            drivers->kinematicInformant.getRobotFrames()
-                .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
-                .getPointInFrame(
-                    drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
-                    linearIMUAcceleration);
+    Vector3f linearChassisAcceleration =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
+                linearIMUAcceleration);
 
-        linearIMUAccelerationDisplay = linearIMUAcceleration;
-        linearIMUAccelerationXDisplay = linearChassisAcceleration.getX();
-        linearIMUAccelerationYDisplay = linearChassisAcceleration.getY();
-        linearIMUAccelerationZDisplay = linearChassisAcceleration.getZ();
+    linearIMUAccelerationDisplay = linearIMUAcceleration;
+    linearIMUAccelerationXDisplay = linearChassisAcceleration.getX();
+    linearIMUAccelerationYDisplay = linearChassisAcceleration.getY();
+    linearIMUAccelerationZDisplay = linearChassisAcceleration.getZ();
 
-        chassisLinearState[X_AXIS].updateFromAcceleration(linearChassisAcceleration.getX());
-        chassisLinearState[Y_AXIS].updateFromAcceleration(linearChassisAcceleration.getY());
-        chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
-    }
+    chassisLinearState[X_AXIS].updateFromAcceleration(linearChassisAcceleration.getX());
+    chassisLinearState[Y_AXIS].updateFromAcceleration(linearChassisAcceleration.getY());
+    chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
+}
 
-    Vector3f removeFalseAcceleration(
-        Vector<KinematicStateVector, 3> imuLinearKSV,
-        Vector<KinematicStateVector, 3> imuAngularKSV,
-        Vector3f r) {
+Vector3f removeFalseAcceleration(
+    Vector<KinematicStateVector, 3> imuLinearKSV,
+    Vector<KinematicStateVector, 3> imuAngularKSV,
+    Vector3f r) {
         Vector3f w = {
             imuAngularKSV[X_AXIS].getVelocity(),
             imuAngularKSV[Y_AXIS].getVelocity(),
@@ -104,5 +96,6 @@ namespace src::Informants {
 
         Vector3f linearIMUAcceleration = a - (alpha ^ r) - (w ^ (w ^ r));
         return linearIMUAcceleration;
-    }
-} //namespace Informants
+}
+
+} //namespace src::Informants

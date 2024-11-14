@@ -15,7 +15,6 @@
 #include "robot_frames.hpp"
 #include "turret_frames.hpp"
 
-
 namespace src {
 class Drivers;
 }  // namespace src
@@ -26,12 +25,12 @@ class ChassisSubsystem;
 
 using namespace src::Utils;
 
-namespace src::Informants {
+namespace src::Informants::Kinematics {
 
-class ChassisOdometry {
-        
-    public:
-    ChassisOdometry(src::Drivers* drivers);         //move to kinematics informant instead of drivers
+class ChassisOdometry { 
+public:
+
+    ChassisOdometry(src::Drivers* drivers);  //move to kinematics informant instead of drivers
     ~ChassisOdometry() = default;
 
     void updateChassisAcceleration();
@@ -45,8 +44,7 @@ class ChassisOdometry {
 
     modm::Vector2f getRobotVelocity2D() { return chassisKFOdometry->getCurrentVelocity2D(); }
         
-        
-    private:
+private:
     src::Informants::Odometry::ChassisKFOdometry* chassisKFOdometry;
 
     KinematicStateVector imuLinearXState;
@@ -78,5 +76,6 @@ class ChassisOdometry {
         chassisAngularYState,
         chassisAngularZState};
 
-};
-} // Informant namespace
+    };
+
+} // namespace src::Informants

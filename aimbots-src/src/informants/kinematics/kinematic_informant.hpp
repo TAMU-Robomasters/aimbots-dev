@@ -51,6 +51,7 @@ public:
     tap::communication::sensors::imu::ImuInterface::ImuState getIMUState();
 
     void initialize(float imuFrequency, float imukP, float imukI);
+    
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;

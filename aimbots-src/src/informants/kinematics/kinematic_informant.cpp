@@ -26,10 +26,5 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
 }
 
-tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::getIMUState() {
-    return drivers->bmi088.getImuState();
-}
-
-
 
 }  // namespace src::Informants

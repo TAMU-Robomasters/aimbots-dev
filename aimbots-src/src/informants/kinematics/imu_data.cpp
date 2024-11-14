@@ -8,18 +8,19 @@
 
 #include "drivers.hpp"
 
-namespace src::Informants {
+namespace src::Informants::Kinematics {
 
 IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
  
-Vector3f KinematicInformant::getRawLocalIMUAngles() {
+Vector3f IMUData::getRawLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
         drivers->bmi088.getRoll(),
         drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
     return imuAngles * (M_PI / 180.0f);      // Convert to rad
 }
-float KinematicInformant::getRawLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
+
+float IMUData::getRawLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
             return -modm::toRadian(drivers->bmi088.getPitch());
@@ -96,7 +97,7 @@ float KinematicInformant::getRawIMULinearAcceleration(LinearAxis axis) {  // Get
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
-void KinematicInformant::updateIMUAngles() {
+void IMUData::updateIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
@@ -128,25 +129,29 @@ void KinematicInformant::updateIMUAngles() {
     chassisAngularState[Z_AXIS].updateFromVelocity(chassisAngularVelocities[Z_AXIS], false);
 }
 
-float KinematicInformant::getIMUAngle(AngularAxis axis, AngleUnit unit) {
+float IMUData::getIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = chassisAngularState[axis].getPosition();
 
     return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
 }
 
-float KinematicInformant::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
+float IMUData::getIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
     float angularVelocity = chassisAngularState[axis].getVelocity();
 
     return unit == AngleUnit::Radians ? angularVelocity : modm::toDegree(angularVelocity);
 }
 
-float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
+float IMUData::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     float angularAcceleration = imuAngularState[axis].getAcceleration();
 
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
-void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
+tap::communication::sensors::imu::ImuInterface::ImuState IMUData::getIMUState() {
+    return drivers->bmi088.getImuState();
+}
+
+void IMUData::recalibrateIMU(Vector3f imuCalibrationEuler) {
     // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
     UNUSED(imuCalibrationEuler);
     drivers->bmi088.requestRecalibration();
