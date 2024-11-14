@@ -64,7 +64,7 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
         hasRampBonus = true;                                          // Local indicator stating robot have ramp bonus
     }
     rampBonusTimeDuration = 20'000 
-            - (tap::arch::clock::getTimeMillisecconds() - rampBonusStartTime); // Calculate time remaining of ramp bonus
+            - (tap::arch::clock::getTimeMilliseconds() - rampBonusStartTime); // Calculate time remaining of ramp bonus
     if(hasRampBonus && rampBonusTimeDuration < 0)    // Checks if our duration has expired
     {
         if(energyBuffer > startingEnergyBuffer)      // If we have more than 60J buffer
