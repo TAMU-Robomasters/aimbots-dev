@@ -93,11 +93,19 @@ void SentryIntelligenceCommand::execute() {
   //while(true) {
     current_HP = drivers->refSerial.getRobotData().currentHp;
     //current_Ammo = drivers->refSerial.getRobotData().current;
-    current_Time = drivers->refSerial.getGameData().stageTimeRemaining;
+    current_Time = tap::arch::clock::getTimeMilliseconds();
 
     //proportional_Ammo = (previous_Ammo-current_Ammo)/(previous_time-current_Time)
-    proportional_HP = (previous_HP-current_HP)/(previous_time-current_Time);
+    proportional_HP = (previous_HP-current_HP)/(current_Time-previous_time);
     current_HP_Display = current_HP;
+
+    //:
+    //0 = perviousHP = CurrentHP (start postion, nobody has attacked me; or i am dead ) [ATTACK]
+    //1 greater than = run away (you are lossing health too quick) [RUN]
+    //less than 1 means you are attacking (but health is not severely affected) [ATTACK]
+
+
+    //
     /*
     if (!drivers->cvCommunicator.isJetsonOnline()) {
           scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
@@ -140,14 +148,15 @@ void SentryIntelligenceCommand::execute() {
     */
     proportional_HP_Display = proportional_HP;
 
-    if(proportional_HP > 1.00){
+    if(proportional_HP > 1){
       //evade
       autoNavCommand.setTargetLocation(1.5f, 6.0f); // fake target location 
     }
-    if(proportional_HP <= 0){
+    if(proportional_HP <= 1){
       //attack
       autoNavCommand.setTargetLocation(9.0f, 0.5f); // fake target loaction 
     }
+
 
     previous_HP = current_HP;
     previous_time = current_Time;

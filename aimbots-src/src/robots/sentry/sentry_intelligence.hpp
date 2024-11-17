@@ -85,7 +85,7 @@ private:
     src::Shooter::ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
     src::Chassis::ChassisAutoNavCommand& autoNavCommand;
-
+    
     //Gimbal
     /*
     src::Gimbal::GimbalFieldRelativeController* controller;
