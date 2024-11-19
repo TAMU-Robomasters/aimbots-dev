@@ -260,14 +260,19 @@ HoldRepeatCommandMapping rightSwitchUp(
 // HoldCommandMapping leftSwitchMid(
 //     drivers(),
 //     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+//     drivers(),
+//     {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // HoldCommandMapping leftSwitchUp(
 //     drivers(),
 //     {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
 //      /*&gimbalChaseCommand*/},
+//     {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
+//      /*&gimbalChaseCommand*/},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// // Runs shooter only
 // // Runs shooter only
 // HoldCommandMapping rightSwitchMid(
 //     drivers(),
@@ -276,7 +281,11 @@ HoldRepeatCommandMapping rightSwitchUp(
 
 // // Runs shooter with feeder
 // HoldCommandMapping rightSwitchUp(
+// // Runs shooter with feeder
+// HoldCommandMapping rightSwitchUp(
 //     drivers(),
+//     {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 //     {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
