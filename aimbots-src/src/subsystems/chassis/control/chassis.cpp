@@ -44,7 +44,8 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
           STARTING_ENERGY_BUFFER,
           ENERGY_BUFFER_LIMIT_THRESHOLD,
           ENERGY_BUFFER_CRIT_THRESHOLD,
-          POWER_LIMIT_SAFETY_FACTOR)
+          POWER_LIMIT_SAFETY_FACTOR
+          EXCESS_BUFFER_CONSUMPTION)
 //
 {
     motors[LB][0] = &leftBackWheel;

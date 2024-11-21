@@ -6,7 +6,8 @@ PowerLimiter::PowerLimiter(
     float startingEnergyBuffer,
     float energyBufferLimitThreshold,  
     float energyBufferCritThreshold,   
-    float safetyFactor)               
+    float safetyFactor, 
+    float excessRampBonus)               
     : drivers(drivers),
       energyBuffer( startingEnergyBuffer ), 
       startingEnergyBuffer( startingEnergyBuffer ),
@@ -16,7 +17,8 @@ PowerLimiter::PowerLimiter(
       safetyFactor(safetyFactor),
       prevTime(0),
       prevRobotDataReceivedTimestamp(0),
-      hasRampBonus(false)
+      hasRampBonus(false),
+      excessBufferConsumption(excessBufferConsumption);
 //
 {}
 
@@ -33,6 +35,9 @@ float PowerLimiter::getPowerLimitRatio() {
     // Checks if we are cutting close to burning thru our energy buffer ()
     //    If we're close, it cuts down on power
     //    If we're not, robot keeps truckin' along
+    if (hasRampBonus) {
+        return EXCESS_BUFFER_CONSUMPTION;
+    }
     if (energyBuffer < energyBufferLimitThreshold) {
         return limitVal(
             static_cast<float>(energyBuffer - energyBufferCritThreshold) / energyBufferLimitThreshold,

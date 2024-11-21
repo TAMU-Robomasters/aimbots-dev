@@ -341,6 +341,7 @@ static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
 static constexpr float STARTING_ENERGY_BUFFER = 60.0f;
 static constexpr float ENERGY_BUFFER_LIMIT_THRESHOLD = 60.0f;
 static constexpr float ENERGY_BUFFER_CRIT_THRESHOLD = 10.0f;
+static constexpr float EXCESS_BUFFER_CONSUMPTION = 2.0f;
 
 /**
  * @brief Power constants for chassis
