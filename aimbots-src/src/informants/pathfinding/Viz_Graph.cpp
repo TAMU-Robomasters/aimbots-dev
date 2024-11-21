@@ -6,7 +6,11 @@
 #include <unordered_map>
 #include <vector>
 
-using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove;
+using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove, std::pair;
+
+
+
+
 VizGraph::VizGraph(unordered_map<Point*, vector<Point*>> neighbors, vector<vector<Point>>& polygons)
     : pathfinder(
           neighbors,
@@ -59,7 +63,7 @@ bool has_LOS(Point a, Point b, const vector<vector<Point>>& polygons) {
     return true;
 }
 
-VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
+VizGraph constructVizGraph(vector<vector<Point>>& polygons, vector<pair<vector<Point>, double>>& cost_zones) {
     unordered_map<Point*, vector<Point*>> neighbors;
 
     for (auto it = polygons.begin(); it != polygons.end(); it++) {
@@ -174,4 +178,57 @@ void normalize(Point& pt) {
     double mag = sqrt(pt.x * pt.x + pt.y * pt.y);
     pt.x /= mag;
     pt.y /= mag;
+}
+
+double cost(Point a, Point b, vector<pair<vector<Point>, double>>& cost_zones) {
+    for (auto it = cost_zones.begin(); it != cost_zones.end(); it++) {
+
+        // find the max and min x and y values of the zone to check if the line is fully or partially in the zone
+        double max_x = 0;
+        double min_x = 0;
+        double max_y = 0;
+        double min_y = 0;
+        for (auto jt = it->first.begin(); jt != it->first.end(); jt++) {
+            max_x = jt->x > max_x ? jt->x : max_x;
+            min_x = jt->x < min_x ? jt->x : min_x;
+            max_y = jt->y > max_y ? jt->y : max_y;
+            min_y = jt->y < min_y ? jt->y : min_y;
+        }
+
+        vector<Point> intersections;
+        for (auto jt = it->first.begin(); jt != it->first.end(); jt++) {
+
+            double x3 = jt->x;
+            double y3 = jt->y;
+
+            double x4 = next->x;
+            double y4 = next->y;
+
+            double detirminant = ((x2 - x1) * (y3 - y4) - (x3 - x4) * (y2 - y1));
+            if (detirminant == 0) continue;  // lines never intersect
+
+            double s = (static_cast<double>(1.0) / detirminant) * ((x3 - x1) * (y3 - y4) - (y3 - y1) * (x3 - x4));
+            double t = (static_cast<double>(1.0) / detirminant) * ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1));
+
+            // cout << "The line from " << x1 << " " << y1 << " to " << b.x << " " << b.y << " does " << ((s > 0 && s < 1 &&
+            // t >= 0 && t <= 1) ? "" : "not "); cout << "intersect with the line from " << x3 << " " << y3 << " to " <<
+            // next->x << " " << next->y << endl; cout << "\ts " << s << " t " << t << endl;
+
+            // if intersection falls on both line segments and is not at either of line 1s vertices, then no LOS
+            if (s > 0 && s < 1 && t > 0 && t < 1){
+                intersections.push_back(Point(x1 + s * (x2 - x1), y1 + s * (y2 - y1)));
+            }
+        }
+
+        switch(intersections.size()){
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+            default: // more then 2 intersections should not be possible, if this happens just take the first 2 i guess?
+                break;
+        }
+    }
+    return 1;
 }
