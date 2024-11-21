@@ -49,14 +49,20 @@ int msBetweenLastMessageDisplay = 0;
  * JetsonMessage from our received bytes.
  */
 alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
+alignas(JetsonMessage) uint8_t rawSerialSend[sizeof(JetsonMessage)]; // message to CV Jetson from embedded (embedded -> CV Jetson)
 
 void JetsonCommunicator::updateSerial() {
-    // 0000 0000  ...  1111 1111
-    // 6 more bytes ^ (zeros)
-    uint8_t simpleData = 255;
+    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 258, 247, 246, 245, 244, 243, 242, 241};
+
+    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+        rawSerialSend[i] == randomValues[i];
+    }
+
+    // uint8_t simpleData = 255; // 1111 1111 (8 ones)
     
-    WRITE(&simpleData, 1);  // attempts to send one byte from the buffer
-    
+    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+        WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
+    }
     // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     // size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
@@ -152,11 +158,17 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
 void JetsonCommunicator::sendSimpleMessage() {
-    // 0000 0000  ...  1111 1111
-    // 6 more bytes ^ (zeros)
-    uint8_t simpleData = 255;
+    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 258, 247, 246, 245, 244, 243, 242, 241};
+
+    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+        rawSerialSend[i] == randomValues[i];
+    }
+
+    // uint8_t simpleData = 255; // 1111 1111 (8 ones)
     
-    WRITE(&simpleData, 1);  // attempts to send one byte from the buffer
+    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+        WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
+    }
 
     // receive response from jetson (CV) over UART
     // updateSerial();
