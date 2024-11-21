@@ -52,15 +52,15 @@ alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 alignas(JetsonMessage) uint8_t rawSerialSend[sizeof(JetsonMessage)]; // message to CV Jetson from embedded (embedded -> CV Jetson)
 
 void JetsonCommunicator::updateSerial() {
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 258, 247, 246, 245, 244, 243, 242, 241};
+    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
 
-    for (int i = 0; i < sizeof(JetsonMessage); i++) {
-        rawSerialSend[i] == randomValues[i];
+    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
+        rawSerialSend[i] = randomValues[i];
     }
 
     // uint8_t simpleData = 255; // 1111 1111 (8 ones)
     
-    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
         WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
     }
     // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
@@ -158,15 +158,15 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
 void JetsonCommunicator::sendSimpleMessage() {
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 258, 247, 246, 245, 244, 243, 242, 241};
+    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
 
-    for (int i = 0; i < sizeof(JetsonMessage); i++) {
-        rawSerialSend[i] == randomValues[i];
+    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
+        rawSerialSend[i] = randomValues[i];
     }
 
     // uint8_t simpleData = 255; // 1111 1111 (8 ones)
     
-    for (int i = 0; i < sizeof(JetsonMessage); i++) {
+    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
         WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
     }
 
