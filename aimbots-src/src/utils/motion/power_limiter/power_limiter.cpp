@@ -47,10 +47,9 @@ float PowerLimiter::getPowerLimitRatio() {
 void PowerLimiter::updatePowerAndEnergyBuffer() {
 
     // Calculates power consumed between local refreshes
-    const auto &robotData = drivers->refSerial.getRobotData();                 // Pulls electrical current data from chassis
-    const auto &chassisData = robotData.chassis;                               //   & calculates power consumed since last time stamp
-    const float current = chassisData.current;                                 //
-    const float newChassisPower = (chassisData.volt * current) / 1'000'000.0f; // div by 1'000'000.0f = convert microwatts to watts
+    const auto &robotData = drivers->refSerial.getRobotData();                             // Pulls electrical current data from chassis
+    const auto &chassisData = robotData.chassis;                                           //    & calculates power consumed since last time stamp
+    const float newChassisPower = (chassisData.volt * chassisData.current) / 1'000'000.0f; // <- Div by 1'000'000.0f = convert microwatts to watts
     
     // Calculates energy buffer between ref info updates
     const float dt = tap::arch::clock::getTimeMilliseconds() - prevTime;                                 // Calculates time passed between local cycles
@@ -65,7 +64,7 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
     }
     rampBonusTimeDuration = 20'000 
             - (tap::arch::clock::getTimeMilliseconds() - rampBonusStartTime); // Calculate time remaining of ramp bonus
-    if(hasRampBonus && rampBonusTimeDuration < 0)    // Checks if our duration has expired
+    if( hasRampBonus && (rampBonusTimeDuration < 0 || energyBuffer < 60)  )   // Checks if our duration has expired or we have burned thru our bonus
     {
         if(energyBuffer > startingEnergyBuffer)      // If we have more than 60J buffer
             energyBuffer = startingEnergyBuffer;     //   -> set to 60J
