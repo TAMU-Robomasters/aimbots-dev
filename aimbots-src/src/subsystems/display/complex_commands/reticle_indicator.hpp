@@ -8,6 +8,8 @@
 
 #include "subsystems/display/basic_commands/hud_indicator.hpp"
 
+#include "subsystems/display/display_constants.hpp"
+
 namespace tap {
 class Drivers;
 }
@@ -33,29 +35,29 @@ private:
      * line. */
     using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
 
-    static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{
-        ReticleTuple(40, 545, Tx::GraphicColor::BLACK),  // 2 m
-        ReticleTuple(60, 540, Tx::GraphicColor::BLACK),
-        ReticleTuple(40, 535, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 500, Tx::GraphicColor::BLACK),  // 4 m
-        ReticleTuple(40, 495, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 490, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 530, Tx::GraphicColor::BLACK),  // 8 m
-        ReticleTuple(30, 525, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 520, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 475, Tx::GraphicColor::BLACK),  // next
-        ReticleTuple(40, 470, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 465, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 445, Tx::GraphicColor::BLACK),  // next
-        ReticleTuple(40, 440, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 435, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 415, Tx::GraphicColor::BLACK),  // next
-        ReticleTuple(40, 410, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 405, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 385, Tx::GraphicColor::BLACK),  // next
-        ReticleTuple(40, 380, Tx::GraphicColor::BLACK),
-        ReticleTuple(10, 375, Tx::GraphicColor::BLACK)
-    };
+    // static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{
+    //     ReticleTuple(40, 545, Tx::GraphicColor::BLACK),  // 2 m
+    //     ReticleTuple(60, 540, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(40, 535, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 500, Tx::GraphicColor::BLACK),  // 4 m
+    //     ReticleTuple(40, 495, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 490, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 530, Tx::GraphicColor::BLACK),  // 8 m
+    //     ReticleTuple(30, 525, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 520, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 475, Tx::GraphicColor::BLACK),  // next
+    //     ReticleTuple(40, 470, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 465, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 445, Tx::GraphicColor::BLACK),  // next
+    //     ReticleTuple(40, 440, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 435, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 415, Tx::GraphicColor::BLACK),  // next
+    //     ReticleTuple(40, 410, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 405, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 385, Tx::GraphicColor::BLACK),  // next
+    //     ReticleTuple(40, 380, Tx::GraphicColor::BLACK),
+    //     ReticleTuple(10, 375, Tx::GraphicColor::BLACK)
+    // };
     /** Size of TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES (so its easier to understand when used
      * in context). */
     static constexpr size_t NUM_RETICLE_COORDINATES = MODM_ARRAY_SIZE(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES);

@@ -5,6 +5,8 @@
 #include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
+// #include "subsystems/display/display_constants.hpp"
+
 using namespace tap::communication::serial;
 
 namespace src::Utils::ClientDisplay {

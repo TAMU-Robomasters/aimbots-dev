@@ -10,12 +10,15 @@
 #include "subsystems/display/basic_commands/hud_indicator.hpp"
 /////////////////
 
-Tx::GraphicColor PRIMARY_COLOR = Tx::GraphicColor::BLACK;
-Tx::GraphicColor SECONDARY_COLOR = Tx::GraphicColor::RED_AND_BLUE;
+using tap::communication::serial::RefSerialData;
 
-uint16_t NUM_RANGE_LINES = 5;
-uint16_t RANGE_LINE_WIDTH = 40;
-uint16_t RANGE_LINE_OFFSET = 10;
+
+RefSerialData::Tx::GraphicColor const PRIMARY_COLOR = RefSerialData::Tx::GraphicColor::GREEN;
+RefSerialData::Tx::GraphicColor const SECONDARY_COLOR = RefSerialData::Tx::GraphicColor::RED_AND_BLUE;
+
+static constexpr uint16_t NUM_RANGE_LINES = 5;
+static constexpr uint16_t RANGE_LINE_WIDTH = 40;
+static constexpr uint16_t RANGE_LINE_OFFSET = 10;
 
 // looks smth like this
 //      ______
@@ -26,7 +29,7 @@ uint16_t RANGE_LINE_OFFSET = 10;
 //       ____
 //      ______
 //       ____
-using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
+using ReticleTuple = std::tuple<int16_t, int16_t, tap::communication::serial::RefSerialData::Tx::GraphicColor>;
 static constexpr ReticleTuple TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[]{ // This is for rangefinding reticle
     ReticleTuple(40, 545, PRIMARY_COLOR),  // 2 m
     ReticleTuple(60, 540, PRIMARY_COLOR),
