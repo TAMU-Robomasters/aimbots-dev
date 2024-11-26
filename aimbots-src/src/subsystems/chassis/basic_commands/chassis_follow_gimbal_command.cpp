@@ -53,7 +53,7 @@ void ChassisFollowGimbalCommand::execute() {
         // Find rotation correction power
         rotationController.runController(
             chassisErrorAngle,
-            -RADPS_TO_RPM(drivers->kinematicInformant.getChassisIMUAngularVelocity(
+            -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)));
         // rotationController.runControllerDerivateError(chassisErrorAngle);

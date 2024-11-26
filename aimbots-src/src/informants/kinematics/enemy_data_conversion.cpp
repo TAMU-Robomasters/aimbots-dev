@@ -1,6 +1,7 @@
 #include "enemy_data_conversion.hpp"
 
 #include "drivers.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
@@ -49,13 +50,13 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     currentTimeDisplay = currentTime_uS;
 
     lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
-    drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
+    drivers->kinematicInformant.fieldRelativeGimbal.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
 
     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
-        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+        drivers->kinematicInformant.fieldRelativeGimbal.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
 
     src::Informants::Transformers::CoordinateFrame turretCameraFrame =
-        drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+        drivers->kinematicInformant.fieldRelativeGimbal.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
 
     lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
 

@@ -2,15 +2,14 @@
 #include "imu_data.hpp"
 
 #include "tap/algorithms/math_user_utils.hpp"
-
 #include "utils/tools/common_types.hpp"
-
+#include "utils/kinematics/kinematic_state_vector.hpp"
 
 #include "drivers.hpp"
 
-namespace src::Informants::Kinematics {
+namespace src::Informants {
 
-IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
+IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {} 
  
 Vector3f IMUData::getRawLocalIMUAngles() {
     Vector3f imuAngles = {
@@ -32,12 +31,12 @@ float IMUData::getRawLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IM
     return 0;
 }
 
-Vector3f KinematicInformant::getRawIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
+Vector3f IMUData::getRawIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
     Vector3f imuAngularVelocities = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
     return imuAngularVelocities * (M_PI / 180.0f);  // Convert to rad/s
 }
 
-float KinematicInformant::getRawIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
+float IMUData::getRawIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
             return -modm::toRadian(drivers->bmi088.getGy());
@@ -51,21 +50,21 @@ float KinematicInformant::getRawIMUAngularVelocity(AngularAxis axis) {  // Gets 
 
 // Update IMU Kinematic State Vectors
 // All relative to IMU Frame
-void KinematicInformant::updateIMUKinematicStateVector() {
+void IMUData::updateIMUKinematicStateVector() {
     imuLinearState[X_AXIS].updateFromAcceleration(-drivers->bmi088.getAy());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
 
-    imuAngularState[X_AXIS].updateFromPosition(getLocalIMUAngle(PITCH_AXIS));
-    imuAngularState[Y_AXIS].updateFromPosition(getLocalIMUAngle(ROLL_AXIS));
-    imuAngularState[Z_AXIS].updateFromPosition(getLocalIMUAngle(YAW_AXIS));
+    imuAngularState[X_AXIS].updateFromPosition(getRawLocalIMUAngle(PITCH_AXIS));
+    imuAngularState[Y_AXIS].updateFromPosition(getRawLocalIMUAngle(ROLL_AXIS));
+    imuAngularState[Z_AXIS].updateFromPosition(getRawLocalIMUAngle(YAW_AXIS));
 
     imuAngularState[X_AXIS].updateFromVelocity(getIMUAngularVelocity(PITCH_AXIS), false);
     imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngularVelocity(ROLL_AXIS), false);
     imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngularVelocity(YAW_AXIS), false);
 }
 
-Vector3f KinematicInformant::getIMUAngularAccelerations() {
+Vector3f IMUData::getIMUAngularAccelerations() {
     float alphax = imuAngularState[X_AXIS].getAcceleration();
     float alphay = imuAngularState[Y_AXIS].getAcceleration();
     float alphaz = imuAngularState[Z_AXIS].getAcceleration();
@@ -74,7 +73,7 @@ Vector3f KinematicInformant::getIMUAngularAccelerations() {
     return alpha;
 }
 
-Vector3f KinematicInformant::getRawIMULinearAccelerations() {
+Vector3f IMUData::getRawIMULinearAccelerations() {
     float ax = -drivers->bmi088.getAy();
     float ay = drivers->bmi088.getAx();
     float az = drivers->bmi088.getAz();
@@ -83,7 +82,7 @@ Vector3f KinematicInformant::getRawIMULinearAccelerations() {
     return a;
 }
 
-float KinematicInformant::getRawIMULinearAcceleration(LinearAxis axis) {  // Gets IMU accel in IMU Frame
+float IMUData::getRawIMULinearAcceleration(LinearAxis axis) {  // Gets IMU accel in IMU Frame
     switch (axis) {
         case X_AXIS:
             return drivers->bmi088.getAx();
@@ -97,27 +96,28 @@ float KinematicInformant::getRawIMULinearAcceleration(LinearAxis axis) {  // Get
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
+
 void IMUData::updateIMUAngles() {
-    Vector3f IMUAngles = getLocalIMUAngles();
-    Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    Vector3f IMUAngles = getRawLocalIMUAngles();
+    Vector3f IMUAngularVelocities = getRawIMUAngularVelocities();
 
     IMUAnglesDisplay = IMUAngles;
 
     // Gets chassis angles
     Vector3f chassisAngles =
-        drivers->kinematicInformant.getRobotFrames()
+        drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames()
             .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
             .getPointInFrame(
-                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
+                drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
                 IMUAngles);
 
     chassisAnglesConvertedDisplay = chassisAngles;
 
     Vector3f chassisAngularVelocities =
-        drivers->kinematicInformant.getRobotFrames()
+        drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames()
             .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
             .getPointInFrame(
-                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
+                drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
                 IMUAngularVelocities);
 
     chassisAngularState[X_AXIS].updateFromPosition(chassisAngles[X_AXIS]);
@@ -147,7 +147,7 @@ float IMUData::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
-tap::communication::sensors::imu::ImuInterface::ImuState IMUData::getIMUState() {
+tap::communication::sensors::imu::ImuInterface::ImuState getIMUState() {
     return drivers->bmi088.getImuState();
 }
 
@@ -156,5 +156,6 @@ void IMUData::recalibrateIMU(Vector3f imuCalibrationEuler) {
     UNUSED(imuCalibrationEuler);
     drivers->bmi088.requestRecalibration();
 };
-} //informants namespace
+
+}  // namespace Informants
 

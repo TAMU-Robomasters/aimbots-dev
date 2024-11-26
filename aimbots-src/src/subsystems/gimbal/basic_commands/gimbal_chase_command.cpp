@@ -91,7 +91,7 @@ void GimbalChaseCommand::execute() {
         uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
 
         std::pair<float, float> fieldTurretAngleAtFrameDelay =
-            drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
+            drivers->kinematicInformant.fieldRelativeGimbal.getGimbalFieldOrientationAtTime(frameCaptureDelay);
 
         // yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
         // pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
@@ -99,9 +99,9 @@ void GimbalChaseCommand::execute() {
         pitchAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.second);
 
         yawRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
+            drivers->kinematicInformant.imuData.getIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
         pitchRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+            drivers->kinematicInformant.imuData.getIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
         targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
         targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;

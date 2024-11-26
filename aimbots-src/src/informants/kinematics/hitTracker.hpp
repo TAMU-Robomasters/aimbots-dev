@@ -16,9 +16,7 @@ class Drivers;
 
 namespace src::Gimbal {
 class GimbalSubsystem;
-}
-
-using namespace src::Utils;
+}  // namespace src::GimbalSubsystem
 
 namespace src::Informants {
 
@@ -28,7 +26,8 @@ public:
     ~HitTracker() = default;
     // src::Informants::Transformers::RobotFrames& getRobotFrames() { return robotFrames; }
 
-    void regSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem) { this->gimbalSubsystem = gimbalSubsystem; }
+    void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem) 
+        { this->gimbalSubsystem = gimbalSubsystem; }
 
     void initalize();
 
@@ -45,7 +44,7 @@ public:
     // armor IDs:
     //    Front
     //  _____ 0  ____
-    // |   |___|   |
+    //  |   |___|   |
     //	|___| | |___|
     // 	 1    |    3
     //	 ___  |  ___
@@ -69,11 +68,14 @@ public:
 
 private:
     src::Drivers* drivers;
+    
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
+
     uint16_t prevHP;
     // src::Informants::Transformers::RobotFrames robotFrames;
     static const uint32_t HIT_EXPIRE_TIME = 5000;
 
     MilliTimeout hitTimer;
-};
+
+};  // class HitTracker
 }  // namespace src::Informants

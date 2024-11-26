@@ -63,7 +63,7 @@ void IMUCalibrateCommand::execute() {
                 drivers->turretCommunicator.requestTurretIMUCalibrate();
 #endif
 #ifndef TARGET_TURRET
-                drivers->kinematicInformant.recalibrateIMU(
+                drivers->kinematicInformant.imuData.recalibrateIMU(
                     {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #endif
                 calibrationState = CalibrationState::CALIBRATING_IMU;
@@ -72,7 +72,7 @@ void IMUCalibrateCommand::execute() {
         }
 
         case CalibrationState::CALIBRATING_IMU: {
-            if (drivers->kinematicInformant.getIMUState() == Bmi088::ImuState::IMU_CALIBRATED) {
+            if (drivers->kinematicInformant.imuData.getIMUState() == Bmi088::ImuState::IMU_CALIBRATED) {
                 calibrationState = CalibrationState::WAITING_CALIBRATION_COMPLETE;
                 extraCalibrationWaitTimer.restart(WAIT_EXTRA_TIME);
             }

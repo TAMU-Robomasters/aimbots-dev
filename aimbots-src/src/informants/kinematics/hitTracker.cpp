@@ -5,7 +5,6 @@
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/tools/common_types.hpp"
 
-
 #include "drivers.hpp"
 
 // namespace src {
@@ -14,7 +13,7 @@
 
 namespace src::Informants {
 
-HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {} // rewrite to go to kinematic informants instead of drivers
+HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {} 
 
 void HitTracker::initalize() { hitTimer.stop(); }
 
@@ -35,7 +34,7 @@ bool HitTracker::wasHit() {
 };
 
 bool HitTracker::recentlyHit() {
-    if (this->drivers->hitTracker.wasHit()) {
+    if (wasHit()) {
         hitTimer.restart(HIT_EXPIRE_TIME);
     }
     return !hitTimer.isExpired();
@@ -43,7 +42,7 @@ bool HitTracker::recentlyHit() {
 
 float HitTracker::getHitAngle_chassisRelative() {
     // get armor panel hit
-    if (!this->drivers->hitTracker.recentlyHit()) {
+    if (!recentlyHit()) {
         return 69.0f;
     }
     uint8_t panel = getHitPanelID();
@@ -69,13 +68,13 @@ float HitTracker::getHitAngle_chassisRelative() {
 
 float HitTracker::getHitAngle_gimbalRelative() {
     // get chassisRelative angle?
-    float chassis_hitAngle = this->drivers->hitTracker.getHitAngle_chassisRelative();
+    float chassis_hitAngle = getHitAngle_chassisRelative();
     if (chassis_hitAngle == 69.0f) {
         return 69.0f;
     }
     // get angle btwn gimbal-chassis?
     float gimbalAngle =
-        this->drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+        drivers->kinematicInformant.fieldRelativeGimbal.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
     // calc and return
     WrappedFloat hitAngle = WrappedFloat(gimbalAngle + chassis_hitAngle, -M_PI, M_PI);
     return hitAngle.getWrappedValue();

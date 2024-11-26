@@ -48,7 +48,7 @@ public:
         targetPitch = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);
 
         // convert chassis-relative pitch soft stops to field-relative angles
-        float chassisPitchInGimbalDirection = drivers->kinematicInformant.getChassisPitchAngleInGimbalDirection();
+        float chassisPitchInGimbalDirection = drivers->kinematicInformant.fieldRelativeGimbal.getChassisPitchAngleInGimbalDirection();
         float softHigh = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_HIGH;
         float softLow = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_LOW;
 

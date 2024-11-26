@@ -5,8 +5,6 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #include "utils/tools/robot_specific_defines.hpp"
-#include "subsystems/gimbal/gimbal_constants.hpp"
-#include "subsystems/chassis/chassis_constants.hpp"
 
 //#include "utils/math/transform_setup.hpp"
 #include "utils/math/transformations.hpp"
