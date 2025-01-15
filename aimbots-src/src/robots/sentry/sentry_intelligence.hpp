@@ -29,6 +29,8 @@
 
 namespace SentryControl{
 
+enum ChassisMatchStates {START = 0, ATTACK, RETREAT, PATROL};
+
 class SentryIntelligenceCommand : public TapComprisedCommand {
 public:
     SentryIntelligenceCommand(
@@ -85,7 +87,9 @@ private:
     src::Shooter::ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
     src::Chassis::ChassisAutoNavCommand& autoNavCommand;
-    
+
+    src::ChassisMatchStates::ChassisMatchStates& currentState; 
+    src::Chassis::ChassisMatchStates perviousState;
     //Gimbal
     /*
     src::Gimbal::GimbalFieldRelativeController* controller;
@@ -108,7 +112,7 @@ private:
     src::Feeder::FullAutoFeederCommand* fullAutoFeederCommand;
     src::Shooter::StopShooterCommand* stopShooterCommand;
     src::Shooter::RunShooterCommand* runShooterCommand;
-    */
+   
     float proportional_HP = 0;
     float proportional_Ammo = 0;
     float current_HP = 0;
@@ -117,6 +121,8 @@ private:
     float previous_time = 300; // 5:00 in seconds
     float previous_Ammo = 750; // 750 starting ammo 
     //char chassis_state[3] = {'Start', 'Evade', 'Attack'};
+    */
+
     
 
 };

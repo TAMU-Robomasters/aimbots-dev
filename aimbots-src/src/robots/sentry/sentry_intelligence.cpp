@@ -12,10 +12,7 @@ namespace SentryControl{
 //static constexpr float MAX_FEEDER_SPEED = 2550.0f;  // 23.6 bps
 //static constexpr float MIN_FEEDER_SPEED = 760.0f;   // 7 bps
 
-// watch varables
-float proportional_HP_Display = 0;
-float current_HP_Display = 0;
-bool in_excute = false;
+
 
 SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Drivers* drivers,
@@ -88,82 +85,25 @@ void SentryIntelligenceCommand::initialize() {
 
 void SentryIntelligenceCommand::execute() {
 
-  in_excute = true;
+   if (chassisState != lastChassisState) {
+      // Perform setup for the next state
+      switch (chassisState) {
+        case ChassisMatchStates::START:
+          //Call start command
+          break;
+        case ChassisMatchStates::RETREAT:
+          //Call retreat command
+          break;
+        case ChassisMatchStates::ATTACK:
+          //cal attack command
+          break;
+        case ChassisMatchStates::PATROL:
+            default:
+            break;
+            }
 
-  //while(true) {
-    current_HP = drivers->refSerial.getRobotData().currentHp;
-    //current_Ammo = drivers->refSerial.getRobotData().current;
-    current_Time = tap::arch::clock::getTimeMilliseconds();
-
-    //proportional_Ammo = (previous_Ammo-current_Ammo)/(previous_time-current_Time)
-    proportional_HP = (previous_HP-current_HP)/(current_Time-previous_time);
-    current_HP_Display = current_HP;
-
-    //:
-    //0 = perviousHP = CurrentHP (start postion, nobody has attacked me; or i am dead ) [ATTACK]
-    //1 greater than = run away (you are lossing health too quick) [RUN]
-    //less than 1 means you are attacking (but health is not severely affected) [ATTACK]
-
-
-    //
-    /*
-    if (!drivers->cvCommunicator.isJetsonOnline()) {
-          scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
-          this->comprisedCommandScheduler.run();
-          return;
-      }
-
-      if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
-          drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
-          scheduleIfNotScheduled(this->comprisedCommandScheduler, chaseCommand);
-          chaseTimeout.restart(chaseTimeoutMillis);
-
-          /*
-          float yawTargetGimbal = fieldRelativeGimbalController->getTargetYaw(AngleUnit::Radians);
-              tap::algorithms::WrappedFloat yawCurrentGimbal =
-                  drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
-
-              float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
-              tap::algorithms::WrappedFloat pitchCurrentGimbal =
-                  drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
-
-              isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
-                  yawCurrentGimbal.minDifference(yawTargetGimbal),
-                  pitchCurrentGimbal.minDifference(pitchTargetGimbal),
-                  targetDepth);
-
-              balYawErrorDisplay = abs(yawCurrentGimbal.minDifference(yawTargetGimbal));
-              balYawAtanDisplay = atan2f(0.35f, 2.0f * targetDepth);
-
-              balPitchErrorDisplay = abs(pitchCurrentGimbal.minDifference(pitchTargetGimbal));
-              balPitchAtanDisplay = atan2f(1.0f, 2.0f * targetDepth);
-
-            */
-      /*
-      }else if (chaseTimeout.isExpired()) {
-          scheduleIfNotScheduled(this->comprisedCommandScheduler, patrolCommand);
-      }
-
-      this->comprisedCommandScheduler.run();
-    */
-
-
-  
-    proportional_HP_Display = proportional_HP;
-
-    if(proportional_HP > 1){
-      //evade
-      autoNavCommand.setTargetLocation(4.0f, 4.0f); // test target location 
-    }
-    if(proportional_HP <= 1){
-      //attack
-      autoNavCommand.setTargetLocation(8.0f, 0.0f); // test target loaction 
-    }
-
-  
-    previous_HP = current_HP;
-    previous_time = current_Time;
-  //}
+            lastChassisState = chassisState;
+        }
    
 }
 
