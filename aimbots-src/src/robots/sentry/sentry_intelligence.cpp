@@ -153,25 +153,14 @@ void SentryIntelligenceCommand::execute() {
 
     if(proportional_HP > 1){
       //evade
-      chassis_current_state = chassis_state[1];
+      autoNavCommand.setTargetLocation(4.0f, 4.0f); // test target location 
     }
     if(proportional_HP <= 1){
       //attack
-      chassis_current_state = chassis_state[2];  // test target loaction 
+      autoNavCommand.setTargetLocation(8.0f, 0.0f); // test target loaction 
     }
 
-    if(chassis_current_state != chassis_previous_state){
-      if(chassis_current_state == chassis_state[1]){
-        //evade
-        autoNavCommand.setTargetLocation(4.0f, 4.0f); // test target location 
-      }
-      if(chassis_current_state == chassis_state[2]){
-        //attack
-        autoNavCommand.setTargetLocation(8.0f, 0.0f); // test target loaction 
-      }
-    }
-
-    chassis_previous_state = chassis_current_state;
+  
     previous_HP = current_HP;
     previous_time = current_Time;
   //}

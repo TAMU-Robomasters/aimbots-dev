@@ -117,9 +117,7 @@ private:
     float previous_time = 300; // 5:00 in seconds
     float previous_Ammo = 750; // 750 starting ammo 
     //char chassis_state[3] = {'Start', 'Evade', 'Attack'};
-    static constexpr std::array<const char*, 6> chassis_state = {"Start", "Evade", "Attack"};
-    const char* chassis_current_state = chassis_state[0];
-    const char* chassis_previous_state = chassis_state[0];
+    
 
 };
 
