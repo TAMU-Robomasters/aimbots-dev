@@ -16,6 +16,18 @@ enum MotorIndex { X = 0, Z = 1 };
 class SlideSubsystem : public tap::control::Subsystem {
 public:
     SlideSubsystem(Drivers*);
+    ~SlideSubsystem() = default;
+
+    void BuildSlideMotors() {
+        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
+            slideMotors[i] = new DJIMotor(drivers, 
+                                          SLIDE_MOTOR_IDS[i], 
+                                          SLIDE_GIMBAL_BUS, 
+                                          SLIDE_MOTOR_DIRECTIONS[i], 
+                                          SLIDE_MOTOR_NAMES[i]);
+        }
+        slideMotorEncoderDisplay[i] = 0.0f;
+    }
 
     mockable void initialize() override;
     mockable void refresh() override;
@@ -30,25 +42,26 @@ public:
     using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);
 
     template <class... Args>
-    void ForAllSlideMotors(DJIMotorFunc<Args...> func, Args... args) {
-        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) (motors[i].*func)(args...);
+    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (auto& slideMotor : slideMotors) {
+            (slideMotor->*func)(args...);
+        }
     }
 
     template <class... Args>
-    void ForAllSlideMotors(SlideSubsystemFunc<MotorIndex, Args...> func, Args... args) {
-        for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
-            auto mi = static_cast<MotorIndex>(i);
-            (this->*func)(mi, args...);
+    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
+        for (uint8_t i = 0; i < SLIDE_MOTOR_COUNT; i++) {
+            (this->*func)(i, args...);
         }
     }
 
     void idle() { desiredOutputs = {}; }
 
 private:
-    std::array<DJIMotor, SLIDE_MOTOR_COUNT> motors;
-    std::array<SmoothPID, SLIDE_MOTOR_COUNT> motorPIDs;
+    std::array<DJIMotor, SLIDE_MOTOR_COUNT> slideMotors;
     std::array<float, SLIDE_MOTOR_COUNT> targetPosesMeters{};
     std::array<int32_t, SLIDE_MOTOR_COUNT> desiredOutputs{};
+    std::array<float, SLIDE_MOTOR_COUNT> slideMotorEncoderDisplay{};
 
     void updateMotorPositionPID(MotorIndex);
     void refreshDesiredOutput(MotorIndex);
