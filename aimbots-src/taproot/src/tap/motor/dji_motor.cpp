@@ -177,10 +177,10 @@ void DjiMotor::setDiedTrue()
 void DjiMotor::updateEncoderValue(uint16_t newEncWrapped)
 {
     int16_t enc_dif = newEncWrapped - encoderWrapped;
-    if (died && isMotorOnline()) {
-        enc_dif = 0;
-        died = false;
-    }
+    // if (died && isMotorOnline()) {
+    //     enc_dif = 0;
+    //     died = false;
+    // }
     if (enc_dif < -ENC_RESOLUTION / 2)
     {
         encoderRevolutions++;
