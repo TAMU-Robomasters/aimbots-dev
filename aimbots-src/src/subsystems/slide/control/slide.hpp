@@ -18,6 +18,11 @@ public:
     SlideSubsystem(Drivers*);
     ~SlideSubsystem() = default;
 
+    // initializes all motors on startup
+    // initializes motor encoder display
+    //   (no idea what that data is used more. 
+    //    it's in the cpp but literally isnt used anywhere(???????????)
+    //    (16/jan/2025))
     void BuildSlideMotors() {
         for (auto i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             slideMotors[i] = new DJIMotor(drivers, 
@@ -43,15 +48,16 @@ public:
 
     template <class... Args>
     void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
-        for (auto& slideMotor : slideMotors) {
-            (slideMotor->*func)(args...);
+        for (auto& currSlideMotor : slideMotors) {
+            (currSlideMotor->*func)(args...);
         }
     }
 
     template <class... Args>
     void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
         for (uint8_t i = 0; i < SLIDE_MOTOR_COUNT; i++) {
-            (this->*func)(i, args...);
+            auto currMotorIndex = static_cast<MotorIndex>(i);
+            (this->*func)(currMotorIndex, args...);
         }
     }
 
@@ -65,6 +71,7 @@ private:
 
     void updateMotorPositionPID(MotorIndex);
     void refreshDesiredOutput(MotorIndex);
+    void refreshEncoderDisplay(MotorIndex);
 };
 
 };  // namespace src::Slide

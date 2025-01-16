@@ -18,13 +18,20 @@ float xMotorEncDisplay = 0.0f;
 float zMotorEncDisplay = 0.0f;
 
 void SlideSubsystem::refresh() {
-    xMotorEncDisplay = slideMotors[X].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
-    zMotorEncDisplay = slideMotors[Z].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    ForAllSlideMtors(&SlideSubsystem::refreshEncoderDisplay);
+    // handled w line above
+    // xMotorEncDisplay = slideMotors[X].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    // zMotorEncDisplay = slideMotors[Z].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+
     ForAllSlideMotors(&SlideSubsystem::refreshDesiredOutput);
 }
 
 void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx) {
     slideMotors[motorIdx].setDesiredOutput(desiredOutputs[motorIdx]);
+}
+
+void SlideSubsystem::refreshEncoderDisplay(MotorIndex motorIdx) {
+    slideMotorEncoderDisplay[motorIdx] = slideMotors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
 }
 
 void SlideSubsystem::updateAllPIDs() { ForAllSlideMotors(&SlideSubsystem::updateMotorPositionPID); }

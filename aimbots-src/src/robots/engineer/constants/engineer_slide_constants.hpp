@@ -33,6 +33,17 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
+/* === Motor configuration variables ===
+ *  --   last updated: 16/jan/2025   --
+ *
+ * if increasing/decreasing motors 
+ *   --> update enum MotorIndex in "slide.hpp" (line 14)
+ *   --> update constants + constant arrays below
+ * 
+ *  thanks & gig em <3
+ * 
+ */
+
 // DJIMotor config
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static const std::array<MotorID, SLIDE_MOTOR_COUNT> SLIDE_MOTOR_IDS = {MotorID::MOTOR4, MotorID::MOTOR5};
