@@ -30,7 +30,7 @@ public:
 
     void registerSubsystems(
         src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-        tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) 
+        src::Chassis::ChassisSubsystem* chassisSubsystem) 
         { this->chassisSubsystem = chassisSubsystem;
           this->gimbalSubsystem = gimbalSubsystem; }
 
@@ -70,16 +70,13 @@ private:
     src::Drivers* drivers;
 
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
-    tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
+    src::Chassis::ChassisSubsystem* chassisSubsystem;
 
-    Informants::Odometry::ChassisKFOdometry chassisKFOdometry;
     src::Informants::Transformers::RobotFrames robotFrames;
     src::Informants::Transformers::TurretFrames turretFrames;
 
     static const uint32_t GIMBAL_BUFFER_SIZE = 40;
     Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalFieldOrientationBuffer;
-    static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
-    Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;  // Buffer for turret orientation data
 
 };  // class FieldRelativeGimbal
 

@@ -1,17 +1,18 @@
 #include "informants/kinematics/chassis_odometry.hpp"
 
-#include <tap/algorithms/wrapped_float.hpp>
-
-#include "utils/kinematics/kinematic_state_vector.hpp"
-#include "informants/odometry/chassis_kf_odometry.hpp"
-#include "utils/tools/robot_specific_defines.hpp"
-#include "utils/tools/common_types.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 
 #include "drivers.hpp"
 
 namespace src::Informants {
 
 ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {} 
+
+//#ifndef TARGET_TURRET
+      // chassisKFOdometry(-2.830f, -0.730f)
+      //chassisKFOdometry(3.1f, 3.5f);
+//#warning "don't hardcode these values"
+//#endif
 
 Vector3f linearIMUAccelerationDisplay;
 float linearIMUAccelerationXDisplay = 0.0f;
@@ -91,6 +92,39 @@ Vector3f ChassisOdometry::removeFalseAcceleration(
 
         Vector3f linearIMUAcceleration = a - (alpha ^ r) - (w ^ (w ^ r));
         return linearIMUAcceleration;
+}
+
+void ChassisOdometry::updateRobotFrames() {
+    // Update IMU Stuff
+    drivers->kinematicInformant.imuData.updateIMUKinematicStateVector();
+
+    #ifndef TARGET_TURRET
+    // Update Chassis Stuff after IMU STUFF
+    drivers->kinematicInformant.imuData.updateIMUAngles();
+    drivers->kinematicInformant.chassisOdometry.updateChassisAcceleration();
+
+    chassisIMUHistoryBuffer.prependOverwrite(
+        {drivers->kinematicInformant.imuData.getIMUAngle(PITCH_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getIMUAngle(ROLL_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians)});
+
+    chassisKFOdometry->update(
+        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getChassisLinearState()[X_AXIS].getAcceleration(),
+        drivers->kinematicInformant.imuData.getChassisLinearState()[Y_AXIS].getAcceleration());
+
+    modm::Location2D<float> robotLocation = chassisKFOdometry->getCurrentLocation2D();
+
+    modm::Location2D<float> robotLocationDisplay;
+    
+    float robotLocationXDisplay = 0.0f;
+    float robotLocationYDisplay = 0.0f;
+
+    robotLocationXDisplay = robotLocation.getX();
+    robotLocationYDisplay = robotLocation.getY();
+
+    robotLocationDisplay = robotLocation;
+#endif
 }
 
 } //namespace src::Informants

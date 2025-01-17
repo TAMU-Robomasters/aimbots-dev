@@ -6,6 +6,8 @@
 #include "informants/odometry/chassis_kf_odometry.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 #include "utils/tools/common_types.hpp"
+#include "informants/kinematics/imu_data.hpp"
+
 
 namespace src {
 class Drivers;
@@ -24,7 +26,7 @@ public:
     ChassisOdometry(src::Drivers* drivers); 
     ~ChassisOdometry() = default;
 
-    void registerSubsystems(tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) 
+    void registerSubsystems(src::Chassis::ChassisSubsystem* chassisSubsystem) 
         { this->chassisSubsystem = chassisSubsystem; }
 
     void updateChassisAcceleration();
@@ -38,11 +40,15 @@ public:
 
     modm::Vector2f getRobotVelocity2D() { return chassisKFOdometry->getCurrentVelocity2D(); }
 
+    void updateRobotFrames();
+
 private:
     src::Drivers* drivers;
-    tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
+    src::Chassis::ChassisSubsystem* chassisSubsystem;
     Informants::Odometry::ChassisKFOdometry* chassisKFOdometry;
 
+    static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
+    Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;  // Buffer for turret orientation data
 };  // class ChassisOdometry
 
 }  // namespace src::Informants

@@ -6,8 +6,8 @@
 #include "informants/kinematics/field_relative_gimbal.hpp"
 #include "informants/kinematics/hitTracker.hpp"
 #include "informants/kinematics/imu_data.hpp"
-#include "utils/tools/common_types.hpp"
 
+#include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 namespace src {
@@ -38,39 +38,39 @@ public:
     #ifdef GIMBAL_COMPATIBLE
         void registerSubsystems(
             src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-            tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) {
+            src::Chassis::ChassisSubsystem* chassisSubsystem) {
             this->gimbalSubsystem = gimbalSubsystem;
             this->chassisSubsystem = chassisSubsystem;
 
-            drivers->kinematicInformant.fieldRelativeGimbal.registerSubsystems(gimbalSubsystem, chassisSubsystem);
+            fieldRelativeGimbal.registerSubsystems(gimbalSubsystem, chassisSubsystem);
         }
-        #endif
     #endif
+#endif
 
 #ifdef CHASSIS_COMPATIBLE 
     void registerSubsystems(
-        tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem) {
+        src::Chassis::ChassisSubsystem* chassisSubsystem) {
         this->chassisSubsystem = chassisSubsystem;
 
-        drivers->kinematicInformant.chassisOdometry.registerSubsystems(chassisSubsystem);
+        chassisOdometry.registerSubsystems(chassisSubsystem);
     } 
-    #endif
+#endif
 
 #ifdef GIMBAL_COMPATIBLE
     void registerSubsystems(
         src::Gimbal::GimbalSubsystem* gimbalSubsystem) {
         this->gimbalSubsystem = gimbalSubsystem;
 
-        drivers->kinematicInformant.hitTracker.registerSubsystems(gimbalSubsystem);
+        hitTracker.registerSubsystems(gimbalSubsystem);
     }
-    #endif
+#endif
 
     void initialize(float imuFrequency, float imukP, float imukI);
 
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
-    tap::control::chassis::ChassisSubsystemInterface* chassisSubsystem;
+    src::Chassis::ChassisSubsystem* chassisSubsystem;
 
     // KinematicStateVector turretIMULinearXState;
     // KinematicStateVector turretIMULinearYState;

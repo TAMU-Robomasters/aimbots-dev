@@ -1,10 +1,6 @@
 #include "kinematic_informant.hpp"
 #include "imu_data.hpp"
 
-#include "tap/algorithms/math_user_utils.hpp"
-#include "utils/tools/common_types.hpp"
-#include "utils/kinematics/kinematic_state_vector.hpp"
-
 #include "drivers.hpp"
 
 namespace src::Informants {
