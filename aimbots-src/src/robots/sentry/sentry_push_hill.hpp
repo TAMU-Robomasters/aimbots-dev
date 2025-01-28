@@ -31,9 +31,9 @@ namespace SentryControl{
 
 
 
-class SentryPushCommand : public TapComprisedCommand {
+class SentryPushHillCommand : public TapComprisedCommand {
 public:
-    SentryPushCommand(
+    SentryPushHillCommand(
         src::Drivers*,
         src::Gimbal::GimbalSubsystem*,
         src::Feeder::FeederSubsystem*,
@@ -48,6 +48,8 @@ public:
     void end(bool interrupted) override;
     bool isReady() override;
     bool isFinished() const override;
+
+    void exit();
 
     const char* getName() const override { return "Sentry Match Push Command"; }
 

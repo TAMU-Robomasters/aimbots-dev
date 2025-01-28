@@ -1,5 +1,5 @@
 
-#include "sentry_push.hpp"
+#include "sentry_push_hill.hpp"
 
 #ifdef TARGET_SENTRY
 
@@ -7,7 +7,7 @@
 namespace SentryControl{
   
 
-SentryPushCommand::SentryPushCommand(
+SentryPushHillCommand::SentryPushHillCommand(
     src::Drivers* drivers,
     src::Gimbal::GimbalSubsystem* gimbal,
     src::Feeder::FeederSubsystem* feeder,
@@ -18,8 +18,7 @@ SentryPushCommand::SentryPushCommand(
       drivers(drivers),
       gimbal(gimbal),
       feeder(feeder),
-      chassis(chassis),
-      autoNavCommand(autoNavCommand) {
+      chassis(chassis){
       //autoNavCommand(drivers, chassis, src::Chassis::defaultLinearConfig, src::Chassis::defaultRotationConfig, src::Chassis::SnapSymmetryConfig) {
   addSubsystemRequirement(chassis);
   this->comprisedCommandScheduler.registerSubsystem(chassis);
@@ -33,31 +32,44 @@ SentryPushCommand::SentryPushCommand(
 
   
 
-void SentryPushCommand::initialize() {
-
-
+void SentryPushHillCommand::initialize() {
+  
 }
    
 
-
-
-void SentryPushCommand::execute() {
- 
+void SentryPushHillCommand::execute() {
+  
+  //move towards the location - autonav
+  //look in the direction of the push - gimbal
+  //shoot enemies that are spotted - feeder
    
 }
 
-void SentryPushCommand::end(bool interrupted) {
+
+void SentryPushHillCommand::end(bool interrupted) {
 
  
 }
 
-bool SentryPushCommand::isReady() { return true; }
+bool SentryPushHillCommand::isReady() { return true; }
 
-bool SentryPushCommand::isFinished() const { 
+bool SentryPushHillCommand::isFinished() const { 
   
   
   return false; 
-  }
+}
+
+  
+void SentryPushHillCommand::exit() {
+  //---drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND
+  //if no robot is spotted 
+  //change sentryState push center
+  //if hp<200 
+  //change sentryState Retreat
+  //enemies are spotted
+  //change sentryState ControlHill
+
+}
 
 }
 

@@ -15,7 +15,7 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelp,
     
-    SentryMatchStates& chassisState)
+    SentryControl::SentryMatchStates& sentryState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
@@ -35,7 +35,7 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
   
 
 void SentryIntelligenceCommand::initialize() {
-
+  sentryState = SentryMatchStates::START;
 
 }
    
@@ -48,6 +48,9 @@ void SentryIntelligenceCommand::execute() {
   if (sentryState != lastSentryState) {
     // Perform setup for the next state
     switch (sentryState) {
+      case SentryMatchStates::START:
+        // calls sentry_push(Hill)
+        break;
       case SentryMatchStates::PUSH:
        
         break;

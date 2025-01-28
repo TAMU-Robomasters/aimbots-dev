@@ -18,7 +18,7 @@
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/control/chassis_helper.hpp"
 
-#include "sentry_push.hpp"
+#include "sentry_push_hill.hpp"
 
 
 
@@ -31,7 +31,7 @@
 
 namespace SentryControl{
 
-enum SentryMatchStates { PUSH = 0, ATTACK, RETREAT, PATROL, CONTROL};
+enum SentryMatchStates { START = 0, PUSH, ATTACK, RETREAT, PATROL, CONTROL};
 
 class SentryIntelligenceCommand : public TapComprisedCommand {
 public:
@@ -43,7 +43,7 @@ public:
         src::Shooter::ShooterSubsystem*,
         src::Utils::RefereeHelperTurreted*,
         
-        SentryMatchStates& chassisState);
+       SentryMatchStates& sentryState);
        
 
     void initialize() override;
@@ -63,7 +63,7 @@ private:
     src::Shooter::ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
    
-    SentryControl::SentryMatchStates& sentryState;
+    SentryMatchStates& sentryState;
     SentryControl::SentryMatchStates lastSentryState;
     
 

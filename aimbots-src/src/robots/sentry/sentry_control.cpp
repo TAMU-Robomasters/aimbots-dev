@@ -229,8 +229,7 @@ SentryIntelligenceCommand SentryIntelligenceCommand(
     &feeder,
     &chassis,
     &shooter,
-    &refHelper,
-    chassisAutoNavCommand);
+    &refHelper);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // Define command mappings here -------------------------------------------
