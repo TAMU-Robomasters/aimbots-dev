@@ -37,7 +37,18 @@ public:
     mockable void initialize() override;
     mockable void refresh() override;
 
-    void setTargetPositionMeters(float x, float z);
+    // TODO: compile & debug setAllTargetPositionsMeters ++ setTargetPositionMeters (i didnt have time)
+    void setAllTargetPositionsMeters(double[] targetVals);
+    void setTargetPositionMeters(MotorIndex, double targetVal);
+    
+    // TODO: fix these functions. general idea below
+
+    /*
+        getTargetPositionMeters( int motorIdx ) {
+            return targetPosesMeters[motorIdx]
+        }
+    */
+   
     float getTargetXMeters() const;
     float getTargetZMeters() const;
 
@@ -54,7 +65,7 @@ public:
     }
 
     template <class... Args>
-    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
+    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) { // is DJIMotor arg correct??
         for (uint8_t i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             auto currMotorIndex = static_cast<MotorIndex>(i);
             (this->*func)(currMotorIndex, args...);

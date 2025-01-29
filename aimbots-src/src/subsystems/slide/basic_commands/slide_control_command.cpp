@@ -21,8 +21,8 @@ void SlideControlCommand::execute() {
 
     xTargetMeterDisplay = targetX;
     zTargetMeterDisplay = targetZ;
-
-    slide->setTargetPositionMeters(targetX, targetZ);
+    
+    slide->setAllTargetPositionsMeters( {targetX, targetZ} );
     slide->updateAllPIDs();
 }
 

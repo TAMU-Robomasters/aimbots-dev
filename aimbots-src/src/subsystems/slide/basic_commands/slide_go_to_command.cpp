@@ -17,7 +17,7 @@ void SlideGoToCommand::initialize() {}
 void SlideGoToCommand::end(bool interrupted) {}
 
 void SlideGoToCommand::execute() {
-    slide->setTargetPositionMeters(targetX, targetZ);
+    slide->setAllTargetPositionsMeters( {targetX, targetZ} ); //
     slide->updateAllPIDs();
 }
 

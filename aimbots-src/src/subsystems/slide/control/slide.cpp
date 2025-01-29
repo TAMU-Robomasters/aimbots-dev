@@ -46,9 +46,16 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
     desiredOutputs[motorIdx] = static_cast<int32_t>(SLIDE_MOTOR_PIDS[motorIdx].getOutput());
 }
 
-void SlideSubsystem::setTargetPositionMeters(float x, float z) {
-    targetPosesMeters[X] = std::clamp(x, 0.0f, SLIDE_MAX_POSITIONS_METERS[X]);
-    targetPosesMeters[Z] = std::clamp(z, 0.0f, SLIDE_MAX_POSITIONS_METERS[Z]);
+//  Updates the target values of all motor indexes.
+//    Done by cycling thru all motor indexes
+void SlideSubsystem::setAllTargetPositionsMeters(double[] targetVals) {
+    ForAllSlideMotors( &SlideSubsystem::setTargetPositionMeters, targetVals );
+}
+
+// Updates the target value of the current motor index
+//   Helper function to above
+void SlideSubsystem::setTargetPositionMeters(MotorIndex motorIdx, double targetVal) {
+    targetPosesMeters[motorIdx] = std::clamp(, 0.0f, SLIDE_MAX_POSITIONS_METERS[motorIdx]);
 }
 
 float SlideSubsystem::getTargetXMeters() const { return targetPosesMeters[X]; }
