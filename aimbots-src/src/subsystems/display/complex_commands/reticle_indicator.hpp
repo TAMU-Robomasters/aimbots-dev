@@ -62,7 +62,7 @@ private:
      * in context). */
     static constexpr size_t NUM_RETICLE_COORDINATES = MODM_ARRAY_SIZE(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES);
     /** The color of the verticle line that connects the horizontal reticle lines. */
-    static constexpr Tx::GraphicColor RETICLE_VERTICAL_COLOR = Tx::GraphicColor::RED_AND_BLUE; //RED_AND_BLUE is assigned by team color
+    static constexpr Tx::GraphicColor RETICLE_VERTICAL_COLOR = SECONDARY_COLOR; //RED_AND_BLUE is assigned by team color
 
     tap::Drivers &drivers;
 
