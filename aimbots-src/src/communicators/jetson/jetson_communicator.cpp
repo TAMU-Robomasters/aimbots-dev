@@ -158,15 +158,43 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
 void JetsonCommunicator::sendSimpleMessage() {
+    // struct JetsonMessage {
+    //     uint8_t magic;
+    //     float targetX;
+    //     float targetY;
+    //     float targetZ;
+    //     uint8_t delay;  // ms
+    //     CVState cvState;
+    // } __attribute__((packed));
+
+
     uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
 
-    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
-        rawSerialSend[i] = randomValues[i];
-    }
+    JetsonMessage embeddedToCvMsg;
+    embeddedToCvMsg.magic = 0xFF;
+    embeddedToCvMsg.targetX = 0xFFFFFFFF;
+    embeddedToCvMsg.targetY = 0xFFFFFFFF;
+    embeddedToCvMsg.targetZ = 0xFFFFFFFF;
+    embeddedToCvMsg.delay = 200;
+
+    rawSerialSend[0] = embeddedToCvMsg.magic;
+    rawSerialSend[1] = embeddedToCvMsg.targetX;
+    rawSerialSend[2] = embeddedToCvMsg.targetY;
+    rawSerialSend[3] = embeddedToCvMsg.targetZ;
+    rawSerialSend[4] = embeddedToCvMsg.delay;
+
+    // for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
+    //     rawSerialSend = embeddedToCvMsg;
+    // }
 
     // uint8_t simpleData = 255; // 1111 1111 (8 ones)
     
-    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
+    // for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
+    //     WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
+    // }
+
+    // NOTE: loop is hard coded
+    for (uint8_t i = 0; i < 5; i++) {
         WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
     }
 
