@@ -48,8 +48,8 @@ static constexpr SmoothPIDConfig SLIDE_Z_POSITION_PID_CONFIG = {
 static constexpr uint8_t SLIDE_MOTOR_COUNT = 2;
 static const std::array<MotorID, SLIDE_MOTOR_COUNT> SLIDE_MOTOR_IDS = {MotorID::MOTOR4, MotorID::MOTOR5};
 static constexpr CANBus SLIDE_BUS = CANBus::CAN_BUS1;
-static const std::array<bool, SLIDE_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, true};
-static const std::array<const char*, SLIDE_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Slide Motor X", "Slide Motor Y"};
+static const std::array<bool, SLIDE_MOTOR_COUNT> SLIDE_MOTOR_DIRECTIONS = {false, true};
+static const std::array<const char*, SLIDE_MOTOR_COUNT> SLIDE_MOTOR_NAMES = {"Slide Motor X", "Slide Motor Y"};
 // DJIMotor PIDs
 static const std::array<SmoothPIDConfig, SLIDE_MOTOR_COUNT> SLIDE_MOTOR_PIDS = {SLIDE_X_POSITION_PID_CONFIG, SLIDE_Z_POSITION_PID_CONFIG};
 // Hardware calculations

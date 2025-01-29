@@ -48,7 +48,7 @@ void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
 
 //  Updates the target values of all motor indexes.
 //    Done by cycling thru all motor indexes
-void SlideSubsystem::setAllTargetPositionsMeters(double[] targetVals) {
+void SlideSubsystem::setAllTargetPositionsMeters( double targetVals[] ) {
     ForAllSlideMotors( &SlideSubsystem::setTargetPositionMeters, targetVals );
 }
 
