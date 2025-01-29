@@ -5,7 +5,8 @@
 
 
 namespace SentryControl{
-  
+
+ const char* watchState = "START";
 
 SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Drivers* drivers,
@@ -14,13 +15,14 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Chassis::ChassisSubsystem* chassis,
     src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelp,
-    
-    SentryControl::SentryMatchStates& sentryState)
+    SentryMatchStates& sentryState)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       feeder(feeder),
-      chassis(chassis){
+      chassis(chassis),
+      sentryState(sentryState),
+      sentryPushHill(drivers, gimbal, feeder, chassis, shooter, refHelp){
       //autoNavCommand(drivers, chassis, src::Chassis::defaultLinearConfig, src::Chassis::defaultRotationConfig, src::Chassis::SnapSymmetryConfig) {
   addSubsystemRequirement(chassis);
   this->comprisedCommandScheduler.registerSubsystem(chassis);
@@ -36,7 +38,7 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
 
 void SentryIntelligenceCommand::initialize() {
   sentryState = SentryMatchStates::START;
-
+  lastSentryState = SentryMatchStates::PATROL;
 }
    
 
@@ -50,6 +52,9 @@ void SentryIntelligenceCommand::execute() {
     switch (sentryState) {
       case SentryMatchStates::START:
         // calls sentry_push(Hill)
+        sentryState = SentryMatchStates::PUSH;
+        watchState = "PUSH";
+        sentryPushHill.execute();
         break;
       case SentryMatchStates::PUSH:
        
@@ -58,7 +63,7 @@ void SentryIntelligenceCommand::execute() {
         
         break;
       case SentryMatchStates::RETREAT:
-        
+        watchState = "RETREAT";
         break;
       case SentryMatchStates::PATROL:
         break;
@@ -68,6 +73,11 @@ void SentryIntelligenceCommand::execute() {
 
     lastSentryState = sentryState;
   }
+
+  if(sentryPushHill.exit()!= sentryState){
+    sentryState == sentryPushHill.exit();
+  }
+
    
 }
 

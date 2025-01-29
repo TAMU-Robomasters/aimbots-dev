@@ -80,6 +80,8 @@ BarrelID currentBarrel = BARREL_IDS[0];
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
 ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::START;
+
+SentryMatchStates sentryMatchStates = SentryMatchStates::START;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
@@ -229,7 +231,8 @@ SentryIntelligenceCommand SentryIntelligenceCommand(
     &feeder,
     &chassis,
     &shooter,
-    &refHelper);
+    &refHelper,
+    sentryMatchStates);
 // CommunicationResponseHandler responseHandler(*drivers());
 
 // Define command mappings here -------------------------------------------

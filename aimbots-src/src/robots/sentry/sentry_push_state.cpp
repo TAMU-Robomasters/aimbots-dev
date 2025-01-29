@@ -1,5 +1,5 @@
 
-#include "sentry_push_hill.hpp"
+#include "sentry_push_state.hpp"
 
 #ifdef TARGET_SENTRY
 
@@ -7,7 +7,7 @@
 namespace SentryControl{
   
 
-SentryPushHillCommand::SentryPushHillCommand(
+SentryPushStateCommand::SentryPushStateCommand(
     src::Drivers* drivers,
     src::Gimbal::GimbalSubsystem* gimbal,
     src::Feeder::FeederSubsystem* feeder,
@@ -32,12 +32,12 @@ SentryPushHillCommand::SentryPushHillCommand(
 
   
 
-void SentryPushHillCommand::initialize() {
+void SentryPushStateCommand::initialize() {
   
 }
    
 
-void SentryPushHillCommand::execute() {
+void SentryPushStateCommand::execute() {
   
   //move towards the location - autonav
   //look in the direction of the push - gimbal
@@ -46,21 +46,21 @@ void SentryPushHillCommand::execute() {
 }
 
 
-void SentryPushHillCommand::end(bool interrupted) {
+void SentryPushStateCommand::end(bool interrupted) {
 
  
 }
 
-bool SentryPushHillCommand::isReady() { return true; }
+bool SentryPushStateCommand::isReady() { return true; }
 
-bool SentryPushHillCommand::isFinished() const { 
+bool SentryPushStateCommand::isFinished() const { 
   
   
   return false; 
 }
 
   
-void SentryPushHillCommand::exit() {
+SentryMatchStates SentryPushStateCommand::exit() {
   //---drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND
   //if no robot is spotted 
   //change sentryState push center
@@ -69,6 +69,11 @@ void SentryPushHillCommand::exit() {
   //enemies are spotted
   //change sentryState ControlHill
 
+  if (drivers->refSerial.getRobotData().currentHp < 200){
+    return SentryMatchStates::RETREAT;
+  }
+  
+  return SentryMatchStates::PUSH;
 }
 
 }

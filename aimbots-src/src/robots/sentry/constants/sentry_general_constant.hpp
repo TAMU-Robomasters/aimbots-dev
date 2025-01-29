@@ -48,3 +48,6 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
+namespace SentryControl{
+    enum SentryMatchStates { START = 0, PUSH, ATTACK, RETREAT, PATROL, CONTROL};
+}
