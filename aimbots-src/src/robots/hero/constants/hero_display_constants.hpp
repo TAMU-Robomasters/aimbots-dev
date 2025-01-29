@@ -13,8 +13,8 @@
 using tap::communication::serial::RefSerialData;
 
 
-RefSerialData::Tx::GraphicColor const PRIMARY_COLOR = RefSerialData::Tx::GraphicColor::PINK;
-RefSerialData::Tx::GraphicColor const SECONDARY_COLOR = RefSerialData::Tx::GraphicColor::YELLOW;
+RefSerialData::Tx::GraphicColor const PRIMARY_COLOR = RefSerialData::Tx::GraphicColor::GREEN;
+RefSerialData::Tx::GraphicColor const SECONDARY_COLOR = RefSerialData::Tx::GraphicColor::RED_AND_BLUE;
 
 static constexpr uint16_t NUM_RANGE_LINES = 5;
 static constexpr uint16_t RANGE_LINE_WIDTH = 40;
