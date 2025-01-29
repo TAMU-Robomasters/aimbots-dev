@@ -27,7 +27,7 @@ void SlideSubsystem::refresh() {
 }
 
 void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx) {
-    slideMotors[motorIdx].setDesiredOutput(desiredOutputs[motorIdx]);
+    slideMotors[motorIdx].setDesiredOutput( desiredOutputs[motorIdx] );
 }
 
 void SlideSubsystem::refreshEncoderDisplay(MotorIndex motorIdx) {
