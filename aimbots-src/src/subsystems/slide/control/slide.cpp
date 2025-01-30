@@ -7,18 +7,18 @@
 namespace src::Slide {
 
 SlideSubsystem::SlideSubsystem(Drivers* drivers)
-    : Subsystem(drivers),
+    : Subsystem(drivers)
 {
     BuildSlideMotors();
 }
 
-void SlideSubsystem::initialize() { ForAllSlideMotors(&DJIMotor::initialize); }
+void SlideSubsystem::initialize() { ForAllSlideMotorsDJI(&DJIMotor::initialize); }
 
 float xMotorEncDisplay = 0.0f;
 float zMotorEncDisplay = 0.0f;
 
 void SlideSubsystem::refresh() {
-    ForAllSlideMtors(&SlideSubsystem::refreshEncoderDisplay);
+    ForAllSlideMotors(&SlideSubsystem::refreshEncoderDisplay);
     // handled w line above
     // xMotorEncDisplay = slideMotors[X].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
     // zMotorEncDisplay = slideMotors[Z].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
@@ -27,23 +27,23 @@ void SlideSubsystem::refresh() {
 }
 
 void SlideSubsystem::refreshDesiredOutput(MotorIndex motorIdx) {
-    slideMotors[motorIdx].setDesiredOutput( desiredOutputs[motorIdx] );
+    slideMotors[motorIdx]->setDesiredOutput( desiredOutputs[motorIdx] );
 }
 
 void SlideSubsystem::refreshEncoderDisplay(MotorIndex motorIdx) {
-    slideMotorEncoderDisplay[motorIdx] = slideMotors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    slideMotorEncoderDisplay[motorIdx] = slideMotors[motorIdx]->getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
 }
 
-void SlideSubsystem::updateAllPIDs() { ForAllSlideMotors(&SlideSubsystem::updateMotorPositionPID); }
+void SlideSubsystem::updateAllPIDs() { ForAllSlideMotors( &SlideSubsystem::updateMotorPositionPID ); } //
 
 void SlideSubsystem::updateMotorPositionPID(MotorIndex motorIdx) {
-    float positionRevs = slideMotors[motorIdx].getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
-    float positionMeters = positionRevs * SLIDE_METERS_PER_REVS_RATIOS[motorIdx];
+    float positionRevs = slideMotors[motorIdx]->getEncoderUnwrapped() / DJIMotor::ENC_RESOLUTION;
+    float positionMeters = positionRevs * SLIDE_MOTOR_METERS_PER_REVS_RATIOS[motorIdx];
     float err = targetPosesMeters[motorIdx] - positionMeters;
 
     SLIDE_MOTOR_PIDS[motorIdx].runControllerDerivateError(err);
 
-    desiredOutputs[motorIdx] = static_cast<int32_t>(SLIDE_MOTOR_PIDS[motorIdx].getOutput());
+    desiredOutputs[motorIdx] = static_cast<int32_t>(SLIDE_MOTOR_PIDS[motorIdx].getOutput() );
 }
 
 //  Updates the target values of all motor indexes.
@@ -54,7 +54,7 @@ void SlideSubsystem::setAllTargetPositionsMeters( double targetVals[] ) {
 
 // Updates the target value of the current motor index
 //   Helper function to above
-void SlideSubsystem::setTargetPositionMeters(MotorIndex motorIdx, double targetVal) {
+void SlideSubsystem::setTargetPositionMeters(MotorIndex motorIdx, double targetVals[]) {
     targetPosesMeters[motorIdx] = std::clamp(, 0.0f, SLIDE_MAX_POSITIONS_METERS[motorIdx]);
 }
 

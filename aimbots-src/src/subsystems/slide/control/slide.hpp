@@ -54,15 +54,18 @@ public:
     template <typename... Args>
     using SlideSubsystemFunc = void (SlideSubsystem::*)(Args...);
 
-    // template <class... Args>
-    // void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) {
-    //     for (auto& currSlideMotor : slideMotors) {
-    //         (currSlideMotor->*func)(args...);
-    //     }
-    // }
-
+    // RUns DJIMotor functions (used just for initialization)
     template <class... Args>
-    void ForAllSlideMotors(void (DJIMotor::*func)(Args...), Args... args) { // is DJIMotor arg correct??
+    void ForAllSlideMotorsDJI(void (DJIMotor::*func)(Args...), Args... args) { // is DJIMotor arg correct??
+        for (uint8_t i = 0; i < SLIDE_MOTOR_COUNT; i++) {
+            auto currMotorIndex = static_cast<MotorIndex>(i);
+            (this->*func)(currMotorIndex, args...);
+        }
+    }
+
+    // Runs SlideSubsystem functions
+    template <class... Args>
+    void ForAllSlideMotors(void (SlideSubsystem::*func)(MotorIndex, Args...), Args... args) {
         for (uint8_t i = 0; i < SLIDE_MOTOR_COUNT; i++) {
             auto currMotorIndex = static_cast<MotorIndex>(i);
             (this->*func)(currMotorIndex, args...);
