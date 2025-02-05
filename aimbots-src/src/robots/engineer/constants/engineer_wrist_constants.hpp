@@ -8,6 +8,8 @@ static constexpr CANBus WRIST_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t WRIST_MOTOR_COUNT = 3;
 
+static constexpr uint8_t WRIST_MOTOR_COUNT_PER_SIDE = 1;
+
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 186.15
     wrapTo0To2PIRange(modm::toRadian(0.0f)),   // 196.21
