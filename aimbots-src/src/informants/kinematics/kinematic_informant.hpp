@@ -34,36 +34,14 @@ public:
     src::Informants::IMUData imuData;    
     src::Informants::HitTracker hitTracker;
 
-#ifdef CHASSIS_COMPATIBLE
-    #ifdef GIMBAL_COMPATIBLE
-        void registerSubsystems(
-            src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-            src::Chassis::ChassisSubsystem* chassisSubsystem) {
-            this->gimbalSubsystem = gimbalSubsystem;
-            this->chassisSubsystem = chassisSubsystem;
+    void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem,
+                            src::Chassis::ChassisSubsystem* chassisSubsystem);
 
-            fieldRelativeGimbal.registerSubsystems(gimbalSubsystem, chassisSubsystem);
-        }
-    #endif
-#endif
+    void registerSubsystems(src::Chassis::ChassisSubsystem* chassisSubsystem);
 
-#ifdef CHASSIS_COMPATIBLE 
-    void registerSubsystems(
-        src::Chassis::ChassisSubsystem* chassisSubsystem) {
-        this->chassisSubsystem = chassisSubsystem;
+    void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem);
 
-        chassisOdometry.registerSubsystems(chassisSubsystem);
-    } 
-#endif
-
-#ifdef GIMBAL_COMPATIBLE
-    void registerSubsystems(
-        src::Gimbal::GimbalSubsystem* gimbalSubsystem) {
-        this->gimbalSubsystem = gimbalSubsystem;
-
-        hitTracker.registerSubsystems(gimbalSubsystem);
-    }
-#endif
+    void registerSubsystems();
 
     void initialize(float imuFrequency, float imukP, float imukI);
 

@@ -197,7 +197,7 @@ static void updateIo(src::Drivers *drivers) {
     // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS,
     // AngleUnit::Degrees);
 
-    yawDisplay = drivers->kinematicInformant.imuData.getIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+    yawDisplay = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Degrees);
     // pitchDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
     // rollDisplay =

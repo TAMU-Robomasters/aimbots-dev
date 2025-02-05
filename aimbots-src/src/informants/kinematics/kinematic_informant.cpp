@@ -8,10 +8,45 @@
 namespace src::Informants {
 
 KinematicInformant::KinematicInformant(src::Drivers* drivers)
-    : drivers(drivers) {}
+    :   drivers(drivers),
+        fieldRelativeGimbal(drivers),
+        chassisOdometry(drivers),
+        imuData(drivers),    
+        hitTracker(drivers) {}
 
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
 }
+
+#ifdef CHASSIS_COMPATIBLE
+    #ifdef GIMBAL_COMPATIBLE
+        void KinematicInformant::registerSubsystems(
+            src::Gimbal::GimbalSubsystem* gimbalSubsystem,
+            src::Chassis::ChassisSubsystem* chassisSubsystem) {
+            this->gimbalSubsystem = gimbalSubsystem;
+            this->chassisSubsystem = chassisSubsystem;
+
+            fieldRelativeGimbal.registerSubsystems(gimbalSubsystem, chassisSubsystem);
+        }
+    #endif
+#endif
+
+#ifdef CHASSIS_COMPATIBLE 
+    void KinematicInformant::registerSubsystems(
+        src::Chassis::ChassisSubsystem* chassisSubsystem) {
+        this->chassisSubsystem = chassisSubsystem;
+
+        chassisOdometry.registerSubsystems(chassisSubsystem);
+    } 
+#endif
+
+#ifdef GIMBAL_COMPATIBLE
+    void KinematicInformant::registerSubsystems(
+        src::Gimbal::GimbalSubsystem* gimbalSubsystem) {
+        this->gimbalSubsystem = gimbalSubsystem;
+
+        hitTracker.registerSubsystems(gimbalSubsystem);
+    }
+#endif
 
 }  // namespace src::Informants

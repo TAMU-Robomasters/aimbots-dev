@@ -55,9 +55,9 @@ void IMUData::updateIMUKinematicStateVector() {
     imuAngularState[Y_AXIS].updateFromPosition(getRawLocalIMUAngle(ROLL_AXIS));
     imuAngularState[Z_AXIS].updateFromPosition(getRawLocalIMUAngle(YAW_AXIS));
 
-    imuAngularState[X_AXIS].updateFromVelocity(getIMUAngularVelocity(PITCH_AXIS), false);
-    imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngularVelocity(ROLL_AXIS), false);
-    imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngularVelocity(YAW_AXIS), false);
+    imuAngularState[X_AXIS].updateFromVelocity(getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Y_AXIS].updateFromVelocity(getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians), false);
+    imuAngularState[Z_AXIS].updateFromVelocity(getIMUAngularVelocity(YAW_AXIS, AngleUnit::Radians), false);
 }
 
 Vector3f IMUData::getIMUAngularAccelerations() {
@@ -143,7 +143,7 @@ float IMUData::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
-tap::communication::sensors::imu::ImuInterface::ImuState getIMUState() {
+tap::communication::sensors::imu::ImuInterface::ImuState IMUData::getIMUState() {
     return drivers->bmi088.getImuState();
 }
 

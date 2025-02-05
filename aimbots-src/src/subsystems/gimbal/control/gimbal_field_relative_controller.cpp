@@ -81,8 +81,8 @@ void GimbalFieldRelativeController::runYawController(
 
         float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
-            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.imuData.getRawIMUAngularVelocity(
-                                                          src::Informants::AngularAxis::YAW_AXIS,
+            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.imuData.getIMUAngularVelocity(
+                                                          AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians) /
                                                           GIMBAL_YAW_GEAR_RATIO);
 
@@ -94,8 +94,8 @@ void GimbalFieldRelativeController::runYawController(
         }
 
         float chassisRelativeVelocityTarget =
-            fieldRelativeVelocityTarget - (drivers->kinematicInformant.imuData.getRawIMUAngularVelocity(
-                                               src::Informants::AngularAxis::YAW_AXIS,
+            fieldRelativeVelocityTarget - (drivers->kinematicInformant.imuData.getIMUAngularVelocity(
+                                               AngularAxis::YAW_AXIS,
                                                AngleUnit::Radians) /
                                            GIMBAL_YAW_GEAR_RATIO);
 
@@ -142,7 +142,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
         float fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.imuData.getIMUAngularVelocity(
-                                                            src::Informants::AngularAxis::PITCH_AXIS,
+                                                            AngularAxis::PITCH_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_PITCH_GEAR_RATIO);
 

@@ -13,7 +13,7 @@ float chassisYawAngleDisplay = 0.0f;
 
 tap::algorithms::WrappedFloat FieldRelativeGimbal::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    float currChassisAngle = drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians);
+    float currChassisAngle = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
     return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
@@ -28,11 +28,11 @@ float FieldRelativeGimbal::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRoll = drivers->kinematicInformant.imuData.getIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    float chassisRoll = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
-    float chassisPitch = drivers->kinematicInformant.imuData.getIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float chassisPitch = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
@@ -47,11 +47,11 @@ float FieldRelativeGimbal::getChassisPitchVelocityInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRollVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(ROLL_AXIS, AngleUnit::Radians);
+    float chassisRollVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
     float sinChasRollVelocity = sinf(chassisRollVelocity);
     float cosChasRollVelocity = cosf(chassisRollVelocity);
 
-    float chassisPitchVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(PITCH_AXIS, AngleUnit::Radians);
+    float chassisPitchVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
     float sinChasPitchVelocity = sinf(chassisPitchVelocity);
     float cosChasPitchVelocity = cosf(chassisPitchVelocity);
 
@@ -109,14 +109,14 @@ void FieldRelativeGimbal::updateRobotFrames() {
     robotFrames.updateFrames(
         gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
         gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians) + CHASSIS_START_ANGLE_WORLD,
+        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians) + CHASSIS_START_ANGLE_WORLD,
         {0, 0, 0},
         AngleUnit::Radians);
 
     turretFrames.updateFrames(
-        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(PITCH_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(ROLL_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians),
         AngleUnit::Radians);
 
 #endif

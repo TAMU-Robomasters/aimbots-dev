@@ -54,7 +54,7 @@ void ChassisFollowGimbalCommand::execute() {
         rotationController.runController(
             chassisErrorAngle,
             -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
-                src::Informants::AngularAxis::YAW_AXIS,
+                AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)));
         // rotationController.runControllerDerivateError(chassisErrorAngle);
         rotationControllerOutputDisplay = rotationController.getOutput();

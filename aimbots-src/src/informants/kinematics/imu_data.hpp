@@ -19,8 +19,6 @@ using namespace src::Utils;
 
 namespace src::Informants {
 
-enum AngularAxis { PITCH_AXIS = 0, ROLL_AXIS = 1, YAW_AXIS = 2 };
-
 class IMUData {
 public:
     IMUData(src::Drivers* drivers);

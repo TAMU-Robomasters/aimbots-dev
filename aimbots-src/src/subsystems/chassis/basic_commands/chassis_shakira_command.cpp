@@ -66,7 +66,7 @@ void ChassisShakiraCommand::execute() {
             rotationController.runController(
                 chassisErrorAngle,
                 -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
-                    src::Informants::AngularAxis::YAW_AXIS,
+                    AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
             desiredRotation = rotationController.getOutput();
@@ -83,7 +83,7 @@ void ChassisShakiraCommand::execute() {
             rotationController.runController(
                 yawAngleFromChassisCenter,
                 -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
-                    src::Informants::AngularAxis::YAW_AXIS,
+                    AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
             desiredRotation = rotationController.getOutput();
