@@ -6,11 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove, std::pair;
-
-
-
-
+using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove;
 VizGraph::VizGraph(unordered_map<Point*, vector<Point*>> neighbors, vector<vector<Point>>& polygons)
     : pathfinder(
           neighbors,
@@ -63,7 +59,7 @@ bool has_LOS(Point a, Point b, const vector<vector<Point>>& polygons) {
     return true;
 }
 
-VizGraph constructVizGraph(vector<vector<Point>>& polygons, vector<pair<vector<Point>, double>>& cost_zones) {
+VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
     unordered_map<Point*, vector<Point*>> neighbors;
 
     for (auto it = polygons.begin(); it != polygons.end(); it++) {
@@ -161,7 +157,6 @@ vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
 
     pathfinder.neighbors.erase(pathfinder.neighbors.find(&start));
     pathfinder.neighbors.erase(pathfinder.neighbors.find(&goal));
-
     return path;
 }
 
@@ -181,13 +176,16 @@ void normalize(Point& pt) {
 }
 
 double cost(Point a, Point b, vector<pair<vector<Point>, double>>& cost_zones) {
+    double cost = sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)); //start with euclidean distance
+
     for (auto it = cost_zones.begin(); it != cost_zones.end(); it++) {
 
         // find the max and min x and y values of the zone to check if the line is fully or partially in the zone
-        double max_x = 0;
-        double min_x = 0;
-        double max_y = 0;
-        double min_y = 0;
+        // initalize to first point
+        double max_x = it->first[0].x;
+        double min_x = it->first[0].x;
+        double max_y = it->first[0].y;
+        double min_y = it->first[0].y;
         for (auto jt = it->first.begin(); jt != it->first.end(); jt++) {
             max_x = jt->x > max_x ? jt->x : max_x;
             min_x = jt->x < min_x ? jt->x : min_x;
@@ -195,40 +193,69 @@ double cost(Point a, Point b, vector<pair<vector<Point>, double>>& cost_zones) {
             min_y = jt->y < min_y ? jt->y : min_y;
         }
 
+
         vector<Point> intersections;
+         // arbitrarily define a as our base point
+        double x1 = a.x;
+        double y1 = a.y;
+
+        // line is defined as basepoint + dr*t where t is an arbitrary parameter.
+        // if t > 1 or t < 0 then point lays on line but not line segment.
+        // if t = 0, or t = 1 then point lays on vertex of a or b respectively
+
+        // deltas
+        double x2 = b.x;
+        double y2 = b.y;
+
         for (auto jt = it->first.begin(); jt != it->first.end(); jt++) {
+            auto next = jt + 1;
+
+            if (next == it->first.end()) {
+                next = it->first.begin();
+            }
 
             double x3 = jt->x;
             double y3 = jt->y;
 
             double x4 = next->x;
             double y4 = next->y;
-
             double detirminant = ((x2 - x1) * (y3 - y4) - (x3 - x4) * (y2 - y1));
             if (detirminant == 0) continue;  // lines never intersect
-
             double s = (static_cast<double>(1.0) / detirminant) * ((x3 - x1) * (y3 - y4) - (y3 - y1) * (x3 - x4));
             double t = (static_cast<double>(1.0) / detirminant) * ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1));
+
 
             // cout << "The line from " << x1 << " " << y1 << " to " << b.x << " " << b.y << " does " << ((s > 0 && s < 1 &&
             // t >= 0 && t <= 1) ? "" : "not "); cout << "intersect with the line from " << x3 << " " << y3 << " to " <<
             // next->x << " " << next->y << endl; cout << "\ts " << s << " t " << t << endl;
 
             // if intersection falls on both line segments and is not at either of line 1s vertices, then no LOS
-            if (s > 0 && s < 1 && t > 0 && t < 1){
+            if (s > 0 && s <= 1 && t > 0 && t <= 1){
                 intersections.push_back(Point(x1 + s * (x2 - x1), y1 + s * (y2 - y1)));
             }
         }
-
         switch(intersections.size()){
-            case 0:
+            case 0: //either fully in or out of the zone
+                if (a.x < max_x && a.x > min_x && a.y < max_y && a.y > min_y){ // if one point is in the zone then the line is fully in the zone
+                    cost += it->second*(sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y))); //add the cost of the zone
+                }
+                //else no intersection and no cost
                 break;
-            case 1:
+
+            case 1: //one intersection, line is partially in the zone
+                if (a.x < max_x && a.x > min_x && a.y < max_y && a.y > min_y){ // point a is in the zone
+                    cost += it->second*(sqrt((a.x - intersections[0].x) * (a.x - intersections[0].x) + (a.y - intersections[0].y) * (a.y - intersections[0].y))); //add the cost of the zone
+                }
+                else{ // point b is in the zone
+                    cost += it->second*(sqrt((intersections[0].x - b.x) * (intersections[0].x - b.x) + (intersections[0].y - b.y) * (intersections[0].y - b.y))); //add the cost of the zone
+                }
                 break;
-            case 2:
             default: // more then 2 intersections should not be possible, if this happens just take the first 2 i guess?
+            case 2:
+                cost += it->second*(sqrt((intersections[0].x - intersections[1].x) * (intersections[0].x - intersections[1].x) + (intersections[0].y - intersections[1].y) * (intersections[0].y - intersections[1].y))); //add the cost of the zone
+                break;
                 break;
         }
     }
-    return 1;
+    return cost;
 }
