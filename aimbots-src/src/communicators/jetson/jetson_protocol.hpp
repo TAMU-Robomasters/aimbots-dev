@@ -9,8 +9,10 @@ enum CVState : uint8_t {
 };
 
 static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
+static constexpr uint8_t DEVBOARD_MESSAGE_MAGIC = 'b';
 
 struct JetsonMessage {
+    uint8_t typeAndTeam;
     uint8_t magic;
     float targetX;
     float targetY;
@@ -19,7 +21,7 @@ struct JetsonMessage {
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 16, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::Vision

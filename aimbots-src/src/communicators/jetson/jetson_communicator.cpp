@@ -171,17 +171,19 @@ void JetsonCommunicator::sendSimpleMessage() {
     uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
 
     JetsonMessage embeddedToCvMsg;
-    embeddedToCvMsg.magic = 0xFF;
+    embeddedToCvMsg.typeAndTeam = 0b00000111;
+    embeddedToCvMsg.magic = DEVBOARD_MESSAGE_MAGIC; // robot = standard, team = blue, magic number = 'b'
+    // 0b 0000 0000 0000 0000
     embeddedToCvMsg.targetX = 0xFFFFFFFF;
     embeddedToCvMsg.targetY = 0xFFFFFFFF;
     embeddedToCvMsg.targetZ = 0xFFFFFFFF;
     embeddedToCvMsg.delay = 200;
 
     rawSerialSend[0] = embeddedToCvMsg.magic;
-    rawSerialSend[1] = embeddedToCvMsg.targetX;
-    rawSerialSend[2] = embeddedToCvMsg.targetY;
-    rawSerialSend[3] = embeddedToCvMsg.targetZ;
-    rawSerialSend[4] = embeddedToCvMsg.delay;
+    // rawSerialSend[1] = embeddedToCvMsg.targetX;
+    // rawSerialSend[2] = embeddedToCvMsg.targetY;
+    // rawSerialSend[3] = embeddedToCvMsg.targetZ;
+    // rawSerialSend[4] = embeddedToCvMsg.delay;
 
     // for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
     //     rawSerialSend = embeddedToCvMsg;
