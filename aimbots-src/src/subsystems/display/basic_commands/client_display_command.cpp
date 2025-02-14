@@ -73,17 +73,18 @@ bool ClientDisplayCommand::run() {
 
     PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
     //  PT_CALL(booleanHudIndicators.sendInitialGraphics());
-    // #ifndef TARGET_ENGINEER
+     #ifdef TARGET_HERO
+
     PT_CALL(reticleIndicator.sendInitialGraphics());
-    //#endif
+    #endif
 
     while (!this->restarting) {
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
         //   PT_CALL(booleanHudIndicators.update());
-        // #ifndef TARGET_ENGINEER
+         #ifdef TARGET_HERO
         PT_CALL(reticleIndicator.update());
-        // #endif
+         #endif
         PT_YIELD();
     }
 
