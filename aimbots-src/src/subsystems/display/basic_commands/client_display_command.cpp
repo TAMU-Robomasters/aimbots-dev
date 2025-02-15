@@ -4,7 +4,7 @@
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
 
-//#include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 // #include "subsystems/gimbal/control/gimbal.hpp"
 // #include "subsystems/hopper/control/hopper.cpp"
 #include "subsystems/display/basic_commands/hud_indicator.hpp"
@@ -16,7 +16,7 @@
     //#endif
 
     // using namespace src::Hopper;
-    // using namespace src::Chassis;
+    using namespace src::Chassis;
     // using namespace src::Gimbal;
     // using namespace src::Utils::Ballistics;
 
@@ -27,16 +27,16 @@ namespace src::Utils::ClientDisplay {
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay  //,
+    ClientDisplaySubsystem &clientDisplay,  //,
                                            //     const HopperSubsystem *hopper,
     // const GimbalSubsystem &gimbal,
-    //    const ChassisSubsystem &chassis
+       const ChassisSubsystem &chassis
     )
     : Command(),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      //  booleanHudIndicators( commandScheduler, refSerialTransmitter, hopper, chassis),
+      booleanHudIndicators(commandScheduler, refSerialTransmitter, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
       //#ifndef TARGET_ENGINEER
       reticleIndicator(drivers, refSerialTransmitter)  //,
@@ -52,7 +52,7 @@ void ClientDisplayCommand::initialize() { this->restarting = true; }
 void ClientDisplayCommand::restartHud() {
     // add more indicators here in the future when restart occurs
     HudIndicator::resetGraphicNameGenerator();
-    // booleanHudIndicators.initialize();
+    //booleanHudIndicators.initialize();
     //#ifndef TARGET_ENGINEER
     reticleIndicator.initialize();
     // #endif
@@ -71,20 +71,20 @@ bool ClientDisplayCommand::run() {
     }
     PT_BEGIN();
 
-    PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
-    //  PT_CALL(booleanHudIndicators.sendInitialGraphics());
-     #ifdef TARGET_HERO
+    //PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
+    PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    // #ifdef TARGET_HERO
 
-    PT_CALL(reticleIndicator.sendInitialGraphics());
-    #endif
+   PT_CALL(reticleIndicator.sendInitialGraphics());
+    //#endif
 
     while (!this->restarting) {
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
-        //   PT_CALL(booleanHudIndicators.update());
-         #ifdef TARGET_HERO
+        PT_CALL(booleanHudIndicators.update());
+        // #ifdef TARGET_HERO
         PT_CALL(reticleIndicator.update());
-         #endif
+        // #endif
         PT_YIELD();
     }
 
