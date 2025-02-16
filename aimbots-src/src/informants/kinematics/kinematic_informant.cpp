@@ -49,4 +49,34 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
     }
 #endif
 
+#ifdef CHASSIS_COMPATIBLE
+    #ifdef GIMBAL_COMPATIBLE
+        void KinematicInformant::updateData() {
+            fieldRelativeGimbal.updateRobotFrames();
+            imuData.updateIMUKinematicStateVector();
+            imuData.updateIMUAngles();
+        }
+    #endif
+#endif
+
+#ifdef CHASSIS_COMPATIBLE 
+    #ifndef GIMBAL_COMPATIBLE
+        void KinematicInformant::updateData() {
+            chassisOdometry.updateRobotFrames();
+            chassisOdometry.updateChassisAcceleration();
+            imuData.updateIMUKinematicStateVector();
+            imuData.updateIMUAngles();
+        }
+    #endif
+#endif
+
+#ifdef GIMBAL_COMPATIBLE
+    #ifndef CHASSIS_COMPATIBLE
+    void KinematicInformant::updataData() {
+        imuData.updateIMUKinematicStateVector();
+        imuData.updateIMUAngles();
+    }
+    #endif
+#endif
+
 }  // namespace src::Informants

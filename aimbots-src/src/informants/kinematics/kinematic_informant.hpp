@@ -34,6 +34,8 @@ public:
     src::Informants::IMUData imuData;    
     src::Informants::HitTracker hitTracker;
 
+    void initialize(float imuFrequency, float imukP, float imukI);
+
     void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem,
                             src::Chassis::ChassisSubsystem* chassisSubsystem);
 
@@ -43,8 +45,9 @@ public:
 
     void registerSubsystems();
 
-    void initialize(float imuFrequency, float imukP, float imukI);
-
+    // updates all kinematic_informant related files' update functions
+    void updateData();
+    
 private:
     src::Drivers* drivers;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;

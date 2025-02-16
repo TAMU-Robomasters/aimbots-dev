@@ -124,10 +124,10 @@ void IMUData::updateIMUAngles() {
     chassisAngularState[Y_AXIS].updateFromVelocity(chassisAngularVelocities[Y_AXIS], false);
     chassisAngularState[Z_AXIS].updateFromVelocity(chassisAngularVelocities[Z_AXIS], false);
 }
-
+float angleDisplay = -1;
 float IMUData::getIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = chassisAngularState[axis].getPosition();
-
+    angleDisplay = angle;
     return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
 }
 

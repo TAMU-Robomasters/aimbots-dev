@@ -2,6 +2,7 @@
 
 #include "subsystems/wrist/wrist_constants.hpp"
 #include "utils/tools/common_types.hpp"
+#include "robots/engineer/constants/engineer_gimbal_constants.hpp"
 
 #include "drivers.hpp"
 
