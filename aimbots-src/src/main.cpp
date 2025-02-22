@@ -212,7 +212,7 @@ static void updateIo(src::Drivers *drivers) {
     gXDisplay =
         drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::ROLL_AXIS,
         AngleUnit::Radians);
-
+        
     hitDisplay = drivers->kinematicInformant.hitTracker.getHitAngle_gimbalRelative();
     wasHit = drivers->kinematicInformant.hitTracker.wasHit();
     recentlyHit = drivers->kinematicInformant.hitTracker.recentlyHit();
