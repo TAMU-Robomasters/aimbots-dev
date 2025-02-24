@@ -122,8 +122,9 @@ GimbalChaseCommand gimbalChaseCommand2(
 GimbalTestCommand gimbalTestCommand(
     drivers(),
     &gimbal,
-    &gimbalFieldRelativeController
-)
+    &gimbalFieldRelativeController,
+    defaultTestConfig
+);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(

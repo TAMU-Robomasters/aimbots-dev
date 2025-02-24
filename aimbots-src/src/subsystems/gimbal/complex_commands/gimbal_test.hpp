@@ -21,6 +21,8 @@ class GimbalTestCommand : public tap::control::Command {
 public: 
     GimbalTestCommand(src::Drivers*, GimbalSubsystem*, GimbalFieldRelativeController*, GimbalTestConfig);
     
+    char const* getName() const override { return "Gimbal Test Command"; }
+
     void initialize() override;
     void execute() override;
 

@@ -18,7 +18,7 @@ float cameraOriginZDisplay = 0.0f;
 float cameraXYMagDisplay = 0.0f;
 float targetXYMagDisplay = 0.0f;
 
-float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS];
+float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS] = {0};
 float *camToTurretPtr = nullptr;
 
 float targetPositionXUnfilteredDisplay = 0.0f;
