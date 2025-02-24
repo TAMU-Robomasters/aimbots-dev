@@ -27,6 +27,7 @@
 //
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/complex_commands/gimbal_test.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
@@ -87,6 +88,15 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalTestConfig defaultTestConfig = {
+    .pitchAmplitudeDegree = 15.0f, 
+    .pitchFrequencyHz = 1,
+    .pitchOffsetDegree = 0.0f,
+    .yawAmplitudeDegree = 15.0f,
+    .yawFrequencyHz = 1,
+    .yawOffsetDegree = 0.0f
+};
+
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisToggleDriveCommand chassisToggleDriveCommand(drivers(), &chassis, &gimbal);
@@ -109,11 +119,16 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+GimbalTestCommand gimbalTestCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController
+)
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {/*&chassisToggleDriveCommand,*/ &gimbalChaseCommand},
+    {/*&chassisToggleDriveCommand,*/ /*&gimbalChaseCommand*/ &gimbalTestCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper

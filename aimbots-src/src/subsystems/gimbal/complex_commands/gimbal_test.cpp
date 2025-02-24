@@ -1,6 +1,8 @@
 /*TODO: 
     - test how large the pitch and yaw amplitude can be*/
+#include <cmath>
 #include "gimbal_test.hpp"
+#include "utils/tools/common_types.hpp"
 
 namespace src::Gimbal{
 GimbalTestCommand::GimbalTestCommand(
@@ -22,10 +24,32 @@ float currGimbalTestTargetYawAngleDisplay = 0.0f;
 float currGimbalTestTargetPitchAngleDisplay = 0.0f;
 
 void GimbalTestCommand::execute() {
-    
+    float yawTargetAngle = getYawTargetAngleIn();
+    float pitchTargetAngle = getPitchTargetAngleIn();
+
+    currGimbalTestTargetYawAngleDisplay = modm::toDegree(yawTargetAngle);
+    currGimbalTestTargetPitchAngleDisplay = modm::toDegree(pitchTargetAngle); 
+
+    controller->setTargetYaw(AngleUnit::Radians, yawTargetAngle);
+    controller->setTargetPitch(AngleUnit::Radians, pitchTargetAngle);
+
+    controller->runYawController();
+    controller->runPitchController();
 }
 
-void GimbalTestCommand::initialize() { commandStartTime = tap::arch::clock::getTimeMilliseconds(); }
+float GimbalTestCommand::getYawTargetAngleIn() {
+    float yawTargetAngle = modm::toRadian(config.yawAmplitudeDegree) * sin(2*M_PI*getRelativeTime()) 
+                         + modm::toRadian(config.yawOffsetDegree);
+    return yawTargetAngle;
+}
+
+float GimbalTestCommand::getPitchTargetAngleIn() {
+    float yawTargetAngle = modm::toRadian(config.pitchAmplitudeDegree) * sin(2*M_PI*getRelativeTime()) 
+                         + modm::toRadian(config.pitchOffsetDegree);
+    return yawTargetAngle;
+}
+
+void GimbalTestCommand::initialize() { initTime = tap::arch::clock::getTimeMilliseconds(); }
 
 bool GimbalTestCommand::isReady() { return true; }
 
