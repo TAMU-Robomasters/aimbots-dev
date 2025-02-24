@@ -18,6 +18,9 @@ float cameraOriginZDisplay = 0.0f;
 float cameraXYMagDisplay = 0.0f;
 float targetXYMagDisplay = 0.0f;
 
+float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS];
+float *camToTurretPtr = nullptr;
+
 float targetPositionXUnfilteredDisplay = 0.0f;
 float targetPositionYUnfilteredDisplay = 0.0f;
 float targetPositionZUnfilteredDisplay = 0.0f;
@@ -70,6 +73,12 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     };
 
     // Enemy Position in meters
+
+    camToTurretPtr = turretCameraFrame.getTransformToFrame(turretFieldFrame).element;
+    for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
+        camToTurretTranformationDisplay[i] = *(camToTurretPtr+i); 
+    }
+    camToTurretPtr = nullptr;
 
     VisionTimedPosition transformedPosition{
         .position = turretCameraFrame.getPointInFrame(turretFieldFrame, currentData.position),
