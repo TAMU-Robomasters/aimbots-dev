@@ -38,13 +38,13 @@ void GimbalTestCommand::execute() {
 }
 
 float GimbalTestCommand::getYawTargetAngleIn() {
-    float yawTargetAngle = modm::toRadian(config.yawAmplitudeDegree) * cos(2*M_PI*getRelativeTime()) 
+    float yawTargetAngle = modm::toRadian(config.yawAmplitudeDegree) * cos(2*M_PI*getRelativeTime()/1000) 
                          + modm::toRadian(config.yawOffsetDegree);
     return yawTargetAngle;
 }
 
 float GimbalTestCommand::getPitchTargetAngleIn() {
-    float yawTargetAngle = modm::toRadian(config.pitchAmplitudeDegree) * sin(2*M_PI*getRelativeTime()) 
+    float yawTargetAngle = modm::toRadian(config.pitchAmplitudeDegree) * sin(2*M_PI*getRelativeTime()/1000) 
                          + modm::toRadian(config.pitchOffsetDegree);
     return yawTargetAngle;
 }
