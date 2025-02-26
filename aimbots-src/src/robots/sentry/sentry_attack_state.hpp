@@ -18,9 +18,6 @@
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/control/chassis_helper.hpp"
 
-#include "sentry_push_state.hpp"
-#include "sentry_attack_state.hpp"
-
 
 
 #include "drivers.hpp"
@@ -34,16 +31,15 @@ namespace SentryControl{
 
 
 
-class SentryIntelligenceCommand : public TapComprisedCommand {
+class SentryAttackStateCommand : public TapComprisedCommand {
 public:
-    SentryIntelligenceCommand(
+    SentryAttackStateCommand(
         src::Drivers*,
         src::Gimbal::GimbalSubsystem*,
         src::Feeder::FeederSubsystem*,
         src::Chassis::ChassisSubsystem*,
         src::Shooter::ShooterSubsystem*,
-        src::Utils::RefereeHelperTurreted*,
-        SentryMatchStates& sentryState);
+        src::Utils::RefereeHelperTurreted*);
        
 
     void initialize() override;
@@ -53,7 +49,9 @@ public:
     bool isReady() override;
     bool isFinished() const override;
 
-    const char* getName() const override { return "Sentry Match Intelligence Command"; }
+    SentryMatchStates exit();
+
+    const char* getName() const override { return "Sentry Match Attack Command"; }
 
 private:
     src::Drivers* drivers;
@@ -63,11 +61,7 @@ private:
     src::Shooter::ShooterSubsystem* shooter;
     src::Utils::RefereeHelperTurreted* refHelper;
    
-    SentryMatchStates& sentryState;
-    SentryControl::SentryMatchStates lastSentryState;
 
-    SentryPushStateCommand sentryPushHill;
-    SentryAttackStateCommand sentryAttack;
     
 
 };

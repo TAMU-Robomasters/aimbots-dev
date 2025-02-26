@@ -22,7 +22,9 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
       feeder(feeder),
       chassis(chassis),
       sentryState(sentryState),
-      sentryPushHill(drivers, gimbal, feeder, chassis, shooter, refHelp){
+      sentryPushHill(drivers, gimbal, feeder, chassis, shooter, refHelp),
+      sentryAttack(drivers, gimbal, feeder, chassis, shooter, refHelper)
+      {
       //autoNavCommand(drivers, chassis, src::Chassis::defaultLinearConfig, src::Chassis::defaultRotationConfig, src::Chassis::SnapSymmetryConfig) {
   addSubsystemRequirement(chassis);
   this->comprisedCommandScheduler.registerSubsystem(chassis);
@@ -47,7 +49,7 @@ void SentryIntelligenceCommand::execute() {
 
 
   
-  if (sentryState != lastSentryState) {
+  if (sentryState == START || sentryState != lastSentryState) {
     // Perform setup for the next state
     switch (sentryState) {
       case SentryMatchStates::START:
@@ -57,17 +59,24 @@ void SentryIntelligenceCommand::execute() {
         sentryPushHill.execute();
         break;
       case SentryMatchStates::PUSH:
-       
+       // calls th
         break;
       case SentryMatchStates::ATTACK:
+      // YOU ARE ATTACking to a position
+
         
         break;
       case SentryMatchStates::RETREAT:
         watchState = "RETREAT";
+        // move back to the home base
         break;
       case SentryMatchStates::PATROL:
+      // go to the other base
+
         break;
       case SentryMatchStates::CONTROL:
+
+      
         break;
     }
 
@@ -98,4 +107,26 @@ bool SentryIntelligenceCommand::isFinished() const {
 
 
 #endif
+
+
+// starts
+//push hill - no robots at the hill -- push center
+//control hill enemies found -- push center
+// retreat hp< 200 -- push center
+// control center
+//attack
+
+//start with the start state and the assigned to push hill
+//push hill checks whether enemies spotted, if enemies spotted then control hill, or less health then rereat
+// if neither then push center
+// if enemy spotted for more than 5 secs then attack
+// if nobosy noticed then control center
+//if lost sight for 5 second then go to control center
+//if enemy robot spotted then go back to attack
+
+
+//attack
+//push:hill - 
+
+
 
