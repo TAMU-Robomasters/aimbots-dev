@@ -3,7 +3,8 @@
 #include <vector>
 #include <functional>
 #include "prio_queue.h"
-using std::unordered_map, std::vector;
+#include <iostream>
+using std::unordered_map, std::vector, std::pair;
 template<typename NodeType>
 class A_star {
     private:
@@ -11,9 +12,9 @@ class A_star {
     std::function<double(NodeType*, NodeType*)> travel_cost;
 
     public:
-    unordered_map<NodeType*, vector<NodeType*>> neighbors;
+    unordered_map<NodeType*, vector<pair<NodeType*, double>>> neighbors;
 
-        A_star(unordered_map<NodeType*, vector<NodeType*>> neighbors,
+        A_star(unordered_map<NodeType*, vector<pair<NodeType*, double>>> neighbors,
            std::function<double(NodeType*, NodeType*)> heuristic,
            std::function<double(NodeType*, NodeType*)> travel_cost)
         : neighbors(neighbors), heuristic(heuristic), travel_cost(travel_cost) {}
@@ -43,7 +44,6 @@ class A_star {
             fScore[start] = heuristic(start, goal);
             open_set.put(start, fScore[start]);
 
-
             while(!open_set.empty()) {
                 NodeType* curr = open_set.get();
                 if (curr == goal) {
@@ -56,12 +56,12 @@ class A_star {
                 }
 
                 for (auto it = neighbors[curr].begin(); it != neighbors[curr].end(); it++) {
-                    double tentative_gScore = gScore[curr] + travel_cost(curr, *it);
-                    if (gScore.find(*it) == gScore.end() || tentative_gScore < gScore[*it]) {
-                        came_from[*it] = curr;
-                        gScore[*it] = tentative_gScore;
-                        fScore[*it] = tentative_gScore + heuristic(*it, goal);
-                        open_set.put(*it, fScore[*it]);
+                    double tentative_gScore = gScore[curr] + it->second;
+                    if (gScore.find(it->first) == gScore.end() || tentative_gScore < gScore[it->first]) {
+                        came_from[it->first] = curr;
+                        gScore[it->first] = tentative_gScore;
+                        fScore[it->first] = tentative_gScore + heuristic(it->first, goal);
+                        open_set.put(it->first, fScore[it->first]);
                     }
                 }
             }

@@ -118,7 +118,8 @@ private:
 
     float linearSettledThreshold;
     float angularSettledThreshold;
-    VizGraph pathfinder = constructVizGraph(polygons);
+    std::vector<std::pair<std::vector<Point>, double>> cost_zones;
+    VizGraph pathfinder = constructVizGraph(polygons, cost_zones);
 };
 
 static constexpr SmoothPIDConfig defaultLinearConfig = {

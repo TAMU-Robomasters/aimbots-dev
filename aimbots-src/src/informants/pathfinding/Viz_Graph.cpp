@@ -6,13 +6,14 @@
 #include <unordered_map>
 #include <vector>
 
-using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove;
-VizGraph::VizGraph(unordered_map<Point*, vector<Point*>> neighbors, vector<vector<Point>>& polygons)
+using std::sqrt, std::vector, std::unordered_map, std::cout, std::endl, std::remove, std::pair, std::make_pair;
+VizGraph::VizGraph(unordered_map<Point*, vector<pair<Point*, double>>> neighbors, vector<vector<Point>>& polygons, vector<pair<vector<Point>, double>>& cost_zones)
     : pathfinder(
           neighbors,
           [](Point* a, Point* b) -> double { return sqrt((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y)); },
           [](Point* a, Point* b) -> double { return sqrt((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y)); }),
-      polygons(polygons) {}
+      polygons(polygons),
+      cost_zones(cost_zones) {}
 
 bool has_LOS(Point a, Point b, const vector<vector<Point>>& polygons) {
     // arbitrarily define a as our base point
@@ -59,14 +60,11 @@ bool has_LOS(Point a, Point b, const vector<vector<Point>>& polygons) {
     return true;
 }
 
-VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
-    unordered_map<Point*, vector<Point*>> neighbors;
+VizGraph constructVizGraph(vector<vector<Point>>& polygons, vector<pair<vector<Point>, double>>& cost_zones) {
+    unordered_map<Point*, vector<pair<Point*, double>>> neighbors;
 
     for (auto it = polygons.begin(); it != polygons.end(); it++) {
         // iterate through all polygons, it is an iterator to a vector of vectors of points, *it is a vector of points
-
-        // make consecutive points neighbors NOTE DOES NOT CHECK NON-CONSECUTIVE POINTS, CONCAVE POLYGONS WILL NOT WORK
-        // CORRECTLY
         
         //find the overall ccw/cw direction of the polygon using the shoelace formula, store this as a z unit vector
         double z_dir = shoelace(*it);
@@ -102,8 +100,9 @@ VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
                     Point los_vector = Point(kt->x - jt->x, kt->y - jt->y);
                     normalize(los_vector);
                     if (los_vector.x * mid.x + los_vector.y * mid.y >= rejection_dot) {
-                        neighbors[&*jt].push_back(&*kt);
-                        neighbors[&*kt].push_back(&*jt);
+                        double trav_cost = cost(*jt, *kt, cost_zones);
+                        neighbors[&*jt].push_back(make_pair(&*kt, trav_cost));
+                        neighbors[&*kt].push_back(make_pair(&*jt, trav_cost));
                 }
             }
 
@@ -111,18 +110,21 @@ VizGraph constructVizGraph(vector<vector<Point>>& polygons) {
             for (auto xt = it + 1; xt != polygons.end(); xt++) {
                 for (auto yt = xt->begin(); yt != xt->end(); yt++) {
                     if (has_LOS(*jt, *yt, polygons)) {
-                        neighbors[&*jt].push_back(&*yt);
-                        neighbors[&*yt].push_back(&*jt);
+                        double trav_cost = cost(*jt, *yt, cost_zones);
+                        neighbors[&*jt].push_back(make_pair(&*yt, trav_cost));
+                        neighbors[&*yt].push_back(make_pair(&*jt, trav_cost));
                     }
                 }
             }
         }
     }
     }
-    return VizGraph(neighbors, polygons);
+    return VizGraph(neighbors, polygons, cost_zones);
 }
 
-
+bool operator==(const std::pair<Point*, double>& lhs, const Point* rhs) {
+    return lhs.first == rhs;
+}
 vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
     Point start(x1, y1);
     Point goal(x2, y2);
@@ -135,23 +137,25 @@ vector<Point> VizGraph::search(double x1, double y1, double x2, double y2) {
     for (auto it = polygons.begin(); it != polygons.end(); it++) {
         for (auto jt = it->begin(); jt != it->end(); jt++) {
             if (has_LOS(start, *jt, polygons)) {
-                pathfinder.neighbors[&start].push_back(&*jt);
+                double trav_cost = cost(start, *jt, cost_zones);
+                pathfinder.neighbors[&start].push_back(make_pair(&*jt, trav_cost));
             }
 
             if (has_LOS(goal, *jt, polygons)) {
-                pathfinder.neighbors[&*jt].push_back(&goal);
-                pathfinder.neighbors[&goal].push_back(&*jt);  // used to remove goal after search
+                double trav_cost = cost(goal, *jt, cost_zones);
+                pathfinder.neighbors[&*jt].push_back(make_pair(&goal, trav_cost));
+                pathfinder.neighbors[&goal].push_back(make_pair(&*jt, trav_cost));  // used to remove goal after search
             }
         }
     }
-
+    
     vector<Point*> ptrPath = pathfinder.search(&start, &goal);
     for (auto it = ptrPath.begin(); it != ptrPath.end(); it++) {
         path.push_back(**it);
     }
 
     for (auto it = pathfinder.neighbors[&goal].begin(); it != pathfinder.neighbors[&goal].end(); it++) {
-        vector<Point*>& vec = pathfinder.neighbors[*it];
+        vector<pair<Point*, double>>& vec = pathfinder.neighbors[it->first];
         vec.erase(remove(vec.begin(), vec.end(), &goal), vec.end());
     }
 
