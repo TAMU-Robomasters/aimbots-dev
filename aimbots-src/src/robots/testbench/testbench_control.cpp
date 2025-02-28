@@ -89,10 +89,10 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalTestConfig defaultTestConfig = {
-    .pitchAmplitudeDegree = 15.0f, 
-    .pitchFrequencyHz = 3,
+    .pitchAmplitudeDegree = 10.0f, 
+    .pitchFrequencyHz = 1,
     .pitchOffsetDegree = 0.0f,
-    .yawAmplitudeDegree = 15.0f,
+    .yawAmplitudeDegree = 10.0f,
     .yawFrequencyHz = 1,
     .yawOffsetDegree = 0.0f
 };

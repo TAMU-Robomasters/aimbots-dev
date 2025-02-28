@@ -59,8 +59,6 @@ private:
     float BASE_HEIGHT_THRESHOLD = 0.00;
 };
 
-static constexpr int_fast8_t NUM_TRANSFORM_ELEMENTS = 4*4;
-
 // clang-format off
 static constexpr float KF_P[9] = { // Covariance Matrix
     1, 0, 0,

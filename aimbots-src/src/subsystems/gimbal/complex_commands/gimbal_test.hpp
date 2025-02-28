@@ -30,8 +30,8 @@ public:
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-    float getYawTargetAngleIn();
-    float getPitchTargetAngleIn();
+    float getYawTargetAngle();
+    float getPitchTargetAngle();
     
     uint32_t getRelativeTime() {return tap::arch::clock::getTimeMilliseconds() - initTime;}
     void resetInitTime() {initTime = tap::arch::clock::getTimeMilliseconds();}
