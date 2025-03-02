@@ -3,7 +3,10 @@
 #include <cmath>
 #include "gimbal_test.hpp"
 #include "utils/tools/common_types.hpp"
+#include "informants/kinematics/coordinate_frame.hpp"
+#include "communicators/jetson/jetson_communicator.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
 namespace src::Gimbal{
 GimbalTestCommand::GimbalTestCommand(
         src::Drivers* drivers, 
@@ -22,19 +25,44 @@ GimbalTestCommand::GimbalTestCommand(
 // Display variables
 float currGimbalTestTargetYawAngleDisplay = 0.0f;
 float currGimbalTestTargetPitchAngleDisplay = 0.0f;
+Matrix4f camToTurretTranformationMatrix = modm::Matrix4f::zeroMatrix();
+float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS] = {0};
+float *camToTurretPtr = nullptr;
 
 void GimbalTestCommand::execute() {
+    if (!drivers->cvCommunicator.isJetsonOnline()) return;
+
+    // start time when Jetson first comes online
+    if (!wasJetsonOnline) {
+        wasJetsonOnline = true;
+        resetInitTime();
+    }
+
     float yawTargetAngle = getYawTargetAngle();
     float pitchTargetAngle = getPitchTargetAngle();
 
     currGimbalTestTargetYawAngleDisplay = modm::toDegree(yawTargetAngle);
-    currGimbalTestTargetPitchAngleDisplay = modm::toDegree(pitchTargetAngle); 
+    currGimbalTestTargetPitchAngleDisplay = modm::toDegree(pitchTargetAngle);
 
     controller->setTargetYaw(AngleUnit::Radians, yawTargetAngle);
     controller->setTargetPitch(AngleUnit::Radians, pitchTargetAngle);
 
     controller->runYawController();
     controller->runPitchController();
+
+    // Display current transformation from camera reference frame to turret reference frame
+    drivers->kinematicInformant.updateRobotFrames();
+    src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame turretCameraFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+    camToTurretTranformationMatrix = turretCameraFrame.getTransformToFrame(turretFieldFrame);
+    camToTurretPtr = camToTurretTranformationMatrix.element;
+    for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
+        camToTurretTranformationDisplay[i] = camToTurretPtr[i]; 
+    }
+    camToTurretPtr = nullptr; 
 }
 
 float GimbalTestCommand::getYawTargetAngle() {
@@ -61,3 +89,4 @@ void GimbalTestCommand::end(bool) {
 }
 
 } // namespace src::Gimbal
+#endif // #ifdef GIMBAL_COMPATIBLE

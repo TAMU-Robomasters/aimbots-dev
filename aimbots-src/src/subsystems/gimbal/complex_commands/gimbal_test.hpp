@@ -6,6 +6,7 @@
 
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 
+#ifdef GIMBAL_COMPATIBLE
 namespace src::Gimbal {
 
 struct GimbalTestConfig {
@@ -16,6 +17,8 @@ struct GimbalTestConfig {
     float yawFrequencyHz;
     float yawOffsetDegree;
 };
+
+static constexpr int_fast8_t NUM_TRANSFORM_ELEMENTS = 4*4;
 
 class GimbalTestCommand : public tap::control::Command {
 public: 
@@ -42,7 +45,9 @@ private:
     GimbalFieldRelativeController* controller;
     GimbalTestConfig config;
 
+    bool wasJetsonOnline = false;
     uint32_t initTime = 0;
 };
 
 } // namespace src::Gimbal
+#endif // #ifdef GIMBAL_COMPATIBLE

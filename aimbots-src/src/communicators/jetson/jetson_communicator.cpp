@@ -37,10 +37,6 @@ float chassisRelativePitchAngleDisplay = 0;
 int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
 
-Matrix4f camToTurretTranformationMatrix = modm::Matrix4f::zeroMatrix();
-float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS] = {0};
-float *camToTurretPtr = nullptr;
-
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
  * The Jetson sends information in the form of a JetsonMessage.
@@ -104,20 +100,7 @@ void JetsonCommunicator::updateSerial() {
 
                 targetXDisplay = lastMessage.targetX;
                 targetYDisplay = lastMessage.targetY;
-                cvStateDisplay = lastMessage.cvState;
-
-                // Display current transformation from camera reference frame to turret reference frame
-                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
-
-                src::Informants::Transformers::CoordinateFrame turretCameraFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
-                camToTurretTranformationMatrix = turretCameraFrame.getTransformToFrame(turretFieldFrame);
-                camToTurretPtr = camToTurretTranformationMatrix.element;
-                for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
-                    camToTurretTranformationDisplay[i] = camToTurretPtr[i]; 
-                }
-                camToTurretPtr = nullptr;        
+                cvStateDisplay = lastMessage.cvState;       
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
