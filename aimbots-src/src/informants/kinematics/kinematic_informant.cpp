@@ -358,6 +358,11 @@ void KinematicInformant::updateRobotFrames() {
         getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians),
         getChassisIMUAngle(ROLL_AXIS, AngleUnit::Radians),
         AngleUnit::Radians);
+    
+    // ad hoc fix so that camera frame gets updated with the most recent gimbal angles
+    /*TODO :
+    - see if we need to refactor updateRobotFrames and TurretFrames::updateFrames*/
+    turretFrames.mirrorPastCameraFrame(orientation.first, orientation.second, AngleUnit::Radians);
 
     robotLocationDisplay = robotLocation;
 #endif
