@@ -1,6 +1,6 @@
 
 
-#include "reticle_indicator.hpp"
+#include "subsystems/display/complex_commands/reticle_indicator.hpp"
 
 #include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
@@ -8,6 +8,7 @@
 // #include "subsystems/display/display_constants.hpp"
 
 using namespace tap::communication::serial;
+using namespace src::Utils::HUDClientDisplay;
 
 namespace src::Utils::ClientDisplay {
 ReticleIndicator::ReticleIndicator(

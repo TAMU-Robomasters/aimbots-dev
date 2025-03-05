@@ -33,31 +33,31 @@ private:
     /** Tuple representing a possible horizontal booly line. The first element is the pixel width
      * of the line, second is Y location of the line (in pixels), third is the color of the booly
      * line. */
-    using ReticleTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
+    using BoolyTuple = std::tuple<int16_t, int16_t, Tx::GraphicColor>;
 
-    // static constexpr BoolyTuple TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[]{
-    //     BoolyTuple(40, 545, Tx::GraphicColor::BLACK),  // 2 m
-    //     BoolyTuple(60, 540, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(40, 535, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 500, Tx::GraphicColor::BLACK),  // 4 m
-    //     BoolyTuple(40, 495, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 490, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 530, Tx::GraphicColor::BLACK),  // 8 m
-    //     BoolyTuple(30, 525, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 520, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 475, Tx::GraphicColor::BLACK),  // next
-    //     BoolyTuple(40, 470, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 465, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 445, Tx::GraphicColor::BLACK),  // next
-    //     BoolyTuple(40, 440, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 435, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 415, Tx::GraphicColor::BLACK),  // next
-    //     BoolyTuple(40, 410, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 405, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 385, Tx::GraphicColor::BLACK),  // next
-    //     BoolyTuple(40, 380, Tx::GraphicColor::BLACK),
-    //     BoolyTuple(10, 375, Tx::GraphicColor::BLACK)
-    // };
+    static constexpr BoolyTuple TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[]{
+        BoolyTuple(40, 545, Tx::GraphicColor::BLACK),  // 2 m
+        BoolyTuple(60, 540, Tx::GraphicColor::BLACK),
+        BoolyTuple(40, 535, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 500, Tx::GraphicColor::BLACK),  // 4 m
+        BoolyTuple(40, 495, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 490, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 530, Tx::GraphicColor::BLACK),  // 8 m
+        BoolyTuple(30, 525, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 520, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 475, Tx::GraphicColor::BLACK),  // next
+        BoolyTuple(40, 470, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 465, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 445, Tx::GraphicColor::BLACK),  // next
+        BoolyTuple(40, 440, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 435, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 415, Tx::GraphicColor::BLACK),  // next
+        BoolyTuple(40, 410, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 405, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 385, Tx::GraphicColor::BLACK),  // next
+        BoolyTuple(40, 380, Tx::GraphicColor::BLACK),
+        BoolyTuple(10, 375, Tx::GraphicColor::BLACK)
+    };
     /** Size of TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES (so its easier to understand when used
      * in context). */
     static constexpr size_t NUM_BOOLY_COORDINATES = MODM_ARRAY_SIZE(TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES);

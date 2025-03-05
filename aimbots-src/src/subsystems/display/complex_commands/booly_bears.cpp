@@ -1,11 +1,16 @@
-#include "booly_bears.hpp"
+#include "subsystems/display/complex_commands/booly_bears.hpp"
 
 #include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
+#include "subsystems/display/basic_commands/hud_indicator.hpp"
+
+
 // #include "subsystems/display/display_constants.hpp"
 
 using namespace tap::communication::serial;
+using namespace src::Utils::HUDClientDisplay;
+
 
 namespace src::Utils::ClientDisplay {
 BoolyBear::BoolyBear(
@@ -17,19 +22,19 @@ BoolyBear::BoolyBear(
 modm::ResumableResult<bool> BoolyBear::sendInitialGraphics() {
     RF_BEGIN(0);
 
-    // send reticle
-    for (reticleIndex = 0; reticleIndex < MODM_ARRAY_SIZE(reticleMsg); reticleIndex++) {
-        RF_CALL(refSerialTransmitter.sendGraphic(&reticleMsg[reticleIndex]));
+    // send booly
+    for (boolyIndex = 0; boolyIndex < MODM_ARRAY_SIZE(boolyMsg); boolyIndex++) {
+        RF_CALL(refSerialTransmitter.sendGraphic(&boolyMsg[boolyIndex]));
     }
 
     RF_END();
 }
 
-modm::ResumableResult<bool> ReticleIndicator::update() {
+modm::ResumableResult<bool> BoolyIndicator::update() {
     RF_BEGIN(1);
-    // send reticle
-    for (reticleIndex = 0; reticleIndex < MODM_ARRAY_SIZE(reticleMsg); reticleIndex++) {
-        RF_CALL(refSerialTransmitter.sendGraphic(&reticleMsg[reticleIndex]));
+    // send booly
+    for (boolyIndex = 0; boolyIndex < MODM_ARRAY_SIZE(boolyMsg); boolyIndex++) {
+        RF_CALL(refSerialTransmitter.sendGraphic(&boolyMsg[boolyIndex]));
     }
     RF_END();
 }
@@ -38,71 +43,71 @@ void BoolyBear::initialize() {
     uint8_t currLineName[3];
     getUnusedGraphicName(currLineName);
 
-    // Add reticle markers
-    uint16_t maxReticleY = 0;
-    uint16_t minReticleY = UINT16_MAX;
+    // Add booly markers
+    uint16_t maxBoolyY = 0;
+    uint16_t minBoolyY = UINT16_MAX;
 
-    // configure all horizontal reticle lines
-    for (size_t i = 0; i < NUM_RETICLE_COORDINATES; i++) {
-        // reticleMsg is an array of Graphic5Messages, so find the index in the array and in the
+    // configure all horizontal booly lines
+    for (size_t i = 0; i < NUM_BOOLY_COORDINATES; i++) {
+        // boolyMsg is an array of Graphic5Messages, so find the index in the array and in the
         // individual Graphic5Message
-        size_t reticleMsgIndex = i / MODM_ARRAY_SIZE(reticleMsg[0].graphicData);
-        size_t graphicDataIndex = i % MODM_ARRAY_SIZE(reticleMsg[0].graphicData);
+        size_t boolyMsgIndex = i / MODM_ARRAY_SIZE(boolyMsg[0].graphicData);
+        size_t graphicDataIndex = i % MODM_ARRAY_SIZE(boolyMsg[0].graphicData);
 
         RefSerialTransmitter::configGraphicGenerics(
-            &reticleMsg[reticleMsgIndex].graphicData[graphicDataIndex],
+            &boolyMsg[boolyMsgIndex].graphicData[graphicDataIndex],
             currLineName,
             Tx::GRAPHIC_ADD,
             DEFAULT_GRAPHIC_LAYER,
-            std::get<2>(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[i]));
+            std::get<2>(TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[i]));
 
         getUnusedGraphicName(currLineName);
 
-        // center of the reticle, in pixels
-        uint16_t reticleXCenter = static_cast<int>(SCREEN_WIDTH / 2) + RETICLE_CENTER_X_OFFSET;
+        // center of the booly, in pixels
+        uint16_t boolyXCenter = static_cast<int>(SCREEN_WIDTH / 2) + BOOLY_CENTER_X_OFFSET;
 
-        // start and end X pixel coordinates of the current reticle line
-        uint16_t startX = reticleXCenter - std::get<0>(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[i]);
-        uint16_t endX = reticleXCenter + std::get<0>(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[i]);
+        // start and end X pixel coordinates of the current booly line
+        uint16_t startX = boolyXCenter - std::get<0>(TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[i]);
+        uint16_t endX = boolyXCenter + std::get<0>(TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[i]);
 
-        // y coordinate of the horizontal reticle line
-        uint16_t y = std::get<1>(TURRET_RETICLE_X_WIDTH_AND_Y_POS_COORDINATES[i]);
+        // y coordinate of the horizontal booly line
+        uint16_t y = std::get<1>(TURRET_BOOLY_X_WIDTH_AND_Y_POS_COORDINATES[i]);
 
         RefSerialTransmitter::configLine(
-            RETICLE_THICKNESS,
+            BOOLY_THICKNESS,
             startX,
             y,
             endX,
             y,
-            &reticleMsg[reticleMsgIndex].graphicData[graphicDataIndex]);
+            &boolyMsg[boolyMsgIndex].graphicData[graphicDataIndex]);
 
-        // update min and max y coordinates to be used when drawing the vertical reticle line that
-        // connects horizontal reticle lines
-        if (y > maxReticleY) {
-            maxReticleY = y;
+        // update min and max y coordinates to be used when drawing the vertical booly line that
+        // connects horizontal booly lines
+        if (y > maxBoolyY) {
+            maxBoolyY = y;
         }
-        if (y < minReticleY) {
-            minReticleY = y;
+        if (y < minBoolyY) {
+            minBoolyY = y;
         }
     }
 
-    // Add vertical reticle line to connect reticle markers
+    // Add vertical booly line to connect booly markers
     RefSerialTransmitter::configGraphicGenerics(
-        &reticleMsg[NUM_RETICLE_COORDINATES / MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]
-             .graphicData[NUM_RETICLE_COORDINATES % MODM_ARRAY_SIZE(reticleMsg[0].graphicData)],
+        &boolyMsg[NUM_BOOLY_COORDINATES / MODM_ARRAY_SIZE(boolyMsg[0].graphicData)]
+             .graphicData[NUM_BOOLY_COORDINATES % MODM_ARRAY_SIZE(boolyMsg[0].graphicData)],
         currLineName,
         Tx::GRAPHIC_ADD,
         DEFAULT_GRAPHIC_LAYER,
-        RETICLE_VERTICAL_COLOR);
+        BOOLY_VERTICAL_COLOR);
 
     RefSerialTransmitter::configLine(
-        RETICLE_THICKNESS,
-        SCREEN_WIDTH / 2 + RETICLE_CENTER_X_OFFSET,
-        minReticleY,
-        SCREEN_WIDTH / 2 + RETICLE_CENTER_X_OFFSET,
-        maxReticleY,
-        &reticleMsg[NUM_RETICLE_COORDINATES / MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]
-             .graphicData[NUM_RETICLE_COORDINATES % MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]);
+        BOOLY_THICKNESS,
+        SCREEN_WIDTH / 2 + BOOLY_CENTER_X_OFFSET,
+        minBoolyY,
+        SCREEN_WIDTH / 2 + BOOLY_CENTER_X_OFFSET,
+        maxBoolyY,
+        &boolyMsg[NUM_BOOLY_COORDINATES / MODM_ARRAY_SIZE(boolyMsg[0].graphicData)]
+             .graphicData[NUM_BOOLY_COORDINATES % MODM_ARRAY_SIZE(boolyMsg[0].graphicData)]);
 }
 
 }  // namespace src::Utils::ClientDisplay
