@@ -14,7 +14,7 @@ namespace tap {
 class Drivers;
 }
 
-namespace src::Utils::ClientDisplay {
+namespace src::Utils::HUDClientDisplay {
 class ReticleIndicator : public HudIndicator, protected modm::Resumable<2> {
 public:
     static constexpr int RETICLE_CENTER_X_OFFSET = 1;

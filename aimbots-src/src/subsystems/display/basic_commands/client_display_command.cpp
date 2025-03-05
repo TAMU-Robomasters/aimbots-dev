@@ -36,7 +36,7 @@ ClientDisplayCommand::ClientDisplayCommand(
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
-      booleanHudIndicators(commandScheduler, refSerialTransmitter, chassis),
+      //booleanHudIndicators(commandScheduler, refSerialTransmitter, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
       //#ifndef TARGET_ENGINEER
       reticleIndicator(drivers, refSerialTransmitter)  //,
@@ -72,16 +72,16 @@ bool ClientDisplayCommand::run() {
     PT_BEGIN();
 
     //PT_WAIT_UNTIL(drivers.refSerial.getRefSerialReceivingData());
-    PT_CALL(booleanHudIndicators.sendInitialGraphics());
+    //PT_CALL(booleanHudIndicators.sendInitialGraphics());
     // #ifdef TARGET_HERO
 
-   PT_CALL(reticleIndicator.sendInitialGraphics());
+    PT_CALL(reticleIndicator.sendInitialGraphics());
     //#endif
 
     while (!this->restarting) {
         // PT_CALL(chassisOrientation.sendInitialGraphics());
         // PT_CALL(cvDisplay.sendInitialGraphics());
-        PT_CALL(booleanHudIndicators.update());
+       // PT_CALL(booleanHudIndicators.update());
         // #ifdef TARGET_HERO
         PT_CALL(reticleIndicator.update());
         // #endif

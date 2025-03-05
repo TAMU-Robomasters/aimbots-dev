@@ -53,10 +53,10 @@ public:
     ClientDisplayCommand(
         tap::Drivers &drivers,
         tap::control::CommandScheduler &commandScheduler,
-        ClientDisplaySubsystem &clientDisplay  ,
+        ClientDisplaySubsystem &clientDisplay  //,
                                                //   const HopperSubsystem *hopper,
         // const GimbalSubsystem &gimbal,
-        const ChassisSubsystem &chassis  //,
+       // const ChassisSubsystem &chassis  //,
         // BallisticsSolver &ballisticsSolver
     );
 
@@ -76,7 +76,7 @@ private:
     tap::communication::serial::RefSerialTransmitter refSerialTransmitter;
 
     /* Actual hud elements */
-    BooleanHUDIndicators booleanHudIndicators;
+    //BooleanHUDIndicators booleanHudIndicators;
     //  ChassisOrientationIndicator chassisOrientation;
     //#ifndef TARGET_ENGINEER
     ReticleIndicator reticleIndicator;
