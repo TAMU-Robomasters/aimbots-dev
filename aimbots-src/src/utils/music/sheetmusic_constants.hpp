@@ -144,7 +144,7 @@ Song legendOfZeldaSong = {LOZ_BPM, Q_N, {{A5, H_N},  {REST, TQ_N}, {A5, TE_N}, {
 // https://musescore.com/user/20360426/scores/4880846
 // Measures 1 - 4
 
-// LG Washing Machine
+// LG Washing Machine.
 
 static constexpr uint32_t LG_BPM = 160;
 Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N},
@@ -155,7 +155,7 @@ Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_
 
                                   {Bb5, QH_N}, {Db6, QH_N},
 
-                                  {Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N},
+                                  {Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_N}, 
 
                                   {Db6, QH_N}, {Gb6, QH_N},
 
