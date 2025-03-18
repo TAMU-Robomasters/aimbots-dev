@@ -49,12 +49,15 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
     }
 #endif
 
+
 void KinematicInformant::updateData() {
+
+    imuData.updateIMUKinematicStateVector();
+    imuData.updateIMUAngles();
+    
     #ifdef CHASSIS_COMPATIBLE
         #ifdef GIMBAL_COMPATIBLE
             fieldRelativeGimbal.updateRobotFrames();
-            imuData.updateIMUKinematicStateVector();
-            imuData.updateIMUAngles();
         #endif
     #endif
 

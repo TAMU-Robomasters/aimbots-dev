@@ -70,7 +70,7 @@ void SentryMatchFiringControlCommand::execute() {
 
             float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
             tap::algorithms::WrappedFloat pitchCurrentGimbal =
-                drivers->kinematicInformant.fieldRElativeGimbal.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
+                drivers->kinematicInformant.fieldRelativeGimbal.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
 
             isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
                 yawCurrentGimbal.minDifference(yawTargetGimbal),

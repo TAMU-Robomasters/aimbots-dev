@@ -96,3 +96,8 @@ static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f
 static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
+
+
+
+static constexpr float GIMBAL_X_OFFSET = 0.0f;
+static constexpr float GIMBAL_Y_OFFSET = 0.0f;

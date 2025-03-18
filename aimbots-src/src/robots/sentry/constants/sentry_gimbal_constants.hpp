@@ -170,12 +170,13 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
-static constexpr float GIMBAL_X_OFFSET = 0.0f;  //-0.05
-static constexpr float GIMBAL_Y_OFFSET = 0.0f;  //-0.05
-
 // PITCH PATROL FUNCTION CONSTANTS
 // TODO: Gimbal Control Command needs to be modified to work in radians, and then convert these constants.
 static constexpr float PITCH_PATROL_AMPLITUDE = modm::toRadian(12.5f);
 static constexpr float PITCH_PATROL_FREQUENCY = 1.5f * M_PI;
 static constexpr float PITCH_PATROL_OFFSET = 20.0f;  // degrees offset from horizon
 static constexpr float PITCH_OFFSET_ANGLE = 0;       // In degrees currently
+
+
+static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
+static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;

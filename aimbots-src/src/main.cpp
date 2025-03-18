@@ -217,6 +217,9 @@ static void updateIo(src::Drivers *drivers) {
     wasHit = drivers->kinematicInformant.hitTracker.wasHit();
     recentlyHit = drivers->kinematicInformant.hitTracker.recentlyHit();
 
+    //VARIABLES to test
+    //
+
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);
     // rollDisplay = modm::toDegree(roll);

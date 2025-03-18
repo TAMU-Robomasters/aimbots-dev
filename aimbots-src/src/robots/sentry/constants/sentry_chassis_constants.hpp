@@ -10,9 +10,6 @@
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
-static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
-static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
-
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
@@ -113,3 +110,6 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 
 // Sentry Chassis Travel Waypoints
 static constexpr int NUMBER_OF_WAYPOINTS = 5;
+
+static constexpr float GIMBAL_X_OFFSET = 0.0f;  //-0.05
+static constexpr float GIMBAL_Y_OFFSET = 0.0f;  //-0.05
