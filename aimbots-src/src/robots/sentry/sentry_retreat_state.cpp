@@ -1,5 +1,5 @@
 
-#include "sentry_attack_state.hpp"
+#include "sentry_retreat_state.hpp"
 
 #ifdef TARGET_SENTRY
 
@@ -7,7 +7,7 @@
 namespace SentryControl{
   
 
-SentryAttackStateCommand::SentryAttackStateCommand(
+SentryRetreatStateCommand::SentryRetreatStateCommand(
     src::Drivers* drivers,
     src::Gimbal::GimbalSubsystem* gimbal,
     src::Feeder::FeederSubsystem* feeder,
@@ -32,54 +32,44 @@ SentryAttackStateCommand::SentryAttackStateCommand(
 
   
 
-void SentryAttackStateCommand::initialize() {
+void SentryRetreatStateCommand::initialize() {
   
 }
    
 
-void SentryAttackStateCommand::execute() {
-  
+void SentryRetreatStateCommand::execute() {
   exit();
   //move towards the location - autonav
   //look in the direction of the push - gimbal
   //shoot enemies that are spotted - feeder
-
-
    
 }
 
 
-void SentryAttackStateCommand::end(bool interrupted) {
+void SentryRetreatStateCommand::end(bool interrupted) {
 
  
 }
 
-bool SentryAttackStateCommand::isReady() { return true; }
+bool SentryRetreatStateCommand::isReady() { return true; }
 
-bool SentryAttackStateCommand::isFinished() const { 
+bool SentryRetreatStateCommand::isFinished() const { 
   
   
   return false; 
 }
 
   
-SentryMatchStates SentryAttackStateCommand::exit() {
-  if(drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND){
-
-  }
-  else{
-    
-  }
-  //---drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND
+SentryMatchStates SentryRetreatStateCommand::exit() {
+  //drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND
   //if no robot is spotted 
   //change sentryState push center
   //if hp<200 
   //change sentryState Retreat
   //enemies are spotted
   //change sentryState ControlHill
-
-
-  return SentryMatchStates::ATTACK;
+  
+  return SentryMatchStates::RETREAT;
 }
 
 }

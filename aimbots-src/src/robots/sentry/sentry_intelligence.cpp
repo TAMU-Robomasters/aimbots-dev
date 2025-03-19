@@ -1,6 +1,7 @@
 
 #include "sentry_intelligence.hpp"
 
+
 #ifdef TARGET_SENTRY
 
 
@@ -15,15 +16,18 @@ SentryIntelligenceCommand::SentryIntelligenceCommand(
     src::Chassis::ChassisSubsystem* chassis,
     src::Shooter::ShooterSubsystem* shooter,
     src::Utils::RefereeHelperTurreted* refHelp,
-    SentryMatchStates& sentryState)
+    SentryMatchStates& sentryState
+      )
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       feeder(feeder),
       chassis(chassis),
       sentryState(sentryState),
-      sentryPushHill(drivers, gimbal, feeder, chassis, shooter, refHelp),
-      sentryAttack(drivers, gimbal, feeder, chassis, shooter, refHelper)
+      sentryPushHill(drivers, gimbal, feeder, chassis, shooter, refHelper),
+      sentryAttack(drivers, gimbal, feeder, chassis, shooter, refHelper),
+      sentryRetreat(drivers, gimbal, feeder, chassis, shooter, refHelper)
+      //sentryPatrol(drivers, gimbal, feeder, chassis, shooter, refHelp)
       {
       //autoNavCommand(drivers, chassis, src::Chassis::defaultLinearConfig, src::Chassis::defaultRotationConfig, src::Chassis::SnapSymmetryConfig) {
   addSubsystemRequirement(chassis);
@@ -49,38 +53,45 @@ void SentryIntelligenceCommand::execute() {
 
 
   
-  if (sentryState == START || sentryState != lastSentryState) {
+  if (sentryState == SentryMatchStates::START || sentryState != lastSentryState) {
     // Perform setup for the next state
     switch (sentryState) {
       case SentryMatchStates::START:
-        // calls sentry_push(Hill)
+        // calls sentry_push(Hill
+        lastSentryState = sentryState;
         sentryState = SentryMatchStates::PUSH;
-        watchState = "PUSH";
-        sentryPushHill.execute();
+        watchState = "START TO NOW PUSH";
         break;
       case SentryMatchStates::PUSH:
-       // calls th
+        lastSentryState = sentryState;
+        sentryPushHill.execute();
+        watchState = "PUSH";
         break;
       case SentryMatchStates::ATTACK:
-      // YOU ARE ATTACking to a position
-
-        
+        lastSentryState = sentryState;
+        sentryAttack.execute();
+        watchState = "ATTACK";
         break;
       case SentryMatchStates::RETREAT:
+        lastSentryState = sentryState;
+        sentryRetreat.execute();
         watchState = "RETREAT";
         // move back to the home base
         break;
       case SentryMatchStates::PATROL:
+        lastSentryState = sentryState;
+        sentryAttack.execute();
+        watchState = "PATROL";
       // go to the other base
 
         break;
       case SentryMatchStates::CONTROL:
-
-      
+        lastSentryState = sentryState;
+        sentryAttack.execute();
+        watchState = "CONTROL";
         break;
     }
 
-    lastSentryState = sentryState;
   }
 
   if(sentryPushHill.exit()!= sentryState){
