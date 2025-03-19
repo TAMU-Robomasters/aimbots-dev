@@ -6,10 +6,13 @@
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 #include "tap/control/command_scheduler.hpp"
 
-#include "reticle_indicator.hpp"
+// #include "reticle_indicator.hpp"
+#include "subsystems/display/complex_commands/reticle_indicator.hpp"
+
 
 using namespace tap::communication::serial;
 using namespace tap::communication::referee;
+using namespace src::Utils::HUDClientDisplay;
 
 namespace src::Utils::ClientDisplay {
 CVDisplay::CVDisplay(

@@ -5,10 +5,14 @@
 #include "tap/communication/serial/ref_serial_data.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
+#include "subsystems/display/basic_commands/hud_indicator.hpp"
+
+
 // #include "subsystems/display/display_constants.hpp"
 
 using namespace tap::communication::serial;
 using namespace src::Utils::HUDClientDisplay;
+using namespace src::Utils::ClientDisplay;
 
 namespace src::Utils::ClientDisplay {
 ReticleIndicator::ReticleIndicator(

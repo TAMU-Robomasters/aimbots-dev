@@ -9,6 +9,7 @@
 #include "subsystems/display/basic_commands/hud_indicator.hpp"
 
 #include "subsystems/display/display_constants.hpp"
+using namespace src::Utils::ClientDisplay;
 
 namespace tap {
 class Drivers;

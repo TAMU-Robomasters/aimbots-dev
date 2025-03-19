@@ -20,6 +20,7 @@
 //#include "subsystems/hopper/control/hopper.cpp"
 
 #include "subsystems/display/complex_commands/boolean_hud_indicators.hpp"
+#include "subsystems/display/basic_commands/hud_indicator.hpp"
 // #include "chassis_orientation_indicator.hpp"
 // #include "subsystems/display/control/client_display_subsystem.hpp"
 // #include "computer_vision_display.hpp"
@@ -31,6 +32,8 @@
 // using namespace src::Chassis;
 // using namespace src::Gimbal;
 // using namespace src::Utils::Ballistics;
+using namespace src::Utils::HUDClientDisplay;
+using namespace src::Utils::ClientDisplay;
 
 namespace tap::control {
 class Subsystem;
