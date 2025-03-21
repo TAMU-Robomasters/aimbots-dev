@@ -26,6 +26,7 @@
 // #include "computer_vision_display.hpp"
 //#ifndef TARGET_ENGINEER
 #include "subsystems/display/complex_commands/reticle_indicator.hpp"
+#include "subsystems/display/complex_commands/booly_bears.hpp"
 //#endif
 
 // using namespace src::Hopper;
@@ -34,6 +35,7 @@
 // using namespace src::Utils::Ballistics;
 using namespace src::Utils::HUDClientDisplay;
 using namespace src::Utils::ClientDisplay;
+using namespace src::Utils::BoolClientDisplay;
 
 namespace tap::control {
 class Subsystem;
@@ -82,7 +84,8 @@ private:
     //BooleanHUDIndicators booleanHudIndicators;
     //  ChassisOrientationIndicator chassisOrientation;
     //#ifndef TARGET_ENGINEER
-    ReticleIndicator reticleIndicator;
+    // reticleIndicator;
+    BoolyBear boolyBears;
     //#endif
     // CVDisplay cvDisplay;
 

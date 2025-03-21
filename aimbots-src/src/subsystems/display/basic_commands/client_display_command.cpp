@@ -13,24 +13,26 @@
 
 //#ifndef TARGET_ENGINEER
 #include "subsystems/display/complex_commands/reticle_indicator.hpp"
-    //#endif
+#include "subsystems/display/complex_commands/booly_bears.hpp"
+//#endif
 
-    // using namespace src::Hopper;
-    using namespace src::Chassis;
-    // using namespace src::Gimbal;
-    // using namespace src::Utils::Ballistics;
+// using namespace src::Hopper;
+using namespace src::Chassis;
+// using namespace src::Gimbal;
+// using namespace src::Utils::Ballistics;
 
-    using namespace tap::control;
+using namespace tap::control;
+using namespace src::Utils::BoolClientDisplay;
 
 namespace src::Utils::ClientDisplay {
 
 ClientDisplayCommand::ClientDisplayCommand(
     tap::Drivers &drivers,
     tap::control::CommandScheduler &commandScheduler,
-    ClientDisplaySubsystem &clientDisplay,  //,
+    ClientDisplaySubsystem &clientDisplay//,  
                                            //     const HopperSubsystem *hopper,
     // const GimbalSubsystem &gimbal,
-       const ChassisSubsystem &chassis
+       //const ChassisSubsystem &chassis
     )
     : Command(),
       drivers(drivers),
@@ -39,7 +41,8 @@ ClientDisplayCommand::ClientDisplayCommand(
       //booleanHudIndicators(commandScheduler, refSerialTransmitter, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
       //#ifndef TARGET_ENGINEER
-      reticleIndicator(drivers, refSerialTransmitter)  //,
+      boolyBears(drivers,refSerialTransmitter)
+      //reticleIndicator(drivers, refSerialTransmitter)  //,
 //#endif
 /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
 {
@@ -54,7 +57,8 @@ void ClientDisplayCommand::restartHud() {
     HudIndicator::resetGraphicNameGenerator();
     //booleanHudIndicators.initialize();
     //#ifndef TARGET_ENGINEER
-    reticleIndicator.initialize();
+    //reticleIndicator.initialize();
+    
     // #endif
 
     this->restarting = false;
@@ -75,7 +79,8 @@ bool ClientDisplayCommand::run() {
     //PT_CALL(booleanHudIndicators.sendInitialGraphics());
     // #ifdef TARGET_HERO
 
-    PT_CALL(reticleIndicator.sendInitialGraphics());
+    //PT_CALL(reticleIndicator.sendInitialGraphics());
+    PT_CALL(boolyBears.sendInitialGraphics());
     //#endif
 
     while (!this->restarting) {
@@ -83,7 +88,8 @@ bool ClientDisplayCommand::run() {
         // PT_CALL(cvDisplay.sendInitialGraphics());
        // PT_CALL(booleanHudIndicators.update());
         // #ifdef TARGET_HERO
-        PT_CALL(reticleIndicator.update());
+        //PT_CALL(reticleIndicator.update());
+        PT_CALL(boolyBears.update());
         // #endif
         PT_YIELD();
     }

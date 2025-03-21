@@ -9,10 +9,12 @@
 // #include "subsystems/display/display_constants.hpp"
 
 using namespace tap::communication::serial;
-using namespace src::Utils::HUDClientDisplay;
+//using namespace src::Utils::HUDClientDisplay;
+using namespace src::Utils::ClientDisplay;
+using namespace src::Utils::BoolClientDisplay;
 
 
-namespace src::Utils::ClientDisplay {
+//namespace src::Utils::ClientDisplay {
 BoolyBear::BoolyBear(
     tap::Drivers &drivers,
     tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
@@ -30,7 +32,7 @@ modm::ResumableResult<bool> BoolyBear::sendInitialGraphics() {
     RF_END();
 }
 
-modm::ResumableResult<bool> BoolyIndicator::update() {
+modm::ResumableResult<bool> BoolyBear::update() {
     RF_BEGIN(1);
     // send booly
     for (boolyIndex = 0; boolyIndex < MODM_ARRAY_SIZE(boolyMsg); boolyIndex++) {
@@ -110,4 +112,4 @@ void BoolyBear::initialize() {
              .graphicData[NUM_BOOLY_COORDINATES % MODM_ARRAY_SIZE(boolyMsg[0].graphicData)]);
 }
 
-}  // namespace src::Utils::ClientDisplay
+//}  // namespace src::Utils::ClientDisplay

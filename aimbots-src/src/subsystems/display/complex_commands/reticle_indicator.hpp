@@ -10,10 +10,12 @@
 
 #include "subsystems/display/display_constants.hpp"
 
+using namespace src::Utils::ClientDisplay;
 
 namespace tap {
 class Drivers;
 }
+
 
 namespace src::Utils::HUDClientDisplay {
 class ReticleIndicator : public HudIndicator, protected modm::Resumable<2> {

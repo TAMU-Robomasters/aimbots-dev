@@ -14,7 +14,7 @@ using namespace tap::communication::serial;
 using namespace src::Utils::HUDClientDisplay;
 using namespace src::Utils::ClientDisplay;
 
-namespace src::Utils::ClientDisplay {
+//namespace src::Utils::ClientDisplay {
 ReticleIndicator::ReticleIndicator(
     tap::Drivers &drivers,
     tap::communication::serial::RefSerialTransmitter &refSerialTransmitter)
@@ -110,6 +110,6 @@ void ReticleIndicator::initialize() {
         maxReticleY,
         &reticleMsg[NUM_RETICLE_COORDINATES / MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]
              .graphicData[NUM_RETICLE_COORDINATES % MODM_ARRAY_SIZE(reticleMsg[0].graphicData)]);
-}
+//}
 
 }  // namespace src::Utils::ClientDisplay

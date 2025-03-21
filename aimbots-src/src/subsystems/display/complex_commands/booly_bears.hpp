@@ -15,7 +15,7 @@ namespace tap {
 class Drivers;
 }
 
-namespace src::Utils::HUDClientDisplay {
+namespace src::Utils::BoolClientDisplay {
 class BoolyBear : public HudIndicator, protected modm::Resumable<2> {
 public:
     static constexpr int BOOLY_CENTER_X_OFFSET = 1;
