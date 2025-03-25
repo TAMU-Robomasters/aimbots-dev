@@ -15,6 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
+      messageSleepTimeout(m),
       lastMessage()
 {}
 
@@ -52,17 +53,21 @@ alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 alignas(JetsonMessage) uint8_t rawSerialSend[sizeof(JetsonMessage)]; // message to CV Jetson from embedded (embedded -> CV Jetson)
 
 void JetsonCommunicator::updateSerial() {
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
+    uint8_t randomValues[sizeof(JetsonMessage)] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
 
     for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
         rawSerialSend[i] = randomValues[i];
     }
 
+    rawSerialSend[0] = 'b';
     // uint8_t simpleData = 255; // 1111 1111 (8 ones)
-    
-    for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
-        WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
+    if (messageSleepTimeout.isExpired()){
+        for (uint8_t i = 0; i < 5; i++) {
+            WRITE(&rawSerialSend[0], 1);  // attempts to send one byte from the buffer
+            messageSleepTimeout.restart(200);
+        }    
     }
+    
     // uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     // size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
@@ -168,7 +173,7 @@ void JetsonCommunicator::sendSimpleMessage() {
     // } __attribute__((packed));
 
 
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241};
+    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
 
     JetsonMessage embeddedToCvMsg;
     embeddedToCvMsg.typeAndTeam = 0b00000111;
@@ -196,10 +201,12 @@ void JetsonCommunicator::sendSimpleMessage() {
     // }
 
     // NOTE: loop is hard coded
-    for (uint8_t i = 0; i < 5; i++) {
-        WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
-    }
-
+    if (messageSleepTimeout.isExpired()){
+        for (uint8_t i = 0; i < 5; i++) {
+            WRITE(&rawSerialSend[0], 1);  // attempts to send one byte from the buffer
+        }
+        messageSleepTimeout.restart(200);
+    } 
     // receive response from jetson (CV) over UART
     // updateSerial();
 }

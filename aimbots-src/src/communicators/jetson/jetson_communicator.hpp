@@ -55,6 +55,7 @@ private:
     size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
+    tap::arch::MilliTimeout messageSleepTimeout;
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
