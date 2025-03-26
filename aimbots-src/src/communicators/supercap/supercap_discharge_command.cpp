@@ -1,6 +1,6 @@
-#include "super_cap_discharge_command.hpp"
+#include "supercap_discharge_command.hpp"
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
 SuperCapDischargeCommand::SuperCapDischargeCommand(src::Drivers* drivers, SuperCapSubsystem* superCap)
     : drivers(drivers),
@@ -26,4 +26,4 @@ bool SuperCapDischargeCommand::isReady() { return true; }
 
 bool SuperCapDischargeCommand::isFinished() const { return false; }
 
-}  // namespace src::Informants::SuperCap
+}  // namespace src::Communicators::SuperCap

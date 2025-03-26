@@ -1,8 +1,8 @@
 #pragma once
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
-static constexpr uint8_t SUPER_CAP_MESSAGE_RECIEVED_MAGIC = 'c';
+static constexpr uint8_t SUPERCAP_MESSAGE_RECIEVED_MAGIC = 'c';
 
 enum SuperCapCommand : char { CHARGE = 'c', DISCHARGE = 'd', STOP = 's' };
 
@@ -28,6 +28,6 @@ struct SuperCapMessageSent {
 static_assert(sizeof(SuperCapMessageRecieved) == 18, "Super Cap Message Recived is not the correct size");
 static_assert(sizeof(SuperCapMessageSent) == 6, "Super Cap Message Sent is not the correct size");
 
-static constexpr uint8_t SUPER_CAP_MESSAGE_SIZE = sizeof(SuperCapMessageRecieved);
-static constexpr uint8_t SUPER_CAP_MESSAGE_SENT_SIZE = sizeof(SuperCapMessageSent);
-}  // namespace src::Informants::SuperCap
+static constexpr uint8_t SUPERCAP_MESSAGE_SIZE = sizeof(SuperCapMessageRecieved);
+static constexpr uint8_t SUPERCAP_MESSAGE_SENT_SIZE = sizeof(SuperCapMessageSent);
+}  // namespace src::Communicators::SuperCap

@@ -2,10 +2,10 @@
 
 #include "tap/control/command.hpp"
 
-#include "super_cap_subsystem.hpp"
+#include "supercap_subsystem.hpp"
 #include "drivers.hpp"
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
 class SuperCapDischargeCommand : public TapCommand {
 public:

@@ -2,17 +2,17 @@
 
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
-#include <utils/common_types.hpp>
+#include <utils/tools/common_types.hpp>
 
 // #include "informants/enemy_data_conversion.hpp"
 
-#include "super_cap_protocol.hpp"
+#include "supercap_protocol.hpp"
 
 namespace src {
 class Drivers;
 }
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
 enum class SuperCapCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
@@ -50,9 +50,9 @@ private:
     // applicable to supercap?
     tap::arch::MilliTimeout superCapOfflineTimeout;
 
-    static constexpr uint32_t SUPER_CAP_BAUD_RATE = 115200;
-    static constexpr uint16_t SUPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
-    static constexpr UartPort SUPER_CAP_UART_PORT = UartPort::Uart1;
+    static constexpr uint32_t SUPERCAP_BAUD_RATE = 115200;
+    static constexpr uint16_t SUPERCAP_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
+    static constexpr UartPort SUPERCAP_UART_PORT = UartPort::Uart1;
 
     SuperCapMessageRecieved lastMessage;
     SuperCapMessageSent lastSentMessage;
@@ -60,6 +60,6 @@ private:
     SuperCapCommand command;
     uint8_t chargeValue;
 
-    static constexpr char SUPER_CAP_DISCHARGE_MSG[] = "DISCHARGE\n";
+    static constexpr char SUPERCAP_DISCHARGE_MSG[] = "DISCHARGE\n";
 };
-}  // namespace src::Informants::SuperCap
+}  // namespace src::Communicators::SuperCap

@@ -2,11 +2,11 @@
 
 #include "tap/control/subsystem.hpp"
 
-#include "super_cap_protocol.hpp"
+#include "supercap_protocol.hpp"
 
 #include "drivers.hpp"
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
 class SuperCapSubsystem : public tap::control::Subsystem {
 public:

@@ -55,6 +55,8 @@
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
+#include "communicators/supercap/supercap_discharge_command.hpp"
+#include "communicators/supercap/supercap_subsystem.hpp"
 //
 #include "subsystems/display/basic_commands/client_display_command.hpp"
 #include "subsystems/display/control/client_display_subsystem.hpp"
@@ -67,6 +69,7 @@ using namespace src::Shooter;
 using namespace src::Hopper;
 // using namespace src::Communication;
 // using namespace src::RobotStates;
+using namespace src::Communicators::SuperCap;
 using namespace src::Utils::ClientDisplay;
 
 // For reference, all possible keyboard inputs:
@@ -121,6 +124,7 @@ GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 HopperSubsystem hopper(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
+SuperCapSubsystem superCap(drivers());
 
 // Command Flags ----------------------------
 bool barrelMovingFlag = true;
@@ -228,6 +232,7 @@ CloseHopperCommand closeHopperCommand2(drivers(), &hopper, HOPPER_CLOSED_ANGLE);
 ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE, HOPPER_OPEN_ANGLE);
 
 // CommunicationResponseHandler responseHandler(*drivers());
+SuperCapDischargeCommand dischargeSuperCapsCommand(drivers(), &superCap);
 
 // client display
 ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
@@ -283,6 +288,7 @@ void registerSubsystems(src::Drivers *drivers) {
     // drivers->commandScheduler.registerSubsystem(&response);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    drivers->commandScheduler.registerSubsystem(&superCap);
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -294,6 +300,7 @@ void initializeSubsystems() {
     hopper.initialize();
     // response.initialize();
     clientDisplay.initialize();
+    superCap.initialize();
 }
 
 // Set default command here -----------------------------------------------

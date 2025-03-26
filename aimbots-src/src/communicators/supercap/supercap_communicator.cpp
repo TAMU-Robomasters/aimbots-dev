@@ -1,13 +1,13 @@
-#include "super_cap_communicator.hpp"
+#include "supercap_communicator.hpp"
 
 #include <drivers.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 
-#define READ(data, length) drivers->uart.read(SUPER_CAP_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(SUPER_CAP_UART_PORT, data, length)
+#define READ(data, length) drivers->uart.read(SUPERCAP_UART_PORT, data, length)
+#define WRITE(data, length) drivers->uart.write(SUPERCAP_UART_PORT, data, length)
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 
 SuperCapCommunicator::SuperCapCommunicator(src::Drivers* drivers)
     : drivers(drivers),
@@ -20,11 +20,11 @@ SuperCapCommunicator::SuperCapCommunicator(src::Drivers* drivers)
 {}
 
 void SuperCapCommunicator::initialize() {
-    superCapOfflineTimeout.restart(SUPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS);
-    drivers->uart.init<SUPER_CAP_UART_PORT, SUPER_CAP_BAUD_RATE>();
+    superCapOfflineTimeout.restart(SUPERCAP_OFFLINE_TIMEOUT_MILLISECONDS);
+    drivers->uart.init<SUPERCAP_UART_PORT, SUPERCAP_BAUD_RATE>();
 }
 
-uint8_t displayBuffer[SUPER_CAP_MESSAGE_SIZE];
+uint8_t displayBuffer[SUPERCAP_MESSAGE_SIZE];
 int displayBufIndex = 0;
 int displayNextByteIndex = 0;
 int lastMsgTimeDisplay = 0;
@@ -49,18 +49,18 @@ void SuperCapCommunicator::updateSerial() {
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
     // restarts the timeout
-    superCapOfflineTimeout.restart(SUPER_CAP_OFFLINE_TIMEOUT_MILLISECONDS);
+    superCapOfflineTimeout.restart(SUPERCAP_OFFLINE_TIMEOUT_MILLISECONDS);
 
     //
     displayBuffer[displayBufIndex] = rawSerialBuffer[0];  // copy byte to display buffer
     displayBufIndex =
-        (displayBufIndex + 1) % SUPER_CAP_MESSAGE_SIZE;  // increment display index and wrap around if necessary
+        (displayBufIndex + 1) % SUPERCAP_MESSAGE_SIZE;  // increment display index and wrap around if necessary
 
     switch (currentSerialState) {
         case SuperCapCommunicatorSerialState::SearchingForMagic: {
             // Check if the byte we just read is the byte we expected in the magic number.
 
-            if (rawSerialBuffer[nextByteIndex] == ((SUPER_CAP_MESSAGE_RECIEVED_MAGIC >> (8 * nextByteIndex)) & 0xFF)) {
+            if (rawSerialBuffer[nextByteIndex] == ((SUPERCAP_MESSAGE_RECIEVED_MAGIC >> (8 * nextByteIndex)) & 0xFF)) {
                 currentSerialState = SuperCapCommunicatorSerialState::AssemblingMessage;
                 // goes to the next byte
                 nextByteIndex++;
@@ -69,7 +69,7 @@ void SuperCapCommunicator::updateSerial() {
                 nextByteIndex = 0;
             }
 
-            if (nextByteIndex == sizeof(decltype(SUPER_CAP_MESSAGE_RECIEVED_MAGIC))) {
+            if (nextByteIndex == sizeof(decltype(SUPERCAP_MESSAGE_RECIEVED_MAGIC))) {
                 // received a full message and we can now interpret it
                 currentSerialState = SuperCapCommunicatorSerialState::AssemblingMessage;
             }
@@ -80,7 +80,7 @@ void SuperCapCommunicator::updateSerial() {
             nextByteIndex++;
             displayNextByteIndex = nextByteIndex;
 
-            if (nextByteIndex == SUPER_CAP_MESSAGE_SIZE) {
+            if (nextByteIndex == SUPERCAP_MESSAGE_SIZE) {
                 // received a full message and we can now interpret it
                 //  puts it into lastMessage struct
                 lastMessage = *reinterpret_cast<SuperCapMessageRecieved*>(rawSerialBuffer);
@@ -117,7 +117,7 @@ void SuperCapCommunicator::updateSerial() {
     // rawSerialBufferSent[0] = lastSentMessage.magic;
     // rawSerialBufferSent[1] = lastSentMessage.command;
     // rawSerialBufferSent[2] = lastSentMessage.charge;
-    WRITE(rawSerialBufferSent, len);
+    WRITE(rawSerialBufferSent, len);  // this is the uart change to canid
 }
 
-}  // namespace src::Informants::SuperCap
+}  // namespace src::Communicators::SuperCap

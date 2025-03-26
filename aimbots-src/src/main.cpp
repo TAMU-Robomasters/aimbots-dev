@@ -148,6 +148,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
+    drivers->superCapCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
@@ -184,6 +185,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
 
     drivers->cvCommunicator.updateSerial();
+    drivers->superCapCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();
 #endif

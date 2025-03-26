@@ -1,6 +1,6 @@
-#include "super_cap_subsystem.hpp"
+#include "supercap_subsystem.hpp"
 
-namespace src::Informants::SuperCap {
+namespace src::Communicators::SuperCap {
 SuperCapSubsystem::SuperCapSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
       currentCommand(STOP),
@@ -61,4 +61,4 @@ void SuperCapSubsystem::refresh() {
             break;
     }
 }
-}  // namespace src::Informants::SuperCap
+}  // namespace src::Communicators::SuperCap
