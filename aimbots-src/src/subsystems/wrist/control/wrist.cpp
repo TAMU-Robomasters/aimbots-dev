@@ -30,29 +30,36 @@ void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
 }
 
 void WristSubsystem::updateAllPIDs() {
-    // if (motor_control_setting == VELOCITY) {
-    //     forAllWristMotors(&WristSubsystem::updateMotorPIDVelocity);
-    // } else if (motor_control_setting == POSITION) {
-    //     forAllWristMotors(&WristSubsystem::updateMotorPID);
-    // }
+    setTargetMotorPos();
     forAllWristMotors(&WristSubsystem::updateMotorPID);
 }
 
+void WristSubsystem::setTargetMotorPos() {
+    // Yaw changes
+    targetMotorPos[0] = targetAnglesRads[0];
+    // TODO: test which is left and which is right ._.
+    // Motor 1 Changes (right)
+    targetMotorPos[1] = (2*targetAnglesRads[1] - targetAnglesRads[2]) / 2;
+    // Motor 2 Changes (left)
+    targetMotorPos[2] = 2*targetAnglesRads[1] - ((2*targetAnglesRads[1] - targetAnglesRads[2]) / 2); // as is, pitch - roll motor
+}
+
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
-    float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
+    float errorRadians = targetMotorPos[idx] - getScaledUnwrappedRadiansOffset(idx);
     float errorDerivative = getMotorRPM(idx);
     float output = positionPIDs[idx].runController(errorRadians, errorDerivative);
 
     desiredMotorOutputs[idx] = output;
 }
 
-void WristSubsystem::updateMotorPIDVelocity(MotorIndex idx) {
+// Old unused code
+/* void WristSubsystem::updateMotorPIDVelocity(MotorIndex idx) {
     float motorRpm = getMotorRPM(idx);
     float rpm_error = targetRPMs[idx] - motorRpm;
     float output = velocityPIDs[idx].runControllerDerivateError(rpm_error);
 
     output = output;  //Suppressing a warning
-}
+} */
 
 float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
     float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];

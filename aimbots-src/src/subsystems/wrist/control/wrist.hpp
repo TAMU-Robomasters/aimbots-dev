@@ -88,10 +88,11 @@ public:
 private:
     std::array<DJIMotor, WRIST_MOTOR_COUNT> motors;
     std::array<SmoothPID, WRIST_MOTOR_COUNT> positionPIDs;
-    std::array<SmoothPID, WRIST_MOTOR_COUNT> velocityPIDs;
+    // std::array<SmoothPID, WRIST_MOTOR_COUNT> velocityPIDs;
 
     // The target desired angles of each motor AFTER scaling for the gear boxes
     std::array<float, WRIST_MOTOR_COUNT> targetAnglesRads{};
+    std::array<float, WRIST_MOTOR_COUNT> targetMotorPos{};
     std::array<float, WRIST_MOTOR_COUNT> targetRPMs{};
     std::array<float, WRIST_MOTOR_COUNT> desiredMotorOutputs{};
 
@@ -101,7 +102,7 @@ private:
     void updateMotorPID(MotorIndex);
 
     // Update motor PIDs to reach target velocity. Don't call alongside updateMotorPID!
-    void updateMotorPIDVelocity(MotorIndex);
+    // void updateMotorPIDVelocity(MotorIndex);
 
     DJIMotor buildMotor(MotorIndex idx) {
         return DJIMotor(drivers, WRIST_MOTOR_IDS[idx], WRIST_BUS, WRIST_MOTOR_DIRECTIONS[idx], WRIST_MOTOR_NAMES[idx]);
