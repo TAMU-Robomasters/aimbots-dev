@@ -70,6 +70,8 @@ public:
         targetAnglesRads[motorIdx] = std::clamp(angleRadians, -maxAngleFromZero, maxAngleFromZero);
     }
 
+    void setTargetMotorPos();
+
     float getTargetAngle(MotorIndex motorIdx) const { return targetAnglesRads[motorIdx]; }
 
     void setTargetRPM(MotorIndex motorIdx, float targetRPM) { targetRPMs[motorIdx] = targetRPM; }
@@ -111,6 +113,7 @@ private:
     void setDesiredOutputToMotor(MotorIndex motorIdx) {
         if (isMotorOnline(motorIdx)) motors[motorIdx].setDesiredOutput(desiredMotorOutputs[motorIdx]);
     }
+
 };
 
 };  // namespace src::Wrist

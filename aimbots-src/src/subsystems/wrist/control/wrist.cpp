@@ -12,11 +12,11 @@ WristSubsystem::WristSubsystem(src::Drivers* drivers)
       positionPIDs{
           SmoothPID(YAW_POSITION_PID_CONFIG),
           SmoothPID(PITCH_POSITION_PID_CONFIG),
-          SmoothPID(ROLL_POSITION_PID_CONFIG)},
-      velocityPIDs{
+          SmoothPID(ROLL_POSITION_PID_CONFIG)} {}
+      /* velocityPIDs{
           SmoothPID(YAW_VELOCITY_PID_CONFIG),
           SmoothPID(PITCH_VELOCITY_PID_CONFIG),
-          SmoothPID(ROLL_VELOCITY_PID_CONFIG)} {}
+          SmoothPID(ROLL_VELOCITY_PID_CONFIG)} {} */
 
 void WristSubsystem::initialize() { forAllWristMotors(&DJIMotor::initialize); }
 
