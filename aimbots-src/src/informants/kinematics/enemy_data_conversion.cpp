@@ -70,7 +70,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     };
 
     // Enemy Position in meters
-
     VisionTimedPosition transformedPosition{
         .position = turretCameraFrame.getPointInFrame(turretFieldFrame, currentData.position),
         .timestamp_uS = currentData.timestamp_uS,

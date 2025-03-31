@@ -25,6 +25,7 @@ void JetsonCommunicator::initialize() {
 }
 
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
+// watchable variables
 int displayBufIndex = 0;
 
 float targetXDisplay = 0;
@@ -37,6 +38,8 @@ float chassisRelativePitchAngleDisplay = 0;
 int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
 
+Matrix4f camToTurretTranformationMatrix = modm::Matrix4f::zeroMatrix();
+float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS] = {0};
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
  * The Jetson sends information in the form of a JetsonMessage.
@@ -171,6 +174,22 @@ void JetsonCommunicator::sendSimpleMessage() {
     //     uint8_t delay;  // ms
     //     CVState cvState;
     // } __attribute__((packed));
+    float32_t camToTurretTransformationArray[NUM_TRANSFORM_ELEMENTS] = {0};
+
+    // Store current transformation from camera reference frame to turret reference frame into array and display the transformation
+     drivers->kinematicInformant.updateRobotFrames();
+     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+         drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+ 
+     src::Informants::Transformers::CoordinateFrame turretCameraFrame =
+         drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+     camToTurretTranformationMatrix = turretCameraFrame.getTransformToFrame(turretFieldFrame);
+     for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
+        camToTurretTransformationArray[i] = camToTurretTranformationMatrix.element[i]; //!this is what we need to send over
+        camToTurretTranformationDisplay[i] = camToTurretTranformationMatrix.element[i];
+     }
+ }
+ 
 
 
     uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
