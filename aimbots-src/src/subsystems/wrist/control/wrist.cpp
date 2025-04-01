@@ -34,6 +34,12 @@ void WristSubsystem::updateAllPIDs() {
     forAllWristMotors(&WristSubsystem::updateMotorPID);
 }
 
+/* DEBUG */
+float debugYaw   = 0;
+float debugLeft  = 0;
+float debugRight = 0;
+
+
 void WristSubsystem::setTargetMotorPos() {
     // Yaw changes
     targetMotorPos[0] = targetAnglesRads[0];
@@ -42,6 +48,10 @@ void WristSubsystem::setTargetMotorPos() {
     targetMotorPos[1] = (2*targetAnglesRads[1] - targetAnglesRads[2]) / 2;
     // Motor 2 Changes (left)
     targetMotorPos[2] = 2*targetAnglesRads[1] - ((2*targetAnglesRads[1] - targetAnglesRads[2]) / 2); // as is, pitch - roll motor
+    /* DEBUG */
+    debugYaw   = targetMotorPos[0];
+    debugRight = targetMotorPos[1];
+    debugLeft  = targetMotorPos[2];
 }
 
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
