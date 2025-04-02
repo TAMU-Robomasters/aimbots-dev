@@ -8,11 +8,11 @@ namespace src::Wrist {
 
 WristSubsystem::WristSubsystem(src::Drivers* drivers)
     : Subsystem(drivers),
-      motors{buildMotor(YAW), buildMotor(PITCH), buildMotor(ROLL)},
+      motors{buildMotor(ROLL), buildMotor(PITCH), buildMotor(YAW)},
       positionPIDs{
-          SmoothPID(YAW_POSITION_PID_CONFIG),
+          SmoothPID(ROLL_POSITION_PID_CONFIG),
           SmoothPID(PITCH_POSITION_PID_CONFIG),
-          SmoothPID(ROLL_POSITION_PID_CONFIG)} {}
+          SmoothPID(YAW_POSITION_PID_CONFIG)} {}
       /* velocityPIDs{
           SmoothPID(YAW_VELOCITY_PID_CONFIG),
           SmoothPID(PITCH_VELOCITY_PID_CONFIG),
@@ -35,23 +35,39 @@ void WristSubsystem::updateAllPIDs() {
 }
 
 /* DEBUG */
-float debugYaw   = 0;
-float debugLeft  = 0;
-float debugRight = 0;
-
+float inputYaw   = 0;
+float inputPitch = 0;
+float inputRoll  = 0;
+float tmp0 = 0;
+float tmp1 = 0;
+float tmp2 = 0;
 
 void WristSubsystem::setTargetMotorPos() {
-    // Yaw changes
-    targetMotorPos[0] = targetAnglesRads[0];
-    // TODO: test which is left and which is right ._.
-    // Motor 1 Changes (right)
-    targetMotorPos[1] = (2*targetAnglesRads[1] - targetAnglesRads[2]) / 2;
-    // Motor 2 Changes (left)
+    // Right Motor is motor 0
+    // Left Motor is motor 1
+
+    // 0 = ROLL
+    // 1 = Pitch
+    // 2 = yaw
+
+    // tmp0
+    targetMotorPos[0] = targetAnglesRads[0]; // pitch - roll
+    // tmp1
+    targetMotorPos[1] = (2*targetAnglesRads[1] - targetAnglesRads[2]) / 2; // pitch + roll
+    // tmp2
     targetMotorPos[2] = 2*targetAnglesRads[1] - ((2*targetAnglesRads[1] - targetAnglesRads[2]) / 2); // as is, pitch - roll motor
+    
+    /* targetMotorPos[0] = targetAnglesRads[0];
+    targetMotorPos[1] = targetAnglesRads[1];
+    targetMotorPos[2] = targetAnglesRads[2]; */
+    
     /* DEBUG */
-    debugYaw   = targetMotorPos[0];
-    debugRight = targetMotorPos[1];
-    debugLeft  = targetMotorPos[2];
+    inputYaw  = targetAnglesRads[0];
+    inputPitch = targetAnglesRads[1];
+    inputRoll   = targetAnglesRads[2];
+    tmp0 = targetMotorPos[0];
+    tmp1 = targetMotorPos[1];
+    tmp2 = targetMotorPos[2];
 }
 
 void WristSubsystem::updateMotorPID(MotorIndex idx) {
