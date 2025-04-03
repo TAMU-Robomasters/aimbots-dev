@@ -15,7 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-      messageSleepTimeout(m),
+      messageSleepTimeout(0),
       lastMessage()
 {}
 
@@ -177,58 +177,17 @@ void JetsonCommunicator::sendSimpleMessage() {
     float32_t camToTurretTransformationArray[NUM_TRANSFORM_ELEMENTS] = {0};
 
     // Store current transformation from camera reference frame to turret reference frame into array and display the transformation
-     drivers->kinematicInformant.updateRobotFrames();
-     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
-         drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_FIELD_FRAME);
- 
-     src::Informants::Transformers::CoordinateFrame turretCameraFrame =
-         drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
-     camToTurretTranformationMatrix = turretCameraFrame.getTransformToFrame(turretFieldFrame);
-     for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
+    drivers->kinematicInformant.updateRobotFrames();
+    src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+    src::Informants::Transformers::CoordinateFrame turretCameraFrame =
+        drivers->kinematicInformant.getTurretFrames().getFrame(src::Informants::Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+    camToTurretTranformationMatrix = turretCameraFrame.getTransformToFrame(turretFieldFrame);
+    for (int_fast8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
         camToTurretTransformationArray[i] = camToTurretTranformationMatrix.element[i]; //!this is what we need to send over
         camToTurretTranformationDisplay[i] = camToTurretTranformationMatrix.element[i];
-     }
- }
- 
-
-
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
-
-    JetsonMessage embeddedToCvMsg;
-    embeddedToCvMsg.typeAndTeam = 0b00000111;
-    embeddedToCvMsg.magic = DEVBOARD_MESSAGE_MAGIC; // robot = standard, team = blue, magic number = 'b'
-    // 0b 0000 0000 0000 0000
-    embeddedToCvMsg.targetX = 0xFFFFFFFF;
-    embeddedToCvMsg.targetY = 0xFFFFFFFF;
-    embeddedToCvMsg.targetZ = 0xFFFFFFFF;
-    embeddedToCvMsg.delay = 200;
-
-    rawSerialSend[0] = embeddedToCvMsg.magic;
-    // rawSerialSend[1] = embeddedToCvMsg.targetX;
-    // rawSerialSend[2] = embeddedToCvMsg.targetY;
-    // rawSerialSend[3] = embeddedToCvMsg.targetZ;
-    // rawSerialSend[4] = embeddedToCvMsg.delay;
-
-    // for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
-    //     rawSerialSend = embeddedToCvMsg;
-    // }
-
-    // uint8_t simpleData = 255; // 1111 1111 (8 ones)
-    
-    // for (uint8_t i = 0; i < sizeof(JetsonMessage); i++) {
-    //     WRITE(&rawSerialSend[i], 1);  // attempts to send one byte from the buffer
-    // }
-
-    // NOTE: loop is hard coded
-    if (messageSleepTimeout.isExpired()){
-        for (uint8_t i = 0; i < 5; i++) {
-            WRITE(&rawSerialSend[0], 1);  // attempts to send one byte from the buffer
-        }
-        messageSleepTimeout.restart(200);
-    } 
-    // receive response from jetson (CV) over UART
-    // updateSerial();
+    }
 }
-
 
 }  // namespace src::Informants::Vision
