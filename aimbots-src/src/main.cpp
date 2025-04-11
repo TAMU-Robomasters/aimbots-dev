@@ -183,6 +183,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
+    drivers->cvCommunicator.sendSimpleMessage();
  // FIXME: remove after testing UART port
 #else
     drivers->turretCommunicator.sendIMUData();

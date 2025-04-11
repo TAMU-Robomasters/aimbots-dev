@@ -53,7 +53,7 @@ float camToTurretTranformationDisplay[NUM_TRANSFORM_ELEMENTS] = {0};
  * JetsonMessage from our received bytes.
  */
 alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
-alignas(JetsonMessage) uint8_t rawSerialSend[sizeof(JetsonMessage)]; // message to CV Jetson from embedded (embedded -> CV Jetson)
+// alignas(JetsonMessage) uint8_t rawSerialSend[sizeof(JetsonMessage)]; // message to CV Jetson from embedded (embedded -> CV Jetson)
 
 void JetsonCommunicator::updateSerial() {
     // uint8_t randomValues[sizeof(JetsonMessage)] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
@@ -166,14 +166,6 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 
 void JetsonCommunicator::sendSimpleMessage() {
-    // struct JetsonMessage {
-    //     uint8_t magic;
-    //     float targetX;
-    //     float targetY;
-    //     float targetZ;
-    //     uint8_t delay;  // ms
-    //     CVState cvState;
-    // } __attribute__((packed));
     float32_t camToTurretTransformationArray[NUM_TRANSFORM_ELEMENTS] = {0};
 
     // Store current transformation from camera reference frame to turret reference frame into array and display the transformation
@@ -189,36 +181,21 @@ void JetsonCommunicator::sendSimpleMessage() {
         camToTurretTranformationDisplay[i] = camToTurretTranformationMatrix.element[i];
     }
 
-    uint8_t randomValues[] = {255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240};
-
     // send...
     // magic number
     // team
     // robot id
     // then, the transformation array (camToTurretTransformationArray)
 
-    // JetsonMessage embeddedToCvMsg;
-    // embeddedToCvMsg.typeAndTeam = 0b00000111;
-    // embeddedToCvMsg.magic = DEVBOARD_MESSAGE_MAGIC; // robot = standard, team = blue, magic number = 'b'
-    // // 0b 0000 0000 0000 0000
-    // embeddedToCvMsg.targetX = 0xFFFFFFFF;
-    // embeddedToCvMsg.targetY = 0xFFFFFFFF;
-    // embeddedToCvMsg.targetZ = 0xFFFFFFFF;
-    // embeddedToCvMsg.delay = 200;
-
-    // rawSerialSend[0] = embeddedToCvMsg.magic;
-
-    for (uint8_t i = 0; i < NUM_TRANSFORM_ELEMENTS; i++) {
-        rawSerialSend[i] = camToTurretTransformationArray[i];
-    }
+    // uint32_t arr[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
     if (messageSleepTimeout.isExpired()){
-        for (uint8_t i = 0; i < 5; i++) {
-            WRITE(&rawSerialSend[0], 1);  // attempts to send one byte from the buffer
-            messageSleepTimeout.restart(200);
-        }    
+        uint8_t b = 'b';
+        WRITE(&b, 1);
+        WRITE((uint8_t*) &camToTurretTransformationArray, sizeof(camToTurretTransformationArray));          
+        // WRITE((uint8_t*) &arr, sizeof(arr));
+        messageSleepTimeout.restart(200);
     }
-
 }
 
 }  // namespace src::Informants::Vision
