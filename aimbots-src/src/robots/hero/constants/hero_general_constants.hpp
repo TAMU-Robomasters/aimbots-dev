@@ -1,6 +1,6 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 static constexpr SongTitle STARTUP_SONG = SongTitle::LG_WASH;
 
@@ -41,10 +41,9 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
     -0.00587f,   // z = 0.01683
 };
 
-
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(-90.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);

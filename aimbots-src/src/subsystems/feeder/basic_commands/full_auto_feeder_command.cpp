@@ -60,11 +60,11 @@ void FullAutoFeederCommand::execute() {
     // overheat, set the RPM to 0, otherwise run as normal
     currentRotationDisplay = feeder->getEncoderUnwrapped(0);
 
-    if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+    if (false && feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     } else {
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
-            feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
+            // feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
 

@@ -33,5 +33,5 @@ static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000, 30
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {SECONDARY, PRIMARY};
 static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0.5;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36, 36};
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, false};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, true};
 //
