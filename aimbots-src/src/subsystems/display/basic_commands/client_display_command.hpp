@@ -84,7 +84,7 @@ private:
     //BooleanHUDIndicators booleanHudIndicators;
     //  ChassisOrientationIndicator chassisOrientation;
     //#ifndef TARGET_ENGINEER
-    // reticleIndicator;
+    ReticleIndicator reticleIndicator;
     BoolyBear boolyBears;
     //#endif
     // CVDisplay cvDisplay;

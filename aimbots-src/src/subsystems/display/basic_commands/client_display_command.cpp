@@ -41,8 +41,8 @@ ClientDisplayCommand::ClientDisplayCommand(
       //booleanHudIndicators(commandScheduler, refSerialTransmitter, chassis),
       /*chassisOrientation(drivers, refSerialTransmitter, gimbal),*/
       //#ifndef TARGET_ENGINEER
-      boolyBears(drivers,refSerialTransmitter)
-      //reticleIndicator(drivers, refSerialTransmitter)  //,
+      boolyBears(drivers,refSerialTransmitter), 
+      reticleIndicator(drivers, refSerialTransmitter)  //,
 //#endif
 /*cvDisplay(refSerialTransmitter, ballisticsSolver)  */
 {
@@ -79,8 +79,8 @@ bool ClientDisplayCommand::run() {
     //PT_CALL(booleanHudIndicators.sendInitialGraphics());
     // #ifdef TARGET_HERO
 
-    //PT_CALL(reticleIndicator.sendInitialGraphics());
-    PT_CALL(boolyBears.sendInitialGraphics());
+    PT_CALL(reticleIndicator.sendInitialGraphics());
+    // PT_CALL(boolyBears.sendInitialGraphics());
     //#endif
 
     while (!this->restarting) {
@@ -88,8 +88,8 @@ bool ClientDisplayCommand::run() {
         // PT_CALL(cvDisplay.sendInitialGraphics());
        // PT_CALL(booleanHudIndicators.update());
         // #ifdef TARGET_HERO
-        //PT_CALL(reticleIndicator.update());
-        PT_CALL(boolyBears.update());
+        PT_CALL(reticleIndicator.update());
+        // PT_CALL(boolyBears.update());
         // #endif
         PT_YIELD();
     }
