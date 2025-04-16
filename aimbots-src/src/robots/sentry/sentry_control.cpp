@@ -255,7 +255,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&imuCalibrateCommand,*/ &chassisManualDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(

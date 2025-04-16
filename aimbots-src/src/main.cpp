@@ -67,7 +67,6 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
-
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
 int main() {
@@ -80,14 +79,14 @@ int main() {
      *      robot loop we must access the singleton drivers to update
      *      IO states and run the scheduler.
      */
+
     src::Drivers *drivers = src::DoNotUse_getDrivers();
-
     Board::initialize();
-
     tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
-
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);
+
+
 
 #ifdef PLATFORM_HOSTED
     tap::motorsim::SimHandler::resetMotorSims();
