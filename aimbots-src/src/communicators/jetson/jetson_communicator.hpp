@@ -15,6 +15,7 @@ class Drivers;
 namespace src::Informants::Vision {
 
 static constexpr int_fast8_t NUM_TRANSFORM_ELEMENTS = 4*4;
+static constexpr int_fast8_t NUM_HEADER_ELEMENTS = 3;
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,

@@ -187,13 +187,16 @@ void JetsonCommunicator::sendSimpleMessage() {
     // robot id
     // then, the transformation array (camToTurretTransformationArray)
 
-    // uint32_t arr[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+    // needed later for schduling (with receiving data from the Jetson)...
+    // size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
+    // if (bytesRead != 1) return;
+
+    // header => magic number, robot type, and team
+    uint8_t headerMessage[NUM_HEADER_ELEMENTS] = {DEVBOARD_MESSAGE_MAGIC, SENTRY_ROBOT_TYPE, RED_TEAM};
 
     if (messageSleepTimeout.isExpired()){
-        uint8_t b = 'b';
-        WRITE(&b, 1);
+        WRITE((uint8_t*) &headerMessage, sizeof(headerMessage));
         WRITE((uint8_t*) &camToTurretTransformationArray, sizeof(camToTurretTransformationArray));          
-        // WRITE((uint8_t*) &arr, sizeof(arr));
         messageSleepTimeout.restart(200);
     }
 }
