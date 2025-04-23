@@ -50,6 +50,8 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
+#if defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE)
+
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
@@ -57,6 +59,19 @@ static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
+
+#elif defined(TARGET_STANDARD_2023)
+
+static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
+
+static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
+static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
+
+#endif
+
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 // This array holds the IDs of all speed monitor barrels on the robot
