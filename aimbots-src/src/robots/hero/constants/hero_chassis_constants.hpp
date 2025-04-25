@@ -8,9 +8,9 @@ static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
-    .kp = 18.0f,
-    .ki = 0.0f,
-    .kd = 1.0f,
+    .kp = 5.0f,
+    .ki = 1.0f,
+    .kd = 2.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
