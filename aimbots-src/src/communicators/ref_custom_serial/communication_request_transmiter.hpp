@@ -28,10 +28,10 @@ private:
 
     // RobotStates* robotStateInterface;
 
-    // #ifdef TARGET_SENTRY
+    // #ifdef ALL_SENTRIES
     static constexpr uint16_t SENTRY_REQUEST_ROBOT_ID = 0x200;
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     MessageType lastSentMessage = MessageType::TEAM_MESSAGE_STANDARD;
 #else
     MessageType lastSentMessage = MessageType::ROBOT_STATE;
@@ -51,7 +51,8 @@ private:
 
         // otherwise, iterate through message types until you find one that is queued
         auto nextMessageType = [](MessageType type) {
-            return static_cast<MessageType>((static_cast<uint8_t>(type) + 1) % static_cast<uint8_t>(MessageType::NUM_MESSAGE_TYPES));
+            return static_cast<MessageType>(
+                (static_cast<uint8_t>(type) + 1) % static_cast<uint8_t>(MessageType::NUM_MESSAGE_TYPES));
         };
 
         lastSentMessage = nextMessageType(lastSentMessage);
@@ -72,4 +73,4 @@ public:
 
 }  // namespace src::Communication
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

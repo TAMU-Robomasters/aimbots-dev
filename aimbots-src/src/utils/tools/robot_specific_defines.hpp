@@ -1,7 +1,7 @@
 #pragma once
 #if defined(TARGET_AERIAL)
-#include "robots/aerial/constants/aerial_general_constants.hpp"
 #include "robots/aerial/aerial_control_interface.hpp"
+#include "robots/aerial/constants/aerial_general_constants.hpp"
 #define ALL_AERIALS
 
 #elif defined(TARGET_DART)
@@ -9,7 +9,7 @@
 #include "robots/dart/dart_control_interface.hpp"
 #define ALL_DARTS
 
-#elif defined(TARGET_ENGINEER) || defined(TARGET_SWERVE_ENGINEER)
+#elif defined(TARGET_ENGINEER)
 #include "robots/engineer/constants/engineer_general_constants.hpp"
 #include "robots/engineer/engineer_control_interface.hpp"
 #define ALL_ENGINEERS
@@ -19,13 +19,13 @@
 #include "robots/hero/hero_control_interface.hpp"
 #define ALL_HEROES
 
-#elif defined(TARGET_SENTRY)
+#elif defined(TARGET_SENTRY_BRAVO) || defined(TARGET_SENTRY_SWERVE)
 #include "robots/sentry/constants/sentry_general_constant.hpp"
 #include "robots/sentry/sentry_control_interface.hpp"
 #define ALL_SENTRIES
 
-#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_WARTORTLE) || defined(TARGET_STANDARD_SQUIRTLE) || \
-    defined(TARGET_STANDARD_2023)
+#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || \
+    defined(TARGET_STANDARD_2025)
 #include "robots/standard/constants/standard_general_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS

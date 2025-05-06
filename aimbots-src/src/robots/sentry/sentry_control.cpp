@@ -338,4 +338,4 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
 }
 }  // namespace src::Control
 
-#endif  // TARGET_SENTRY
+#endif  // ALL_SENTRIES

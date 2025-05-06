@@ -18,10 +18,11 @@ namespace src::Communication {
 CommunicationRequestHandler::CommunicationRequestHandler(src::Drivers* drivers) : drivers(drivers) {}
 
 void CommunicationRequestHandler::operator()(const tap::communication::serial::DJISerial::ReceivedSerialMessage& message) {
-    MessageType type = static_cast<MessageType>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
+    MessageType type =
+        static_cast<MessageType>(message.data[sizeof(tap::communication::serial::RefSerialData::Tx::InteractiveHeader)]);
 
     switch (type) {
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
         // case MessageType::TEAM_MESSAGE_STANDARD:
         //     if (teamMesssageHandlerStandard != nullptr) {
         //         updateRobotStateStandard();
@@ -51,4 +52,4 @@ void CommunicationRequestHandler::operator()(const tap::communication::serial::D
 
 }  // namespace src::Communication
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

@@ -1,6 +1,6 @@
 #include "sentry_match_chassis_control_command.hpp"
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
 #ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {

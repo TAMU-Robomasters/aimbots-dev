@@ -1,14 +1,46 @@
 #pragma once
-#include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
+#include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
+
+#if defined(TARGET_SENTRY_SWERVE)
+#define SWERVE
+static constexpr uint8_t MOTORS_PER_WHEEL = 2;
+
+static constexpr MotorID LEFT_BACK_YAW_ID = MotorID::MOTOR5;
+static constexpr MotorID LEFT_FRONT_YAW_ID = MotorID::MOTOR6;
+static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
+static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
+
+static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
+    .kp = 1.0f,
+    .ki = 0.0f,
+    .kd = 0.01f,
+    .maxICumulative = 0.9f,
+    .maxOutput = 1.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr int LEFT_FRONT_YAW_OFFSET = 0;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 0;
+static constexpr int LEFT_BACK_YAW_OFFSET = 0;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 0;
+
+#elif defined(TARGET_SENTRY_BRAVO)
+static constexpr uint8_t MOTORS_PER_WHEEL = 1;
+
+#endif
 
 /**
  * @brief Defines the number of motors created for the chassis.
  */
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
-static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 static constexpr float CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;

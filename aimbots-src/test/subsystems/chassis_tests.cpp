@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "drivers.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
+
+#include "drivers.hpp"
 
 using ::testing::NiceMock;
 
@@ -11,7 +12,7 @@ TEST(ChassisSubsystemTest, initialize_runs_initialize_on_all_motors) {
 
     // ON_CALL(c.leftBackWheel, getEncoderUnwrapped);
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     EXPECT_CALL(c.railWheel, initialize);
 #else
     EXPECT_CALL(c.leftBackWheel, initialize);

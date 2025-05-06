@@ -52,7 +52,7 @@ void RobotStates::updateRobotStateHealth(int number, Team teamColor, int health)
     robotStates[teamColor][number - 1].setHealth(health);
 }
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
 void RobotStates::updateTeamMessage() {
     // will update all of the struct messages for the coms
     // tap::communication::serial::RefSerial::RobotId id = &drivers->refSerial.getRobotData().robotId;
@@ -113,7 +113,7 @@ void RobotStates::respond() {
 
 void RobotStates::refresh() {
     this->respond();
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     // TODO:: the code that will update stuff based on the recived messages
     this->updateTeamMessage();
 #endif
@@ -126,4 +126,4 @@ void RobotStates::refresh() {
 }
 }  // namespace src::RobotStates
 
-#endif //#ifdef REF_COMM_COMPATIBLE
+#endif  //#ifdef REF_COMM_COMPATIBLE

@@ -32,8 +32,8 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
       leftBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       leftFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
-      rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
+      rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
 #endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
