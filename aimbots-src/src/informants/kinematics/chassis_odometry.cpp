@@ -6,11 +6,11 @@
 
 namespace src::Informants {
 
-ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {} 
+ChassisOdometry::ChassisOdometry(src::Drivers* drivers) : drivers(drivers) {}
 
 //#ifndef TARGET_TURRET
-      // chassisKFOdometry(-2.830f, -0.730f)
-      //chassisKFOdometry(3.1f, 3.5f);
+// chassisKFOdometry(-2.830f, -0.730f)
+// chassisKFOdometry(3.1f, 3.5f);
 //#warning "don't hardcode these values"
 //#endif
 
@@ -24,30 +24,34 @@ float chassisAngleYDisplay = 0.0f;
 float chassisAngleZDisplay = 0.0f;
 
 void ChassisOdometry::updateChassisAcceleration() {
-    chassisAngleXDisplay = drivers->kinematicInformant.imuData.getChassisAngularState()[X_AXIS].getPosition();
-    chassisAngleYDisplay = drivers->kinematicInformant.imuData.getChassisAngularState()[Y_AXIS].getPosition();
-    chassisAngleZDisplay = drivers->kinematicInformant.imuData.getChassisAngularState()[Z_AXIS].getPosition();
+    chassisAngleXDisplay = drivers->kinematicInformant.getIMUData()->getChassisAngularState()[X_AXIS].getPosition();
+    chassisAngleYDisplay = drivers->kinematicInformant.getIMUData()->getChassisAngularState()[Y_AXIS].getPosition();
+    chassisAngleZDisplay = drivers->kinematicInformant.getIMUData()->getChassisAngularState()[Z_AXIS].getPosition();
 
     Vector3f linearIMUAcceleration = removeFalseAcceleration(
-            drivers->kinematicInformant.imuData.getImuLinearState(), 
-            drivers->kinematicInformant.imuData.getImuAngularState(), 
-            IMU_MOUNT_POSITION);
+        drivers->kinematicInformant.getIMUData()->getImuLinearState(),
+        drivers->kinematicInformant.getIMUData()->getImuAngularState(),
+        IMU_MOUNT_POSITION);
 
-    Vector3f linearChassisAcceleration =
-        drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames()
-            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
-            .getPointInFrame(
-                drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
-                linearIMUAcceleration);
+    Vector3f linearChassisAcceleration = drivers->kinematicInformant.getFieldGimbal()
+                                             ->getRobotFrames()
+                                             .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+                                             .getPointInFrame(
+                                                 drivers->kinematicInformant.getFieldGimbal()->getRobotFrames().getFrame(
+                                                     Transformers::FrameType::CHASSIS_FRAME),
+                                                 linearIMUAcceleration);
 
     linearIMUAccelerationDisplay = linearIMUAcceleration;
     linearIMUAccelerationXDisplay = linearChassisAcceleration.getX();
     linearIMUAccelerationYDisplay = linearChassisAcceleration.getY();
     linearIMUAccelerationZDisplay = linearChassisAcceleration.getZ();
 
-    drivers->kinematicInformant.imuData.getChassisLinearState()[X_AXIS].updateFromAcceleration(linearChassisAcceleration.getX());
-    drivers->kinematicInformant.imuData.getChassisLinearState()[Y_AXIS].updateFromAcceleration(linearChassisAcceleration.getY());
-    drivers->kinematicInformant.imuData.getChassisLinearState()[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
+    drivers->kinematicInformant.getIMUData()->getChassisLinearState()[X_AXIS].updateFromAcceleration(
+        linearChassisAcceleration.getX());
+    drivers->kinematicInformant.getIMUData()->getChassisLinearState()[Y_AXIS].updateFromAcceleration(
+        linearChassisAcceleration.getY());
+    drivers->kinematicInformant.getIMUData()->getChassisLinearState()[Z_AXIS].updateFromAcceleration(
+        linearChassisAcceleration.getZ());
 }
 
 Vector3f wDisplay = {0.0f, 0.0f, 0.0f};
@@ -63,62 +67,62 @@ Vector3f ChassisOdometry::removeFalseAcceleration(
     Vector<KinematicStateVector, 3> imuLinearKSV,
     Vector<KinematicStateVector, 3> imuAngularKSV,
     Vector3f r) {
-        Vector3f w = {
-            imuAngularKSV[X_AXIS].getVelocity(),
-            imuAngularKSV[Y_AXIS].getVelocity(),
-            imuAngularKSV[Z_AXIS].getVelocity()};
+    Vector3f w = {
+        imuAngularKSV[X_AXIS].getVelocity(),
+        imuAngularKSV[Y_AXIS].getVelocity(),
+        imuAngularKSV[Z_AXIS].getVelocity()};
 
-        // Vector3f alpha = {
-        //     imuAngularKSV[X_AXIS].getAcceleration(),
-        //     imuAngularKSV[Y_AXIS].getAcceleration(),
-        //     imuAngularKSV[Z_AXIS].getAcceleration()};
-        // was broken so i made it 0, requires investigation on why it's broken (was setting stuff to infinity)
+    // Vector3f alpha = {
+    //     imuAngularKSV[X_AXIS].getAcceleration(),
+    //     imuAngularKSV[Y_AXIS].getAcceleration(),
+    //     imuAngularKSV[Z_AXIS].getAcceleration()};
+    // was broken so i made it 0, requires investigation on why it's broken (was setting stuff to infinity)
 
-        Vector3f alpha = {0.0f, 0.0f, 0.0f};
+    Vector3f alpha = {0.0f, 0.0f, 0.0f};
 
-        Vector3f a = {
-            imuLinearKSV[X_AXIS].getAcceleration(),
-            imuLinearKSV[Y_AXIS].getAcceleration(),
-            imuLinearKSV[Z_AXIS].getAcceleration()};
+    Vector3f a = {
+        imuLinearKSV[X_AXIS].getAcceleration(),
+        imuLinearKSV[Y_AXIS].getAcceleration(),
+        imuLinearKSV[Z_AXIS].getAcceleration()};
 
-        aXDisplay = a.getX();
-        aYDisplay = a.getY();
-        aZDisplay = a.getZ();
+    aXDisplay = a.getX();
+    aYDisplay = a.getY();
+    aZDisplay = a.getZ();
 
-        wDisplay = w;
-        alphaDisplay = alpha;
-        rDisplay = r;
-        aDisplay = a;
+    wDisplay = w;
+    alphaDisplay = alpha;
+    rDisplay = r;
+    aDisplay = a;
 
-        Vector3f linearIMUAcceleration = a - (alpha ^ r) - (w ^ (w ^ r));
-        return linearIMUAcceleration;
+    Vector3f linearIMUAcceleration = a - (alpha ^ r) - (w ^ (w ^ r));
+    return linearIMUAcceleration;
 }
+
+float robotLocationXDisplay = 0.0f;
+float robotLocationYDisplay = 0.0f;
 
 void ChassisOdometry::updateRobotFrames() {
     // Update IMU Stuff
-    drivers->kinematicInformant.imuData.updateIMUKinematicStateVector();
+    drivers->kinematicInformant.getIMUData()->updateIMUKinematicStateVector();
 
-    #ifndef TARGET_TURRET
+#ifndef TARGET_TURRET
     // Update Chassis Stuff after IMU STUFF
-    drivers->kinematicInformant.imuData.updateIMUAngles();
-    drivers->kinematicInformant.chassisOdometry.updateChassisAcceleration();
+    drivers->kinematicInformant.getIMUData()->updateIMUAngles();
+    drivers->kinematicInformant.getChassisOdometry()->updateChassisAcceleration();
 
     chassisIMUHistoryBuffer.prependOverwrite(
-        {drivers->kinematicInformant.imuData.getIMUAngle(PITCH_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(ROLL_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians)});
+        {drivers->kinematicInformant.getIMUData()->getIMUAngle(PITCH_AXIS, AngleUnit::Radians),
+         drivers->kinematicInformant.getIMUData()->getIMUAngle(ROLL_AXIS, AngleUnit::Radians),
+         drivers->kinematicInformant.getIMUData()->getIMUAngle(YAW_AXIS, AngleUnit::Radians)});
 
     chassisKFOdometry->update(
-        drivers->kinematicInformant.imuData.getIMUAngle(YAW_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getChassisLinearState()[X_AXIS].getAcceleration(),
-        drivers->kinematicInformant.imuData.getChassisLinearState()[Y_AXIS].getAcceleration());
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(YAW_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.getIMUData()->getChassisLinearState()[X_AXIS].getAcceleration(),
+        drivers->kinematicInformant.getIMUData()->getChassisLinearState()[Y_AXIS].getAcceleration());
 
     modm::Location2D<float> robotLocation = chassisKFOdometry->getCurrentLocation2D();
 
     modm::Location2D<float> robotLocationDisplay;
-    
-    float robotLocationXDisplay = 0.0f;
-    float robotLocationYDisplay = 0.0f;
 
     robotLocationXDisplay = robotLocation.getX();
     robotLocationYDisplay = robotLocation.getY();
@@ -127,4 +131,4 @@ void ChassisOdometry::updateRobotFrames() {
 #endif
 }
 
-} //namespace src::Informants
+}  // namespace src::Informants

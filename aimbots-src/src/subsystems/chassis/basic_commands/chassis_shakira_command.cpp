@@ -1,11 +1,10 @@
 #include "utils/ballistics/ballistics_solver.hpp"
 
-
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
 
-#include "subsystems/chassis/control/chassis_helper.hpp"
 #include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
+#include "subsystems/chassis/control/chassis_helper.hpp"
 
 namespace src::Chassis {
 
@@ -65,7 +64,7 @@ void ChassisShakiraCommand::execute() {
 
             rotationController.runController(
                 chassisErrorAngle,
-                -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(
                     AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 
@@ -82,7 +81,7 @@ void ChassisShakiraCommand::execute() {
         } else {
             rotationController.runController(
                 yawAngleFromChassisCenter,
-                -RADPS_TO_RPM(drivers->kinematicInformant.imuData.getIMUAngularVelocity(
+                -RADPS_TO_RPM(drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(
                     AngularAxis::YAW_AXIS,
                     AngleUnit::Radians)));
 

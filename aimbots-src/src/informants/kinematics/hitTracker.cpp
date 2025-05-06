@@ -13,7 +13,7 @@
 
 namespace src::Informants {
 
-HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {} 
+HitTracker::HitTracker(src::Drivers* drivers) : drivers(drivers) {}
 
 void HitTracker::initalize() { hitTimer.stop(); }
 
@@ -73,8 +73,9 @@ float HitTracker::getHitAngle_gimbalRelative() {
         return 69.0f;
     }
     // get angle btwn gimbal-chassis?
-    float gimbalAngle =
-        drivers->kinematicInformant.fieldRelativeGimbal.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+    float gimbalAngle = drivers->kinematicInformant.getFieldGimbal()
+                            ->getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat()
+                            .getWrappedValue();
     // calc and return
     WrappedFloat hitAngle = WrappedFloat(gimbalAngle + chassis_hitAngle, -M_PI, M_PI);
     return hitAngle.getWrappedValue();

@@ -104,12 +104,14 @@ void TurretCommunicator::sendIMUData() {
         modm::can::Message yawMsg(static_cast<uint32_t>(CanID::YawData), 7);
         AngleMessageData* yawData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
         yawData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians) *
+            ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         yawData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::YAW_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
-        yawData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.imuData.getRawIMULinearAcceleration(Z_AXIS) * LINEAR_PRECISION_FACTOR);
+            drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::YAW_AXIS, AngleUnit::Radians) *
+            ANGLE_PRECISION_FACTOR);
+        yawData->linearAcceleration = static_cast<int16_t>(
+            drivers->kinematicInformant.getIMUData()->getRawIMULinearAcceleration(Z_AXIS) * LINEAR_PRECISION_FACTOR);
         yawData->seq = sendSequence;
 
         drivers->can.sendMessage(bus, yawMsg);
@@ -117,13 +119,14 @@ void TurretCommunicator::sendIMUData() {
         modm::can::Message pitchMsg(static_cast<uint32_t>(CanID::PitchData), 7);
         AngleMessageData* pitchData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
         pitchData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians) *
+            ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         pitchData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians) *
+            drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians) *
             ANGLE_PRECISION_FACTOR);
-        pitchData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.imuData.getRawIMULinearAcceleration(X_AXIS) * LINEAR_PRECISION_FACTOR);
+        pitchData->linearAcceleration = static_cast<int16_t>(
+            drivers->kinematicInformant.getIMUData()->getRawIMULinearAcceleration(X_AXIS) * LINEAR_PRECISION_FACTOR);
         pitchData->seq = sendSequence;
 
         drivers->can.sendMessage(bus, pitchMsg);
@@ -131,13 +134,14 @@ void TurretCommunicator::sendIMUData() {
         modm::can::Message rollMsg(static_cast<uint32_t>(CanID::RollData), 7);
         AngleMessageData* rollData = reinterpret_cast<AngleMessageData*>(yawMsg.data);
         rollData->target = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians) * ANGLE_PRECISION_FACTOR);
+            drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians) *
+            ANGLE_PRECISION_FACTOR);
         // TODO: Check if this is right??
         rollData->angularVelocity = static_cast<int16_t>(
-            drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians) *
+            drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians) *
             ANGLE_PRECISION_FACTOR);
-        rollData->linearAcceleration =
-            static_cast<int16_t>(drivers->kinematicInformant.imuData.getRawIMULinearAcceleration(Y_AXIS) * LINEAR_PRECISION_FACTOR);
+        rollData->linearAcceleration = static_cast<int16_t>(
+            drivers->kinematicInformant.getIMUData()->getRawIMULinearAcceleration(Y_AXIS) * LINEAR_PRECISION_FACTOR);
         rollData->seq = sendSequence;
 
         drivers->can.sendMessage(bus, rollMsg);
@@ -152,7 +156,7 @@ void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg) {
     if (data & CHASSIS_TO_TURRET_MSG_REQUEST_IMU_CALIBRATION) {
         drivers->leds.set(tap::gpio::Leds::Green, true);
 
-        drivers->kinematicInformant.imuData.recalibrateIMU();
+        drivers->kinematicInformant.getIMUData()->recalibrateIMU();
     }
 }
 #else

@@ -6,7 +6,6 @@
 #include "informants/kinematics/field_relative_gimbal.hpp"
 #include "informants/kinematics/hitTracker.hpp"
 #include "informants/kinematics/imu_data.hpp"
-
 #include "utils/tools/common_types.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
@@ -29,15 +28,9 @@ public:
     KinematicInformant(src::Drivers* drivers);
     ~KinematicInformant() = default;
 
-    src::Informants::FieldRelativeGimbal fieldRelativeGimbal;
-    src::Informants::ChassisOdometry chassisOdometry;
-    src::Informants::IMUData imuData;    
-    src::Informants::HitTracker hitTracker;
-
     void initialize(float imuFrequency, float imukP, float imukI);
 
-    void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem,
-                            src::Chassis::ChassisSubsystem* chassisSubsystem);
+    void registerSubsystems(src::Gimbal::GimbalSubsystem* gimbalSubsystem, src::Chassis::ChassisSubsystem* chassisSubsystem);
 
     void registerSubsystems(src::Chassis::ChassisSubsystem* chassisSubsystem);
 
@@ -47,9 +40,18 @@ public:
 
     // updates all kinematic_informant related files' update functions
     void updateData();
-    
+
+    src::Informants::FieldRelativeGimbal* getFieldGimbal() { return &fieldRelativeGimbal; }
+    src::Informants::ChassisOdometry* getChassisOdometry() { return &chassisOdometry; }
+    src::Informants::IMUData* getIMUData() { return &imuData; }
+    src::Informants::HitTracker* getHitTracker() { return &hitTracker; }
+
 private:
     src::Drivers* drivers;
+    src::Informants::FieldRelativeGimbal fieldRelativeGimbal;
+    src::Informants::ChassisOdometry chassisOdometry;
+    src::Informants::IMUData imuData;
+    src::Informants::HitTracker hitTracker;
     src::Gimbal::GimbalSubsystem* gimbalSubsystem;
     src::Chassis::ChassisSubsystem* chassisSubsystem;
 
@@ -70,7 +72,6 @@ private:
     //     turretIMUAngularYState,
     //     turretIMUAngularZState};
 
-    
 };  // class KinematicInformant
 
 }  // namespace src::Informants

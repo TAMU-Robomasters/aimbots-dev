@@ -66,11 +66,11 @@ void SentryMatchFiringControlCommand::execute() {
         if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::CVState::FOUND) {
             float yawTargetGimbal = fieldRelativeGimbalController->getTargetYaw(AngleUnit::Radians);
             tap::algorithms::WrappedFloat yawCurrentGimbal =
-                drivers->kinematicInformant.fieldRelativeGimbal.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
+                drivers->kinematicInformant.getIMUData()->getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
 
             float pitchTargetGimbal = fieldRelativeGimbalController->getTargetPitch(AngleUnit::Radians);
             tap::algorithms::WrappedFloat pitchCurrentGimbal =
-                drivers->kinematicInformant.fieldRelativeGimbal.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
+                drivers->kinematicInformant.getIMUData()->getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
 
             isErrorCloseEnoughToShoot = ballisticsSolver->withinAimingTolerance(
                 yawCurrentGimbal.minDifference(yawTargetGimbal),

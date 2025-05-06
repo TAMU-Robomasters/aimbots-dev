@@ -118,11 +118,11 @@ int main() {
             }*/
 
             // comms
-            drivers->kinematicInformant.hitTracker.getHitAngle_chassisRelative();
+            drivers->kinematicInformant.getHitTracker()->getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateData();
             drivers->musicPlayer.playMusic();
-            drivers->kinematicInformant.hitTracker.getHitAngle_gimbalRelative();
+            drivers->kinematicInformant.getHitTracker()->getHitAngle_gimbalRelative();
 
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
@@ -147,10 +147,10 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
-    drivers->kinematicInformant.imuData.recalibrateIMU(
+    drivers->kinematicInformant.getIMUData()->recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
-    drivers->kinematicInformant.imuData.recalibrateIMU(
+    drivers->kinematicInformant.getIMUData()->recalibrateIMU(
         {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
 #endif
     // drivers->terminalSerial.initialize();
@@ -193,31 +193,23 @@ static void updateIo(src::Drivers *drivers) {
 
     // utils::Music::continuePlayingXPStartupTune(drivers);
 
-    // imuStatus = drivers->kinematicInformant.imuData.getIMUState();
+    // imuStatus = drivers->kinematicInformant.getIMUData()->getIMUState();
     // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(AngularAxis::PITCH_AXIS,
     // AngleUnit::Degrees);
 
-    yawDisplay = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Degrees);
-    pitchDisplay =
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
-    rollDisplay =
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
+    yawDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+    pitchDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
+    rollDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
-    gZDisplay =
-        drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::YAW_AXIS,
-        AngleUnit::Radians);
-    gYDisplay =
-        drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::PITCH_AXIS,
-        AngleUnit::Radians);
-    gXDisplay =
-        drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::ROLL_AXIS,
-        AngleUnit::Radians);
-        
-    hitDisplay = drivers->kinematicInformant.hitTracker.getHitAngle_gimbalRelative();
-    wasHit = drivers->kinematicInformant.hitTracker.wasHit();
-    recentlyHit = drivers->kinematicInformant.hitTracker.recentlyHit();
+    gZDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    gYDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    gXDisplay = drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
 
-    //VARIABLES to test
+    hitDisplay = drivers->kinematicInformant.getHitTracker()->getHitAngle_gimbalRelative();
+    wasHit = drivers->kinematicInformant.getHitTracker()->wasHit();
+    recentlyHit = drivers->kinematicInformant.getHitTracker()->recentlyHit();
+
+    // VARIABLES to test
     //
 
     // yawDisplay = modm::toDegree(yaw);

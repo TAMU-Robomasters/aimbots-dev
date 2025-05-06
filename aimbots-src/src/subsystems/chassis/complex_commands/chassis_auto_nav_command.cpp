@@ -56,7 +56,7 @@ void ChassisAutoNavCommand::load_path(vector<Point> path) {
 }
 
 void ChassisAutoNavCommand::setTargetLocation(double x, double y) {
-    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.chassisOdometry.getRobotLocation2D();
+    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D();
     load_path(pathfinder.search(currentWorldLocation.getX(), currentWorldLocation.getY(), x, y));
 }
 
@@ -78,10 +78,10 @@ void ChassisAutoNavCommand::execute() {
         this->pop_path();
     }
 
-    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.chassisOdometry.getRobotLocation2D();
+    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D();
     myX = currentWorldLocation.getX();
     myY = currentWorldLocation.getY();
-    modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.chassisOdometry.getRobotVelocity2D();
+    modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getChassisOdometry()->getRobotVelocity2D();
 
     autoNavigator.update(currentWorldLocation);
     autoNavigator.getDesiredInput(&xError, &yError, &rotationError);

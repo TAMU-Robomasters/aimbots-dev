@@ -45,8 +45,8 @@ void ChassisAutoNavTokyoCommand::execute() {
     float yError = 0.0f;
     float rotationError = 0.0f;
 
-    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.chassisOdometry.getRobotLocation2D();
-    modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.chassisOdometry.getRobotVelocity2D();
+    modm::Location2D<float> currentWorldLocation = drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D();
+    modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getChassisOdometry()->getRobotVelocity2D();
 
     autoNavigator.update(currentWorldLocation);
 
@@ -101,4 +101,4 @@ void ChassisAutoNavTokyoCommand::end(bool interrupted) {
 
 }  // namespace src::Chassis
 
-#endif //#ifdef CHASSIS_COMPATIBLE
+#endif  //#ifdef CHASSIS_COMPATIBLE

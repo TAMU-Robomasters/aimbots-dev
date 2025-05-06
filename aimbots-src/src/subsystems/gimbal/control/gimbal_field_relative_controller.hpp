@@ -3,10 +3,10 @@
 #include <optional>
 
 #include <drivers.hpp>
-#include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
 #include <subsystems/gimbal/control/gimbal.hpp>
-#include <utils/tools/common_types.hpp>
+#include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
 #include <utils/pid/smooth_pid_wrap.hpp>
+#include <utils/tools/common_types.hpp>
 
 #include "utils/filters/ema.hpp"
 #ifdef GIMBAL_COMPATIBLE
@@ -48,7 +48,8 @@ public:
         targetPitch = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);
 
         // convert chassis-relative pitch soft stops to field-relative angles
-        float chassisPitchInGimbalDirection = drivers->kinematicInformant.fieldRelativeGimbal.getChassisPitchAngleInGimbalDirection();
+        float chassisPitchInGimbalDirection =
+            drivers->kinematicInformant.getFieldGimbal()->getChassisPitchAngleInGimbalDirection();
         float softHigh = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_HIGH;
         float softLow = chassisPitchInGimbalDirection + PITCH_AXIS_SOFTSTOP_LOW;
 

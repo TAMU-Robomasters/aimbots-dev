@@ -1,19 +1,20 @@
 #include "field_relative_gimbal.hpp"
 
-#include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/gimbal/control/gimbal.hpp"
 
 #include "drivers.hpp"
 
 namespace src::Informants {
-    
-FieldRelativeGimbal::FieldRelativeGimbal(src::Drivers* drivers) : drivers(drivers) {} 
+
+FieldRelativeGimbal::FieldRelativeGimbal(src::Drivers* drivers) : drivers(drivers) {}
 
 float chassisYawAngleDisplay = 0.0f;
 
 tap::algorithms::WrappedFloat FieldRelativeGimbal::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    float currChassisAngle = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians);
+    float currChassisAngle =
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
     return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
@@ -28,11 +29,10 @@ float FieldRelativeGimbal::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRoll = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    float chassisRoll = drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
-
-    float chassisPitch = drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float chassisPitch = drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
@@ -47,11 +47,13 @@ float FieldRelativeGimbal::getChassisPitchVelocityInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRollVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    float chassisRollVelocity =
+        drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::ROLL_AXIS, AngleUnit::Radians);
     float sinChasRollVelocity = sinf(chassisRollVelocity);
     float cosChasRollVelocity = cosf(chassisRollVelocity);
 
-    float chassisPitchVelocity = drivers->kinematicInformant.imuData.getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    float chassisPitchVelocity =
+        drivers->kinematicInformant.getIMUData()->getIMUAngularVelocity(AngularAxis::PITCH_AXIS, AngleUnit::Radians);
     float sinChasPitchVelocity = sinf(chassisPitchVelocity);
     float cosChasPitchVelocity = cosf(chassisPitchVelocity);
 
@@ -69,10 +71,10 @@ float FieldRelativeGimbal::getChassisLinearAccelerationInGimbalDirection() {
     // @luke help pwease 🥺👉👈
     float ang = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
 
-    chassisLinearStateXDisplay = drivers->kinematicInformant.imuData.getChassisLinearState()[X_AXIS].getAcceleration();
+    chassisLinearStateXDisplay = drivers->kinematicInformant.getIMUData()->getChassisLinearState()[X_AXIS].getAcceleration();
 
-    float accel =
-        drivers->kinematicInformant.imuData.getChassisLinearState()[X_AXIS].getAcceleration() * sinf(ang) + drivers->kinematicInformant.imuData.getChassisLinearState()[Y_AXIS].getAcceleration() * cosf(ang);
+    float accel = drivers->kinematicInformant.getIMUData()->getChassisLinearState()[X_AXIS].getAcceleration() * sinf(ang) +
+                  drivers->kinematicInformant.getIMUData()->getChassisLinearState()[Y_AXIS].getAcceleration() * cosf(ang);
 
     return accel;
 }
@@ -91,14 +93,14 @@ void FieldRelativeGimbal::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     turretFrames.mirrorPastCameraFrame(gimbalFieldAngles.first, gimbalFieldAngles.second, AngleUnit::Radians);
 }
 
- //PUT THIS BACK
+// PUT THIS BACK
 // This updates more than just the robot frames, so will also update turret frames
 
 void FieldRelativeGimbal::updateRobotFrames() {
     // Update IMU Stuff
-    drivers->kinematicInformant.imuData.updateIMUKinematicStateVector();
+    drivers->kinematicInformant.getIMUData()->updateIMUKinematicStateVector();
 
-    #ifndef TARGET_TURRET
+#ifndef TARGET_TURRET
     // update gimbal orientation buffer
     std::pair<float, float> orientation;
     orientation.first = getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
@@ -109,17 +111,18 @@ void FieldRelativeGimbal::updateRobotFrames() {
     robotFrames.updateFrames(
         gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
         gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians) + CHASSIS_START_ANGLE_WORLD,
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians) +
+            CHASSIS_START_ANGLE_WORLD,
         {0, 0, 0},
         AngleUnit::Radians);
 
     turretFrames.updateFrames(
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians),
-        drivers->kinematicInformant.imuData.getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::YAW_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::PITCH_AXIS, AngleUnit::Radians),
+        drivers->kinematicInformant.getIMUData()->getIMUAngle(AngularAxis::ROLL_AXIS, AngleUnit::Radians),
         AngleUnit::Radians);
 
 #endif
 }
 
-}  // namespace Informants
+}  // namespace src::Informants

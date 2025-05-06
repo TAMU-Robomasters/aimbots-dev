@@ -1,7 +1,5 @@
 #include "gimbal_patrol_command.hpp"
 
-
-
 #ifdef ALL_SENTRIES
 
 namespace src::Gimbal {
@@ -134,17 +132,17 @@ float GimbalPatrolCommand::getFieldRelativeYawPatrolAngle(AngleUnit unit) {
 
     if (chassisState == src::Chassis::ChassisMatchStates::CAPTURE) {
         zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-            drivers->kinematicInformant.chassisOdometry.getRobotLocation2D(),
+            drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D(),
             capPatrolCoordinates[patrolCoordinateIndex],
             AngleUnit::Radians);
     } else if (chassisState == src::Chassis::ChassisMatchStates::AGGRO) {
         zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-            drivers->kinematicInformant.chassisOdometry.getRobotLocation2D(),
+            drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D(),
             aggroPatrolCoordinates[patrolCoordinateIndex],
             AngleUnit::Radians);
     } else {
         zAngle = src::Utils::MatrixHelper::getZAngleBetweenLocations(
-            drivers->kinematicInformant.chassisOdometry.getRobotLocation2D(),
+            drivers->kinematicInformant.getChassisOdometry()->getRobotLocation2D(),
             safePatrolCoordinates[patrolCoordinateIndex],
             AngleUnit::Radians);
     }

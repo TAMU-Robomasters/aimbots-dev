@@ -1,12 +1,12 @@
-#include "kinematic_informant.hpp"
 #include "imu_data.hpp"
 
 #include "drivers.hpp"
+#include "kinematic_informant.hpp"
 
 namespace src::Informants {
 
-IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {} 
- 
+IMUData::IMUData(src::Drivers* drivers) : drivers(drivers) {}
+
 Vector3f IMUData::getRawLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
@@ -100,21 +100,23 @@ void IMUData::updateIMUAngles() {
     IMUAnglesDisplay = IMUAngles;
 
     // Gets chassis angles
-    Vector3f chassisAngles =
-        drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames()
-            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
-            .getPointInFrame(
-                drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
-                IMUAngles);
+    Vector3f chassisAngles = drivers->kinematicInformant.getFieldGimbal()
+                                 ->getRobotFrames()
+                                 .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+                                 .getPointInFrame(
+                                     drivers->kinematicInformant.getFieldGimbal()->getRobotFrames().getFrame(
+                                         Transformers::FrameType::CHASSIS_FRAME),
+                                     IMUAngles);
 
     chassisAnglesConvertedDisplay = chassisAngles;
 
-    Vector3f chassisAngularVelocities =
-        drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames()
-            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
-            .getPointInFrame(
-                drivers->kinematicInformant.fieldRelativeGimbal.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
-                IMUAngularVelocities);
+    Vector3f chassisAngularVelocities = drivers->kinematicInformant.getFieldGimbal()
+                                            ->getRobotFrames()
+                                            .getFrame(Transformers::FrameType::CHASSIS_IMU_FRAME)
+                                            .getPointInFrame(
+                                                drivers->kinematicInformant.getFieldGimbal()->getRobotFrames().getFrame(
+                                                    Transformers::FrameType::CHASSIS_FRAME),
+                                                IMUAngularVelocities);
 
     chassisAngularState[X_AXIS].updateFromPosition(chassisAngles[X_AXIS]);
     chassisAngularState[Y_AXIS].updateFromPosition(chassisAngles[Y_AXIS]);
@@ -143,9 +145,7 @@ float IMUData::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
-tap::communication::sensors::imu::ImuInterface::ImuState IMUData::getIMUState() {
-    return drivers->bmi088.getImuState();
-}
+tap::communication::sensors::imu::ImuInterface::ImuState IMUData::getIMUState() { return drivers->bmi088.getImuState(); }
 
 void IMUData::recalibrateIMU(Vector3f imuCalibrationEuler) {
     // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
@@ -153,5 +153,4 @@ void IMUData::recalibrateIMU(Vector3f imuCalibrationEuler) {
     drivers->bmi088.requestRecalibration();
 };
 
-}  // namespace Informants
-
+}  // namespace src::Informants
