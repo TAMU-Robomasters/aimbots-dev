@@ -14,11 +14,11 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 1.0f,
+    .kp = 10.0f,
     .ki = 0.0f,
     .kd = 0.01f,
     .maxICumulative = 0.9f,
-    .maxOutput = 1.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
