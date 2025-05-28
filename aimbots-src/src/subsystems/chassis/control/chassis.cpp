@@ -252,10 +252,10 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
 
     float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 
-    float a = x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-    float b = x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-    float c = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
-    float d = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+    float a = -x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    float b = -x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    float c = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+    float d = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
 
     targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
     left_front_yaw = (atan2f(d, b) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
