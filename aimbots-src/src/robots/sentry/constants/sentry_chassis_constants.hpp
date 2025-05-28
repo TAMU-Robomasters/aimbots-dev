@@ -14,7 +14,7 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 10.0f,
+    .kp = 40.0f,
     .ki = 0.0f,
     .kd = 0.01f,
     .maxICumulative = 0.9f,
@@ -27,10 +27,10 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int LEFT_FRONT_YAW_OFFSET = 2350;
-static constexpr int RIGHT_FRONT_YAW_OFFSET = 1680;
-static constexpr int LEFT_BACK_YAW_OFFSET = 280;
-static constexpr int RIGHT_BACK_YAW_OFFSET = 6300;
+static constexpr int LEFT_FRONT_YAW_OFFSET = 2410;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 1670;
+static constexpr int LEFT_BACK_YAW_OFFSET = 255;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 6450;
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
