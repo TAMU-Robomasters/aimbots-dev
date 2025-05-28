@@ -112,7 +112,11 @@
     "strstream": "cpp",
     "cfenv": "cpp",
     "typeindex": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "xlocmes": "cpp",
+    "xlocmon": "cpp",
+    "xlocnum": "cpp",
+    "xloctime": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,

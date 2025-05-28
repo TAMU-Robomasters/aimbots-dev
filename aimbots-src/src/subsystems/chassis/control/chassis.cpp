@@ -101,7 +101,10 @@ int refSerialWorkingDisplay = 0;
 uint16_t chassisPowerLimitDisplay = 0;
 
 float motorOutputDisplay = 0.0f;
-float yawMotorOutputDisplay = 0.0f;
+float yawMotorOutputDisplayRF = 0.0f;
+float yawMotorOutputDisplayRB = 0.0f;
+float yawMotorOutputDisplayLF = 0.0f;
+float yawMotorOutputDisplayLB = 0.0f;
 
 void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
@@ -112,7 +115,10 @@ void ChassisSubsystem::refresh() {
 
     motorOutputDisplay = motors[RF][0]->getOutputDesired();
     #ifdef SWERVE
-        yawMotorOutputDisplay = motors[RF][1]->getOutputDesired();
+        yawMotorOutputDisplayRF = motors[RF][1]->getEncoderWrapped();
+        yawMotorOutputDisplayRB = motors[RB][1]->getEncoderWrapped();
+        yawMotorOutputDisplayLF = motors[LF][1]->getEncoderWrapped();
+        yawMotorOutputDisplayLB = motors[LB][1]->getEncoderWrapped();
     #endif
 }
 

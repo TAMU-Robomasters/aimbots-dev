@@ -27,10 +27,10 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int LEFT_FRONT_YAW_OFFSET = 0;
-static constexpr int RIGHT_FRONT_YAW_OFFSET = 0;
-static constexpr int LEFT_BACK_YAW_OFFSET = 0;
-static constexpr int RIGHT_BACK_YAW_OFFSET = 0;
+static constexpr int LEFT_FRONT_YAW_OFFSET = 2350;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 1680;
+static constexpr int LEFT_BACK_YAW_OFFSET = 280;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 6300;
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
