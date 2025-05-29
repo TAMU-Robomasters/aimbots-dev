@@ -114,7 +114,7 @@ void GimbalChaseCommand::execute() {
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
-        bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
+        bSolDistanceDisplay = ballisticsSolution->horizontalDistanceToTarget;
 
         // Comment when Z axis stops being silly
         // targetPitchAxisAngle =

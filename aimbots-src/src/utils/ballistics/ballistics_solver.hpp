@@ -28,6 +28,7 @@ struct MeasuredKinematicState {
     modm::Vector3f velocity;      // m/s
     modm::Vector3f acceleration;  // m/s^2
 
+    // TODO: check if I need this
     /**
      * @param[in] dt: The amount of time to project forward.
      * @param[in] s: The position of the object.
@@ -73,16 +74,13 @@ public:
     struct BallisticsSolution {
         float pitchAngle;
         float yawAngle;
-        float distanceToTarget;
+        float horizontalDistanceToTarget;
         float timeToTarget;  // in seconds
     };
 
     std::optional<BallisticsSolution> solve(std::optional<float> projectileSpeed = std::nullopt);
 
     /**
-     * @param[in] targetInitialState: The initial 3D kinematic state of a target. Frame requirements:
-     * RELATIVE TO PROJECTILE RELEASE POSITION, Z IS OPPOSITE TO GRAVITY.
-     * @param[in] bulletVelocity: The velocity of the projectile to be fired in m/s.
      * @param[in] numIterations: The number of times to project the kinematics forward.
      *      Guidelines on choosing this parameter:
      *      - If the target is moving very slow relative to bulletVelocity, 1 is probably enough.
@@ -99,21 +97,28 @@ public:
      * @param[in] pitchAxisOffset: The distance between the pitch and yaw axes (in meters)
      * as seen from a plane parallel to the ground. A positive offset indicates that
      * the pitch axis is located behind the yaw axis.
+     * @param[in] maxError: The maximum error allowed in the solution. If the error is greater than
+     * this value, the solution is considered invalid.
+     * @param[in] minDiff: The minimum difference between the current solution and the previous
+     * solution. If the difference is less than this value, There could be numerical instability
+     * and the solution is considered invalid.
      * @return Whether or not a valid aiming solution was found. Out parameters only valid if true.
      */
     bool findTargetProjectileIntersection(
-        MeasuredKinematicState targetInitialState,
-        float bulletVelocity,
         uint8_t numIterations,
         float *turretPitch,
         float *turretYaw,
         float *projectedTravelTime,
-        const float pitchAxisOffset = 0);
+        const float pitchAxisOffset = 0,
+        const float maxError = 0.001f,
+        const float minDiff = 1e-7f);
+
+    // TODO: check these tolerances 
 
     // The width tolerance of where a predicted shot needs to land on a plate be considered "on target"
-    static constexpr float PLATE_WIDTH_TOLERANCE = 0.15f;  // 0.15
+    static constexpr float PLATE_WIDTH_TOLERANCE = 0.15f;  // 0.15cm
     // The height tolerance of where a predicted shot needs to land on a plate be considered "on target"
-    static constexpr float PLATE_HEIGHT_TOLERANCE = 0.1f;  // 0.1
+    static constexpr float PLATE_HEIGHT_TOLERANCE = 0.1f;  // 0.1cm
     // (Same tolerance for both types of armor panels)
 
     /**
@@ -131,33 +136,30 @@ public:
     }
 
     /**
-     * Computes an iterative numerical approximation of the pitch angle to aim the turret in order to
-     * hit a given target and the time it will take for that target to be hit, given the velocity of a
-     * bullet out of the turret and the position of the target relative to the turret.
-     *
-     * @param[in] targetPosition: The 3D position of a target in m. Frame requirements: RELATIVE TO
-     * PROJECTILE RELEASE POSITION, Z IS OPPOSITE TO GRAVITY.
-     * @param[in] bulletVelocity: The velocity of the projectile to be fired in m/s.
-     * @param[out] travelTime: The expected travel time of a turret shot to hit a target from this
-     * object's position.
-     * @param[out] turretPitch: The pitch angle of the turret to hit the target at the given travel
-     * time.
-     * @param[in] pitchAxisOffset: The distance between the pitch and yaw axes (in meters)
-     * as seen from a plane parallel to the ground. A positive offset indicates that
-     * the pitch axis is located behind the yaw axis.
-     * @return Whether or not a valid travel time was found.
+     * @param[in] stepSize: The step size for the finite difference approximation.
+     * @param[in] x_init: The initial guess for the solution.
+     * @return The approximate inverse Jacobian of the ballistic characteristic equation.
      */
-    bool computeTravelTime(
-        const modm::Vector3f &targetPosition,
-        float bulletVelocity,
-        float *travelTime,
-        float *turretPitch,
-        const float pitchAxisOffset = 0);
+    Matrix3f approximateInverseJacobian(Vector3f x_init, float stepSize = 0.001);
+
+    /**
+     * @param[in] x: The input to the ballistic characteristic equation.
+     * x.x is the yaw angle, x.y is the pitch angle, x.z is the projectile traveltime to the target.
+     * @return The output of the ballistic characteristic equation.
+     */
+    Vector3f ballisticCharacteristicEquation(Vector3f x);
+
+    // TODO: move this to a better place
+    Matrix3f inverseMatrix3f(Matrix3f matrix);
 
 private:
     src::Drivers *drivers;
 
     const float defaultProjectileSpeed = 30.0f;  // m/s
+
+    float bulletVelocity = 0; // m/s
+
+    MeasuredKinematicState targetKinematicState;
 
     uint32_t lastPlatePredictionTime = 0;
 

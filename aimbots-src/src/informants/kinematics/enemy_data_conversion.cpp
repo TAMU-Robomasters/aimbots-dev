@@ -29,27 +29,21 @@ float targetPositionZDisplay = 0.0f;
 uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
-uint8_t DCBinDisplay = 0;
-float xDFTMagDisplay[30];
-
-float dampingValue = 0.999f;
-float spinMagnitude = 0.0f;
-
 uint32_t plateTimeOffsetDisplay = 0;
-
-float previousPositionMag = 0;
 
 float untransformedDataPosXDisplay = 0.0;
 float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
 
 // gather data, transform data,
-void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
+
+//? is there any reason why we need plateTimeOffsetDisplay?
+void VisionDataConversion::updateTargetInfo(Vector3f position) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
 
-    lastFrameCaptureDelay = frameCaptureDelay + plateTimeOffsetDisplay;
-    drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay + plateTimeOffsetDisplay);
+    lastFrameCaptureDelay = plateTimeOffsetDisplay;
+    drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay);
 
     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
         drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
@@ -57,11 +51,8 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     src::Informants::Transformers::CoordinateFrame turretCameraFrame =
         drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
 
-    lastFrameCaptureTimestamp_uS = currentTime_uS - (frameCaptureDelay * MICROSECONDS_PER_MS);
+    lastFrameCaptureTimestamp_uS = currentTime_uS - (lastFrameCaptureDelay * MICROSECONDS_PER_MS);
 
-    // position.setX(-position.getX());
-
-    // Vector3f position2 = Vector3f(position.getX(), position.getY(), position.getZ());
 
     VisionTimedPosition currentData{
         .position = position,
@@ -99,48 +90,6 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
 
-    // This is just a preventative measure against bad CV data corrupting the kalman filters.
-    // Lower the value if issues continue to happen
-    float MAX_DELTA = 25;  //(5 meters)^2
-
-    float currPosMag = sqrt(
-        pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
-        pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
-
-    if (abs(currPosMag) < MAX_DELTA && transformedPosition.position.getZ() < BASE_HEIGHT_THRESHOLD) {
-        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
-        YPositionFilter.update(dt, transformedPosition.position.getY());
-        ZPositionFilter.update(dt, transformedPosition.position.getZ());
-
-        xDFT.damping_factor = dampingValue;
-
-        xDFTValid = xDFT.update(XPositionFilter.getFuturePrediction(0).getX());
-
-        // if (xDFTValid) {
-        //     spinMagnitude = 0.0f;
-        //     // std::complex<float> DC_bin = xDFT.dft[0];
-        //     uint8_t highestMagIndex = 0;
-        //     float highestMag = 0;
-
-        //     for (size_t i = 0; i < 30; i++) {
-        //         // if (std::abs<float>(xDFT.dft[i]) > highestMag) {
-        //         //     highestMag = std::abs<float>(xDFT.dft[i]);
-        //         //     highestMagIndex = i;
-        //         // }
-        //         xDFTMagDisplay[i] = std::abs<float>(xDFT.dft[i]);
-        //     }
-
-        //     for (size_t i = 1; i < 29; i++) {
-        //         spinMagnitude += std::abs<float>(xDFT.dft[i]);
-        //     }
-
-        //     DCBinDisplay = highestMagIndex;
-        //     // DC_binDisplay = src::Utils::DFTHelper::getDominantFrequency<float, 30>(xDFT.dft);
-        // }
-
-        lastUpdateTimestamp_uS = currentTime_uS;
-    }
-    previousPositionMag = currPosMag;
 }
 
 float targetPositionXFutureDisplay = 0.0f;
@@ -157,7 +106,7 @@ float targetAccelerationZFutureDisplay = 0.0f;
 
 float predictiondTDisplay = 0.0f;
 
-PlateKinematicState VisionDataConversion::getPlatePrediction(uint32_t dt) const {
+PlateKinematicState VisionDataConversion::getPlateState(uint32_t dt) const {
     lastFrameCaptureDisplay = lastFrameCaptureTimestamp_uS;
 
     float totalForwardProjectionTime =

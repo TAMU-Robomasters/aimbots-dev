@@ -32,9 +32,9 @@ public:
      * @brief Gets latest valid enemy target data from CV, converts it to a chassis-relative kinematic state, and filters it.
      * Should be called on every CV update.
      */
-    void updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay);
+    void updateTargetInfo(Vector3f position);
 
-    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+    PlateKinematicState getPlateState(uint32_t dt) const;
 
     uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay; }
 
@@ -48,10 +48,6 @@ private:
     uint32_t lastFrameCaptureDelay = 0;
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
-
-    // 1s sample, 30ms per sample = 33 samples
-    SlidingDFT<float, 30> xDFT;
-    bool xDFTValid = false;
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;

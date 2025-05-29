@@ -32,7 +32,7 @@ public:
 
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+    PlateKinematicState getPlateState(uint32_t dt) const;
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 

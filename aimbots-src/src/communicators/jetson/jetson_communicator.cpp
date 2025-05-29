@@ -109,7 +109,7 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setY(lastMessage.targetY);
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
+                    visionDataConverter.updateTargetInfo(visionTargetPosition);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
@@ -139,8 +139,8 @@ void JetsonCommunicator::updateSerial() {
     // }
 }
 
-PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
-    return visionDataConverter.getPlatePrediction(dt);
+PlateKinematicState JetsonCommunicator::getPlateState(uint32_t dt) const {
+    return visionDataConverter.getPlateState(dt);
 }
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
