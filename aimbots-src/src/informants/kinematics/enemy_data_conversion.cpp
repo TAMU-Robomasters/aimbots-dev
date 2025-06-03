@@ -31,6 +31,8 @@ uint32_t lastFrameCaptureDisplay = 0;
 
 uint32_t plateTimeOffsetDisplay = 0;
 
+float previousPositionMag = 0;
+
 float untransformedDataPosXDisplay = 0.0;
 float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
@@ -89,6 +91,22 @@ void VisionDataConversion::updateTargetInfo(Vector3f position) {
     targetPositionZDisplay = posVecMath.getZ();
 
     float dt = static_cast<float>(currentTime_uS - lastUpdateTimestamp_uS) / MICROSECONDS_PER_SECOND;
+
+    // This is just a preventative measure against bad CV data corrupting the kalman filters.
+    // Lower the value if issues continue to happen
+    float MAX_DELTA = 25;  //(5 meters)^2
+
+    float currPosMag = sqrt(
+        pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
+        pow(transformedPosition.position.getZ(), 2));  // magnitude of the current position of camera
+
+    if (abs(currPosMag) < MAX_DELTA) {
+        XPositionFilter.update(dt, transformedPosition.position.getX());  // transformedData -> transformedPosition
+        YPositionFilter.update(dt, transformedPosition.position.getY());
+        ZPositionFilter.update(dt, transformedPosition.position.getZ());
+        lastUpdateTimestamp_uS = currentTime_uS;
+    }
+    previousPositionMag = currPosMag;
 
 }
 

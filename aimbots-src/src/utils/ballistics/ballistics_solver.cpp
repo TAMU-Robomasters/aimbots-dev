@@ -18,6 +18,18 @@ MeasuredKinematicState plateKinematicStateDisplay;
 float solveForXDisplay = 0;
 float solveForYDisplay = 0;
 float solveForZDisplay = 0;
+float ballisticErrDisplay = 0;
+int minDiffErrDisplay = 0;
+int divByZeroErrDisplay = 0;
+
+float matrixDisplay[9] = {0};
+float matrixDisplay2[9] = {0};
+float floatDisplay = 0;
+float floatDisplay2 = 0;
+float vectorDisplay[3] = {0};
+float vectorDisplay2[3] = {0};
+float vectorDisplay3[3] = {0};
+
 
 int nothingSeenDisplay = 0;
 int jetsonOnlineDisplay = 0;
@@ -45,7 +57,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     //TODO: figure out if we should refactor getPlateState or throw it out
     auto plateKinematicState = drivers->cvCommunicator.getPlateState(0);
 
-    MeasuredKinematicState targetKinematicState = {
+    targetKinematicState = {
         .position = plateKinematicState.position,
         .velocity = plateKinematicState.velocity,
         .acceleration = plateKinematicState.acceleration,
@@ -63,7 +75,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     lastBallisticsSolution->horizontalDistanceToTarget = sqrt(pow(targetKinematicState.position.y, 2) + pow(targetKinematicState.position.x, 2));
     failedToFindIntersectionDisplay = 0;
     if (!findTargetProjectileIntersection(
-            3,
+            5,
             &lastBallisticsSolution->pitchAngle,
             &lastBallisticsSolution->yawAngle,
             &lastBallisticsSolution->timeToTarget)) {
@@ -109,43 +121,70 @@ bool BallisticsSolver::findTargetProjectileIntersection(
     }
     initGuess.x = yaw;  // yaw component
 
+    for (int i = 0; i < 3; i++) {
+        vectorDisplay3[i] = initGuess[i];
+    }
+
     // Broyden's method implementation
     Matrix3f inverseJacob;
     Vector3f xCurr, xPast, delX, delF, vec;
-    float err;
+    float err = 0;
+ 
+    // TODO: check how many iterations are needed for convergence
 
     for (int n = 0; n < numIterations; n++) {
         if (n == 0) {
             inverseJacob = approximateInverseJacobian(initGuess);
+            for (int i = 0; i < 9; i++) {
+                matrixDisplay2[i] = inverseJacob.element[i];
+            }
+
+            for (int i = 0; i < 3; i++) {
+                vectorDisplay2[i] = ballisticCharacteristicEquation(initGuess)[i];
+            }
+
             xCurr = initGuess - inverseJacob * ballisticCharacteristicEquation(initGuess);
             xPast = initGuess;
-            err = xCurr.getLength();
+            for (int i = 0; i < 3; i++) {
+                vectorDisplay[i] = xCurr[i];
+            }
+            err = ballisticCharacteristicEquation(xCurr).getLength();
         } else {
             // Sherman-Morrison Formula
             delX = xCurr - xPast;
             delF = ballisticCharacteristicEquation(xCurr) - ballisticCharacteristicEquation(xPast);
             vec = inverseJacob * delF;
             float denominator = delX * vec; // dot product
-            if (compareFloatClose(denominator, 0.0f, 1e-6f)) break;  // Prevent division by zero
+            floatDisplay2 = denominator;
+            if (compareFloatClose(denominator, 0.0f, 1e-6f)) {
+                divByZeroErrDisplay = 1;
+                break;
+            } // Prevent division by zero    
             
             inverseJacob = inverseJacob + ((delX - vec).asMatrix() * (delX.asTransposedMatrix() * inverseJacob)) / denominator;
             
             xPast = xCurr;
             xCurr = xCurr - inverseJacob * ballisticCharacteristicEquation(xCurr);
 
-            err = xCurr.getLength();
+            err = ballisticCharacteristicEquation(xCurr).getLength();
         }
 
         // TODO: rethink these conditions
-        // ?should we also return true when the err is greater than maxError?
-        if (err < maxError && n == numIterations - 1) {
-            *turretYaw = xCurr.x;
-            *turretPitch = xCurr.y;
-            *projectedTravelTime = xCurr.z;
-            return true;
-        }
+        
 
-        if ((xCurr - xPast).getLength() < minDiff) return false; // There could be numerical instability
+        if ((xCurr - xPast).getLength() < minDiff) {
+            minDiffErrDisplay = 1;
+            return false;
+        }  // There could be numerical instability  
+    }
+
+    // ?should we also return true when the err is greater than maxError?
+    ballisticErrDisplay = err;
+    if (err < maxError) {
+        *turretYaw = xCurr.x;
+        *turretPitch = xCurr.y;
+        *projectedTravelTime = xCurr.z;
+        return true;
     }
 
     return false;
@@ -166,7 +205,6 @@ Matrix3f BallisticsSolver::approximateInverseJacobian(Vector3f xInit, float step
         column1.y, column2.y, column3.y,
         column1.z, column2.z, column3.z
     };
-    
     return inverseMatrix3f(Matrix3f(elements));
 }
 Matrix3f BallisticsSolver::inverseMatrix3f(Matrix3f matrix) {
@@ -174,7 +212,6 @@ Matrix3f BallisticsSolver::inverseMatrix3f(Matrix3f matrix) {
     float det = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
                 matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
                 matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
-
     // TODO: figure out what to return
     // Check if matrix is invertible
     if (compareFloatClose(det, 0.0f, 1e-6f)) {
@@ -196,7 +233,6 @@ Matrix3f BallisticsSolver::inverseMatrix3f(Matrix3f matrix) {
         -(matrix[0][0] * matrix[2][1] - matrix[0][1] * matrix[2][0]),
         matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
     };
-
     return Matrix3f(elements) / det;
 }
 
@@ -217,7 +253,16 @@ Vector3f BallisticsSolver::ballisticCharacteristicEquation(Vector3f x) {
                 
     float f_z = b.y * sin(x.y) + b.z * cos(x.y) + s * x.z * sin(x.y) + 
                 0.5f * (g - a_t.z) * x.z * x.z - p_t.z - v_t.z * x.z;
-    
+    for (int i = 0; i < 3; i++) {
+        matrixDisplay[i] = p_t[i];
+    }
+    for (int i = 0; i < 3; i++) {
+        matrixDisplay[i + 3] = v_t[i];
+    }
+    for (int i = 0; i < 3; i++) {
+        matrixDisplay[i + 6] = a_t[i];
+    }
+
     return Vector3f(f_x, f_y, f_z);
 }
 
