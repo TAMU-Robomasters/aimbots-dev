@@ -229,6 +229,7 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
 #endif
 
 #ifdef SWERVE
+
 float left_front_yaw_actual = 0.0f;
 float right_front_yaw_actual = 0.0f;
 float left_back_yaw_actual = 0.0f;
@@ -248,6 +249,18 @@ float left_front_drive;
 float right_front_drive;
 float left_back_drive;
 float right_back_drive;
+
+float ChassisSubsystem::yawToRad(float targetYaw){
+    return ((targetYaw-offset)/((180 / M_PI) / 360 * 8191))-3 * M_PI / 2;
+}
+
+void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, float currYaw){
+    float deta = targetYaw-currYaw;
+    if(math.abs()>(M_PI/2)){
+        targetRPMDrive = -targetRPMDrive;
+        targetYaw = delta > 
+    }
+}
 
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // float theta = fieldRelativeInformant->getYaw();
