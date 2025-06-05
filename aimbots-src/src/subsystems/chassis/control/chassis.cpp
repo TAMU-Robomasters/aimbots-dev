@@ -244,6 +244,11 @@ int right_front_yaw;
 int left_back_yaw;
 int right_back_yaw;
 
+float left_front_drive;
+float right_front_drive;
+float left_back_drive;
+float right_back_drive;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // float theta = fieldRelativeInformant->getYaw();
     // float temp = y*cos(theta)+x*sin(theta);

@@ -97,6 +97,7 @@ public:
 
     void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 #ifdef SWERVE
+    void optimizeSwerve(float& targetRPMDrive, ); // finds best path for the 
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);  // swerve drive robots
 #endif
     void calculateRail(float x, float maxWheelSpeed);  // sentry rail robots
