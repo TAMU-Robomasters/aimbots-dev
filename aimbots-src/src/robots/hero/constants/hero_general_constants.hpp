@@ -44,7 +44,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);

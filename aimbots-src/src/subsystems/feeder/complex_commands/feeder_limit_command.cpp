@@ -49,7 +49,7 @@ void FeederLimitCommand::execute() {
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 350;
     // States the speed of the feeder wheel when firing
-    // Checks if the limit switch is pressed & is "not killed" (refer to )
+    // Checks if the limit switch is pressed & is "not killed"
 
     if (limitswitchInactive.isExpired()) {
         isFiring = false;
