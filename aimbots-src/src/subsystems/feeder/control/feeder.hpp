@@ -49,7 +49,7 @@ public:
 
     void BuildPIDControllers() {
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-            feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
+            feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG[i]);
         }
     }
 
