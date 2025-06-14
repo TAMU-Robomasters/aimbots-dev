@@ -55,7 +55,7 @@ std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std:
     }
 
     //TODO: figure out if we should refactor getPlateState or throw it out
-    auto plateKinematicState = drivers->cvCommunicator.getPlateState(0);
+    auto plateKinematicState = drivers->cvCommunicator.getCurrentPlateEstimation();
 
     targetKinematicState = {
         .position = plateKinematicState.position,

@@ -34,7 +34,7 @@ public:
      */
     void updateTargetInfo(Vector3f position);
 
-    PlateKinematicState getPlateState(uint32_t dt) const;
+    PlateKinematicState getCurrentPlateEstimation() const;
 
     uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay; }
 
@@ -44,6 +44,8 @@ private:
     src::Drivers* drivers;
 
     static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
+
+    VisionTimedPosition currTransformedPosition;
 
     uint32_t lastFrameCaptureDelay = 0;
 
@@ -56,29 +58,20 @@ private:
 };
 
 // clang-format off
-static constexpr float KF_P[9] = { // Covariance Matrix
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
+static constexpr float KF_P[9] = { // Covariance Matrix. Low uncertainty in posiiton, high uncertainty in velocity and acceleration
+    1E-4, 0, 0,
+    0, 0.031329, 0,
+    0, 0, 234.3961,
+};  
+
+static constexpr float KF_H[3] = { // Observation Matrix
+    1, 0, 0
 };
 
-static constexpr float KF_H[9] = { // Observation Matrix
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
-};
 
-static constexpr float KF_Q[9] = { // Environment Noise Covariance Matrix
-    1E-1, 0,   0,
-    0,    1E0, 0,
-    0,    0,   1E1,
-};
-
-static constexpr float KF_R[9] = { // Measurement Noise Covariance Matrix
-    1E0, 0,   0,
-    0,    1E2, 0,
-    0,    0,   1E4,
-};
+static constexpr float KF_R = 1E-4;  // Measurement Noise Covariance Matrix
 // clang-format on
+
+static constexpr float AccelErr = 4.0f;
 
 }  // namespace src::Informants::Vision

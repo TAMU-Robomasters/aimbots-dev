@@ -23,6 +23,8 @@
 #include "utils/pid/smooth_pid_wrap.hpp"
 
 inline float pow2(float x) { return x * x; }
+inline float pow3(float x) { return x * x * x; }
+inline float pow4(float x) { return x * x * x * x; }
 
 static inline float wrapTo0To2PIRange(float angle) {
     if (angle < 0.0f) {

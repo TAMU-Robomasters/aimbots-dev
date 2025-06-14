@@ -24,9 +24,9 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.002201f, // x
-    0.1348f, // y
-    -0.0498f,  // z
+    0.001572f, // x
+    0.119450f, // y
+    -0.060847f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
@@ -42,9 +42,9 @@ static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
 };
 
 static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
-    -0.001727f, //x = 0.04498
-    0.0f, //y - does not matter too much because projectile comes out this axis
-    0.00587f, //z = 0.01683
+    0.001575f, //x
+    0.163044f, //y
+    -0.010555f, //z
 };
 // clang-format on
 

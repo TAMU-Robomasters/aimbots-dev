@@ -139,8 +139,8 @@ void JetsonCommunicator::updateSerial() {
     // }
 }
 
-PlateKinematicState JetsonCommunicator::getPlateState(uint32_t dt) const {
-    return visionDataConverter.getPlateState(dt);
+PlateKinematicState JetsonCommunicator::getCurrentPlateEstimation() const {
+    return visionDataConverter.getCurrentPlateEstimation();
 }
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }

@@ -5,9 +5,9 @@
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R),
-      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R),
-      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_Q, KF_R)  //
+      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, AccelErr),
+      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, AccelErr),
+      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, AccelErr)  //
 {}
 
 // watchable variables
@@ -69,6 +69,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position) {
         .timestamp_uS = currentData.timestamp_uS,
     };
 
+    // TODO: get rid of this maybe?
+    currTransformedPosition = transformedPosition;
+
     Vector3f posVecMath = turretCameraFrame.getOrigin() + currentData.position;
 
     cameraOriginXDisplay = turretCameraFrame.getOrigin().getX();
@@ -124,18 +127,18 @@ float targetAccelerationZFutureDisplay = 0.0f;
 
 float predictiondTDisplay = 0.0f;
 
-PlateKinematicState VisionDataConversion::getPlateState(uint32_t dt) const {
+PlateKinematicState VisionDataConversion::getCurrentPlateEstimation() const {
     lastFrameCaptureDisplay = lastFrameCaptureTimestamp_uS;
 
     float totalForwardProjectionTime =
-        static_cast<float>(dt + (tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS)) /
+        static_cast<float>(tap::arch::clock::getTimeMicroseconds() - lastFrameCaptureTimestamp_uS) /
         MICROSECONDS_PER_SECOND;
 
     predictiondTDisplay = totalForwardProjectionTime;
 
-    Vector3f xPlate = XPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f yPlate = YPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(0);  // dt / MICROSECONDS_PER_SECOND
+    Vector3f xPlate = XPositionFilter.getFuturePrediction(totalForwardProjectionTime);
+    Vector3f yPlate = YPositionFilter.getFuturePrediction(totalForwardProjectionTime);
+    Vector3f zPlate = ZPositionFilter.getFuturePrediction(totalForwardProjectionTime);
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
@@ -143,21 +146,17 @@ PlateKinematicState VisionDataConversion::getPlateState(uint32_t dt) const {
 
     targetPositionYFutureDisplay = yPlate.getX();
     targetVelocityYFutureDisplay = yPlate.getY();
-
     targetAccelerationYFutureDisplay = yPlate.getZ();
 
     targetPositionZFutureDisplay = zPlate.getX();
     targetVelocityZFutureDisplay = zPlate.getY();
-
     targetAccelerationZFutureDisplay = zPlate.getZ();
 
     return PlateKinematicState{
-        .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
-        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
-        // .velocity = Vector3f(0, 0, 0),
+        .position = Vector3f(xPlate.getX(), yPlate.getX(),zPlate.getX()),
+        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),        
         .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
-        // .acceleration = Vector3f(0, 0, 0),
-        .timestamp_uS = tap::arch::clock::getTimeMicroseconds() + dt,
+        .timestamp_uS = tap::arch::clock::getTimeMicroseconds()
     };
 }
 
