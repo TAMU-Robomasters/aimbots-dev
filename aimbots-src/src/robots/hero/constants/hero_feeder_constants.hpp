@@ -7,9 +7,9 @@
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT] = {{
-    .kp = 40.0f,
+    .kp = 60.0f,
     .ki = 0.0f,
-    .kd = 0.8f,
+    .kd = 2.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -34,7 +34,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT]
     }
 };
 
-static constexpr int UNJAM_TIMER_MS = 50;
+static constexpr int UNJAM_TIMER_MS = 100;
 
 static constexpr float FEEDER_DEFAULT_RPM = 12000.0f;
 

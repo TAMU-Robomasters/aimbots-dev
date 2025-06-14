@@ -47,12 +47,12 @@ void FeederLimitCommand::execute() {
     // Updates the current controller switch state
     currFireState = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
     // States how long the limit switch is ignored when firing a projectile
-    limitSwitchDownTime = 350;
+    limitSwitchDownTime = 300;
     // States the speed of the feeder wheel when firing
     // Checks if the limit switch is pressed & is "not killed"
 
-    if (limitswitchInactive.isExpired()) {
-        isFiring = false;
+    if (!limitswitchInactive.isExpired()) {
+        limitPressed = false;
         // feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
     }
 
@@ -69,8 +69,8 @@ void FeederLimitCommand::execute() {
 
         if (unjamTimer.execute()) {
             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+            //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
+            //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
             startupThreshold.restart(500);
         }
     } else {
