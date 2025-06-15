@@ -30,8 +30,8 @@ static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
 };
 
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
-    0.0f,  // x
-    0.0f,  // y
+    0.157f,  // x
+    0.0335f,  // y
     0.0f,  // z
 };
 
