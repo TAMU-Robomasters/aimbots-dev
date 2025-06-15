@@ -34,7 +34,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT]
     }
 };
 
-static constexpr int UNJAM_TIMER_MS = 100;
+static constexpr int UNJAM_TIMER_MS = 200;
 
 static constexpr float FEEDER_DEFAULT_RPM = 12000.0f;
 
