@@ -15,6 +15,7 @@ namespace src::Feeder {
 
 bool limitPressed = false;
 bool currFireState = false;
+bool watchFire = false;
 bool prevFireState = false;
 bool isFiring = false;
 bool loaderDormant = false;
@@ -37,6 +38,7 @@ void FeederLimitCommand::initialize() {
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
     limitswitchInactive.restart(0);
+    watchFire=true;
 }
 
 void FeederLimitCommand::execute() {
@@ -45,7 +47,8 @@ void FeederLimitCommand::execute() {
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;
     // Updates the current controller switch state
-    currFireState = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
+    watchFire = false;
+    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 300;
     // States the speed of the feeder wheel when firing
@@ -62,12 +65,13 @@ void FeederLimitCommand::execute() {
     // }
 
     if (!limitPressed && !loaderDormant) {
+        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
 
-        if (unjamTimer.execute()) {
+        if (!unjamTimer.execute()) {
             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
             //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
             //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
@@ -75,7 +79,7 @@ void FeederLimitCommand::execute() {
         }
     } else {
         feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
-        if (!isFiring) {
+        if (isFiring) {
             feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
         }
         loaderDormant = true;

@@ -234,10 +234,10 @@ HoldRepeatCommandMapping rightSwitchUp(
 
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
 
-HoldCommandMapping leftClickMouse(
-    drivers(),
-    {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+// HoldCommandMapping leftClickMouse(
+//     drivers(),
+//     {&feederLimitCommand},
+//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -289,7 +289,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&bCtrlPressed);
-    drivers->commandMapper.addMap(&leftClickMouse);
+  //  drivers->commandMapper.addMap(&leftClickMouse);
 }
 }  // namespace HeroControl
 
