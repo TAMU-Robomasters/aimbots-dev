@@ -49,7 +49,13 @@ public:
 
     void BuildPIDControllers() {
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
-            feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG[i]);
+
+            #ifndef ALL_HEROES //TODO add ability for multiple pids for all robot feeders
+               feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
+            #else
+                feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG[i]);
+            #endif
+            
         }
     }
 
