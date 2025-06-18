@@ -97,11 +97,11 @@ public:
 
     void calculateHolonomic(float x, float y, float r, float maxWheelSpeed);  // normal 4wd mecanum robots
 #ifdef SWERVE
-    //converts yaw encoder count to radians
+    // converts yaw encoder count to radians
     float yawToRad(float targetYaw, int offset);
-    //finds the shortest path for the swerve drive to point in
-    void optimizeSwerve(float& targetRPMDrive, float& targetYaw, float currYaw); 
-    //calculates targets for swerves yaw and pitch given the desired direction and speed
+    // finds the shortest path for the swerve drive to point in
+    void optimizeSwerve(float& targetRPMDrive, float& targetYaw, float currYaw);
+    // calculates targets for swerves yaw and pitch given the desired direction and speed
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);
 #endif
     void calculateRail(float x, float maxWheelSpeed);  // sentry rail robots
@@ -161,10 +161,10 @@ public:
     Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
         Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
 
-        wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
-        wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
-        wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
-        wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+        wheelVelocities[LF][0] = leftFrontWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
+        wheelVelocities[RF][0] = rightFrontWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
+        wheelVelocities[LB][0] = leftBackWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
+        wheelVelocities[RB][0] = rightBackWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
 
         return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
     }
@@ -201,10 +201,10 @@ protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;
 
 public:
-    inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getShaftRPM(); }
-    inline int16_t getLeftBackRpmActual() const /*override*/ { return leftBackWheel.getShaftRPM(); }
-    inline int16_t getRightFrontRpmActual() const /*override*/ { return rightFrontWheel.getShaftRPM(); }
-    inline int16_t getRightBackRpmActual() const /*override*/ { return rightBackWheel.getShaftRPM(); }
+    inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f; }
+    inline int16_t getLeftBackRpmActual() const /*override*/ { return leftBackWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f; }
+    inline int16_t getRightFrontRpmActual() const /*override*/ { return rightFrontWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f; }
+    inline int16_t getRightBackRpmActual() const /*override*/ { return rightBackWheel.getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f; }
 };
 
 };  // namespace src::Chassis

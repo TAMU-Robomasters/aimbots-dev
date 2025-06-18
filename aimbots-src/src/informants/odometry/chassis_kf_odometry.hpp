@@ -29,6 +29,8 @@ public:
 
     void resetAtNewLocation(float newXPos = 0.0f, float newYPos = 0.0f);
 
+    void overrideOdometryPosition(const float positionX, const float positionY) override { resetAtNewLocation(positionX, positionY); }
+
 private:
     float initialXPos;
     float initialYPos;

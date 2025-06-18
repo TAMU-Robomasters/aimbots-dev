@@ -121,11 +121,15 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+        return (yawMotors[YawIdx]->isMotorOnline())
+                   ? yawMotors[YawIdx]->getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f
+                   : 0;
     }
 
     inline int16_t getPitchMotorRPM(uint8_t PitchIdx) const {
-        return (pitchMotors[PitchIdx]->isMotorOnline()) ? pitchMotors[PitchIdx]->getShaftRPM() : 0;
+        return (pitchMotors[PitchIdx]->isMotorOnline())
+                   ? pitchMotors[PitchIdx]->getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f
+                   : 0;
     }
 
     inline int16_t getYawMotorTorque(uint8_t yawIdx) const {
@@ -141,7 +145,7 @@ public:
         uint8_t onlineMotors = 0;
         for (auto& yawMotor : yawMotors) {
             if (yawMotor->isMotorOnline()) {
-                rpm += yawMotor->getShaftRPM();
+                rpm += yawMotor->getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
                 onlineMotors++;
             }
         }
@@ -152,7 +156,7 @@ public:
         uint8_t onlineMotors = 0;
         for (auto& pitchMotor : pitchMotors) {
             if (pitchMotor->isMotorOnline()) {
-                rpm += pitchMotor->getShaftRPM();
+                rpm += pitchMotor->getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
                 onlineMotors++;
             }
         }
@@ -177,17 +181,19 @@ public:
     }
 
     inline float getYawMotorAngleUnwrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderUnwrapped())
-                                                    : 0.0f;
+        return (yawMotors[YawIdx]->isMotorOnline())
+                   ? /*DJIEncoderValueToRadians(*/ yawMotors[YawIdx]->getEncoder()->getPosition().getUnwrappedValue()
+                   : 0.0f;
     }
 
     inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderWrapped())
-                                                    : 0.0f;
+        return (yawMotors[YawIdx]->isMotorOnline())
+                   ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getPosition().getWrappedValue())
+                   : 0.0f;
     }
     inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
         return (pitchMotors[PitchIdx]->isMotorOnline())
-                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoderWrapped())
+                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoder()->getPosition().getWrappedValue())
                    : 0.0f;
     }
 
