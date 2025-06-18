@@ -13,12 +13,16 @@
 // 29/09/2011    SOH Madgwick    Initial release
 // 02/10/2011    SOH Madgwick    Optimised for reduced CPU load
 // 09/06/2020    Matthew Arnold  Update style, use safer casting
+// 04/30/2022    Matthew Arnold  Change input/outputs from degrees to radians
+// 03/06/2025    Chinmay Murthy  Make getters const
 //
 //=============================================================================================
 #ifndef MAHONY_AHRS_H_
 #define MAHONY_AHRS_H_
 
 #include <cmath>
+
+#include "modm/math/geometry/angle.hpp"
 
 //--------------------------------------------------------------------------------------------
 // Variable declaration
@@ -32,7 +36,6 @@ private:
     float integralFBx, integralFBy, integralFBz;  // integral error terms scaled by Ki
     float invSampleFreq;
     float roll, pitch, yaw;
-    char anglesComputed;
     static float invSqrt(float x);
     void computeAngles();
 
@@ -56,7 +59,6 @@ public:
         integralFBx = 0.0f;
         integralFBy = 0.0f;
         integralFBz = 0.0f;
-        anglesComputed = 0;
         roll = 0.0f;
         pitch = 0.0f;
         yaw = 0.0f;
@@ -72,36 +74,9 @@ public:
         float my,
         float mz);
     void updateIMU(float gx, float gy, float gz, float ax, float ay, float az);
-    float getRoll()
-    {
-        if (!anglesComputed) computeAngles();
-        return roll * 57.29578f;
-    }
-    float getPitch()
-    {
-        if (!anglesComputed) computeAngles();
-        return pitch * 57.29578f;
-    }
-    float getYaw()
-    {
-        if (!anglesComputed) computeAngles();
-        return yaw * 57.29578f + 180.0f;
-    }
-    float getRollRadians()
-    {
-        if (!anglesComputed) computeAngles();
-        return roll;
-    }
-    float getPitchRadians()
-    {
-        if (!anglesComputed) computeAngles();
-        return pitch;
-    }
-    float getYawRadians()
-    {
-        if (!anglesComputed) computeAngles();
-        return yaw;
-    }
+    float getRoll() const { return roll; }
+    float getPitch() const { return pitch; }
+    float getYaw() const { return fmod(yaw + M_TWOPI, M_TWOPI); }
 };
 
 #endif  // MAHONY_AHRS_H_
