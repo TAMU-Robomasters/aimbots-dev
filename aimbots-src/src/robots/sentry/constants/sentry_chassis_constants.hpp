@@ -62,7 +62,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -76,13 +76,13 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR3;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.07663f;
+static constexpr float WHEEL_RADIUS = 0.0635f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f;
+static constexpr float WHEELBASE_WIDTH = 0.393f;
 
-static constexpr float WHEELBASE_LENGTH = 0.357f;
+static constexpr float WHEELBASE_LENGTH = 0.393f;
 
-static constexpr float CHASSIS_GEARBOX_RATIO = (187.0f / 3591.0f);
+static constexpr float CHASSIS_GEARBOX_RATIO = (17.0f / 268.0f);
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;

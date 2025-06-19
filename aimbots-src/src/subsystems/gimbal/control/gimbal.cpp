@@ -125,7 +125,7 @@ void GimbalSubsystem::refresh() {
         currentPitchMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoderUnwrapped()));
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
-        //pitchDesiredOutputDisplay = desiredPitchMotorOutputs[pitchDisplayMotorIdx];
+        pitchDesiredOutputDisplay = desiredPitchMotorOutputs[pitchDisplayMotorIdx];
 
         // flush the desired output to the motor
         setDesiredOutputToPitchMotor(i);
