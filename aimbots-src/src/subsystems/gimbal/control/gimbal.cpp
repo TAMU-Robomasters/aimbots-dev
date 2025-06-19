@@ -71,7 +71,7 @@ void GimbalSubsystem::refresh() {
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
 
-        int64_t currentYawEncoderPosition = yawMotors[i]->getEncoderUnwrapped();
+        int64_t currentYawEncoderPosition = yawMotors[i]->getEncoder()->getPosition().getUnwrappedValue();
 
         // https://www.desmos.com/calculator/bducsk7y6v
         float wrappedYawAxisAngle =
@@ -85,9 +85,9 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoder()->getPosition().getUnwrappedValue()));
         otherYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoder()->getPosition().getUnwrappedValue()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
 
         yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
@@ -107,7 +107,7 @@ void GimbalSubsystem::refresh() {
         }
         pitchOnlineCount++;
 
-        int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoderUnwrapped();
+        int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoder()->getPosition().getUnwrappedValue();
 
         // https://www.desmos.com/calculator/fydwmos1xr
         float wrappedPitchAxisAngle =
@@ -121,7 +121,7 @@ void GimbalSubsystem::refresh() {
         // DEBUG VARS //
         ////////////////
         currentPitchMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getPosition().getUnwrappedValue()));
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
 
         // flush the desired output to the motor

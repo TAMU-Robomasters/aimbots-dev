@@ -104,7 +104,7 @@ public:
     // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
     int64_t getEncoderUnwrapped(uint8_t feederIdx = 0) const {
-        return feederMotors[feederIdx]->getEncoderUnwrapped() / FEEDER_GEAR_RATIOS[feederIdx];
+        return feederMotors[feederIdx]->getEncoder()->getPosition().getUnwrappedValue() / FEEDER_GEAR_RATIOS[feederIdx];
     }
 
     int getTotalLimitCount() const;
