@@ -27,10 +27,10 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int LEFT_FRONT_YAW_OFFSET = 2410;
-static constexpr int RIGHT_FRONT_YAW_OFFSET = 1670;
-static constexpr int LEFT_BACK_YAW_OFFSET = 255;
-static constexpr int RIGHT_BACK_YAW_OFFSET = 6450;
+static constexpr int LEFT_FRONT_YAW_OFFSET = 2000;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 7500;
+static constexpr int LEFT_BACK_YAW_OFFSET = 6200;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 7500;
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -65,11 +65,11 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 
-static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
-static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR1;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR4;
 static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR3;
 
 // Mechanical chassis constants, all in m

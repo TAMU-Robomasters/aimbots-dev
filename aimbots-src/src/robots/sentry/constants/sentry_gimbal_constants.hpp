@@ -31,8 +31,8 @@ static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(42.58f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(229.0f))};
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-2.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(80.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(190.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #endif
@@ -63,7 +63,7 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 20'000.0f,
+    .kp = 2'000.0f,
     .ki = 0.0f,
     .kd = 10.0f,
     .maxICumulative = 0.0f,
@@ -121,7 +121,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 2200.0f,
+    .kp = 220.0f,
     .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
