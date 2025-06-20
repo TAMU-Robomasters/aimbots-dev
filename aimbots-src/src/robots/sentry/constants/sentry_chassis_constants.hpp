@@ -14,9 +14,9 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 40.0f,
+    .kp = 15.0f,
     .ki = 0.0f,
-    .kd = 5.0f,
+    .kd = 2.0f,
     .maxICumulative = 0.9f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -68,9 +68,9 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR3;
 static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR4;
-static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR3;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR2;
 
 // Mechanical chassis constants, all in m
 /**
