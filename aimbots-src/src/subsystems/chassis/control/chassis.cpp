@@ -265,14 +265,20 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
         delta = (2 * M_PI)-delta;
     }
     if(std::abs(delta)>(M_PI/2)){
-        targetRPMDrive = -targetRPMDrive;
+        targetRPMDrive = targetRPMDrive * -1;
         targetYaw += M_PI;
-        targetYaw = wrapTo0To2PIRange(targetYaw);
+        if(targetYaw >= 2*M_PI){
+            targetYaw -= 2*M_PI;
+        }
     }
 }
-
+float displayR = 0.0f;
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
-    //defense mode (X) when robot is at rest
+    displayR = r;
+    // if(r < 250 && r > -250){
+    //     r=0;
+    // }
+    //defense mode (0) when robot is at rest
     if(x==0 && y==0 && r==0){
         float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 

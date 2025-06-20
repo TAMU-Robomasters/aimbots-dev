@@ -16,7 +16,7 @@ static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 #if defined(TARGET_SENTRY_BRAVO)
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(42.58f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(229.0f))};
@@ -28,11 +28,11 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 #elif defined(TARGET_SENTRY_SWERVE)
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(42.58f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(229.0f))};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-200.0f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(147.8f))};
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-2.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #endif
@@ -48,13 +48,13 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentr
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Sentry
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Sentry
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
@@ -63,16 +63,16 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 20'000.0f,
+    .kp = 1'000.0f,
     .ki = 0.0f,
-    .kd = 10.0f,
+    .kd = 2000.0f,
     .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 10.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
@@ -121,7 +121,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 2200.0f,
+    .kp = 2000.0f,
     .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -130,7 +130,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 10.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
