@@ -34,6 +34,7 @@ void GimbalSubsystem::initialize() {
 
 float pitchOutputDisplay = 0.0f;
 float yawOutputDisplay = 0.0f;
+bool pitchOnline = false;
 
 float currentYawAxisAngleDisplay = 0.0f;
 float currByFuncYawAngleDisplay = 0;
@@ -100,6 +101,7 @@ void GimbalSubsystem::refresh() {
     yawOnlineCountDisplay = yawOnlineCount;
 
     int pitchOnlineCount = 0;
+    pitchOnline = pitchMotors[0]->isMotorOnline();
     float pitchAxisAngleSum = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         if (!pitchMotors[i]->isMotorOnline()) {
@@ -123,6 +125,7 @@ void GimbalSubsystem::refresh() {
         currentPitchMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getPosition().getUnwrappedValue()));
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
+        pitchDesiredOutputDisplay = desiredPitchMotorOutputs[pitchDisplayMotorIdx];
 
         // flush the desired output to the motor
         setDesiredOutputToPitchMotor(i);
