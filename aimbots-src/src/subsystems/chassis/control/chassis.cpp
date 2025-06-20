@@ -115,10 +115,10 @@ void ChassisSubsystem::refresh() {
 
 //     motorOutputDisplay = motors[RF][0]->getOutputDesired();
 //     #ifdef SWERVE
-//         yawMotorOutputDisplayRF = motors[RF][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayRB = motors[RB][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayLF = motors[LF][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayLB = motors[LB][1]->getEncoderWrapped();
+//         yawMotorOutputDisplayRF = motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue();
+//         yawMotorOutputDisplayRB = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
+//         yawMotorOutputDisplayLF = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
+//         yawMotorOutputDisplayLB = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
 //     #endif
  }
 
@@ -150,11 +150,11 @@ float targetRpmDisplay = 0.0f;
 float motorRpmDisplay = 0.0f;
 void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     float err = 0;
-    err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
+    err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getInternalEncoder().getShaftRPM();
     if (MotorPerWheelIdx == DRIVER) {
-        err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getShaftRPM();
+        err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getInternalEncoder().getShaftRPM();
     } else if (MotorPerWheelIdx == YAW) {
-        err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getEncoderWrapped();
+        err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getInternalEncoder().getEncoder().getWrappedValue();
         if (abs(err) > 4096) {
             int err_int =
                 (((-1 * static_cast<int>(err)) / (abs(static_cast<int>(err)))) * (8192 - static_cast<int>(err))) % 8192;
@@ -163,7 +163,7 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
     }
 
     targetRpmDisplay = targetRPMs[LF][MotorPerWheelIdx];
-    motorRpmDisplay = motors[LF][MotorPerWheelIdx]->getShaftRPM();
+    motorRpmDisplay = motors[LF][MotorPerWheelIdx]->getInternalEncoder().getShaftRPM();
 
     velocityPIDs[WheelIdx][MotorPerWheelIdx]->runControllerDerivateError(
         err/*,
@@ -282,7 +282,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         float d = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
         
         targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
+        left_front_yaw_actual = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_left_front_yaw = (3 * M_PI/4);
         optimizeSwerve(targetRPMs[LF][0],target_left_front_yaw, yawToRad(left_front_yaw_actual,LEFT_FRONT_YAW_OFFSET));
         left_front_yaw = target_left_front_yaw * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
@@ -290,7 +290,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         left_front_yaw_db = targetRPMs[LF][1];
 
         targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
+        right_front_yaw_actual = motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_right_front_yaw = (M_PI / 4);
         optimizeSwerve(targetRPMs[RF][0],target_right_front_yaw, yawToRad(right_front_yaw_actual,RIGHT_FRONT_YAW_OFFSET));
         right_front_yaw = target_right_front_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
@@ -298,7 +298,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         right_front_yaw_db = targetRPMs[RF][1];
 
         targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_back_yaw_actual = motors[LB][1]->getEncoderWrapped();
+        left_back_yaw_actual = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_left_back_yaw = M_PI / 4;
         optimizeSwerve(targetRPMs[LB][0],target_left_back_yaw, yawToRad(left_back_yaw_actual,LEFT_BACK_YAW_OFFSET));
         left_back_yaw = target_left_back_yaw * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
@@ -306,7 +306,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         left_back_yaw_db = targetRPMs[LB][1];
 
         targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_back_yaw_actual = motors[RB][1]->getEncoderWrapped();
+        right_back_yaw_actual = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_right_back_yaw = 3 * M_PI / 4;
         optimizeSwerve(targetRPMs[RB][0],target_right_back_yaw,yawToRad(right_back_yaw_actual,RIGHT_BACK_YAW_OFFSET));
         right_back_yaw = target_right_back_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;
@@ -321,7 +321,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         float d = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
         
         targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
+        left_front_yaw_actual = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_left_front_yaw = (atan2f(d, b) + 3 * M_PI / 2);
         optimizeSwerve(targetRPMs[LF][0],target_left_front_yaw, yawToRad(left_front_yaw_actual,LEFT_FRONT_YAW_OFFSET));
         left_front_yaw = target_left_front_yaw * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
@@ -329,7 +329,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         left_front_yaw_db = targetRPMs[LF][1];
 
         targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
+        right_front_yaw_actual = motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_right_front_yaw = (atan2f(c, b) + 3 * M_PI / 2);
         optimizeSwerve(targetRPMs[RF][0],target_right_front_yaw, yawToRad(right_front_yaw_actual,RIGHT_FRONT_YAW_OFFSET));
         right_front_yaw = target_right_front_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
@@ -337,7 +337,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         right_front_yaw_db = targetRPMs[RF][1];
 
         targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_back_yaw_actual = motors[LB][1]->getEncoderWrapped();
+        left_back_yaw_actual = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_left_back_yaw = atan2f(d, a) + 3 * M_PI / 2;
         optimizeSwerve(targetRPMs[LB][0],target_left_back_yaw, yawToRad(left_back_yaw_actual,LEFT_BACK_YAW_OFFSET));
         left_back_yaw = target_left_back_yaw * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
@@ -345,7 +345,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         left_back_yaw_db = targetRPMs[LB][1];
 
         targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_back_yaw_actual = motors[RB][1]->getEncoderWrapped();
+        right_back_yaw_actual = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
         target_right_back_yaw = atan2f(c, a) + 3 * M_PI / 2;
         optimizeSwerve(targetRPMs[RB][0],target_right_back_yaw,yawToRad(right_back_yaw_actual,RIGHT_BACK_YAW_OFFSET));
         right_back_yaw = target_right_back_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;

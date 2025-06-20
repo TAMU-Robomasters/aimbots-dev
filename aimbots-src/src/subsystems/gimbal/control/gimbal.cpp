@@ -71,7 +71,7 @@ void GimbalSubsystem::refresh() {
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
 
-        int64_t currentYawEncoderPosition = yawMotors[i]->getEncoderUnwrapped();
+        int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
 
         // https://www.desmos.com/calculator/bducsk7y6v
         float wrappedYawAxisAngle =
@@ -85,12 +85,12 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getInternalEncoder().getEncoder().getUnwrappedValue()));
         otherYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getUnwrappedValue()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
 
-        yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
+        yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getInternalEncoder().getShaftRPM();
 
         yawDesiredOutputDisplay = desiredYawMotorOutputs[yawDisplayMotorIdx];
 
@@ -107,7 +107,7 @@ void GimbalSubsystem::refresh() {
         }
         pitchOnlineCount++;
 
-        int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoderUnwrapped();
+        int64_t currentPitchEncoderPosition = pitchMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
 
         // https://www.desmos.com/calculator/fydwmos1xr
         float wrappedPitchAxisAngle =
@@ -121,7 +121,7 @@ void GimbalSubsystem::refresh() {
         // DEBUG VARS //
         ////////////////
         currentPitchMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getInternalEncoder().getEncoder().getUnwrappedValue()));
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
 
         // flush the desired output to the motor
