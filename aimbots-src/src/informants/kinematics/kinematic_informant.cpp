@@ -28,7 +28,6 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
 
 void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
     // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
-    UNUSED(imuCalibrationEuler);
     drivers->bmi088.requestCalibration();
 };
 
@@ -38,36 +37,40 @@ tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::get
 
 Vector3f KinematicInformant::getLocalIMUAngles() {
     Vector3f imuAngles = {
-        -drivers->bmi088.getPitch(),  // inverts pitch
-        drivers->bmi088.getRoll(),
-        drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
-    return imuAngles * (M_PI / 180.0f);      // Convert to rad
+        drivers->bmi088.getPitch(),  
+        -drivers->bmi088.getRoll(),
+        drivers->bmi088.getYaw()};  
+    //return imuAngles * (M_PI / 180.0f);      // Convert to rad
+    return imuAngles;
 }
 float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getPitch());
+            // return -modm::toRadian(drivers->bmi088.getPitch());
+            return drivers->bmi088.getPitch();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getRoll());
+            // return modm::toRadian(drivers->bmi088.getRoll());
+            return -drivers->bmi088.getRoll();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getYaw() - 180.0f);  // for some reason yaw is 180.0 degrees rotated
+            // return modm::toRadian(drivers->bmi088.getYaw() - 180.0f);  // for some reason yaw is 180.0 degrees rotated
+            return drivers->bmi088.getYaw();
     }
     return 0;
 }
 
 Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
     Vector3f imuAngularVelocities = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
-    return imuAngularVelocities * (M_PI / 180.0f);  // Convert to rad/s
+    return imuAngularVelocities;  // Convert to rad/s
 }
 
 float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getGy());
+            return -drivers->bmi088.getGy();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getGx());
+            return drivers->bmi088.getGx();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getGz());
+            return drivers->bmi088.getGz();
     }
     return 0;
 }
@@ -264,15 +267,22 @@ float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-    #ifdef HERO
-        float chassisRoll = 0;
+    //over
+    #ifdef ALL_HEROS
+        chassisRoll = 0;
+    #endif
+    #ifdef ALL_SENTRIES
+        chassisRoll = 0;
     #endif
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    #ifdef HERO
-        float chassisPitch = 0;
+    #ifdef ALL_HEROS
+        chassisPitch = 0;
+    #endif
+    #ifdef ALL_SENTRIES
+        chassisPitch = 0;
     #endif
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
