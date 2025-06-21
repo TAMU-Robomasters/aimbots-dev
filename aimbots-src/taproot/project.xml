@@ -60,6 +60,7 @@
     <module>modm:platform:timer:10</module>
     <module>modm:platform:adc:3</module>
     <module>modm:platform:i2c:3</module>
+    <module>modm:platform:i2c:2</module>
 
   </modules>
 </library>
