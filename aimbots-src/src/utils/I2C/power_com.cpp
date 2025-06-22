@@ -2,8 +2,6 @@
 #include <cstdint>
 
 #include "modm/platform/gpio/base.hpp"
-#include "modm/platform/gpio/gpio_C9.hpp"
-#include "modm/platform/gpio/gpio_A8.hpp"
 #include "modm/platform/gpio/gpio_F0.hpp"
 #include "modm/platform/gpio/gpio_F1.hpp"
 #include "tap/board/board.hpp"
@@ -21,7 +19,7 @@
 namespace utils {
     static POWER_COM* instance;
 
-    MODM_ISR(EXTI3) {
+    MODM_ISR(EXTI2) {
     POWER_COM_DATA::DATA_READY_PIN::acknowledgeExternalInterruptFlag();
     if(instance)
         instance->update();

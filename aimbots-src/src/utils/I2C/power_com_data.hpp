@@ -10,18 +10,47 @@ namespace utils::POWER_COM_DATA {
 
     using DATA_READY_PIN = modm::platform::GpioF0;
     using POWER_COM_MASTER = modm::platform::I2cMaster2;
-//clock 100Khz
-//adress 0x55
-    static constexpr uint8_t I2C_ADRESS = 0x50;
+    static constexpr uint8_t I2C_ADRESS = 0b1000000;
 
     enum class Register : uint8_t {
-        WHO_AM_I = 0x00,
-        VOLTAGE = 0x01,
-        CURRENT = 0x02,
+
+        //[READ/WRITE]
+        //All-register reset, shunt voltage and bus
+        //voltage ADC conversion times and
+        //averaging, operating mode.
+        CONFIG = 0x00,
+
+        //[READ ONLY]
+        //Contains the value of the current flowing
+        //through the shunt resistor
+        CURRENT = 0x01,
+
+        //[READ ONLY]
+        //Bus voltage measurement data. 
+        BUS_VOLTAGE = 0x02,
+
+        //[READ ONLY]
+        //Contains the value of the calculated
+        //power being delivered to the load.
+        POWER = 0x03,
+
     };
 
     enum class RegisterData : uint8_t {
-        DEVICE_ID = 0x55,
+
+        MANUFACTURER_ID = 0xFE,
+
+        DIE_ID = 0xFF,
+
+        //[READ/WRITE]
+        //Alert configuration and Conversion
+        //Ready flag.
+        MASK_AND_ENABLE = 0x06,
+
+        //[READ/WRITE]
+        //Contains the limit value to compare to
+        //the selected Alert function. 
+        ALERT_LIMIT = 0x07,
     };
 
     
