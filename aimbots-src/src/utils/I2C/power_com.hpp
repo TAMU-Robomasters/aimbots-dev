@@ -14,13 +14,26 @@ class POWER_COM : modm::I2cDevice<POWER_COM_DATA::POWER_COM_MASTER>, modm::pt::P
 public:
     POWER_COM();
 
-    void initialize();
+    bool begin();
+    void reset(void);
+    float readCurrent(void);
+    float readBusVoltage(void);
+    float readPower(void);
+    void setMode(INA260_MeasurementMode mode);
+    INA260_MeasurementMode getMode(void);
 
-    void update();
+    bool conversionReady(void);
+    bool alertFunctionFlag(void);
 
-    inline float getVoltage() {return voltage;};
-    inline float getCurrent() {return current;};
-    inline float getPower() {return power;};
+    float getAlertLimit(void);
+    INA260_AlertLatch getAlertLatch(void);
+    void setAlertLatch(INA260_AlertLatch state);
+    INA260_AlertPolarity getAlertPolarity(void);
+    void setAlertPolarity(INA260_AlertPolarity polarity);
+    INA260_AlertType getAlertType(void);
+    void setAlertType(INA260_AlertType alert);
+
+    
 
 private:
     inline modm::ResumableResult<bool> readRegister(POWER_COM_DATA::Register reg, size_t length = 1)
