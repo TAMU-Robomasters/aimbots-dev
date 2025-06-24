@@ -14,26 +14,32 @@ class POWER_COM : modm::I2cDevice<POWER_COM_DATA::POWER_COM_MASTER>, modm::pt::P
 public:
     POWER_COM();
 
-    bool begin();
-    void reset(void);
-    float readCurrent(void);
-    float readBusVoltage(void);
-    float readPower(void);
-    void setMode(INA260_MeasurementMode mode);
-    INA260_MeasurementMode getMode(void);
+    bool init();
+    void update();
+    inline float getCurrent(){return current;};
+    inline float getBusVoltage(){return voltage;};
+    inline float getPower(){return power;};
+    //void setMode(INA260_MeasurementMode mode);
+    //INA260_MeasurementMode getMode(void);
 
-    bool conversionReady(void);
-    bool alertFunctionFlag(void);
+    // bool conversionReady(void);
+    // bool alertFunctionFlag(void);
 
-    float getAlertLimit(void);
-    INA260_AlertLatch getAlertLatch(void);
-    void setAlertLatch(INA260_AlertLatch state);
-    INA260_AlertPolarity getAlertPolarity(void);
-    void setAlertPolarity(INA260_AlertPolarity polarity);
-    INA260_AlertType getAlertType(void);
-    void setAlertType(INA260_AlertType alert);
+    //float getAlertLimit(void);
+    //INA260_AlertLatch getAlertLatch(void);
+    //void setAlertLatch(INA260_AlertLatch state);
+    //INA260_AlertPolarity getAlertPolarity(void);
+    //void setAlertPolarity(INA260_AlertPolarity polarity);
+    //INA260_AlertType getAlertType(void);
+    //void setAlertType(INA260_AlertType alert);
 
-    
+    //INA260_ConversionTime getCurrentConversionTime(void);
+    //void setCurrentConversionTime(INA260_ConversionTime time);
+    //INA260_ConversionTime getVoltageConversionTime(void);
+    //void setVoltageConversionTime(INA260_ConversionTime time);
+    //INA260_AveragingCount getAveragingCount(void);
+    //void setAveragingCount(INA260_AveragingCount count);
+
 
 private:
     inline modm::ResumableResult<bool> readRegister(POWER_COM_DATA::Register reg, size_t length = 1)
@@ -43,30 +49,37 @@ private:
         if(length > 3) length = 3;
 
         raw_data_buffer[0] = uint8_t(reg);
-        while(!transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, length));
+        while(!transaction.configureWriteRead(write_data_buffer, 1, raw_data_buffer, length));
 
         RF_END_RETURN_CALL(runTransaction());
     };
 
-    inline modm::ResumableResult<bool> writeToRegister(POWER_COM_DATA::Register reg, POWER_COM_DATA::RegisterData data) {
+    inline modm::ResumableResult<bool> writeToRegister(POWER_COM_DATA::Register reg, POWER_COM_DATA::Register data) {
         RF_BEGIN();
 
         raw_data_buffer[0] = uint8_t(reg);
         raw_data_buffer[1] = uint8_t(data);
 
-        while(!transaction.configureWrite(raw_data_buffer, 2));
+        while(!transaction.configureWrite(write_data_buffer, 2));
 
         RF_END_RETURN_CALL(runTransaction());
     }
 
     void initializeHardware() {
-        //while(!readRegister(POWER_COM_DATA::Register::WHO_AM_I).getResult());
+        while(!readRegister(POWER_COM_DATA::Register::INA260_REG_DIE_UID).getResult());
         modm::delay_ms(1);
 
-        if(raw_data_buffer[0] == uint8_t(POWER_COM_DATA::RegisterData::DIE_ID))
+        uint16_t device_id = raw_data_buffer[0];
+        // uint8_t mask = ~((1<<0)|(1<<1)|(1<<2)|(1<<3));
+        // device_id = device_id & mask;
+        device_id = device_id >> 4;
+
+        if(device_id == 0x227)
             isDeviceVerified = true;
         else
             isDeviceVerified = false;
+
+        
     }
 
     bool PT_readingRawData() {
@@ -82,7 +95,8 @@ private:
     float power;
 
     bool isDeviceVerified;
-    uint8_t raw_data_buffer[3];
+    int16_t raw_data_buffer[3];
+    uint8_t write_data_buffer[3];
 };
 }
 

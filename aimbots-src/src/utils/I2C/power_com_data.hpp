@@ -10,19 +10,17 @@ namespace utils::POWER_COM_DATA {
 
     using DATA_READY_PIN = modm::platform::GpioF0;
     using POWER_COM_MASTER = modm::platform::I2cMaster2;
-    static constexpr uint8_t I2C_ADRESS = 0b1000000;
-
+    static constexpr uint8_t I2C_ADDRESS = 0x40;
     enum class Register : uint8_t {
         
-        INA260_I2CADDR_DEFAULT 0x40, ///< INA260 default i2c address
-        INA260_REG_CONFIG 0x00,      ///< Configuration register
-        INA260_REG_CURRENT 0x01, ///< Current measurement register (signed) in mA
-        INA260_REG_BUSVOLTAGE 0x02, ///< Bus voltage measurement register in mV
-        INA260_REG_POWER 0x03,      ///< Power calculation register in mW
-        INA260_REG_MASK_ENABLE 0x06, ///< Interrupt/Alert setting and checking register
-        INA260_REG_ALERT_LIMIT 0x07, ///< Alert limit value register
-        INA260_REG_MFG_UID 0xFE,     ///< Manufacturer ID Register
-        INA260_REG_DIE_UID 0xFF,     ///< Die ID and Revision Register
+        INA260_REG_CONFIG = 0x00,      ///< Configuration register
+        INA260_REG_CURRENT = 0x01, ///< Current measurement register (signed) in mA
+        INA260_REG_BUSVOLTAGE = 0x02, ///< Bus voltage measurement register in mV
+        INA260_REG_POWER = 0x03,      ///< Power calculation register in mW
+        INA260_REG_MASK_ENABLE = 0x06, ///< Interrupt/Alert setting and checking register
+        INA260_REG_ALERT_LIMIT = 0x07, ///< Alert limit value register
+        INA260_REG_MFG_UID = 0xFE,     ///< Manufacturer ID Register
+        INA260_REG_DIE_UID = 0xFF,     ///< Die ID and Revision Register
     };
 
     /**
