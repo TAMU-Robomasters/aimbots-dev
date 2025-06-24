@@ -10,7 +10,7 @@ namespace utils::POWER_COM_DATA {
 
     using DATA_READY_PIN = modm::platform::GpioF0;
     using POWER_COM_MASTER = modm::platform::I2cMaster2;
-    static constexpr uint8_t I2C_ADDRESS = 0x40;
+    static constexpr uint8_t I2C_ADDRESS = 0b1000101;
     enum class Register : uint8_t {
         
         INA260_REG_CONFIG = 0x00,      ///< Configuration register
@@ -23,91 +23,91 @@ namespace utils::POWER_COM_DATA {
         INA260_REG_DIE_UID = 0xFF,     ///< Die ID and Revision Register
     };
 
-    /**
-     * @brief Mode options.
-     *
-     * Allowed values for setMode.
-     */
-    enum class _mode : uint8_t {
-        INA260_MODE_SHUTDOWN = 0x00,   /**< SHUTDOWN: Minimize quiescient current and
-                                        turn off current into the device inputs. Set
-                                        another mode to exit shutown mode **/
-        INA260_MODE_TRIGGERED = 0x03,  /**< TRIGGERED: Trigger a one-shot measurement
-                                        of current and bus voltage. Set the TRIGGERED
-                                        mode again to take a new measurement **/
-        INA260_MODE_CONTINUOUS = 0x07, /**< CONTINUOUS: (Default) Continuously update
-                                            the current, bus voltage and power
-                                            registers with new measurements **/
-    }INA260_MeasurementMode;
+    // /**
+    //  * @brief Mode options.
+    //  *
+    //  * Allowed values for setMode.
+    //  */
+    // enum class _mode : uint8_t {
+    //     INA260_MODE_SHUTDOWN = 0x00,   /**< SHUTDOWN: Minimize quiescient current and
+    //                                     turn off current into the device inputs. Set
+    //                                     another mode to exit shutown mode **/
+    //     INA260_MODE_TRIGGERED = 0x03,  /**< TRIGGERED: Trigger a one-shot measurement
+    //                                     of current and bus voltage. Set the TRIGGERED
+    //                                     mode again to take a new measurement **/
+    //     INA260_MODE_CONTINUOUS = 0x07, /**< CONTINUOUS: (Default) Continuously update
+    //                                         the current, bus voltage and power
+    //                                         registers with new measurements **/
+    // }INA260_MeasurementMode;
 
-    /**
-     * @brief Conversion Time options.
-     *
-     * Allowed values for setCurrentConversionTime and setVoltageConversionTime.
-     */
-    enum class _conversion_time : uint8_t {
-        INA260_TIME_140_us,   ///< Measurement time: 140us
-        INA260_TIME_204_us,   ///< Measurement time: 204us
-        INA260_TIME_332_us,   ///< Measurement time: 332us
-        INA260_TIME_558_us,   ///< Measurement time: 558us
-        INA260_TIME_1_1_ms,   ///< Measurement time: 1.1ms (Default)
-        INA260_TIME_2_116_ms, ///< Measurement time: 2.116ms
-        INA260_TIME_4_156_ms, ///< Measurement time: 4.156ms
-        INA260_TIME_8_244_ms, ///< Measurement time: 8.224ms
-    }INA260_ConversionTime;
+    // /**
+    //  * @brief Conversion Time options.
+    //  *
+    //  * Allowed values for setCurrentConversionTime and setVoltageConversionTime.
+    //  */
+    // enum class _conversion_time : uint8_t {
+    //     INA260_TIME_140_us,   ///< Measurement time: 140us
+    //     INA260_TIME_204_us,   ///< Measurement time: 204us
+    //     INA260_TIME_332_us,   ///< Measurement time: 332us
+    //     INA260_TIME_558_us,   ///< Measurement time: 558us
+    //     INA260_TIME_1_1_ms,   ///< Measurement time: 1.1ms (Default)
+    //     INA260_TIME_2_116_ms, ///< Measurement time: 2.116ms
+    //     INA260_TIME_4_156_ms, ///< Measurement time: 4.156ms
+    //     INA260_TIME_8_244_ms, ///< Measurement time: 8.224ms
+    // }INA260_ConversionTime;
 
-    /**
-     * @brief Averaging Count options.
-     *
-     * Allowed values forsetAveragingCount.
-     */
-    enum class _count : uint8_t {
-        INA260_COUNT_1,    ///< Window size: 1 sample (Default)
-        INA260_COUNT_4,    ///< Window size: 4 samples
-        INA260_COUNT_16,   ///< Window size: 16 samples
-        INA260_COUNT_64,   ///< Window size: 64 samples
-        INA260_COUNT_128,  ///< Window size: 128 samples
-        INA260_COUNT_256,  ///< Window size: 256 samples
-        INA260_COUNT_512,  ///< Window size: 512 samples
-        INA260_COUNT_1024, ///< Window size: 1024 samples
-    }INA260_AveragingCount;
+    // /**
+    //  * @brief Averaging Count options.
+    //  *
+    //  * Allowed values forsetAveragingCount.
+    //  */
+    // enum class _count : uint8_t {
+    //     INA260_COUNT_1,    ///< Window size: 1 sample (Default)
+    //     INA260_COUNT_4,    ///< Window size: 4 samples
+    //     INA260_COUNT_16,   ///< Window size: 16 samples
+    //     INA260_COUNT_64,   ///< Window size: 64 samples
+    //     INA260_COUNT_128,  ///< Window size: 128 samples
+    //     INA260_COUNT_256,  ///< Window size: 256 samples
+    //     INA260_COUNT_512,  ///< Window size: 512 samples
+    //     INA260_COUNT_1024, ///< Window size: 1024 samples
+    // }INA260_AveragingCount;
 
-    /**
-     * @brief Alert trigger options.
-     *
-     * Allowed values for setAlertType.
-     */
-    enum class _alert_type : uint8_t {
-        INA260_ALERT_CONVERSION_READY = 0x1, ///< Trigger on conversion ready
-        INA260_ALERT_OVERPOWER = 0x2,        ///< Trigger on power over limit
-        INA260_ALERT_UNDERVOLTAGE = 0x4,     ///< Trigger on bus voltage under limit
-        INA260_ALERT_OVERVOLTAGE = 0x8,      ///< Trigger on bus voltage over limit
-        INA260_ALERT_UNDERCURRENT = 0x10,    ///< Trigger on current under limit
-        INA260_ALERT_OVERCURRENT = 0x20,     ///< Trigger on current over limit
-        INA260_ALERT_NONE = 0x0,             ///< Do not trigger alert pin (Default)
-    }INA260_AlertType;
+    // /**
+    //  * @brief Alert trigger options.
+    //  *
+    //  * Allowed values for setAlertType.
+    //  */
+    // enum class _alert_type : uint8_t {
+    //     INA260_ALERT_CONVERSION_READY = 0x1, ///< Trigger on conversion ready
+    //     INA260_ALERT_OVERPOWER = 0x2,        ///< Trigger on power over limit
+    //     INA260_ALERT_UNDERVOLTAGE = 0x4,     ///< Trigger on bus voltage under limit
+    //     INA260_ALERT_OVERVOLTAGE = 0x8,      ///< Trigger on bus voltage over limit
+    //     INA260_ALERT_UNDERCURRENT = 0x10,    ///< Trigger on current under limit
+    //     INA260_ALERT_OVERCURRENT = 0x20,     ///< Trigger on current over limit
+    //     INA260_ALERT_NONE = 0x0,             ///< Do not trigger alert pin (Default)
+    // }INA260_AlertType;
 
-    /**
-     * @brief Alert pin polarity options.
-     *
-     * Allowed values for setAlertPolarity.
-     */
-    enum class _alert_polarity : uint8_t {
-        INA260_ALERT_POLARITY_NORMAL = 0x0, ///< Active high open-collector (Default)
-        INA260_ALERT_POLARITY_INVERTED = 0x1, ///< Active low open-collector           ///< Do not trigger alert pin (Default)
-    }INA260_AlertPolarity;
+    // /**
+    //  * @brief Alert pin polarity options.
+    //  *
+    //  * Allowed values for setAlertPolarity.
+    //  */
+    // enum class _alert_polarity : uint8_t {
+    //     INA260_ALERT_POLARITY_NORMAL = 0x0, ///< Active high open-collector (Default)
+    //     INA260_ALERT_POLARITY_INVERTED = 0x1, ///< Active low open-collector           ///< Do not trigger alert pin (Default)
+    // }INA260_AlertPolarity;
 
-    /**
-     * @brief Alert pin latch options.
-     *
-     * Allowed values for setAlertLatch.
-     */
-    enum class _alert_latch : uint8_t {
-        INA260_ALERT_LATCH_ENABLED = 0x1,     /**< Alert will latch until Mask/Enable
-                                                register is read **/
-        INA260_ALERT_LATCH_TRANSPARENT = 0x0, /**< Alert will reset when fault is
-                                                cleared **/
-    }INA260_AlertLatch;
+    // /**
+    //  * @brief Alert pin latch options.
+    //  *
+    //  * Allowed values for setAlertLatch.
+    //  */
+    // enum class _alert_latch : uint8_t {
+    //     INA260_ALERT_LATCH_ENABLED = 0x1,     /**< Alert will latch until Mask/Enable
+    //                                             register is read **/
+    //     INA260_ALERT_LATCH_TRANSPARENT = 0x0, /**< Alert will reset when fault is
+    //                                             cleared **/
+    // }INA260_AlertLatch;
     
 
 }

@@ -44,6 +44,7 @@ public:
         : tap::Drivers(),
           controlOperatorInterface(this),
        //   magnetometer(),
+          powerSensor(),
           cvCommunicator(this),
           kinematicInformant(this),
           hitTracker(this),

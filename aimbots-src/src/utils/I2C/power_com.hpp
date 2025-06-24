@@ -14,7 +14,7 @@ class POWER_COM : modm::I2cDevice<POWER_COM_DATA::POWER_COM_MASTER>, modm::pt::P
 public:
     POWER_COM();
 
-    bool init();
+    void init();
     void update();
     inline float getCurrent(){return current;};
     inline float getBusVoltage(){return voltage;};
@@ -49,7 +49,7 @@ private:
         if(length > 3) length = 3;
 
         raw_data_buffer[0] = uint8_t(reg);
-        while(!transaction.configureWriteRead(write_data_buffer, 1, raw_data_buffer, length));
+        while(!transaction.configureWriteRead(raw_data_buffer, 1, raw_data_buffer, length));
 
         RF_END_RETURN_CALL(runTransaction());
     };
@@ -60,7 +60,7 @@ private:
         raw_data_buffer[0] = uint8_t(reg);
         raw_data_buffer[1] = uint8_t(data);
 
-        while(!transaction.configureWrite(write_data_buffer, 2));
+        while(!transaction.configureWrite(raw_data_buffer, 2));
 
         RF_END_RETURN_CALL(runTransaction());
     }
@@ -69,34 +69,39 @@ private:
         while(!readRegister(POWER_COM_DATA::Register::INA260_REG_DIE_UID).getResult());
         modm::delay_ms(1);
 
-        uint16_t device_id = raw_data_buffer[0];
+        //uint16_t device_id = raw_data_buffer[0];
         // uint8_t mask = ~((1<<0)|(1<<1)|(1<<2)|(1<<3));
         // device_id = device_id & mask;
-        device_id = device_id >> 4;
+        //device_id = device_id >> 4;
 
-        if(device_id == 0x227)
+        //if(device_id == 320)
             isDeviceVerified = true;
-        else
-            isDeviceVerified = false;
+        //else
+            //isDeviceVerified = false;
 
         
     }
 
     bool PT_readingRawData() {
         PT_BEGIN();
-        PT_CALL(readRegister(POWER_COM_DATA::Register::CURRENT, 3));
+        PT_CALL(readRegister(POWER_COM_DATA::Register::INA260_REG_CURRENT));
+        current = raw_data_buffer[0];
+        PT_CALL(readRegister(POWER_COM_DATA::Register::INA260_REG_BUSVOLTAGE));
+        voltage = raw_data_buffer[1];
+        PT_CALL(readRegister(POWER_COM_DATA::Register::INA260_REG_POWER));
+        power = raw_data_buffer[2];
+        
         modm::delay_ms(5);
         
         PT_END();
     }
 
-    float voltage;
-    float current;
-    float power;
+    uint8_t voltage;
+    uint8_t current;
+    uint8_t power;
 
     bool isDeviceVerified;
-    int16_t raw_data_buffer[3];
-    uint8_t write_data_buffer[3];
+    uint8_t raw_data_buffer[3];
 };
 }
 

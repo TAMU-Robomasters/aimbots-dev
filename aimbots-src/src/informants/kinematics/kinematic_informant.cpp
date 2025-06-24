@@ -267,23 +267,12 @@ float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-    //over
-    #ifdef ALL_HEROS
         chassisRoll = 0;
-    #endif
-    #ifdef ALL_SENTRIES
-        chassisRoll = 0;
-    #endif
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    #ifdef ALL_HEROS
         chassisPitch = 0;
-    #endif
-    #ifdef ALL_SENTRIES
-        chassisPitch = 0;
-    #endif
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
