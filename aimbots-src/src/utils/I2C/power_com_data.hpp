@@ -1,16 +1,21 @@
 #pragma once
 #include <cstdint>
 
-#include <modm/platform/gpio/gpio_G6.hpp>
-#include <modm/platform/gpio/gpio_G3.hpp>
-#include <modm/platform/gpio/gpio_F0.hpp>
-#include <modm/platform/i2c/i2c_master_2.hpp>
+#include <modm/platform/gpio/gpio_B12.hpp>
+#include <modm/platform/gpio/gpio_B13.hpp>
+#include <modm/platform/gpio/gpio_B14.hpp>
+#include <modm/platform/gpio/gpio_B15.hpp>
+
+#include <modm/platform/spi/spi_master_2.hpp>
 
 namespace utils::POWER_COM_DATA {
 
-    using DATA_READY_PIN = modm::platform::GpioF0;
-    using POWER_COM_MASTER = modm::platform::I2cMaster2;
-    static constexpr uint8_t I2C_ADDRESS = 0b1000101;
+    //using DATA_READY_PIN = modm::platform::GpioF0;
+    using SPI_CS = modm::platform::GpioB12;
+    using SPI_CLK = modm::platform::GpioB13;
+    using SPI_MISO = modm::platform::GpioB14;
+    using SPI_MOSI = modm::platform::GPIOB15;
+    using POWER_COM_MASTER = modm::platform::SpiMaster2;
     enum class Register : uint8_t {
         
         INA260_REG_CONFIG = 0x00,      ///< Configuration register
