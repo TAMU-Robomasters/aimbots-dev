@@ -11,10 +11,10 @@
 namespace utils::POWER_COM_DATA {
 
     //using DATA_READY_PIN = modm::platform::GpioF0;
-    using SPI_CS = modm::platform::GpioB12;
+    using SPI_CS = modm::platform::GpioOutputB12;
     using SPI_CLK = modm::platform::GpioB13;
     using SPI_MISO = modm::platform::GpioB14;
-    using SPI_MOSI = modm::platform::GPIOB15;
+    using SPI_MOSI = modm::platform::GpioB15;
     using POWER_COM_MASTER = modm::platform::SpiMaster2;
     
 
