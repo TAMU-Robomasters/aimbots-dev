@@ -23,6 +23,8 @@
 
 #include "dji_motor_tx_handler_mock.hpp"
 
+#include "tap/motor/dji_motor.hpp"
+
 namespace tap::mock
 {
 DjiMotorTxHandlerMock::DjiMotorTxHandlerMock(tap::Drivers *drivers)

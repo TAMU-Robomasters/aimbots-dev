@@ -29,7 +29,7 @@
 
 #include "modm/architecture/interface/register.hpp"
 
-#include "imu_interface.hpp"
+#include "abstract_imu.hpp"
 
 namespace tap
 {
@@ -46,7 +46,7 @@ namespace tap::communication::sensors::imu
 class ImuTerminalSerialHandler : public communication::serial::TerminalSerialCallbackInterface
 {
 public:
-    ImuTerminalSerialHandler(Drivers* drivers, ImuInterface* imu)
+    ImuTerminalSerialHandler(Drivers* drivers, AbstractIMU* imu)
         : drivers(drivers),
           imu(imu),
           subjectsBeingInspected(0)
@@ -75,7 +75,7 @@ private:
 
     Drivers* drivers;
 
-    ImuInterface* imu;
+    AbstractIMU* imu;
 
     /**
      * Each element in the enum corresponds to a sensor that a user may query.

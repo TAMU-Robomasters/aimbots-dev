@@ -1,3 +1,4 @@
+
 #pragma once
 
 namespace src::Informants::Vision {

@@ -25,7 +25,6 @@
 #define TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
-#include "tap/motor/dji_motor.hpp"
 
 #include "../subsystem.hpp"
 #include "modm/math/matrix.hpp"

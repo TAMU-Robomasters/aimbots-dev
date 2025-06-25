@@ -161,10 +161,10 @@ public:
     Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
         Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
 
-        wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
-        wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
-        wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
-        wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+        wheelVelocities[LF][0] = leftFrontWheel.getInternalEncoder().getShaftRPM();
+        wheelVelocities[RF][0] = rightFrontWheel.getInternalEncoder().getShaftRPM();
+        wheelVelocities[LB][0] = leftBackWheel.getInternalEncoder().getShaftRPM();
+        wheelVelocities[RB][0] = rightBackWheel.getInternalEncoder().getShaftRPM();
 
         return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
     }
@@ -201,10 +201,10 @@ protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;
 
 public:
-    inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getShaftRPM(); }
-    inline int16_t getLeftBackRpmActual() const /*override*/ { return leftBackWheel.getShaftRPM(); }
-    inline int16_t getRightFrontRpmActual() const /*override*/ { return rightFrontWheel.getShaftRPM(); }
-    inline int16_t getRightBackRpmActual() const /*override*/ { return rightBackWheel.getShaftRPM(); }
+    inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getInternalEncoder().getShaftRPM(); }
+    inline int16_t getLeftBackRpmActual() const /*override*/ { return leftBackWheel.getInternalEncoder().getShaftRPM(); }
+    inline int16_t getRightFrontRpmActual() const /*override*/ { return rightFrontWheel.getInternalEncoder().getShaftRPM(); }
+    inline int16_t getRightBackRpmActual() const /*override*/ { return rightBackWheel.getInternalEncoder().getShaftRPM(); }
 };
 
 };  // namespace src::Chassis

@@ -31,6 +31,8 @@
 
 #include "modm/architecture/interface/can_message.hpp"
 
+#include "dji_motor_encoder_mock.hpp"
+
 namespace tap
 {
 namespace mock
@@ -44,26 +46,24 @@ public:
         tap::can::CanBus motorCanBus,
         bool isInverted,
         const char* name,
-        uint16_t encWrapped = ENC_RESOLUTION / 2,
-        int64_t encRevolutions = 0);
+        bool currentControl = false,
+        float gearRatio = 1,
+        uint32_t encoderHomePosition = 0,
+        tap::encoder::EncoderInterface* externalEncoder = nullptr);
     virtual ~DjiMotorMock();
 
     MOCK_METHOD(void, initialize, (), (override));
-    MOCK_METHOD(float, getPositionUnwrapped, (), (const override));
-    MOCK_METHOD(float, getPositionWrapped, (), (const override));
-    MOCK_METHOD(int64_t, getEncoderUnwrapped, (), (const override));
-    MOCK_METHOD(uint16_t, getEncoderWrapped, (), (const override));
     MOCK_METHOD(void, processMessage, (const modm::can::Message& message), (override));
     MOCK_METHOD(void, setDesiredOutput, (int32_t desiredOutput), (override));
     MOCK_METHOD(void, resetEncoderValue, (), (override));
     MOCK_METHOD(bool, isMotorOnline, (), (const override));
+    MOCK_METHOD(bool, isInCurrentControl, (), (const override));
     MOCK_METHOD(void, serializeCanSendData, (modm::can::Message * txMessage), (const override));
 
     MOCK_METHOD(int16_t, getOutputDesired, (), (const override));
     MOCK_METHOD(uint32_t, getMotorIdentifier, (), (const override));
     MOCK_METHOD(int8_t, getTemperature, (), (const override));
     MOCK_METHOD(int16_t, getTorque, (), (const override));
-    MOCK_METHOD(int16_t, getShaftRPM, (), (const override));
     MOCK_METHOD(bool, isMotorInverted, (), (const override));
     MOCK_METHOD(tap::can::CanBus, getCanBus, (), (const override));
     MOCK_METHOD(const char*, getName, (), (const override));

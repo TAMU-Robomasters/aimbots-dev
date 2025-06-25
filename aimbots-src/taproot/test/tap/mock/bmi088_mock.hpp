@@ -38,18 +38,18 @@ public:
 
     MOCK_METHOD(void, initialize, (float, float, float), (override));
     MOCK_METHOD(void, periodicIMUUpdate, (), (override));
-    MOCK_METHOD(ImuState, getImuState, (), (const override));
-    MOCK_METHOD(void, requestRecalibration, (), (override));
-    MOCK_METHOD(float, getYaw, (), (override));
-    MOCK_METHOD(float, getPitch, (), (override));
-    MOCK_METHOD(float, getRoll, (), (override));
-    MOCK_METHOD(float, getGx, (), (override));
-    MOCK_METHOD(float, getGy, (), (override));
-    MOCK_METHOD(float, getGz, (), (override));
-    MOCK_METHOD(float, getAx, (), (override));
-    MOCK_METHOD(float, getAy, (), (override));
-    MOCK_METHOD(float, getAz, (), (override));
-    MOCK_METHOD(float, getTemp, (), (override));
+    MOCK_METHOD(bool, read, (), (override));
+    MOCK_METHOD(ImuState, getImuState, (), (const final override));
+    MOCK_METHOD(float, getYaw, (), (const override));
+    MOCK_METHOD(float, getPitch, (), (const override));
+    MOCK_METHOD(float, getRoll, (), (const override));
+    MOCK_METHOD(float, getGx, (), (const override));
+    MOCK_METHOD(float, getGy, (), (const override));
+    MOCK_METHOD(float, getGz, (), (const override));
+    MOCK_METHOD(float, getAx, (), (const override));
+    MOCK_METHOD(float, getAy, (), (const override));
+    MOCK_METHOD(float, getAz, (), (const override));
+    MOCK_METHOD(float, getTemp, (), (const override));
     MOCK_METHOD(uint32_t, getPrevIMUDataReceivedTime, (), (const override));
 };
 }  // namespace tap::mock

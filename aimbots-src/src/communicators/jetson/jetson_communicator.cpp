@@ -1,3 +1,4 @@
+
 #include "jetson_communicator.hpp"
 
 #include <drivers.hpp>
@@ -51,6 +52,7 @@ int msBetweenLastMessageDisplay = 0;
 alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 
 void JetsonCommunicator::updateSerial() {
+    #ifdef ALL_SENTRIES
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
@@ -137,6 +139,7 @@ void JetsonCommunicator::updateSerial() {
     //     lastMessage.targetX = 0.0f;
     //     lastMessage.targetY = 0.0f;
     // }
+    #endif
 }
 
 PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {

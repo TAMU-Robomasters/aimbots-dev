@@ -55,7 +55,7 @@ void ImuHeater::runTemperatureController(float temperature)
     }
 
     // Run PID controller to find desired output, output units PWM frequency
-    imuTemperatureController.update(IMU_DESIRED_TEMPERATURE - temperature);
+    imuTemperatureController.update(imuDesiredTemperature - temperature);
 
     // Set heater PWM output, limit output so it is not < 0
     drivers->pwm.write(

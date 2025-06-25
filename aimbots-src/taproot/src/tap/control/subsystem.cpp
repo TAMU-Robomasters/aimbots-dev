@@ -34,6 +34,7 @@ namespace control
 Subsystem::Subsystem(Drivers* drivers)
     : drivers(drivers),
       defaultCommand(nullptr),
+      testCommand(nullptr),
       globalIdentifier(CommandScheduler::constructSubsystem(this))
 {
 }
@@ -54,12 +55,21 @@ void Subsystem::setDefaultCommand(Command* command)
     }
 }
 
+void Subsystem::setTestCommand(Command* command)
+{
+    if (command != nullptr)
+    {
+        testCommand = command;
+    }
+}
+
 const char* Subsystem::getName() const { return "Subsystem"; }
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 Subsystem::Subsystem()
     : drivers(nullptr),
       defaultCommand(nullptr),
+      testCommand(nullptr),
       globalIdentifier(CommandScheduler::constructSubsystem(this))
 {
 }

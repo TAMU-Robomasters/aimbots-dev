@@ -37,16 +37,15 @@ public:
     virtual ~ImuInterfaceMock();
 
     MOCK_METHOD(const char *, getName, (), (const override));
-    MOCK_METHOD(float, getAx, (), (override));
-    MOCK_METHOD(float, getAy, (), (override));
-    MOCK_METHOD(float, getAz, (), (override));
-    MOCK_METHOD(float, getGx, (), (override));
-    MOCK_METHOD(float, getGy, (), (override));
-    MOCK_METHOD(float, getGz, (), (override));
-    MOCK_METHOD(float, getTemp, (), (override));
-    MOCK_METHOD(float, getYaw, (), (override));
-    MOCK_METHOD(float, getPitch, (), (override));
-    MOCK_METHOD(float, getRoll, (), (override));
+    MOCK_METHOD(float, getAx, (), (const override));
+    MOCK_METHOD(float, getAy, (), (const override));
+    MOCK_METHOD(float, getAz, (), (const override));
+    MOCK_METHOD(float, getGx, (), (const override));
+    MOCK_METHOD(float, getGy, (), (const override));
+    MOCK_METHOD(float, getGz, (), (const override));
+    MOCK_METHOD(float, getYaw, (), (const override));
+    MOCK_METHOD(float, getPitch, (), (const override));
+    MOCK_METHOD(float, getRoll, (), (const override));
 };
 }  // namespace tap::mock
 

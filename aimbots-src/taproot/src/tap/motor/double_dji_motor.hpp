@@ -54,21 +54,21 @@ public:
         bool isInvertedTwo,
         const char* nameOne,
         const char* nameTwo,
-        uint16_t encWrapped = DjiMotor::ENC_RESOLUTION / 2,
-        int64_t encRevolutions = 0);
+        bool currentControl = false,
+        float gearRatio = 1,
+        uint32_t encoderHomePositionOne = 0,
+        tap::encoder::EncoderInterface* externalEncoder = nullptr);
 
     void initialize() override;
-    float getPositionUnwrapped() const override;
-    float getPositionWrapped() const override;
-    int64_t getEncoderUnwrapped() const override;
-    uint16_t getEncoderWrapped() const override;
-    void resetEncoderValue() override;
+    tap::encoder::EncoderInterface* getEncoder() const override
+    {
+        return const_cast<tap::encoder::MultiEncoder<3>*>(&this->encoder);
+    }
     void setDesiredOutput(int32_t desiredOutput) override;
     bool isMotorOnline() const override;
     int16_t getOutputDesired() const override;
     int8_t getTemperature() const override;
     int16_t getTorque() const override;
-    int16_t getShaftRPM() const override;
 
 protected:
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
@@ -81,6 +81,7 @@ protected:
     DjiMotor motorOne;
     DjiMotor motorTwo;
 #endif
+    tap::encoder::MultiEncoder<3> encoder;
 };
 }  // namespace tap::motor
 

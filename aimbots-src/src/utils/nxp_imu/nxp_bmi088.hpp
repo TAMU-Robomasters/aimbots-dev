@@ -88,19 +88,19 @@ class NXPBMI088 : public Bmi088Data, public ImuInterface {
 
     inline const char *getName() const final_mockable { return "bmi088"; }
 
-    mockable inline float getYaw() final_mockable { return nxpAlgorithm.getYaw(); }
-    mockable inline float getPitch() final_mockable { return nxpAlgorithm.getPitch(); }
-    mockable inline float getRoll() final_mockable { return nxpAlgorithm.getRoll(); }
+    mockable inline virtual float getYaw() final_mockable { return nxpAlgorithm.getYaw(); }
+    mockable inline virtual float getPitch() final_mockable { return nxpAlgorithm.getPitch(); }
+    mockable inline virtual float getRoll() final_mockable { return nxpAlgorithm.getRoll(); }
 
-    mockable inline float getGx() final_mockable { return data.gyroDegPerSec[ImuData::X]; }  // gyro
-    mockable inline float getGy() final_mockable { return data.gyroDegPerSec[ImuData::Y]; }
-    mockable inline float getGz() final_mockable { return data.gyroDegPerSec[ImuData::Z]; }
+    mockable inline virtual float getGx() final_mockable { return data.gyroDegPerSec[ImuData::X]; }  // gyro
+    mockable inline virtual float getGy() final_mockable { return data.gyroDegPerSec[ImuData::Y]; }
+    mockable inline virtual float getGz() final_mockable { return data.gyroDegPerSec[ImuData::Z]; }
 
-    mockable inline float getAx() final_mockable { return data.accG[ImuData::X]; }  // aceleramoter
-    mockable inline float getAy() final_mockable { return data.accG[ImuData::Y]; }
-    mockable inline float getAz() final_mockable { return data.accG[ImuData::Z]; }
+    mockable inline virtual float getAx() final_mockable { return data.accG[ImuData::X]; }  // aceleramoter
+    mockable inline virtual float getAy() final_mockable { return data.accG[ImuData::Y]; }
+    mockable inline virtual float getAz() final_mockable { return data.accG[ImuData::Z]; }
 
-    mockable inline float getTemp() final_mockable { return data.temperature; }
+    mockable inline virtual float getTemp() final_mockable { return data.temperature; }
 
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }
 

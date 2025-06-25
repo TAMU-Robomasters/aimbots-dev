@@ -78,7 +78,7 @@ void FeederSubsystem::refresh() {
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
     float desiredOutput = feederVelocityPIDs[FeederIdx]->runController(
-        feederTargetRPMs[FeederIdx] - feederMotors[FeederIdx]->getShaftRPM(),
+        feederTargetRPMs[FeederIdx] - feederMotors[FeederIdx]->getInternalEncoder().getShaftRPM(),
         getFeederMotorTorque(FeederIdx));
     setDesiredFeederMotorOutput(FeederIdx, desiredOutput);
 }

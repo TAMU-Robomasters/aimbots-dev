@@ -46,8 +46,15 @@ public:
     MOCK_METHOD(bool, isCommandScheduled, (const control::Command *), (const override));
     MOCK_METHOD(void, registerSubsystem, (control::Subsystem *), (override));
     MOCK_METHOD(bool, isSubsystemRegistered, (const control::Subsystem *), (const override));
-    MOCK_METHOD(void, startHardwareTests, (), (override));
-    MOCK_METHOD(void, stopHardwareTests, (), (override));
+
+    MOCK_METHOD(void, runAllHardwareTests, (), (override));
+    MOCK_METHOD(void, runHardwareTest, (const control::Subsystem *), (override));
+    MOCK_METHOD(void, stopAllHardwareTests, (), (override));
+    MOCK_METHOD(void, stopHardwareTest, (const control::Subsystem *), (override));
+    MOCK_METHOD(int, countRunningHardwareTests, (), (override));
+    MOCK_METHOD(bool, isRunningTest, (const control::Subsystem *), (override));
+    MOCK_METHOD(bool, hasPassedTest, (const control::Subsystem *), (override));
+
     MOCK_METHOD(int, subsystemListSize, (), (const override));
     MOCK_METHOD(int, commandListSize, (), (const override));
     MOCK_METHOD(CommandIterator, cmdMapBegin, (), (override));

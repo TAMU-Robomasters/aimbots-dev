@@ -36,11 +36,10 @@ namespace tap::algorithms::ballistics
  * - Velocity Units: m/s
  * - Acceleration Units: m/s^2
  */
-struct MeasuredKinematicState
+
+struct AbstractKinematicState
 {
-    modm::Vector3f position;      // m
-    modm::Vector3f velocity;      // m/s
-    modm::Vector3f acceleration;  // m/s^2
+    virtual modm::Vector3f projectForward(float dt) const = 0;
 
     /**
      * @param[in] dt: The amount of time to project forward.
@@ -54,6 +53,23 @@ struct MeasuredKinematicState
     {
         return s + v * dt + 0.5f * a * powf(dt, 2.0f);
     }
+};
+
+struct SecondOrderKinematicState : public AbstractKinematicState
+{
+    inline SecondOrderKinematicState(
+        modm::Vector3f position,
+        modm::Vector3f velocity,
+        modm::Vector3f acceleration)
+        : position(position),
+          velocity(velocity),
+          acceleration(acceleration)
+    {
+    }
+
+    modm::Vector3f position;      // m
+    modm::Vector3f velocity;      // m/s
+    modm::Vector3f acceleration;  // m/s^2
 
     /**
      * @param[in] dt: The amount of time to project the state forward.
@@ -61,7 +77,7 @@ struct MeasuredKinematicState
      * @return The future 3D position of this object using a quadratic (constant acceleration)
      * model.
      */
-    inline modm::Vector3f projectForward(float dt)
+    inline modm::Vector3f projectForward(float dt) const override
     {
         return modm::Vector3f(
             quadraticKinematicProjection(dt, position.x, velocity.x, acceleration.x),
@@ -117,7 +133,7 @@ bool computeTravelTime(
  * @return Whether or not a valid aiming solution was found. Out parameters only valid if true.
  */
 bool findTargetProjectileIntersection(
-    MeasuredKinematicState targetInitialState,
+    const AbstractKinematicState &targetInitialState,
     float bulletVelocity,
     uint8_t numIterations,
     float *turretPitch,

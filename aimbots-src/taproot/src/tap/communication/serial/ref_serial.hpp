@@ -24,6 +24,7 @@
 #ifndef TAPROOT_REF_SERIAL_HPP_
 #define TAPROOT_REF_SERIAL_HPP_
 
+#include <cmath>
 #include <cstdint>
 #include <unordered_map>
 
@@ -80,8 +81,8 @@ public:
      * parser yet. They are values that are used in message headers to indicate the type of message
      * we have received.
      *
-     * Current Ref Serial Version: 1.6.1
-     * Updated April 2024.
+     * Current Ref Serial Version: 1.7.0
+     * Updated March 2025.
      */
     enum MessageType
     {
@@ -90,7 +91,6 @@ public:
         REF_MESSAGE_TYPE_ALL_ROBOT_HP = 0x3,
 
         REF_MESSAGE_TYPE_SITE_EVENT_DATA = 0x101,
-        REF_MESSAGE_TYPE_PROJECTILE_SUPPPLIER_ACTION = 0x102,
         REF_MESSAGE_TYPE_WARNING_DATA = 0x104,
         REF_MESSAGE_TYPE_DART_INFO = 0x105,
 
@@ -98,7 +98,6 @@ public:
         REF_MESSAGE_TYPE_POWER_AND_HEAT = 0x202,
         REF_MESSAGE_TYPE_ROBOT_POSITION = 0x203,
         REF_MESSAGE_TYPE_ROBOT_BUFF_STATUS = 0x204,
-        REF_MESSAGE_TYPE_AERIAL_ENERGY_STATUS = 0x205,
         REF_MESSAGE_TYPE_RECEIVE_DAMAGE = 0x206,
         REF_MESSAGE_TYPE_PROJECTILE_LAUNCH = 0x207,
         REF_MESSAGE_TYPE_BULLETS_REMAIN = 0x208,
@@ -110,9 +109,14 @@ public:
         REF_MESSAGE_TYPE_RADAR_INFO = 0x20E,
 
         REF_MESSAGE_TYPE_CUSTOM_DATA = 0x301,
-        // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER = 0x302,
-        // REF_MESSAGE_TYPE_SMALL_MAP = 0x303,
-        // REF_MESSAGE_TYPE_VTM_INPUT_DATA = 0x304
+        // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE = 0x302,
+        // REF_MESSAGE_TYPE_SMALL_MAP_INTERACTION = 0x303,
+        // REF_MESSAGE_TYPE_VTM_INPUT_DATA = 0x304,
+        // REF_MESSAGE_TYPE_RADAR_MINIMAP = 0x305,
+        // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_SEND = 0x306,
+        // REF_MESSAGE_TYPE_SENTRY_SMALL_MAP = 0x307,
+        // REF_MESSAGE_TYPE_ROBOT_SMALL_MAP = 0x308,
+        // REF_MESSAGE_TYPE_ROBOT_CUSTOM_CONTROLLER_FEEDBACK = 0x309
     };
 
     /**
@@ -171,7 +175,8 @@ public:
     mockable void releaseTransmissionSemaphore(uint32_t sentMsgLen)
     {
         transmissionSemaphore.release();
-        transmissionDelayTimer.restart(sentMsgLen * 1'000 / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S);
+        transmissionDelayTimer.restart(
+            std::ceil(sentMsgLen * 1000.0f / Tx::MAX_TRANSMIT_SPEED_BYTES_PER_S));
     }
 
     /**
