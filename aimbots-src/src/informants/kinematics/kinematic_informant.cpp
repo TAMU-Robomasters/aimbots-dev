@@ -27,8 +27,8 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
 }
 
 void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
-    // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
-    drivers->bmi088.requestCalibration();
+     drivers->bmi088.requestRecalibration(imuCalibrationEuler);
+    //drivers->bmi088.requestCalibration();
 };
 
 tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::getIMUState() {
