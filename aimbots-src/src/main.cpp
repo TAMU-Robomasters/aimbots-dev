@@ -67,6 +67,7 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
+float powerDisplay = 0;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -224,6 +225,7 @@ static void updateIo(src::Drivers *drivers) {
     hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
     wasHit = drivers->hitTracker.wasHit();
     recentlyHit = drivers->hitTracker.recentlyHit();
+    powerDisplay = drivers->powerCommunicator.getLastValidMessage().power;
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

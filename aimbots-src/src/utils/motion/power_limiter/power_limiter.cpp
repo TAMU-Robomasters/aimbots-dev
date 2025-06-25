@@ -39,10 +39,13 @@ void PowerLimiter::updatePowerAndEnergyBuffer() {
     const auto &robotData = drivers->refSerial.getRobotData();
     const auto &chassisData = robotData.chassis;
     //const float current = chassisData.current;
-    const float current = 3.0f;
-    const float newChassisPower = (20.0f/*placeholder*/ * current) / 1'000'000.0f;
-    // we're multiplying by 1'000'000.0f to convert from microwatts to watts
-
+    //const float current = 3.0f;
+    //const float newChassisPower = 25.0f * 4.8f;    // we're multiplying by 1'000'000.0f to convert from microwatts to watts
+    #if defined(ALL_SENTRIES)
+    const float newChassisPowwe = 25.0f * 4.8f;
+    #else
+    const float newChassisPower = drivers->powerCommunicator.getLastValidMessage().power;
+    #endif
     const float dt = tap::arch::clock::getTimeMilliseconds() - prevTime;
     prevTime = tap::arch::clock::getTimeMilliseconds();
     energyBuffer -= ((consumedPower * safetyFactor) - chassisData.powerConsumptionLimit) * dt / 1000.0f;

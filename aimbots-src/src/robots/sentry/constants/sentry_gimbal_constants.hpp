@@ -34,8 +34,6 @@ static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {w
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #endif
@@ -52,13 +50,11 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentr
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Sentry
 static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Sentry
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
@@ -69,17 +65,12 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Se
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 1'000.0f,
-    .kp = 1'000.0f,
     .ki = 0.0f,
-    .kd = 2000.0f,
     .kd = 2000.0f,
     .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
-    .errDeadzone = 10.0f,
     .errDeadzone = 10.0f,
     .errorDerivativeFloor = 0.0f,
 };
@@ -91,9 +82,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
@@ -106,9 +95,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .maxICumulative = 1000.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
-    .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
-    .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
@@ -130,7 +117,6 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .kp = 2000.0f,
-    .kp = 2000.0f,
     .ki = 25.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -139,7 +125,6 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 10.0f,
     .errDeadzone = 10.0f,
     .errorDerivativeFloor = 0.0f,
 };
