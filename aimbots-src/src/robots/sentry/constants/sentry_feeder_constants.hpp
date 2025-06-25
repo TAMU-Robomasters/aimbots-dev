@@ -5,7 +5,7 @@
 #define FEEDER_COMPATIBLE
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,  // 40
+    .kp = 50.0f,  // 40
     .ki = 0.0f,
     .kd = 0.8f,  // 0.01
     .maxICumulative = 10.0f,
