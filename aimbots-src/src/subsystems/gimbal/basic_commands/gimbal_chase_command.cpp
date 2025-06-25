@@ -1,3 +1,4 @@
+
 #include "gimbal_chase_command.hpp"
 
 #include "utils/ballistics/ballistics_solver.hpp"
@@ -55,6 +56,7 @@ float pitchAtFrameDelayDisplay;
 float yawVelocityChaseOffset = 0.0f;
 
 void GimbalChaseCommand::execute() {
+    #ifdef ALL_SENTRIES
     float quickTurnOffset = 0.0f;
 
     if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
@@ -149,6 +151,7 @@ void GimbalChaseCommand::execute() {
 
     chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
     chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
+    #endif
 }
 
 bool GimbalChaseCommand::isReady() { return true; }
