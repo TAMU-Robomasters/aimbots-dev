@@ -38,8 +38,7 @@ float PowerLimiter::getPowerLimitRatio() {
 void PowerLimiter::updatePowerAndEnergyBuffer() {
     const auto &robotData = drivers->refSerial.getRobotData();
     const auto &chassisData = robotData.chassis;
-    const float current = chassisData.current;
-    const float newChassisPower = (chassisData.volt * current) / 1'000'000.0f;
+    const float newChassisPower = drivers->powerCommunicator.getLastValidMessage().power;
     // we're multiplying by 1'000'000.0f to convert from microwatts to watts
 
     const float dt = tap::arch::clock::getTimeMilliseconds() - prevTime;
