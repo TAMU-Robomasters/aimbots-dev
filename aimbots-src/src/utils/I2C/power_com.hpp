@@ -14,7 +14,7 @@ public:
 
     void init();
     void update();
-    uint8_t getData(){return data;};
+    uint8_t getData(){return receivedData;};
 
 
 private:
@@ -22,7 +22,7 @@ private:
 
 
 
-    uint8_t data;
+    uint8_t receivedData = 0;
 };
 }
 
