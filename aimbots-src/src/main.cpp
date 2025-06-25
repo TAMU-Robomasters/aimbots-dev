@@ -46,7 +46,7 @@
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
-#include "utils/I2C/power_com_data.hpp"
+//#include "utils/I2C/power_com_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -150,7 +150,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
-    drivers->powerSensor.init();
+  //  drivers->powerSensor.init();
     drivers->cvCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
@@ -186,7 +186,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    drivers->powerSensor.update();
+ //   drivers->powerSensor.update();
 
     drivers->cvCommunicator.updateSerial();
 #else
@@ -221,7 +221,7 @@ static void updateIo(src::Drivers *drivers) {
     hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
     wasHit = drivers->hitTracker.wasHit();
     recentlyHit = drivers->hitTracker.recentlyHit();
-    data = drivers->powerSensor.getData();
+ //   data = drivers->powerSensor.getData();
     // current = drivers->powerSensor.getCurrent();
     // voltage = drivers->powerSensor.getBusVoltage();
     // power = drivers->powerSensor.getPower();

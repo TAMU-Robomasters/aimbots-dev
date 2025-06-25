@@ -44,7 +44,7 @@ public:
         : tap::Drivers(),
           controlOperatorInterface(this),
        //   magnetometer(),
-          powerSensor(),
+  //        powerSensor(),
           cvCommunicator(this),
           kinematicInformant(this),
           hitTracker(this),
@@ -54,7 +54,7 @@ public:
 public:
     Control::OperatorInterface controlOperatorInterface;
     //utils::Ist8310 magnetometer;
-    utils::POWER_COM powerSensor;
+ //   utils::POWER_COM powerSensor;
     Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
