@@ -44,7 +44,7 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
-    underHeat = refHelper->canCurrBarrelShootSafely();
+    //underHeat = refHelper->canCurrBarrelShootSafely();
     // Updates the limit switch state (is pressed or not)
     limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
     // Updates the previous controller switch state (is up or not)
