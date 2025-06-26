@@ -50,7 +50,7 @@ void FeederLimitCommand::execute() {
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;
     // Updates the current controller switch state
-    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true) && underHeat;
+    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 200;
     // States the speed of the feeder wheel when firing
