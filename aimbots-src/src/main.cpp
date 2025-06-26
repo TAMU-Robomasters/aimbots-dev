@@ -187,11 +187,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-#ifdef ALL_SENTRIES
     drivers->cvCommunicator.updateSerial();
-#else
-    drivers->powerCommunicator.updateSerial();
-#endif
+   // drivers->powerCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();
 #endif
@@ -224,7 +221,7 @@ static void updateIo(src::Drivers *drivers) {
     hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
     wasHit = drivers->hitTracker.wasHit();
     recentlyHit = drivers->hitTracker.recentlyHit();
-    powerDis = drivers->powerCommunicator.getLastValidMessage().power;
+  //  powerDis = drivers->powerCommunicator.getLastValidMessage().power;
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

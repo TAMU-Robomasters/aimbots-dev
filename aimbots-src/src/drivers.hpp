@@ -27,7 +27,7 @@
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "communicators/devboard/turret_can_communicator.hpp"
 #include "communicators/jetson/jetson_communicator.hpp"
-#include "communicators/INA260/INA260_communicator.hpp"
+//#include "communicators/INA260/INA260_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
@@ -45,7 +45,7 @@ public:
           controlOperatorInterface(this),
           magnetometer(),
           cvCommunicator(this),
-          powerCommunicator(this),
+      //    powerCommunicator(this),
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
@@ -55,7 +55,7 @@ public:
     Control::OperatorInterface controlOperatorInterface;
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
-    Informants::INA260::INA260Communicator powerCommunicator;
+  //  Informants::INA260::INA260Communicator powerCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
