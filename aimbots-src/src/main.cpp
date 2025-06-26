@@ -148,11 +148,8 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
-#ifdef ALL_SENTRIES
     drivers->cvCommunicator.initialize();
-#else
-    drivers->powerCommunicator.initialize();
-#endif
+   // drivers->powerCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
