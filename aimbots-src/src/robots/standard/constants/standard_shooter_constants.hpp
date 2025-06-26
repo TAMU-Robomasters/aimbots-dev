@@ -27,7 +27,7 @@ static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BAT
     18,
     4850,
     30,
-    7150};
+    6254};
 // clang-format on
 
 static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
