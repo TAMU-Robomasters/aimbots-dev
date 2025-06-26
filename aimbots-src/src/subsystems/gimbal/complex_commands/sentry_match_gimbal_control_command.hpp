@@ -49,7 +49,7 @@ private:
     src::Chassis::ChassisMatchStates& chassisState;
 
     MilliTimeout chaseTimeout;
-    int chaseTimeoutMillis = 0;
+    int chaseTimeoutMillis = 1000;
 };
 
 }  // namespace src::Gimbal

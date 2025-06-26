@@ -21,7 +21,7 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
       chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
       chassisState(chassisState),
-      chaseTimeout(0),
+      chaseTimeout(1000),
       chaseTimeoutMillis(chaseTimeoutMillis)  //
 {
     addSubsystemRequirement(gimbal);
@@ -37,6 +37,7 @@ void SentryMatchGimbalControlCommand::initialize() {
 void SentryMatchGimbalControlCommand::execute() {
     if (!drivers->cvCommunicator.isJetsonOnline()) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &chaseCommand, interrupted);
         this->comprisedCommandScheduler.run();
         return;
     }
@@ -44,10 +45,15 @@ void SentryMatchGimbalControlCommand::execute() {
     if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
         drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
         chaseTimeout.restart(chaseTimeoutMillis);
+    }else if(!chaseTimeout.isExpired()){
+        scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
     }
     if (chaseTimeout.isExpired()) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &patrolCommand);
+        descheduleIfScheduled(this->comprisedCommandScheduler, &chaseCommand, interrupted);
     }
 
     this->comprisedCommandScheduler.run();
