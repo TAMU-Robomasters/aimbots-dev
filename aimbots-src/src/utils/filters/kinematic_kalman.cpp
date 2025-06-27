@@ -88,10 +88,10 @@ Vector3f KinematicKalman::getFuturePrediction(float dt) const { // called every 
     timeoutDisplay = kalmanOfflineTimeout.timeRemaining();
     counterDisplay++;
     // 未来最高! 未来最高! 未来最高!!!
-    if (kalmanOfflineTimeout.isExpired()) return Vector3f(lastMeasurement, 0, 0);
+    if (true/*kalmanOfflineTimeout.isExpired()*/) return Vector3f(lastMeasurement, 0, 0);
     Matrix3f F = stateSpaceMatrix(dt);
     FDisplay = F;
-    if (updateCount <= 3) {
+    if (updateCount <= 10) {
         isFirstUpdate = false;
         return Vector3f(lastMeasurement, 0, 0);
     }

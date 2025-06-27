@@ -1,4 +1,5 @@
 #include "gimbal_field_relative_controller.hpp"
+#include <subsystems/gimbal/control/gimbal.hpp>
 
 #ifdef GIMBAL_COMPATIBLE
 #ifdef GIMBAL_UNTETHERED
@@ -95,6 +96,9 @@ float kPitchBallisticVelocityDebug = 0.0f;
 float kPitchBallisticAccelerationDebug = 0.0f;
 bool updatePitchBallisticFeedforwardDebug = false;
 
+float kGRAVITYDebug = 0.0f;
+float updateKGravityDebug = false;
+
 
 //TODO:should I limit feedforward plus PID
 
@@ -132,15 +136,15 @@ void GimbalFieldRelativeController::runYawController(
             updateYawPositionPIDsDebug = false;
         }
         if (forCV) {
-            yawOuterLoopCounter++;
-            if (yawOuterLoopCounter % 10 == 0) {
+            // yawOuterLoopCounter++;
+            // if (yawOuterLoopCounter % 10 == 0) {
                 fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
                 gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
                 RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                             src::Informants::AngularAxis::YAW_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_YAW_GEAR_RATIO);
-            }
+            // }
         } else {
             fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
@@ -183,7 +187,7 @@ void GimbalFieldRelativeController::runYawController(
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
-        chassisYawRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
+        chassisYawRelativeVelocityTargetDisplay = modm::toDegree(chassisRelativeVelocityTarget);
         chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
         // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[0]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
@@ -196,7 +200,7 @@ void GimbalFieldRelativeController::runYawController(
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
-        if (forCV) gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward +*/ velocityControllerOutput + ballisticFeedforward);
+        if (forCV) gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
         else gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     }
 }
@@ -298,15 +302,15 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             updatePitchPositionPIDsDebug = false;
         }
         if (forCV) {
-            pitchOuterLoopCounter++;
-            if (pitchOuterLoopCounter % 10 == 0) {
+            // pitchOuterLoopCounter++;
+            // if (pitchOuterLoopCounter % 10 == 0) {
                 fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
                 gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
                 RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                             src::Informants::AngularAxis::PITCH_AXIS,
                                                             AngleUnit::Radians) /
                                                             GIMBAL_PITCH_GEAR_RATIO);
-        }
+        // }
         } else {
             fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
@@ -422,7 +426,7 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
 
         if (updatePitchBallisticFeedforwardDebug) {
             kPitchBallisticVelocity = kPitchBallisticVelocityDebug;
-            updateYawBallisticFeedforwardDebug = false;
+            updatePitchBallisticFeedforwardDebug = false;
         }
 
         float ballisticFeedforward = gravityCompensationFeedforward + kPitchBallisticVelocity * chassisRelativeVelocityTarget; 

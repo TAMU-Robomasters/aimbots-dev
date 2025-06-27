@@ -223,7 +223,7 @@ void GimbalChaseCommand::execute() {
         if (isTargetBeingTracked) {
             cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
             cvController->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
-            cvController->runYawController(6.0f);
+            cvController->runYawController(20.0f);
             cvController->runPitchController(6.0f);
         }
         // cvController->runYawVelocityController(5.0f);

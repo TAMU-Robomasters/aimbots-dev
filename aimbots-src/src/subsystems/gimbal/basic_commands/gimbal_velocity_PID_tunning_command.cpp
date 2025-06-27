@@ -78,9 +78,9 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
     float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
     
     if (timeInPeriod < periodMilliseconds / 2.0f) {
-        return pitchConfig.velocityAmplitudeDegreesPerSec;
+        return pitchConfig.velocityAmplitudeDegreesPerSec + 15.0f;
     } else {
-        return -pitchConfig.velocityAmplitudeDegreesPerSec;
+        return -pitchConfig.velocityAmplitudeDegreesPerSec + 15.0f;
     }
 }
 

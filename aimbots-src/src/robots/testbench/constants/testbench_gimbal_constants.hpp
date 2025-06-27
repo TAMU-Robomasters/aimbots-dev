@@ -226,6 +226,6 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
-static constexpr float kGRAVITY = 0.0f;
+float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = -0.0f;
 // -------------------------------------------------------------------------------------------------------------------------

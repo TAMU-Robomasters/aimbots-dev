@@ -14,7 +14,7 @@ namespace src::Utils::Filters {
 //TODO: consolidate kalman timeout and jetson communicator tracking target timeout
 const int KIN_NUM_STATES = 3;
 
-const uint32_t KALMAN_TIMEOUT_MILLISECONDS =  300;
+const uint32_t KALMAN_TIMEOUT_MILLISECONDS =  500;
 
 class KinematicKalman {
 public:
