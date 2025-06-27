@@ -72,7 +72,7 @@ bool activeDisplay = false;
 bool activeDisplay2 = false;
 
 void SentryMatchChassisControlCommand::execute() {
-    if (refHelper->getGameStage() == GamePeriod::IN_GAME) {  // Remove the true later
+ //   if (refHelper->getGameStage() == GamePeriod::IN_GAME) {  // Remove the true later
 
         stateDisplay = chassisState;
         activeDisplay = activeMovement;
@@ -143,11 +143,11 @@ void SentryMatchChassisControlCommand::execute() {
             lastChassisState = chassisState;
         }
 
-    } else {
-        descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, true);
-        descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, true);
-        descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, true);
-    }
+    // } else {
+    //     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavCommand, true);
+    //     descheduleIfScheduled(this->comprisedCommandScheduler, &autoNavTokyoCommand, true);
+    //     descheduleIfScheduled(this->comprisedCommandScheduler, &tokyoCommand, true);
+    // }
 
     this->comprisedCommandScheduler.run();
 }

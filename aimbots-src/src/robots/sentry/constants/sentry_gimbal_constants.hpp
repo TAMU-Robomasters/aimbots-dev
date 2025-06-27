@@ -63,16 +63,16 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Se
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 1'000.0f,
-    .ki = 10.0f,
-    .kd = 3'000.0f,
+    .kp = 2'000.0f,
+    .ki = 0.0f,
+    .kd = 12000.0f,
     .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 10.0f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
@@ -123,14 +123,14 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .kp = 2000.0f,
     .ki = 25.0f,
-    .kd = 0.0f,
+    .kd =   1.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 10.0f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
