@@ -20,6 +20,7 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalFieldRelativeController*,
+        GimbalFieldRelativeController*,
         src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         GimbalPatrolConfig patrolConfig,

@@ -92,6 +92,7 @@ src::Informants::IMUCalibrateCommand imuCalibrateCommand(drivers(), &chassis, &g
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
+GimbalFieldRelativeController cvGimbalFieldRelativeController(drivers(), &gimbal, true);
 
 // Ballistics Solver
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
@@ -147,6 +148,7 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
+    &cvGimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     patrolConfig,
@@ -171,29 +173,23 @@ ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearCo
 
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 // pass chassisRelative controller to gimbalChaseCommand on sentry, pass fieldRelative for other robots
 GimbalChaseCommand gimbalChaseCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
+    &cvGimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-// only for when dirving with remote
 
+// only for when dirving with remote
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
+    &cvGimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);

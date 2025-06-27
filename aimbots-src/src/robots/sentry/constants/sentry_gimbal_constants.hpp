@@ -90,7 +90,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// VISION PID CONSTANTS
+// PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 20.0f,  // 35
     .ki = 0.0f,
@@ -150,6 +150,65 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
 
 static constexpr float kGRAVITY = 0.0f;
 static constexpr float HORIZON_OFFSET = 0.0f;
+
+// VISOION CASCADEPID CONSTANTS
+static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 20.0f,  // 35
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 1000.0f,
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 25.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 1000.0f,
+    .maxOutput = 35.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// VISION VELOCITY PID CONSTANTS
+static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
+    .kp = 2000.0f,
+    .ki = 25.0f,
+    .kd = 0.0f,
+    .maxICumulative = 2000.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 10.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig VISION_PITCH_VELOCITY_PID_CONFIG = {
+    .kp = 900.0f,
+    .ki = 30.0f,
+    .kd = 0.0f,
+    .maxICumulative = 10.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
 
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
     {0.0f, 0.0f},

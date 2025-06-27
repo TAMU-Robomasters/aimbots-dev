@@ -1,6 +1,4 @@
 #include "gimbal_toggle_aiming_command.hpp"
-//!!CHANGE ME BEFORE COMMITING
-#ifndef GIMBAL_COMPATIBLE
 
 
 namespace src::Gimbal {
@@ -9,6 +7,7 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
     GimbalFieldRelativeController* controller,
+    GimbalFieldRelativeController* cvController,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     float defaultLaunchSpeed,
@@ -16,7 +15,7 @@ GimbalToggleAimCommand::GimbalToggleAimCommand(
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
-      gimbalCVCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, defaultLaunchSpeed),
+      gimbalCVCommand(drivers, gimbal, controller, cvController, refHelper, ballisticsSolver, defaultLaunchSpeed),
       gimbalFreeAimCommand(drivers, gimbal, controller, quickTurnOffset)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
@@ -61,5 +60,3 @@ bool GimbalToggleAimCommand::isReady() { return true; }
 bool GimbalToggleAimCommand::isFinished() const { return false; }
 
 }  // namespace src::Gimbal
-
-#endif

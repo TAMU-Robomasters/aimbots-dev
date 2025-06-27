@@ -8,6 +8,7 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
     GimbalFieldRelativeController* gimbalController,
+    GimbalFieldRelativeController* cvController,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     GimbalPatrolConfig patrolConfig,
@@ -19,7 +20,7 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
       controller(gimbalController),
       ballisticsSolver(ballisticsSolver),
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
-      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
+      chaseCommand(drivers, gimbal, controller, cvController, refHelper, ballisticsSolver, 30.0f),
       chassisState(chassisState),
       chaseTimeout(1000),
       chaseTimeoutMillis(chaseTimeoutMillis)  //

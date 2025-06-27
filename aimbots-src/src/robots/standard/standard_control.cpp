@@ -33,6 +33,7 @@
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
@@ -131,6 +132,7 @@ bool barrelCaliDoneFlag = false;
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
+GimbalFieldRelativeController cvGimbalFieldRelativeController(drivers(), &gimbal, true);
 
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
@@ -156,6 +158,17 @@ SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };
+
+GimbalVelocityTunningConfig yawConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = 0.2f,
+};  
+
+GimbalVelocityTunningConfig pitchConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = 0.2f,
+};
+
 
 // Define commands here ---------------------------------------------------
 
@@ -193,24 +206,27 @@ GimbalChaseCommand gimbalChaseCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
+    &cvGimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
     &gimbalFieldRelativeController,
+    &cvGimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
+
+GimbalVelocityTunningCommand cvGimbalVelocityTunningCommand(
+    drivers(), 
+    &gimbal, 
+    &cvGimbalFieldRelativeController, 
+    yawConfig, 
+    pitchConfig);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
@@ -235,13 +251,13 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {&gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
+    {&cvGimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(

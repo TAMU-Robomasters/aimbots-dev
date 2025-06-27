@@ -98,7 +98,7 @@ void GimbalChaseCommand::execute() {
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
 
-    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
+    float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(defaultLaunchSpeed);
     // projectileSpeed = 30.0f;
 
     if (projectileSpeed == 0) {

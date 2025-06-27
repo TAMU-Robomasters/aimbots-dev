@@ -58,7 +58,7 @@ private:
 
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
-    float defaultLaunchSpeed;
+    float defaultLaunchSpeed = 0.0f;
     
     float previousTargetYawAngle = -1000; // shouldn't every be -1000
     float previousYawVelocity = -1E6; // shouldn't ever be -1E6

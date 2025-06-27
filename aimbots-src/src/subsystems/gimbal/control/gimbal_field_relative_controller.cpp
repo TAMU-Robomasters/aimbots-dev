@@ -204,11 +204,11 @@ void GimbalFieldRelativeController::runYawController(
 // for PID testing
 void GimbalFieldRelativeController::runYawVelocityController(
     std::optional<float> velocityLimit) {
+
+    fieldRelativeYawVelocityTargetDisplay = this->getTargetVelocityYaw(AngleUnit::Degrees);
     
     kinematicYawAngleDisplay =
         modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue());
-
-    fieldRelativeYawVelocityTargetDisplay = this->getTargetVelocityYaw(AngleUnit::Degrees);
 
     // speedTarget += 1 / 200.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
@@ -324,7 +324,10 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget -
-            (drivers->kinematicInformant.getChassisPitchVelocityInGimbalDirection() / GIMBAL_PITCH_GEAR_RATIO);
+            (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                src::Informants::AngularAxis::PITCH_AXIS,
+                AngleUnit::Radians
+            ) / GIMBAL_PITCH_GEAR_RATIO);
 
         // Gravity compensation should be positive if the gimbal tips forward, negative if it tips backwards
         float gravityCompensationFeedforward =
@@ -342,8 +345,12 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
                                                src::Informants::AngularAxis::PITCH_AXIS,
                                                AngleUnit::Radians) /
                                            GIMBAL_PITCH_GEAR_RATIO);
+        if (updatePitchBallisticFeedforwardDebug) {
+            kPitchBallisticVelocity = kPitchBallisticVelocityDebug;
+            updateYawBallisticFeedforwardDebug = false;
+        }
 
-        float ballisticFeedforward = 0; /*gravityCompensationFeedforward + kPitchBallisticVelocity * chassisRelativeBallisticVelocityTarget;*/ 
+        float ballisticFeedforward = gravityCompensationFeedforward + kPitchBallisticVelocity * chassisRelativeBallisticVelocityTarget; 
 
         // chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         // chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getPitchMotorRPM(i));
@@ -413,7 +420,12 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
                                                AngleUnit::Radians) /
                                            GIMBAL_PITCH_GEAR_RATIO);
 
-        float ballisticFeedforward = 0; /*gravityCompensationFeedforward + kPitchBallisticVelocity * chassisRelativeBallisticVelocityTarget;*/ 
+        if (updatePitchBallisticFeedforwardDebug) {
+            kPitchBallisticVelocity = kPitchBallisticVelocityDebug;
+            updateYawBallisticFeedforwardDebug = false;
+        }
+
+        float ballisticFeedforward = gravityCompensationFeedforward + kPitchBallisticVelocity * chassisRelativeVelocityTarget; 
 
         chassisPitchRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         chassisPitchRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));

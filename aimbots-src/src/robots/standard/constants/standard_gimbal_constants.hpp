@@ -102,7 +102,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// VISION PID CONSTANTS
+// CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 30.0f,  // 30
     .ki = 0.0f,
@@ -147,6 +147,64 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
+    .kp = 700.0f,
+    .ki = 15.0f,
+    .kd = 0.0f,
+    .maxICumulative = 3000.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// VISION CASCADE PID CONSTANTS
+static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 30.0f,  // 30
+    .ki = 0.0f,
+    .kd = 0.5f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
+    .kp = 25.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 1.0f,
+    .maxOutput = 35.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+// VISION VELOCITY PID CONSTANTS
+static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
+    .kp = 1850.0f,  // 3000
+    .ki = 25.0f,    // 25
+    .kd = 0.0f,
+    .maxICumulative = 2000.0f,
+    .maxOutput = GM6020_MAX_OUTPUT,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 1000.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+static constexpr SmoothPIDConfig VISION_PITCH_VELOCITY_PID_CONFIG = {
     .kp = 700.0f,
     .ki = 15.0f,
     .kd = 0.0f,
