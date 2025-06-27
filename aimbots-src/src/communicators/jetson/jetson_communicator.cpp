@@ -15,6 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
+      targetTrackingTimeout(0),
       lastMessage()
 {}
 
@@ -103,6 +104,7 @@ void JetsonCommunicator::updateSerial() {
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
+                    targetTrackingTimeout.restart(TARGET_TRACKING_TIMEOUT_MILLISECONDS);
 
                     // position is relative to camera
                     visionTargetPosition.setX(lastMessage.targetX);
@@ -117,6 +119,7 @@ void JetsonCommunicator::updateSerial() {
                 if (lastMessage.cvState == CVState::FOUND) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
+                    
                     tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
@@ -139,10 +142,12 @@ void JetsonCommunicator::updateSerial() {
     // }
 }
 
-PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
-    return visionDataConverter.getPlatePrediction(dt);
+PlateKinematicState JetsonCommunicator::getCurrentPlateEstimation() const {
+    return visionDataConverter.getCurrentPlateEstimation();
 }
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
+
+bool JetsonCommunicator::isTargetBeingTracked() const {return !targetTrackingTimeout.isExpired();}
 
 }  // namespace src::Informants::Vision

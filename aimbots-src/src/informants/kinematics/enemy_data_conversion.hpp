@@ -5,11 +5,17 @@
 
 #include "utils/tools/common_types.hpp"
 #include "utils/filters/kinematic_kalman.hpp"
+#include "utils/filters/fourth_order_low_pass.hpp"
 #include "utils/math/dft_helper.hpp"
 
 namespace src {
 class Drivers;
 }
+
+namespace src::Informants::Transformers {
+class CoordinateFrame;
+}
+
 namespace src::Informants::Vision {
 
 struct VisionTimedPosition {
@@ -34,55 +40,64 @@ public:
      */
     void updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay);
 
-    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+    PlateKinematicState getCurrentPlateEstimation() const;
 
-    uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay; }
+    uint32_t getLastFrameCaptureDelay() const { return lastFrameCaptureDelay_ms; }
 
     bool isLastFrameStale() const;
 
 private:
+    Vector3f getMeasurementNoiseFromCamera(
+        float distanceRelativeToCamera, 
+        Transformers::CoordinateFrame* cameraFrame, 
+        Transformers::CoordinateFrame* fieldFrame
+    );
+    
+    Vector3f getMeasurementOffsetDueToMotor(
+        float distanceRelativeToCamera,
+        float yawMotorAngleDisplacement, 
+        float pitchMotorAngleDisplacement
+    );
+
+
+
     src::Drivers* drivers;
 
     static constexpr float VALID_TIME = 0;  // max elapsed ms before an enemy position entry is invalid
 
-    uint32_t lastFrameCaptureDelay = 0;
+    VisionTimedPosition currTransformedPosition;
+
+    uint32_t lastFrameCaptureDelay_ms = 0;
 
     src::Utils::Filters::KinematicKalman XPositionFilter, YPositionFilter, ZPositionFilter;
-
-    // 1s sample, 30ms per sample = 33 samples
-    SlidingDFT<float, 30> xDFT;
-    bool xDFTValid = false;
 
     uint32_t lastUpdateTimestamp_uS = 0;
     uint32_t lastFrameCaptureTimestamp_uS = 0;
 
     float BASE_HEIGHT_THRESHOLD = 0.00;
+    
+    float perviousYawAngle = 0;
+    float perviousPitchAngle = 0;
+
+    src::Utils::Filters::targetDistanceFourthOrderLPF targetDistanceFilter;
 };
 
 // clang-format off
-static constexpr float KF_P[9] = { // Covariance Matrix
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
+static constexpr float KF_P[9] = { // Initial covariance matrix. Iniitial estimate of the uncertainty in position, velocity and acceleration
+    25, 0, 0,
+    0, 31329, 0,
+    0, 0, 58522500.0,
+};  
+
+static constexpr float KF_H[3] = { // Observation Matrix
+    1, 0, 0
 };
 
-static constexpr float KF_H[9] = { // Observation Matrix
-    1, 0, 0,
-    0, 1, 0,
-    0, 0, 1,
-};
 
-static constexpr float KF_Q[9] = { // Environment Noise Covariance Matrix
-    1E-1, 0,   0,
-    0,    1E0, 0,
-    0,    0,   1E1,
-};
-
-static constexpr float KF_R[9] = { // Measurement Noise Covariance Matrix
-    1E0, 0,   0,
-    0,    1E2, 0,
-    0,    0,   1E4,
-};
+static constexpr float KF_R = 1E-4;  // Measurement Noise
 // clang-format on
+
+static constexpr float accelErrManeuver = 6.0f;
+static constexpr float accelErrStable = 0.1f;
 
 }  // namespace src::Informants::Vision

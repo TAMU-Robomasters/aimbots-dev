@@ -32,13 +32,15 @@ public:
 
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
-    PlateKinematicState getPlatePrediction(uint32_t dt) const;
+    PlateKinematicState getCurrentPlateEstimation() const;
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
     uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
 
     bool isLastFrameStale() const;
+    
+    bool isTargetBeingTracked() const;
 
 private:
     src::Drivers* drivers;
@@ -54,6 +56,15 @@ private:
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
+
+    /**
+     * @brief if expired, the target is no longer being tracked and we should
+     * reset all our target filtering
+     */
+    tap::arch::MilliTimeout targetTrackingTimeout;
+
+    //* could maybe be tuned lower
+    static constexpr uint32_t TARGET_TRACKING_TIMEOUT_MILLISECONDS = 500;
 
     JetsonMessage lastMessage;
     uint32_t lastFoundTargetTime;

@@ -9,7 +9,7 @@ namespace src::Gimbal {
 GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
-    GimbalControllerInterface* gimbalController,
+    GimbalFieldRelativeController* gimbalController,
     std::optional<float> quickTurnOffset)
     : tap::control::Command(),
       drivers(drivers),

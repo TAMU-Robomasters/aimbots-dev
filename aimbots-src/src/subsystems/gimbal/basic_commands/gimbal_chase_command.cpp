@@ -8,7 +8,8 @@ namespace src::Gimbal {
 GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
-    GimbalControllerInterface* gimbalController,
+    GimbalFieldRelativeController* gimbalController,
+    GimbalFieldRelativeController* cvGimbalController,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     float defaultLaunchSpeed)
@@ -16,9 +17,14 @@ GimbalChaseCommand::GimbalChaseCommand(
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
+      cvController(cvGimbalController),
       refHelper(refHelper),
       ballisticsSolver(ballisticsSolver),
-      defaultLaunchSpeed(defaultLaunchSpeed)  //
+      defaultLaunchSpeed(defaultLaunchSpeed) ,
+      yawVelocityFilter(),
+      yawBallisticsFilter(0.1),
+      pitchVelocityFilter(),
+      pitchBallisticsFilter(0.1)  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
@@ -34,9 +40,19 @@ float pitchOffsetDisplay = 0.0f;
 float chassisRelativeYawAngleDisplay = 0;
 float chassisRelativePitchAngleDisplay = 0;
 
+float chassisRelativeYawVelocityDisplay = 0;
+float chassisRelativePitchVelocityDisplay = 0;
+
 float bSolTargetYawDisplay = 0.0f;
 float bSolTargetPitchDisplay = 0.0f;
 float bSolDistanceDisplay = 0.0f;
+
+float targetYawAxisVelocityDisplay = 0.0f;
+float targetYawAxisAccelerationDisplay = 0.0f;
+
+float targetPitchAxisAngleDisplay = 0.0f;
+float targetPitchAxisVelocityDisplay = 0.0f;
+float targetPitchAxisAccelerationDisplay = 0.0f;
 
 float gimbalPitchInputDisplay = 0.0f;
 
@@ -53,6 +69,14 @@ float yawAtFrameDelayDisplay;
 float pitchAtFrameDelayDisplay;
 
 float yawVelocityChaseOffset = 0.0f;
+
+float yawVelocityDebug = 0.0f;
+float yawAccelerationDebug = 0.0f;
+bool updateYawDebug = false;
+
+bool trackDebug = false;
+
+bool ballisticsSolutionDisplay = false;
 
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
@@ -87,6 +111,7 @@ void GimbalChaseCommand::execute() {
         ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
 
     if (ballisticsSolution != std::nullopt) {
+        ballisticsSolutionDisplay = true;
         // Convert ballistics solutions to field-relative angles
         uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
 
@@ -103,8 +128,28 @@ void GimbalChaseCommand::execute() {
         pitchRawDisplay =
             drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
 
-        targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;
+        targetYawAxisAngle =  ballisticsSolution->yawAngle;
+        targetPitchAxisAngle = ballisticsSolution->pitchAngle;
+
+        // Smooth out angles on the distance to the target
+        // further distance = more smoothing
+        //TODO: Not really sure if this does a whole lot since kf should be doing smoothing
+        float exponentialTerm = 0.853;
+        float a = 6.2;
+        float c = 12.1;
+        float alpha = (1/exponentialTerm) * log(-(ballisticsSolution->horizontalDistanceToTarget - c) / a);
+        yawBallisticsFilter.setAlpha(alpha);
+        yawBallisticsFilter.update(targetYawAxisAngle);
+
+        exponentialTerm = 0.853;
+        a = 6.2;
+        c = 12.1;
+        alpha = (1/exponentialTerm) * log(-(ballisticsSolution->horizontalDistanceToTarget - c) / a);
+        yawBallisticsFilter.setAlpha(alpha);
+        yawBallisticsFilter.update(targetPitchAxisAngle);
+
+        // targetYawAxisAngle = yawBallisticsFilter.getValue();
+
         // targetYawAxisAngle =
         //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
         //     ballisticsSolution->yawAngle;
@@ -114,34 +159,98 @@ void GimbalChaseCommand::execute() {
 
         bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
         bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
-        bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
+        bSolDistanceDisplay = ballisticsSolution->horizontalDistanceToTarget;
 
         // Comment when Z axis stops being silly
         // targetPitchAxisAngle =
         //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
-        controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
-        controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+        cvController->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
+        cvController->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+        
+        isTargetBeingTracked = drivers->cvCommunicator.isTargetBeingTracked();
 
-        // controller->runYawController(
+        if (!isTargetBeingTracked) {
+            yawVelocityFilter.reset();
+            yawAccelerationFilter.reset();
+            pitchVelocityFilter.reset();
+            pitchAccelerationFilter.reset();
+        }
+
+        // Angle filtering for feedforward control
+        if (previousTargetYawAngle == -1000) {
+            previousTargetYawAngle = targetYawAxisAngle;
+            lastBallisticsSolutionTimeStamp_uS = currTime_uS;
+        }
+        else {
+            currTime_uS = tap::arch::clock::getTimeMicroseconds();
+            dt = (currTime_uS - lastBallisticsSolutionTimeStamp_uS) * 1E-6;
+            lastBallisticsSolutionTimeStamp_uS = currTime_uS;
+            yawVelocity = calcDerivative(previousTargetYawAngle, targetYawAxisAngle, dt);
+            previousTargetYawAngle = targetYawAxisAngle;
+            yawVelocity = yawVelocityFilter.processSample(yawVelocity);
+            targetYawAxisVelocityDisplay = modm::toDegree(yawVelocity);
+
+            pitchVelocity = calcDerivative(previousTargetPitchAngle, targetPitchAxisAngle, dt);
+            previousTargetPitchAngle = targetPitchAxisAngle;
+            pitchVelocity = pitchVelocityFilter.processSample(pitchVelocity);
+            targetPitchAxisVelocityDisplay = modm::toDegree(pitchVelocity);
+
+            if (previousYawVelocity == -1E6) previousYawVelocity = yawVelocity;
+            else {
+                yawAcceleration = calcDerivative(previousYawVelocity, yawVelocity, dt);
+                previousYawVelocity = yawVelocity;
+                yawAcceleration = yawAccelerationFilter.processSample(yawAcceleration);
+                targetYawAxisAccelerationDisplay = modm::toDegree(yawAcceleration);
+
+                pitchAcceleration = calcDerivative(previousPitchVelocity, pitchVelocity, dt);
+                previousPitchVelocity = pitchVelocity;
+                pitchAcceleration = pitchAccelerationFilter.processSample(pitchAcceleration);
+                targetPitchAxisAccelerationDisplay = modm::toDegree(pitchAcceleration);
+            }
+        }
+
+        
+        if (updateYawDebug) {
+            yawVelocity = yawVelocityDebug;
+            yawAcceleration = yawAccelerationDebug;
+
+            updateYawDebug = false;
+        }
+        // cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
+
+        trackDebug = isTargetBeingTracked;
+        if (isTargetBeingTracked) {
+            cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
+            cvController->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
+            cvController->runYawController(6.0f);
+            cvController->runPitchController(6.0f);
+        }
+        // cvController->runYawVelocityController(5.0f);
+        // cvController->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
-        controller->runYawController(5.0f);
-        controller->runPitchController(5.0f);
+        // cvController->runPitchController(5.0f);
     } else {
+        //TODO: maybe make it so that the gimbal stays at the same position
         // Yaw counterclockwise is positive angle
-        targetYawAxisAngle = controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
-                             drivers->controlOperatorInterface.getGimbalYawInput();
-        // Pitch up is positive angle
-        targetPitchAxisAngle =
-            controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
+        ballisticsSolutionDisplay = false;
+        
+        controller->setTargetYaw(
+                AngleUnit::Radians,
+                controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
+                    drivers->controlOperatorInterface.getGimbalYawInput());
 
-        gimbalPitchInputDisplay = drivers->controlOperatorInterface.getGimbalPitchInput();
+        controller->setTargetPitch(
+            AngleUnit::Radians,
+            controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput());
+        controller->runYawController(6.0f);
+        controller->runPitchController(6.0f);
 
-        controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
-        controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+        // controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
+        // controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-        controller->runYawController();
-        controller->runPitchController();
+        // controller->runYawController();
+        // controller->runPitchController();
     }
 
     targetYawAxisAngleDisplay2 = controller->getTargetYaw(AngleUnit::Degrees);      // uncomment later
@@ -149,6 +258,9 @@ void GimbalChaseCommand::execute() {
 
     chassisRelativeYawAngleDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Degrees);
     chassisRelativePitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
+
+    chassisRelativeYawVelocityDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(0))); 
+    chassisRelativePitchVelocityDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(0)));
 }
 
 bool GimbalChaseCommand::isReady() { return true; }

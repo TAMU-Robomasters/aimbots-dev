@@ -4,6 +4,7 @@
 #include <subsystems/gimbal/control/gimbal_controller_interface.hpp>
 #include <subsystems/gimbal/control/gimbal.hpp>
 #include <tap/control/command.hpp>
+#include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 
@@ -14,7 +15,7 @@ public:
     GimbalFieldRelativeControlCommand(
         src::Drivers*,
         GimbalSubsystem*,
-        GimbalControllerInterface*,
+        GimbalFieldRelativeController*,
         std::optional<float> quickTurnOffset = std::nullopt);
 
     char const* getName() const override { return "Gimbal Control Command"; }
@@ -32,7 +33,7 @@ private:
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
-    GimbalControllerInterface* controller;
+    GimbalFieldRelativeController* controller;
 
     std::optional<float> quickTurnOffset;
 

@@ -311,6 +311,14 @@ float KinematicInformant::getChassisLinearAccelerationInGimbalDirection() {
     return accel;
 }
 
+float KinematicInformant::getYawMotorAngularVelocity(uint8_t motorIdx) {
+    return RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(motorIdx));
+}
+
+float KinematicInformant::getPitchMotorAngularVelocity(uint8_t motorIdx) {
+    return RPM_TO_RADPS(gimbalSubsystem->getPitchMotorRPM(motorIdx));
+}
+
 modm::Location2D<float> robotLocationDisplay;
 float robotLocationXDisplay = 0.0f;
 float robotLocationYDisplay = 0.0f;

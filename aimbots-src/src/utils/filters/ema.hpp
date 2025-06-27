@@ -20,6 +20,8 @@ public:
     }
 
     float getValue() { return lastValue; }
+
+    void setAlpha(float alpha) { this->alpha = alpha; }
 };
 
 }  // namespace src::Utils::Filters
