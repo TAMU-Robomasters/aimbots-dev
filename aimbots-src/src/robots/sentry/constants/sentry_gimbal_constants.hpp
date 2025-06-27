@@ -63,8 +63,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Se
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 1'000.0f,
-    .ki = 10.0f,
+    .kp = 2'000.0f,
+    .ki = 100.0f,
     .kd = 3'000.0f,
     .maxICumulative = 0.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
