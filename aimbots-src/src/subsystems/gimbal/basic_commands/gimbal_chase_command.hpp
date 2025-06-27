@@ -7,6 +7,8 @@
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
+#include "utils/filters/ema.hpp"
+#include "utils/filters/fourth_order_low_pass.hpp"
 
 #include "drivers.hpp"
 #ifdef GIMBAL_COMPATIBLE
@@ -26,7 +28,8 @@ public:
     GimbalChaseCommand(
         src::Drivers*,
         GimbalSubsystem*,
-        GimbalControllerInterface*,
+        GimbalFieldRelativeController*,
+        GimbalFieldRelativeController*,
         src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         float defaultLaunchSpeed);
@@ -43,22 +46,50 @@ public:
     void end(bool interrupted) override;
 
 private:
+    float calcDerivative(float x0, float x1, float dt) { return (x1 - x0) / (dt); }
+
     src::Drivers* drivers;
 
     GimbalSubsystem* gimbal;
-    GimbalControllerInterface* controller;
+    GimbalFieldRelativeController* controller;
+    GimbalFieldRelativeController* cvController;
 
     src::Utils::RefereeHelperTurreted* refHelper;
 
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver;
 
     float defaultLaunchSpeed;
+    
+    float previousTargetYawAngle = -1000; // shouldn't every be -1000
+    float previousYawVelocity = -1E6; // shouldn't ever be -1E6
+    uint32_t currTime_uS = 0;
+    float dt = 0.0f;
+    float yawVelocity = 0.0f;
+    float yawAcceleration = 0.0f;
+
+    float previousTargetPitchAngle = -1000; // shouldn't every be -1000
+    float previousPitchVelocity = -1E6; // shouldn't ever be -1E6
+    float pitchVelocity = 0.0f;
+    float pitchAcceleration = 0.0f;
+
+    uint32_t lastBallisticsSolutionTimeStamp_uS = 0;
 
     src::Informants::Vision::PlateKinematicState data;
 
     bool wasQPressed = false;
     bool wasEPressed = false;
     bool ignoreQuickTurns = false;
+
+    src::Utils::Filters::YawVelocityFourthOrderLPF yawVelocityFilter;
+    src::Utils::Filters::YawAccelerationFourthOrderLPF yawAccelerationFilter;
+    src::Utils::Filters::EMAFilter yawBallisticsFilter;
+
+    src::Utils::Filters::YawVelocityFourthOrderLPF pitchVelocityFilter;
+    src::Utils::Filters::YawAccelerationFourthOrderLPF pitchAccelerationFilter;
+    src::Utils::Filters::EMAFilter pitchBallisticsFilter;
+
+    bool isTargetBeingTracked = false;
+
 };
 
 }  // namespace src::Gimbal

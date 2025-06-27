@@ -101,6 +101,13 @@ public:
     // m/s
     float getChassisLinearAccelerationInGimbalDirection();
 
+    //TODO: check later if this is the right place to put these motorfunctions
+    // rad/s
+    float getYawMotorAngularVelocity(uint8_t motorIdx);
+    // rad/s
+    float getPitchMotorAngularVelocity(uint8_t motorIdx);
+
+
     void mirrorPastRobotFrame(uint32_t frameDelay_ms);
 
     inline Vector3f getChassisIMUOrientationAtTime(uint32_t time_ms) {

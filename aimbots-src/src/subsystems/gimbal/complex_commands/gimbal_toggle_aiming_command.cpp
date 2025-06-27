@@ -1,5 +1,6 @@
 #include "gimbal_toggle_aiming_command.hpp"
-#ifdef GIMBAL_COMPATIBLE
+//!!CHANGE ME BEFORE COMMITING
+#ifndef GIMBAL_COMPATIBLE
 
 
 namespace src::Gimbal {
@@ -7,7 +8,7 @@ namespace src::Gimbal {
 GimbalToggleAimCommand::GimbalToggleAimCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbal,
-    GimbalControllerInterface* controller,
+    GimbalFieldRelativeController* controller,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     float defaultLaunchSpeed,

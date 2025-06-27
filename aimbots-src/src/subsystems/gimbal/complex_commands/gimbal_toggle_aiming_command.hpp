@@ -9,6 +9,8 @@
 
 #include "drivers.hpp"
 
+//!!! REMOVE ME BEFORE COMMITING
+#ifndef GIMBAL_COMPATIBLE
 namespace src::Gimbal {
 
 class GimbalToggleAimCommand : public TapComprisedCommand {
@@ -16,7 +18,7 @@ public:
     GimbalToggleAimCommand(
         src::Drivers*,
         GimbalSubsystem*,
-        GimbalControllerInterface*,
+        GimbalFieldRelativeController*,
         src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         float defaultLaunchSpeed,
@@ -44,3 +46,4 @@ private:
 };
 
 }  // namespace src::Gimbal
+#endif

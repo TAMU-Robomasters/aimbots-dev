@@ -252,8 +252,8 @@ private:
 
     float yawAxisOffset = 0;  // in radians
 
-    tap::algorithms::WrappedFloat targetYawAxisAngle;    // chassis relative, in radians
-    tap::algorithms::WrappedFloat targetPitchAxisAngle;  // chassis relative, in radians
+    tap::algorithms::WrappedFloat targetYawAxisAngle = 0;    // chassis relative, in radians
+    tap::algorithms::WrappedFloat targetPitchAxisAngle = 0;  // chassis relative, in radians
 
     void setDesiredOutputToYawMotor(uint8_t YawIdx);
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);

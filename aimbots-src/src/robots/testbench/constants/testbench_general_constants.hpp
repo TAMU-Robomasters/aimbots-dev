@@ -3,7 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::WE_ARE_NUMBER_ONE;
+static constexpr SongTitle STARTUP_SONG = SongTitle::NONE;
 
 /**
  * @brief Defines the number of motors created for the chassis.

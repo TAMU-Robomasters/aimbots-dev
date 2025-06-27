@@ -40,6 +40,18 @@ struct YawVelocityFourthOrderLPF {
         return acc;
     }
 
+    void reset() {
+        for (size_t i = 0; i < sos.size(); ++i) {
+            SOSSection s;
+            // unpack
+            s.b = { sos[i][0], sos[i][1], sos[i][2]};
+            s.a = { sos[i][3], sos[i][4], sos[i][5] }; // a0 should be 1
+            sections.push_back(s);
+            sections[i].xh = std::array<double,2>{};
+            sections[i].yh = std::array<double,2>{};
+        }
+    }
+
 private:
     double gain = 8.9849e-07;
     static constexpr auto sos = std::array<std::array<double,6>,2>{{
@@ -78,11 +90,23 @@ struct YawAccelerationFourthOrderLPF {
         return acc;
     }
 
+    void reset() {
+        for (size_t i = 0; i < sos.size(); ++i) {
+            SOSSection s;
+            // unpack
+            s.b = { sos[i][0], sos[i][1], sos[i][2]};
+            s.a = { sos[i][3], sos[i][4], sos[i][5] }; // a0 should be 1
+            sections.push_back(s);
+            sections[i].xh = std::array<double,2>{};
+            sections[i].yh = std::array<double,2>{};
+        }
+    }
+
 private:
     double gain = 1.5106e-05;
     static constexpr auto sos = std::array<std::array<double,6>,2>{{
         // section1: {b0, b1, b2, a0, a1, a2}
-        { 1.0000, 1.0000, 0, 1.0000, -0.9510, 0 }
+        { 1.0000, 1.0000, 0, 1.0000, -0.9510, 0 },
         // section2:
         { 1.0000, 2.0000, 1.0000, 1.0000, -1.9485, 0.9510 }
     }};
@@ -113,6 +137,18 @@ struct targetDistanceFourthOrderLPF {
             acc = yn;
         };
         return acc;
+    }
+
+    void reset() {
+        for (size_t i = 0; i < sos.size(); ++i) {
+            SOSSection s;
+            // unpack
+            s.b = { sos[i][0], sos[i][1], sos[i][2]};
+            s.a = { sos[i][3], sos[i][4], sos[i][5] }; // a0 should be 1
+            sections.push_back(s);
+            sections[i].xh = std::array<double,2>{};
+            sections[i].yh = std::array<double,2>{};
+        }
     }
 
 private:

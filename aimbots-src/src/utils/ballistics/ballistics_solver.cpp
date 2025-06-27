@@ -37,22 +37,24 @@ int jetsonOnlineDisplay = 0;
 int failedToFindIntersectionDisplay = 0;
 
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
+
+    //!maybe we should get rid of checking for the last valid message and just rely on a timeout since last target
     nothingSeenDisplay = drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND;
     jetsonOnlineDisplay = !drivers->cvCommunicator.isJetsonOnline();
-    if (!drivers->cvCommunicator.isJetsonOnline() ||
-        drivers->cvCommunicator.getLastValidMessage().cvState < src::Informants::Vision::CVState::FOUND) {
-        // nothingSeenDisplay = 1;
+    nothingSeenDisplay = 0;
+    if (!drivers->cvCommunicator.isTargetBeingTracked()) {
+        nothingSeenDisplay = 1;
         return std::nullopt;
     }
 
     // nothingSeenDisplay = 0;
 
-    // If we have already solved for this target, return the same solution
-    if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
-        return lastBallisticsSolution;
-    } else {
-        lastPlatePredictionTime = drivers->cvCommunicator.getLastFoundTargetTime();
-    }
+    // // If we have already solved for this target, return the same solution
+    // if (lastPlatePredictionTime == drivers->cvCommunicator.getLastFoundTargetTime()) {
+    //     return lastBallisticsSolution;
+    // } else {
+    //     lastPlatePredictionTime = drivers->cvCommunicator.getLastFoundTargetTime();
+    // }
 
     //TODO: figure out if we should refactor getPlateState or throw it out
     auto plateKinematicState = drivers->cvCommunicator.getCurrentPlateEstimation();
