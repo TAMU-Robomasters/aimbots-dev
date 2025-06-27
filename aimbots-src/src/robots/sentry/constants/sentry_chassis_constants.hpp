@@ -14,7 +14,7 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 50.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
     .kd = 15.0f,
     .maxICumulative = 0.9f,
