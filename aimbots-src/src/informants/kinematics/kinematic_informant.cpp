@@ -164,6 +164,38 @@ float KinematicInformant::getChassisIMUAngularVelocity(AngularAxis axis, AngleUn
     return unit == AngleUnit::Radians ? angularVelocity : modm::toDegree(angularVelocity);
 }
 
+void KinematicInformant::updateYawIMUAngles() {
+    Vector3f IMUAngles = getLocalIMUAngles();
+    Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+
+    IMUAnglesDisplay = IMUAngles;
+
+    // Gets yaw angles
+    Vector3f yawAngles =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::GIMBAL_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                IMUAngles);
+
+    //AnglesConvertedDisplay = chassisAngles;
+
+    Vector3f yawAngularVelocities =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::GIMBAL_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                IMUAngularVelocities);
+
+    chassisAngularState[X_AXIS].updateFromPosition(chassisAngles[X_AXIS]);
+    chassisAngularState[Y_AXIS].updateFromPosition(chassisAngles[Y_AXIS]);
+    chassisAngularState[Z_AXIS].updateFromPosition(chassisAngles[Z_AXIS]);
+
+    chassisAngularState[X_AXIS].updateFromVelocity(chassisAngularVelocities[X_AXIS], false);
+    chassisAngularState[Y_AXIS].updateFromVelocity(chassisAngularVelocities[Y_AXIS], false);
+    chassisAngularState[Z_AXIS].updateFromVelocity(chassisAngularVelocities[Z_AXIS], false);
+}
+
 float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     float angularAcceleration = imuAngularState[axis].getAcceleration();
 

@@ -83,6 +83,12 @@ public:
     // Returns angular velocity in rad/s or deg/s
     float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
+    float updateYawIMUAngles();
+
+    float getYawIMUAngles(AngularAxis axis, AngleUnit unit);
+
+    float getYawIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
+
     Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
