@@ -187,13 +187,25 @@ void KinematicInformant::updateYawIMUAngles() {
                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
                 IMUAngularVelocities);
 
-    chassisAngularState[X_AXIS].updateFromPosition(chassisAngles[X_AXIS]);
-    chassisAngularState[Y_AXIS].updateFromPosition(chassisAngles[Y_AXIS]);
-    chassisAngularState[Z_AXIS].updateFromPosition(chassisAngles[Z_AXIS]);
+    turretIMUAngularState[X_AXIS].updateFromPosition(yawAngles[X_AXIS]);
+    turretIMUAngularState[Y_AXIS].updateFromPosition(yawAngles[Y_AXIS]);
+    turretIMUAngularState[Z_AXIS].updateFromPosition(yawAngles[Z_AXIS]);
 
-    chassisAngularState[X_AXIS].updateFromVelocity(chassisAngularVelocities[X_AXIS], false);
-    chassisAngularState[Y_AXIS].updateFromVelocity(chassisAngularVelocities[Y_AXIS], false);
-    chassisAngularState[Z_AXIS].updateFromVelocity(chassisAngularVelocities[Z_AXIS], false);
+    turretIMUAngularState[X_AXIS].updateFromVelocity(yawAngularVelocities[X_AXIS], false);
+    turretIMUAngularState[Y_AXIS].updateFromVelocity(yawAngularVelocities[Y_AXIS], false);
+    turretIMUAngularState[Z_AXIS].updateFromVelocity(yawAngularVelocities[Z_AXIS], false);
+}
+
+float KinematicInformant::getYawIMUAngle(AngularAxis axis, AngleUnit unit) {
+    float angle = turretIMUAngularState[axis].getPosition();
+
+    return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
+}
+
+float KinematicInformant::getYawIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
+    float angularVelocity = turretIMUAngularState[axis].getVelocity();
+
+    return unit == AngleUnit::Radians ? angularVelocity : modm::toDegree(angularVelocity);
 }
 
 float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
@@ -292,6 +304,7 @@ tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalP
 }
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
+    #ifndef TURRET_IMU
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
@@ -308,6 +321,10 @@ float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
         sqrtf(pow2(sinGimbYaw) * pow2(cosChasRoll) + pow2(cosGimbYaw) * pow2(cosChasPitch)));
 
     return chassisPitchAngleInGimbalDirection;
+
+    #else
+    return getYawIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    #endif
 }
 
 float KinematicInformant::getChassisPitchVelocityInGimbalDirection() {

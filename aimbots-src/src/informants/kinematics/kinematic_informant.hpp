@@ -83,9 +83,9 @@ public:
     // Returns angular velocity in rad/s or deg/s
     float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
-    float updateYawIMUAngles();
+    void updateYawIMUAngles();
 
-    float getYawIMUAngles(AngularAxis axis, AngleUnit unit);
+    float getYawIMUAngle(AngularAxis axis, AngleUnit unit);
 
     float getYawIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
@@ -115,6 +115,12 @@ public:
         return chassisIMUHistoryBuffer[index];
     }
 
+    inline Vector3f getYawIMUOrientationAtTime(uint32_t time_ms){
+        // assume 2 ms delay between gimbal updates
+        int index = std::min(time_ms / KINEMATIC_REFRESH_RATE, YAW_IMU_BUFFER_SIZE - 1);
+        return yawIMUHistoryBuffer[index];
+    }
+
     inline std::pair<float, float>& getGimbalFieldOrientation(int index) { return gimbalFieldOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
@@ -138,10 +144,12 @@ private:
     src::Informants::Transformers::RobotFrames robotFrames;
     src::Informants::Transformers::TurretFrames turretFrames;
 
+    static const uint32_t YAW_IMU_BUFFER_SIZE = 50;
     static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
     static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
 
     Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;
+    Deque<Vector3f, YAW_IMU_BUFFER_SIZE> yawIMUHistoryBuffer;
 
     KinematicStateVector imuLinearXState;
     KinematicStateVector imuLinearYState;
