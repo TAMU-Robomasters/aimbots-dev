@@ -120,6 +120,41 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
+
+
+void KinematicInformant::updateGimbalIMUAngles() {
+    Vector3f IMUAngles = getLocalIMUAngles();
+    Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+
+    IMUAnglesDisplay = IMUAngles;
+
+    // Gets chassis angles
+    Vector3f gimbalAngles =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::GIMBAL_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                IMUAngles);
+
+    chassisAnglesConvertedDisplay = gimbalAngles;
+
+    Vector3f gimbalAngularVelocities =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::GIMBAL_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                IMUAngularVelocities);
+
+    gimbalAngularState[X_AXIS].updateFromPosition(gimbalAngles[X_AXIS]);
+    gimbalAngularState[Y_AXIS].updateFromPosition(gimbalAngles[Y_AXIS]);
+    gimbalAngularState[Z_AXIS].updateFromPosition(gimbalAngles[Z_AXIS]);
+
+    gimbalAngularState[X_AXIS].updateFromVelocity(gimbalAngularVelocities[X_AXIS], false);
+    gimbalAngularState[Y_AXIS].updateFromVelocity(gimbalAngularVelocities[Y_AXIS], false);
+    gimbalAngularState[Z_AXIS].updateFromVelocity(gimbalAngularVelocities[Z_AXIS], false);
+}
+
+
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
