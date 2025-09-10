@@ -75,6 +75,8 @@ public:
 
     void updateIMUKinematicStateVector();
 
+    void updateGimbalIMUAngles();
+
     void updateChassisIMUAngles();
 
     // Returns angle in rad or deg
@@ -153,6 +155,10 @@ private:
     KinematicStateVector chassisAngularYState;
     KinematicStateVector chassisAngularZState;
 
+    KinematicStateVector gimbalAngularXState;
+    KinematicStateVector gimbalAngularYState;
+    KinematicStateVector gimbalAngularZState;
+
     KinematicStateVector turretIMULinearXState;
     KinematicStateVector turretIMULinearYState;
     KinematicStateVector turretIMULinearZState;
@@ -176,6 +182,11 @@ private:
         chassisAngularXState,
         chassisAngularYState,
         chassisAngularZState};
+
+    modm::Vector<KinematicStateVector, 3> gimbalAngularState = {
+        gimbalAngularXState,
+        gimbalAngularYState,
+        gimbalAngularZState};
 
     modm::Vector<KinematicStateVector, 3> turretIMULinearState = {
         turretIMULinearXState,
