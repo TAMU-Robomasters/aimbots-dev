@@ -82,13 +82,18 @@ public:
     // Returns angle in rad or deg
     float getChassisIMUAngle(AngularAxis axis, AngleUnit unit);
 
+    float getGimbalIMUAngle(AngularAxis axis, AngleUnit unit);
+
     // Returns angular velocity in rad/s or deg/s
     float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
+
+    float getGimbalIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
     Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
     void updateChassisAcceleration();
+    void updateGimbalAcceleration();
 
     // This updates more than just the robot frames, so will also update turret frames
     void updateRobotFrames();
@@ -110,7 +115,11 @@ public:
         int index = std::min(time_ms / KINEMATIC_REFRESH_RATE, CHASSIS_IMU_BUFFER_SIZE - 1);
         return chassisIMUHistoryBuffer[index];
     }
-
+    // inline Vector3f getGimbalIMUOrientationAtTime(uint32_t time_ms) {
+    //     // assume 2 ms delay between gimbal updates
+    //     int index = std::min(time_ms / KINEMATIC_REFRESH_RATE, GIMBAL_IMU_BUFFER_SIZE - 1);
+    //     return chassisIMUHistoryBuffer[index];
+    // }
     inline std::pair<float, float>& getGimbalFieldOrientation(int index) { return gimbalFieldOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
@@ -151,6 +160,10 @@ private:
     KinematicStateVector chassisLinearYState;
     KinematicStateVector chassisLinearZState;
 
+    KinematicStateVector gimbalLinearXState;
+    KinematicStateVector gimbalLinearYState;
+    KinematicStateVector gimbalLinearZState;
+
     KinematicStateVector chassisAngularXState;
     KinematicStateVector chassisAngularYState;
     KinematicStateVector chassisAngularZState;
@@ -178,6 +191,12 @@ private:
         chassisLinearXState,
         chassisLinearYState,
         chassisLinearZState};
+
+    modm::Vector<KinematicStateVector, 3> gimbalLinearState = {
+        gimbalLinearXState,
+        gimbalLinearYState,
+        gimbalLinearZState};
+
     modm::Vector<KinematicStateVector, 3> chassisAngularState = {
         chassisAngularXState,
         chassisAngularYState,
@@ -198,6 +217,7 @@ private:
         turretIMUAngularZState};
 
     src::Informants::Odometry::ChassisKFOdometry chassisKFOdometry;
+    // src::Informants::Odometry::GimbalKFOdometry gimbalKFOdometry;
 };
 
 }  // namespace src::Informants

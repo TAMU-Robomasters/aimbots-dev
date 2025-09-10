@@ -128,7 +128,6 @@ void KinematicInformant::updateGimbalIMUAngles() {
 
     IMUAnglesDisplay = IMUAngles;
 
-    // Gets chassis angles
     Vector3f gimbalAngles =
         drivers->kinematicInformant.getRobotFrames()
             .getFrame(Transformers::FrameType::GIMBAL_FRAME)
@@ -189,19 +188,19 @@ void KinematicInformant::updateChassisIMUAngles() {
 
 float KinematicInformant::getChassisIMUAngle(AngularAxis axis, AngleUnit unit) {
     float angle = chassisAngularState[axis].getPosition();
-
+    return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
+}
+float KinematicInformant::getGimbalIMUAngle(AngularAxis axis, AngleUnit unit) {
+    float angle = gimbalAngularState[axis].getPosition();
     return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
 }
 
 float KinematicInformant::getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit) {
     float angularVelocity = chassisAngularState[axis].getVelocity();
-
     return unit == AngleUnit::Radians ? angularVelocity : modm::toDegree(angularVelocity);
 }
-
 float KinematicInformant::getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit) {
     float angularAcceleration = imuAngularState[axis].getAcceleration();
-
     return unit == AngleUnit::Radians ? angularAcceleration : modm::toDegree(angularAcceleration);
 }
 
@@ -280,6 +279,30 @@ void KinematicInformant::updateChassisAcceleration() {
     chassisLinearState[Z_AXIS].updateFromAcceleration(linearChassisAcceleration.getZ());
 }
 
+void KinematicInformant::updateGimbalAcceleration() {
+    // gimbalAngleXDisplay = gimbalAngularState[X_AXIS].getPosition();
+    // gimbalAngleYDisplay = gimbalAngularState[Y_AXIS].getPosition();
+    // gimbalAngleZDisplay = gimbalAngularState[Z_AXIS].getPosition();
+
+    Vector3f linearIMUAcceleration = removeFalseAcceleration(imuLinearState, imuAngularState, IMU_MOUNT_POSITION);
+
+    Vector3f linearGimbalAcceleration =
+        drivers->kinematicInformant.getRobotFrames()
+            .getFrame(Transformers::FrameType::GIMBAL_IMU_FRAME)
+            .getPointInFrame(
+                drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::GIMBAL_FRAME),
+                linearIMUAcceleration);
+
+    linearIMUAccelerationDisplay = linearIMUAcceleration;
+    linearIMUAccelerationXDisplay = linearGimbalAcceleration.getX();
+    linearIMUAccelerationYDisplay = linearGimbalAcceleration.getY();
+    linearIMUAccelerationZDisplay = linearGimbalAcceleration.getZ();
+
+    gimbalLinearState[X_AXIS].updateFromAcceleration(linearGimbalAcceleration.getX());
+    gimbalLinearState[Y_AXIS].updateFromAcceleration(linearGimbalAcceleration.getY());
+    gimbalLinearState[Z_AXIS].updateFromAcceleration(linearGimbalAcceleration.getZ());
+}
+
 float chassisYawAngleDisplay = 0.0f;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
@@ -356,8 +379,17 @@ void KinematicInformant::updateRobotFrames() {
 
 #ifndef TARGET_TURRET
     // Update Chassis Stuff after IMU STUFF
+    #ifdef CHASSIS_IMU // old shi
     updateChassisIMUAngles();
+
     updateChassisAcceleration();
+    #endif
+    
+    #ifdef TURRET_IMU // Gimbal IMU migration
+    updateGimbalIMUAngles();
+
+    updateChassisAcceleration();
+    #endif
 
     chassisIMUHistoryBuffer.prependOverwrite(
         {getChassisIMUAngle(PITCH_AXIS, AngleUnit::Radians),
