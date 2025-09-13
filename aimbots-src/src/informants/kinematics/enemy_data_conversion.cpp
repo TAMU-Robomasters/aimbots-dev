@@ -5,9 +5,9 @@
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 12.0f, 2.0f),
-      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 12.0f, 2.0f),
-      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 12.0f, 2.0f)  //
+      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 4.0f, 2.0f),
+      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 4.0f, 2.0f),
+      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f)  //
 {}
 
 // watchable variables

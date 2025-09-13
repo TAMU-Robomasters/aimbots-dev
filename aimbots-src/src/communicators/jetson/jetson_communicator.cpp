@@ -29,6 +29,8 @@ int displayBufIndex = 0;
 
 float targetXDisplay = 0;
 float targetYDisplay = 0;
+float targetZDisplay = 0;
+uint8_t captureDelayDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 
 float fieldRelativeYawAngleDisplay = 0;
@@ -100,6 +102,8 @@ void JetsonCommunicator::updateSerial() {
 
                 targetXDisplay = lastMessage.targetX;
                 targetYDisplay = lastMessage.targetY;
+                targetZDisplay = lastMessage.targetZ;
+                captureDelayDisplay = lastMessage.delay;
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better

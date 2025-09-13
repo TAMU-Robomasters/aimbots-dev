@@ -82,16 +82,6 @@ public:
         fieldRelativeVelocityPitchTarget = targetVelocityPitch;
     }
 
-    void setTargetAccelerationYaw(AngleUnit unit, float targetAccelerationYaw) {
-        targetAccelerationYaw = (unit == AngleUnit::Radians) ? targetAccelerationYaw : modm::toRadian(targetAccelerationYaw);
-        fieldRelativeAccelerationYawTarget = targetAccelerationYaw;
-    }
-
-    void setTargetAccelerationPitch(AngleUnit unit, float targetAccelerationPitch) {
-        targetAccelerationPitch = (unit == AngleUnit::Radians) ? targetAccelerationPitch : modm::toRadian(targetAccelerationPitch);
-        fieldRelativeAccelerationPitchTarget = targetAccelerationPitch;
-    }
-
     bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
         bool controllersSettled = false;
         for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
@@ -132,16 +122,6 @@ public:
                                             : modm::toDegree(fieldRelativeVelocityPitchTarget);
     }
 
-    float getTargetAccelerationYaw(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? fieldRelativeAccelerationYawTarget
-                                            : modm::toDegree(fieldRelativeAccelerationYawTarget);
-    }
-
-    float getTargetAccelerationPitch(AngleUnit unit) const {
-        return (unit == AngleUnit::Radians) ? fieldRelativeAccelerationPitchTarget
-                                            : modm::toDegree(fieldRelativeAccelerationPitchTarget);
-    }
-
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
@@ -168,12 +148,6 @@ private:
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
     std::array<src::Utils::Filters::EMAFilter*, PITCH_MOTOR_COUNT> pitchVelocityFilters;
 
-    float kYawBallisticVelocity = 20.0f; // ballistic feedforward coefficient
-    float kPitchBallisticVelocity = 0.0f; // ballistic feedforward coefficient
-    float kBallisticAcceleration = 0.0f; // ballistic feedforward coefficient
-
-    uint32_t yawOuterLoopCounter = -1;
-    uint32_t pitchOuterLoopCounter = -1;
     float fieldRelativeVelocityTarget = 0.0f;
 };
 

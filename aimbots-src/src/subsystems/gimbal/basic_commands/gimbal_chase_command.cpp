@@ -170,55 +170,6 @@ void GimbalChaseCommand::execute() {
         
         isTargetBeingTracked = drivers->cvCommunicator.isTargetBeingTracked();
 
-        if (!isTargetBeingTracked) {
-            yawVelocityFilter.reset();
-            yawAccelerationFilter.reset();
-            pitchVelocityFilter.reset();
-            pitchAccelerationFilter.reset();
-        }
-
-        // Angle filtering for feedforward control
-        if (previousTargetYawAngle == -1000) {
-            previousTargetYawAngle = targetYawAxisAngle;
-            lastBallisticsSolutionTimeStamp_uS = currTime_uS;
-        }
-        else {
-            currTime_uS = tap::arch::clock::getTimeMicroseconds();
-            dt = (currTime_uS - lastBallisticsSolutionTimeStamp_uS) * 1E-6;
-            lastBallisticsSolutionTimeStamp_uS = currTime_uS;
-            yawVelocity = calcDerivative(previousTargetYawAngle, targetYawAxisAngle, dt);
-            previousTargetYawAngle = targetYawAxisAngle;
-            yawVelocity = yawVelocityFilter.processSample(yawVelocity);
-            targetYawAxisVelocityDisplay = modm::toDegree(yawVelocity);
-
-            pitchVelocity = calcDerivative(previousTargetPitchAngle, targetPitchAxisAngle, dt);
-            previousTargetPitchAngle = targetPitchAxisAngle;
-            pitchVelocity = pitchVelocityFilter.processSample(pitchVelocity);
-            targetPitchAxisVelocityDisplay = modm::toDegree(pitchVelocity);
-
-            if (previousYawVelocity == -1E6) previousYawVelocity = yawVelocity;
-            else {
-                yawAcceleration = calcDerivative(previousYawVelocity, yawVelocity, dt);
-                previousYawVelocity = yawVelocity;
-                yawAcceleration = yawAccelerationFilter.processSample(yawAcceleration);
-                targetYawAxisAccelerationDisplay = modm::toDegree(yawAcceleration);
-
-                pitchAcceleration = calcDerivative(previousPitchVelocity, pitchVelocity, dt);
-                previousPitchVelocity = pitchVelocity;
-                pitchAcceleration = pitchAccelerationFilter.processSample(pitchAcceleration);
-                targetPitchAxisAccelerationDisplay = modm::toDegree(pitchAcceleration);
-            }
-        }
-
-        
-        if (updateYawDebug) {
-            yawVelocity = yawVelocityDebug;
-            yawAcceleration = yawAccelerationDebug;
-
-            updateYawDebug = false;
-        }
-        // cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
-
         trackDebug = isTargetBeingTracked;
         if (isTargetBeingTracked) {
             cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);

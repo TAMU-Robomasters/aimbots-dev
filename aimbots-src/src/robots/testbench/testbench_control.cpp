@@ -91,18 +91,23 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 20.0f,
+    .velocityAmplitudeDegreesPerSec = 10.0f,
     .frequencyHz = .2f,
 };
 
 GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 20.0f,
+    .velocityAmplitudeDegreesPerSec = 10.0f,
     .frequencyHz = .2f,
 };
 
-GimbalPositionTunningConfig gimbalPositionTunningConfig = {
-    .yawPositionAmplitudeDegrees = 30.0f,
-    .yawFrequencyHz = 0.5f,
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
 };
 
 // Define commands here ---------------------------------------------------
@@ -126,27 +131,28 @@ GimbalChaseCommand gimbalChaseCommand(
 GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
     drivers(), 
     &gimbal,     
-    &gimbalFieldRelativeController, 
+    &cvGimbalFieldRelativeController, 
     gimbalYawVelocityTunningConfig,
     gimbalPitchVelocityTunningConfig);
 
 GimbalPositionTunningCommand gimbalPositionTunningCommand(
     drivers(), 
     &gimbal,     
-    &gimbalFieldRelativeController, 
-    gimbalPositionTunningConfig);
+    &cvGimbalFieldRelativeController, 
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
 
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(), 
-    {&gimbalFieldRelativeControlCommand  /*,&gimbalPositionTunningCommand*/},
+    {&gimbalFieldRelativeControlCommand /*&gimbalVelocityTunningCommand*/ /*&gimbalPositionTunningCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&gimbalChaseCommand},
+    {/*&gimbalPositionTunningCommand*/ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchUp(

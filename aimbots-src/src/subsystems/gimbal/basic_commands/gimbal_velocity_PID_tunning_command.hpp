@@ -28,11 +28,6 @@ public:
     bool isFinished() const override;
     void end(bool interrupted) override;
 
-    float getYawTargetVelocity();
-    float getPitchTargetVelocity();
-    
-    uint32_t getRelativeTime() {return tap::arch::clock::getTimeMilliseconds() - initTime;}
-
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
@@ -41,6 +36,11 @@ private:
     GimbalVelocityTunningConfig pitchConfig;
 
     uint32_t initTime = 0;
+
+    float getYawTargetVelocity();
+    float getPitchTargetVelocity();
+    
+    uint32_t getRelativeTime() {return tap::arch::clock::getTimeMilliseconds() - initTime;}
 };
 
 } // namespace src::Gimbal

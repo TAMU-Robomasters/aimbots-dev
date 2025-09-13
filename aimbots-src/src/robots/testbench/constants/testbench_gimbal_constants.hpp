@@ -136,9 +136,9 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
 
 // VISION CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.3f,
+    .kd = 0.0f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
@@ -150,9 +150,9 @@ static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.3f,
+    .kd = 0.0f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
@@ -165,9 +165,9 @@ static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VISION VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
-    .kp = 800.0f,
-    .ki = 110.0f,
-    .kd = 0.0001f,
+    .kp = 1000.0f,
+    .ki = 200.0f,
+    .kd = 1.2f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -179,9 +179,9 @@ static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig VISION_PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 200.0f,
-    .ki = 20.0f,
-    .kd = 0.0f,
+    .kp = 900.0f,
+    .ki = 100.0f,
+    .kd = 1.2f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

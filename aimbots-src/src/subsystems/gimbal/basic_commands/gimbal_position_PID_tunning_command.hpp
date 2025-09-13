@@ -10,8 +10,8 @@
 namespace src::Gimbal {
 
 struct GimbalPositionTunningConfig {
-    float yawPositionAmplitudeDegrees = 0.0f;
-    float yawFrequencyHz = 0.0f;
+    float positionAmplitudeDegrees = 0.0f;
+    float frequencyHz = 0.0f;
 };
 
 class GimbalPositionTunningCommand : public tap::control::Command {
@@ -20,7 +20,8 @@ public:
         src::Drivers* drivers,
         GimbalSubsystem* gimbalSubsystem,
         GimbalFieldRelativeController* controller,
-        GimbalPositionTunningConfig config);
+        GimbalPositionTunningConfig yawConfig,
+        GimbalPositionTunningConfig pitchConfig);
 
     void initialize() override;
     void execute() override;
@@ -34,10 +35,12 @@ private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
     GimbalFieldRelativeController* controller;
-    GimbalPositionTunningConfig config;
+    GimbalPositionTunningConfig yawConfig;
+    GimbalPositionTunningConfig pitchConfig;
     uint32_t initTime;
 
     float getYawTargetPosition();
+    float getPitchTargetPosition();
     float getRelativeTime() const;
 };
 

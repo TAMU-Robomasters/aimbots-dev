@@ -10,55 +10,77 @@ bool updateYawPositionConfigDebug = false;
 float yawPositionTunningFrequencyDebug = 0.0f;
 float yawPositionTunningAmplitudeDebug = 0.0f;
 
-bool updateYawControllerVelocityLimitDebug = false;
-float yawControllerVelocityLimitDebug = 0.0f; // degrees per second
+bool updatePitchPositionConfigDebug = false;
+float pitchPositionTunningFrequencyDebug = 0.0f;
+float pitchPositionTunningAmplitudeDebug = 0.0f;
+
+float currGimbalTargetYawPositionDisplay = 0.0f;
+float currGimbalTargetPitchPositionDisplay = 0.0f;
 
 GimbalPositionTunningCommand::GimbalPositionTunningCommand(
     src::Drivers* drivers, 
     GimbalSubsystem* gimbalSubsystem,
     GimbalFieldRelativeController* controller, 
-    GimbalPositionTunningConfig config)
+    GimbalPositionTunningConfig yawConfig,
+    GimbalPositionTunningConfig pitchConfig)
     : drivers(drivers), 
       gimbal(gimbalSubsystem), 
       controller(controller), 
-      config(config)
+      yawConfig(yawConfig),
+      pitchConfig(pitchConfig)
     {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
     }
 
-float currGimbalTargetYawPositionDisplay = 0.0f;
-
 void GimbalPositionTunningCommand::execute() {
     float yawTargetPosition = getYawTargetPosition();
+    float pitchTargetPosition = getPitchTargetPosition();
 
     currGimbalTargetYawPositionDisplay = yawTargetPosition;
+    currGimbalTargetPitchPositionDisplay = pitchTargetPosition;
 
     controller->setTargetYaw(AngleUnit::Degrees, yawTargetPosition);
+    controller->setTargetPitch(AngleUnit::Degrees, pitchTargetPosition);
 
-    //TODO: fix this or get rid of it
-    // for tuning velocity limit through Ozone
-    if (updateYawControllerVelocityLimitDebug) {
-        controller->runYawController(modm::toRadian(yawControllerVelocityLimitDebug));
-        updateYawControllerVelocityLimitDebug = false;
-    } else controller->runYawController(modm::toRadian(100)); 
+    controller->runYawController(6); 
+    controller->runPitchController(6);
 }
 
 float GimbalPositionTunningCommand::getYawTargetPosition() { // in degrees
     // For PID tunning through Ozone
     if (updateYawPositionConfigDebug) {
-        config.yawFrequencyHz = yawPositionTunningFrequencyDebug;
-        config.yawPositionAmplitudeDegrees = yawPositionTunningAmplitudeDebug;
+        yawConfig.frequencyHz = yawPositionTunningFrequencyDebug;
+        yawConfig.positionAmplitudeDegrees = yawPositionTunningAmplitudeDebug;
         updateYawPositionConfigDebug = false;
     }
 
-    float periodMilliseconds = 1000.0f / config.yawFrequencyHz;
+    float periodMilliseconds = 1000.0f / yawConfig.frequencyHz;
     
     float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
     
     if (timeInPeriod < periodMilliseconds / 2.0f) {
-        return config.yawPositionAmplitudeDegrees;
+        return yawConfig.positionAmplitudeDegrees;
     } else {
-        return -config.yawPositionAmplitudeDegrees;
+        return -yawConfig.positionAmplitudeDegrees;
+    }
+}
+
+float GimbalPositionTunningCommand::getPitchTargetPosition() { // in degrees
+    // For PID tunning through Ozone
+    if (updatePitchPositionConfigDebug) {
+        pitchConfig.frequencyHz = pitchPositionTunningFrequencyDebug;
+        pitchConfig.positionAmplitudeDegrees = pitchPositionTunningAmplitudeDebug;
+        updatePitchPositionConfigDebug = false;
+    }
+
+    float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
+    
+    float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
+    
+    if (timeInPeriod < periodMilliseconds / 2.0f) {
+        return pitchConfig.positionAmplitudeDegrees;
+    } else {
+        return -pitchConfig.positionAmplitudeDegrees;
     }
 }
 
