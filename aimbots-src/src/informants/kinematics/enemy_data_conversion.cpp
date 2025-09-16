@@ -38,6 +38,9 @@ float untransformedDataPosXDisplay = 0.0;
 float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
 
+// for frame delay timing debug
+float frameDelayDebug = 0.0f;
+
 // gather data, transform data,
 /**
  * @brief plateTImeOffsetDisplay is used to manually add time to frame delay
@@ -46,7 +49,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
 
-    lastFrameCaptureDelay_ms = frameCaptureDelay + plateTimeOffsetDisplay; 
+    lastFrameCaptureDelay_ms = frameDelayDebug; // frameCaptureDelay + plateTimeOffsetDisplay; 
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay_ms);
 
     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
@@ -94,10 +97,12 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
     cameraXYMagDisplay = sqrt(pow2(turretCameraFrame.getOrigin().getX()) + pow2(turretCameraFrame.getOrigin().getY()));
     targetXYMagDisplay = sqrt(pow2(transformedPosition.position.getX()) + pow2(transformedPosition.position.getY()));
 
+    // camera relative
     untransformedDataPosXDisplay = currentData.position.getX();
     untransformedDataPosYDisplay = currentData.position.getY();
     untransformedDataPosZDisplay = currentData.position.getZ();
 
+    // turret relative
     targetPositionXUnfilteredDisplay = transformedPosition.position.getX();
     targetPositionYUnfilteredDisplay = transformedPosition.position.getY();
     targetPositionZUnfilteredDisplay = transformedPosition.position.getZ();
@@ -155,6 +160,7 @@ PlateKinematicState VisionDataConversion::getCurrentPlateEstimation() const {
 
     predictiondTDisplay = totalForwardProjectionTime;
 
+    // kf prediction
     Vector3f xPlate = XPositionFilter.getFuturePrediction(totalForwardProjectionTime);
     Vector3f yPlate = YPositionFilter.getFuturePrediction(totalForwardProjectionTime);
     Vector3f zPlate = ZPositionFilter.getFuturePrediction(totalForwardProjectionTime);

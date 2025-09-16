@@ -95,7 +95,7 @@ Vector3f KinematicKalman::getFuturePrediction(float dt) const { // called every 
         isFirstUpdate = false;
         return Vector3f(lastMeasurement, 0, 0);
     }
-    return F * x;
+    return F * x; //!now sending no kf
 }
 
 Matrix3f KinematicKalman::stateSpaceMatrix(float dt) const {
