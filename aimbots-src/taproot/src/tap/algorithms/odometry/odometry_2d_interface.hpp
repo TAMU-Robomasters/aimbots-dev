@@ -62,6 +62,8 @@ public:
      * @return The last time that odometry was computed (in microseconds).
      */
     virtual uint32_t getLastComputedOdometryTime() const = 0;
+
+    virtual void overrideOdometryPosition(const float positionX, const float positionY) = 0;
 };
 
 }  // namespace tap::algorithms::odometry

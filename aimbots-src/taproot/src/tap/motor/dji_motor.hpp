@@ -28,30 +28,27 @@
 
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/can/can_rx_listener.hpp"
+#include "tap/communication/sensors/encoder/multi_encoder.hpp"
 
 #include "modm/math/geometry/angle.hpp"
 
+#include "dji_motor_encoder.hpp"
+#include "dji_motor_ids.hpp"
 #include "motor_interface.hpp"
+
+#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+#include <gmock/gmock.h>
+
+#include "tap/mock/dji_motor_encoder_mock.hpp"
+#endif
 
 namespace tap::motor
 {
-/**
- * CAN IDs for the feedback messages sent by DJI motor controllers. Motor `i` in the set
- * {1, 2,...,8} sends feedback data with in a CAN message with ID 0x200 + `i`.
- * for declaring a new motor, must be one of these motor
- * identifiers
- */
-enum MotorId : uint32_t
-{
-    MOTOR1 = 0X201,
-    MOTOR2 = 0x202,
-    MOTOR3 = 0x203,
-    MOTOR4 = 0x204,
-    MOTOR5 = 0x205,
-    MOTOR6 = 0x206,
-    MOTOR7 = 0x207,
-    MOTOR8 = 0x208,
-};
+#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+using Encoder = tap::mock::DjiMotorEncoderMock;
+#else
+using Encoder = DjiMotorEncoder;
+#endif
 
 /**
  * A class designed to interface with DJI brand motors and motor controllers over CAN.
@@ -62,11 +59,7 @@ enum MotorId : uint32_t
  *      == false`) is counter clockwise when looking at the shaft from the side opposite
  *      the motor. This is specified in the C620 user manual (page 18).
  *
- * DJI motor encoders store a consistent encoding for a given angle across power-cycles.
- * This means the encoder angle reported by the motor can have meaning if the encoding
- * for an angle is unique as it is for the GM6020s. However for geared motors like the
- * M3508 where a full encoder revolution does not correspond 1:1 to a shaft revolution,
- * it is impossible to know the orientation of the shaft given just the encoder value.
+ * @see DjiMotorEncoder
  *
  * Extends the CanRxListener class to attach a message handler for feedback data from the
  * motor to the CAN Rx dispatch handler.
@@ -77,9 +70,6 @@ enum MotorId : uint32_t
 class DjiMotor : public can::CanRxListener, public MotorInterface
 {
 public:
-    // 0 - 8191 for dji motors
-    static constexpr uint16_t ENC_RESOLUTION = 8192;
-
     // Maximum values for following motors
     // Controller for the M2006, in mA output
     static constexpr uint16_t MAX_OUTPUT_C610 = 10000;
@@ -93,14 +83,6 @@ public:
     // Output is in mV
     static constexpr uint16_t MAX_OUTPUT_GM3510 = 29000;
 
-    // Internal gear ratio of the following motors
-    static constexpr float GEAR_RATIO_M3508 = 3591.0f / 187.0f;
-    static constexpr float GEAR_RATIO_M3510_L1 = 3.7f / 1.0f;
-    static constexpr float GEAR_RATIO_M3510_L2 = 5.2f / 1.0f;
-    static constexpr float GEAR_RATIO_M3510_L3 = 19.0f / 1.0f;
-    static constexpr float GEAR_RATIO_M3510_L4 = 27.0f / 1.0f;
-    static constexpr float GEAR_RATIO_M2006 = 36.0f / 1.0f;
-
     /**
      * @param drivers a pointer to the drivers struct
      * @param desMotorIdentifier the ID of this motor controller
@@ -109,10 +91,9 @@ public:
      *      counter-clockwise when looking at the shaft from the side opposite the motor.
      *      If `true` then the positive rotation direction will be clockwise.
      * @param name a name to associate with the motor for use in the motor menu
-     * @param encoderWrapped the starting encoderValue to store for this motor.
-     *      Will be overwritten by the first reported encoder value from the motor
-     * @param encoderRevolutions the starting number of encoder revolutions to store.
-     *      See comment for DjiMotor::encoderRevolutions for more details.
+     * @param gearRatio the ratio of input revolutions to output revolutions of this encoder.
+     * @param encoderHomePosition the zero position for the encoder in encoder ticks.
+     * @param externalEncoder a pointer to an external encoder to average with the internal encoder.
      */
     DjiMotor(
         Drivers* drivers,
@@ -120,26 +101,24 @@ public:
         tap::can::CanBus motorCanBus,
         bool isInverted,
         const char* name,
-        uint16_t encoderWrapped = ENC_RESOLUTION / 2,
-        int64_t encoderRevolutions = 0);
+        bool currentControl = false,
+        float gearRatio = 1,
+        uint32_t encoderHomePosition = 0,
+        tap::encoder::EncoderInterface* externalEncoder = nullptr);
 
     mockable ~DjiMotor();
 
     void initialize() override;
 
-    float getPositionUnwrapped() const override;
-
-    float getPositionWrapped() const override;
-
-    int64_t getEncoderUnwrapped() const override;
-
-    uint16_t getEncoderWrapped() const override;
+    tap::encoder::EncoderInterface* getEncoder() const override
+    {
+        return const_cast<tap::encoder::MultiEncoder<2>*>(&this->encoder);
+    }
 
     /**
-     * Resets this motor's current encoder home position to the current encoder position reported by
-     * CAN messages, and resets this motor's encoder revolutions to 0.
+     * Returns the builtin encoder associated with the motor.
      */
-    void resetEncoderValue() override;
+    mockable const Encoder& getInternalEncoder() const { return this->internalEncoder; }
 
     DISALLOW_COPY_AND_ASSIGN(DjiMotor)
 
@@ -190,49 +169,19 @@ public:
 
     int16_t getTorque() const override;
 
-    /// For interpreting the sign of return value see class comment
-    int16_t getShaftRPM() const override;
-
     mockable bool isMotorInverted() const;
 
     mockable tap::can::CanBus getCanBus() const;
 
     mockable const char* getName() const;
 
-    template <typename T>
-    static void assertEncoderType()
-    {
-        constexpr bool good_type =
-            std::is_same<typename std::decay<T>::type, std::int64_t>::value ||
-            std::is_same<typename std::decay<T>::type, std::uint16_t>::value;
-        static_assert(good_type, "x is not of the correct type");
-    }
-
-    template <typename T>
-    static T degreesToEncoder(float angle)
-    {
-        assertEncoderType<T>();
-        return static_cast<T>((ENC_RESOLUTION * angle) / 360);
-    }
-
-    template <typename T>
-    static float encoderToDegrees(T encoder)
-    {
-        assertEncoderType<T>();
-        return (360.0f * static_cast<float>(encoder)) / ENC_RESOLUTION;
-    }
+    mockable bool isInCurrentControl() const;
 
 private:
     // wait time before the motor is considered disconnected, in milliseconds
     static const uint32_t MOTOR_DISCONNECT_TIME = 100;
 
     const char* motorName;
-
-    /**
-     * Updates the stored encoder value given a newly received encoder value
-     * special logic necessary for keeping track of unwrapped encoder value.
-     */
-    void updateEncoderValue(uint16_t newEncWrapped);
 
     Drivers* drivers;
 
@@ -241,8 +190,6 @@ private:
     tap::can::CanBus motorCanBus;
 
     int16_t desiredOutput;
-
-    int16_t shaftRPM;
 
     int8_t temperature;
 
@@ -255,26 +202,15 @@ private:
      */
     bool motorInverted;
 
-    /**
-     * The raw encoder value reported by the motor controller relative to
-     * encoderHomePosition. It wraps around from {0..8191}, hence "Wrapped"
-     */
-    uint16_t encoderWrapped;
+    bool currentControl;
 
-    /**
-     * Absolute unwrapped encoder position =
-     *      encoderRevolutions * ENCODER_RESOLUTION + encoderWrapped
-     * This lets us keep track of some sense of absolute position even while
-     * raw encoderValue continuosly loops within {0..8191}. Origin value is
-     * arbitrary.
-     */
-    int64_t encoderRevolutions;
+#if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
+    testing::NiceMock<Encoder> internalEncoder;
+#else
+    Encoder internalEncoder;
+#endif
 
-    /**
-     * The actual encoder wrapped value received from CAN messages where this motor
-     * is considered to have an encoder value of 0. encoderHomePosition is 0 by default.
-     */
-    uint16_t encoderHomePosition;
+    tap::encoder::MultiEncoder<2> encoder;
 
     tap::arch::MilliTimeout motorDisconnectTimeout;
 };

@@ -47,21 +47,26 @@ DjiMotor::DjiMotor(
     tap::can::CanBus motorCanBus,
     bool isInverted,
     const char* name,
-    uint16_t encoderWrapped,
-    int64_t encoderRevolutions)
+    bool currentControl,
+    float gearRatio,
+    uint32_t encoderHomePosition,
+    tap::encoder::EncoderInterface* externalEncoder)
     : CanRxListener(drivers, static_cast<uint32_t>(desMotorIdentifier), motorCanBus),
       motorName(name),
       drivers(drivers),
       motorIdentifier(desMotorIdentifier),
       motorCanBus(motorCanBus),
       desiredOutput(0),
-      shaftRPM(0),
       temperature(0),
       torque(0),
       motorInverted(isInverted),
-      encoderWrapped(encoderWrapped),
-      encoderRevolutions(encoderRevolutions),
-      encoderHomePosition(0)
+      currentControl(currentControl),
+      internalEncoder(isInverted, gearRatio, encoderHomePosition),
+      encoder(
+          {externalEncoder != nullptr ? externalEncoder
+                                      : const_cast<Encoder*>(&this->getInternalEncoder()),
+           externalEncoder != nullptr ? const_cast<Encoder*>(&this->getInternalEncoder())
+                                      : nullptr})
 {
     motorDisconnectTimeout.stop();
 }
@@ -70,6 +75,7 @@ void DjiMotor::initialize()
 {
     drivers->djiMotorTxHandler.addMotorToManager(this);
     attachSelfToRxHandler();
+    this->encoder.initialize();
 }
 
 void DjiMotor::processMessage(const modm::can::Message& message)
@@ -78,10 +84,6 @@ void DjiMotor::processMessage(const modm::can::Message& message)
     {
         return;
     }
-    uint16_t encoderActual =
-        static_cast<uint16_t>(message.data[0] << 8 | message.data[1]);        // encoder value
-    shaftRPM = static_cast<int16_t>(message.data[2] << 8 | message.data[3]);  // rpm
-    shaftRPM = motorInverted ? -shaftRPM : shaftRPM;
     torque = static_cast<int16_t>(message.data[4] << 8 | message.data[5]);  // torque
     torque = motorInverted ? -torque : torque;
     temperature = static_cast<int8_t>(message.data[6]);  // temperature
@@ -89,14 +91,7 @@ void DjiMotor::processMessage(const modm::can::Message& message)
     // restart disconnect timer, since you just received a message from the motor
     motorDisconnectTimeout.restart(MOTOR_DISCONNECT_TIME);
 
-    // invert motor if necessary
-    encoderActual = motorInverted ? ENC_RESOLUTION - 1 - encoderActual : encoderActual;
-
-    int32_t encoderRelativeToHome = (int32_t)encoderActual - (int32_t)encoderHomePosition;
-
-    updateEncoderValue(
-        encoderRelativeToHome < 0 ? (int32_t)ENC_RESOLUTION + encoderRelativeToHome
-                                  : encoderRelativeToHome);
+    this->internalEncoder.processMessage(message);
 }
 
 void DjiMotor::setDesiredOutput(int32_t desiredOutput)
@@ -136,52 +131,14 @@ int8_t DjiMotor::getTemperature() const { return temperature; }
 
 int16_t DjiMotor::getTorque() const { return torque; }
 
-int16_t DjiMotor::getShaftRPM() const { return shaftRPM; }
-
 bool DjiMotor::isMotorInverted() const { return motorInverted; }
 
 tap::can::CanBus DjiMotor::getCanBus() const { return motorCanBus; }
 
 const char* DjiMotor::getName() const { return motorName; }
 
-int64_t DjiMotor::getEncoderUnwrapped() const
-{
-    return static_cast<int64_t>(encoderWrapped) +
-           static_cast<int64_t>(ENC_RESOLUTION) * encoderRevolutions;
-}
+bool DjiMotor::isInCurrentControl() const { return currentControl; }
 
-uint16_t DjiMotor::getEncoderWrapped() const { return encoderWrapped; }
-
-void DjiMotor::resetEncoderValue()
-{
-    encoderRevolutions = 0;
-    encoderHomePosition = (encoderWrapped + encoderHomePosition) % ENC_RESOLUTION;
-    encoderWrapped = 0;
-}
-
-float DjiMotor::getPositionUnwrapped() const
-{
-    return getEncoderUnwrapped() * M_TWOPI / ENC_RESOLUTION;
-}
-
-float DjiMotor::getPositionWrapped() const
-{
-    return getEncoderWrapped() * M_TWOPI / ENC_RESOLUTION;
-}
-
-void DjiMotor::updateEncoderValue(uint16_t newEncWrapped)
-{
-    int16_t enc_dif = newEncWrapped - encoderWrapped;
-    if (enc_dif < -ENC_RESOLUTION / 2)
-    {
-        encoderRevolutions++;
-    }
-    else if (enc_dif > ENC_RESOLUTION / 2)
-    {
-        encoderRevolutions--;
-    }
-    encoderWrapped = newEncWrapped;
-}
 }  // namespace motor
 
 }  // namespace tap

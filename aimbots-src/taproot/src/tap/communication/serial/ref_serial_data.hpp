@@ -117,10 +117,11 @@ public:
 
         enum class SiteDartHit : uint8_t
         {
-            NONE = 0,        ///< No hit target.
-            OUTPOST = 1,     ///< Outpost hit.
-            BASE_FIXED = 2,  ///< Fixed target hit.
-            BASE_RANDOM = 3  ///< Random target hit.
+            NONE = 0,               ///< No hit target.
+            OUTPOST = 1,            ///< Outpost hit.
+            BASE_FIXED = 2,         ///< Fixed target hit.
+            BASE_RANDOM_FIXED = 3,  ///< Fixed target hit after random movement.
+            BASE_RANDOM_MOVING = 4  ///< Random moving target hit.
         };
 
         enum class SupplierOutletStatus : uint8_t
@@ -158,25 +159,20 @@ public:
 
         enum class SiteData : uint32_t
         {
-            RESTORATION_FRONT_OCCUPIED = modm::Bit0,
-            RESTORATION_INSIDE_OCCUPIED = modm::Bit1,
+            RESUPPLY_OUTSIDE_EXCHANGE_OCCUPIED = modm::Bit0,
+            RESUPPLY_INSIDE_EXCHANGE_OCCUPIED = modm::Bit1,
             SUPPLIER_OCCUPIED = modm::Bit2,
 
-            POWER_RUNE_OCCUPIED = modm::Bit3,
-            SMALL_POWER_RUNE_ACTIVATED = modm::Bit4,
-            LARGER_POWER_RUNE_ACTIVIATED = modm::Bit5,
+            SMALL_POWER_RUNE_ACTIVATED = modm::Bit3,
+            LARGER_POWER_RUNE_ACTIVIATED = modm::Bit4,
 
-            RING_OCCUPIED_TEAM = modm::Bit6,
-            RING_OCCUPIED_OPPONENT = modm::Bit7,
+            CENTRAL_ELEVATED_GROUND_OCCUPIED_TEAM = modm::Bit5,
+            CENTRAL_ELEVATED_GROUND_OCCUPIED_OPPONENT = modm::Bit6,
 
-            TRAPEZOID_R3_OCCUPIED_TEAM = modm::Bit8,
-            TRAPEZOID_R3_OCCUPIED_OPPONENT = modm::Bit9,
+            TRAPEZOID_OCCUPIED_TEAM = modm::Bit7,
 
-            TRAPEZOID_R4_OCCUPIED_TEAM = modm::Bit10,
-            TRAPEZOID_R4_OCCUPIED_OPPONENT = modm::Bit11,
-
-            CENTRAL_BUFF_OCCUPIED_TEAM = modm::Bit30,
-            CENTRAL_BUFF_OCCUPIED_OPPONENT = modm::Bit31
+            CENTRAL_BUFF_OCCUPIED_TEAM = modm::Bit21,
+            CENTRAL_BUFF_OCCUPIED_OPPONENT = modm::Bit22
         };
         MODM_FLAGS32(SiteData);
 
@@ -188,29 +184,43 @@ public:
         };
         MODM_FLAGS8(RobotPower);
 
+        enum class RobotEnergyLevel : uint8_t
+        {
+            ABOVE_50_PERCENT = 0x32,
+            ABOVE_30_PERCENT = 0b11110,
+            ABOVE_15_PERCENT = 0b11100,
+            ABOVE_5_PERCENT = 0b11000,
+            ABOVE_1_PERCENT = 0b10000,
+            BELOW_1_PERCENT = 0b00000,
+        };
+
         /// Activation status flags for the RFID module (for RMUC only).
         enum class RFIDActivationStatus : uint32_t
         {
             BASE_BUFF = modm::Bit0,
-            ELEVATED_RING_OWN = modm::Bit1,
-            ELEVATED_RING_OPPONENT = modm::Bit2,
-            TRAPEZOID_R3_OWN = modm::Bit3,
-            TRAPEZOID_R3_OPPONENT = modm::Bit4,
-            TRAPEZOID_R4_OWN = modm::Bit5,
-            TRAPEZOID_R4_OPPONENT = modm::Bit6,
-            POWER_RUNE_ACTIVATION = modm::Bit7,
-            LAUNCH_RAMP_FRONT_OWN = modm::Bit8,
-            LAUNCH_RAMP_BACK_OWN = modm::Bit9,
-            LAUNCH_RAMP_FRONT_OPPONENT = modm::Bit10,
-            LAUNCH_RAMP_BACK_OPPONENT = modm::Bit11,
-            OUTPOST_BUFF = modm::Bit12,
-            RESTORATION_ZONE = modm::Bit13,
-            SENTRY_PATROL_OWN = modm::Bit14,
-            SENTRY_PATROL_OPPONENT = modm::Bit15,
-            LARGE_ISLAND_OWN = modm::Bit16,
-            LARGE_ISLAND_OPPONENT = modm::Bit17,
-            EXCHANGE_ZONE = modm::Bit18,
-            CENTRAL_BUFF = modm::Bit19
+            CENTRAL_ELEVATED_GROUND_OWN = modm::Bit1,
+            CENTRAL_ELEVATED_GROUND_OPPONENT = modm::Bit2,
+            TRAPEZOID_OWN = modm::Bit3,
+            TRAPEZOID_OPPONENT = modm::Bit4,
+            LAUNCH_RAMP_FRONT_OWN = modm::Bit5,
+            LAUNCH_RAMP_BACK_OWN = modm::Bit6,
+            LAUNCH_RAMP_FRONT_OPPONENT = modm::Bit7,
+            LAUNCH_RAMP_BACK_OPPONENT = modm::Bit8,
+            TERRAIN_CROSSING_OFF_CENTRAL_OWN = modm::Bit9,
+            TERRAIN_CROSSING_ON_CENTRAL_OWN = modm::Bit10,
+            TERRAIN_CROSSING_OFF_CENTRAL_OPPONENT = modm::Bit11,
+            TERRAIN_CROSSING_ON_CENTRAL_OPPONENT = modm::Bit12,
+            TERRAIN_CROSSING_OFF_ROAD_OWN = modm::Bit13,
+            TERRAIN_CROSSING_ON_ROAD_OWN = modm::Bit14,
+            TERRAIN_CROSSING_OFF_ROAD_OPPONENT = modm::Bit15,
+            TERRAIN_CROSSING_ON_ROAD_OPPONENT = modm::Bit16,
+            FORTRESS_BUFF_OWN = modm::Bit17,
+            OUTPOST_BUFF_OWN = modm::Bit18,
+            RESUPPLY_ZONE_OUTSIDE_EXCHANGE = modm::Bit19,
+            RESUPPLY_ZONE_INSIDE_EXCHANGE = modm::Bit20,
+            LARGE_RESOURCE_ISLAND_OWN = modm::Bit21,
+            LARGE_RESOURCE_ISLAND_OPPONENT = modm::Bit22,
+            CENTRAL_BUFF = modm::Bit23
         };
         MODM_FLAGS32(RFIDActivationStatus);
 
@@ -240,7 +250,7 @@ public:
         /**
          * The Maximum launch speed for a 17mm barrel in m/s.
          */
-        static constexpr int MAX_LAUNCH_SPEED_17MM = 30;
+        static constexpr int MAX_LAUNCH_SPEED_17MM = 25;
 
         /**
          * The Maximum launch speed for a 42mm barrel in m/s.
@@ -258,7 +268,6 @@ public:
                 uint16_t engineer2;
                 uint16_t standard3;
                 uint16_t standard4;
-                uint16_t standard5;
                 uint16_t sentry7;
                 uint16_t outpost;
                 uint16_t base;
@@ -273,9 +282,7 @@ public:
          */
         struct EventData
         {
-            SiteData_t siteData;  ///< Information about occupied zones.
-            uint8_t
-                virtualShieldRemainingPercent;  ///< Remain percent on own base's virtual shield.
+            SiteData_t siteData;           ///< Information about occupied zones.
             uint8_t timeSinceLastDartHit;  ///< Time since the last dart hit own outpost or base.
             SiteDartHit lastDartHit;       ///< The target hit by the last dart.
         };
@@ -301,9 +308,6 @@ public:
 
         struct ChassisData
         {
-            uint16_t volt;                   ///< Output voltage to the chassis (in mV).
-            uint16_t current;                ///< Output current to the chassis (in mA).
-            float power;                     ///< Output power to the chassis (in W).
             uint16_t powerBuffer;            ///< Chassis power buffer (in J).
             RobotPosition position;          ///< x, y coordinate of the chassis (in m).
             uint16_t powerConsumptionLimit;  ///< The current chassis power limit (in W).
@@ -415,7 +419,6 @@ public:
             RobotPosition engineer;
             RobotPosition standard3;
             RobotPosition standard4;
-            RobotPosition standard5;
         };
 
         /**
@@ -427,7 +430,6 @@ public:
             uint8_t engineer;
             uint8_t standard3;
             uint8_t standard4;
-            uint8_t standard5;
             uint8_t sentry;
         };
 
@@ -490,6 +492,7 @@ public:
                                                     ///< received.
             RefereeWarningData refereeWarningData;  ///< Referee warning information, updated when
                                                     ///< a robot receives a penalty
+            RobotEnergyLevel robotEnergyRemaining;  ///< The current energy level of the robot.
         };
     };
 
@@ -655,8 +658,10 @@ public:
          * You cannot send messages faster than this speed to the referee system.
          *
          * Source: https://bbs.robomaster.com/forum.php?mod=viewthread&tid=9120
+         *
+         * Changed from 1280 to 1000 as the HUD was still unreliable.
          */
-        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1280;
+        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1000;
 
         /**
          * Get the min wait time after which you can send more data to the client. Sending faster

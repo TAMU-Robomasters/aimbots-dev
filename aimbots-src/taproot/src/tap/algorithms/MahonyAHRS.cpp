@@ -58,7 +58,6 @@ Mahony::Mahony()
     integralFBx = 0.0f;
     integralFBy = 0.0f;
     integralFBz = 0.0f;
-    anglesComputed = 0;
     invSampleFreq = 1.0f / DEFAULT_SAMPLE_FREQ;
     roll = 0.0f;
     pitch = 0.0f;
@@ -86,11 +85,6 @@ void Mahony::update(
         updateIMU(gx, gy, gz, ax, ay, az);
         return;
     }
-
-    // Convert gyroscope degrees/sec to radians/sec
-    gx *= 0.0174533f;
-    gy *= 0.0174533f;
-    gz *= 0.0174533f;
 
     // Compute feedback only if accelerometer measurement valid
     // (avoids NaN in accelerometer normalisation)
@@ -189,7 +183,6 @@ void Mahony::update(
     q1 *= recipNorm;
     q2 *= recipNorm;
     q3 *= recipNorm;
-    anglesComputed = 0;
 }
 
 //-------------------------------------------------------------------------------------------
@@ -199,11 +192,6 @@ void Mahony::updateIMU(float gx, float gy, float gz, float ax, float ay, float a
 {
     float recipNorm;
     float qa, qb, qc;
-
-    // Convert gyroscope degrees/sec to radians/sec
-    gx *= 0.0174533f;
-    gy *= 0.0174533f;
-    gz *= 0.0174533f;
 
     // Compute feedback only if accelerometer measurement valid
     // (avoids NaN in accelerometer normalisation)
@@ -271,7 +259,7 @@ void Mahony::updateIMU(float gx, float gy, float gz, float ax, float ay, float a
     q1 *= recipNorm;
     q2 *= recipNorm;
     q3 *= recipNorm;
-    anglesComputed = 0;
+    computeAngles();
 }
 
 //-------------------------------------------------------------------------------------------
@@ -281,7 +269,6 @@ void Mahony::computeAngles()
     roll = atan2f(q0 * q1 + q2 * q3, 0.5f - q1 * q1 - q2 * q2);
     pitch = asinf(-2.0f * (q1 * q3 - q0 * q2));
     yaw = atan2f(q1 * q2 + q0 * q3, 0.5f - q2 * q2 - q3 * q3);
-    anglesComputed = 1;
 }
 
 template <typename From, typename To>

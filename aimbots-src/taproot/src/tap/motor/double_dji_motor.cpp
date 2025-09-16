@@ -23,6 +23,10 @@
 
 #include "double_dji_motor.hpp"
 
+#define CAST_ENC(x)                              \
+    const_cast<tap::encoder::EncoderInterface*>( \
+        static_cast<const tap::encoder::EncoderInterface*>(&x))
+
 namespace tap::motor
 {
 DoubleDjiMotor::DoubleDjiMotor(
@@ -35,24 +39,32 @@ DoubleDjiMotor::DoubleDjiMotor(
     bool isInvertedTwo,
     const char* nameOne,
     const char* nameTwo,
-    uint16_t encWrapped,
-    int64_t encRevolutions)
+    bool currentControl,
+    float gearRatio,
+    uint32_t encoderHomePositionOne,
+    tap::encoder::EncoderInterface* externalEncoder)
     : motorOne(
           drivers,
           desMotorIdentifierOne,
           motorCanBusOne,
           isInvertedOne,
           nameOne,
-          encWrapped,
-          encRevolutions),
+          currentControl,
+          gearRatio,
+          encoderHomePositionOne),
       motorTwo(
           drivers,
           desMotorIdentifierTwo,
           motorCanBusTwo,
           isInvertedTwo,
           nameTwo,
-          encWrapped,
-          encRevolutions)
+          currentControl,
+          gearRatio),
+      encoder(
+          {externalEncoder != nullptr ? externalEncoder : CAST_ENC(motorOne.getInternalEncoder()),
+           externalEncoder != nullptr ? CAST_ENC(motorOne.getInternalEncoder())
+                                      : CAST_ENC(motorTwo.getInternalEncoder()),
+           externalEncoder != nullptr ? CAST_ENC(motorTwo.getInternalEncoder()) : nullptr})
 {
 }
 
@@ -60,21 +72,10 @@ void DoubleDjiMotor::initialize()
 {
     motorOne.initialize();
     motorTwo.initialize();
+    // This is weird because the initialize is called twice for the internal encoders. This is
+    // fine because the internal encoders have no initialize logic.
+    encoder.initialize();
 }
-
-int64_t DoubleDjiMotor::getEncoderUnwrapped() const { return motorOne.getEncoderUnwrapped(); }
-
-uint16_t DoubleDjiMotor::getEncoderWrapped() const { return motorOne.getEncoderWrapped(); }
-
-void DoubleDjiMotor::resetEncoderValue()
-{
-    motorOne.resetEncoderValue();
-    motorTwo.resetEncoderValue();
-}
-
-float DoubleDjiMotor::getPositionUnwrapped() const { return motorOne.getPositionUnwrapped(); }
-
-float DoubleDjiMotor::getPositionWrapped() const { return motorOne.getPositionWrapped(); }
 
 void DoubleDjiMotor::setDesiredOutput(int32_t desiredOutput)
 {
@@ -101,17 +102,13 @@ int8_t DoubleDjiMotor::getTemperature() const
 {
     return std::max(motorOne.getTemperature(), motorTwo.getTemperature());
 }
+
 int16_t DoubleDjiMotor::getTorque() const
 {
-    return (static_cast<int32_t>(motorOne.getTorque()) +
-            static_cast<int32_t>(motorTwo.getTorque())) /
-           2;
-}
+    int32_t m1Torque = motorOne.getTorque();
+    int32_t m2Torque = motorTwo.getTorque();
+    int num_online = motorOne.isMotorOnline() + motorTwo.isMotorOnline();
 
-int16_t DoubleDjiMotor::getShaftRPM() const
-{
-    return (static_cast<int32_t>(motorOne.getShaftRPM()) +
-            static_cast<int32_t>(motorTwo.getShaftRPM())) /
-           2;
+    return num_online == 0 ? 0 : (m1Torque + m2Torque) / num_online;
 }
 }  // namespace tap::motor

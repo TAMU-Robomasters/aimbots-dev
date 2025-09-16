@@ -56,57 +56,52 @@ public:
      * Returns the linear acceleration in the x direction, in
      * \f$\frac{\mbox{m}}{\mbox{second}^2}\f$.
      */
-    virtual inline float getAx() = 0;
+    virtual inline float getAx() const = 0;
 
     /**
      * Returns the linear acceleration in the y direction, in
      * \f$\frac{\mbox{m}}{\mbox{second}^2}\f$.
      */
-    virtual inline float getAy() = 0;
+    virtual inline float getAy() const = 0;
 
     /**
      * Returns the linear acceleration in the z direction, in
      * \f$\frac{\mbox{m}}{\mbox{second}^2}\f$.
      */
-    virtual inline float getAz() = 0;
+    virtual inline float getAz() const = 0;
 
     /**
      * Returns the gyroscope reading (rotational speed) in the x direction, in
-     * \f$\frac{\mbox{degrees}}{\mbox{second}}\f$.
+     * \f$\frac{\mbox{radians}}{\mbox{second}}\f$.
      */
-    virtual inline float getGx() = 0;
+    virtual inline float getGx() const = 0;
 
     /**
      * Returns the gyroscope reading (rotational speed) in the y direction, in
-     * \f$\frac{\mbox{degrees}}{\mbox{second}}\f$.
+     * \f$\frac{\mbox{radians}}{\mbox{second}}\f$.
      */
-    virtual inline float getGy() = 0;
+    virtual inline float getGy() const = 0;
 
     /**
      * Returns the gyroscope reading (rotational speed) in the z direction, in
-     * \f$\frac{\mbox{degrees}}{\mbox{second}}\f$.
+     * \f$\frac{\mbox{radians}}{\mbox{second}}\f$.
      */
-    virtual inline float getGz() = 0;
+    virtual inline float getGz() const = 0;
 
     /**
-     * Returns the temperature of the imu in degrees C.
+     * Returns yaw angle. in radians.
      */
-    virtual inline float getTemp() = 0;
+    virtual inline float getYaw() const = 0;
 
     /**
-     * Returns yaw angle. in degrees.
+     * Returns pitch angle in radians.
      */
-    virtual inline float getYaw() = 0;
+    virtual inline float getPitch() const = 0;
 
     /**
-     * Returns pitch angle in degrees.
+     * Returns roll angle in radians.
      */
-    virtual inline float getPitch() = 0;
-
-    /**
-     * Returns roll angle in degrees.
-     */
-    virtual inline float getRoll() = 0;
+    virtual inline float getRoll() const = 0;
 };
 }  // namespace tap::communication::sensors::imu
 
