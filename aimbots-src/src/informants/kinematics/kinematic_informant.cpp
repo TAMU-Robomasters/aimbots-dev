@@ -119,14 +119,17 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 }
 
 Vector3f chassisAnglesConvertedDisplay;
-Vector3f IMUAnglesDisplay;
-
+float IMUAnglesDisplayX;
+float IMUAnglesDisplayY;
+float IMUAnglesDisplayZ;
 
 void KinematicInformant::updateGimbalIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
-    IMUAnglesDisplay = IMUAngles;
+    IMUAnglesDisplayX = IMUAngles[0];
+    IMUAnglesDisplayY = IMUAngles[1];
+    IMUAnglesDisplayZ = IMUAngles[2];
 
     Vector3f gimbalAngles =
         drivers->kinematicInformant.getRobotFrames()
@@ -153,12 +156,12 @@ void KinematicInformant::updateGimbalIMUAngles() {
     gimbalAngularState[Z_AXIS].updateFromVelocity(gimbalAngularVelocities[Z_AXIS], false);
 }
 
-
+float chassisXDisplay = -100000.0f;
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
-    IMUAnglesDisplay = IMUAngles;
+    chassisXDisplay = IMUAngles[0];
 
     // Gets chassis angles
     Vector3f chassisAngles =
