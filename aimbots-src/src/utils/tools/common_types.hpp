@@ -15,6 +15,7 @@
 #include "tap/communication/serial/remote.hpp"
 #include "tap/control/chassis/power_limiter.hpp"
 #include "tap/motor/servo.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 
 #include "modm/container/deque.hpp"
 #include "modm/math/geometry/vector.hpp"
@@ -52,8 +53,11 @@ using DJIMotor = tap::mock::DjiMotorMock;
 using DJIMotor = tap::motor::DjiMotor;
 #endif
 
+#include "tap/motor/dji_motor_encoder.hpp"
+using DJIMotorEncoder = tap::motor::DjiMotorEncoder;
+
 static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotorEncoder::ENC_RESOLUTION;
 }
 
 enum class AngleUnit : uint8_t {

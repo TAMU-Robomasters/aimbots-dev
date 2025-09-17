@@ -46,6 +46,7 @@
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
+//#include "utils/I2C/power_com_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -102,6 +103,7 @@ int main() {
 
         if (mainLoopTimeout.execute()) {
             drivers->bmi088.periodicIMUUpdate();
+            drivers->bmi088.read();
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
@@ -148,6 +150,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
+  //  drivers->powerSensor.init();
     drivers->cvCommunicator.initialize();
    // drivers->powerCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(

@@ -51,6 +51,8 @@ private:
         NUM_INPUTS,
     };
 
+    void overrideOdometryPosition(const float positionX, const float positionY) override { resetAtNewLocation(positionX, positionY); }
+
     static constexpr int STATES_SQUARED = static_cast<int>(OdomState::NUM_STATES) * static_cast<int>(OdomState::NUM_STATES);
     static constexpr int INPUTS_SQUARED = static_cast<int>(OdomInput::NUM_INPUTS) * static_cast<int>(OdomInput::NUM_INPUTS);
     static constexpr int INPUTS_MULT_STATES =

@@ -126,8 +126,18 @@ void GimbalFieldRelativeController::runYawController(
 
 float pitchAngularErrorDisplay = 0.0f;
 float gravComp = 0.0f;
+float feildRelativePitchTargetDisplay = 0.0f;
+float kinematicPitchAngleDisplay = 0.0f;
+
+
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
+
+    feildRelativePitchTargetDisplay = this->getTargetPitch(AngleUnit::Degrees);
+
+    kinematicPitchAngleDisplay =
+        modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
+
     float pitchAngularError =
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
