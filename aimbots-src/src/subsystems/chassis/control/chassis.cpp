@@ -200,6 +200,11 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
 float xInputDisplay = 0.0f;
 float yInputDisplay = 0.0f;
 float rInputDisplay = 0.0f;
+int chassisRotateDisplay;
+int leftBackRotationRatioDisplay;
+int xDisplay;
+int yDisplay;
+
 void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWheelSpeed) {
     xInputDisplay = x;
     yInputDisplay = y;
@@ -225,6 +230,10 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
         limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
 
     desiredRotation = r;
+    chassisRotateDisplay = chassisRotateTranslated;
+    leftBackRotationRatioDisplay = leftBackRotationRatio;
+    xDisplay = x;
+    yDisplay = y;
 }
 #endif
 
@@ -278,48 +287,50 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
     }
 }
 
+float wheelRPMDisplay = 0.0f;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
-    if(x < 0.1 && y < 0.1 && r<0.1){
-        lockWatch = true;
-        float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+    // if(x < 0.1 && y < 0.1 && r<0.1){
+    //     lockWatch = true;
+    //     float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 
-        float a = -x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-        float b = -x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-        float c = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
-        float d = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+    //     float a = -x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    //     float b = -x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    //     float c = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+    //     float d = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
         
-        targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
-        target_left_front_yaw = prev_left_front_yaw;
-        optimizeSwerve(targetRPMs[LF][0],target_left_front_yaw, yawToRad(left_front_yaw_actual,LEFT_FRONT_YAW_OFFSET));
-        left_front_yaw = target_left_front_yaw * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
-        targetRPMs[LF][1] = left_front_yaw % 8191;
-        left_front_yaw_db = targetRPMs[LF][1];
+    //     targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    //     left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
+    //     target_left_front_yaw = prev_left_front_yaw;
+    //     optimizeSwerve(targetRPMs[LF][0],target_left_front_yaw, yawToRad(left_front_yaw_actual,LEFT_FRONT_YAW_OFFSET));
+    //     left_front_yaw = target_left_front_yaw * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
+    //     targetRPMs[LF][1] = left_front_yaw % 8191;
+    //     left_front_yaw_db = targetRPMs[LF][1];
 
-        targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
-        target_right_front_yaw = prev_right_front_yaw;
-        optimizeSwerve(targetRPMs[RF][0],target_right_front_yaw, yawToRad(right_front_yaw_actual,RIGHT_FRONT_YAW_OFFSET));
-        right_front_yaw = target_right_front_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
-        targetRPMs[RF][1] = right_front_yaw % 8191;
-        right_front_yaw_db = targetRPMs[RF][1];
+    //     targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    //     right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
+    //     target_right_front_yaw = prev_right_front_yaw;
+    //     optimizeSwerve(targetRPMs[RF][0],target_right_front_yaw, yawToRad(right_front_yaw_actual,RIGHT_FRONT_YAW_OFFSET));
+    //     right_front_yaw = target_right_front_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
+    //     targetRPMs[RF][1] = right_front_yaw % 8191;
+    //     right_front_yaw_db = targetRPMs[RF][1];
 
-        targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        left_back_yaw_actual = motors[LB][1]->getEncoderWrapped();
-        target_left_back_yaw = prev_left_back_yaw;
-        optimizeSwerve(targetRPMs[LB][0],target_left_back_yaw, yawToRad(left_back_yaw_actual,LEFT_BACK_YAW_OFFSET));
-        left_back_yaw = target_left_back_yaw * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
-        targetRPMs[LB][1] = left_back_yaw % 8191;
-        left_back_yaw_db = targetRPMs[LB][1];
+    //     targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    //     left_back_yaw_actual = motors[LB][1]->getEncoderWrapped();
+    //     target_left_back_yaw = prev_left_back_yaw;
+    //     optimizeSwerve(targetRPMs[LB][0],target_left_back_yaw, yawToRad(left_back_yaw_actual,LEFT_BACK_YAW_OFFSET));
+    //     left_back_yaw = target_left_back_yaw * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
+    //     targetRPMs[LB][1] = left_back_yaw % 8191;
+    //     left_back_yaw_db = targetRPMs[LB][1];
 
-        targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-        right_back_yaw_actual = motors[RB][1]->getEncoderWrapped();
-        target_right_back_yaw =  prev_right_back_yaw;
-        optimizeSwerve(targetRPMs[RB][0],target_right_back_yaw,yawToRad(right_back_yaw_actual,RIGHT_BACK_YAW_OFFSET));
-        right_back_yaw = target_right_back_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;
-        targetRPMs[RB][1] = right_back_yaw % 8191;
-        right_back_yaw_db = targetRPMs[RB][1];
-    }else{
+    //     targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
+    //     right_back_yaw_actual = motors[RB][1]->getEncoderWrapped();
+    //     target_right_back_yaw =  prev_right_back_yaw;
+    //     optimizeSwerve(targetRPMs[RB][0],target_right_back_yaw,yawToRad(right_back_yaw_actual,RIGHT_BACK_YAW_OFFSET));
+    //     right_back_yaw = target_right_back_yaw * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;
+    //     targetRPMs[RB][1] = right_back_yaw % 8191;
+    //     right_back_yaw_db = targetRPMs[RB][1];
+    // }else{
         lockWatch = false;
         float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 
@@ -364,7 +375,8 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
         targetRPMs[RB][1] = right_back_yaw % 8191;
         right_back_yaw_db = targetRPMs[RB][1];
         // wooo! just for commants
-    }
+  //  }
+    wheelRPMDisplay = targetRPMs[LB][0];
 }
 #endif
 
