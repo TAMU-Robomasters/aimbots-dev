@@ -114,6 +114,7 @@ Matrix3f KinematicKalman::processNoiseCovarianceMatrix(float dt, const float tar
     float QArray[KIN_NUM_STATES * KIN_NUM_STATES] = {0.25 * pow4(dt), 0.5 * pow3(dt), 0.5 * pow2(dt),
                                                       0.5 * pow3(dt), pow2(dt),       dt,
                                                       0.5 * pow2(dt), dt,             1};
+    //TODO: test maneuver old code or git rid of it 
     accelErr = maneuverProbability * accelErrManeuver + (1.0f - maneuverProbability) * accelErrStable;
 
     // if (updateAccelErrDistanceMultiplierDebug) {
