@@ -1,5 +1,7 @@
 #include "kinematic_kalman.hpp"
 
+
+// TODO: check if everything is numerically stable with the matrix and vector calculations
 using namespace src::Utils::MatrixHelper;
 
 namespace src::Utils::Filters {
@@ -71,7 +73,8 @@ void KinematicKalman::update(float dt, float z_pos, float motorAngularVelocity, 
 
     x = x + K * y;
     static const Matrix3f I = Matrix3f::identityMatrix();
-    P = (I - K.asMatrix() * H.asTransposedMatrix()) * P;
+    // (I - K * H) * P is numerically unstable
+    P = P - K.asMatrix() * H.asTransposedMatrix() * P;
 }
 
 void KinematicKalman::predict(float dt, const float targetDistance) {
@@ -102,7 +105,7 @@ Matrix3f KinematicKalman::stateSpaceMatrix(float dt) const {
     // clang-format off
     float FHatArray[KIN_NUM_STATES * KIN_NUM_STATES] = {1, dt, 0.5 * pow2(dt),
                                                         0, 1,  dt,
-                                                        0, 0,  1};
+                                                        0, 0,  0};
     // clang-format on
     return Matrix3f(FHatArray);
 }
@@ -113,11 +116,12 @@ Matrix3f KinematicKalman::processNoiseCovarianceMatrix(float dt, const float tar
                                                       0.5 * pow2(dt), dt,             1};
     accelErr = maneuverProbability * accelErrManeuver + (1.0f - maneuverProbability) * accelErrStable;
 
-    if (updateAccelErrDistanceMultiplierDebug) {
-    accelErrDistanceMultiplier = accelErrDistanceMultiplierDebug;
-        updateAccelErrDistanceMultiplierDebug = false;
-    }
-    accelErr /= (accelErrDistanceMultiplier * targetDistance);
+    // if (updateAccelErrDistanceMultiplierDebug) {
+    // accelErrDistanceMultiplier = accelErrDistanceMultiplierDebug;
+    //     updateAccelErrDistanceMultiplierDebug = false;
+    // }
+    // accelErr /= (accelErrDistanceMultiplier * targetDistance);
+    accelErr = accelErrManeuver;
     accelErrDisplay = accelErr;
     return Matrix3f(QArray)*pow2(accelErr);
 }
