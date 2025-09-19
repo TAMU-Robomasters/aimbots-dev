@@ -82,17 +82,21 @@ public:
     // Returns angle in rad or deg
     float getChassisIMUAngle(AngularAxis axis, AngleUnit unit);
 
+    // for turret IMU
     float getGimbalIMUAngle(AngularAxis axis, AngleUnit unit);
 
     // Returns angular velocity in rad/s or deg/s
     float getChassisIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
+    // for turret IMU
     float getGimbalIMUAngularVelocity(AngularAxis axis, AngleUnit unit);
 
     Vector3f getIMUAngularAccelerations();
     float getIMUAngularAcceleration(AngularAxis axis, AngleUnit unit);
     // Returns lnothing!!!
     void updateChassisAcceleration();
+
+    // for turret IMU
     void updateGimbalAcceleration();
 
     // This updates more than just the robot frames, so will also update turret frames
@@ -100,6 +104,10 @@ public:
 
     tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat();
     tap::algorithms::WrappedFloat getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat();
+
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeChassisYawAngleAsWrappedFloat();
+    tap::algorithms::WrappedFloat getCurrentFieldRelativeChassisPitchAngleAsWrappedFloat();
+
 
     // rad
     float getChassisPitchAngleInGimbalDirection();
