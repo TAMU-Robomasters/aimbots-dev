@@ -94,21 +94,21 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 20.0f,  // 35
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 1000.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 0.1f,
     .errorDerivativeFloor = 0.0f,
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .kp = 25.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 1000.0f,
     .maxOutput = 35.0f,
     .tQDerivativeKalman = 1.0f,
@@ -121,16 +121,16 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 2000.0f,
-    .ki = 25.0f,
-    .kd =   1.0f,
+    .kp = 100.0f,
+    .ki = 0.0f,
+    .kd =   0.5f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.1f,
+    .errDeadzone = 0.5f,
     .errorDerivativeFloor = 0.0f,
 };
 

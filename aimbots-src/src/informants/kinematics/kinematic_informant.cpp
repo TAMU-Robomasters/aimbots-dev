@@ -417,18 +417,23 @@ Vector3f chassisAnglesConvertedDisplay;
 float chassisAnglesConvertedDisplayX;
 float chassisAnglesConvertedDisplayY;
 float chassisAnglesConvertedDisplayZ;
+float chassisAngularVelocitiesDisplayZ;
+
+float YawAngularVelocityEncoder;
 
 Vector3f IMUAnglesDisplay;
 // individual components for debug purposes
 float IMUAnglesDisplayX;
 float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
+float rawYawVel;
 
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    YawAngularVelocityEncoder = (gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/2.0f;
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-    Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,IMUAngularVelocities.z - gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
+    Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,IMUAngularVelocities.z - YawAngularVelocityEncoder);
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
@@ -459,7 +464,9 @@ void KinematicInformant::updateChassisIMUAngles() {
     //             drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
     //             IMUAngularVelocitiesYawSubtraction);
 
+    rawYawVel = getIMUAngularVelocities().getZ();
     Vector3f chassisAngularVelocities = IMUAngularVelocitiesYawSubtraction;
+    chassisAngularVelocitiesDisplayZ = IMUAngularVelocitiesYawSubtraction.z;
 
     chassisAngularState[X_AXIS].updateFromPosition(chassisAngles[X_AXIS]);
     chassisAngularState[Y_AXIS].updateFromPosition(chassisAngles[Y_AXIS]);
