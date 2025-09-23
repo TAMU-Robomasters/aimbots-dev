@@ -413,11 +413,13 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
 #ifdef TURRET_IMU
 
 Vector3f chassisAnglesConvertedDisplay;
+// individual components for debug purposes
 float chassisAnglesConvertedDisplayX;
 float chassisAnglesConvertedDisplayY;
 float chassisAnglesConvertedDisplayZ;
 
 Vector3f IMUAnglesDisplay;
+// individual components for debug purposes
 float IMUAnglesDisplayX;
 float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
@@ -433,6 +435,8 @@ void KinematicInformant::updateChassisIMUAngles() {
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
 
+    // this transform doesn't exist yet
+
     // Gets chassis angles
     // Vector3f chassisAngles =
     //     drivers->kinematicInformant.getRobotFrames()
@@ -441,7 +445,7 @@ void KinematicInformant::updateChassisIMUAngles() {
     //             drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
     //             IMUAnglesYawSubtraction);
 
-    Vector3f chassisAngles = IMUAnglesDisplay;
+    Vector3f chassisAngles = IMUAnglesYawSubtraction;
 
     chassisAnglesConvertedDisplay = chassisAngles;
     chassisAnglesConvertedDisplayX = chassisAngles.x;
@@ -585,10 +589,9 @@ void KinematicInformant::updateGimbalAcceleration() {
 
 float chassisYawAngleDisplay = 0.0f;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
-    float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
-    return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
+    return WrappedFloat(getLocalIMUAngles().z - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat() {
@@ -598,41 +601,13 @@ tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalP
 }
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
-    float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-    float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-    float sinChasRoll = sinf(chassisRoll);
-    float cosChasRoll = cosf(chassisRoll);
-
-    float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    float sinChasPitch = sinf(chassisPitch);
-    float cosChasPitch = cosf(chassisPitch);
-
-    float chassisPitchAngleInGimbalDirection = atan2f(
-        cosGimbYaw * sinChasPitch + sinGimbYaw * sinChasRoll,
-        sqrtf(pow2(sinGimbYaw) * pow2(cosChasRoll) + pow2(cosGimbYaw) * pow2(cosChasPitch)));
-
-    return chassisPitchAngleInGimbalDirection;
+    return -getLocalIMUAngles().getX();
 }
 
 float KinematicInformant::getChassisPitchVelocityInGimbalDirection() {
-    float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-    float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
 
-    float chassisRollVelocity = getChassisIMUAngularVelocity(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-    float sinChasRollVelocity = sinf(chassisRollVelocity);
-    float cosChasRollVelocity = cosf(chassisRollVelocity);
-
-    float chassisPitchVelocity = getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    float sinChasPitchVelocity = sinf(chassisPitchVelocity);
-    float cosChasPitchVelocity = cosf(chassisPitchVelocity);
-
-    float chassisPitchVelocityInGimbalDirection = atan2f(
-        cosGimbYaw * sinChasPitchVelocity + sinGimbYaw * sinChasRollVelocity,
-        sqrtf(pow2(sinGimbYaw) * pow2(cosChasRollVelocity) + pow2(cosGimbYaw) * pow2(cosChasPitchVelocity)));
-
-    return chassisPitchVelocityInGimbalDirection;
+    return -getIMUAngularVelocities().getX();
 }
 
 float chassisLinearStateXDisplay = 0.0f;
