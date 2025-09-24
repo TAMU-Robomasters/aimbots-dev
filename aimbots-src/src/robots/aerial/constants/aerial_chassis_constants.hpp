@@ -3,6 +3,7 @@
 #include "utils/math/matrix_helpers.hpp"
 
 #define CHASSIS_COMPATIBLE
+#define CHASSIS_IMU // THE GREAT RETURN
 
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
