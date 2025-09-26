@@ -428,6 +428,8 @@ float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
 float rawYawVel;
 
+float IMUYawAngleDisplayGood;
+
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
@@ -439,6 +441,8 @@ void KinematicInformant::updateChassisIMUAngles() {
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
+    
+    IMUYawAngleDisplayGood = getLocalIMUAngles().z;
 
     // this transform doesn't exist yet
 

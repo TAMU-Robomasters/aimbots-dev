@@ -293,6 +293,22 @@ uint16_t watchRFYaw = 0;
 uint16_t watchLBYaw = 0;
 uint16_t watchRBYaw = 0;
 
+// uint16_t watchLFSpeed = 0;
+
+// for tunning PID system through Ozone
+
+float driveVelocityPDebug = 0.0f;
+float driveVelocityIDebug = 0.0f;
+float driveVelocityDDebug = 0.0f;
+bool updateDriveVelocityPIDsDebug = false;
+
+float steeringVelocityPDebug = 0.0f;
+float steeringVelocityIDebug = 0.0f;
+float steeringVelocityDDebug = 0.0f;
+bool updateSteeringVelocityPIDsDebug = false;
+
+float maxWheelSpeedDisplay = 0.0f;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // if(x < 0.1 && y < 0.1 && r<0.1){
     //     lockWatch = true;
@@ -335,6 +351,57 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     //     targetRPMs[RB][1] = right_back_yaw % 8191;
     //     right_back_yaw_db = targetRPMs[RB][1];
     // }else{
+
+        if (updateDriveVelocityPIDsDebug) {
+            velocityPIDs[LB][0]->pid.setP(driveVelocityPDebug);
+            velocityPIDs[LB][0]->pid.setI(driveVelocityIDebug);
+            velocityPIDs[LB][0]->pid.setD(driveVelocityDDebug);
+            velocityPIDs[LB][0]->pid.reset();
+            
+            velocityPIDs[RB][0]->pid.setP(driveVelocityPDebug);
+            velocityPIDs[RB][0]->pid.setI(driveVelocityIDebug);
+            velocityPIDs[RB][0]->pid.setD(driveVelocityDDebug);
+            velocityPIDs[RB][0]->pid.reset();
+
+            velocityPIDs[RF][0]->pid.setP(driveVelocityPDebug);
+            velocityPIDs[RF][0]->pid.setI(driveVelocityIDebug);
+            velocityPIDs[RF][0]->pid.setD(driveVelocityDDebug);
+            velocityPIDs[RF][0]->pid.reset();
+
+            velocityPIDs[LF][0]->pid.setP(driveVelocityPDebug);
+            velocityPIDs[LF][0]->pid.setI(driveVelocityIDebug);
+            velocityPIDs[LF][0]->pid.setD(driveVelocityDDebug);
+            velocityPIDs[LF][0]->pid.reset();
+
+            updateDriveVelocityPIDsDebug = false;
+        }
+
+        if (updateSteeringVelocityPIDsDebug) {
+            velocityPIDs[LB][1]->pid.setP(steeringVelocityPDebug);
+            velocityPIDs[LB][1]->pid.setI(steeringVelocityIDebug);
+            velocityPIDs[LB][1]->pid.setD(steeringVelocityDDebug);
+            velocityPIDs[LB][1]->pid.reset();
+            
+            velocityPIDs[RB][1]->pid.setP(steeringVelocityPDebug);
+            velocityPIDs[RB][1]->pid.setI(steeringVelocityIDebug);
+            velocityPIDs[RB][1]->pid.setD(steeringVelocityDDebug);
+            velocityPIDs[RB][1]->pid.reset();
+
+            velocityPIDs[RF][1]->pid.setP(steeringVelocityPDebug);
+            velocityPIDs[RF][1]->pid.setI(steeringVelocityIDebug);
+            velocityPIDs[RF][1]->pid.setD(steeringVelocityDDebug);
+            velocityPIDs[RF][1]->pid.reset();
+
+            velocityPIDs[LF][1]->pid.setP(steeringVelocityPDebug);
+            velocityPIDs[LF][1]->pid.setI(steeringVelocityIDebug);
+            velocityPIDs[LF][1]->pid.setD(steeringVelocityDDebug);
+            velocityPIDs[LF][1]->pid.reset();
+
+            updateSteeringVelocityPIDsDebug = false;
+        }
+
+        maxWheelSpeedDisplay = maxWheelSpeed;
+
         lockWatch = false;
         float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
 

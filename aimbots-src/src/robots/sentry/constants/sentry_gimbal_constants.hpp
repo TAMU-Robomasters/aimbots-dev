@@ -94,7 +94,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 35.0f,  // 35
+    .kp = 10.0f,  // 35
     .ki = 0.0f,
     .kd = 0.1f,
     .maxICumulative = 1000.0f,

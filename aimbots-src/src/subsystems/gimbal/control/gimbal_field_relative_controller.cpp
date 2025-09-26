@@ -53,6 +53,13 @@ float kinematicYawAngleDisplay = 0;
 
 float speedTarget = 0.0f;
 
+// ozone pid tuning
+
+float gimbalYawPositionCascadePDebug = 0.0f;
+float gimbalYawPositionCascadeIDebug = 0.0f;
+float gimbalYawPositionCascadeDDebug = 0.0f;
+bool updateGimbalYawPositionCascadeDebug = false;
+
 void GimbalFieldRelativeController::runYawController(
     std::optional<float> velocityLimit) {  // using cascade controller for yaw
 
@@ -77,6 +84,14 @@ void GimbalFieldRelativeController::runYawController(
 
     // speedTarget += 1 / 200.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        if (updateGimbalYawPositionCascadeDebug) {
+            yawPositionCascadePIDs[i]->pid.setP(gimbalYawPositionCascadePDebug);
+            yawPositionCascadePIDs[i]->pid.setI(gimbalYawPositionCascadeIDebug);
+            yawPositionCascadePIDs[i]->pid.setD(gimbalYawPositionCascadeDDebug);
+            yawPositionCascadePIDs[i]->pid.reset();
+            updateGimbalYawPositionCascadeDebug = false;
+        }
+
         yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
         float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
