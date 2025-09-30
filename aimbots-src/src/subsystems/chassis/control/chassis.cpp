@@ -318,10 +318,16 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
 
 
 float wheelRPMDisplay = 0.0f;
+
 uint16_t watchLFYaw = 0;
 uint16_t watchRFYaw = 0;
 uint16_t watchLBYaw = 0;
 uint16_t watchRBYaw = 0;
+
+float watchLFYawTarget = 0;
+float watchRFYawTarget = 0;
+float watchLBYawTarget = 0;
+float watchRBYawTarget = 0;
 
 // uint16_t watchLFSpeed = 0;
 
@@ -357,7 +363,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     // tune these to prevent yaw motors from always being in "rotation mode" due to chassis follow gimbal pid
     auto deadband = [](float v, float eps) { return (std::fabs(v) < eps) ? 0.0f : v; };
     static constexpr float kXYDeadband = 0.02f;
-    static constexpr float kRDeadband  = 70.0f;
+    static constexpr float kRDeadband  = 100.0f;
     x = deadband(x, kXYDeadband);
     y = deadband(y, kXYDeadband);
     r = deadband(r, kRDeadband);
@@ -455,6 +461,11 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     // RB
     computeModule(a, c, RIGHT_BACK_YAW_OFFSET,  right_back_yaw_actual,
                   RB, targetRPMs[RB][0], targetRPMs[RB][1], right_back_yaw_db);
+
+    watchRBYawTarget = lastCmdYawRad[RB];
+    watchLFYawTarget = lastCmdYawRad[LF];
+    watchRFYawTarget = lastCmdYawRad[RF];
+    watchLBYawTarget = lastCmdYawRad[LB];
 }
 
 

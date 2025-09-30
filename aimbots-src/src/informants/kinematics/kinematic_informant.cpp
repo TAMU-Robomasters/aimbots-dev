@@ -420,6 +420,7 @@ float chassisAnglesConvertedDisplayZ;
 float chassisAngularVelocitiesDisplayZ;
 
 float YawAngularVelocityEncoder;
+float YawPosEncoder;
 
 Vector3f IMUAnglesDisplay;
 // individual components for debug purposes
@@ -431,11 +432,13 @@ float rawYawVel;
 float IMUYawAngleDisplayGood;
 
 void KinematicInformant::updateChassisIMUAngles() {
+    YawPosEncoder = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
+    YawAngularVelocityEncoder = (gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/2.0f;
+
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
-    YawAngularVelocityEncoder = (gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/2.0f;
-    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-    Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,round((IMUAngularVelocities.z - YawAngularVelocityEncoder)*10000.0f)/10000.0f);
+    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
+    Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
@@ -599,10 +602,12 @@ void KinematicInformant::updateGimbalAcceleration() {
 }
 
 float chassisYawAngleDisplay = 0.0f;
+float fieldRelativeYawDisplay = 0.0f;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
-    return WrappedFloat(getLocalIMUAngles().z - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
+    fieldRelativeYawDisplay = getLocalIMUAngles().z;
+    return WrappedFloat(getLocalIMUAngles().z + YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat() {
