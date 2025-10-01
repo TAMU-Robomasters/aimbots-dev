@@ -40,7 +40,7 @@ static constexpr float FEEDER_DEFAULT_RPM = 100.0f;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;//TODO
 
-static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {};
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {100.0f};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {100.0f};  // Absolute values
