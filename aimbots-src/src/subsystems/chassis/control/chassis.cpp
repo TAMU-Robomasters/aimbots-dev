@@ -350,22 +350,22 @@ float yDisplay = 0.0f;
 float rotDisplay = 0.0f;
 
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
-    if (updateSteeringVelocityPIDsDebug) {
-        for (size_t i = 0; i < 4; i++) {
-            velocityPIDs[i][1]->pid.setP(steeringPositionPDebug);
-            velocityPIDs[i][1]->pid.setI(steeringPositionIDebug);
-            velocityPIDs[i][1]->pid.setD(steeringPositionDDebug);
-        }
+    // if (updateSteeringPositioPIDsDebug) {
+    //     for (size_t i = 0; i < 4; i++) {
+    //         velocityPIDs[i][1]->pid.setP(steeringPositionPDebug);
+    //         velocityPIDs[i][1]->pid.setI(steeringPositionIDebug);
+    //         velocityPIDs[i][1]->pid.setD(steeringPositionDDebug);
+    //     }
 
         
-    }
+    // }
 
 
     xDisplay = x;
     yDisplay = y;
     rotDisplay = r;
     
-    updateSteeringVelocityPIDsDebug = false;
+   // updateSteeringVelocityPIDsDebug = false;
 
     maxWheelSpeedDisplay = maxWheelSpeed;
     lockWatch = false;
