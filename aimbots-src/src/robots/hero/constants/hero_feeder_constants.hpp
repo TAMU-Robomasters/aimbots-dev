@@ -36,7 +36,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT]
 
 static constexpr int UNJAM_TIMER_MS = 0;
 
-static constexpr float FEEDER_DEFAULT_RPM = 100.0f;
+static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;//TODO
 
