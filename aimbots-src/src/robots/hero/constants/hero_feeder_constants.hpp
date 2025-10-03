@@ -7,7 +7,7 @@
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;//TODO
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT] = {{
-    .kp = 0.0f,
+    .kp = 10000.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 0.0f,
@@ -20,7 +20,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT]
     .errorDerivativeFloor = 0.0f,
     },
     {
-    .kp = 00.0f,
+    .kp = 0.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 00.0f,

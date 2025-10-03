@@ -52,6 +52,8 @@ void FullAutoFeederCommand::initialize() {
 // uint16_t lastHeatDisplay = 0;
 // uint16_t heatLimitDisplay = 0;
 float lastProjectileSpeedDisplay = 0.0f;
+float feederMotorSpeed1Display = 0.0f;
+float feederMotorTarget1Display = 0.0f;
 
 void FullAutoFeederCommand::execute() {
     isCommandRunningDisplay = true;
@@ -59,6 +61,9 @@ void FullAutoFeederCommand::execute() {
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
     currentRotationDisplay = feeder->getEncoderUnwrapped(0);
+    
+    feederMotorSpeed1Display = feeder->getCurrentRPM(0);
+    feederMotorTarget1Display = 500.0f;
 
     if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
