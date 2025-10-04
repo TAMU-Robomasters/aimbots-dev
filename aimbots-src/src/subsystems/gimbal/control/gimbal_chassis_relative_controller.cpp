@@ -42,11 +42,11 @@ float pitchMotorRPMDisplay = 0.0f;
 
 void GimbalChassisRelativeController::runPitchController(std::optional<float> velocityLimit) {
     UNUSED(velocityLimit);
+    pitchMotorRPMDisplay = gimbal->getPitchMotorRPM(0);
 
     float positionPIDOutput = 0.0f;
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
         pitchMotorSetpointErrorDisplay = gimbal->getPitchMotorSetpointError(i, AngleUnit::Degrees);
-        pitchMotorRPMDisplay = gimbal->getPitchMotorRPM(i);
 
         positionPIDOutput = pitchPositionPIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),

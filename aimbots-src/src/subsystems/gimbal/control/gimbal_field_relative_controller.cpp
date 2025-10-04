@@ -126,6 +126,7 @@ void GimbalFieldRelativeController::runYawController(
 
 float pitchAngularErrorDisplay = 0.0f;
 float gravComp = 0.0f;
+float overshootPitchMotorDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
     float pitchAngularError =
@@ -183,8 +184,12 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
         if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873 &&
             gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW - 0.0873) {
             gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
-        } else {
+        } else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873) { // baconsizzle notes
+            gimbal->setDesiredPitchMotorOutput(i, -10000 * sgn(kGRAVITY));
+            overshootPitchMotorDisplay = -10000 * sgn(kGRAVITY);
+        }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW - 0.0873){
             gimbal->setDesiredPitchMotorOutput(i, 10000 * sgn(kGRAVITY));
+            overshootPitchMotorDisplay = 10000 * sgn(kGRAVITY);
         }
     }
 }
