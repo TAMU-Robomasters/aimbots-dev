@@ -222,13 +222,13 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchMid(
     drivers(), 
-        {/*&feederLimitCommand,*/&runShooterCommand},
+        {&feederLimitCommand,&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand,&runShooterWithFeederCommand},
+    {&feederLimitCommand,&runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 
