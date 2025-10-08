@@ -59,9 +59,9 @@ void IMUCalibrateCommand::execute() {
 
             if (gimbalController.allOnlineYawControllersSettled(modm::toRadian(1.0f), 1000) &&
                 gimbalController.allOnlinePitchControllersSettled(modm::toRadian(1.0f), 1000)) {
-#ifdef TURRET_IMU
-                drivers->turretCommunicator.requestTurretIMUCalibrate();
-#endif
+// #ifdef TURRET_IMU
+//                 drivers->turretCommunicator.requestTurretIMUCalibrate();
+// #endif
 #ifndef TARGET_TURRET
                 drivers->kinematicInformant.recalibrateIMU(
                     {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
