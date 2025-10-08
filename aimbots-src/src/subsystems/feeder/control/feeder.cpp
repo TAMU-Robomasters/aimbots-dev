@@ -40,8 +40,8 @@ void FeederSubsystem::initialize() {
 bool rightMouseDisplay = false;
 bool eKeyDisplay = false;
 bool wKeyDisplay = false;
-
-float feederTargetRPMDisplay = 0;
+float watchDisplay = 0; 
+float feederTargetRPMDisplay = 500;
 int feederWatchIdx = 0;  // don't change, only in debug
 bool isFeederOnlineDisplay = false;
 
@@ -64,6 +64,7 @@ void FeederSubsystem::refresh() {
 
         if (i == feederWatchIdx) {
             feederTargetRPMDisplay = feederTargetRPMs[i];
+            watchDisplay = getCurrentRPM(feederWatchIdx);
         }
 
         feederOnlineCount++;

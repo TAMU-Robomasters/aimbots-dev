@@ -7,7 +7,7 @@
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;//TODO
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT] = {{
-    .kp = 0.0f,
+    .kp = 0.25f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -46,6 +46,6 @@ static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500.0f,
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {500.0f,500.0f};  // Absolute values
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {SECONDARY, PRIMARY};
 static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0;
-static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {200,200};
+static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36,36};
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, true};
 //
