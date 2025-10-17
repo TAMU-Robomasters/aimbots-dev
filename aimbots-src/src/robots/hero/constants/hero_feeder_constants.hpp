@@ -4,10 +4,10 @@
 
 #define FEEDER_COMPATIBLE
 
-static constexpr uint8_t FEEDER_MOTOR_COUNT = 0;//TODO
+static constexpr uint8_t FEEDER_MOTOR_COUNT = 2;//TODO
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT] = {{
-    .kp = 0.0f,
+    .kp = 0.25f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -34,18 +34,18 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG [FEEDER_MOTOR_COUNT]
     }
 };
 
-static constexpr int UNJAM_TIMER_MS = 0;
+static constexpr int UNJAM_TIMER_MS = 500;
 
-static constexpr float FEEDER_DEFAULT_RPM = 0f;
+static constexpr float FEEDER_DEFAULT_RPM = 500.0f;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {};  // Absolute values
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500.0f,500.0f};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {500.0f,500.0f};  // Absolute values
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {SECONDARY, PRIMARY};
 static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0;
-static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {};
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {};
+static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36,36};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, true};
 //
