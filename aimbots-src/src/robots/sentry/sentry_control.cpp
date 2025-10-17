@@ -170,7 +170,6 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTok
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 
 GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
-GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 

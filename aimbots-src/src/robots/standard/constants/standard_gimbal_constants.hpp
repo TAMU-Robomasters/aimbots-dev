@@ -31,7 +31,6 @@ static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {w
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #elif defined(TARGET_STANDARD_SQUIRTLE)
@@ -41,7 +40,6 @@ static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {w
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #elif defined(TARGET_STANDARD_2023)
@@ -50,7 +48,6 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapT
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(166.86f))};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 

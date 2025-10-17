@@ -232,9 +232,7 @@ uint64_t RefereeHelperTurreted::getAllowableFeederRotation(int projectileBuffer)
     float maxRotations = ((float)projectilesRemaining) / PROJECTILES_PER_FEEDER_ROTATION;
     maxRotationsDisplay = maxRotations;
     // Get the maximum absolute position the motor can get to
-    #include "tap/motor/dji_motor_encoder.hpp"
-    using DJIMotorEncoder = tap::motor::DjiMotorEncoder;
-    int64_t encoderChangeThreshold = DJIMotorEncoder::ENC_RESOLUTION * maxRotations;
+    int64_t encoderChangeThreshold = DJIMotor::ENC_RESOLUTION * maxRotations;
     return encoderChangeThreshold;
 }
 
