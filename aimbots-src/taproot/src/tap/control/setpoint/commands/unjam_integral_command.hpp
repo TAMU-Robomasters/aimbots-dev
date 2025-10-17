@@ -31,8 +31,6 @@
 
 #include "../interfaces/integrable_setpoint_subsystem.hpp"
 
-#include "unjam_command_interface.hpp"
-
 namespace tap::control::setpoint
 {
 /**
@@ -50,7 +48,7 @@ namespace tap::control::setpoint
  * Like most velocity commands this one will not schedule/will deschedule if
  * IntegrableSetpointSubsystem goes offline.
  */
-class UnjamIntegralCommand : public UnjamCommandInterface
+class UnjamIntegralCommand : public tap::control::Command
 {
 public:
     /// Config struct that the user passes into the UnjamIntegralCommand's constructor.

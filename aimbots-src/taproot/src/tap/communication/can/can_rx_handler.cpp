@@ -56,30 +56,12 @@ void CanRxHandler::attachReceiveHandler(
     CanRxListener* const canRxListener,
     CanRxListener** messageHandlerStore)
 {
-    uint16_t bin = binIndexForCanId(canRxListener->canIdentifier);
+    uint16_t id = lookupTableIndexForCanId(canRxListener->canIdentifier);
 
-    if (messageHandlerStore[bin] == nullptr)
-    {
-        messageHandlerStore[bin] = canRxListener;
-    }
-    else
-    {
-        CanRxListener* node = messageHandlerStore[bin];
+    modm_assert(id < NUM_CAN_IDS, "CAN", "RX listener id out of bounds", 1);
+    modm_assert(messageHandlerStore[id] == nullptr, "CAN", "overloading", 1);
 
-        do
-        {
-            if (node->canIdentifier == canRxListener->canIdentifier)
-            {
-                RAISE_ERROR(drivers, "overloading can rx listener");
-                return;
-            }
-
-            if (node->next == nullptr) break;
-            node = node->next;
-        } while (true);
-
-        node->next = canRxListener;
-    }
+    messageHandlerStore[id] = canRxListener;
 }
 
 void CanRxHandler::pollCanData()
@@ -103,17 +85,17 @@ void CanRxHandler::processReceivedCanData(
     const modm::can::Message& rxMessage,
     CanRxListener* const* messageHandlerStore)
 {
-    uint16_t bin = binIndexForCanId(rxMessage.getIdentifier());
+    uint16_t id = lookupTableIndexForCanId(rxMessage.getIdentifier());
 
-    CanRxListener* listener = messageHandlerStore[bin];
-    while (listener != nullptr && listener->canIdentifier != rxMessage.identifier)
+    if (id >= NUM_CAN_IDS)
     {
-        listener = listener->next;
+        RAISE_ERROR(drivers, "Invalid can id received");
+        return;
     }
 
-    if (listener != nullptr)
+    if (messageHandlerStore[id] != nullptr)
     {
-        listener->processMessage(rxMessage);
+        messageHandlerStore[id]->processMessage(rxMessage);
     }
 }
 
@@ -133,31 +115,15 @@ void CanRxHandler::removeReceiveHandler(
     const CanRxListener& canRxListener,
     CanRxListener** messageHandlerStore)
 {
-    int bin = binIndexForCanId(canRxListener.canIdentifier);
+    int id = lookupTableIndexForCanId(canRxListener.canIdentifier);
 
-    if (messageHandlerStore[bin] == nullptr)
+    if (id >= NUM_CAN_IDS)
     {
-        RAISE_ERROR(drivers, "listener not in handler storage");
+        RAISE_ERROR(drivers, "index out of bounds");
         return;
     }
 
-    if (messageHandlerStore[bin]->canIdentifier == canRxListener.canIdentifier)
-    {
-        messageHandlerStore[bin] = messageHandlerStore[bin]->next;
-    }
-    else
-    {
-        CanRxListener* node = messageHandlerStore[bin];
-        while (node->next != nullptr)
-        {
-            if (node->next->canIdentifier == canRxListener.canIdentifier)
-            {
-                node->next = node->next->next;
-                return;
-            }
-        }
-        RAISE_ERROR(drivers, "listener not in handler storage");
-    }
+    messageHandlerStore[id] = nullptr;
 }
 
 }  // namespace tap::can

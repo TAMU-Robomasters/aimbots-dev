@@ -128,7 +128,7 @@ public:
         uint16_t CRC16;
     } modm_packed;
 
-    static const uint16_t SERIAL_RX_BUFF_SIZE = 1024;
+    static const uint16_t SERIAL_RX_BUFF_SIZE = 256;
     static const uint16_t SERIAL_HEAD_BYTE = 0xA5;
 
     using ReceivedSerialMessage = SerialMessage<SERIAL_RX_BUFF_SIZE>;

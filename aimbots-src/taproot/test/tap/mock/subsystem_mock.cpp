@@ -25,13 +25,6 @@
 
 namespace tap::mock
 {
-SubsystemMock::SubsystemMock(Drivers *drivers) : control::Subsystem(drivers)
-{
-    // Most of the time tests expect that we don't have a test command
-    // for the subsystem. This makes tests cleaner
-    EXPECT_CALL(*this, getTestCommand)
-        .Times(testing::AnyNumber())
-        .WillRepeatedly(testing::Return(nullptr));
-}
+SubsystemMock::SubsystemMock(Drivers *drivers) : control::Subsystem(drivers) {}
 SubsystemMock::~SubsystemMock() {}
 }  // namespace tap::mock

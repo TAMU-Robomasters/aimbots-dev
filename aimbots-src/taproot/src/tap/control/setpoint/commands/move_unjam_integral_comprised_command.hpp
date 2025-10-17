@@ -29,7 +29,7 @@
 #include "../interfaces/integrable_setpoint_subsystem.hpp"
 
 #include "move_integral_command.hpp"
-#include "unjam_command_interface.hpp"
+#include "unjam_integral_command.hpp"
 
 namespace tap::control::setpoint
 {
@@ -47,7 +47,7 @@ public:
      * @param[in] drivers A reference to the `Drivers` struct.
      * @param[in] subsystem The IntegrableSetpointSubsystem that will be rotated or unjammed.
      * @param[in] moveIntegralCommand A command that rotates the agitator forward.
-     * @param[in] unjamCommand A command that unjams the agitator.
+     * @param[in] unjamIntegralCommand A command that unjams the agitator.
      *
      * @note The move integral and unjam integral commands must have the same subsystem requirement.
      * This subsystem requirement must be the subsystem passed in.
@@ -56,7 +56,7 @@ public:
         tap::Drivers &drivers,
         IntegrableSetpointSubsystem &subsystem,
         MoveIntegralCommand &moveIntegralCommand,
-        UnjamCommandInterface &unjamCommand);
+        UnjamIntegralCommand &unjamIntegralCommand);
 
     bool isReady() override;
 
@@ -75,7 +75,7 @@ private:
 
     MoveIntegralCommand &moveIntegralCommand;
 
-    UnjamCommandInterface &unjamCommand;
+    UnjamIntegralCommand &unjamCommand;
 
     /// True if the agitator is being unjammed
     bool unjamSequenceCommencing;

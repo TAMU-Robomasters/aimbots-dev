@@ -37,19 +37,12 @@ WrappedFloat::WrappedFloat(const float value, const float lowerBound, const floa
     wrapValue();
 }
 
-bool WrappedFloat::operator==(const WrappedFloat& other) const
-{
-    assertBoundsEqual(other);
-
-    return this->wrapped == other.wrapped;
-}
-
 void WrappedFloat::operator+=(const WrappedFloat& other)
 {
     assertBoundsEqual(other);
 
     this->wrapped += other.wrapped;
-    wrapValue();
+    if (this->wrapped > this->upperBound) this->wrapped -= (this->upperBound - this->lowerBound);
     this->revolutions += other.revolutions;
 }
 
@@ -58,7 +51,7 @@ void WrappedFloat::operator-=(const WrappedFloat& other)
     assertBoundsEqual(other);
 
     this->wrapped -= other.wrapped;
-    wrapValue();
+    if (this->wrapped < this->lowerBound) this->wrapped += (this->upperBound - this->lowerBound);
     this->revolutions -= other.revolutions;
 }
 
@@ -80,18 +73,24 @@ WrappedFloat WrappedFloat::operator-(const WrappedFloat& other) const
     return temp;
 }
 
-void WrappedFloat::operator+=(float value) { *this += this->withSameBounds(value); }
+void WrappedFloat::operator+=(float value)
+{
+    *this += WrappedFloat(value, this->lowerBound, this->upperBound);
+}
 
-void WrappedFloat::operator-=(float value) { *this -= this->withSameBounds(value); }
+void WrappedFloat::operator-=(float value)
+{
+    *this -= WrappedFloat(value, this->lowerBound, this->upperBound);
+}
 
 WrappedFloat WrappedFloat::operator+(float value) const
 {
-    return *this + this->withSameBounds(value);
+    return *this + WrappedFloat(value, this->lowerBound, this->upperBound);
 }
 
 WrappedFloat WrappedFloat::operator-(float value) const
 {
-    return *this - this->withSameBounds(value);
+    return *this - WrappedFloat(value, this->lowerBound, this->upperBound);
 }
 
 float WrappedFloat::minDifference(const WrappedFloat& other) const
@@ -108,14 +107,33 @@ float WrappedFloat::minDifference(const WrappedFloat& other) const
 
 float WrappedFloat::minDifference(const float& unwrappedValue) const
 {
-    return minDifference(this->withSameBounds(unwrappedValue));
+    return minDifference(WrappedFloat(unwrappedValue, this->lowerBound, this->upperBound));
 }
 
 WrappedFloat WrappedFloat::minInterpolate(const WrappedFloat& other, const float alpha) const
 {
     assertBoundsEqual(other);
 
-    return *this + (minDifference(other) * alpha);
+    float halfInterval = (this->upperBound - other.lowerBound) / 2;
+    float rawInterpolation = this->wrapped * alpha + other.wrapped * (1 - alpha);
+
+    if (abs(this->wrapped - other.wrapped) <= halfInterval)
+    {
+        return WrappedFloat(rawInterpolation, this->lowerBound, this->upperBound);
+    }
+    else
+    {
+        if (rawInterpolation > this->lowerBound + halfInterval)
+            return WrappedFloat(
+                rawInterpolation - halfInterval,
+                this->lowerBound,
+                this->upperBound);
+        else
+            return WrappedFloat(
+                rawInterpolation + halfInterval,
+                this->lowerBound,
+                this->upperBound);
+    }
 }
 
 void WrappedFloat::shiftBounds(const float shiftMagnitude)
@@ -132,11 +150,11 @@ void WrappedFloat::wrapValue()
     {
         this->wrapped = upperBound + fmodf(oldValue - upperBound, upperBound - lowerBound);
     }
-    else if (oldValue >= upperBound)
+    else if (oldValue >= upperBound - 1E-5)
     {
         this->wrapped = lowerBound + fmodf(oldValue - lowerBound, upperBound - lowerBound);
     }
-    this->revolutions += floor((oldValue - lowerBound) / (upperBound - lowerBound));
+    this->revolutions += static_cast<int>((oldValue - lowerBound) / (upperBound - lowerBound));
 }
 
 float WrappedFloat::limitValue(
@@ -145,8 +163,8 @@ float WrappedFloat::limitValue(
     const float max,
     int* status)
 {
-    WrappedFloat minWrapped = valueToLimit.withSameBounds(min);
-    WrappedFloat maxWrapped = valueToLimit.withSameBounds(max);
+    WrappedFloat minWrapped(min, valueToLimit.lowerBound, valueToLimit.upperBound);
+    WrappedFloat maxWrapped(max, valueToLimit.lowerBound, valueToLimit.upperBound);
     return limitValue(valueToLimit, minWrapped, maxWrapped, status);
 }
 
@@ -163,7 +181,12 @@ float WrappedFloat::limitValue(
     {
         return valueToLimit.getWrappedValue();
     }
-    if (!valueToLimit.withinRange(min, max))
+    if ((min.getWrappedValue() < max.getWrappedValue() &&
+         (valueToLimit.getWrappedValue() > max.getWrappedValue() ||
+          valueToLimit.getWrappedValue() < min.getWrappedValue())) ||
+        (min.getWrappedValue() > max.getWrappedValue() &&
+         valueToLimit.getWrappedValue() > max.getWrappedValue() &&
+         valueToLimit.getWrappedValue() < min.getWrappedValue()))
     {
         // valueToLimit is not "within" min and max
         float targetMinDifference = valueToLimit.minDifference(min);
@@ -185,43 +208,6 @@ float WrappedFloat::limitValue(
         *status = 0;
         return valueToLimit.getWrappedValue();
     }
-}
-
-bool WrappedFloat::withinRange(const WrappedFloat& lowerBound, const WrappedFloat& upperBound) const
-{
-    return (lowerBound.getWrappedValue() < upperBound.getWrappedValue() &&
-            (this->getWrappedValue() > lowerBound.getWrappedValue() &&
-             this->getWrappedValue() < upperBound.getWrappedValue())) ||
-           (lowerBound.getWrappedValue() > upperBound.getWrappedValue() &&
-            (this->getWrappedValue() > lowerBound.getWrappedValue() ||
-             this->getWrappedValue() < upperBound.getWrappedValue()));
-}
-
-float WrappedFloat::rangeOverlap(
-    const WrappedFloat& lowerA,
-    const WrappedFloat& upperA,
-    const WrappedFloat& lowerB,
-    const WrappedFloat& upperB)
-{
-    assertBoundsEqual(lowerA, upperA);
-    assertBoundsEqual(upperA, lowerB);
-    assertBoundsEqual(lowerB, upperB);
-
-    float origin = lowerA.getLowerBound();
-    float offset = lowerA.getWrappedValue() - origin;
-
-    float upperAShifted = (upperA - offset).getWrappedValue();
-    float lowerBShifted = (lowerB - offset).getWrappedValue();
-    float upperBShifted = (upperB - offset).getWrappedValue();
-
-    if (upperBShifted < lowerBShifted)
-    {
-        float leftRange = std::min(upperBShifted, upperAShifted);
-        float rightRange = std::max(origin, upperAShifted - lowerBShifted);
-        return leftRange + rightRange;
-    }
-
-    return std::max(0.0f, std::min(upperAShifted, upperBShifted) - std::max(origin, lowerBShifted));
 }
 
 }  // namespace algorithms

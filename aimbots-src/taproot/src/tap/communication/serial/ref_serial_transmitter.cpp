@@ -234,7 +234,7 @@ modm::ResumableResult<void> RefSerialTransmitter::deleteGraphicLayer(
         reinterpret_cast<uint8_t*>(&deleteGraphicLayerMessage),
         sizeof(Tx::DeleteGraphicLayerMessage));
 
-    drivers->refSerial.releaseTransmissionSemaphore(sizeof(Tx::DeleteGraphicLayerMessage));
+    drivers->refSerial.releaseTransmissionSemaphore(sizeof(Tx::DeleteGraphicOperation));
 
     RF_END();
 }

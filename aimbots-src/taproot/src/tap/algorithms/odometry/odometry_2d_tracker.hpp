@@ -79,8 +79,6 @@ public:
 
     inline uint32_t getLastComputedOdometryTime() const final { return lastComputedOdometryTime; }
 
-    void overrideOdometryPosition(const float positionX, const float positionY);
-
 private:
     ChassisWorldYawObserverInterface* chassisYawObserver;
     ChassisDisplacementObserverInterface* chassisDisplacementObserver;

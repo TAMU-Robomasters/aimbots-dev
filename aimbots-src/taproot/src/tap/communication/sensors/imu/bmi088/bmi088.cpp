@@ -48,9 +48,34 @@ namespace tap::communication::sensors::imu::bmi088
 #define DELAY_US(us) modm::delay_us(us);
 #endif
 
+Bmi088::Bmi088(tap::Drivers *drivers) : drivers(drivers), imuHeater(drivers) {}
+
+Bmi088::ImuState Bmi088::getImuState() const { return imuState; }
+
+void Bmi088::requestRecalibration(modm::Vector3f calibrationEulerAngles) // function param will be lost in taproot regen
+{
+    if (imuState == ImuState::IMU_NOT_CALIBRATED || imuState == ImuState::IMU_CALIBRATED)
+    {
+        data.gyroOffsetRaw[ImuData::X] = 0;
+        data.gyroOffsetRaw[ImuData::Y] = 0;
+        data.gyroOffsetRaw[ImuData::Z] = 0;
+        data.accOffsetRaw[ImuData::X] = 0;
+        data.accOffsetRaw[ImuData::Y] = 0;
+        data.accOffsetRaw[ImuData::Z] = 0;
+        data.gyroDegPerSec[ImuData::X] = 0;
+        data.gyroDegPerSec[ImuData::Y] = 0;
+        data.gyroDegPerSec[ImuData::Z] = 0;
+        data.accG[ImuData::X] = 0;
+        data.accG[ImuData::Y] = 0;
+        data.accG[ImuData::Z] = 0;
+        lastCalibrationEulerAngles = calibrationEulerAngles; // WILL BE LOST IN TAPROOT FUNCTION REGEN
+        calibrationSample = 0;
+        imuState = ImuState::IMU_CALIBRATING;
+    }
+}
+
 void Bmi088::initialize(float sampleFrequency, float mahonyKp, float mahonyKi)
 {
-    AbstractIMU::initialize(sampleFrequency, mahonyKp, mahonyKi);
 #if !defined(PLATFORM_HOSTED)
     ImuCS1Accel::GpioOutput();
     ImuCS1Gyro::GpioOutput();
@@ -69,6 +94,8 @@ void Bmi088::initialize(float sampleFrequency, float mahonyKp, float mahonyKi)
     initializeGyro();
 
     imuHeater.initialize();
+
+    mahonyAlgorithm.begin(sampleFrequency, mahonyKp, mahonyKi);
 }
 
 void Bmi088::initializeAcc()
@@ -112,7 +139,8 @@ void Bmi088::initializeAcc()
 
     setAndCheckAccRegister(
         Acc::ACC_CONF,
-        Acc::AccBandwidth_t(accOversampling) | Acc::AccOutputRate_t(accOutputRate));
+        Acc::AccBandwidth_t(Acc::AccBandwidth::NORMAL) |
+            Acc::AccOutputRate_t(Acc::AccOutputRate::Hz800));
 
     setAndCheckAccRegister(Acc::ACC_RANGE, ACC_RANGE);
 }
@@ -139,22 +167,19 @@ void Bmi088::initializeGyro()
 
     // extra 0x80 is because the bandwidth register will always have 0x80 masked
     // so when checking, we want to mask as well to avoid an error
-    setAndCheckGyroRegister(Gyro::GYRO_BANDWIDTH, gyroOutputRate | Gyro::GyroBandwidth_t(0x80));
+    setAndCheckGyroRegister(
+        Gyro::GYRO_BANDWIDTH,
+        Gyro::GyroBandwidth::ODR1000_BANDWIDTH116 | Gyro::GyroBandwidth_t(0x80));
 
     setAndCheckGyroRegister(Gyro::GYRO_LPM1, Gyro::GyroLpm1::PWRMODE_NORMAL);
 }
 
 void Bmi088::periodicIMUUpdate()
 {
-    AbstractIMU::periodicIMUUpdate();
-    imuHeater.runTemperatureController(imuData.temperature);
-}
-
-bool Bmi088::read()
-{
-    if (!readTimeout.execute())
+    if (imuState == ImuState::IMU_NOT_CONNECTED)
     {
-        return false;
+        RAISE_ERROR(drivers, "periodicIMUUpdate called w/ imu not connected");
+        return;
     }
 
     uint8_t rxBuff[6] = {};
@@ -163,28 +188,75 @@ bool Bmi088::read()
 
     prevIMUDataReceivedTime = tap::arch::clock::getTimeMicroseconds();
 
-    float rawAccX = bigEndianInt16ToFloat(rxBuff);
-    float rawAccY = bigEndianInt16ToFloat(rxBuff + 2);
-    float rawAccZ = bigEndianInt16ToFloat(rxBuff + 4);
-    imuData.accRaw = tap::algorithms::transforms::Vector(rawAccX, rawAccY, rawAccZ);
+    data.accRaw[ImuData::X] = bigEndianInt16ToFloat(rxBuff);
+    data.accRaw[ImuData::Y] = bigEndianInt16ToFloat(rxBuff + 2);
+    data.accRaw[ImuData::Z] = bigEndianInt16ToFloat(rxBuff + 4);
 
     Bmi088Hal::bmi088GyroReadMultiReg(Gyro::RATE_X_LSB, rxBuff, 6);
-
-    float rawGyroX = bigEndianInt16ToFloat(rxBuff);
-    float rawGyroY = bigEndianInt16ToFloat(rxBuff + 2);
-    float rawGyroZ = bigEndianInt16ToFloat(rxBuff + 4);
-    imuData.gyroRaw = tap::algorithms::transforms::Vector(rawGyroX, rawGyroY, rawGyroZ);
+    data.gyroRaw[ImuData::X] = bigEndianInt16ToFloat(rxBuff);
+    data.gyroRaw[ImuData::Y] = bigEndianInt16ToFloat(rxBuff + 2);
+    data.gyroRaw[ImuData::Z] = bigEndianInt16ToFloat(rxBuff + 4);
 
     Bmi088Hal::bmi088AccReadMultiReg(Acc::TEMP_MSB, rxBuff, 2);
-    imuData.temperature = parseTemp(rxBuff[0], rxBuff[1]);
+    data.temperature = parseTemp(rxBuff[0], rxBuff[1]);
 
-    imuData.gyroRadPerSec =
-        (imuData.gyroRaw - imuData.gyroOffsetRaw) * GYRO_RAD_PER_S_PER_GYRO_COUNT;
-    imuData.accG = (imuData.accRaw - imuData.accOffsetRaw) * ACC_G_PER_ACC_COUNT;
+    if (imuState == ImuState::IMU_CALIBRATING)
+    {
+        computeOffsets();
+    }
+    else
+    {
+        data.gyroDegPerSec[ImuData::X] =
+            GYRO_DS_PER_GYRO_COUNT * (data.gyroRaw[ImuData::X] - data.gyroOffsetRaw[ImuData::X]);
+        data.gyroDegPerSec[ImuData::Y] =
+            GYRO_DS_PER_GYRO_COUNT * (data.gyroRaw[ImuData::Y] - data.gyroOffsetRaw[ImuData::Y]);
+        data.gyroDegPerSec[ImuData::Z] =
+            GYRO_DS_PER_GYRO_COUNT * (data.gyroRaw[ImuData::Z] - data.gyroOffsetRaw[ImuData::Z]);
 
-    applyTransform(imuData);
+        data.accG[ImuData::X] =
+            ACC_G_PER_ACC_COUNT * (data.accRaw[ImuData::X] - data.accOffsetRaw[ImuData::X]);
+        data.accG[ImuData::Y] =
+            ACC_G_PER_ACC_COUNT * (data.accRaw[ImuData::Y] - data.accOffsetRaw[ImuData::Y]);
+        data.accG[ImuData::Z] =
+            ACC_G_PER_ACC_COUNT * (data.accRaw[ImuData::Z] - data.accOffsetRaw[ImuData::Z]);
 
-    return true;
+        mahonyAlgorithm.updateIMU(
+            data.gyroDegPerSec[ImuData::X],
+            data.gyroDegPerSec[ImuData::Y],
+            data.gyroDegPerSec[ImuData::Z],
+            data.accG[ImuData::X],
+            data.accG[ImuData::Y],
+            data.accG[ImuData::Z]);
+    }
+
+    imuHeater.runTemperatureController(data.temperature);
+}
+
+void Bmi088::computeOffsets()
+{
+    calibrationSample++;
+
+    data.gyroOffsetRaw[ImuData::X] += data.gyroRaw[ImuData::X];
+    data.gyroOffsetRaw[ImuData::Y] += data.gyroRaw[ImuData::Y];
+    data.gyroOffsetRaw[ImuData::Z] += data.gyroRaw[ImuData::Z];
+    data.accOffsetRaw[ImuData::X] += data.accRaw[ImuData::X];
+    data.accOffsetRaw[ImuData::Y] += data.accRaw[ImuData::Y];
+    data.accOffsetRaw[ImuData::Z] +=
+        data.accRaw[ImuData::Z] - (tap::algorithms::ACCELERATION_GRAVITY / ACC_G_PER_ACC_COUNT);
+
+    if (calibrationSample >= BMI088_OFFSET_SAMPLES)
+    {
+        calibrationSample = 0;
+        data.gyroOffsetRaw[ImuData::X] /= BMI088_OFFSET_SAMPLES;
+        data.gyroOffsetRaw[ImuData::Y] /= BMI088_OFFSET_SAMPLES;
+        data.gyroOffsetRaw[ImuData::Z] /= BMI088_OFFSET_SAMPLES;
+        data.accOffsetRaw[ImuData::X] /= BMI088_OFFSET_SAMPLES;
+        data.accOffsetRaw[ImuData::Y] /= BMI088_OFFSET_SAMPLES;
+        data.accOffsetRaw[ImuData::Z] /= BMI088_OFFSET_SAMPLES;
+        imuState = ImuState::IMU_CALIBRATED;
+        mahonyAlgorithm.reset();
+        mahonyAlgorithm.setCalibrationEuler(lastCalibrationEulerAngles);
+    }
 }
 
 void Bmi088::setAndCheckAccRegister(Acc::Register reg, Acc::Registers_t value)

@@ -30,8 +30,6 @@
 
 #include "tap/motor/motor_interface.hpp"
 
-#include "encoder_interface_mock.hpp"
-
 namespace tap::mock
 {
 class MotorInterfaceMock : public tap::motor::MotorInterface
@@ -41,19 +39,17 @@ public:
     virtual ~MotorInterfaceMock();
 
     MOCK_METHOD(void, initialize, (), (override));
+    MOCK_METHOD(int64_t, getEncoderUnwrapped, (), (const override));
+    MOCK_METHOD(uint16_t, getEncoderWrapped, (), (const override));
+    MOCK_METHOD(void, resetEncoderValue, (), (override));
+    MOCK_METHOD(float, getPositionUnwrapped, (), (const override));
+    MOCK_METHOD(float, getPositionWrapped, (), (const override));
     MOCK_METHOD(void, setDesiredOutput, (int32_t), (override));
     MOCK_METHOD(bool, isMotorOnline, (), (const override));
     MOCK_METHOD(int16_t, getOutputDesired, (), (const override));
     MOCK_METHOD(int8_t, getTemperature, (), (const override));
     MOCK_METHOD(int16_t, getTorque, (), (const override));
-
-    EncoderInterfaceMock* getEncoder() const override
-    {
-        return const_cast<testing::NiceMock<tap::mock::EncoderInterfaceMock>*>(&encoder);
-    }
-
-private:
-    testing::NiceMock<tap::mock::EncoderInterfaceMock> encoder;
+    MOCK_METHOD(int16_t, getShaftRPM, (), (const override));
 };
 
 }  // namespace tap::mock

@@ -29,6 +29,8 @@
 #include "tap/algorithms/ramp.hpp"
 #include "tap/architecture/timeout.hpp"
 #include "tap/control/command.hpp"
+#include "tap/drivers.hpp"
+#include "tap/motor/dji_motor.hpp"
 
 namespace tap
 {
