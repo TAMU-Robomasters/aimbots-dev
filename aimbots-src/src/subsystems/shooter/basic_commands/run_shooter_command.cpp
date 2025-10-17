@@ -45,7 +45,7 @@ void RunShooterCommand::execute() {
 
     uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(/*SHOOTER_SPEED_MATRIX[0][0]*/ 5);
 
-    // refSpeedLimitDisplay = refSpeedLimit;
+    refSpeedLimitDisplay = refSpeedLimit;
 
     // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
     //     if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {

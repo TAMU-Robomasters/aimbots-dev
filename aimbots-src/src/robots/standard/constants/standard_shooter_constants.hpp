@@ -40,3 +40,4 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
 
 static constexpr bool SHOOTER_1_DIRECTION = false;
 static constexpr bool SHOOTER_2_DIRECTION = true;
+
