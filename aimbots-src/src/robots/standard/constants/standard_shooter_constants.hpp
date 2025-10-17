@@ -7,7 +7,7 @@
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 40.0f,
+    .kp = 15.0f,
     .ki = 0.10f,  // 0.10f;
     .kd = 0.00f,
     .maxICumulative = 10.0f,
