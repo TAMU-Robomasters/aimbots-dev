@@ -41,17 +41,18 @@ void RunShooterCommand::execute() {
     heatLimitDisplay = refHelper->getCurrBarrelLimit();
 
     // defaults to slowest usable speed for robot
-    uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
+    uint16_t flywheelRPM = 5100; //SHOOTER_SPEED_MATRIX[0][1];
+
     uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(/*SHOOTER_SPEED_MATRIX[0][0]*/ 5);
 
-    refSpeedLimitDisplay = refSpeedLimit;
+    // refSpeedLimitDisplay = refSpeedLimit;
 
-    for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
-        if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
-            flywheelRPM = SHOOTER_SPEED_MATRIX[i][1];
-            break;
-        }
-    }
+    // for (int i = 0; i < SHOOTER_SPEED_MATRIX.getNumberOfRows(); i++) {
+    //     if (SHOOTER_SPEED_MATRIX[i][0] == refSpeedLimit) {
+    //         flywheelRPM = SHOOTER_SPEED_MATRIX[i][1];
+    //         break;
+    //     }
+    // }
 
     flywheelRPMDisplay = flywheelRPM;
     flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
