@@ -24,8 +24,10 @@ void GimbalFieldRelativeControlCommand::initialize() {}
 
 float gimbalYawInputDisplay = 0.0f;
 float targetPitchAngleDisplay = 0;
+float PitchAngleTest = 0;
 
 void GimbalFieldRelativeControlCommand::execute() {
+    PitchAngleTest = drivers->bmi088.getPitch();
     /*if (drivers->remote.keyPressed(Remote::Key::V) && !wasVPressed) wasVPRessed = true;
 
     if (wasVPRessed && !drivers->remote.keyPressed(Remote::Key::V)) {

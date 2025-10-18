@@ -22,7 +22,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 
 // clang-format off;
 // Sentry shoots at the speed of death
-static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
+static constexpr uint16_t shooter_speed_array[2] = {30, 6254};  // {m/s, rpm}
 // clang-format on
 
 static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
@@ -36,8 +36,8 @@ static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR2;
 static constexpr MotorID SHOOTER_3_ID = MotorID::MOTOR3;
 static constexpr MotorID SHOOTER_4_ID = MotorID::MOTOR4;
 
-static constexpr bool SHOOTER_1_DIRECTION = true;
-static constexpr bool SHOOTER_2_DIRECTION = false;
+static constexpr bool SHOOTER_1_DIRECTION = false;
+static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = true;
 

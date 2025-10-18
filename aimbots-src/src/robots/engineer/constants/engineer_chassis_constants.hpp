@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
+#define CHASSIS_IMU // THE GREAT RETURN
 
 /**
  * @brief Defines the number of motors created for the chassis.

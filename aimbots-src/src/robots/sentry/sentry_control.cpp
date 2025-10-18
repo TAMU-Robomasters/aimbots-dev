@@ -21,6 +21,7 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
@@ -102,11 +103,11 @@ SnapSymmetryConfig defaultSnapConfig = {
 };
 
 TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
-    .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
-    .rotationalSpeedIncrement = 50.0f,
+    .translationalSpeedMultiplier = 1.0f,
+    .translationThresholdToDecreaseRotationSpeed = 0.25f,
+    .rotationalSpeedFractionOfMax = 0.8f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.2f,
+    .rotationalSpeedIncrement = 20.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
@@ -158,11 +159,22 @@ SentryMatchGimbalControlCommand matchGimbalControlCommand(
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+
+//chassis follow gimbal toggle command
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
     &gimbal,
     defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
+//chassis ignore gimbal toggle command
+ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
     defaultTokyoConfig,
     false,
     randomizerConfig);
@@ -255,12 +267,13 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
+     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
+    {&chassisTokyoCommand, &gimbalToggleAimCommand
      /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
@@ -338,4 +351,4 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
 }
 }  // namespace src::Control
 
-#endif  // TARGET_SENTRY
+#endif  // ALL_SENTRIES

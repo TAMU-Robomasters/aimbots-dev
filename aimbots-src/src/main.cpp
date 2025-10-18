@@ -67,6 +67,7 @@ uint32_t loopTimeDisplay = 0;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
+float powerDis = 69.0f;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -148,6 +149,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
+   // drivers->powerCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
@@ -182,8 +184,8 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-
     drivers->cvCommunicator.updateSerial();
+   // drivers->powerCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();
 #endif
@@ -216,6 +218,7 @@ static void updateIo(src::Drivers *drivers) {
     hitDisplay = drivers->hitTracker.getHitAngle_gimbalRelative();
     wasHit = drivers->hitTracker.wasHit();
     recentlyHit = drivers->hitTracker.recentlyHit();
+  //  powerDis = drivers->powerCommunicator.getLastValidMessage().power;
 
     // yawDisplay = modm::toDegree(yaw);
     // pitchDisplay = modm::toDegree(pitch);

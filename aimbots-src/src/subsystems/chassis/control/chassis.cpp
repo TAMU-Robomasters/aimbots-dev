@@ -32,8 +32,8 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
       rightBackYaw(drivers, RIGHT_BACK_YAW_ID, CHASSIS_BUS, false, "Right Back Yaw Motor"),
       leftBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       leftFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
-      rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
       rightFrontYawPosPID(CHASSIS_YAW_PID_CONFIG),
+      rightBackYawPosPID(CHASSIS_YAW_PID_CONFIG),
 #endif
       targetRPMs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
       desiredOutputs(Matrix<float, DRIVEN_WHEEL_COUNT, MOTORS_PER_WHEEL>::zeroMatrix()),
@@ -101,6 +101,10 @@ int refSerialWorkingDisplay = 0;
 uint16_t chassisPowerLimitDisplay = 0;
 
 float motorOutputDisplay = 0.0f;
+float yawMotorOutputDisplayRF = 0.0f;
+float yawMotorOutputDisplayRB = 0.0f;
+float yawMotorOutputDisplayLF = 0.0f;
+float yawMotorOutputDisplayLB = 0.0f;
 
 void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
@@ -109,8 +113,14 @@ void ChassisSubsystem::refresh() {
 
     limitChassisPower();
 
-    motorOutputDisplay = motors[RB][0]->getOutputDesired();
-}
+//     motorOutputDisplay = motors[RF][0]->getOutputDesired();
+//     #ifdef SWERVE
+//         yawMotorOutputDisplayRF = motors[RF][1]->getEncoderWrapped();
+//         yawMotorOutputDisplayRB = motors[RB][1]->getEncoderWrapped();
+//         yawMotorOutputDisplayLF = motors[LF][1]->getEncoderWrapped();
+//         yawMotorOutputDisplayLB = motors[LB][1]->getEncoderWrapped();
+//     #endif
+ }
 
 void ChassisSubsystem::limitChassisPower() {
     float powerLimitFrac = powerLimiter.getPowerLimitRatio();
@@ -190,6 +200,11 @@ void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex M
 float xInputDisplay = 0.0f;
 float yInputDisplay = 0.0f;
 float rInputDisplay = 0.0f;
+int chassisRotateDisplay;
+int leftBackRotationRatioDisplay;
+int xDisplay;
+int yDisplay;
+
 void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWheelSpeed) {
     xInputDisplay = x;
     yInputDisplay = y;
@@ -215,14 +230,19 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
         limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
 
     desiredRotation = r;
+    chassisRotateDisplay = chassisRotateTranslated;
+    leftBackRotationRatioDisplay = leftBackRotationRatio;
+    xDisplay = x;
+    yDisplay = y;
 }
 #endif
 
 #ifdef SWERVE
-float left_front_yaw_actual = 0.0f;
-float right_front_yaw_actual = 0.0f;
-float left_back_yaw_actual = 0.0f;
-float right_back_yaw_actual = 0.0f;
+
+float left_front_yaw_actual;
+float right_front_yaw_actual;
+float left_back_yaw_actual;
+float right_back_yaw_actual;
 
 int left_front_yaw_db;
 int right_front_yaw_db;
@@ -234,45 +254,232 @@ int right_front_yaw;
 int left_back_yaw;
 int right_back_yaw;
 
-void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
-    // float theta = fieldRelativeInformant->getYaw();
-    // float temp = y*cos(theta)+x*sin(theta);
-    // x = -y*sin(theta)+x*cos(theta);
-    // y = temp;
+float target_left_front_yaw;
+float target_right_front_yaw;
+float target_left_back_yaw;
+float target_right_back_yaw;
 
-    float wheelbaseCenterDist = sqrtf(powf(WHEELBASE_WIDTH / 2.0f, 2.0f) + powf(WHEELBASE_LENGTH / 2.0f, 2.0f));
+float left_front_drive;
+float right_front_drive;
+float left_back_drive;
+float right_back_drive;
 
-    float a = x - r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-    float b = x + r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
-    float c = y + r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
-    float d = y - r * (WHEELBASE_WIDTH / wheelbaseCenterDist);
+float prev_left_front_yaw;
+float prev_right_front_yaw;
+float prev_left_back_yaw;
+float prev_right_back_yaw;
 
-    targetRPMs[LF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    left_front_yaw = (atan2f(d, b) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + LEFT_FRONT_YAW_OFFSET;
-    targetRPMs[LF][1] = left_front_yaw % 8191;
-    // targetRPMs[LF][1] = 35/360 * 8191;
-    left_front_yaw_db = targetRPMs[LF][1];
-    left_front_yaw_actual = motors[LF][1]->getEncoderWrapped();
+bool lockWatch;
 
-    targetRPMs[RF][0] = limitVal<float>(sqrtf(powf(b, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    right_front_yaw = (atan2f(c, b) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + RIGHT_FRONT_YAW_OFFSET;
-    targetRPMs[RF][1] = right_front_yaw % 8191;
-    right_front_yaw_actual = motors[RF][1]->getEncoderWrapped();
-    right_front_yaw_db = targetRPMs[RF][1];
-
-    targetRPMs[LB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(d, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    left_back_yaw = (atan2f(d, a) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + LEFT_BACK_YAW_OFFSET;
-    targetRPMs[LB][1] = left_back_yaw % 8191;
-    left_back_yaw_actual = motors[LB][1]->getEncoderWrapped();
-    left_back_yaw_db = targetRPMs[LB][1];
-
-    targetRPMs[RB][0] = limitVal<float>(sqrtf(powf(a, 2.0f) + powf(c, 2.0f)), -maxWheelSpeed, maxWheelSpeed);
-    int right_back_yaw = (atan2f(c, a) + 3 * M_PI / 2) * (180 / M_PI) / 360 * 8191 + RIGHT_BACK_YAW_OFFSET;
-    targetRPMs[RB][1] = right_back_yaw % 8191;
-    right_back_yaw_actual = motors[RB][1]->getEncoderWrapped();
-    right_back_yaw_db = targetRPMs[RB][1];
-    // wooo! just for commants
+static inline float wrap0N(float x, float N) {
+    float y = std::fmod(x, N);
+    if (y < 0) y += N;
+    return y;
 }
+
+static inline float wrapToPi(float a) {
+    return std::atan2(std::sin(a), std::cos(a));
+}
+
+static inline float wrap0To2Pi(float a) {
+    return wrap0N(a, 2.0f * static_cast<float>(M_PI));
+}
+
+static constexpr float kTicksPerRev = 8192.0f; // why wasn't there a variable for this already?
+static constexpr float kTwoPi       = 2.0f * static_cast<float>(M_PI);
+
+float ChassisSubsystem::yawToRad(float ticks, int offsetTicks) {
+    const float deltaTicks = wrap0N(ticks - static_cast<float>(offsetTicks), kTicksPerRev);
+    return deltaTicks * (kTwoPi / kTicksPerRev);
+}
+
+static inline float radToTicksFloat(float radians, int offsetTicks) {
+    const float ticks = static_cast<float>(offsetTicks) + radians * (kTicksPerRev / kTwoPi);
+    return wrap0N(ticks, kTicksPerRev);
+}
+static inline int   radToTicksInt  (float radians, int offsetTicks) {
+    return static_cast<int>(std::lround(radToTicksFloat(radians, offsetTicks)));
+}
+
+void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, float currYaw) {
+    const float hysteresis = static_cast<float>(M_PI) * 2.0f / 180.0f; // ~2°
+    float delta = wrapToPi(targetYaw - currYaw);
+
+    targetYaw = currYaw + delta;
+
+    //flip wheel direction if turn is greater than 90 + hysteresis degrees
+    if (std::fabs(delta) > (static_cast<float>(M_PI) / 2.0f + hysteresis)) {
+        targetRPMDrive = -targetRPMDrive;
+        targetYaw += (delta > 0.0f) ? -static_cast<float>(M_PI) : static_cast<float>(M_PI);
+    }
+
+    targetYaw = wrap0To2Pi(targetYaw);
+}
+
+
+float wheelRPMDisplay = 0.0f;
+
+uint16_t watchLFYaw = 0;
+uint16_t watchRFYaw = 0;
+uint16_t watchLBYaw = 0;
+uint16_t watchRBYaw = 0;
+
+float watchLFYawTarget = 0;
+float watchRFYawTarget = 0;
+float watchLBYawTarget = 0;
+float watchRBYawTarget = 0;
+
+// uint16_t watchLFSpeed = 0;
+
+// for tunning PID system through Ozone
+
+float driveVelocityPDebug = 0.0f;
+float driveVelocityIDebug = 0.0f;
+float driveVelocityDDebug = 0.0f;
+bool updateDriveVelocityPIDsDebug = false;
+
+float steeringPositionPDebug = 0.0f;
+float steeringPositionIDebug = 0.0f;
+float steeringPositionDDebug = 0.0f;
+bool updateSteeringPositionPIDsDebug = false;
+
+float maxWheelSpeedDisplay = 0.0f;
+
+float xDisplay = 0.0f;
+float yDisplay = 0.0f;
+float rotDisplay = 0.0f;
+
+void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
+    // if (updateSteeringPositioPIDsDebug) {
+    //     for (size_t i = 0; i < 4; i++) {
+    //         velocityPIDs[i][1]->pid.setP(steeringPositionPDebug);
+    //         velocityPIDs[i][1]->pid.setI(steeringPositionIDebug);
+    //         velocityPIDs[i][1]->pid.setD(steeringPositionDDebug);
+    //     }
+
+        
+    // }
+
+
+    xDisplay = x;
+    yDisplay = y;
+    rotDisplay = r;
+    
+   // updateSteeringVelocityPIDsDebug = false;
+
+    maxWheelSpeedDisplay = maxWheelSpeed;
+    lockWatch = false;
+
+    // deadband system to prevent chassis from updating when x,y and r are less than a specified value
+    // tune these to prevent yaw motors from always being in "rotation mode" due to chassis follow gimbal pid
+    auto deadband = [](float v, float eps) { return (std::fabs(v) < eps) ? 0.0f : v; };
+    static constexpr float kXYDeadband = 0.02f;
+    static constexpr float kRDeadband  = 100.0f;
+    x = deadband(x, kXYDeadband);
+    y = deadband(y, kXYDeadband);
+    r = deadband(r, kRDeadband);
+
+    // chassis geometry
+    const float halfW = WHEELBASE_WIDTH  * 0.5f;
+    const float halfL = WHEELBASE_LENGTH * 0.5f;
+    const float wheelbaseCenterDist = std::sqrt(halfW * halfW + halfL * halfL);
+
+    // rotational contribution about center
+    const float rx =  r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    const float ry =  r * (WHEELBASE_WIDTH  / wheelbaseCenterDist);
+    const float a = -x + rx;
+    const float b = -x - rx;
+    const float c =  y - ry;
+    const float d =  y + ry;
+
+    // yaw values in radians
+    left_front_yaw_actual  = yawToRad(motors[LF][1]->getEncoderWrapped(),  LEFT_FRONT_YAW_OFFSET);
+    right_front_yaw_actual = yawToRad(motors[RF][1]->getEncoderWrapped(), RIGHT_FRONT_YAW_OFFSET);
+    left_back_yaw_actual   = yawToRad(motors[LB][1]->getEncoderWrapped(),  LEFT_BACK_YAW_OFFSET);
+    right_back_yaw_actual  = yawToRad(motors[RB][1]->getEncoderWrapped(), RIGHT_BACK_YAW_OFFSET);
+
+    watchLFYaw = motors[LF][1]->getEncoderUnwrapped();
+    watchRFYaw = motors[RF][1]->getEncoderUnwrapped();
+    watchLBYaw = motors[LB][1]->getEncoderUnwrapped();
+    watchRBYaw = motors[RB][1]->getEncoderUnwrapped();
+
+    // last angle input is stored here and only gets updated when a new value is greater than the deadband
+    static bool  lastYawInit[4]   = {false, false, false, false};
+    static float lastCmdYawRad[4] = {0, 0, 0, 0};
+
+    auto ensureInit = [&](int idx, float actual) {
+        if (!lastYawInit[idx]) {
+            lastCmdYawRad[idx] = wrap0To2Pi(actual);
+            lastYawInit[idx]   = true;
+        }
+    };
+    ensureInit(LF, left_front_yaw_actual);
+    ensureInit(RF, right_front_yaw_actual);
+    ensureInit(LB, left_back_yaw_actual);
+    ensureInit(RB, right_back_yaw_actual);
+
+    // holdAngles = true when x,y and r is close to 0
+    static constexpr float kModuleVecEps = 1e-3f;
+    const bool noTranslate = (std::hypot(x, y) < 1e-4f);
+    const bool noRotate    = (std::fabs(r) < 1e-4f);
+    const bool holdAngles  = noTranslate && noRotate;
+
+    // FRC implementation of swerve module computation
+    auto computeModule = [&](float vx, float vy,
+                             int offsetTicks,
+                             float currYawRad,
+                             int moduleIdx,
+                             float& outDriveRPM,
+                             float& outSteerTicksFloat,
+                             int&   outSteerDbgInt) {
+        float targetYawRad;
+
+        if (holdAngles) {
+            // set drive to last valid command above deadband limits
+            targetYawRad = lastCmdYawRad[moduleIdx];
+            outDriveRPM  = 0.0f;
+        } else {
+            const float mag = std::hypot(vx, vy);
+            outDriveRPM = limitVal<float>(mag, -maxWheelSpeed, maxWheelSpeed);
+
+            if (mag < kModuleVecEps) {
+                // Rare single-module degeneracy: hold its last angle
+                targetYawRad = lastCmdYawRad[moduleIdx];
+                outDriveRPM  = 0.0f;
+            } else {
+                targetYawRad = std::atan2(vy, vx) + 1.5f * static_cast<float>(M_PI);
+                optimizeSwerve(outDriveRPM, targetYawRad, currYawRad);
+                lastCmdYawRad[moduleIdx] = targetYawRad; // update latch
+            }
+        }
+
+        outSteerTicksFloat = radToTicksFloat(targetYawRad, offsetTicks);
+        outSteerDbgInt     = static_cast<int>(std::lround(outSteerTicksFloat));
+    };
+
+    // LF
+    computeModule(b, d, LEFT_FRONT_YAW_OFFSET,  left_front_yaw_actual,
+                  LF, targetRPMs[LF][0], targetRPMs[LF][1], left_front_yaw_db);
+
+    // RF
+    computeModule(b, c, RIGHT_FRONT_YAW_OFFSET, right_front_yaw_actual,
+                  RF, targetRPMs[RF][0], targetRPMs[RF][1], right_front_yaw_db);
+
+    // LB
+    computeModule(a, d, LEFT_BACK_YAW_OFFSET,   left_back_yaw_actual,
+                  LB, targetRPMs[LB][0], targetRPMs[LB][1], left_back_yaw_db);
+
+    // RB
+    computeModule(a, c, RIGHT_BACK_YAW_OFFSET,  right_back_yaw_actual,
+                  RB, targetRPMs[RB][0], targetRPMs[RB][1], right_back_yaw_db);
+
+    watchRBYawTarget = lastCmdYawRad[RB];
+    watchLFYawTarget = lastCmdYawRad[LF];
+    watchRFYawTarget = lastCmdYawRad[RF];
+    watchLBYawTarget = lastCmdYawRad[LB];
+}
+
+
 #endif
 
 void ChassisSubsystem::calculateRail(float x, float maxWheelSpeed) {

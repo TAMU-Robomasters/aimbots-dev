@@ -2,17 +2,18 @@
 
 #include "tap/control/command.hpp"
 
-//this doesn't exist
-// #include "communication_outbound_subsystem.hpp"
+// this doesn't exist
+//  #include "communication_outbound_subsystem.hpp"
 
 #ifdef REF_COMM_COMPATIBLE
 
 namespace src::Communication {
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
 class TeamMessageStandard : public tap::control::Command {
 public:
-    TeamMessageStandard(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+    TeamMessageStandard(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem)
+        : sub(communicationOutBoundSubsystem) {
         this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
@@ -47,7 +48,8 @@ private:
 #else
 class CommunicationMessage : public tap::control::Command {
 public:
-    communicationMessage(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem) : sub(communicationOutBoundSubsystem) {
+    communicationMessage(CommunicationOutBoundSubsystem &communicationOutBoundSubsystem)
+        : sub(communicationOutBoundSubsystem) {
         this->addSubsyemRequirement(&communicationOutBoundSubsystem);
     }
 
@@ -82,4 +84,4 @@ private:
 #endif
 }  // namespace src::Communication
 
-#endif //#ifdef REF_COMM_COMPATIBLE
+#endif  //#ifdef REF_COMM_COMPATIBLE
