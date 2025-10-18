@@ -38,6 +38,8 @@ public:
      * @brief Gets latest valid enemy target data from CV, converts it to a chassis-relative kinematic state, and filters it.
      * Should be called on every CV update.
      */
+    void reset(int inital_x = 0, int inital_y = 0, int inital_z = 0);
+
     void updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay);
 
     PlateKinematicState getCurrentPlateEstimation() const;
@@ -87,7 +89,7 @@ static constexpr float KF_P[9] = { // Initial covariance matrix. Iniitial estima
     25, 0, 0,
     0, 31329, 0,
     0, 0, 58522500.0,
-};  
+};
 
 static constexpr float KF_H[3] = { // Observation Matrix
     1, 0, 0

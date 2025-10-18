@@ -43,14 +43,15 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (1.0f / 1.0f);  // for 2023 Sta
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-23.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
+// LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 35.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.001f,
+    .kd = 0.4f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -62,9 +63,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 15'000.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 85.0f,
+    .kd = 0.1f,
     .maxICumulative = 10.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -77,9 +78,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 35.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.001f,
+    .kd = 0.4f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
@@ -91,9 +92,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,
     .tQDerivativeKalman = 1.0f,
@@ -106,9 +107,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 800.0f,
-    .ki = 110.0f,
-    .kd = 0.0001f,
+    .kp = 100.0f,
+    .ki = 27.0f,
+    .kd = -0.85f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -120,9 +121,9 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 750.0f,
-    .ki = 25.0f,
-    .kd = 0.0f,
+    .kp = 6.0f,
+    .ki = 10.0f,
+    .kd = -1.2f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -136,9 +137,9 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
 
 // VISION CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 60.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.4f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
@@ -150,9 +151,9 @@ static constexpr SmoothPIDConfig VISION_YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 80.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
@@ -165,9 +166,9 @@ static constexpr SmoothPIDConfig VISION_PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VISION VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
-    .kp = 60.0f,
-    .ki = 0.0f,
-    .kd = 0.0f,
+    .kp = 100.0f,
+    .ki = 27.0f,
+    .kd = -0.85f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -179,9 +180,9 @@ static constexpr SmoothPIDConfig VISION_YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig VISION_PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 600.0f,
-    .ki = 0.0f,
-    .kd = 0.0f,
+    .kp = 6.0f,
+    .ki = 10.0f,
+    .kd = -1.2f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

@@ -5,8 +5,8 @@
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 4.0f, 2.0f),
-      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 4.0f, 2.0f),
+      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f),
+      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f),
       ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f)  //
 {}
 
@@ -39,17 +39,32 @@ float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
 
 // for frame delay timing debug
-float frameDelayDebug = 0.0f;
+float frameDelayOffset = 40.0f;
 
 // gather data, transform data,
 /**
  * @brief plateTImeOffsetDisplay is used to manually add time to frame delay
  */
+
+void VisionDataConversion::reset(int inital_x, int inital_y, int inital_z) {
+    // Cannot use assignment operator due to const members, so use placement new
+    XPositionFilter.~KinematicKalman();
+    new (&XPositionFilter) src::Utils::Filters::KinematicKalman(Vector3f(inital_x, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f);
+
+    YPositionFilter.~KinematicKalman();
+    new (&YPositionFilter) src::Utils::Filters::KinematicKalman(Vector3f(inital_y, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f);
+
+    ZPositionFilter.~KinematicKalman();
+    new (&ZPositionFilter) src::Utils::Filters::KinematicKalman(Vector3f(inital_z, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f);
+    lastUpdateTimestamp_uS = 0;
+    lastFrameCaptureTimestamp_uS = 0;
+}
+
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
     currentTimeDisplay = currentTime_uS;
 
-    lastFrameCaptureDelay_ms = frameDelayDebug; // frameCaptureDelay + plateTimeOffsetDisplay; 
+    lastFrameCaptureDelay_ms = frameDelayOffset + frameCaptureDelay; // frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay_ms);
 
     src::Informants::Transformers::CoordinateFrame turretFieldFrame =
@@ -117,7 +132,7 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
 
     // This is just a preventative measure against bad CV data corrupting the kalman filters.
     // Lower the value if issues continue to happen
-    float MAX_DELTA = 25;  //(5 meters)^2
+    float MAX_DELTA = 10;  //(5 meters)^2
 
     float currPosMag = sqrt(
         pow(transformedPosition.position.getX(), 2) + pow(transformedPosition.position.getY(), 2) +
@@ -128,9 +143,9 @@ void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCap
         float yawMotorAngularVelocity = RPM_TO_RADPS(drivers->kinematicInformant.getYawMotorAngularVelocity(0));
         float pitchMotorAngularVelocity = RPM_TO_RADPS(drivers->kinematicInformant.getPitchMotorAngularVelocity(0));
 
-        XPositionFilter.update(dt, transformedPosition.position.getX(), /*yawMotorAngularVelocity,*/0, measurementNoiseFromCamera.x, currentData.position.y);  // transformedData -> transformedPosition
-        YPositionFilter.update(dt, transformedPosition.position.getY(), /*yawMotorAngularVelocity,*/0, measurementNoiseFromCamera.y, currentData.position.y);
-        ZPositionFilter.update(dt, transformedPosition.position.getZ(), /*pitchMotorAngularVelocity,*/0, measurementNoiseFromCamera.z, currentData.position.y); 
+        XPositionFilter.update(dt, transformedPosition.position.getX(), yawMotorAngularVelocity, measurementNoiseFromCamera.x, currentData.position.y);  // transformedData -> transformedPosition
+        YPositionFilter.update(dt, transformedPosition.position.getY(), yawMotorAngularVelocity, measurementNoiseFromCamera.y, currentData.position.y);
+        ZPositionFilter.update(dt, transformedPosition.position.getZ(), pitchMotorAngularVelocity, measurementNoiseFromCamera.z, currentData.position.y);
         lastUpdateTimestamp_uS = currentTime_uS;
     }
     previousPositionMag = currPosMag;
@@ -180,7 +195,7 @@ PlateKinematicState VisionDataConversion::getCurrentPlateEstimation() const {
     return PlateKinematicState{
         .position = Vector3f(xPlate.getX(), yPlate.getX(), zPlate.getX()),
         // .velocity = Vector3f(0, 0, 0),
-        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()), 
+        .velocity = Vector3f(xPlate.getY(), yPlate.getY(), zPlate.getY()),
         // .acceleration = Vector3f(0, 0, 0),
         .acceleration = Vector3f(xPlate.getZ(), yPlate.getZ(), zPlate.getZ()),
         .timestamp_uS = tap::arch::clock::getTimeMicroseconds()

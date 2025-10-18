@@ -42,6 +42,8 @@ public:
     
     bool isTargetBeingTracked() const;
 
+
+
 private:
     src::Drivers* drivers;
     src::Informants::Vision::VisionDataConversion visionDataConverter;
@@ -64,7 +66,7 @@ private:
     tap::arch::MilliTimeout targetTrackingTimeout;
 
     //* could maybe be tuned lower
-    static constexpr uint32_t TARGET_TRACKING_TIMEOUT_MILLISECONDS = 500;
+    static constexpr uint32_t TARGET_TRACKING_TIMEOUT_MILLISECONDS = 300;
 
     JetsonMessage lastMessage;
     uint32_t lastFoundTargetTime;
@@ -73,5 +75,6 @@ private:
 
     Matrix<float, 1, 2> visionTargetAngles;
     Vector3f visionTargetPosition;
+	Vector3f lastVisionTargetPosition = Vector3f(0.0f, 0.0f, 0.0f);
 };
 }  // namespace src::Informants::Vision

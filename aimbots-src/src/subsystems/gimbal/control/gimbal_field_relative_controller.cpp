@@ -165,6 +165,7 @@ void GimbalFieldRelativeController::runYawController(
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
+
         gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     }
 }

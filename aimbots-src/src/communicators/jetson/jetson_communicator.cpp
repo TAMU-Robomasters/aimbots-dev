@@ -27,6 +27,9 @@ void JetsonCommunicator::initialize() {
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 int displayBufIndex = 0;
 
+float change_in_position_magnitude = 0.0f;
+int reset = 0;
+
 float targetXDisplay = 0;
 float targetYDisplay = 0;
 float targetZDisplay = 0;
@@ -115,15 +118,31 @@ void JetsonCommunicator::updateSerial() {
                     visionTargetPosition.setY(lastMessage.targetY);
                     visionTargetPosition.setZ(lastMessage.targetZ);
 
-                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
-                    lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
-                }
 
-                // Auditory indicator that helps debug our vision pipeline.
+                    lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
+					reset = 0;
+                } else {
+                    visionDataConverter.reset(lastMessage.targetX, lastMessage.targetY, lastMessage.targetZ);
+					reset = 1;
+				}
+
+				change_in_position_magnitude = (visionTargetPosition - lastVisionTargetPosition).getLength();
+
+				if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude < .1) {
+					visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
+					reset = 0;
+				} else if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude >= .1){
+					visionDataConverter.reset(lastMessage.targetX, lastMessage.targetY, lastMessage.targetZ);
+					reset = 2;
+				}
+
+				lastVisionTargetPosition = visionTargetPosition;
+
+                //Auditory indicator that helps debug our vision pipeline.
                 if (lastMessage.cvState == CVState::FOUND) {
                     tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
-                    
+
                     tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);

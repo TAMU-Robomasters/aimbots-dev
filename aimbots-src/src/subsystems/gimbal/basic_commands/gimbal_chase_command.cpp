@@ -76,6 +76,9 @@ bool updateYawDebug = false;
 
 bool trackDebug = false;
 
+float lastYawPosition = 0.0f;
+float lastPitchPosition = 0.0f;
+
 bool ballisticsSolutionDisplay = false;
 
 void GimbalChaseCommand::execute() {
@@ -176,6 +179,8 @@ void GimbalChaseCommand::execute() {
             cvController->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
             cvController->runYawController(6.0f);
             cvController->runPitchController(6.0f);
+            lastYawPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();;
+            lastPitchPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();;
         }
         // cvController->runYawVelocityController(5.0f);
         // cvController->runYawController(
@@ -187,13 +192,10 @@ void GimbalChaseCommand::execute() {
         ballisticsSolutionDisplay = false;
         
         controller->setTargetYaw(
-                AngleUnit::Radians,
-                controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
-                    drivers->controlOperatorInterface.getGimbalYawInput());
+                AngleUnit::Radians, lastYawPosition);
 
         controller->setTargetPitch(
-            AngleUnit::Radians,
-            controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput());
+            AngleUnit::Radians,lastPitchPosition);
         controller->runYawController(6.0f);
         controller->runPitchController(6.0f);
 
