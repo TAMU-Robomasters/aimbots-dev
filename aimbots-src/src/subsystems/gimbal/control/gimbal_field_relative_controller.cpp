@@ -149,12 +149,13 @@ float gravComp = 0.0f;
 float overshootPitchMotorDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
-    float pitchAngularError =
+    float pitchAngularError = // POTENTIAL CULPRIT -ZHENG-HAO
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
 
     pitchAngularErrorDisplay = pitchAngularError;
 
+    // Look at ts vvvvv -ZHENG-HAO
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
 
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
