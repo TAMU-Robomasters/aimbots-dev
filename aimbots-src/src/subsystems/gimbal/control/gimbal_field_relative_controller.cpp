@@ -5,10 +5,9 @@
 
 namespace src::Gimbal {
 
-GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem, bool forCV)
+GimbalFieldRelativeController::GimbalFieldRelativeController(src::Drivers* drivers, GimbalSubsystem* gimbalSubsystem)
     : drivers(drivers),
       gimbal(gimbalSubsystem),
-      forCV(forCV),
       fieldRelativeYawTarget(0.0f, -M_PI, M_PI),
       fieldRelativePitchTarget(0.0f, -M_PI, M_PI)  //
 {
@@ -110,13 +109,13 @@ void GimbalFieldRelativeController::runYawController(
 
         yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
-        if (updateYawPositionPIDsDebug) {
-            yawPositionCascadePIDs[i]->pid.setP(yawPositionPDebug);
-            yawPositionCascadePIDs[i]->pid.setI(yawPositionIDebug);
-            yawPositionCascadePIDs[i]->pid.setD(yawPositionDDebug);
-            yawPositionCascadePIDs[i]->pid.reset();
-            updateYawPositionPIDsDebug = false;
-        }
+        // if (updateYawPositionPIDsDebug) {
+        //     yawPositionCascadePIDs[i]->pid.setP(yawPositionPDebug);
+        //     yawPositionCascadePIDs[i]->pid.setI(yawPositionIDebug);
+        //     yawPositionCascadePIDs[i]->pid.setD(yawPositionDDebug);
+        //     yawPositionCascadePIDs[i]->pid.reset();
+        //     updateYawPositionPIDsDebug = false;
+        // }
         fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
@@ -206,13 +205,13 @@ void GimbalFieldRelativeController::runYawVelocityController(
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
         // for PID tunning through Ozone
-        if (updateYawVelocityPIDsDebug) {
-            yawVelocityPIDs[i]->pid.setP(yawVelocityPDebug);
-            yawVelocityPIDs[i]->pid.setI(yawVelocityIDebug);
-            yawVelocityPIDs[i]->pid.setD(yawVelocityDDebug);
-            yawVelocityPIDs[i]->pid.reset();
-            updateYawVelocityPIDsDebug = false;
-        }
+        // if (updateYawVelocityPIDsDebug) {
+        //     yawVelocityPIDs[i]->pid.setP(yawVelocityPDebug);
+        //     yawVelocityPIDs[i]->pid.setI(yawVelocityIDebug);
+        //     yawVelocityPIDs[i]->pid.setD(yawVelocityDDebug);
+        //     yawVelocityPIDs[i]->pid.reset();
+        //     updateYawVelocityPIDsDebug = false;
+        // }
 
         float velocityControllerOutput = yawVelocityPIDs[i]->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),

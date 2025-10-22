@@ -14,20 +14,15 @@
 namespace src::Gimbal {
 class GimbalFieldRelativeController : public GimbalControllerInterface {
 public:
-    GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*, bool forCV=false);
+    GimbalFieldRelativeController(src::Drivers*, GimbalSubsystem*);
 
     void initialize() override;
 
     void BuildPIDControllers() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
-            if (forCV) {
-                yawPositionCascadePIDs[i] = new SmoothPID(VISION_YAW_POSITION_CASCADE_PID_CONFIG);
-                yawVelocityPIDs[i] = new SmoothPID(VISION_YAW_VELOCITY_PID_CONFIG);
-            } else {
                 yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
                 yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
-            }
 
             yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
             pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
@@ -35,13 +30,8 @@ public:
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
-            if (forCV) {
-                pitchPositionCascadePIDs[i] = new SmoothPID(VISION_PITCH_POSITION_CASCADE_PID_CONFIG);
-                pitchVelocityPIDs[i] = new SmoothPID(VISION_PITCH_VELOCITY_PID_CONFIG);
-            } else {
-                pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
-                pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
-            }
+            pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
+            pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
         }
     }
 
@@ -125,7 +115,6 @@ public:
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
-    bool forCV;
 
     tap::algorithms::WrappedFloat fieldRelativeYawTarget;
     tap::algorithms::WrappedFloat fieldRelativePitchTarget;

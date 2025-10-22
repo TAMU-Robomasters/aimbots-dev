@@ -64,7 +64,7 @@ GimbalSubsystem gimbal(drivers());
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
-GimbalFieldRelativeController cvGimbalFieldRelativeController(drivers(), &gimbal, true);
+GimbalFieldRelativeController cvGimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
