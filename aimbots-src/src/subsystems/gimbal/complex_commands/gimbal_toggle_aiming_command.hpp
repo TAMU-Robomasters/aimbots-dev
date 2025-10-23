@@ -10,7 +10,7 @@
 #include "drivers.hpp"
 
 //!!! REMOVE ME BEFORE COMMITING
-#ifndef GIMBAL_COMPATIBLE
+#ifdef GIMBAL_COMPATIBLE
 namespace src::Gimbal {
 
 class GimbalToggleAimCommand : public TapComprisedCommand {

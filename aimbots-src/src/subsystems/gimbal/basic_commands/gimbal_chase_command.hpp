@@ -29,7 +29,6 @@ public:
         src::Drivers*,
         GimbalSubsystem*,
         GimbalFieldRelativeController*,
-        GimbalFieldRelativeController*,
         src::Utils::RefereeHelperTurreted*,
         src::Utils::Ballistics::BallisticsSolver*,
         float defaultLaunchSpeed);
@@ -52,7 +51,6 @@ private:
 
     GimbalSubsystem* gimbal;
     GimbalFieldRelativeController* controller;
-    GimbalFieldRelativeController* cvController;
 
     src::Utils::RefereeHelperTurreted* refHelper;
 

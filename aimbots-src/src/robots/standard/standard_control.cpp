@@ -205,7 +205,7 @@ GimbalChaseCommand gimbalChaseCommand2(
     SHOOTER_SPEED_MATRIX[0][0]);
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
-    &gimbal,
+    &gimbal,    
     &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,

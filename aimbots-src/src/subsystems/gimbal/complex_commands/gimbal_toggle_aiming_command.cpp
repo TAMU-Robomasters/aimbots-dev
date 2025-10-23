@@ -1,6 +1,6 @@
 #include "gimbal_toggle_aiming_command.hpp"
 //!!CHANGE ME BEFORE COMMITING
-#ifndef GIMBAL_COMPATIBLE
+#ifdef GIMBAL_COMPATIBLE
 
 
 namespace src::Gimbal {

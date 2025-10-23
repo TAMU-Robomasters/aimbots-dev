@@ -9,7 +9,6 @@ GimbalChaseCommand::GimbalChaseCommand(
     src::Drivers* drivers,
     GimbalSubsystem* gimbalSubsystem,
     GimbalFieldRelativeController* gimbalController,
-    GimbalFieldRelativeController* cvGimbalController,
     src::Utils::RefereeHelperTurreted* refHelper,
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     float defaultLaunchSpeed)
@@ -17,7 +16,6 @@ GimbalChaseCommand::GimbalChaseCommand(
       drivers(drivers),
       gimbal(gimbalSubsystem),
       controller(gimbalController),
-      cvController(cvGimbalController),
       refHelper(refHelper),
       ballisticsSolver(ballisticsSolver),
       defaultLaunchSpeed(defaultLaunchSpeed) ,
@@ -168,24 +166,24 @@ void GimbalChaseCommand::execute() {
         // targetPitchAxisAngle =
         //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
 
-        cvController->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
-        cvController->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+        controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
+        controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
         
         isTargetBeingTracked = drivers->cvCommunicator.isTargetBeingTracked();
 
         trackDebug = isTargetBeingTracked;
         if (isTargetBeingTracked) {
-            cvController->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
-            cvController->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
-            cvController->runYawController(6.0f);
-            cvController->runPitchController(6.0f);
+            controller->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
+            controller->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
+            controller->runYawController(6.0f);
+            controller->runPitchController(6.0f);
             lastYawPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();;
             lastPitchPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();;
         }
-        // cvController->runYawVelocityController(5.0f);
-        // cvController->runYawController(
+        // controller->runYawVelocityController(5.0f);
+        // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
-        // cvController->runPitchController(5.0f);
+        // controller->runPitchController(5.0f);
     } else {
         //TODO: maybe make it so that the gimbal stays at the same position
         // Yaw counterclockwise is positive angle
