@@ -152,13 +152,12 @@ float softstopHighDisplay = 0.0f;
 float softstopLowDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
-    float pitchAngularError = // POTENTIAL CULPRIT -ZHENG-HAO
+    float pitchAngularError = 
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
 
     pitchAngularErrorDisplay = pitchAngularError;
 
-    // Look at ts vvvvv -ZHENG-HAO
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
     pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
