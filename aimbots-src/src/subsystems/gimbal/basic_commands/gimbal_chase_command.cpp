@@ -175,8 +175,8 @@ void GimbalChaseCommand::execute() {
         if (isTargetBeingTracked) {
             controller->setTargetVelocityYaw(AngleUnit::Radians, yawVelocity);
             controller->setTargetVelocityPitch(AngleUnit::Radians, pitchVelocity);
-            controller->runYawController(6.0f);
-            controller->runPitchController(6.0f);
+            controller->runYawController();
+            controller->runPitchController();
             lastYawPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();;
             lastPitchPosition = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();;
         }
@@ -194,8 +194,8 @@ void GimbalChaseCommand::execute() {
 
         controller->setTargetPitch(
             AngleUnit::Radians,lastPitchPosition);
-        controller->runYawController(6.0f);
-        controller->runPitchController(6.0f);
+        controller->runYawController(6.0); 
+        controller->runPitchController(6.0);
 
         // controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
         // controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);

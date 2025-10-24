@@ -28,8 +28,8 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(260.11f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(298.25f))};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-30.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -102,23 +102,23 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// VISION PID CONSTANTS
+// CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,  // 30
+    .kp = 20.0f,  // 30
     .ki = 0.0f,
-    .kd = 0.5f,
+    .kd = 0.2f,
     .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 0.0175f, // 1 degs bucko$
     .errorDerivativeFloor = 0.0f,
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 20.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
@@ -133,22 +133,22 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 400.0f,  // 3000
-    .ki = 25.0f,    // 25
-    .kd = 2.2f, // 10
+    .kp = 800.0f,  
+    .ki = 200.0f,   
+    .kd = 0.0f, 
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 1000.0f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .kp = 750.0f,
-    .ki = 25.0f,
+    .ki = 150.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
@@ -165,7 +165,8 @@ static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
-static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
+//!!! this K works for standard 25 !!!!
+static constexpr float kGRAVITY = 1500.0f;  // Negative because weight is behind pitch motor
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off

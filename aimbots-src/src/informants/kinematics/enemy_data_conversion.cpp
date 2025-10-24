@@ -39,7 +39,7 @@ float untransformedDataPosYDisplay = 0.0;
 float untransformedDataPosZDisplay = 0.0;
 
 // for frame delay timing debug
-float frameDelayOffset = 40.0f;
+float frameDelayOffset = 40.0f; // 40.0 for non-realsense cam
 
 // gather data, transform data,
 /**
@@ -62,7 +62,7 @@ void VisionDataConversion::reset(int inital_x, int inital_y, int inital_z) {
 
 void VisionDataConversion::updateTargetInfo(Vector3f position, uint32_t frameCaptureDelay) {
     uint32_t currentTime_uS = tap::arch::clock::getTimeMicroseconds();
-    currentTimeDisplay = currentTime_uS;
+    currentTimeDisplay = currentTime_uS; 
 
     lastFrameCaptureDelay_ms = frameDelayOffset + frameCaptureDelay; // frameCaptureDelay + plateTimeOffsetDisplay;
     drivers->kinematicInformant.mirrorPastRobotFrame(lastFrameCaptureDelay_ms);

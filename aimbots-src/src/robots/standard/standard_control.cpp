@@ -34,6 +34,8 @@
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
@@ -157,6 +159,26 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 10.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 10.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
+};
+
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -203,6 +225,19 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawVelocityTunningConfig,
+    gimbalPitchVelocityTunningConfig);
+
+GimbalPositionTunningCommand gimbalPositionTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,    
