@@ -3,7 +3,6 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
-// #define CHASSIS_IMU // old shi
 #define TURRET_IMU // IMU migration and whatnot
 
 #if defined(TARGET_SENTRY_SWERVE)
@@ -18,7 +17,7 @@ static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .kp = 30.0f,
     .ki = 0.0f,
-    .kd = 15.0f,
+    .kd = 0.0f,
     .maxICumulative = 0.9f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -52,7 +51,7 @@ static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
     .kp = 18.0f,
     .ki = 0.0f,
-    .kd = 5.0f,
+    .kd = 1.0f,
     .maxICumulative = 10.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -116,9 +115,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.65f,
+    .kp = 1.0f,
     .ki = 0.0f,
-    .kd = 0.01f,
+    .kd = 0.0f,
     .maxICumulative = 0.9f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -128,20 +127,6 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
-
-/**
- * @brief TOKYO CONSTANTS
- */
-// Fraction that user input is multiplied by when "drifting"
-static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
-// Fraction of the maximum translation speed for when rotation speed should be reduced
-static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
-// Fraction of max chassis speed applied to rotation speed
-static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
-// Fraction to cut rotation speed by when the robot is "drifting"
-static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
-// Rotational speed increment per iteration to apply until rotation setpoint is reached
-static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
