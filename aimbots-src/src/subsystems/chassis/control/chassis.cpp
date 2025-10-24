@@ -122,6 +122,31 @@ void ChassisSubsystem::refresh() {
 //     #endif
  }
 
+// void ChassisSubsystem::limitChassisPower() {
+//     float powerLimitFrac = powerLimiter.getPowerLimitRatio();
+
+//     if (compareFloatClose(1.0f, powerLimitFrac, 0.001f)) {
+//         return;
+//     }
+
+//     float totalError = 0.0f;
+//     for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+//         totalError += abs(velocityPIDs[i][0]->getError());
+//     }
+
+//     bool totalErrorZero = compareFloatClose(totalError, 0.0f, 0.001f);
+
+//     for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+//         float velocityErrorFrac =
+//             totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT) : (abs(velocityPIDs[i][0]->getError()) / totalError);
+
+//         float modifiedPowerLimitFrac = limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * velocityErrorFrac, 0.0f, 1.0f);
+
+//         motors[i][0]->setDesiredOutput(motors[i][0]->getOutputDesired() * modifiedPowerLimitFrac);
+//     }
+// }
+
+
 void ChassisSubsystem::limitChassisPower() {
     float powerLimitFrac = powerLimiter.getPowerLimitRatio();
 
@@ -129,22 +154,51 @@ void ChassisSubsystem::limitChassisPower() {
         return;
     }
 
+    // This functions with DRIVE MOTORS being motors[i][0]
     float totalError = 0.0f;
     for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
-        totalError += abs(velocityPIDs[i][0]->getError());
+        totalError += fabsf(velocityPIDs[i][0]->getError());
     }
 
     bool totalErrorZero = compareFloatClose(totalError, 0.0f, 0.001f);
 
     for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
         float velocityErrorFrac =
-            totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT) : (abs(velocityPIDs[i][0]->getError()) / totalError);
+            totalErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT)
+                           : (fabsf(velocityPIDs[i][0]->getError()) / totalError);
 
-        float modifiedPowerLimitFrac = limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * velocityErrorFrac, 0.0f, 1.0f);
+        float modifiedPowerLimitFrac =
+            limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * velocityErrorFrac, 0.0f, 1.0f);
 
         motors[i][0]->setDesiredOutput(motors[i][0]->getOutputDesired() * modifiedPowerLimitFrac);
     }
+
+#ifdef SWERVE
+    // This functions with YAW MOTORS being on motors[i][1] the same way the DRIVE Motors works
+    float totalYawError = 0.0f;
+    for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        totalYawError += fabsf(velocityPIDs[i][1]->getError());
+    }
+
+    bool totalYawErrorZero = compareFloatClose(totalYawError, 0.0f, 0.001f);
+
+    for (size_t i = 0; i < DRIVEN_WHEEL_COUNT; i++) {
+        float yawErrorFrac =
+            totalYawErrorZero ? (1.0f / DRIVEN_WHEEL_COUNT)
+                              : (fabsf(velocityPIDs[i][1]->getError()) / totalYawError);
+
+      
+        const float yawMinFrac = 0.01f;
+        float modifiedYawPowerFrac =
+            limitVal(DRIVEN_WHEEL_COUNT * powerLimitFrac * yawErrorFrac, yawMinFrac, 1.0f);
+
+        motors[i][1]->setDesiredOutput(motors[i][1]->getOutputDesired() * modifiedYawPowerFrac);
+    }
+#endif
 }
+
+
+
 
 float targetRpmDisplay = 0.0f;
 float motorRpmDisplay = 0.0f;
