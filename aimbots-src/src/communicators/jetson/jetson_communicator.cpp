@@ -164,6 +164,41 @@ void JetsonCommunicator::updateSerial() {
     //     lastMessage.targetY = 0.0f;
     // }
 }
+void JetsonCommunicator::writeSerial(const JetsonMessage& message) {
+    uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    
+    uint8_t rawMessage[JETSON_MESSAGE_SIZE];
+    memcpy(rawMessage, &message, sizeof(message));
+
+    uint32_t magicNumber = JETSON_MESSAGE_MAGIC;
+    for (size_t i = 0; i < sizeof(magicNumber); ++i) {
+        if (WRITE(&magicNumber, 1) != 1) {
+            // error
+            return;
+        }
+    }
+
+    size_t bytesWritten = 0;
+    while (bytesWritten < sizeof(rawMessage)) {
+        size_t bytesToWrite = sizeof(rawMessage) - bytesWritten;
+        size_t bytesSent = WRITE(&rawMessage[bytesWritten], bytesToWrite);
+        
+        if (bytesSent == 0) {
+            // failed to send
+            return;
+        }
+
+        bytesWritten += bytesSent;
+    }
+
+    messageSentTime = currTime;
+    targetXDisplay = message.targetX;
+    targetYDisplay = message.targetY;
+    targetZDisplay = message.targetZ;
+
+    displayStatus("Message Sent Successfully");
+
+}
 
 PlateKinematicState JetsonCommunicator::getCurrentPlateEstimation() const {
     return visionDataConverter.getCurrentPlateEstimation();

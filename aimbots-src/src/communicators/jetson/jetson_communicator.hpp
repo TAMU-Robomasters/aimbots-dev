@@ -26,7 +26,8 @@ public:
     ~JetsonCommunicator() = default;
 
     void initialize();
-    void updateSerial();
+    void updateSerial(); // reading from jetson
+    void writeSerial(); // new function for writing to jetson over UART
 
     inline bool isJetsonOnline() const { return !jetsonOfflineTimeout.isExpired(); }
 
