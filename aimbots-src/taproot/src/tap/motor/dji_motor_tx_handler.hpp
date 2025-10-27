@@ -76,7 +76,7 @@ public:
     /** CAN message identifier for "low" segment (low 4 CAN motor IDs) of control message. */
     static constexpr uint32_t CAN_DJI_LOW_IDENTIFIER = 0X200;
     /** CAN message identifier for "high" segment (high 4 CAN motor IDs) of control message. */
-    static constexpr uint32_t CAN_DJI_HIGH_IDENTIFIER = 0X1FF;
+    static constexpr uint32_t CAN_DJI_HIGH_IDENTIFIER = 0X1FE; //!!! Manually changed to current controlled
 
     DjiMotorTxHandler(Drivers* drivers) : drivers(drivers) {}
     mockable ~DjiMotorTxHandler() = default;

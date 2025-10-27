@@ -166,7 +166,7 @@ static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 //!!! this K works for standard 25 !!!!
-static constexpr float kGRAVITY = 1500.0f;  // Negative because weight is behind pitch motor
+static constexpr float kGRAVITY = 1000.0f;  // !!! This is only for standard 25
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off

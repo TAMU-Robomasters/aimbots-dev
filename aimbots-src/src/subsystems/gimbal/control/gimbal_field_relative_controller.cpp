@@ -63,6 +63,7 @@ float chassisRelativeYawTargetDisplay = 0;
 float kinematicYawAngleDisplay = 0;
 float kinematicYawAngleRadDisplay = 0;
 float kinematicPitchAngleDisplay = 0;
+float yawTorqueCurrentDisplay = 0;
 
 float speedTarget = 0.0f;
 
@@ -225,10 +226,11 @@ void GimbalFieldRelativeController::runYawVelocityController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
 
+        yawTorqueCurrentDisplay = gimbal->getYawMotorTorque(i);
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
-        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput + velocityFeedforward);
+        gimbal->setDesiredYawMotorOutput(i, 8000);
     }
 }
 
