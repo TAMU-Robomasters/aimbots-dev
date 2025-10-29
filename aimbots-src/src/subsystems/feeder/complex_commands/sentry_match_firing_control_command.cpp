@@ -1,7 +1,6 @@
-
-#ifdef TARGET_SENTRY
-
 #include "sentry_match_firing_control_command.hpp"
+
+#ifdef ALL_SENTRIES
 
 namespace src::Control {
 

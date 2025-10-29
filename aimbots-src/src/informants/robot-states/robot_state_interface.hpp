@@ -35,7 +35,7 @@ public:
     void updateRobotStateHealth(int robotNumber, Team teamColor, int health);
     void updateRobotStatePosition(int robotNumber, Team teamColor, short x, short y, short z);
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     void updateTeamMessage();
     uint8_t teamMessage[115];
 #endif
@@ -56,4 +56,4 @@ public:
 
 }  // namespace src::RobotStates
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

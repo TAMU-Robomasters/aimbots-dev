@@ -3,10 +3,10 @@
 #include "tap/communication/serial/ref_serial.hpp"
 // #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
-#include "modm/architecture/interface/register.hpp"
-#include "modm/processing/protothread.hpp"
 #include "informants/robot-states/robot_state.hpp"
 #include "informants/robot-states/robot_state_interface.hpp"
+#include "modm/architecture/interface/register.hpp"
+#include "modm/processing/protothread.hpp"
 
 #include "drivers.hpp"
 
@@ -23,7 +23,7 @@ public:
     bool recive();
 
     void updateStates();
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     void attachTeamMessageHandlerStandard(MessageReceivedCallback message) { teamMesssageHandlerStandard = message; }
     void attachTeamMessageHandlerHero(MessageReceivedCallback message) { teamMesssageHandlerHero = message; }
 
@@ -34,7 +34,7 @@ public:
 private:
     src::Drivers* drivers;
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     MessageReceivedCallback teamMesssageHandlerStandard = nullptr;
     MessageReceivedCallback teamMesssageHandlerHero = nullptr;
     MessageReceivedCallback teamMessageHandlerSentry = nullptr;
@@ -43,6 +43,6 @@ private:
     MessageReceivedCallback enemyRobotStateHandler = nullptr;
 #endif
 };
-}  // namespace src::robotStates
+}  // namespace src::Communication
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

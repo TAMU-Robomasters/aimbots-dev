@@ -9,7 +9,7 @@ namespace src::Feeder {
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
-      limitSwitch(static_cast<std::string>("C7"), src::Informants::EdgeType::RISING) {
+      limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING) {
     BuildFeederMotors();
     BuildPIDControllers();
 }

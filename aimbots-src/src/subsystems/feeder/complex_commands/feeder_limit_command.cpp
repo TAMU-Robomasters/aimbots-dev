@@ -15,9 +15,13 @@ namespace src::Feeder {
 
 bool limitPressed = false;
 bool currFireState = false;
+bool currLoadState = false;
+bool watchFire = false;
 bool prevFireState = false;
+bool prevLoadState = false;
 bool isFiring = false;
 bool loaderDormant = false;
+bool underHeat = false;
 int limitSwitchDownTime;
 
 FeederLimitCommand::FeederLimitCommand(
@@ -40,19 +44,22 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
+    //underHeat = refHelper->canCurrBarrelShootSafely();
     // Updates the limit switch state (is pressed or not)
     limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;
     // Updates the current controller switch state
-    currFireState = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
+    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
     // States how long the limit switch is ignored when firing a projectile
-    limitSwitchDownTime = 350;
+    limitSwitchDownTime = 200;
     // States the speed of the feeder wheel when firing
-    // Checks if the limit switch is pressed & is "not killed" (refer to )
+    // Checks if the limit switch is pressed & is "not killed"
 
-    if (limitswitchInactive.isExpired()) {
-        isFiring = false;
+    prevLoadState = currLoadState; 
+
+    if (!limitswitchInactive.isExpired()) {
+        limitPressed = false;
         // feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
     }
 
@@ -62,20 +69,31 @@ void FeederLimitCommand::execute() {
     // }
 
     if (!limitPressed && !loaderDormant) {
-        if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
-            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::unjamFeederMotor);
+        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+        if (fabs(feeder->getCurrentRPM(0)) <= 5.0f && unjamTimer.isExpired()){
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
-
-        if (unjamTimer.execute()) {
+        if (!unjamTimer.isExpired() && startupThreshold.isExpired()) {
+            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::unjamFeederMotor);
+            currLoadState=false;
+        }else{
             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
-            startupThreshold.restart(500);
+            currLoadState = true;
         }
+        if(prevLoadState == false && currLoadState == true){
+            startupThreshold.restart(1000);
+        }
+
+        // if (!unjamTimer.execute()) {
+        //     feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+        //     //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 1.0f);
+        //     //feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+        //     startupThreshold.restart(500);
+        // }
     } else {
         feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
-        if (!isFiring) {
+        currLoadState = false;
+        if (isFiring) {
             feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
         }
         loaderDormant = true;

@@ -1,15 +1,17 @@
 #pragma once
 
-#ifdef TARGET_SENTRY
+#include "utils/tools/robot_specific_defines.hpp"
 
-#include "subsystems/chassis/control/chassis.hpp"
+#ifdef ALL_SENTRIES
+
+#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "utils/tools/common_types.hpp"
 #include "utils/motion/auto_nav/auto_navigator_holonomic.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
+#include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
 

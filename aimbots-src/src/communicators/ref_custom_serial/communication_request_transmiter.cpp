@@ -14,7 +14,9 @@
 #ifdef REF_COMM_COMPATIBLE
 
 namespace src::Communication {
-CommunicationRequestTransmiter::CommunicationRequestTransmiter(src::Drivers* drivers) : drivers(drivers), refSerial(drivers) {}
+CommunicationRequestTransmiter::CommunicationRequestTransmiter(src::Drivers* drivers)
+    : drivers(drivers),
+      refSerial(drivers) {}
 
 bool CommunicationRequestTransmiter::send() {
     PT_BEGIN();
@@ -27,7 +29,8 @@ bool CommunicationRequestTransmiter::send() {
             PT_CALL(refSerial.sendRobotToRobotMsg(
                 &robotToRobotMessage,
                 SENTRY_REQUEST_ROBOT_ID,
-                drivers->refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
+                drivers->refSerial.getRobotIdBasedOnCurrentRobotTeam(
+                    tap::communication::serial::RefSerialData::RobotId::BLUE_SENTINEL),
                 1));
         } else {
             PT_YIELD();
@@ -43,7 +46,7 @@ bool CommunicationRequestTransmiter::send() {
 void CommunicationRequestTransmiter::updateQue(MessageType type) {
     queuedMessageType |= (1 << static_cast<uint8_t>(type));
 
-    // #ifdef TARGET_SENTRY
+    // #ifdef ALL_SENTRIES
     //     // Team color = drivers->refSerial->getRobotData().robotID == 7 ? Team::RED : Team::BLUE;
     //     Team color = Team::RED;
     //     // Team color = drivers->getRobotData->robotData.robotId == RED_SENTINEL ? Team::RED : Team::BLUE;
@@ -54,4 +57,4 @@ void CommunicationRequestTransmiter::updateQue(MessageType type) {
 
 }  // namespace src::Communication
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

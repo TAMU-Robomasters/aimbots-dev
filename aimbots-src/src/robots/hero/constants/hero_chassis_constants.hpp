@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
+#define CHASSIS_IMU // THE GREAT RETURN
 
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -22,7 +23,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
@@ -38,9 +39,9 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
  */
 static constexpr float WHEEL_RADIUS = 0.07663f;
 
-static constexpr float WHEELBASE_WIDTH = 0.357f;
+static constexpr float WHEELBASE_WIDTH = 0.500f;
 
-static constexpr float WHEELBASE_LENGTH = 0.357f;
+static constexpr float WHEELBASE_LENGTH = 0.5372f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 

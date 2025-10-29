@@ -30,7 +30,7 @@ uint8_t value2;
 uint8_t value3;
 uint8_t value4;
 bool CommunicationResponseSubsytem::run() {
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     // ms = states.createMessage();
     // uint16_t sx = ms.standardX;
     test = static_cast<unsigned char>(rand() % 0xff);
@@ -68,7 +68,8 @@ bool CommunicationResponseSubsytem::run() {
         this->robotToRobotMessage.dataAndCRC16[1] = value2;  // static_cast<uint8_t>(sx);
         this->robotToRobotMessage.dataAndCRC16[2] = value3;  // static_cast<uint8_t>(sx);
         this->robotToRobotMessage.dataAndCRC16[3] = value4;  // static_cast<uint8_t>(sy);
-        // this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  // static_cast<uint8_t>(sy);
+        // this->robotToRobotMessage.dataAndCRC16[4] = static_cast<unsigned char>(rand() % 0xff);  //
+        // static_cast<uint8_t>(sy);
 
         // if (this->sentryMoving != this->getDriveStatus()) {
         //     this->sentryMoving = this->getDriveStatus();
@@ -85,7 +86,8 @@ bool CommunicationResponseSubsytem::run() {
         PT_CALL(this->refSerialTransmitter.sendRobotToRobotMsg(
             &this->robotToRobotMessage,
             SENTRY_RESPONSE_MESSAGE_ID,
-            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(tap::communication::serial::RefSerialData::RobotId::BLUE_HERO),
+            drivers.refSerial.getRobotIdBasedOnCurrentRobotTeam(
+                tap::communication::serial::RefSerialData::RobotId::BLUE_HERO),
             4));
         // }
 
@@ -107,4 +109,4 @@ bool CommunicationResponseSubsytem::run() {
 
 }  // namespace src::Communication
 
-#endif // #ifdef REF_COMM_COMPATIBLE
+#endif  // #ifdef REF_COMM_COMPATIBLE

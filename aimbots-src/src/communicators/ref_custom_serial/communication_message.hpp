@@ -4,7 +4,7 @@
 #ifdef REF_COMM_COMPATIBLE
 
 namespace src::Communication {
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
 struct robot_state_message_team {
     /* data */
     uint16_t standardX, standardY, heroX, heroY, sentryX, sentryY;
@@ -26,7 +26,7 @@ struct robot_state_message_enemy {
 #endif
 
 enum class MessageType : uint8_t {
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
     TEAM_MESSAGE_STANDARD,
     TEAM_MESSAGE_HERO,
     TEAM_MESSAGE_SENTRY,

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "utils/tools/robot_specific_defines.hpp"
+
+#ifdef ALL_SENTRIES
+
 #include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -72,3 +76,5 @@ private:
 };
 
 }  // namespace src::Control
+
+#endif

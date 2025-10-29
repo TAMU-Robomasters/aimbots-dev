@@ -1,6 +1,6 @@
 #include "sentry_match_chassis_control_command.hpp"
 
-#ifdef TARGET_SENTRY
+#ifdef ALL_SENTRIES
 #ifdef CHASSIS_COMPATIBLE
 
 namespace src::Chassis {
@@ -40,10 +40,10 @@ SentryMatchChassisControlCommand::SentryMatchChassisControlCommand(
 
 void SentryMatchChassisControlCommand::initialize() {
     // This is a necessary step, do not question it.
-    // updateChassisState(ChassisMatchStates::GUARDING);
-    // updateChassisState(ChassisMatchStates::START);
+     updateChassisState(ChassisMatchStates::GUARDING);
+     updateChassisState(ChassisMatchStates::START);
     chassisState = ChassisMatchStates::GUARDING;
-    // chassisState = ChassisMatchStates::START;
+    chassisState = ChassisMatchStates::START;
     updateChassisState(ChassisMatchStates::START);
     delayTimer.restart(500);
     lockoutTimer.restart(0);

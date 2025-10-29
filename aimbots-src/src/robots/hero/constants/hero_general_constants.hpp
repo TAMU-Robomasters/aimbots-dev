@@ -30,8 +30,8 @@ static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
 };
 
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
-    0.0f,  // x
-    0.0f,  // y
+    0.157f,  // x
+    0.0335f,  // y
     0.0f,  // z
 };
 
@@ -44,7 +44,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
-static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(180.0f);
+static constexpr float CIMU_CALIBRATION_EULER_Z = modm::toRadian(90.0f);
 
 static constexpr float TIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float TIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);
