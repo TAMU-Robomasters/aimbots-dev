@@ -204,8 +204,11 @@ int chassisRotateDisplay;
 int leftBackRotationRatioDisplay;
 int xDisplay;
 int yDisplay;
+float thing = 0.0f;
 
 void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWheelSpeed) {
+    float x_d = (sqrtf(2) / 2) * (x - y);
+    float y_d = (sqrtf(2) / 2) * (x + y);
     xInputDisplay = x;
     yInputDisplay = y;
     rInputDisplay = r;
@@ -219,15 +222,14 @@ void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWh
     float rightBackRotationRatio = modm::toRadian(wheelbaseCenterDist + GIMBAL_X_OFFSET + GIMBAL_Y_OFFSET);
 
     float chassisRotateTranslated = modm::toDegree(r) / wheelbaseCenterDist;
-
     targetRPMs[LF][0] =
-        limitVal<float>(x + y + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(x_d + y_d + chassisRotateTranslated * leftFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[RF][0] =
-        limitVal<float>(x - y + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(x_d - y_d + chassisRotateTranslated * rightFrontRotationRatio, -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[LB][0] =
-        limitVal<float>(-x + y + chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(-x_d + y_d + chassisRotateTranslated * leftBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
     targetRPMs[RB][0] =
-        limitVal<float>(-x - y + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
+        limitVal<float>(-x_d - y_d + chassisRotateTranslated * rightBackRotationRatio, -maxWheelSpeed, maxWheelSpeed);
 
     desiredRotation = r;
     chassisRotateDisplay = chassisRotateTranslated;
