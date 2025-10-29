@@ -5,7 +5,7 @@
 #define CHASSIS_COMPATIBLE
 #define TURRET_IMU // IMU migration and whatnot
 
-#if defined(TARGET_SENTRY_SWERVE)
+#if defined(TARGET_SENTRY)
 #define SWERVE
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 
@@ -32,9 +32,6 @@ static constexpr int LEFT_FRONT_YAW_OFFSET = 2090;
 static constexpr int RIGHT_FRONT_YAW_OFFSET = 7460;
 static constexpr int LEFT_BACK_YAW_OFFSET = 6117;
 static constexpr int RIGHT_BACK_YAW_OFFSET = 7500;
-
-#elif defined(TARGET_SENTRY_BRAVO)
-static constexpr uint8_t MOTORS_PER_WHEEL = 1;
 
 #endif
 

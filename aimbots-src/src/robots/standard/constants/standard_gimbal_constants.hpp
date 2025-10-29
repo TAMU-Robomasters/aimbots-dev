@@ -15,7 +15,7 @@ static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-#if defined(TARGET_STANDARD_BLASTOISE)
+#if defined(TARGET_STANDARD_JERRY)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(144.27f)};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)};
@@ -24,31 +24,13 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
-#elif defined(TARGET_STANDARD_2025)
+#elif defined(TARGET_STANDARD_BALTHAZAR)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(260.11f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(298.25f))};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
-// LOW should be lesser than HIGH, otherwise switch the motor direction
-
-#elif defined(TARGET_STANDARD_SQUIRTLE)
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(254.75f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(-110.64f))};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-// LOW should be lesser than HIGH, otherwise switch the motor direction
-
-#elif defined(TARGET_STANDARD_2023)
-/* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(251.89f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(166.86f))};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-24.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(22.0f);
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 #endif

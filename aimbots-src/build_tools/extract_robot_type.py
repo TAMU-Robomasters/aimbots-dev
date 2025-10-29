@@ -18,19 +18,16 @@
 from SCons.Script import *
 
 ROBOT_TYPE_FILE     = "robot-type/robot_type.hpp"
-VALID_ROBOT_TYPES   = [ "STANDARD_2023",
-                        "STANDARD_BLASTOISE",
-                        "STANDARD_SQUIRTLE",
-                        "STANDARD_2025",
+VALID_ROBOT_TYPES   = [ #"STANDARD_2023",
+                        "STANDARD_JERRY",
+                        #"STANDARD_SQUIRTLE",
+                        "STANDARD_BALTHAZAR",
                         "AERIAL",
                         "ENGINEER",
-                        "SENTRY_BRAVO",
-                        "SENTRY_SWERVE",
+                        "SENTRY",
                         "HERO",
                         "DART",
                         "CVTEST_HAN",
-                        "CVTEST_LUKE",
-                        "CVTEST_CHEWIE",
                         "TURRET" ]
 
 def get_robot_type():

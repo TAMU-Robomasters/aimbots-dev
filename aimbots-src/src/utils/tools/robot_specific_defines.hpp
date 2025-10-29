@@ -19,19 +19,18 @@
 #include "robots/hero/hero_control_interface.hpp"
 #define ALL_HEROES
 
-#elif defined(TARGET_SENTRY_BRAVO) || defined(TARGET_SENTRY_SWERVE)
+#elif defined(TARGET_SENTRY)
 #include "robots/sentry/constants/sentry_general_constant.hpp"
 #include "robots/sentry/sentry_control_interface.hpp"
 #define TURRET_IMU
 #define ALL_SENTRIES
 
-#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || \
-    defined(TARGET_STANDARD_2025)
+#elif defined(TARGET_STANDARD_BALTHAZAR)  || defined(TARGET_STANDARD_JERRY)
 #include "robots/standard/constants/standard_general_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS
 
-#elif defined(TARGET_CVTEST_HAN) || defined(TARGET_CVTEST_CHEWIE) || defined(TARGET_CVTEST_LUKE)
+#elif defined(TARGET_CVTEST_HAN)
 #include "robots/testbench/constants/testbench_general_constants.hpp"
 #include "robots/testbench/testbench_control_interface.hpp"
 #define ALL_TESTBENCHES
