@@ -48,7 +48,7 @@ void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRol
 #endif
 }
 
-float camera_offset_angle = -4.7f;
+float camera_offset_angle = 0.0f;
 
 float gimbalYawDisplay = 0.0f;
 float gimbalPitchDisplay = 0.0f;
