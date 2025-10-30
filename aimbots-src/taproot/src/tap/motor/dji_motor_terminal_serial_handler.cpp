@@ -26,6 +26,7 @@
 #include "tap/algorithms/strtok.hpp"
 #include "tap/drivers.hpp"
 
+#include "dji_motor.hpp"
 #include "dji_motor_tx_handler.hpp"
 
 namespace tap
@@ -190,7 +191,8 @@ void DjiMotorTerminalSerialHandler::getMotorInfoToString(
     {
         outputStream << (DJI_MOTOR_TO_NORMALIZED_ID(motor->getMotorIdentifier()) + 1) << ". "
                      << motor->getName() << ": online: " << (motor->isMotorOnline() ? "yes" : "no")
-                     << ", enc: " << motor->getEncoderWrapped() << ", rpm: " << motor->getShaftRPM()
+                     << ", enc: " << motor->getInternalEncoder().getEncoder().getWrappedValue()
+                     << ", rpm: " << motor->getInternalEncoder().getShaftRPM()
                      << ", out des: " << motor->getOutputDesired() << modm::endl;
     }
 }

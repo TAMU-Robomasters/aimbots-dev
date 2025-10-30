@@ -26,23 +26,34 @@
 
 #include <cstdint>
 
+#include "tap/communication/sensors/encoder/encoder_interface.hpp"
+
 namespace tap::motor
 {
 class MotorInterface
 {
 public:
     virtual void initialize() = 0;
-    virtual int64_t getEncoderUnwrapped() const = 0;
-    virtual uint16_t getEncoderWrapped() const = 0;
-    virtual void resetEncoderValue() = 0;
-    virtual float getPositionUnwrapped() const = 0;
-    virtual float getPositionWrapped() const = 0;
+    virtual tap::encoder::EncoderInterface* getEncoder() const = 0;
     virtual void setDesiredOutput(int32_t desiredOutput) = 0;
     virtual bool isMotorOnline() const = 0;
     virtual int16_t getOutputDesired() const = 0;
     virtual int8_t getTemperature() const = 0;
     virtual int16_t getTorque() const = 0;
-    virtual int16_t getShaftRPM() const = 0;
+
+    [[deprecated]] virtual void resetEncoderValue() { this->getEncoder()->resetEncoderValue(); };
+    [[deprecated]] virtual float getPositionUnwrapped() const
+    {
+        return this->getEncoder()->getPosition().getUnwrappedValue();
+    };
+    [[deprecated]] virtual float getPositionWrapped() const
+    {
+        return this->getEncoder()->getPosition().getWrappedValue();
+    };
+    [[deprecated]] virtual int16_t getShaftRPM() const
+    {
+        return this->getEncoder()->getVelocity() / static_cast<float>(M_TWOPI) * 60.f;
+    };
 };
 
 }  // namespace tap::motor
