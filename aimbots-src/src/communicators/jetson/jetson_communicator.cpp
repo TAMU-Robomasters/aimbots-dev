@@ -4,8 +4,6 @@
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 
-#define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
 
 namespace src::Informants::Vision {
 
