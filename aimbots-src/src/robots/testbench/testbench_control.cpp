@@ -20,7 +20,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-// #include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
