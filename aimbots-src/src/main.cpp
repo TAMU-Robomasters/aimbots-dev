@@ -147,7 +147,6 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
-    drivers->cvCommunicator.initialize();
     drivers->kinematicInformant.recalibrateIMU(
         {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 #else
@@ -182,8 +181,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-
-    drivers->cvCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();
 #endif

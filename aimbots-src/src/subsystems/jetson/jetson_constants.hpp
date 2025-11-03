@@ -31,14 +31,14 @@
 #ifdef JETSON_COMPATIBLE // Currently all Jetson compatible robots use the same UART port
 
 #include <drivers.hpp>
-#include <utils/tools/common_types.hpp>
+#include "utils/tools/common_types.hpp"
 
-#define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
-#define INIT_UART() drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
+namespace src::Jetson {
 
 constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 constexpr uint32_t JETSON_BAUD_RATE = 115200;
 constexpr uint8_t jetsonMessageHeader = 'j';
 
-#endif
+} // namespace src::Jetson
+
+#endif // #ifdef JETSON_COMPATIBLE

@@ -20,7 +20,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
+// #include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
@@ -33,9 +33,12 @@
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/control/shooter.hpp"
+//
+#include "subsystems/jetson/jetson.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
+using namespace src::Jetson;
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -58,7 +61,14 @@ src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
+static constexpr size_t messageCount = 0;
+JetsonSubsystem<messageCount> jetson(
+    drivers(), 
+    { // Add the address of message objects here. Remember to update messageCount
 
+    }
+);
+ 
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
@@ -119,13 +129,14 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&gimbalChaseCommand},
+    {},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&gimbal);
+    drivers->commandScheduler.registerSubsystem(&jetson);
 
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }

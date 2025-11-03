@@ -17,13 +17,13 @@ public:
         }
         return false;
     }
-    void setData(uint8_t bytes[]) const {
-    data = * ( DataStruct * ) &bytes // memcopy
+    void setData(uint8_t bytes[]) {
+        data = * ( DataStruct * ) &bytes; // memcopy
         updateTimeStamp = tap::arch::clock::getTimeMilliseconds();
     }
-    const DataStruct& getData() {return data}
+    const DataStruct& getData() const {return data;}
 };
 
 } // namespace src::Informants::Vision
 
-#endif //#ifdef JETSON_COMPATIBLE 
+#endif // #ifdef JETSON_COMPATIBLE 

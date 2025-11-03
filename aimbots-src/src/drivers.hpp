@@ -43,7 +43,6 @@ public:
         : tap::Drivers(),
           controlOperatorInterface(this),
           magnetometer(),
-          cvCommunicator(this),
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
@@ -52,7 +51,6 @@ public:
 public:
     Control::OperatorInterface controlOperatorInterface;
     utils::Ist8310 magnetometer;
-    Informants::Vision::JetsonCommunicator cvCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
