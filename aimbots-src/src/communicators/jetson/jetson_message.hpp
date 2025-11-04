@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include "drivers.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "subsystems/jetson/jetson_constants.hpp"
 #include "data_channel.hpp"
@@ -17,17 +18,20 @@ because the can potentially write or read at the same time
 //TODO: think of better Namespace
 #ifdef JETSON_COMPATIBLE
 
-#define READ_BYTES(data, length) uartDriver.read(src::Jetson::JETSON_UART_PORT, data, length)
-#define WRITE_BYTES(data, length) uartDriver.write(src::Jetson::JETSON_UART_PORT, data, length)
+#define READ_BYTES(data, length) drivers->uart.read(src::Jetson::JETSON_UART_PORT, data, length)
+#define WRITE_BYTES(data, length) drivers->uart.write(src::Jetson::JETSON_UART_PORT, data, length)
 namespace src::Communication {
 
 class MessageFromJetson {
+protected:
     // all messages from the Jetson have the same header
     static constexpr uint8_t header = src::Jetson::jetsonMessageHeader; 
+    src::Drivers* drivers;
     uint8_t messageID;
-    tap::communication::serial::Uart uartDriver;
 public:
-    MessageFromJetson(uint8_t messageID) : messageID(messageID) {}
+    MessageFromJetson(src::Drivers* drivers, uint8_t messageID) 
+        : drivers(drivers), messageID(messageID)
+    {}
 
     uint8_t getID() const { return messageID; }
     virtual void processMessage() = 0;
@@ -38,7 +42,9 @@ class DataFromJetson : public MessageFromJetson {
     DataChannel<DataStruct> channel;
     alignas(DataStruct) uint8_t dataBytes[sizeof(DataStruct)];
 public:
-    DataFromJetson(uint8_t messageID) : MessageFromJetson(messageID) {}
+    DataFromJetson(src::Drivers* drivers, uint8_t messageID) 
+        : MessageFromJetson(drivers, messageID) 
+    {}
 
     void processMessage() {
         READ_BYTES(dataBytes, sizeof(DataStruct));
@@ -48,13 +54,18 @@ public:
 
 template <typename DataStruct>
 class QueryFromJetson : public MessageFromJetson {
+    static constexpr uint8_t devboardHeader = src::Jetson::devboardMessageHeader; // for sending
     DataStruct data;
 public:
-    QueryFromJetson(uint8_t messageID) : MessageFromJetson(messageID) {}
+    QueryFromJetson(src::Drivers* drivers, uint8_t messageID) 
+        : MessageFromJetson(drivers, messageID) 
+    {}
 
-    virtual DataStruct fetchResponseData() = 0;
+    virtual DataStruct fetchData() = 0;
     void processMessage() {
-        data = fetchResponseData();
+        data = fetchData();
+        WRITE_BYTES((uint8_t*) &devboardHeader, sizeof(devboardHeader));
+        WRITE_BYTES((uint8_t*) &messageID, sizeof(messageID)); 
         WRITE_BYTES((uint8_t*) &data, sizeof(DataStruct));
     }
 };

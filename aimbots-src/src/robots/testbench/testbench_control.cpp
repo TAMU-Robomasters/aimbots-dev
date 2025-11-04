@@ -9,7 +9,6 @@
 
 //
 #include "informants/kinematics/robot_frames.hpp"
-#include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 //
 #include "tap/control/command_mapper.hpp"
@@ -20,13 +19,11 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-// #include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
@@ -35,6 +32,7 @@
 #include "subsystems/shooter/control/shooter.hpp"
 //
 #include "subsystems/jetson/jetson.hpp"
+#include "communicators/jetson/messages/gimbal_angle_query.hpp"
 
 using namespace src::Chassis;
 using namespace src::Gimbal;
@@ -58,23 +56,23 @@ BarrelID currentBarrel = BarrelID::TURRET_17MM_1;
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
+// Define Jetson messages here -------------------------------------------
+src::Communication::GimbalQuery gimbalMessage(drivers(), 'g');
+
 // Define subsystems here ------------------------------------------------
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
-static constexpr size_t messageCount = 0;
+static constexpr size_t messageCount = 1;
 JetsonSubsystem<messageCount> jetson(
     drivers(), 
     { // Add the address of message objects here. Remember to update messageCount
-
+        &gimbalMessage
     }
 );
  
 // Robot Specific Controllers ------------------------------------------------
 GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
-
-// Ballistics Solver -------------------------------------------------------
-src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
 // Configs -----------------------------------------------------------------
 SnapSymmetryConfig defaultSnapConfig = {
@@ -105,20 +103,6 @@ ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTok
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
 
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(

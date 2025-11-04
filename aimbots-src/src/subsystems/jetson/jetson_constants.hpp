@@ -37,7 +37,8 @@ namespace src::Jetson {
 
 constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 constexpr uint32_t JETSON_BAUD_RATE = 115200;
-constexpr uint8_t jetsonMessageHeader = 'j';
+constexpr uint8_t jetsonMessageHeader = 'j'; // for receiving
+constexpr uint8_t devboardMessageHeader = 'd'; // for sending
 
 } // namespace src::Jetson
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <tap/architecture/clock.hpp>
+#include <cstring>
 
 #ifdef JETSON_COMPATIBLE 
 
@@ -18,7 +19,7 @@ public:
         return false;
     }
     void setData(uint8_t bytes[]) {
-        data = * ( DataStruct * ) &bytes; // memcopy
+        std::memcpy(&data, bytes, sizeof(DataStruct));
         updateTimeStamp = tap::arch::clock::getTimeMilliseconds();
     }
     const DataStruct& getData() const {return data;}

@@ -24,12 +24,13 @@ class JetsonMessageHandler {
     src::Drivers* drivers;
     std::array<MessageFromJetson* const, messageCount> jetsonMessages = {};
 public:
-    JetsonMessageHandler(const std::array<MessageFromJetson* const, messageCount>& jetsonMessages)
-    : jetsonMessages(jetsonMessages)
+    JetsonMessageHandler(src::Drivers* drivers,const std::array<MessageFromJetson* const, messageCount>& jetsonMessages)
+    : drivers(drivers),
+      jetsonMessages(jetsonMessages)
     {
         INIT_UART();
     };
-
+    
     void checkForMessage() {
         uint8_t header;
         READ(&header, 1);
