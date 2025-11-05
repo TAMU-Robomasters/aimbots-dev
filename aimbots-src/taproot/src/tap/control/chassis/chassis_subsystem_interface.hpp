@@ -55,7 +55,7 @@ public:
      *      where vz is rotational velocity. This is the velocity calculated from the chassis's
      *      encoders. Units: m/s
      */
-    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() const = 0;
+    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() = 0;
 
     /**
      * Transforms the chassis relative velocity of the form <vx, vy, vz> (where z is an

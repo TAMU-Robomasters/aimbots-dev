@@ -159,15 +159,38 @@ public:
         return mat * ratio;
     }
 
-    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override {
-        Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
+    Matrix<float, 3, 1> getActualVelocityChassisRelative() override {
+        #ifndef SWERVE
+            Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
 
-        wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
-        wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
-        wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
-        wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+            wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
+            wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
+            wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
+            wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
 
-        return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
+            return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
+        #endif
+        #ifdef SWERVE
+            Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
+
+            // yaw values in radians
+            float left_front_yaw_actual  = yawToRad(motors[LF][1]->getEncoderWrapped(),  LEFT_FRONT_YAW_OFFSET);
+            float right_front_yaw_actual = yawToRad(motors[RF][1]->getEncoderWrapped(), RIGHT_FRONT_YAW_OFFSET);
+            float left_back_yaw_actual   = yawToRad(motors[LB][1]->getEncoderWrapped(),  LEFT_BACK_YAW_OFFSET);
+            float right_back_yaw_actual  = yawToRad(motors[RB][1]->getEncoderWrapped(), RIGHT_BACK_YAW_OFFSET);
+
+            wheelVelocities[2*LF+0][0] = leftFrontWheel.getShaftRPM()*std::cos(left_front_yaw_actual);
+            wheelVelocities[2*LF+1][0] = leftFrontWheel.getShaftRPM()*std::sin(left_front_yaw_actual);
+            wheelVelocities[2*RF+0][0] = rightFrontWheel.getShaftRPM()*std::cos(right_front_yaw_actual);
+            wheelVelocities[2*RF+1][0] = rightFrontWheel.getShaftRPM()*std::sin(right_front_yaw_actual);
+            wheelVelocities[2*LB+0][0] = leftBackWheel.getShaftRPM()*std::cos(left_back_yaw_actual);
+            wheelVelocities[2*LB+1][0] = leftBackWheel.getShaftRPM()*std::sin(left_back_yaw_actual);
+            wheelVelocities[2*RB+0][0] = rightBackWheel.getShaftRPM()*std::cos(right_back_yaw_actual);
+            wheelVelocities[2*RB+1][0] = rightBackWheel.getShaftRPM()*std::sin(right_back_yaw_actual);
+            static constexpr float ratio = 2.0f * M_PI * CHASSIS_GEARBOX_RATIO / 60.0f;
+            return forward_swerve_kinematics * (ratio * wheelVelocities);
+        #endif
+        
     }
 
     bool getTokyoDrift() const;
@@ -201,7 +224,7 @@ public:
 protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;
     #ifdef SWERVE
-        Matrix<float, 3, 4*DRIVEN_WHEEL_COUNT> forward_swerve_kinematics;
+        Matrix<float, 3, 2*DRIVEN_WHEEL_COUNT> forward_swerve_kinematics;
     #endif
 
 public:
