@@ -200,6 +200,9 @@ public:
 
 protected:
     Matrix<float, 3, 4> wheelVelToChassisVelMat;
+    #ifdef SWERVE
+        Matrix<float, 3, 4*DRIVEN_WHEEL_COUNT> forward_swerve_kinematics;
+    #endif
 
 public:
     inline int16_t getLeftFrontRpmActual() const /*override*/ { return leftFrontWheel.getShaftRPM(); }
