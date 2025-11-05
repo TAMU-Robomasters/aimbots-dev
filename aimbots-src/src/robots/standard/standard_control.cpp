@@ -143,10 +143,10 @@ SnapSymmetryConfig defaultSnapConfig = {
 };
 
 TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
+    .translationalSpeedMultiplier = 0.75f,
     .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,  // 0.75
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedFractionOfMax = 1.0f,  // 0.75
+    .rotationalSpeedMultiplierWhenTranslating = 0.75f,
     .rotationalSpeedIncrement = 30.0f,
 };
 
