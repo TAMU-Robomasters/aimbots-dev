@@ -211,11 +211,11 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
             overshootPitchMotorDisplay = 67.0f;
         } else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_HIGH + 0.0873) { // baconsizzle notes
-            gimbal->setDesiredPitchMotorOutput(i, -10000 * sgn(kGRAVITY));
-            overshootPitchMotorDisplay = -10000 * sgn(kGRAVITY);
+            gimbal->setDesiredPitchMotorOutput(i, -10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = -10000 /** sgn(kGRAVITY)*/;
         }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_LOW - 0.0873){
-            gimbal->setDesiredPitchMotorOutput(i, 10000 * sgn(kGRAVITY));
-            overshootPitchMotorDisplay = 10000 * sgn(kGRAVITY);
+            gimbal->setDesiredPitchMotorOutput(i, 10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = 10000 /** sgn(kGRAVITY)*/;
         }
     }
 }

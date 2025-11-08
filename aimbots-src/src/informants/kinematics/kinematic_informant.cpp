@@ -127,6 +127,7 @@ Vector3f IMUAnglesDisplay;
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    
 
     IMUAnglesDisplay = IMUAngles;
 
