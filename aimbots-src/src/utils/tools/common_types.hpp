@@ -49,11 +49,13 @@ int sgn(T val) {
 using DJIMotor = tap::mock::DjiMotorMock;
 #else
 #include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 using DJIMotor = tap::motor::DjiMotor;
+using DJIMotorEncoder = tap::motor::DjiMotorEncoder;
 #endif
 
 static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotorEncoder::ENC_RESOLUTION;
 }
 
 enum class AngleUnit : uint8_t {
