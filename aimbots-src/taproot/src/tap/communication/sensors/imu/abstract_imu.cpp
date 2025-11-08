@@ -31,11 +31,24 @@ void AbstractIMU::initialize(float sampleFrequency, float mahonyKp, float mahony
     readTimeout.restart(1'000'000 / sampleFrequency);
 }
 
+
 void AbstractIMU::requestCalibration()
 {
     if (imuState == ImuState::IMU_NOT_CALIBRATED || imuState == ImuState::IMU_CALIBRATED)
     {
-        resetOffsets();
+        data.gyroOffsetRaw[ImuData::X] = 0;
+        data.gyroOffsetRaw[ImuData::Y] = 0;
+        data.gyroOffsetRaw[ImuData::Z] = 0;
+        data.accOffsetRaw[ImuData::X] = 0;
+        data.accOffsetRaw[ImuData::Y] = 0;
+        data.accOffsetRaw[ImuData::Z] = 0;
+        data.gyroDegPerSec[ImuData::X] = 0;
+        data.gyroDegPerSec[ImuData::Y] = 0;
+        data.gyroDegPerSec[ImuData::Z] = 0;
+        data.accG[ImuData::X] = 0;
+        data.accG[ImuData::Y] = 0;
+        data.accG[ImuData::Z] = 0;
+        lastCalibrationEulerAngles = calibrationEulerAngles; // WILL BE LOST IN TAPROOT FUNCTION REGEN
         calibrationSample = 0;
         imuState = ImuState::IMU_CALIBRATING;
     }
@@ -95,6 +108,7 @@ void AbstractIMU::computeOffsets()
         imuData.accOffsetRaw = imuData.accOffsetRaw / offsetSampleCount;
         imuState = ImuState::IMU_CALIBRATED;
         mahonyAlgorithm.reset();
+        mahonyAlgorithm.setCalibrationEuler(lastCalibrationEulerAngles);  // WILL BE LOST IN TAPROOT FUNCTION REGEN
     }
 }
 

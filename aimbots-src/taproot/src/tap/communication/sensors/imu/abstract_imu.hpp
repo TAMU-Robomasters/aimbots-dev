@@ -31,6 +31,7 @@
 #include "tap/architecture/periodic_timer.hpp"
 #include "tap/communication/sensors/imu/imu_interface.hpp"
 #include "tap/util_macros.hpp"
+#include "modm/math/geometry/vector3.hpp" // LOST ON TAPROOT REGEN
 
 namespace tap::communication::sensors::imu
 {
@@ -55,13 +56,29 @@ public:
 
     virtual void initialize(float sampleFrequency, float mahonyKp, float mahonyKi);
 
-    /**
+   /**
      * When this function is called, the bmi088 enters a calibration state during which time,
      * gyro/accel calibration offsets will be computed and the mahony algorithm reset. When
-     * calibrating, angle, accelerometer, and gyroscope values will return 0. When calibrating
-     * the BMI088 should be level, otherwise the IMU will be calibrated incorrectly.
+     * calibrating, angle, accelerometer, and gyroscope values will return 0. This function takes
+     * in a vector of Euler angles that allows the user to specify the orientation of the IMU
+     * during calibration.
+     *
+     *     _____________________
+     *     |                   |
+     *     |         ^ y       |
+     *     |         |         |
+     *     |         |         |
+     *     |         R ---> x  |
+     *     |     ROBOMASTER    |
+     *     |                   |
+     *     |                   |
+     *     |                   |
+     *     |                   |
+     *     |___________________|
      */
-    virtual void requestCalibration() override;
+    virtual void requestCalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f} ) override; // added in manually WILL BE LOST ON TAPROOT REGEN
+
+
 
     /**
      * Call this function at same rate as intialized sample frequency.
@@ -131,6 +148,7 @@ protected:
 
     ImuState imuState = ImuState::IMU_NOT_CONNECTED;
     int calibrationSample = 0;
+    modm::Vector3f lastCalibrationEulerAngles; // added in manually WILL BE LOST ON TAPROOT REGEN
     int offsetSampleCount = 1000;
 
     ImuData imuData;
