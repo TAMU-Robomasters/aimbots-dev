@@ -32,22 +32,14 @@ void AbstractIMU::initialize(float sampleFrequency, float mahonyKp, float mahony
 }
 
 
-void AbstractIMU::requestCalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f} )
+void AbstractIMU::requestCalibration(modm::Vector3f calibrationEulerAngles)
 {
     if (imuState == ImuState::IMU_NOT_CALIBRATED || imuState == ImuState::IMU_CALIBRATED)
     {
-        data.gyroOffsetRaw[ImuData::X] = 0;
-        data.gyroOffsetRaw[ImuData::Y] = 0;
-        data.gyroOffsetRaw[ImuData::Z] = 0;
-        data.accOffsetRaw[ImuData::X] = 0;
-        data.accOffsetRaw[ImuData::Y] = 0;
-        data.accOffsetRaw[ImuData::Z] = 0;
-        data.gyroDegPerSec[ImuData::X] = 0;
-        data.gyroDegPerSec[ImuData::Y] = 0;
-        data.gyroDegPerSec[ImuData::Z] = 0;
-        data.accG[ImuData::X] = 0;
-        data.accG[ImuData::Y] = 0;
-        data.accG[ImuData::Z] = 0;
+        imuData.gyroOffsetRaw = tap::algorithms::transforms::Vector(0, 0, 0);
+        imuData.accOffsetRaw = tap::algorithms::transforms::Vector(0, 0, 0);
+        imuData.gyroRadPerSec = tap::algorithms::transforms::Vector(0, 0, 0);
+        imuData.accG = tap::algorithms::transforms::Vector(0, 0, 0);
         lastCalibrationEulerAngles = calibrationEulerAngles; // WILL BE LOST IN TAPROOT FUNCTION REGEN
         calibrationSample = 0;
         imuState = ImuState::IMU_CALIBRATING;
