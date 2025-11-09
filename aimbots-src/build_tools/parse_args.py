@@ -25,8 +25,9 @@ SIM_BUILD_TARGET_ACCEPTED_ARGS      = ["build-sim", "run-sim"]
 HARDWARE_BUILD_TARGET_ACCEPTED_ARGS = ["build", "run", "size", "gdb", "all"]
 VALID_BUILD_PROFILES                = ["debug", "release", "fast"]
 VALID_PROFILING_TYPES               = ["true", "false"]
+VALID_WARNING_TYPES = ["true", "false"]
 
-USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>]\n\
+USAGE = "Usage: scons <target> [profile=<debug|release|fast>] [robot=TARGET_<ROBOT_TYPE>] [profiling=<true|false>] [warnings=<true|false>]\n\
     \"<target>\" is one of:\n\
         - \"build\": build all code for the hardware platform.\n\
         - \"run\": build all code for the hardware platform, and deploy it to the board via a connected ST-Link.\n\
@@ -46,6 +47,8 @@ def parse_args():
         "BUILD_PROFILE": "",
         "PROFILING": "",
         "ROBOT_TYPE": "",
+        # CHANGED:
+        "WARNINGS": "",
     }
     if len(COMMAND_LINE_TARGETS) > CMD_LINE_ARGS:
         raise Exception("You did not enter the correct number of arguments.\n" + USAGE)
@@ -73,6 +76,10 @@ def parse_args():
     args["PROFILING"] = ARGUMENTS.get("profiling", "false")
     if args["PROFILING"] not in VALID_PROFILING_TYPES:
         raise Exception("You specified an invalid profiling type.\n" + USAGE)
+    
+    args["WARNINGS"] = ARGUMENTS.get("warnings", "true")
+    if args["WARNINGS"] not in VALID_WARNING_TYPES:
+        raise Exception("You specified an invalid warning type.\n" + USAGE)
 
     # Extract the robot type from either the command line or robot_type.hpp
     args["ROBOT_TYPE"] = extract_robot_type.get_robot_type()

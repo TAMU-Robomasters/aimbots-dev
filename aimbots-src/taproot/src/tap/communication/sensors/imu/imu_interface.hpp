@@ -108,7 +108,7 @@ public:
      * gyro/accel calibration offsets will be computed and the mahony algorithm reset. When
      * calibrating, angle, accelerometer, and gyroscope values will return 0.
      */
-    virtual void requestCalibration() = 0;
+    virtual void requestCalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f}) = 0;  // added in manually WILL BE LOST ON TAPROOT REGEN
 };
 }  // namespace tap::communication::sensors::imu
 

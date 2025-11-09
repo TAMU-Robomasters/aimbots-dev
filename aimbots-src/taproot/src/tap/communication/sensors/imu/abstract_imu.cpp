@@ -32,7 +32,7 @@ void AbstractIMU::initialize(float sampleFrequency, float mahonyKp, float mahony
 }
 
 
-void AbstractIMU::requestCalibration()
+void AbstractIMU::requestCalibration(modm::Vector3f calibrationEulerAngles = {0.0f,0.0f,0.0f} )
 {
     if (imuState == ImuState::IMU_NOT_CALIBRATED || imuState == ImuState::IMU_CALIBRATED)
     {
