@@ -25,9 +25,11 @@ void JetsonCommunicator::initialize() {
 
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 int displayBufIndex = 0;
+size_t nextByteIndexDisplay = 0;
+uint32_t timeDisplay = 0;
 
-float targetXDisplay = 0;
-float targetYDisplay = 0;
+float targetYawDisplay = 0;
+float targetPitchDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 
 float fieldRelativeYawAngleDisplay = 0;
@@ -52,10 +54,15 @@ alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    timeDisplay = currTime;
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
+    for (size_t i = 0; i < sizeof(JetsonMessage); i++) {
+        rawSerialDisplay[i] = rawSerialBuffer[i];
+    }
     if (bytesRead != 1) return;
 
+    nextByteIndexDisplay = 1;
     // We've successfully read a new byte from the Jetson, so we can restart this.
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
@@ -97,19 +104,14 @@ void JetsonCommunicator::updateSerial() {
                     lastMsgTimeDisplay = currTime;
                 }
 
-                targetXDisplay = lastMessage.targetX;
-                targetYDisplay = lastMessage.targetY;
+                targetYawDisplay = modm::toDegree(lastMessage.yaw);
+                targetPitchDisplay = modm::toDegree(lastMessage.pitch);
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    // position is relative to camera
-                    visionTargetPosition.setX(lastMessage.targetX);
-                    visionTargetPosition.setY(lastMessage.targetY);
-                    visionTargetPosition.setZ(lastMessage.targetZ);
-
-                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
+                    // position is relative to camerap
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 

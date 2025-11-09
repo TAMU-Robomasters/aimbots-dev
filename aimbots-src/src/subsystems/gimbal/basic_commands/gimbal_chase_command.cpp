@@ -73,55 +73,27 @@ void GimbalChaseCommand::execute() {
 
     float targetYawAxisAngle = 0.0f;
     float targetPitchAxisAngle = 0.0f;
+    
+    float targetYawChangeAngle = 0.0f;
+    float targetPitchChangeAngle = 0.0f;
+
+    float currFieldRelativeYawAngle = 0.0f;
+    float currFieldRelativePitchAngle = 0.0f;
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
-    // projectileSpeed = 30.0f;
 
-    if (projectileSpeed == 0) {
-        projectileSpeed = 25;
-    }
 
-    predictedProjectileSpeedDisplay = projectileSpeed;
 
-    std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
+    if (drivers->cvCommunicator.isJetsonOnline()) {
+        targetYawChangeAngle = drivers->cvCommunicator.getLastValidMessage().yaw;
+        targetPitchChangeAngle = drivers->cvCommunicator.getLastValidMessage().pitch;
 
-    if (ballisticsSolution != std::nullopt) {
-        // Convert ballistics solutions to field-relative angles
-        uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
+        currFieldRelativeYawAngle = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+        currFieldRelativePitchAngle = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
 
-        std::pair<float, float> fieldTurretAngleAtFrameDelay =
-            drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
 
-        // yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
-        // pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
-        yawAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.first);
-        pitchAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.second);
-
-        yawRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-        pitchRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-
-        targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;
-        // targetYawAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->yawAngle;
-        // targetPitchAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->pitchAngle;
-
-        bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
-        bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
-        bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
-
-        // Comment when Z axis stops being silly
-        // targetPitchAxisAngle =
-        //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
-
-        controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
-        controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
+        controller->setTargetYaw(AngleUnit::Radians, currFieldRelativeYawAngle + targetYawChangeAngle);
+        controller->setTargetPitch(AngleUnit::Radians, currFieldRelativePitchAngle + targetPitchChangeAngle);
 
         // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));

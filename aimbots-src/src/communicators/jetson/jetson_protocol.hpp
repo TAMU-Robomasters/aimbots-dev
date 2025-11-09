@@ -12,14 +12,12 @@ static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
 
 struct JetsonMessage {
     uint8_t magic;
-    float targetX;
-    float targetY;
-    float targetZ;
-    uint8_t delay;  // ms
+    float pitch;
+    float yaw;
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 10, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::Vision

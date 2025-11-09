@@ -123,15 +123,7 @@ GimbalPatrolConfig patrolConfig = {
     .pitchPatrolOffset = -modm::toRadian(2.0f),
 };
 
-// Match Controllers ------------------------------------------------
-SentryMatchFiringControlCommand matchFiringControlCommand(
-    drivers(),
-    &feeder,
-    &shooter,
-    &refHelper,
-    &ballisticsSolver,
-    &gimbalFieldRelativeController,
-    chassisMatchState);
+
 
 SentryMatchChassisControlCommand matchChassisControlCommand(
     drivers(),
@@ -273,7 +265,7 @@ HoldCommandMapping leftSwitchMid(
 HoldCommandMapping leftSwitchUp(
     drivers(),
      //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
-    {&chassisTokyoCommand, &gimbalToggleAimCommand
+    {/*&chassisTokyoCommand*/ &gimbalChaseCommand
      /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
