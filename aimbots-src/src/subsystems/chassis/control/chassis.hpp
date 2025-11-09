@@ -187,7 +187,7 @@ public:
             wheelVelocities[2*LB+1][0] = leftBackWheel.getShaftRPM()*std::sin(left_back_yaw_actual);
             wheelVelocities[2*RB+0][0] = rightBackWheel.getShaftRPM()*std::cos(right_back_yaw_actual);
             wheelVelocities[2*RB+1][0] = rightBackWheel.getShaftRPM()*std::sin(right_back_yaw_actual);
-            static constexpr float ratio = 2.0f * M_PI * CHASSIS_GEARBOX_RATIO / 60.0f;
+            static constexpr float ratio = (CHASSIS_GEARBOX_RATIO * 0.10668 * M_PI / 60.0f); //4.2 in diameter wheels (0.10668m), 60 to convert from rpm to rps
             return forward_swerve_kinematics * (ratio * wheelVelocities);
         #endif
         

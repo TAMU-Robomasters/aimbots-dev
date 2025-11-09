@@ -124,7 +124,8 @@
     "xlocbuf": "cpp",
     "xlocinfo": "cpp",
     "xmemory": "cpp",
-    "xtr1common": "cpp"
+    "xtr1common": "cpp",
+    "xstddef": "cpp"
   },
   "search.exclude": {
     "**/node_modules": true,
