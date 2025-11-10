@@ -88,6 +88,8 @@ float pitchVelocityIDebug= 0.0f;
 float pitchVelocityDDebug= 0.0f;
 bool updatePitchVelocityPIDsDebug = false;
 
+float chassisRelativeVelocityFeedForwardTunning = 0.0f;
+
 void GimbalFieldRelativeController::runYawController(
     std::optional<float> velocityLimit) {  // using cascade controller for yaw
 
@@ -199,8 +201,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
 
 
         float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-                YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+            sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(chassisRelativeVelocityTarget),
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
 

@@ -42,8 +42,8 @@ void GimbalVelocityTunningCommand::execute() {
 
     controller->setTargetVelocityYaw(AngleUnit::Degrees, yawTargetVelocity);
     controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
-    controller->runYawVelocityController(5.0f);
-    controller->runPitchVelocityController(5.0f);
+    controller->runYawVelocityController();
+    controller->runPitchVelocityController();
 }
 
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second

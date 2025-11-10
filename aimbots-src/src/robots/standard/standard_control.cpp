@@ -160,12 +160,12 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 10.0f,
+    .velocityAmplitudeDegreesPerSec = 30.0f,
     .frequencyHz = .2f,
 };
 
 GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 10.0f,
+    .velocityAmplitudeDegreesPerSec = 30.0f,
     .frequencyHz = .2f,
 };
 
@@ -271,6 +271,7 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
     {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    /*{&gimbalPositionTunningCommand},*/
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper

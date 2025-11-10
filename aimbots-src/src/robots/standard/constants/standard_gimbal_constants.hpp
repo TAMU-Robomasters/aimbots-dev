@@ -28,10 +28,14 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(260.11f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(298.25f))};
+// LOW should be lesser than HIGH, otherwise switch the motor direction
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-30.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
-// LOW should be lesser than HIGH, otherwise switch the motor direction
+/* Values obtain by setting the motor to different digital voltage values and
+taking the average of the actually chassis relative velocities and finding best fit line*/ 
+static float chassisRelativeYawFeedforward(float velocity) {return (velocity + 3.6566) / 0.0013;}
+
 
 #elif defined(TARGET_STANDARD_SQUIRTLE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
@@ -104,7 +108,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 15.0f,  // 30
+    .kp = 14.0f,  // 30
     .ki = 0.0f,
     .kd = 0.2f,
     .maxICumulative = 1.0f,
@@ -133,9 +137,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 600.0f,  
-    .ki = 120.0f,   
-    .kd = 0.0f, 
+    .kp = 800.0f,  
+    .ki = 50.0f,   
+    .kd = 0.5f, 
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -166,7 +170,7 @@ static constexpr float CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD = 1.0f;
 static constexpr float CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION = 0.0f;
 
 //!!! this K works for standard 25 !!!!
-static constexpr float kGRAVITY = 1500.0f;  // Negative because weight is behind pitch motor
+static constexpr float kGRAVITY = -1500.0f;  // Negative because weight is behind pitch motor
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 // clang-format off
