@@ -128,10 +128,11 @@ void JetsonCommunicator::updateSerial() {
 
 				change_in_position_magnitude = (visionTargetPosition - lastVisionTargetPosition).getLength();
 
-				if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude < .1) {
+                float position_err_threshold = 0.4;
+				if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude < position_err_threshold) {
 					visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
 					reset = 0;
-				} else if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude >= .1){
+				} else if (lastMessage.cvState >= CVState::FOUND && change_in_position_magnitude >= position_err_threshold){
 					visionDataConverter.reset(lastMessage.targetX, lastMessage.targetY, lastMessage.targetZ);
 					reset = 2;
 				}

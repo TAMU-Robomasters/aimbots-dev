@@ -66,6 +66,8 @@ float kinematicPitchAngleDisplay = 0;
 
 float speedTarget = 0.0f;
 
+float yawMotorOutputDisplay = 0.0f;
+
 
 // for tunning PID system through Ozone
 float yawVelocityPDebug = 0.0f;
@@ -168,6 +170,7 @@ void GimbalFieldRelativeController::runYawController(
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
+        yawMotorOutputDisplay = velocityFeedforward + velocityControllerOutput;
 
         gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     }

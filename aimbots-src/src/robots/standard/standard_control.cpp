@@ -23,6 +23,7 @@
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_follow_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 //
@@ -182,6 +183,13 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
+
+ChassisFollowGimbalCommand chassisFollowGimbalCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultSnapConfig);
+
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
@@ -270,6 +278,7 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
+    //
     {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     /*{&gimbalPositionTunningCommand},*/
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
@@ -277,7 +286,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisToggleDriveCommand, &gimbalChaseCommand},
+    {/*&chassisTokyoCommand,*/ &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only and closes hopper

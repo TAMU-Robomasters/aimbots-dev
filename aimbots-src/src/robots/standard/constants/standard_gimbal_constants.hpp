@@ -108,16 +108,16 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // CASCADE PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 14.0f,  // 30
+    .kp = 25.0f,  // 30
     .ki = 0.0f,
     .kd = 0.2f,
     .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .maxOutput = 1E3f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0175f, // 1 degs bucko$
+    .errDeadzone = 0.0f, // 1 degs bucko$
     .errorDerivativeFloor = 0.0f,
 };
 

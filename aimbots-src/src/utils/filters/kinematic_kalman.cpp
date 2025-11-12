@@ -4,6 +4,8 @@
 // TODO: check if everything is numerically stable with the matrix and vector calculations
 using namespace src::Utils::MatrixHelper;
 
+// TODO reset kalman here
+
 namespace src::Utils::Filters {
 
 // watchable variables

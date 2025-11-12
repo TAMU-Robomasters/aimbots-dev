@@ -5,9 +5,9 @@
 namespace src::Informants::Vision {
 VisionDataConversion::VisionDataConversion(src::Drivers* drivers)
     : drivers(drivers),
-      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f),
-      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f),
-      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 1.0f, 2.0f)  //
+      XPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 5.5f, 2.0f),
+      YPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 5.5f, 2.0f),
+      ZPositionFilter(Vector3f(0, 0, 0), KF_P, KF_H, KF_R, 2.0f, 2.0f)  //
 {}
 
 // watchable variables
@@ -30,7 +30,7 @@ uint32_t currentTimeDisplay = 0;
 uint32_t lastFrameCaptureDisplay = 0;
 
 uint32_t plateTimeOffsetDisplay = 1;
-uint32_t forwardProjectionOffset_uS = 0;
+uint32_t forwardProjectionOffset_uS = 170'000;
 
 float previousPositionMag = 0;
 
@@ -178,7 +178,10 @@ PlateKinematicState VisionDataConversion::getCurrentPlateEstimation() const {
     // kf prediction
     Vector3f xPlate = XPositionFilter.getFuturePrediction(totalForwardProjectionTime);
     Vector3f yPlate = YPositionFilter.getFuturePrediction(totalForwardProjectionTime);
-    Vector3f zPlate = ZPositionFilter.getFuturePrediction(totalForwardProjectionTime);
+
+    // TODO clean up all code to assume a static Z value
+    // TODO smooth out measurements using kalman filter
+    Vector3f zPlate = Vector3f(currTransformedPosition.position.getZ(), 0, 0);
 
     targetPositionXFutureDisplay = xPlate.getX();
     targetVelocityXFutureDisplay = xPlate.getY();
