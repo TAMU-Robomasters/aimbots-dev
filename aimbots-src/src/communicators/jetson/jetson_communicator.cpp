@@ -15,7 +15,8 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-      lastMessage()
+      lastMessage(),
+      odometryMessageToJetson({EMBEDDED_MESSAGE_MAGIC, 0.0f, 0.0f, 0.0f})
 {}
 
 void JetsonCommunicator::initialize() {
@@ -35,6 +36,12 @@ float chassisRelativePitchAngleDisplay = 0;
 
 int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
+
+uint8_t messageTypeDisplay = 0;
+
+float odoXDisplay = 0;
+float odoYDisplay = 0;
+float odoThetaDisplay = 0;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
@@ -59,9 +66,6 @@ void JetsonCommunicator::updateSerial() {
     // We've successfully read a new byte from the Jetson, so we can restart this.
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
-    displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
-    displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
-
     switch (currentSerialState) {
         // ...looking for message start...
         case JetsonCommunicatorSerialState::SearchingForMagic: {
@@ -75,8 +79,40 @@ void JetsonCommunicator::updateSerial() {
             // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
             // we wouldn't have gotten this far.
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
+                currentSerialState = JetsonCommunicatorSerialState::HandleMessageType;
+            }
+            break;
+        }
+        // ...received packet from Jetson, decide what to do
+        case JetsonCommunicatorSerialState::HandleMessageType: {
+            uint8_t messageType = rawSerialBuffer[nextByteIndex];
+            messageTypeDisplay = messageType;
+            if (messageType == JETSON_LOCALIZATION_MESSAGE_HEADER) {
+                nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
             }
+            else if (messageType == JETSON_ODOMETRY_QUERY) { // Respond to Query
+                odometryMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
+                odometryMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+                odometryMessageToJetson.theta = drivers->kinematicInformant.getGimbalIMUAngle(src::Informants::YAW_AXIS, AngleUnit::Radians);
+
+                odoXDisplay = odometryMessageToJetson.x;
+                odoYDisplay = odometryMessageToJetson.y;
+                odoThetaDisplay = odometryMessageToJetson.theta;
+
+                // Send data to Jetson
+                WRITE((uint8_t*)&odometryMessageToJetson, sizeof(odometryMessageToJetson));
+
+                // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            }
+
+            // restart everything if nothing matches
+            else {
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            } 
             break;
         }
         // ...found message start, assemble message...
@@ -125,8 +161,6 @@ void JetsonCommunicator::updateSerial() {
                 // As we've received a full message, reset the byte index and go back to searching for the magic number.
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
-            } else {
-                rawSerialDisplay[nextByteIndex] = rawSerialBuffer[nextByteIndex];
             }
 
             break;
@@ -141,6 +175,10 @@ void JetsonCommunicator::updateSerial() {
 
 PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
     return visionDataConverter.getPlatePrediction(dt);
+}
+
+modm::Location2D<float> JetsonCommunicator::getLocationEstimate() const {
+    return modm::Location2D(lastMessage.x, lastMessage.y, lastMessage.theta);
 }
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }

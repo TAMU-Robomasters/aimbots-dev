@@ -482,6 +482,10 @@ void KinematicInformant::updateChassisIMUAngles() {
     chassisAngularState[X_AXIS].updateFromVelocity(chassisAngularVelocities[X_AXIS], false);
     chassisAngularState[Y_AXIS].updateFromVelocity(chassisAngularVelocities[Y_AXIS], false);
     chassisAngularState[Z_AXIS].updateFromVelocity(chassisAngularVelocities[Z_AXIS], false);
+
+    gimbalAngularState[X_AXIS].updateFromPosition(IMUAngles[X_AXIS]);
+    gimbalAngularState[Y_AXIS].updateFromPosition(IMUAngles[Y_AXIS]);
+    gimbalAngularState[Z_AXIS].updateFromPosition(IMUAngles[Z_AXIS]);
 }
 
 float KinematicInformant::getChassisIMUAngle(AngularAxis axis, AngleUnit unit) {

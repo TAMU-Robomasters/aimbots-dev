@@ -3,6 +3,8 @@
 #include <tap/architecture/timeout.hpp>
 #include <tap/util_macros.hpp>
 #include <utils/tools/common_types.hpp>
+#include <modm/math/geometry/location_2d.hpp>
+
 
 #include "informants/kinematics/enemy_data_conversion.hpp"
 
@@ -16,7 +18,8 @@ namespace src::Informants::Vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
-    AssemblingMessage,
+    HandleMessageType,
+    AssemblingMessage
 };
 
 class JetsonCommunicator {
@@ -33,6 +36,8 @@ public:
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
+
+    modm::Location2D<float> getLocationEstimate() const;
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
@@ -56,6 +61,9 @@ private:
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
     JetsonMessage lastMessage;
+
+    EmbeddedOdometryMessage odometryMessageToJetson;
+
     uint32_t lastFoundTargetTime;
 
     PlateKinematicState lastPlateKinematicState;
