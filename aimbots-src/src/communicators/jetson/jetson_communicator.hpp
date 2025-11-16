@@ -16,7 +16,13 @@ namespace src::Informants::Vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
-    AssemblingMessage,
+    HandleMessageType,
+    AssemblingMessage
+};
+
+struct AutoAimAngles {
+    float yaw;
+    float pitch;
 };
 
 class JetsonCommunicator {
@@ -33,6 +39,8 @@ public:
     inline JetsonMessage const& getLastValidMessage() const { return lastMessage; }
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
+
+    AutoAimAngles getAutoAimAngles() const;
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
@@ -56,6 +64,7 @@ private:
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
     JetsonMessage lastMessage;
+    EmbeddedTransformationMessage transformationMessageToJetson;
     uint32_t lastFoundTargetTime;
 
     PlateKinematicState lastPlateKinematicState;
