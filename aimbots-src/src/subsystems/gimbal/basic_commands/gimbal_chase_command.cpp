@@ -82,14 +82,14 @@ void GimbalChaseCommand::execute() {
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
 
-
-
-    if (drivers->cvCommunicator.isJetsonOnline()) {
-        src::Informants::Vision::AutoAimAngles desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
-
+    src::Informants::Vision::AutoAimAngles desiredAngles = {0.0f, 0.0f};
+    if (drivers->cvCommunicator.isJetsonOnline()) { 
+        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target
+            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();   
+        }
         controller->setTargetYaw(AngleUnit::Radians, desiredAngles.yaw);
         controller->setTargetPitch(AngleUnit::Radians, desiredAngles.pitch);
-
+    
         // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
         controller->runYawController(5.0f);
