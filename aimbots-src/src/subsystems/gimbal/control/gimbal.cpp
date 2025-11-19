@@ -85,7 +85,7 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue()));
+            getEncoderWrapped(yawMotors[yawDisplayMotorIdx]);
         otherYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getWrappedValue()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
@@ -107,7 +107,7 @@ void GimbalSubsystem::refresh() {
         }
         pitchOnlineCount++;
 
-        int64_t currentPitchEncoderPosition = pitchMotors[i]->getEncoder()->getPosition().getWrappedValue();
+        int64_t currentPitchEncoderPosition = getEncoderWrapped(pitchMotors[i]); // CHANGED HERE
 
         // https://www.desmos.com/calculator/fydwmos1xr
         float wrappedPitchAxisAngle =
@@ -121,7 +121,7 @@ void GimbalSubsystem::refresh() {
         // DEBUG VARS //
         ////////////////
         currentPitchMotorAngleDisplay =
-            modm::toDegree(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getPosition().getWrappedValue()/*DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getEncoder())*/);
+            modm::toDegree(getEncoderWrapped(pitchMotors[pitchDisplayMotorIdx])/*DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getEncoder())*/);
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
 
         // flush the desired output to the motor

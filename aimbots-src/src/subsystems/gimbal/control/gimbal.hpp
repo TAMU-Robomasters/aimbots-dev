@@ -182,12 +182,12 @@ public:
     }
 
     inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoder()->getPosition().getWrappedValue() /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
+        return (yawMotors[YawIdx]->isMotorOnline()) ? getEncoderWrapped(yawMotors[YawIdx]) //CHANGED HERE /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
     inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
         return (pitchMotors[PitchIdx]->isMotorOnline())
-                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoder()->getPosition().getWrappedValue())
+                   ? DJIEncoderValueToRadians(getEncoderWrapped(pitchMotors[PitchIdx]))
                    : 0.0f;
     }
 

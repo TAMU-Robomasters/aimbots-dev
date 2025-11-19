@@ -58,6 +58,10 @@ static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
     return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotorEncoder::ENC_RESOLUTION;
 }
 
+static inline float getEncoderWrapped(const DJIMotor* motor){
+    return motor->getEncoder()->getPosition().getWrappedValue() - M_PI;
+}
+
 enum class AngleUnit : uint8_t {
     Degrees,
     Radians,
