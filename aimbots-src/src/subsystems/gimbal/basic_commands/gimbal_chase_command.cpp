@@ -18,7 +18,8 @@ GimbalChaseCommand::GimbalChaseCommand(
       controller(gimbalController),
       refHelper(refHelper),
       ballisticsSolver(ballisticsSolver),
-      defaultLaunchSpeed(defaultLaunchSpeed)  //
+      defaultLaunchSpeed(defaultLaunchSpeed),
+      desiredAngles({0.0f, 0.0f})  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
@@ -82,7 +83,6 @@ void GimbalChaseCommand::execute() {
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
 
-    src::Informants::Vision::AutoAimAngles desiredAngles = {0.0f, 0.0f};
     if (drivers->cvCommunicator.isJetsonOnline()) { 
         if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target
             desiredAngles = drivers->cvCommunicator.getAutoAimAngles();   

@@ -35,6 +35,12 @@ static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
+// Chassis Relative Velocity Yaw Feedforward Equation
+// Derived by setting the desired yaw voltage to different values and measuring the velocity of the yaw
+static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
+    return (desiredYawVelocity + 3.5803f) / 0.0011;
+}
+
 #endif
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
@@ -68,7 +74,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .kp = 0.0f,
     .ki = 0.0f,
     .kd = 0.0f,
-    .maxICumulative = 0.0f,
+    .maxICumulative = 1.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -94,25 +100,25 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,  // 35
+    .kp = 3.0f,  // 35
     .ki = 0.0f,
-    .kd = 0.15f,
-    .maxICumulative = 1000.0f,
+    .kd = 0.01f,
+    .maxICumulative = 1.0f,
     .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 0.0523599,
     .errorDerivativeFloor = 0.0f,
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 6.0f,
     .ki = 0.0f,
-    .kd = 0.1f,
+    .kd = 0.0f,
     .maxICumulative = 1000.0f,
-    .maxOutput = 35.0f,
+    .maxOutput = 40.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -123,16 +129,16 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
-    .ki = 0.0f,
-    .kd =   0.0f,
+    .kp = 200.0f,
+    .ki = 40.0f,
+    .kd =   1.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.1f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 

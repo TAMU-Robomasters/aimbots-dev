@@ -21,10 +21,11 @@ public:
     void BuildPIDControllers() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
-            yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
-            yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
+                yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
+                yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
+            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
+            pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
             // smoothing yaw velocity heavily for display purposes
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
@@ -36,6 +37,9 @@ public:
 
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
     void runPitchController(std::optional<float> velocityLimit = std::nullopt) override;
+
+    void runYawVelocityController(std::optional<float> velocityLimit = std::nullopt);
+    void runPitchVelocityController(std::optional<float> velocityLimit = std::nullopt);
 
     bool isOnline() const;
 
@@ -55,6 +59,17 @@ public:
         targetPitch =
             tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
         fieldRelativePitchTarget.setWrappedValue(targetPitch);
+    }
+
+    // for PID testing
+    void setTargetVelocityYaw(AngleUnit unit, float targetVelocityYaw) {
+        targetVelocityYaw = (unit == AngleUnit::Radians) ? targetVelocityYaw : modm::toRadian(targetVelocityYaw);
+        fieldRelativeVelocityYawTarget = targetVelocityYaw;
+    }
+
+    void setTargetVelocityPitch(AngleUnit unit, float targetVelocityPitch) {
+        targetVelocityPitch = (unit == AngleUnit::Radians) ? targetVelocityPitch : modm::toRadian(targetVelocityPitch);
+        fieldRelativeVelocityPitchTarget = targetVelocityPitch;
     }
 
     bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
@@ -87,6 +102,16 @@ public:
                                             : modm::toDegree(fieldRelativePitchTarget.getWrappedValue());
     }
 
+    float getTargetVelocityYaw(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? fieldRelativeVelocityYawTarget
+                                            : modm::toDegree(fieldRelativeVelocityYawTarget);
+    }
+
+    float getTargetVelocityPitch(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? fieldRelativeVelocityPitchTarget
+                                            : modm::toDegree(fieldRelativeVelocityPitchTarget);
+    }
+
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
@@ -94,6 +119,12 @@ private:
     tap::algorithms::WrappedFloat fieldRelativeYawTarget;
     tap::algorithms::WrappedFloat fieldRelativePitchTarget;
 
+    float fieldRelativeVelocityYawTarget;
+    float fieldRelativeVelocityPitchTarget;
+
+    float fieldRelativeAccelerationYawTarget;
+    float fieldRelativeAccelerationPitchTarget;
+ 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
 
@@ -104,6 +135,9 @@ private:
     std::array<src::Utils::Filters::EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
 
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
+    std::array<src::Utils::Filters::EMAFilter*, PITCH_MOTOR_COUNT> pitchVelocityFilters;
+
+    float fieldRelativeVelocityTarget = 0.0f;
 };
 
 }  // namespace src::Gimbal

@@ -33,6 +33,8 @@
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
@@ -157,6 +159,26 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
+};
+
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -211,6 +233,19 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawVelocityTunningConfig,
+    gimbalPitchVelocityTunningConfig);
+
+GimbalPositionTunningCommand gimbalPositionTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
@@ -235,7 +270,8 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    // {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {&gimbalVelocityTunningCommand}, 
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper

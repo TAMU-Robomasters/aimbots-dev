@@ -84,7 +84,7 @@ static constexpr float DS3218_MAX_PWM = 0.85f;
 
 static constexpr float M3508_MAX_OUTPUT = 16'384.0f;
 static constexpr float M2006_MAX_OUTPUT = 10'000.0f;
-static constexpr float GM6020_MAX_OUTPUT = 30'000.0f;
+static constexpr float GM6020_MAX_OUTPUT = 25'000.0f;
 
 static constexpr float GM6020_VELOCITY_FILTER_ALPHA = 1.0f;
 
