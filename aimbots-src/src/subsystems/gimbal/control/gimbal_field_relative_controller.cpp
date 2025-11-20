@@ -156,8 +156,12 @@ void GimbalFieldRelativeController::runYawController(
                                            GIMBAL_YAW_GEAR_RATIO);
 
 
+        float chassisVelocityDeadzoneThreshold = modm::toRadian(80.0f); // rad/s
         float velocityFeedforward = tap::algorithms::limitVal(
-            sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
+            (fabs(chassisRelativeVelocityTarget) >= chassisVelocityDeadzoneThreshold) *
+            0.5 * sgn(chassisRelativeVelocityTarget) * 
+            chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget))
+            ,
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
 
@@ -169,6 +173,15 @@ void GimbalFieldRelativeController::runYawController(
         // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[0]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
+
+        // for PID tunning through Ozone
+        if (updateYawVelocityPIDsDebug) {
+            yawVelocityPIDs[i]->pid.setP(yawVelocityPDebug);
+            yawVelocityPIDs[i]->pid.setI(yawVelocityIDebug);
+            yawVelocityPIDs[i]->pid.setD(yawVelocityDDebug);
+            yawVelocityPIDs[i]->pid.reset();
+            updateYawVelocityPIDsDebug = false;
+        }
 
         float velocityControllerOutput = yawVelocityPIDs[i]->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
