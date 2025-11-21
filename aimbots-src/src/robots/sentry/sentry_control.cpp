@@ -28,6 +28,7 @@
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/complex_commands/sentry_match_firing_control_command.hpp"
+#include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
@@ -212,6 +213,7 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
+FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
@@ -280,13 +282,13 @@ HoldCommandMapping leftSwitchUp(
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&runShooterCommand},
+    {&feederLimitCommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
 HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    {&feederLimitCommand, &runShooterWithFeederCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------

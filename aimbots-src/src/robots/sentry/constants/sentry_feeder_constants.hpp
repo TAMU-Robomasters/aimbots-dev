@@ -20,6 +20,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 
 static constexpr int UNJAM_TIMER_MS = 300;
 
+static constexpr int FEEDER_LIMIT_RESTART = 1000;
 
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
