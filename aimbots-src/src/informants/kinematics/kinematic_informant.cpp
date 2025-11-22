@@ -46,11 +46,11 @@ Vector3f KinematicInformant::getLocalIMUAngles() {
 float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getPitch());
+            return -drivers->bmi088.getPitch();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getRoll());
+            return drivers->bmi088.getRoll();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getYaw() - 180.0f);  // for some reason yaw is 180.0 degrees rotated
+            return drivers->bmi088.getYaw() - M_PI;  // for some reason yaw is 180.0 degrees rotated
     }
     return 0;
 }
