@@ -40,6 +40,8 @@ static constexpr int FEEDER_LIMIT_RESTART = 1000;
 
 static constexpr float FEEDER_DEFAULT_RPM = 12000.0f;
 
+static constexpr bool LIMIT_INVERTED = true;
+
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};

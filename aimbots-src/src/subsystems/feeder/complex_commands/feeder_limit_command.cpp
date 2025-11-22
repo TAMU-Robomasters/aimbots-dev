@@ -48,7 +48,12 @@ bool limitPressedDisplay = false;
 void FeederLimitCommand::execute() {
     //underHeat = refHelper->canCurrBarrelShootSafely();
     // Updates the limit switch state (is pressed or not)
-    limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
+
+    if(LIMIT_INVERTED){
+        limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
+    } else{
+        limitPressed = feeder->getPressed();
+    }
     limitPressedDisplay = limitPressed;
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;

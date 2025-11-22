@@ -20,9 +20,11 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 
 static constexpr int UNJAM_TIMER_MS = 300;
 
-static constexpr int FEEDER_LIMIT_RESTART = 1000;
+static constexpr int FEEDER_LIMIT_RESTART = 250;
 
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
+
+static constexpr bool LIMIT_INVERTED = false;
 
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
