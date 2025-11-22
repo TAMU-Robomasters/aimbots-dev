@@ -40,8 +40,8 @@ Vector3f KinematicInformant::getLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
         drivers->bmi088.getRoll(),
-        drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
-    return imuAngles * (M_PI / 180.0f);      // Convert to rad
+        drivers->bmi088.getYaw() - M_PI};  // for some reason yaw is 180.0 degrees rotated
+    return imuAngles;      // Convert to rad
 }
 float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
@@ -57,17 +57,17 @@ float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angl
 
 Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
     Vector3f imuAngularVelocities = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
-    return imuAngularVelocities * (M_PI / 180.0f);  // Convert to rad/s
+    return imuAngularVelocities;
 }
 
 float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getGy());
+            return -drivers->bmi088.getGy();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getGx());
+            return drivers->bmi088.getGx();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getGz());
+            return drivers->bmi088.getGz();
     }
     return 0;
 }
@@ -175,6 +175,8 @@ Vector3f alphaDisplay = {0.0f, 0.0f, 0.0f};
 Vector3f rDisplay = {0.0f, 0.0f, 0.0f};
 Vector3f aDisplay = {0.0f, 0.0f, 0.0f};
 
+float tapAXDisplay = 0.0f;
+
 float aXDisplay = 0.0f;
 float aYDisplay = 0.0f;
 float aZDisplay = 0.0f;
@@ -182,6 +184,7 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     Vector<KinematicStateVector, 3> imuLinearKSV,
     Vector<KinematicStateVector, 3> imuAngularKSV,
     Vector3f r) {
+    drivers->bmi088.read();
     Vector3f w = {
         imuAngularKSV[X_AXIS].getVelocity(),
         imuAngularKSV[Y_AXIS].getVelocity(),
@@ -203,6 +206,8 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     aXDisplay = a.getX();
     aYDisplay = a.getY();
     aZDisplay = a.getZ();
+  //  drivers->bmi088.read();
+    tapAXDisplay = modm::toDegree(drivers->bmi088.getYaw());
 
     wDisplay = w;
     alphaDisplay = alpha;
