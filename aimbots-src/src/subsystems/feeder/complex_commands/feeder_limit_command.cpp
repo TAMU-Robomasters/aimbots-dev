@@ -112,7 +112,11 @@ void FeederLimitCommand::execute() {
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes
     // to mid)
     if (currFireState && !prevFireState) {
-        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
+         if(FEEDER_MOTOR_COUNT == 2){
+             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
+         }else{
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+        }
         isFiring = true;
         loaderDormant = false;
         limitswitchInactive.restart(limitSwitchDownTime);
