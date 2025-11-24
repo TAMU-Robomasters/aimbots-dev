@@ -45,6 +45,9 @@ void ChassisTokyoCommand::initialize() {
     }
 }
 
+float xTargetDisplay = 0.5f;
+float rampTargetDisplay = 0.0f;
+
 void ChassisTokyoCommand::execute() {
     chassis->setTokyoDrift(true);
     float desiredX = 0.0f;
@@ -81,6 +84,7 @@ void ChassisTokyoCommand::execute() {
             }
             rampTarget *= spinRateModifier;
         }
+        rampTargetDisplay = rampTarget;
 
         // reduces rotation speed when translation speed is high
         if (fabsf(desiredX) > translationalSpeedThreshold || fabsf(desiredY) > translationalSpeedThreshold) {
@@ -90,13 +94,14 @@ void ChassisTokyoCommand::execute() {
         rotationSpeedRamp.setTarget(rampTarget);
         rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
         desiredRotation = rotationSpeedRamp.getValue();
-
+        
         rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
 
     } else {
+        xTargetDisplay = 69420.67;
         Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
-
+    xTargetDisplay = desiredX;
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 
