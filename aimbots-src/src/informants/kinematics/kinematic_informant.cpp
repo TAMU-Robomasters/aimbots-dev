@@ -40,7 +40,7 @@ Vector3f KinematicInformant::getLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
         drivers->bmi088.getRoll(),
-        drivers->bmi088.getYaw() - M_PI};  // for some reason yaw is 180.0 degrees rotated
+        drivers->bmi088.getYaw()}; 
     return imuAngles;      // Convert to rad
 }
 float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
@@ -50,7 +50,7 @@ float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angl
         case ROLL_AXIS:
             return drivers->bmi088.getRoll();
         case YAW_AXIS:
-            return drivers->bmi088.getYaw() - M_PI;  // for some reason yaw is 180.0 degrees rotated
+            return drivers->bmi088.getYaw();
     }
     return 0;
 }
