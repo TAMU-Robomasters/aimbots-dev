@@ -13,6 +13,7 @@ namespace src::Gimbal {
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
+      lpf(src::Utils::Filters::FirstOrderButterworthLPF(0.1602, 0.1602, -0.6796)),
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
       targetYawAxisAngle(YAW_AXIS_START_ANGLE, -M_PI, M_PI),

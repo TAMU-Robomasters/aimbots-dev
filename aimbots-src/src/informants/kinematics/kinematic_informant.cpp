@@ -432,6 +432,8 @@ float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
 float rawYawVel;
 
+float IMUAngularVelocityDisplayZ = 0.0f;
+
 float IMUYawAngleDisplayGood;
 
 float YawPosEncoderDisplay = 0.0f;
@@ -442,7 +444,7 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
     YawPosEncoder = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    YawAngularVelocityEncoder = RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0));
+    YawAngularVelocityEncoder = GIMBAL_YAW_GEAR_RATIO * RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0));
     YawPosEncoderDisplay = YawPosEncoder;
     YawAngularVelocityEncoderDisplay = YawAngularVelocityEncoder;
 
@@ -450,6 +452,8 @@ void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
+
+    IMUAngularVelocityDisplayZ = IMUAngularVelocities.z;
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
