@@ -44,6 +44,7 @@ void FeederLimitCommand::initialize() {
 }
 
 bool limitPressedDisplay = false;
+bool remoteDisplay = false;
 
 void FeederLimitCommand::execute() {
     //underHeat = refHelper->canCurrBarrelShootSafely();
@@ -59,6 +60,7 @@ void FeederLimitCommand::execute() {
     prevFireState = currFireState;
     // Updates the current controller switch state
     currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
+    remoteDisplay = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 200;
     // States the speed of the feeder wheel when firing

@@ -279,17 +279,17 @@ HoldCommandMapping leftSwitchUp(
      /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
-// Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&feederLimitCommand, &runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
-HoldCommandMapping rightSwitchUp(
+HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
     {&feederLimitCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
+    true);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
