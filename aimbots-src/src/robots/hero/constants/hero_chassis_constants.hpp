@@ -22,7 +22,7 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 // 1 for no symmetry, 2 for 180 degree symmetry, 4 for 90 degree symmetry
-static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 4;
+static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // CAN Bus 2
 static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;

@@ -267,12 +267,17 @@ tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalP
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    #ifdef HERO
+        float chassisRoll = 0;
+    #endif
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    #ifdef HERO
+        float chassisPitch = 0;
+    #endif
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
