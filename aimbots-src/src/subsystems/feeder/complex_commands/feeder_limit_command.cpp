@@ -7,6 +7,8 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 
+#include "communicators/jetson/jetson_protocol.hpp"
+
 #include "drivers.hpp"
 
 #ifdef FEEDER_COMPATIBLE
@@ -23,6 +25,8 @@ bool isFiring = false;
 bool loaderDormant = false;
 bool underHeat = false;
 int limitSwitchDownTime;
+
+bool currFireStateDisplay = 0.0f;
 
 FeederLimitCommand::FeederLimitCommand(
     src::Drivers* drivers,
@@ -59,7 +63,10 @@ void FeederLimitCommand::execute() {
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;
     // Updates the current controller switch state
-    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
+    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP 
+                    || drivers->remote.getMouseL()==true
+                    || drivers->cvCommunicator.shouldFire());
+    currFireStateDisplay = currFireState;
     remoteDisplay = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 200;

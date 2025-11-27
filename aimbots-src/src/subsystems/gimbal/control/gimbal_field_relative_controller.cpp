@@ -156,7 +156,7 @@ void GimbalFieldRelativeController::runYawController(
                                            GIMBAL_YAW_GEAR_RATIO);
 
 
-        float chassisVelocityDeadzoneThreshold = 0.1f;
+        float chassisVelocityDeadzoneThreshold = 1.0f;
         float velocityFeedforward = tap::algorithms::limitVal(
             (fabs(chassisRelativeVelocityTarget) >= chassisVelocityDeadzoneThreshold) *
             0.5 * sgn(chassisRelativeVelocityTarget) * 

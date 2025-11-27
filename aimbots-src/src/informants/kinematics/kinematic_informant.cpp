@@ -704,7 +704,10 @@ void KinematicInformant::updateRobotFrames() {
     robotLocationDisplay = robotLocation;
 }
 
-float frameDelayDisplay = 0;
+float frameDelayDisplay = 0.0f;
+float pastGimbalYawAngleDisplay = 0.0f;
+float pastGimbalPitchAngleDisplay = 0.0f;
+
 
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     frameDelayDisplay = frameDelay_ms;
@@ -714,6 +717,9 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 
     std::pair<float, float> gimbalFieldAngles = getGimbalFieldOrientationAtTime(frameDelay_ms);
+
+    pastGimbalYawAngleDisplay = modm::toDegree(gimbalFieldAngles.first);
+    pastGimbalPitchAngleDisplay = modm::toDegree(gimbalFieldAngles.second);
 
     turretFrames.mirrorPastCameraFrame(gimbalFieldAngles.first, gimbalFieldAngles.second, AngleUnit::Radians);
 }

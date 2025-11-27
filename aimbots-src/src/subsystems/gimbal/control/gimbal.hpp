@@ -16,6 +16,8 @@
 
 namespace src::Gimbal {
 
+static const size_t lowPassFilterOrder = 3;
+
 enum GimbalAxis { YAW_AXIS = 0, PITCH_AXIS = 1 };
 
 class GimbalSubsystem : public tap::control::Subsystem {
@@ -239,7 +241,7 @@ public:
 private:
     src::Drivers* drivers;
 
-    mutable src::Utils::Filters::FirstOrderButterworthLPF lpf;
+    mutable src::Utils::Filters::FirstOrderButterworthLPF<lowPassFilterOrder> lpf;
     std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
     std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
 

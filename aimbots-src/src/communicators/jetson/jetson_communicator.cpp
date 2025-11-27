@@ -15,12 +15,14 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
+      fireTimeout(),
       lastMessage(),
       transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}})
 {}
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
+    fireTimeout.restart(100);
     drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
@@ -31,6 +33,7 @@ uint32_t timeDisplay = 0;
 
 float targetYawDisplay = 0;
 float targetPitchDisplay = 0;
+uint8_t timeUntilNextFireDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 
 float fieldRelativeYawAngleDisplay = 0;
@@ -40,6 +43,8 @@ int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
 
 float frameDelayOffsetDisplay_ms = 0.0f;
+
+uint32_t fireTimeoutTimeRemainingDisplay = 0.0f;
 
 float messageTypeDisplay = 0.0f;
 
@@ -60,6 +65,12 @@ alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     timeDisplay = currTime;
+
+    fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
+
+    if (fireTimeout.isStopped()) {
+        fireTimeout.restart(100);
+    }
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
@@ -97,7 +108,7 @@ void JetsonCommunicator::updateSerial() {
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
             } 
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
-                uint8_t frameDelay_ms; 
+                uint8_t frameDelay_ms = 0.0f; 
                 //!!! potential issue where not enough time has passed and we don't read anything
                 READ(&frameDelay_ms, 1);
                 
@@ -149,12 +160,15 @@ void JetsonCommunicator::updateSerial() {
 
                 targetYawDisplay = modm::toDegree(lastMessage.yaw);
                 targetPitchDisplay = modm::toDegree(lastMessage.pitch);
+                timeUntilNextFireDisplay = lastMessage.timeUntilNextFire;
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    // position is relative to camerap
+                    // fireTimeout.restart(lastMessage.timeUntilNextFire);
+
+                    // position is relative to camera
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
@@ -196,5 +210,14 @@ AutoAimAngles JetsonCommunicator::getAutoAimAngles() const {
 }
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
+
+bool JetsonCommunicator::shouldFire() {
+    if (!fireTimeout.isExpired()) { // still need to wait before we fire
+        return false;
+    }
+    // We should fire
+    fireTimeout.stop(); // stop timer so we don't keep sending true
+    return true;
+}
 
 }  // namespace src::Informants::Vision

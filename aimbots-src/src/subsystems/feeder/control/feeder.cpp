@@ -90,7 +90,7 @@ void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {
     feederMotors[FeederIdx]->setDesiredOutput(desiredFeederMotorOutputs[FeederIdx]);
 }
 
-bool FeederSubsystem::getPressed() { return limitSwitch.readSwitch(); }
+bool FeederSubsystem::getPressed() { return LIMIT_INVERTED ? !limitSwitch.readSwitch() : limitSwitch.readSwitch(); }
 
 }  // namespace src::Feeder
 

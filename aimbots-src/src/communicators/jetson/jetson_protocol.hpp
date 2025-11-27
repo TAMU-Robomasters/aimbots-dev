@@ -19,6 +19,7 @@ struct JetsonMessage {
     uint8_t messageType;
     float pitch;
     float yaw;
+    uint8_t timeUntilNextFire;
     CVState cvState;
 } __attribute__((packed));
 
@@ -27,7 +28,7 @@ struct EmbeddedTransformationMessage {
     float matrix[16];
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 11, "JetsonMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 12, "JetsonMessage is not the correct size");
 static_assert(sizeof(EmbeddedTransformationMessage) == 65, "EmbeddedTransformationMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);

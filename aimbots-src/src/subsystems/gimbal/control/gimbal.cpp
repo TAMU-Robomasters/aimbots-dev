@@ -1,5 +1,6 @@
 #include "gimbal.hpp"
 
+#include <array>
 #include <utils/tools/common_types.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
@@ -13,7 +14,10 @@ namespace src::Gimbal {
 GimbalSubsystem::GimbalSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
-      lpf(src::Utils::Filters::FirstOrderButterworthLPF(0.1602, 0.1602, -0.6796)),
+      lpf(
+          {0.0102, 0.0305, 0.0305, 0.0102},
+          {1, -2.0038, 1.4471, -0.3618}
+      ),
       currentYawAxisAngle(0.0f, -M_PI, M_PI),
       currentPitchAxisAngle(0.0f, -M_PI, M_PI),
       targetYawAxisAngle(YAW_AXIS_START_ANGLE, -M_PI, M_PI),

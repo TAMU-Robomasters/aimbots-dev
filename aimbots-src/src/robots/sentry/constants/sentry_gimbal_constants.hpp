@@ -26,7 +26,6 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Sentry
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
@@ -37,12 +36,12 @@ static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(0.416577296)};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(282.0f))};
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-50.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(20.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = 1.0f;  
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = 1.0/4.0f;  //!!! wtf bluetooth gears?
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
@@ -146,7 +145,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 1.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
