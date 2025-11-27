@@ -22,7 +22,6 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-    fireTimeout.restart(100);
     drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
@@ -67,10 +66,6 @@ void JetsonCommunicator::updateSerial() {
     timeDisplay = currTime;
 
     fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
-
-    if (fireTimeout.isStopped()) {
-        fireTimeout.restart(100);
-    }
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
@@ -166,7 +161,7 @@ void JetsonCommunicator::updateSerial() {
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    // fireTimeout.restart(lastMessage.timeUntilNextFire);
+                    fireTimeout.restart(lastMessage.timeUntilNextFire);
 
                     // position is relative to camera
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
