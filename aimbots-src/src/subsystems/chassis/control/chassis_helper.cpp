@@ -63,6 +63,27 @@ void randomizeSpinCharacteristics(
         randomizerConfig.maxSpinRateModifierDuration);
 }
 
+// TODO: make new helper similar to randomizeSpinCharacteristics
+// Takes in a time arg so it allows sin function
+void sinusodalSpinCharacteristics( // ZHENGHAO-99
+    float* spinRateModifier,
+    uint32_t* spinRateModifierDuration,
+    SpinRandomizerConfig randomizerConfig,
+    float t) {
+    
+    float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.maxSpinRateModifier;
+    
+    *spinRateModifier = amp * std::sin(t); // idk man
+
+    // *spinRateModifier = src::Utils::Random::getRandomFloatInBounds(
+    //     randomizerConfig.minSpinRateModifier,
+    //     randomizerConfig.maxSpinRateModifier);
+
+    // *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
+    //     randomizerConfig.minSpinRateModifierDuration,
+    //     randomizerConfig.maxSpinRateModifierDuration);
+}
+
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
 float findNearestChassisErrorTo(float chassisRelativeTargetAngle, SnapSymmetryConfig snapSymmetryConfig) {
     float angleBetweenCorners = M_TWOPI / static_cast<float>(snapSymmetryConfig.numSnapPositions);

@@ -25,7 +25,7 @@ ChassisTokyoCommand::ChassisTokyoCommand(
       tokyoConfig(tokyoConfig),
       spinDirectionOverride(spinDirectionOverride),
       randomizeSpinRate(randomizeSpinRate),
-      randomizerConfig(randomizerConfig)  //
+      randomizerConfig(randomizerConfig)  // 
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
@@ -82,7 +82,7 @@ void ChassisTokyoCommand::execute() {
                     randomizerConfig);
                 spinRateModifierTimer.restart(spinRateModifierDuration);
             }
-            rampTarget *= spinRateModifier;
+            rampTarget *= spinRateModifier; // This is what changes speed? ZHENGHAO-99
         }
         rampTargetDisplay = rampTarget;
 
