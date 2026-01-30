@@ -151,7 +151,7 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig);
+ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig); // added   0, true, randomizerConfig ZHENG-HAO
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);

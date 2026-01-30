@@ -2,6 +2,8 @@
 
 #include "utils/math/random.hpp"
 
+#include "tap/architecture/clock.hpp"
+
 
 #ifdef CHASSIS_COMPATIBLE
 
@@ -65,23 +67,36 @@ void randomizeSpinCharacteristics(
 
 // TODO: make new helper similar to randomizeSpinCharacteristics
 // Takes in a time arg so it allows sin function
+
+float timeDisplay = 0.0f;
+float ampDisplay = 0.0f;
+float sinDisplay = 0.0f;
+
+
 void sinusodalSpinCharacteristics( // ZHENGHAO-99
     float* spinRateModifier,
     uint32_t* spinRateModifierDuration,
-    SpinRandomizerConfig randomizerConfig,
-    float t) {
+    SpinRandomizerConfig randomizerConfig) {
     
-    float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.maxSpinRateModifier;
+    // auto timeNow = std::chrono::system_clock::now();
+    auto timeEpoch = tap::arch::clock::getTimeMilliseconds();
+    float ms = static_cast<float>(timeEpoch % 1000000000);
     
-    *spinRateModifier = amp * std::sin(t); // idk man
+    timeDisplay = ms;
+    
+    float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.minSpinRateModifier;
+    ampDisplay = amp;
+    
+    sinDisplay = std::sin(0.0023*ms);
 
-    // *spinRateModifier = src::Utils::Random::getRandomFloatInBounds(
-    //     randomizerConfig.minSpinRateModifier,
-    //     randomizerConfig.maxSpinRateModifier);
+    *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms)); // idk man
 
+    *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration;
     // *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
     //     randomizerConfig.minSpinRateModifierDuration,
     //     randomizerConfig.maxSpinRateModifierDuration);
+
+    
 }
 
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner
