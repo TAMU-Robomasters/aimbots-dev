@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define FEEDER_COMPATIBLE
+#define NO_LIMIT_COMPATIBLE
 
 static constexpr uint8_t FEEDER_MOTOR_COUNT = 1;
 
