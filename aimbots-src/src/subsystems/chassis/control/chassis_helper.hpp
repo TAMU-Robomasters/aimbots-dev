@@ -62,7 +62,8 @@ void randomizeSpinCharacteristics(
 void sinusodalSpinCharacteristics( // ZHENGHAO-99
     float* spinRateModifier,
     uint32_t* spinRateModifierDuration,
-    SpinRandomizerConfig randomizerConfig);
+    SpinRandomizerConfig randomizerConfig,
+    bool complex);
 
 
 float findNearestChassisErrorTo(float targetAngle, SnapSymmetryConfig snapSymmetryConfig);

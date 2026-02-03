@@ -134,8 +134,9 @@ TokyoConfig defaultTokyoConfig = {
 };
 
 SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
-    .maxSpinRateModifier = 1.0f,
+    // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
+    .minSpinRateModifier = -0.75, // 0.75f,
+    .maxSpinRateModifier = 0.75, // 1.0f,
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };

@@ -76,7 +76,8 @@ float sinDisplay = 0.0f;
 void sinusodalSpinCharacteristics( // ZHENGHAO-99
     float* spinRateModifier,
     uint32_t* spinRateModifierDuration,
-    SpinRandomizerConfig randomizerConfig) {
+    SpinRandomizerConfig randomizerConfig,
+    bool complex) {
     
     // auto timeNow = std::chrono::system_clock::now();
     auto timeEpoch = tap::arch::clock::getTimeMilliseconds();
@@ -87,11 +88,17 @@ void sinusodalSpinCharacteristics( // ZHENGHAO-99
     float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.minSpinRateModifier;
     ampDisplay = amp;
     
-    sinDisplay = std::sin(0.0023*ms);
+    // sinDisplay = std::sin(0.0023*ms);
+    
+    if(!complex) {
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms)); // idk man
+    }
+    else {
+        // idk js multiply random sins together
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+    }
 
-    *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms)); // idk man
-
-    *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration;
+    *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration; // ts probably not needed lmao ZHENG-HAO
     // *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
     //     randomizerConfig.minSpinRateModifierDuration,
     //     randomizerConfig.maxSpinRateModifierDuration);

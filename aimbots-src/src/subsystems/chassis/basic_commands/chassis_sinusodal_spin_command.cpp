@@ -85,7 +85,8 @@ void ChassisSinusodalSpinCommand::execute() {
         Helper::sinusodalSpinCharacteristics(
             &this->spinRateModifier,
             &this->spinRateModifierDuration,
-            randomizerConfig);
+            randomizerConfig,
+            true);
 
         spinRateModifierTimer.restart(spinRateModifierDuration); // im assuming ts in sec
 
