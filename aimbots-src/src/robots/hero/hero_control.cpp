@@ -21,6 +21,7 @@
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_sinusodal_spin_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
@@ -151,7 +152,23 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
-ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig); // added   0, true, randomizerConfig ZHENG-HAO
+
+ChassisTokyoCommand chassisTokyoCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,
+    true,
+    randomizerConfig); // added   0, true, randomizerConfig ZHENG-HAO
+
+ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,
+    randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -212,7 +229,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&chassisTokyoCommand, &gimbalToggleAimCommand2},
+    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalToggleAimCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
