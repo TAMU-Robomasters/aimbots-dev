@@ -49,6 +49,9 @@
 #include "subsystems/hopper/basic_commands/open_hopper_command.hpp"
 #include "subsystems/hopper/complex_commands/toggle_hopper_command.hpp"
 #include "subsystems/hopper/control/hopper.hpp"
+
+#include "subsystems/feeder/complex_commands/encoder_single_shot_command.hpp"
+
 //
 //#include "subsystems/barrel_manager/barrel_manager.hpp"
 //#include "subsystems/barrel_manager/barrel_swap_command.hpp"
@@ -214,6 +217,8 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
+EncoderSingleShotCommand encoderSingleShotCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS, SINGLE_SHOT_MS);
+
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
@@ -258,7 +263,7 @@ HoldCommandMapping rightSwitchMid(
 // Runs shooter with feeder and closes hopper
 HoldRepeatCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    {&encoderSingleShotCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
     true);
 

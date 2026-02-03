@@ -38,6 +38,7 @@ private:
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
+    MilliTimeout singleShotTimer;
     // MilliTimeout semiautoDelay;
     MilliTimeout limitswitchInactive;
 };

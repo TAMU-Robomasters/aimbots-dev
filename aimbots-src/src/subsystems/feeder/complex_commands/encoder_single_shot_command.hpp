@@ -10,17 +10,18 @@
 #include "drivers.hpp"
 
 #ifdef FEEDER_COMPATIBLE
-#ifdef NO_LIMIT
+#ifdef NO_LIMIT_COMPATIBLE
 
 namespace src::Feeder {
 
-class EncoderSingleShotCOmmand : public TapCommand {
+class EncoderSingleShotCommand : public TapCommand {
 public:
-    EncoderSingleShotCOmmand(
+    EncoderSingleShotCommand(
         src::Drivers* drivers,
         FeederSubsystem* feeder,
         src::Utils::RefereeHelperTurreted*,
-        int UMJAM_TIMER_MS = 300);
+        int UNJAM_TIMER_MS = 300,
+        int SINGLE_SHOT_MS = 500);
     void initialize() override;
 
     void execute() override;
@@ -36,10 +37,13 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
     int UNJAM_TIMER_MS;
+    int SINGLE_SHOT_MS;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
+    MilliTimeout singleShotTimer;
     // MilliTimeout semiautoDelay;
+    MilliTimeout limitswitchInactive;
 };
 }  // namespace src::Feeder
 

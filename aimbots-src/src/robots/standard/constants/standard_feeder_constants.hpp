@@ -22,6 +22,10 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr int UNJAM_TIMER_MS = 300;
+static constexpr int SINGLE_SHOT_MS = 60;
+
+static constexpr int FEEDER_LIMIT_RESTART = 150;
+static constexpr bool LIMIT_INVERTED = false;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
