@@ -85,7 +85,7 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderWrapped()));
         otherYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
@@ -121,7 +121,7 @@ void GimbalSubsystem::refresh() {
         // DEBUG VARS //
         ////////////////
         currentPitchMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoderUnwrapped()));
+            modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoderWrapped()));
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
 
         // flush the desired output to the motor
