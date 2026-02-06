@@ -19,12 +19,14 @@ EncoderSingleShotCommand::EncoderSingleShotCommand(
     FeederSubsystem* feeder,
     src::Utils::RefereeHelperTurreted* refHelper,
     int UNJAM_TIMER_MS,
-    int SINGLE_SHOT_MS)
+    int64_t SINGLE_SHOT_ENCODER_TICKS)
     : drivers(drivers),
       feeder(feeder),
       refHelper(refHelper),
       UNJAM_TIMER_MS(UNJAM_TIMER_MS),
-      SINGLE_SHOT_MS(SINGLE_SHOT_MS) {
+      SINGLE_SHOT_ENCODER_TICKS(SINGLE_SHOT_ENCODER_TICKS),
+      singleShotStartEncoder(0),
+      singleShotDirectionSign(1) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(feeder));
 }
 
@@ -32,12 +34,19 @@ void EncoderSingleShotCommand::initialize() {
     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     startupThreshold.restart(500);  // delay to wait before attempting unjam
     unjamTimer.restart(0);
-    singleShotTimer.restart(SINGLE_SHOT_MS);
+    singleShotStartEncoder = feeder->getEncoderUnwrapped(0);
+    singleShotDirectionSign = sgn(FEEDER_NORMAL_RPMS[0]);
+    if (singleShotDirectionSign == 0) {
+        singleShotDirectionSign = 1;
+    }
     limitswitchInactive.restart(0);
 }
 
 void EncoderSingleShotCommand::execute() {
-    if (!singleShotTimer.isExpired()) {
+    const int64_t encoderDelta =
+        (feeder->getEncoderUnwrapped(0) - singleShotStartEncoder) * singleShotDirectionSign;
+
+    if (encoderDelta < SINGLE_SHOT_ENCODER_TICKS) {
         feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
 
         if (fabs(feeder->getCurrentRPM(0)) <= 5.0f && unjamTimer.isExpired()) {

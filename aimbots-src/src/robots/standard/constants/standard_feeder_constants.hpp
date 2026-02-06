@@ -22,7 +22,6 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr int UNJAM_TIMER_MS = 300;
-static constexpr int SINGLE_SHOT_MS = 60;
 
 static constexpr int FEEDER_LIMIT_RESTART = 150;
 static constexpr bool LIMIT_INVERTED = false;
@@ -34,6 +33,8 @@ static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
+static constexpr int64_t SINGLE_SHOT_ENCODER_TICKS =
+    DJIMotor::ENC_RESOLUTION / PROJECTILES_PER_FEEDER_ROTATION;
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {4150};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
 

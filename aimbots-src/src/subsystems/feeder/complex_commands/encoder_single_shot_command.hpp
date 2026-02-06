@@ -21,7 +21,8 @@ public:
         FeederSubsystem* feeder,
         src::Utils::RefereeHelperTurreted*,
         int UNJAM_TIMER_MS = 300,
-        int SINGLE_SHOT_MS = 500);
+        int64_t SINGLE_SHOT_ENCODER_TICKS =
+            (DJIMotor::ENC_RESOLUTION * FEEDER_GEAR_RATIOS[0]) / PROJECTILES_PER_FEEDER_ROTATION);
     void initialize() override;
 
     void execute() override;
@@ -37,11 +38,12 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
     int UNJAM_TIMER_MS;
-    int SINGLE_SHOT_MS;
+    int64_t SINGLE_SHOT_ENCODER_TICKS;
+    int64_t singleShotStartEncoder;
+    int singleShotDirectionSign;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
-    MilliTimeout singleShotTimer;
     // MilliTimeout semiautoDelay;
     MilliTimeout limitswitchInactive;
 };

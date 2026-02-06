@@ -217,7 +217,7 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-EncoderSingleShotCommand encoderSingleShotCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS, SINGLE_SHOT_MS);
+EncoderSingleShotCommand encoderSingleShotCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS, SINGLE_SHOT_ENCODER_TICKS);
 
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
