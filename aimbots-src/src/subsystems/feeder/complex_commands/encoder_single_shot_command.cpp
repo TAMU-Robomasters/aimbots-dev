@@ -42,9 +42,14 @@ void EncoderSingleShotCommand::initialize() {
     limitswitchInactive.restart(0);
 }
 
+int64_t encoderDeltaWatch = 0;
+float const_change;
+
 void EncoderSingleShotCommand::execute() {
-    const int64_t encoderDelta =
-        (feeder->getEncoderUnwrapped(0) - singleShotStartEncoder) * singleShotDirectionSign;
+    const int64_t encoderDelta = (feeder->getEncoderUnwrapped(0) - singleShotStartEncoder) * singleShotDirectionSign;
+
+    encoderDeltaWatch = encoderDelta;
+    const_change = 819.0f;
 
     if (encoderDelta < SINGLE_SHOT_ENCODER_TICKS) {
         feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
