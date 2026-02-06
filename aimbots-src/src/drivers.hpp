@@ -26,6 +26,7 @@
 #include "informants/kinematics/kinematic_informant.hpp"
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "communicators/devboard/turret_can_communicator.hpp"
+#include "communicators/power_sensor/power_can_communicator.hpp"
 #include "communicators/jetson/jetson_communicator.hpp"
 //#include "communicators/INA260/INA260_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
@@ -46,6 +47,7 @@ public:
           magnetometer(),
           cvCommunicator(this),
       //    powerCommunicator(this),
+            powerCommunicator(this, CANBus::CAN_BUS1),
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
@@ -56,6 +58,7 @@ public:
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
   //  Informants::INA260::INA260Communicator powerCommunicator;
+    Informants::PowerComms::PowerCommunicator powerCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
