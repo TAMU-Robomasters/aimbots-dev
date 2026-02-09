@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
+#define CHASSIS_IMU // THE GREAT RETURN
 
 static constexpr uint8_t DRIVEN_WHEEL_COUNT = 4;
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -68,9 +69,9 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
-    .kp = 1.65f,  // 0.45
+    .kp = 0.7f,  // 0.45
     .ki = 0.0f,
-    .kd = 0.005f,  // 0.05
+    .kd = 0.0f,  // 0.05
     .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,

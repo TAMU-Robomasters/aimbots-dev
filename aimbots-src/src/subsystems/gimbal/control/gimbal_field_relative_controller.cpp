@@ -27,6 +27,7 @@ void GimbalFieldRelativeController::initialize() {
 
 float fieldRelativeYawTargetDisplay = 0.0f;
 float targetYawAxisAngleDisplay = 0.0f;
+float fieldRelativeYawTargetRadDisplay = 0.0f;
 
 float fieldRelativeYawOutputDisplay = 0.0f;
 
@@ -50,13 +51,24 @@ float pitchGimbalMotorPositionTargetDisplay = 0.0f;
 float yawAngleErrorDisplay = 0;
 float chassisRelativeYawTargetDisplay = 0;
 float kinematicYawAngleDisplay = 0;
+float kinematicYawAngleRadDisplay = 0;
 
 float speedTarget = 0.0f;
+
+// ozone pid tuning
+
+float gimbalYawPositionCascadePDebug = 0.0f;
+float gimbalYawPositionCascadeIDebug = 0.0f;
+float gimbalYawPositionCascadeDDebug = 0.0f;
+bool updateGimbalYawPositionCascadeDebug = false;
 
 void GimbalFieldRelativeController::runYawController(
     std::optional<float> velocityLimit) {  // using cascade controller for yaw
 
+    fieldRelativeYawTargetRadDisplay = this->getTargetYaw(AngleUnit::Radians);
     fieldRelativeYawTargetDisplay = this->getTargetYaw(AngleUnit::Degrees);
+
+    kinematicYawAngleRadDisplay = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
 
     kinematicYawAngleDisplay =
         modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue());
@@ -77,6 +89,14 @@ void GimbalFieldRelativeController::runYawController(
 
     // speedTarget += 1 / 200.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        if (updateGimbalYawPositionCascadeDebug) {
+            yawPositionCascadePIDs[i]->pid.setP(gimbalYawPositionCascadePDebug);
+            yawPositionCascadePIDs[i]->pid.setI(gimbalYawPositionCascadeIDebug);
+            yawPositionCascadePIDs[i]->pid.setD(gimbalYawPositionCascadeDDebug);
+            yawPositionCascadePIDs[i]->pid.reset();
+            updateGimbalYawPositionCascadeDebug = false;
+        }
+
         yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
 
         float fieldRelativeVelocityTarget = yawPositionCascadePIDs[i]->runController(
@@ -126,16 +146,20 @@ void GimbalFieldRelativeController::runYawController(
 
 float pitchAngularErrorDisplay = 0.0f;
 float gravComp = 0.0f;
+float overshootPitchMotorDisplay = 0.0f;
+float pitchAngleDisplay = 0.0f;
+float softstopHighDisplay = 0.0f;
+float softstopLowDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
-    float pitchAngularError =
+    float pitchAngularError = 
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
 
     pitchAngularErrorDisplay = pitchAngularError;
 
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
-
+    pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
 
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
@@ -180,11 +204,18 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             gimbal->getPitchMotorTorque(i));
 
         pitchOutputVelocityDisplay = velocityFeedforward + velocityControllerOutput;
+        softstopHighDisplay = PITCH_AXIS_SOFTSTOP_HIGH + 0.0873;
+        softstopLowDisplay = PITCH_AXIS_SOFTSTOP_LOW - 0.0873;
         if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873 &&
             gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW - 0.0873) {
             gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
-        } else {
-            gimbal->setDesiredPitchMotorOutput(i, 10000 * sgn(kGRAVITY));
+            overshootPitchMotorDisplay = 67.0f;
+        } else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_HIGH + 0.0873) { // baconsizzle notes
+            gimbal->setDesiredPitchMotorOutput(i, -10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = -10000 /** sgn(kGRAVITY)*/;
+        }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_LOW - 0.0873){
+            gimbal->setDesiredPitchMotorOutput(i, 10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = 10000 /** sgn(kGRAVITY)*/;
         }
     }
 }
