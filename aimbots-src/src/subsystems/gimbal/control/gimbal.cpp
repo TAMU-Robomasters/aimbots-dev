@@ -43,6 +43,7 @@ int   yawEncoderDisplay = 0;
 float currentYawMotorAngleDisplay = 0.0f;
 float otherYawMotorAngleDisplay = 0.0f;
 float currentPitchMotorAngleDisplay = 0.0f;
+float pitchErrorDisplay = 0.0f;
 
 float yawAxisMotorSpeedDisplay = 0.0f;
 
@@ -72,7 +73,7 @@ void GimbalSubsystem::refresh() {
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
 
-        int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
+        int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
 
         // https://www.desmos.com/calculator/bducsk7y6v
         float wrappedYawAxisAngle =
@@ -125,6 +126,7 @@ void GimbalSubsystem::refresh() {
         currentPitchMotorAngleDisplay =
             modm::toDegree(getEncoderWrapped(pitchMotors[pitchDisplayMotorIdx])/*DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getEncoder()->getEncoder())*/);
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
+        pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx, AngleUnit::Radians);
 
         // flush the desired output to the motor
         setDesiredOutputToPitchMotor(i);
