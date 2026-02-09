@@ -38,6 +38,7 @@ float yawOutputDisplay = 0.0f;
 float currentYawAxisAngleDisplay = 0.0f;
 float currByFuncYawAngleDisplay = 0;
 float currentPitchAxisAngleDisplay = 0.0f;
+int   yawEncoderDisplay = 0;
 
 float currentYawMotorAngleDisplay = 0.0f;
 float otherYawMotorAngleDisplay = 0.0f;
@@ -83,6 +84,7 @@ void GimbalSubsystem::refresh() {
         ////////////////
         // DEBUG VARS //
         ////////////////
+        yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
             modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
