@@ -2,6 +2,14 @@
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
+// ne f hese has PI in i
+#include "modm/container/deque.hpp"
+#include "modm/math/geometry/vector.hpp"
+#include "modm/math/interpolation/linear.hpp"
+#include "modm/math/matrix.hpp"
+#include "utils/pid/smooth_pid_wrap.hpp"
+
+
 #define GIMBAL_COMPATIBLE
 #define GIMBAL_UNTETHERED
 
@@ -26,8 +34,8 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 
 #elif defined(TARGET_STANDARD_2025)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(260.11f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(120.5f)};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapNegPIPI(modm::toRadian(260.11f))};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(120.5f) - M_PI};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(60.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(170.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};

@@ -24,7 +24,8 @@
 
 inline float pow2(float x) { return x * x; }
 
-static inline float wrapTo0To2PIRange(float angle) {
+// prbabl deprecae his
+static inline float wrapTo0To2PIRange(float angle) { // suppsed  be [-pi pi] ZHENG-HA
     if (angle < 0.0f) {
         return angle + M_TWOPI;
     } else if (angle > M_TWOPI) {
@@ -32,6 +33,16 @@ static inline float wrapTo0To2PIRange(float angle) {
     } else {
         return angle;
     }
+}
+
+static inline float wrapNegPIPI(float angle) { // suppsed  be [-pi pi] ZHENG-HA
+    if(angle < -M_PI) {
+        return angle + M_TWOPI;
+    }
+    else if(angle > M_PI) {
+        return angle - M_TWOPI;
+    }
+    return angle;
 }
 
 template <typename T>
