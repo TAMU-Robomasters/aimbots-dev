@@ -36,8 +36,8 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapNegPIPI(modm::toRadian(260.11f))};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(120.5f) - M_PI};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(60.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(170.5f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-130.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(20.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -116,8 +116,8 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.5f,
     .maxICumulative = 1.0f,
-    //.maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
-    .maxOutput = 0.0f,
+    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    //.maxOutput = 0.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
