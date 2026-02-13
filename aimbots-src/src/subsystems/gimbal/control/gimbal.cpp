@@ -88,7 +88,8 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderWrapped()));
+            //modm::toDegree(DJIEncoderValueToRadians(yawMotors[yawDisplayMotorIdx]->getEncoderWrapped()));
+            currentYawEncoderPosition;
         otherYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getEncoderUnwrapped()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
