@@ -144,6 +144,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
+    drivers->powerCommunicator.init();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
@@ -185,6 +186,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
+    drivers->powerCommunicator.
    // drivers->powerCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();

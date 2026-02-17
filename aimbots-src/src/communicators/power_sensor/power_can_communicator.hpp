@@ -13,7 +13,7 @@ static constexpr uint32_t COMMS_DISCONNECTED_TIMEOUT = 1000;
 
 class PowerCommunicator {
 
-   // const float currentMul = 0.00125;
+    // const float currentMul = 0.00125;
 
     // static constexpr float ANGLE_PRECISION_FACTOR = 10000.0f;  // Max input before clipping = 32'767 / 10000 = +-3.276 rads
     // static constexpr float LINEAR_PRECISION_FACTOR = 100.0f;   // Max input before clipping = 32'767 / 100 = +-327.6 m/s^2
@@ -26,12 +26,14 @@ class PowerCommunicator {
     };
 
 
-    // struct AngleMessageData {
-    //     int16_t target;
-    //     int16_t angularVelocity;
-    //     int16_t linearAcceleration;
-    //     uint8_t seq;
-    // } modm_packed;
+    struct PowerMessageData {
+        uint8_t current1;
+        uint8_t current2;
+        uint8_t voltage1;
+        uint8_t voltage2;
+        uint8_t power1;
+        uint8_t power2;
+    } modm_packed;
 
 public:
     struct PowerData { // change when kebard isn spid
@@ -44,21 +46,9 @@ public:
 
     void init();
 
-    float getLastReportedAngle(AngularAxis axis, AngleUnit unit);
-    float getLastReportedAngularVelocity(AngularAxis axis, AngleUnit unit);
-    float getLastReportedLinearAcceleration(LinearAxis axis);
+    void handlePowerDataRX(const modm::can::Message& message);
 
-// #ifdef TARGET_TURRET
-    void sendIMUData();
-    void handleChassisRequestRX(modm::can::Message const& msg);
-// #else
-
-    void sendTurretRequest();
-
-    void handleYawDataRX(modm::can::Message const& msg);
-    void handlePitchDataRX(modm::can::Message const& msg);
-    void handleRollDataRX(modm::can::Message const& msg);
-// #endif
+    void request();
 
     using CANListenerProc = void (PowerCommunicator::*)(const modm::can::Message& message);
     class RXHandler : public tap::can::CanRxListener {
@@ -78,19 +68,12 @@ private:
     MilliTimeout disconnectedTimeout;
 
 
-    uint8_t chassisRequestData;
+    uint8_t powerRequestData;
+    // PeriodicMilliTimer sendToTurretTimer;
 
-// #ifndef TARGET_TURRET
-    PeriodicMilliTimer sendToTurretTimer;
-
-    // RXHandler yawDataRXHandler;
-    // RXHandler pitchDataRXHandler;
-    // RXHandler rollDataRXHandler;
-// #else
+    RXHandler powerDataRXHandler;
     uint8_t sendSequence = 0;
 
-    // RXHandler chassisRequestRXHandler;
-// #endif
 };
 
-}  // namespace src::Informants::TurretComms
+}  // src::Informants::PowerComms
