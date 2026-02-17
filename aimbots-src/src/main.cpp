@@ -186,7 +186,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-    drivers->powerCommunicator.
+    drivers->powerCommunicator.request(); // TEST FUNC ZHENG-HAO
    // drivers->powerCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();

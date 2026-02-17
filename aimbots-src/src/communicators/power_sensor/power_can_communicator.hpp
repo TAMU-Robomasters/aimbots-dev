@@ -69,7 +69,7 @@ private:
 
 
     uint8_t powerRequestData;
-    // PeriodicMilliTimer sendToTurretTimer;
+    PeriodicMilliTimer sendTimer;
 
     RXHandler powerDataRXHandler;
     uint8_t sendSequence = 0;

@@ -33,10 +33,16 @@ void PowerCommunicator::init() {
 }
 
 void PowerCommunicator::request() {
-    modm::can::Message msg(static_cast<uint32_t>(CanID::Power), 1);
-    msg.setExtended(false);
-    msg.data[0] = chassisRequestData;
-    drivers->can.sendMessage(bus, msg);
+    if(sendTimer.execute()) {
+        modm::can::Message msg(static_cast<uint32_t>(CanID::Power), 1);
+        msg.setExtended(false);
+        msg.data[0] = powerRequestData;
+        drivers->can.sendMessage(bus, msg);
+
+        powerRequestData = 0;
+        sendTimer.restart();
+    }
+    
 }
 
 void PowerCommunicator::RXHandler::processMessage(modm::can::Message const& msg) { (ctx->*proc)(msg); }
