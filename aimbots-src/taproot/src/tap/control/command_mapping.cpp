@@ -51,9 +51,6 @@ bool operator==(const CommandMapping &cm1, const CommandMapping &cm2)
 
 bool mapStateEqual(const CommandMapping &cm1, const CommandMapping &cm2)
 {
-    // When inserting mappings into the CommandMapper, we want to check for equality based
-    // on the mapState since we don't want two identical map_states with unique map_commands.
-    // Even if mappedCommand vectors are different we want insertion to fail.
     return cm1.mapState == cm2.mapState;
 }
 

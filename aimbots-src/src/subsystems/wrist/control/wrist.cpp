@@ -56,7 +56,7 @@ void WristSubsystem::updateMotorPIDVelocity(MotorIndex idx) {
 
 float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
     float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
-    float unwrappedRadians = DJIEncoderValueToRadians(motors[motorIdx].getEncoderUnwrapped());
+    float unwrappedRadians = DJIEncoderValueToRadians(motors[motorIdx].getEncoder()->getPosition().getUnwrappedValue());
 
     return unwrappedRadians / inPerOut;
 }
