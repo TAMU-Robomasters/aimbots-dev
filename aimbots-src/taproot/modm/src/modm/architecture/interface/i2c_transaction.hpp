@@ -110,6 +110,12 @@ public:
 		return state;
 	}
 
+	void
+	resetState()
+	{
+		state = TransactionState::Idle;
+	}
+
 	/// @return `true` while adapter is busy
 	bool
 	isBusy() const
@@ -176,7 +182,7 @@ public:
 	virtual bool
 	attaching()
 	{
-		if (state == TransactionState::Busy)
+		if (state == TransactionState::Busy || state == TransactionState::Error)
 			return false;
 		state = TransactionState::Busy;
 		return true;

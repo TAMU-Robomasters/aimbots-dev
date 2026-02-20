@@ -150,7 +150,7 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr float kGRAVITY = 0.0f;
+static constexpr float kGRAVITY = 1.0f;
 static constexpr float HORIZON_OFFSET = 0.0f;
 
 const modm::Pair<float, float> YAW_FEEDFORWARD_VELOCITIES[11] = {
