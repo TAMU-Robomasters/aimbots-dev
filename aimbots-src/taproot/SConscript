@@ -127,9 +127,6 @@ if sys.platform == "win32":
 # that may overwrite previous options.
 
 # Add build-specific flags
-if args["SUPPRESS_WARNINGS"] == "true":
-    env.AppendUnique(CCFLAGS=["-w"])
-
 if args["BUILD_PROFILE"] == "debug":
     env.AppendUnique(CCFLAGS=["-fno-inline"])
 elif args["BUILD_PROFILE"] == "fast":
