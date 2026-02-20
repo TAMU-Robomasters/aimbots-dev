@@ -38,7 +38,7 @@ void Pwm::init()
 {
 #ifndef PLATFORM_HOSTED
 
-    Timer1::connect<PWMOutPinC1::Ch1>();
+    Timer1::connect<PWMOutPinC1::Ch1, PWMOutPinC2::Ch2, PWMOutPinC3::Ch3, PWMOutPinC4::Ch4>();
     Timer1::enable();
     Timer1::setMode(Timer1::Mode::UpCounter);
     timer1CalculatedOverflow = Timer1::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER1_FREQUENCY);
@@ -68,6 +68,9 @@ void Pwm::writeAllZeros()
 {
 #ifndef PLATFORM_HOSTED
     write(0.0f, Pin::C1);
+    write(0.0f, Pin::C2);
+    write(0.0f, Pin::C3);
+    write(0.0f, Pin::C4);
     write(0.0f, Pin::Buzzer);
     write(0.0f, Pin::ImuHeater);
 #endif
@@ -85,6 +88,24 @@ void Pwm::write(float duty, Pin pin)
         case Pin::C1:
             Timer1::configureOutputChannel(
                 Ch1,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C2:
+            Timer1::configureOutputChannel(
+                Ch2,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C3:
+            Timer1::configureOutputChannel(
+                Ch3,
+                Timer1::OutputCompareMode::Pwm,
+                duty * timer1CalculatedOverflow);
+            break;
+        case Pin::C4:
+            Timer1::configureOutputChannel(
+                Ch4,
                 Timer1::OutputCompareMode::Pwm,
                 duty * timer1CalculatedOverflow);
             break;
