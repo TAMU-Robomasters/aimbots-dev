@@ -48,7 +48,7 @@ public:
 
     void handlePowerDataRX(const modm::can::Message& message);
 
-    void request();
+    void requestTest();
 
     using CANListenerProc = void (PowerCommunicator::*)(const modm::can::Message& message);
     class RXHandler : public tap::can::CanRxListener {

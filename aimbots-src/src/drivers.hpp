@@ -47,7 +47,7 @@ public:
           magnetometer(),
           cvCommunicator(this),
       //    powerCommunicator(this),
-            powerCommunicator(this, CANBus::CAN_BUS2),
+          powerCommunicator(this, CANBus::CAN_BUS1),
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),

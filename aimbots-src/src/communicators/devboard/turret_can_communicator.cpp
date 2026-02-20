@@ -156,6 +156,7 @@ void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg) {
     }
 }
 #else
+
 void TurretCommunicator::sendTurretRequest() {
     if (sendToTurretTimer.execute()) {
         modm::can::Message msg(static_cast<uint32_t>(CanID::ChassisToTurret), 1);
