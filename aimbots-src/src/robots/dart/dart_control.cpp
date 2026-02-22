@@ -50,6 +50,10 @@
 //
 #include "subsystems/barrel_manager/barrel_manager.hpp"
 #include "subsystems/barrel_manager/barrel_swap_command.hpp"
+
+#include "subsystems/launcher/control/launcher.hpp"
+#include "subsystems/launcher/basic_commands/launch_command.hpp"
+
 //
 // #include "informants/communication/communication_response_handler.hpp"
 // #include "informants/communication/communication_response_subsytem.hpp"
@@ -62,6 +66,7 @@ using namespace src::Chassis;
 // using namespace src::Feeder;
 using namespace src::Gimbal;
 using namespace src::Shooter;
+using namespace src::Launcher;
 
 // For reference, all possible keyboard inputs:
 // W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
@@ -122,7 +127,7 @@ ChassisSubsystem chassis(drivers());
 // FeederSubsystem feeder(drivers());
 GimbalSubsystem gimbal(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
-
+LauncherSubsystem launcher(drivers());
 // CommunicationResponseSubsytem response(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
@@ -153,6 +158,8 @@ SpinRandomizerConfig randomizerConfig = {
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };
+
+
 
 // GimbalPatrolConfig patrolConfig = {
 //     .pitchPatrolAmplitude = modm::toRadian(11.0f),
@@ -187,6 +194,8 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+
+LaunchCommand launch_cmd(drivers(), &launcher);
 
 //GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig);
 //GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
@@ -266,6 +275,8 @@ void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&gimbal);
     drivers->commandScheduler.registerSubsystem(&shooter);
     drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
+    drivers->commandScheduler.registerSubsystem(&launcher);
+
 }
 
 // Initialize subsystems here ---------------------------------------------
@@ -274,12 +285,15 @@ void initializeSubsystems() {
     // feeder.initialize();
     gimbal.initialize();
     shooter.initialize();
+    launcher.initialize();
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
     // feeder.setDefaultCommand(&stopFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
+    launcher.setDefaultCommand(&launch_cmd);
+    
 }
 
 // Set commands scheduled on startup
