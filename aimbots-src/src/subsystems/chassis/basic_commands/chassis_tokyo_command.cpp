@@ -53,15 +53,20 @@ void ChassisTokyoCommand::execute() {
 
     // we overwrite desiredRotation later if tokyo drifting
     Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
-
+    float maxWheelSpeed;
     if (gimbal->isOnline()) {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         // this is wrapped between -PI and PI
 
         // The maximum speed that we're realistically able to achieve with the current power limit
-        const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
+
+        maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+        #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+            maxWheelSpeed = 4000;
+        #endif
 
         desiredX *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
         desiredY *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;

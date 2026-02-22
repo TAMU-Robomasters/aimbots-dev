@@ -37,9 +37,14 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     }
 
     // Gets the maximum speed that we're realistically able to achieve with the current power limit
-    const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
-        drivers->refSerial.getRefSerialReceivingData(),
-        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+    float maxWheelSpeed;
+    maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+    
+    #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+    maxWheelSpeed = 4000;
+    #endif
 
     *desiredRotation *= maxWheelSpeed;
 
