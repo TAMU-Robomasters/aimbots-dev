@@ -298,6 +298,7 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
+    scheduleIfNotScheduled(drivers->commandScheduler, &launch_cmd);
     // no startup commands should be set
     // yet...
     // TODO: Possibly add some sort of hardware test command
@@ -333,3 +334,4 @@ void initializeSubsystemCommands(src::Drivers *drivers) {
 // temp
 
 #endif  // TARGET_DART
+

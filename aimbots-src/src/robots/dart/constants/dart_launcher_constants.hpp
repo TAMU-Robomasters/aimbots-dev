@@ -5,7 +5,7 @@
 
 #define LAUNCHER_COMPATIBLE
 
-static constexpr tap::gpio::Pwm::Pin LAUNCHER_PIN = tap::gpio::Pwm::C1;
+static constexpr tap::gpio::Pwm::Pin LAUNCHER_PIN = tap::gpio::Pwm::C2;
 
 static constexpr float LAUNCHER_PWM_LAUNCH_SPEED = 0.01f;  // pwm percent per millisecond
 

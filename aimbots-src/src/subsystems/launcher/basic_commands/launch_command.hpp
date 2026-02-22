@@ -3,7 +3,6 @@
 #include "subsystems/launcher/control/launcher.hpp"
 #include "utils/tools/common_types.hpp"
 
-
 #include "drivers.hpp"
 
 #ifdef LAUNCHER_COMPATIBLE
@@ -25,8 +24,8 @@ public:
 private:
     src::Drivers* drivers;
     LauncherSubsystem* launcher;
-    int number;
 };
-};  // namespace src::Hopper
 
-#endif  // #ifdef HOPPER_LID_COMPATIBLE
+}  // namespace src::Launcher
+
+#endif  // LAUNCHER_COMPATIBLE

@@ -3,20 +3,23 @@
 #ifdef LAUNCHER_COMPATIBLE
 
 namespace src::Launcher {
-LaunchCommand::LaunchCommand(src::Drivers* drivers, LauncherSubsystem* launcher) {
-    this->drivers = drivers;
-    this->launcher = launcher;
-    number = 3;
-    addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(launcher));
+
+extern float launcherPwmDisplay;
+float launchCommandPwmDisplay = 0.0f;
+
+LaunchCommand::LaunchCommand(src::Drivers* drivers, LauncherSubsystem* launcher)
+    : drivers(drivers), launcher(launcher) {
+    addSubsystemRequirement(launcher);
 }
 
 void LaunchCommand::initialize() {
-    launcher->setLauncherSpeed(3);
+    launcher->setLauncherSpeed(30.0f);
 }
 
 void LaunchCommand::execute() {
+    launcher->setLauncherSpeed(30.0f);
     launcher->refresh();
-    int other_number = number + 3;
+    launchCommandPwmDisplay = launcherPwmDisplay;
 }
 
 void LaunchCommand::end(bool) {}
@@ -25,6 +28,6 @@ bool LaunchCommand::isReady() { return true; }
 
 bool LaunchCommand::isFinished() const { return false; }
 
-};  // namespace src::Hopper
+}  // namespace src::Launcher
 
-#endif  // #ifdef HOPPER_LID_COMPATIBLE
+#endif  // LAUNCHER_COMPATIBLE

@@ -4,34 +4,38 @@
 
 #include "utils/tools/common_types.hpp"
 
-
 #include "drivers.hpp"
 
 #ifdef LAUNCHER_COMPATIBLE
 
 namespace src::Launcher {
 
+float launcherPwmDisplay = 0.0f;
+
 LauncherSubsystem::LauncherSubsystem(tap::Drivers* drivers)
     : Subsystem(drivers),
-      drivers(drivers),
-      launcherMotor(drivers, LAUNCHER_PIN, LAUNCHER_MAX_PWM, LAUNCHER_MIN_PWM, LAUNCHER_PWM_LAUNCH_SPEED) {}
+      drivers(drivers) {}
 
 void LauncherSubsystem::initialize() {
+    drivers->pwm.init();
     drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1, 330);  // Timer 1 for C1 Pin
     setLauncherSpeed(3);
-}
-int number = 4;
-
-void LauncherSubsystem::refresh() { 
-    launcherMotor.updateSendPwmRamp(); 
-    number = 3;
+    refresh();
 }
 
-
+void LauncherSubsystem::refresh() {
+    launcherPwmDisplay = launcherPwmTarget;
+}
 void LauncherSubsystem::setLauncherSpeed(float launchSpeed) {
-    launcherMotor.setTargetPwm(35);
+    launcherPwmTarget = launchSpeed;
+    float num = 0.0f;
+    while(num <= launchSpeed){
+        drivers->pwm.write(num, LAUNCHER_PIN);
+        num += 0.5;
+    }
     actionStartTime = tap::arch::clock::getTimeMilliseconds();
 }
-};  // namespace src::Hopper
 
-#endif  // #ifdef HOPPER_LID_COMPATIBLE
+}  // namespace src::Launcher
+
+#endif  // LAUNCHER_COMPATIBLE
