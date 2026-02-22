@@ -47,6 +47,9 @@ float currentPitchMotorAngleDisplay = 0.0f;
 float pitchErrorDisplay = 0.0f;
 float targePitchAngleDisplay = 0.0f;
 float targetPitchAxisAngleDisplay = 0.0f;
+float pitchErrorDisplay = 0.0f;
+float targePitchAngleDisplay = 0.0f;
+float targetPitchAxisAngleDisplay = 0.0f;
 
 float yawAxisMotorSpeedDisplay = 0.0f;
 
@@ -134,6 +137,8 @@ void GimbalSubsystem::refresh() {
             modm::toDegree(DJIEncoderValueToRadians(pitchMotors[pitchDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue()));
          // currentPitchAxisAnglesByMotor[pitchDisplayMotorIdx]->getWrappedValue();
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
+        pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx,AngleUnit::Radians);
+        targePitchAngleDisplay = targetPitchAxisAngle.getWrappedValue();
         pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx,AngleUnit::Radians);
         targePitchAngleDisplay = targetPitchAxisAngle.getWrappedValue();
 

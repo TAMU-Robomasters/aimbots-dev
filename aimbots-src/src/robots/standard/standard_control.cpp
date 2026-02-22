@@ -25,6 +25,7 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+//#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -143,10 +144,10 @@ SnapSymmetryConfig defaultSnapConfig = {
 };
 
 TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
+    .translationalSpeedMultiplier = 0.75f,
     .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,  // 0.75
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
+    .rotationalSpeedFractionOfMax = 1.0f,  // 0.75
+    .rotationalSpeedMultiplierWhenTranslating = 0.75f,
     .rotationalSpeedIncrement = 30.0f,
 };
 
