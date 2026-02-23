@@ -43,6 +43,10 @@ float odoXDisplay = 0;
 float odoYDisplay = 0;
 float odoThetaDisplay = 0;
 
+float lidarXDisplay = 0;
+float lidarYDisplay = 0; 
+float lidarThetaDisplay = 0;
+
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
  * The Jetson sends information in the form of a JetsonMessage.
@@ -98,7 +102,7 @@ void JetsonCommunicator::updateSerial() {
 
                 odoXDisplay = odometryMessageToJetson.x;
                 odoYDisplay = odometryMessageToJetson.y;
-                odoThetaDisplay = odometryMessageToJetson.theta;
+                odoThetaDisplay = modm::toDegree(odometryMessageToJetson.theta);
 
                 // Send data to Jetson
                 WRITE((uint8_t*)&odometryMessageToJetson, sizeof(odometryMessageToJetson));
@@ -136,6 +140,11 @@ void JetsonCommunicator::updateSerial() {
                 targetXDisplay = lastMessage.targetX;
                 targetYDisplay = lastMessage.targetY;
                 cvStateDisplay = lastMessage.cvState;
+                
+                // Localization data from Jetson
+                lidarXDisplay = lastMessage.x;
+                lidarYDisplay = lastMessage.y;
+                lidarThetaDisplay = modm::toDegree(lastMessage.theta);
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
