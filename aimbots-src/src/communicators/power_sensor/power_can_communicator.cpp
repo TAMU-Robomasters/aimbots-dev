@@ -1,20 +1,10 @@
 #include "power_can_communicator.hpp"
 
-#include "tap/communication/sensors/imu/bmi088/bmi088.hpp"
-
 #include "drivers.hpp"
 
 namespace src::Informants::PowerComms{
 
-PowerCommunicator::RXHandler::RXHandler( // src::Drivers* drivers, uint32_t id, CANBus bus, PowerCommunicator* ctx, CANListenerProc proc
-    src::Drivers* drivers,
-    uint32_t id,
-    CANBus bus,
-    PowerCommunicator* ctx,
-    CANListenerProc proc)
-    : CanRxListener(drivers, id, bus),
-      ctx(ctx),
-      proc(proc) {}
+
 
 PowerCommunicator::PowerCommunicator(src::Drivers* drivers, CANBus bus)
     : drivers(drivers),
@@ -39,7 +29,7 @@ void PowerCommunicator::requestTest() {
     if(sendTimer.execute()) {
         modm::can::Message msg(static_cast<uint32_t>(CanID::Power), 1);
         msg.setExtended(false);
-        msg.data[0] = 0b1000101;
+        msg.data[0] = 0b00101;
         drivers->can.sendMessage(bus, msg);
 
         powerRequestDataDisplay = msg.data[0];
@@ -49,6 +39,15 @@ void PowerCommunicator::requestTest() {
     }
     
 }
+PowerCommunicator::RXHandler::RXHandler( // src::Drivers* drivers, uint32_t id, CANBus bus, PowerCommunicator* ctx, CANListenerProc proc
+    src::Drivers* drivers,
+    uint32_t id,
+    CANBus bus,
+    PowerCommunicator* ctx,
+    CANListenerProc proc)
+    : CanRxListener(drivers, id, bus),
+      ctx(ctx),
+      proc(proc) {}
 
 void PowerCommunicator::RXHandler::processMessage(modm::can::Message const& msg) { 
     (ctx->*proc)(msg);

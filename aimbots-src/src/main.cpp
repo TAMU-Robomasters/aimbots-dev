@@ -145,6 +145,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
     drivers->powerCommunicator.init();
+  //drivers->turretCommunicator.init();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
@@ -165,7 +166,7 @@ static void initializeIo(src::Drivers *drivers) {
 #endif
 
 #ifdef TURRET_HAS_IMU  // should probably be initialized for both TARGET_TURRET and chassis boards
-    drivers->turretCommunicator.init();
+  //  drivers->turretCommunicator.init();
 #endif
 }
 
@@ -186,14 +187,14 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-    // drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
+   //  drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
    // drivers->powerCommunicator.updateSerial();
 #else
-    drivers->turretCommunicator.sendIMUData();
+   // drivers->turretCommunicator.sendIMUData();
 #endif
 
 #ifdef TURRET_HAS_IMU
-    drivers->turretCommunicator.sendTurretRequest();
+  //  drivers->turretCommunicator.sendTurretRequest();
 #endif
 
     // utils::Music::continuePlayingXPStartupTune(drivers);

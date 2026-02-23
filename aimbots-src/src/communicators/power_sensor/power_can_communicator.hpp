@@ -1,6 +1,6 @@
 #pragma once
 
-#include "informants/kinematics/kinematic_informant.hpp"
+//#include "informants/kinematics/kinematic_informant.hpp"
 #include "utils/tools/common_types.hpp"
 
 namespace src {
@@ -19,7 +19,7 @@ class PowerCommunicator {
     // static constexpr float LINEAR_PRECISION_FACTOR = 100.0f;   // Max input before clipping = 32'767 / 100 = +-327.6 m/s^2
     // static constexpr float CMPS2_TO_MPS2 = 0.01f;
 
-    // static constexpr uint32_t SEND_TO_TURRET_PERIOD = 300;
+     static constexpr uint32_t SEND_TO_SENSOR_PERIOD = 300;
 
     enum class CanID {
         Power = 0x446,
@@ -46,7 +46,7 @@ public:
 
     void init();
 
-    void handlePowerDataRX(const modm::can::Message& message);
+    void handlePowerDataRX(modm::can::Message const& message);
 
     void requestTest();
 
