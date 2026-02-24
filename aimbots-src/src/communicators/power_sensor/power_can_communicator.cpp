@@ -15,28 +15,28 @@ PowerCommunicator::PowerCommunicator(src::Drivers* drivers, CANBus bus)
 
 int current1Display = 0;
 void PowerCommunicator::handlePowerDataRX(const modm::can::Message& message) {
-    PowerMessageData const* data = reinterpret_cast<PowerMessageData const*>(message.data);
-    current1Display = data->current1;
+    // PowerMessageData const* data = reinterpret_cast<PowerMessageData const*>(message.data);
+    // current1Display = data->current1;
 }
 
 void PowerCommunicator::init() {
-    powerDataRXHandler.attachSelfToRxHandler();
+    // powerDataRXHandler.attachSelfToRxHandler();
 }
 
 
 int powerRequestDataDisplay = 0;
 void PowerCommunicator::requestTest() {
-    if(sendTimer.execute()) {
-        modm::can::Message msg(static_cast<uint32_t>(CanID::Power), 1);
-        msg.setExtended(false);
-        msg.data[0] = 0b00101;
-        drivers->can.sendMessage(bus, msg);
+    // if(sendTimer.execute()) {
+    //     modm::can::Message msg(static_cast<uint32_t>(CanID::Power), 1);
+    //     msg.setExtended(false);
+    //     msg.data[0] = 0b00101;
+    //     drivers->can.sendMessage(bus, msg);
 
-        powerRequestDataDisplay = msg.data[0];
+    //     powerRequestDataDisplay = msg.data[0];
 
-        powerRequestData = 0;
-        sendTimer.restart();
-    }
+    //     powerRequestData = 0;
+    //     sendTimer.restart();
+    // }
     
 }
 PowerCommunicator::RXHandler::RXHandler( // src::Drivers* drivers, uint32_t id, CANBus bus, PowerCommunicator* ctx, CANListenerProc proc

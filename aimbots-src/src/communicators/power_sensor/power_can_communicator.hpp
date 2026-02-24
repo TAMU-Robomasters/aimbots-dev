@@ -22,17 +22,21 @@ class PowerCommunicator {
      static constexpr uint32_t SEND_TO_SENSOR_PERIOD = 300;
 
     enum class CanID {
-        Power = 0x446,
+        Power = 446,
     };
 
 
     struct PowerMessageData {
-        uint8_t current1;
-        uint8_t current2;
-        uint8_t voltage1;
-        uint8_t voltage2;
-        uint8_t power1;
-        uint8_t power2;
+        int16_t target;
+        int16_t angularVelocity;
+        int16_t linearAcceleration;
+        uint8_t seq;
+        // uint8_t current1;
+        // uint8_t current2;
+        // uint8_t voltage1;
+        // uint8_t voltage2;
+        // uint8_t power1;
+        // uint8_t power2;
     } modm_packed;
 
 public:
