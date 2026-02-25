@@ -58,7 +58,7 @@ public:
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
   //  Informants::INA260::INA260Communicator powerCommunicator;
-    Informants::PowerComms::PowerCommunicator powerCommunicator;
+    Informants::PowerComms::PowerSensor powerCommunicator;
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;

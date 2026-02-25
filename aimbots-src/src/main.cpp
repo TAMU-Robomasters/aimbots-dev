@@ -144,7 +144,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
-    drivers->powerCommunicator.init();
+ //   drivers->powerCommunicator.init();
     // drivers->turretCommunicator.init();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();

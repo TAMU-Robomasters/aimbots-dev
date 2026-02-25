@@ -1,83 +1,44 @@
 #pragma once
 
-//#include "informants/kinematics/kinematic_informant.hpp"
-#include "utils/tools/common_types.hpp"
+#include "tap/architecture/timeout.hpp"
+#include "tap/communication/can/can_rx_listener.hpp"
+#include "tap/communication/sensors/current/current_sensor_interface.hpp"
+#include "tap/communication/sensors/voltage/voltage_sensor_interface.hpp"
+#include "tap/drivers.hpp"
 
-namespace src {
-class Drivers;
-}  // namespace src
+#include "modm/architecture/interface/can_message.hpp"
 
-namespace src::Informants::PowerComms {
+namespace src::Informants::PowerComms
+{
+static constexpr uint16_t CHASSIS_SENSOR_CAN_ID = 0x446;
 
-static constexpr uint32_t COMMS_DISCONNECTED_TIMEOUT = 1000;
-
-class PowerCommunicator {
-
-    // const float currentMul = 0.00125;
-
-    // static constexpr float ANGLE_PRECISION_FACTOR = 10000.0f;  // Max input before clipping = 32'767 / 10000 = +-3.276 rads
-    // static constexpr float LINEAR_PRECISION_FACTOR = 100.0f;   // Max input before clipping = 32'767 / 100 = +-327.6 m/s^2
-    // static constexpr float CMPS2_TO_MPS2 = 0.01f;
-
-     static constexpr uint32_t SEND_TO_SENSOR_PERIOD = 300;
-
-    enum class CanID {
-        Power = 446,
-    };
-
-
-    struct PowerMessageData {
-        int16_t target;
-        int16_t angularVelocity;
-        int16_t linearAcceleration;
-        uint8_t seq;
-        // uint8_t current1;
-        // uint8_t current2;
-        // uint8_t voltage1;
-        // uint8_t voltage2;
-        // uint8_t power1;
-        // uint8_t power2;
-    } modm_packed;
-
+class PowerSensor
+    : public tap::can::CanRxListener,
+      public tap::communication::sensors::voltage::VoltageSensorInterface,
+      public tap::communication::sensors::current::CurrentSensorInterface
+{
 public:
-    struct PowerData { // change when kebard isn spid
-        uint16_t c = 0;
-        uint16_t v = 0;
-        uint16_t p = 0;
-    };
+    PowerSensor(tap::Drivers* drivers, tap::can::CanBus canBus);
 
-    PowerCommunicator(src::Drivers* drivers, CANBus bus);
+    void processMessage(const modm::can::Message& message) override;
 
-    void init();
+    mockable void initialize();
 
-    void handlePowerDataRX(modm::can::Message const& message);
+    float getVoltageMv() const override { return this->voltage; };
+    float getCurrentMa() const override { return this->current; };
+    float getPowerWatts() const {return this->power;};
 
-    void requestTest();
+    void update() override{};
 
-    using CANListenerProc = void (PowerCommunicator::*)(const modm::can::Message& message);
-    class RXHandler : public tap::can::CanRxListener {
-    public:
-        RXHandler(src::Drivers* drivers, uint32_t id, CANBus bus, PowerCommunicator* ctx, CANListenerProc proc);
-        void processMessage(modm::can::Message const& msg) override;
-
-    private:
-        PowerCommunicator* ctx;
-        CANListenerProc proc;
-    };
+    bool isOnline() const { return !this->heartbeat.isExpired(); }
 
 private:
-    src::Drivers* drivers;
-    CANBus bus;
+    float voltage = 0;
+    float current = 0;
+    float power = 0;
 
-    MilliTimeout disconnectedTimeout;
-
-
-    uint8_t powerRequestData;
-    PeriodicMilliTimer sendTimer;
-
-    RXHandler powerDataRXHandler;
-    uint8_t sendSequence = 0;
-
+    tap::arch::MilliTimeout heartbeat;
 };
+}  
 
-}  // src::Informants::PowerComms
+
