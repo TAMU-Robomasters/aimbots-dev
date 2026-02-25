@@ -42,6 +42,7 @@ void RunShooterCommand::execute() {
 
     // defaults to slowest usable speed for robot
     uint16_t flywheelRPM = SHOOTER_SPEED_MATRIX[0][1];
+
     uint16_t refSpeedLimit = refHelper->getCurrBarrelProjectileSpeedLimit().value_or(/*SHOOTER_SPEED_MATRIX[0][0]*/ 5);
 
     refSpeedLimitDisplay = refSpeedLimit;

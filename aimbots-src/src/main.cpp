@@ -152,11 +152,11 @@ static void initializeIo(src::Drivers *drivers) {
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
    // drivers->powerCommunicator.initialize();
-    drivers->kinematicInformant.recalibrateIMU(
-        {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
-#else
-    drivers->kinematicInformant.recalibrateIMU(
-        {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
+  //  drivers->kinematicInformant.recalibrateIMU(
+   //     {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
+// #else
+//     drivers->kinematicInformant.recalibrateIMU(
+//         {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
 #endif
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
@@ -203,7 +203,7 @@ static void updateIo(src::Drivers *drivers) {
     // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS,
     // AngleUnit::Degrees);
 
-    yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
+     yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
      pitchDisplay =
          drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Degrees);
      rollDisplay =

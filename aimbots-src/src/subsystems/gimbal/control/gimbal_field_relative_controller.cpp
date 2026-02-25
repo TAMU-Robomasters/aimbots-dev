@@ -146,16 +146,20 @@ void GimbalFieldRelativeController::runYawController(
 
 float pitchAngularErrorDisplay = 0.0f;
 float gravComp = 0.0f;
+float overshootPitchMotorDisplay = 0.0f;
+float pitchAngleDisplay = 0.0f;
+float softstopHighDisplay = 0.0f;
+float softstopLowDisplay = 0.0f;
 
 void GimbalFieldRelativeController::runPitchController(std::optional<float> velocityLimit) {
-    float pitchAngularError =
+    float pitchAngularError = 
         drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().minDifference(
             this->getTargetPitch(AngleUnit::Radians));
 
     pitchAngularErrorDisplay = pitchAngularError;
 
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
-
+    pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
 
     for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
@@ -200,11 +204,18 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             gimbal->getPitchMotorTorque(i));
 
         pitchOutputVelocityDisplay = velocityFeedforward + velocityControllerOutput;
+        softstopHighDisplay = PITCH_AXIS_SOFTSTOP_HIGH + 0.0873;
+        softstopLowDisplay = PITCH_AXIS_SOFTSTOP_LOW - 0.0873;
         if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873 &&
             gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW - 0.0873) {
             gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
-        } else {
-            gimbal->setDesiredPitchMotorOutput(i, 10000 * sgn(kGRAVITY));
+            overshootPitchMotorDisplay = 67.0f;
+        } else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_HIGH + 0.0873) { // baconsizzle notes
+            gimbal->setDesiredPitchMotorOutput(i, -10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = -10000 /** sgn(kGRAVITY)*/;
+        }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_LOW - 0.0873){
+            gimbal->setDesiredPitchMotorOutput(i, 10000 /** sgn(kGRAVITY)*/);
+            overshootPitchMotorDisplay = 10000 /** sgn(kGRAVITY)*/;
         }
     }
 }

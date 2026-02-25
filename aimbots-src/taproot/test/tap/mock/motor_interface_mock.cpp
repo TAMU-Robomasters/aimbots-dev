@@ -25,7 +25,7 @@
 
 namespace tap::mock
 {
-MotorInterfaceMock::MotorInterfaceMock() : tap::motor::MotorInterface() {}
+MotorInterfaceMock::MotorInterfaceMock() : tap::motor::MotorInterface(), encoder() {}
 
 MotorInterfaceMock::~MotorInterfaceMock() {}
 }  // namespace tap::mock

@@ -29,7 +29,7 @@
 #include <array>
 #include <cstdint>
 
-#include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_ids.hpp"
 
 namespace modm::can
 {

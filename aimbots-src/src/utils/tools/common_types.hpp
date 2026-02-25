@@ -24,7 +24,8 @@
 
 inline float pow2(float x) { return x * x; }
 
-static inline float wrapTo0To2PIRange(float angle) {
+// prbabl deprecae his
+static inline float wrapTo0To2PIRange(float angle) { // suppsed  be [-pi pi] ZHENG-HA
     if (angle < 0.0f) {
         return angle + M_TWOPI;
     } else if (angle > M_TWOPI) {
@@ -32,6 +33,16 @@ static inline float wrapTo0To2PIRange(float angle) {
     } else {
         return angle;
     }
+}
+
+static inline float wrapNegPIPI(float angle) { // suppsed  be [-pi pi] ZHENG-HA
+    if(angle < -M_PI) {
+        return angle + M_TWOPI;
+    }
+    else if(angle > M_PI) {
+        return angle - M_TWOPI;
+    }
+    return angle;
 }
 
 template <typename T>
@@ -49,11 +60,17 @@ int sgn(T val) {
 using DJIMotor = tap::mock::DjiMotorMock;
 #else
 #include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 using DJIMotor = tap::motor::DjiMotor;
+using DJIMotorEncoder = tap::motor::DjiMotorEncoder;
 #endif
 
 static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotorEncoder::ENC_RESOLUTION;
+}
+
+static inline float getEncoderWrapped(const DJIMotor* motor){
+    return motor->getEncoder()->getPosition().getWrappedValue() - M_PI;
 }
 
 enum class AngleUnit : uint8_t {

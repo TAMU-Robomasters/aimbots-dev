@@ -28,7 +28,9 @@
 
 #include "tap/util_macros.hpp"
 
-#include "dji_motor.hpp"
+#include "modm/architecture/interface/can_message.hpp"
+
+#include "dji_motor_ids.hpp"
 
 namespace tap
 {
@@ -37,6 +39,8 @@ class Drivers;
 
 namespace tap::motor
 {
+class DjiMotor;
+
 /**
  * Converts the dji MotorId to a uint32_t.
  * @param[in] id Some CAN MotorId
@@ -77,6 +81,8 @@ public:
     static constexpr uint32_t CAN_DJI_LOW_IDENTIFIER = 0X200;
     /** CAN message identifier for "high" segment (high 4 CAN motor IDs) of control message. */
     static constexpr uint32_t CAN_DJI_HIGH_IDENTIFIER = 0X1FF;
+    /** CAN message identifier for 6020s in current mode of control message. */
+    static constexpr uint32_t CAN_DJI_6020_CURRENT_IDENTIFIER = 0x1FE;
 
     DjiMotorTxHandler(Drivers* drivers) : drivers(drivers) {}
     mockable ~DjiMotorTxHandler() = default;
@@ -116,8 +122,10 @@ protected:
         DjiMotor** canMotorStore,
         modm::can::Message* messageLow,
         modm::can::Message* messageHigh,
+        modm::can::Message* message6020Current,
         bool* validMotorMessageLow,
-        bool* validMotorMessageHigh);
+        bool* validMotorMessageHigh,
+        bool* validMotorMessage6020Current);
 
     void removeFromMotorManager(const DjiMotor& motor, DjiMotor** motorStore);
 };
