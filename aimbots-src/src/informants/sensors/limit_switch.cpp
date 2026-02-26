@@ -7,6 +7,7 @@ LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge) : rxPin(rxPin), count
 void LimitSwitch::initialize() {  // awesome
     C6::configure(modm::platform::Gpio::InputType::PullDown);
     C7::configure(modm::platform::Gpio::InputType::PullDown);
+    C5::configure(modm::platform::Gpio::InputType::PullDown);
 }
 
 int counter_debug = 0;
@@ -35,6 +36,8 @@ bool LimitSwitch::readSwitch() {
         return C6::read();
     else if (rxPin == "C7")
         return C7::read();
+    else if (rxPin == "C5")
+        return C5::read();
     return true;
 }
 
