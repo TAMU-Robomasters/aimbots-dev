@@ -30,6 +30,8 @@ public:
 
     void update() override{};
 
+    void requestTest();
+
     bool isOnline() const { return !this->heartbeat.isExpired(); }
 
 private:
