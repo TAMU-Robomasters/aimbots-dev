@@ -25,6 +25,7 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+//#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"

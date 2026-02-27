@@ -393,15 +393,15 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     const float d =  y + ry;
 
     // yaw values in radians
-    left_front_yaw_actual  = yawToRad(motors[LF][1]->getEncoderWrapped(),  LEFT_FRONT_YAW_OFFSET);
-    right_front_yaw_actual = yawToRad(motors[RF][1]->getEncoderWrapped(), RIGHT_FRONT_YAW_OFFSET);
-    left_back_yaw_actual   = yawToRad(motors[LB][1]->getEncoderWrapped(),  LEFT_BACK_YAW_OFFSET);
-    right_back_yaw_actual  = yawToRad(motors[RB][1]->getEncoderWrapped(), RIGHT_BACK_YAW_OFFSET);
+    left_front_yaw_actual  = yawToRad(motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_FRONT_YAW_OFFSET);
+    right_front_yaw_actual = yawToRad(motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_FRONT_YAW_OFFSET);
+    left_back_yaw_actual   = yawToRad(motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_BACK_YAW_OFFSET);
+    right_back_yaw_actual  = yawToRad(motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_BACK_YAW_OFFSET);
 
-    watchLFYaw = motors[LF][1]->getEncoderUnwrapped();
-    watchRFYaw = motors[RF][1]->getEncoderUnwrapped();
-    watchLBYaw = motors[LB][1]->getEncoderUnwrapped();
-    watchRBYaw = motors[RB][1]->getEncoderUnwrapped();
+    watchLFYaw = motors[LF][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchRFYaw = motors[RF][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchLBYaw = motors[LB][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchRBYaw = motors[RB][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
 
     // last angle input is stored here and only gets updated when a new value is greater than the deadband
     static bool  lastYawInit[4]   = {false, false, false, false};

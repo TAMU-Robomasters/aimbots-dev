@@ -25,8 +25,8 @@ static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 #if defined(TARGET_STANDARD_BLASTOISE)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(144.27f)};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(144.93f) + M_PI};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)+((5*M_PI)/18)};
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-14.5f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(17.5f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
@@ -34,10 +34,10 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 
 #elif defined(TARGET_STANDARD_2025)
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapNegPIPI(modm::toRadian(260.11f))};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(120.5f) - M_PI};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-130.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(20.0f);
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(-19.6f) + M_PI};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-50)+((5*M_PI)/18)};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
