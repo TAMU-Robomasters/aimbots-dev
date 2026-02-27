@@ -123,13 +123,18 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
 
-
+float IMUAnglesDisplayX;
+float IMUAnglesDisplayY;
+float IMUAnglesDisplayZ;
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     
 
     IMUAnglesDisplay = IMUAngles;
+    IMUAnglesDisplayX = IMUAngles.x;
+    IMUAnglesDisplayY = IMUAngles.y;
+    IMUAnglesDisplayZ = IMUAngles.z;
 
     // Gets chassis angles
     Vector3f chassisAngles =
@@ -297,16 +302,10 @@ float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
-    #ifdef HERO
-        float chassisRoll = 0;
-    #endif
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-    #ifdef HERO
-        float chassisPitch = 0;
-    #endif
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
@@ -531,6 +530,7 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     Vector<KinematicStateVector, 3> imuLinearKSV,
     Vector<KinematicStateVector, 3> imuAngularKSV,
     Vector3f r) {
+    drivers->bmi088.read(); 
     Vector3f w = {
         imuAngularKSV[X_AXIS].getVelocity(),
         imuAngularKSV[Y_AXIS].getVelocity(),
@@ -719,7 +719,6 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
 
     turretFrames.mirrorPastCameraFrame(gimbalFieldAngles.first, gimbalFieldAngles.second, AngleUnit::Radians);
 }
-
 #endif
 
 }  // namespace src::Informants
