@@ -116,6 +116,9 @@ void JetsonCommunicator::updateSerial() {
                     drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
                 
                 Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
+
+                transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+                transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
                 
                 std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 
