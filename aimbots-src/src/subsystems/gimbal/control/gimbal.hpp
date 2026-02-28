@@ -4,6 +4,7 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
+#include "utils/filters/first_order_butterworth_filter.hpp"
 
 #include "subsystems/gimbal/gimbal_constants.hpp"
 
@@ -14,6 +15,8 @@
 // }
 
 namespace src::Gimbal {
+
+static const size_t lowPassFilterOrder = 3;
 
 enum GimbalAxis { YAW_AXIS = 0, PITCH_AXIS = 1 };
 
@@ -121,7 +124,8 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+        float shaftRPM = (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+        return lpf.update(shaftRPM);
     }
 
     inline int16_t getPitchMotorRPM(uint8_t PitchIdx) const {
@@ -237,6 +241,7 @@ public:
 private:
     src::Drivers* drivers;
 
+    mutable src::Utils::Filters::FirstOrderButterworthLPF<lowPassFilterOrder> lpf;
     std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
     std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
 
@@ -259,7 +264,6 @@ private:
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 
     static const uint32_t GIMBAL_BUFFER_SIZE = 40;
-
     // gimbal yaw / pitch buffer
     // yaw is first, pitch is second, respectively in the pair
     Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;

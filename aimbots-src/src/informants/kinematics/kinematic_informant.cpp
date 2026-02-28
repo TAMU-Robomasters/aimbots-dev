@@ -442,19 +442,28 @@ float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
 float rawYawVel;
 
+float IMUAngularVelocityDisplayZ = 0.0f;
+
 float IMUYawAngleDisplayGood;
+
+float YawPosEncoderDisplay = 0.0f;
+float YawAngularVelocityEncoderDisplay = 0.0f;
 
 void KinematicInformant::updateChassisIMUAngles() {
     YawAngularAccelDisplay = getIMUAngularAccelerations().z;
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
     YawPosEncoder = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    YawAngularVelocityEncoder = (gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/2.0f;
+    YawAngularVelocityEncoder = GIMBAL_YAW_GEAR_RATIO * RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0));
+    YawPosEncoderDisplay = YawPosEncoder;
+    YawAngularVelocityEncoderDisplay = YawAngularVelocityEncoder;
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
+
+    IMUAngularVelocityDisplayZ = IMUAngularVelocities.z;
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
@@ -706,7 +715,10 @@ void KinematicInformant::updateRobotFrames() {
     robotLocationDisplay = robotLocation;
 }
 
-float frameDelayDisplay = 0;
+float frameDelayDisplay = 0.0f;
+float pastGimbalYawAngleDisplay = 0.0f;
+float pastGimbalPitchAngleDisplay = 0.0f;
+
 
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     frameDelayDisplay = frameDelay_ms;
@@ -716,6 +728,9 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 
     std::pair<float, float> gimbalFieldAngles = getGimbalFieldOrientationAtTime(frameDelay_ms);
+
+    pastGimbalYawAngleDisplay = modm::toDegree(gimbalFieldAngles.first);
+    pastGimbalPitchAngleDisplay = modm::toDegree(gimbalFieldAngles.second);
 
     turretFrames.mirrorPastCameraFrame(gimbalFieldAngles.first, gimbalFieldAngles.second, AngleUnit::Radians);
 }
