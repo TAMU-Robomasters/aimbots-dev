@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
+#define YAW_3508
 
 #define GIMBAL_UNTETHERED
 
@@ -69,7 +70,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 0.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -98,7 +99,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.15f,
     .maxICumulative = 1000.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -127,7 +128,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .ki = 0.0f,
     .kd =   0.0f,
     .maxICumulative = 2000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

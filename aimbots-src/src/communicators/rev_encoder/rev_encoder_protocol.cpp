@@ -32,8 +32,7 @@ namespace src::Informants{
     }
 
     uint8_t debug_byte[2];
-    uint16_t debug_packed = 0;
-    uint16_t RevEncoder::readData() {
+    void RevEncoder::readData() {
         uint8_t rx[2]; 
 
         Spi2Nss::reset();
@@ -43,20 +42,16 @@ namespace src::Informants{
         debug_byte[0] = rx[0];
         debug_byte[1] = rx[1];
 
-        packedData = (uint16_t(rx[0])<<8) | uint16_t(rx[1]);
-        debug_packed = packedData;
-        return packedData;
+        data = (uint16_t(rx[0])<<8) | uint16_t(rx[1]);
     }
 
+    uint16_t debug_data = 0;
     void RevEncoder::execute() {
         readData();
-        getAngle();
+        debug_data = data;
     }  
     
-    float debug_angle;
-    float RevEncoder::getAngle() {
-        angle = (float(packedData) / 65535.0f) * 2 * PI;
-        debug_angle = angle;
-        return angle;
+    uint16_t RevEncoder::getData() const {
+        return data;
     }
 } // namespace src::Informants

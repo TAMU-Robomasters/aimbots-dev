@@ -15,14 +15,13 @@ public:
     ~RevEncoder() = default;
 
     void initialize();
-    uint16_t readData();
+    void readData();
     void execute();
-    float getAngle();
-    
+    uint16_t getData() const;
+
 private:
     src::Drivers* drivers;
-    float angle;
-    uint16_t packedData;
+    uint16_t data;
 
 }; // class RevEncoder
 

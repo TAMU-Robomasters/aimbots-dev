@@ -125,6 +125,7 @@ int main() {
             drivers->musicPlayer.playMusic();
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
+
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
@@ -144,8 +145,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
-
-#ifdef TARGET_HERO || TARGET_SENTRY_SWERVE
+#ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
 
@@ -190,8 +190,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-
-#ifdef TARGET_HERO || TARGET_SENTRY_SWERVE
+#ifdef YAW_3508
     drivers->revEncoder.execute();
 #endif
 

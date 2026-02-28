@@ -46,8 +46,10 @@ public:
           controlOperatorInterface(this),
           magnetometer(),
           cvCommunicator(this),
-      //    powerCommunicator(this),
+      //  powerCommunicator(this),
+      #ifdef YAW_3508
           revEncoder(this),
+      #endif
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
@@ -58,7 +60,9 @@ public:
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
   //  Informants::INA260::INA260Communicator powerCommunicator;
+  #ifdef YAW_3508
     Informants::RevEncoder revEncoder;
+  #endif
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;
     Informants::TurretComms::TurretCommunicator turretCommunicator;
