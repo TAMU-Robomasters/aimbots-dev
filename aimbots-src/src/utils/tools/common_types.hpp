@@ -70,7 +70,7 @@ static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
 }
 
 static inline float RevEncoderValueToRadians(int16_t encoderValue) {
-    return (M_TWOPI * static_cast<uint64_t>(encoderValue)) / 65535.0f;
+    return (M_TWOPI * (static_cast<float>(encoderValue) / 65535.0f));
 }
 
 static inline float getEncoderWrapped(const DJIMotor* motor){
