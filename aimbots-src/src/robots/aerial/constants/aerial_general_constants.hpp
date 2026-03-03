@@ -2,7 +2,7 @@
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
+static constexpr SongTitle STARTUP_SONG = SongTitle::FREEBIRD;
 
 // #define TURRET_HAS_IMU
 
