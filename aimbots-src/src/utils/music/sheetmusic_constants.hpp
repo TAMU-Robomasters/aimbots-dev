@@ -231,4 +231,16 @@ Song BadPiggies = {BadPiggiesBPM, Q_N, {{C6, Q_N}, {C6, E_N}, {Ds4, S_N}, {Bb5, 
 // Based on:
 // https://onlinesequencer.net/5250585
 
+
+
+static constexpr uint32_t boonieBPM = 110;
+Song boonie = {boonieBPM, Q_N, {{C6, Q_N}, {C6, Q_N}, {E6, Q_N}, {E6, Q_N},
+                                {D6, E_N}, {C6, Q_N}, {A5, QH_N}, {G5, Q_N},
+                                {C6, Q_N}, {C6, Q_N}, {E6, E_N}, {E6, QH_N},
+                                {D6, W_N}, {END, Q_N} }};
+
+// BOONIE
+// https://onlinesequencer.net/5250667
+
+
 }  // namespace utils::Jukebox
