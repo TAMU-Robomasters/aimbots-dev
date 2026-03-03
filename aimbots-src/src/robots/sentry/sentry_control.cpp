@@ -336,6 +336,7 @@ void registerIOMappings(src::Drivers *drivers) {
 
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
+
 }
 
 }  // namespace SentryControl

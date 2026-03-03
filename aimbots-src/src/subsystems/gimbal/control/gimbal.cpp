@@ -111,6 +111,7 @@ void GimbalSubsystem::refresh() {
         tartgetYawDisplay = targetYawAxisAngle.getWrappedValue();
 
         yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
+        yawAxisMotorSpeedDisplay = yawMotors[1]->getShaftRPM();
 
         yawDesiredOutputDisplay = desiredYawMotorOutputs[yawDisplayMotorIdx];
 

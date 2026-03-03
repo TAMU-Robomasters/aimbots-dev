@@ -25,7 +25,7 @@ namespace src::Informants{
         Spi2Hal::initialize(
             Spi2Hal::Prescaler::Div16,
             Spi2Hal::MasterSelection::Master,
-            Spi2Hal::DataMode::Mode3,
+            Spi2Hal::DataMode::Mode1,
             Spi2Hal::DataOrder::MsbFirst,
             Spi2Hal::DataSize::Bit8
         );
