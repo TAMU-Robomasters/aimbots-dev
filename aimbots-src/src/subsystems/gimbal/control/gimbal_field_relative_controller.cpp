@@ -35,6 +35,7 @@ float feedforwardDisplay = 0.0f;
 
 float fieldRelativeYawVelocityTargetDisplay = 0.0f;
 float fieldRelativePitchVelocityTargetDisplay = 0.0f;
+float fieldRelativeVelocityTargetDisplay = 0.0f;
 float pitchVelocityFeedforwardOutputDisplay = 0.0f;
 float yawVelocityFeedforwardOutputDisplay = 0.0f;
 float velocityPIDOutputDisplay = 0.0f;
@@ -47,6 +48,8 @@ float chassisPitchRelativeVelocityTargetDisplay = 0.0f;
 float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
 float chassisPitchRelativeDerivedVelocityDisplay = 0.0f;
 
+float chassisRelativeVelocityTargetDisplay = 0.0f;
+float chassisRelativeVelocityCurrentDisplay = 0.0f;
 float chassisRelativeAccelerationTargetDisplay = 0.0f;
 float fieldRelativeAccelerationTargetDisplay = 0.0f;
 float chassisIMUAccelerationDisplay = 0.0f;
