@@ -36,6 +36,12 @@ static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
+ // Chassis Relative Velocity Yaw Feedforward Equation
+// Derived by setting the desired yaw voltage to different values and measuring the velocity of the yaw
+// static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
+//     return (desiredYawVelocity + 3.5803f) / 0.0011;
+// }
+
 #endif
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
@@ -59,6 +65,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Se
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
+
+
 
 /**
  * @brief Position PID constants
