@@ -17,11 +17,19 @@ public:
     void initialize();
     void readData();
     void execute();
+    void revEncoderVelocity();
     uint16_t getData() const;
+    float getVelocity() const;
 
 private:
     src::Drivers* drivers;
     uint16_t data;
+    float velocity;
+
+    float lastAngle;
+    uint32_t lastTimeMs = 0;
+    uint32_t currentTimeMs;
+    uint32_t dtMs;
 
 }; // class RevEncoder
 

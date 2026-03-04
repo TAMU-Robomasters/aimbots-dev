@@ -3,7 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
-#define TURRET_IMU // IMU migration and whatnot
+#define SENTRY_IMU // IMU migration and whatnot
 
 #if defined(TARGET_SENTRY_SWERVE)
 #define SWERVE

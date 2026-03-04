@@ -48,10 +48,34 @@ namespace src::Informants{
     uint16_t debug_data = 0;
     void RevEncoder::execute() {
         readData();
+        revEncoderVelocity();
         debug_data = data;
     }  
-    
+
+    float debug_vel = 0;
+    void RevEncoder::revEncoderVelocity() {
+        currentTimeMs = tap::arch::clock::getTimeMilliseconds();
+        dtMs = currentTimeMs - lastTimeMs;
+
+        float currentAngle = (M_TWOPI) * (data / 65535.0f);
+
+        if (lastTimeMs != 0 && dtMs > 0) {
+            float dt = dtMs / 1000.0f;
+
+            float dAngle = fmodf((currentAngle - lastAngle) + M_PI, M_TWOPI) - M_PI;
+            velocity = dAngle / dt;
+            debug_vel = velocity;
+        }
+
+        lastAngle = currentAngle;
+        lastTimeMs = currentTimeMs;
+    }
+
     uint16_t RevEncoder::getData() const {
         return data;
+    }
+
+    float RevEncoder::getVelocity() const {
+        return velocity;
     }
 } // namespace src::Informants

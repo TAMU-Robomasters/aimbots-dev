@@ -50,7 +50,7 @@ static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Mo
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -103,9 +103,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,  // 35
+    .kp = 1.0f,  // 35
     .ki = 0.0f,
-    .kd = 0.15f,
+    .kd = 0.0f,
     .maxICumulative = 1000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -132,9 +132,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
-    .ki = 0.0f,
-    .kd =   0.0f,
+    .kp = 1.0f,
+    .ki = 1.0f,
+    .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
