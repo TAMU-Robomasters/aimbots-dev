@@ -173,9 +173,8 @@ void GimbalFieldRelativeController::runYawController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
     #else
-        float velocityControllerOutput = yawVelocityPIDs[i]->runController(
-            chassisRelativeVelocityTarget - gimbal->getYawMotorRPM(i),
-            gimbal->getYawMotorTorque(i));
+        float velocityControllerOutput = yawVelocityPIDs[i]->runControllerDerivateError(
+            chassisRelativeVelocityTarget - gimbal->getYawMotorRPM(i));
     #endif
 
         fieldRelativeVelocityTargetDisplay = fieldRelativeVelocityTarget;
