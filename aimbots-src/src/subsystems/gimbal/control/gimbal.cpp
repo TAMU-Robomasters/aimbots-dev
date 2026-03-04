@@ -68,7 +68,6 @@ float pitchDesiredOutputDisplay = 0;
 float currentYawAxisAngleByMotorDisplay = 0;
 
 float pitchLimitedOutputDisplay = 0;
-float yawErrDisplay = 0;
 
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
@@ -109,7 +108,7 @@ void GimbalSubsystem::refresh() {
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
             //modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
-            RevEncoderValueToRadians(currentYawEncoderPosition);
+            RevEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i];
         otherYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getWrappedValue()));
         yawOutputDisplay = yawMotors[i]->getOutputDesired();
@@ -120,7 +119,6 @@ void GimbalSubsystem::refresh() {
         yawAxisMotorSpeedDisplay = yawMotors[1]->getShaftRPM();
 
         yawDesiredOutputDisplay = desiredYawMotorOutputs[yawDisplayMotorIdx];
-        yawErrDisplay = this->getYawMotorSetpointError(yawDisplayMotorIdx, AngleUnit::Radians);
 
         // flush the desired output to the motor
         setDesiredOutputToYawMotor(i);
@@ -202,7 +200,12 @@ void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
 
 float GimbalSubsystem::getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
-float motorAngleError = currentYawAxisAnglesByMotor[YawIdx]->minDifference(targetYawAxisAngle) / GIMBAL_YAW_GEAR_RATIO;
+#ifndef YAW_3508
+    float motorAngleError = currentYawAxisAnglesByMotor[YawIdx]->minDifference(targetYawAxisAngle) / GIMBAL_YAW_GEAR_RATIO;
+    // target - current
+#else
+    float motorAngleError = drivers->revEncoder.getWrappedAngle()->minDifference(target)
+#endif
 
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }
