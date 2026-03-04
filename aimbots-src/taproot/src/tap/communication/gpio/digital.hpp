@@ -59,7 +59,6 @@ public:
         PF1,
         PF0,
         B12,
-        C5,
         C6,
         C7,
     };

@@ -28,13 +28,9 @@
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/complex_commands/sentry_match_firing_control_command.hpp"
-#include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
-#include "subsystems/feeder/complex_commands/feeder_shot_timing_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
@@ -127,27 +123,15 @@ GimbalPatrolConfig patrolConfig = {
     .pitchPatrolOffset = -modm::toRadian(2.0f),
 };
 
-GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 60.0f,
-    .frequencyHz = .2f,
-};
-
-GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 30.0f,
-    .frequencyHz = .2f,
-};
-
-GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
-    .positionAmplitudeDegrees = 30.0f,
-    .frequencyHz = 0.5f,
-};
-
-GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
-    .positionAmplitudeDegrees = 20.0f,
-    .frequencyHz = 0.5f,
-};
-
-// Define commands here ---------------------------------------------------
+// Match Controllers ------------------------------------------------
+SentryMatchFiringControlCommand matchFiringControlCommand(
+    drivers(),
+    &feeder,
+    &shooter,
+    &refHelper,
+    &ballisticsSolver,
+    &gimbalFieldRelativeController,
+    chassisMatchState);
 
 SentryMatchChassisControlCommand matchChassisControlCommand(
     drivers(),
@@ -218,20 +202,6 @@ GimbalChaseCommand gimbalChaseCommand2(
     SHOOTER_SPEED_MATRIX[0][0]);
 // only for when dirving with remote
 
-GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
-    drivers(), 
-    &gimbal,     
-    &gimbalFieldRelativeController, 
-    gimbalYawVelocityTunningConfig,
-    gimbalPitchVelocityTunningConfig);
-
-GimbalPositionTunningCommand gimbalPositionTunningCommand(
-    drivers(), 
-    &gimbal,     
-    &gimbalFieldRelativeController, 
-    gimbalYawPositionTunningConfig,
-    gimbalPitchPositionTunningConfig);
-
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
@@ -242,8 +212,6 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
-FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
-FeederShotTimingCommand feederShotTimingCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
@@ -300,28 +268,26 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 HoldCommandMapping leftSwitchMid(
     drivers(),
     {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
-    // {&gimbalPositionTunningCommand},
-    // {&gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
      //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
-    {/*&chassisTokyoCommand*/ &gimbalChaseCommand
+    {&chassisTokyoCommand, &gimbalToggleAimCommand
      /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&feederShotTimingCommand, &runShooterCommand}, // shot timing
+    {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
-HoldRepeatCommandMapping rightSwitchUp(
+HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand}, // continuously feed
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
+    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {

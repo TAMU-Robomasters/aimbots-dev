@@ -148,11 +148,10 @@ using PWMOutPins = SoftwareGpioPort<PWMOutPinC1, PWMOutPinBuzzer, PWMOutPinImuHe
 using DigitalInPinPF1 = GpioF1;
 using DigitalInPinPF0 = GpioF0;
 using DigitalInPinB12 = GpioB12;
-using DigitalInPinC5 = GpioC6;
 using DigitalInPinC6 = GpioI6;
 using DigitalInPinC7 = GpioI7;
         
-using DigitalInPins = SoftwareGpioPort<DigitalInPinPF1, DigitalInPinPF0, DigitalInPinB12, DigitalInPinC5, DigitalInPinC6, DigitalInPinC7>;
+using DigitalInPins = SoftwareGpioPort<DigitalInPinPF1, DigitalInPinPF0, DigitalInPinB12, DigitalInPinC6, DigitalInPinC7>;
 
 // Initialize digital output pins
         

@@ -15,9 +15,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       currentSerialState(JetsonCommunicatorSerialState::SearchingForMagic),
       nextByteIndex(0),
       jetsonOfflineTimeout(),
-      fireTimeout(),
-      lastMessage(),
-      transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}})
+      lastMessage()
 {}
 
 void JetsonCommunicator::initialize() {
@@ -27,12 +25,9 @@ void JetsonCommunicator::initialize() {
 
 uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
 int displayBufIndex = 0;
-size_t nextByteIndexDisplay = 0;
-uint32_t timeDisplay = 0;
 
-float targetYawDisplay = 0;
-float targetPitchDisplay = 0;
-uint8_t timeUntilNextFireDisplay = 0;
+float targetXDisplay = 0;
+float targetYDisplay = 0;
 CVState cvStateDisplay = CVState::NOT_FOUND;
 
 float fieldRelativeYawAngleDisplay = 0;
@@ -40,12 +35,6 @@ float chassisRelativePitchAngleDisplay = 0;
 
 int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
-
-float frameDelayOffsetDisplay_ms = 0.0f;
-
-uint32_t fireTimeoutTimeRemainingDisplay = 0.0f;
-
-float messageTypeDisplay = 0.0f;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
@@ -63,14 +52,10 @@ alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
 
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
-    timeDisplay = currTime;
-
-    fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
 
     size_t bytesRead = READ(&rawSerialBuffer[nextByteIndex], 1);  // attempts to pull one byte from the buffer
     if (bytesRead != 1) return;
 
-    nextByteIndexDisplay = 1;
     // We've successfully read a new byte from the Jetson, so we can restart this.
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
 
@@ -90,49 +75,8 @@ void JetsonCommunicator::updateSerial() {
             // Wait until we've reached the end of the magic number. If any of the bytes in the magic number weren't a match,
             // we wouldn't have gotten this far.
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
-                currentSerialState = JetsonCommunicatorSerialState::HandleMessageType;
-            }
-            break;
-        }
-        
-        case JetsonCommunicatorSerialState::HandleMessageType: {
-            uint8_t messageType = rawSerialBuffer[nextByteIndex];
-            messageTypeDisplay = messageType;
-            if (messageType == JETSON_AIM_MESSAGE) {
-                nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
-            } 
-            else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
-                uint8_t frameDelay_ms = 0.0f; 
-                //!!! potential issue where not enough time has passed and we don't read anything
-                READ(&frameDelay_ms, 1);
-                
-                drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
-
-                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
-
-                src::Informants::Transformers::CoordinateFrame cameraFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
-                
-                Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
-                
-                std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
-
-                // Send data to Jetson
-                WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
-
-                // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
-                nextByteIndex = 0;
-                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
- 
-            // restart everything if nothing matches
-            else {
-                nextByteIndex = 0;
-                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
-            } 
-             
             break;
         }
         // ...found message start, assemble message...
@@ -153,23 +97,25 @@ void JetsonCommunicator::updateSerial() {
                     lastMsgTimeDisplay = currTime;
                 }
 
-                targetYawDisplay = modm::toDegree(lastMessage.yaw);
-                targetPitchDisplay = modm::toDegree(lastMessage.pitch);
-                timeUntilNextFireDisplay = lastMessage.timeUntilNextFire;
+                targetXDisplay = lastMessage.targetX;
+                targetYDisplay = lastMessage.targetY;
                 cvStateDisplay = lastMessage.cvState;
 
                 if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    fireTimeout.restart(lastMessage.timeUntilNextFire);
-
                     // position is relative to camera
+                    visionTargetPosition.setX(lastMessage.targetX);
+                    visionTargetPosition.setY(lastMessage.targetY);
+                    visionTargetPosition.setZ(lastMessage.targetZ);
+
+                    visionDataConverter.updateTargetInfo(visionTargetPosition, lastMessage.delay);
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
                 if (lastMessage.cvState == CVState::FOUND) {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
+                    tap::buzzer::playNote(&drivers->pwm, 466);
                 } else if (lastMessage.cvState == CVState::FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
@@ -197,22 +143,6 @@ PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
     return visionDataConverter.getPlatePrediction(dt);
 }
 
-AutoAimAngles JetsonCommunicator::getAutoAimAngles() const {
-    AutoAimAngles angles;
-    angles.yaw = lastMessage.yaw;
-    angles.pitch = lastMessage.pitch;
-    return angles;
-}
-
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
-
-bool JetsonCommunicator::shouldFire() {
-    if (!fireTimeout.isExpired()) { // still need to wait before we fire
-        return false;
-    }
-    // We should fire
-    fireTimeout.stop(); // stop timer so we don't keep sending true
-    return true;
-}
 
 }  // namespace src::Informants::Vision

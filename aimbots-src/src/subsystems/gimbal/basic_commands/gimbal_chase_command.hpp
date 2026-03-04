@@ -56,9 +56,6 @@ private:
 
     src::Informants::Vision::PlateKinematicState data;
 
-    src::Informants::Vision::AutoAimAngles desiredAngles;
-
-
     bool wasQPressed = false;
     bool wasEPressed = false;
     bool ignoreQuickTurns = false;

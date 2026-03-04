@@ -8,28 +8,18 @@ enum CVState : uint8_t {
     FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
-static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
-// Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
-static constexpr uint8_t JETSON_TRANSFORMATION_QUERY = 't';
-static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'b'; // header for devboard -> jetson comms
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
 
 struct JetsonMessage {
     uint8_t magic;
-    uint8_t messageType;
-    float pitch;
-    float yaw;
-    uint8_t timeUntilNextFire;
+    float targetX;
+    float targetY;
+    float targetZ;
+    uint8_t delay;  // ms
     CVState cvState;
 } __attribute__((packed));
 
-struct EmbeddedTransformationMessage {
-    uint8_t magic;
-    float matrix[16];
-} __attribute__((packed));
-
-static_assert(sizeof(JetsonMessage) == 12, "JetsonMessage is not the correct size");
-static_assert(sizeof(EmbeddedTransformationMessage) == 65, "EmbeddedTransformationMessage is not the correct size");
+static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::Vision

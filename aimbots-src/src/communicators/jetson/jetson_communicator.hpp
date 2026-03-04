@@ -16,13 +16,7 @@ namespace src::Informants::Vision {
 
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
-    HandleMessageType,
-    AssemblingMessage
-};
-
-struct AutoAimAngles {
-    float yaw;
-    float pitch;
+    AssemblingMessage,
 };
 
 class JetsonCommunicator {
@@ -40,15 +34,11 @@ public:
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
-    AutoAimAngles getAutoAimAngles() const;
-
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
     uint32_t getLastFrameCaptureDelay() const { return visionDataConverter.getLastFrameCaptureDelay(); }
 
     bool isLastFrameStale() const;
-
-    bool shouldFire();
 
 private:
     src::Drivers* drivers;
@@ -60,14 +50,12 @@ private:
     size_t nextByteIndex;
 
     tap::arch::MilliTimeout jetsonOfflineTimeout;
-    tap::arch::MilliTimeout fireTimeout;
 
     static constexpr uint32_t JETSON_BAUD_RATE = 115200;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
     JetsonMessage lastMessage;
-    EmbeddedTransformationMessage transformationMessageToJetson;
     uint32_t lastFoundTargetTime;
 
     PlateKinematicState lastPlateKinematicState;

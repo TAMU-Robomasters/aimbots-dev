@@ -60,9 +60,6 @@ void Digital::configureInputPullMode(Digital::InputPin pin, Digital::InputPullMo
         case Digital::InputPin::B12:
             DigitalInPinB12::configure(mode);
             break;
-        case Digital::InputPin::C5:
-            DigitalInPinC5::configure(mode);
-            break;
         case Digital::InputPin::C6:
             DigitalInPinC6::configure(mode);
             break;
@@ -117,8 +114,6 @@ bool Digital::read(Digital::InputPin pin) const
             return DigitalInPinPF0::read();
         case Digital::InputPin::B12:
             return DigitalInPinB12::read();
-        case Digital::InputPin::C5:
-            return DigitalInPinC5::read();
         case Digital::InputPin::C6:
             return DigitalInPinC6::read();
         case Digital::InputPin::C7:
