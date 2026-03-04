@@ -9,7 +9,7 @@ namespace src::Feeder {
 FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     : tap::control::Subsystem(drivers),
       drivers(drivers),
-      limitSwitch(static_cast<std::string>("C6"), src::Informants::EdgeType::RISING) {
+      limitSwitch(static_cast<std::string>("C5"), src::Informants::EdgeType::RISING) {
     BuildFeederMotors();
     BuildPIDControllers();
 }
@@ -90,7 +90,7 @@ void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {
     feederMotors[FeederIdx]->setDesiredOutput(desiredFeederMotorOutputs[FeederIdx]);
 }
 
-bool FeederSubsystem::getPressed() { return limitSwitch.readSwitch(); }
+bool FeederSubsystem::getPressed() { return LIMIT_INVERTED ? !limitSwitch.readSwitch() : limitSwitch.readSwitch(); }
 
 }  // namespace src::Feeder
 
