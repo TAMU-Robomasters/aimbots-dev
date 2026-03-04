@@ -132,8 +132,8 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1.0f,
-    .ki = 1.0f,
+    .kp = 0.0f,
+    .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = M3508_MAX_OUTPUT,

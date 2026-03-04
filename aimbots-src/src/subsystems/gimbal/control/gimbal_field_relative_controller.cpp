@@ -163,7 +163,7 @@ void GimbalFieldRelativeController::runYawController(
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
         chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
+        chassisRelativeVelocityCurrentDisplay = gimbal->getYawMotorRPM(i);
         // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[0]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
@@ -213,16 +213,8 @@ float pitchVelocityIDebug= 0.0f;
 float pitchVelocityDDebug= 0.0f;
 bool updatePitchVelocityPIDsDebug = false;
 
-float chassisPitchRelativeVelocityTargetDisplay = 0.0f;
-float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
-float pitchVelocityFeedforwardOutputDisplay = 0.0f;
- 
-float fieldRelativeYawVelocityTargetDisplay = 0.0f;
 float chassisRelativeVelocityYawFeedforward = 0.0f;
-float chassisYawRelativeVelocityTargetDisplay = 0.0f;
-float chassisYawRelativeVelocityCurrentDisplay = 0.0f;
 float kinematicPitchAngleDisplay = 0.0f;
-float fieldRelativePitchVelocityTargetDisplay = 0.0f;
 
 // for PID testing
 void GimbalFieldRelativeController::runYawVelocityController(
@@ -235,8 +227,11 @@ void GimbalFieldRelativeController::runYawVelocityController(
 
     // speedTarget += 1 / 200.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+    #ifndef YAW_3508
         yawVelocityFilters[i]->update(modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i))));
-
+    #else
+        yawVelocityFilters[i]->update(modm::toDegree(gimbal->getYawMotorRPM(i)));
+    #endif
         float fieldRelativeVelocityTarget = this->getTargetVelocityYaw(AngleUnit::Radians);
 
         if (velocityLimit.has_value()) {
@@ -259,7 +254,11 @@ void GimbalFieldRelativeController::runYawVelocityController(
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
         chassisYawRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
+    #ifndef YAW_3508
+        chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i))));
+    #else
+        chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(gimbal->getYawMotorRPM(i));
+    #endif
         chassisYawRelativeVelocityCurrentDisplay = yawVelocityFilters[0]->getValue();
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
@@ -273,14 +272,19 @@ void GimbalFieldRelativeController::runYawVelocityController(
             updateYawVelocityPIDsDebug = false;
         }
 
+    #ifndef YAW_3508
         float velocityControllerOutput = yawVelocityPIDs[i]->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
-
+    #else
+        float velocityControllerOutput = yawVelocityPIDs[i]->runController(
+            chassisRelativeVelocityTarget - gimbal->getYawMotorRPM(i),
+            gimbal->getYawMotorTorque(i));
+    #endif
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
-        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput );
+        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput);
     }
 }
 
