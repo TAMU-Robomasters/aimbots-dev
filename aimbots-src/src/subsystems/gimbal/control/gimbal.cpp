@@ -195,8 +195,12 @@ void GimbalSubsystem::setDesiredOutputToPitchMotor(uint8_t PitchIdx) {
 
 float GimbalSubsystem::getYawMotorSetpointError(uint8_t YawIdx, AngleUnit unit) const {
     // how much the motor needs to turn to get to the target angle
+#ifndef YAW_3508
     float motorAngleError = currentYawAxisAnglesByMotor[YawIdx]->minDifference(targetYawAxisAngle) / GIMBAL_YAW_GEAR_RATIO;
     // target - current
+#else
+    float motorAngleError = drivers->revEncoder.getWrappedAngle()->minDifference(target)
+#endif
 
     return (unit == AngleUnit::Radians) ? motorAngleError : modm::toDegree(motorAngleError);
 }
