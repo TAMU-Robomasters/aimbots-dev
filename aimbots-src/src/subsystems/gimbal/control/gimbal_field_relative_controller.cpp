@@ -254,7 +254,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
 
         chassisYawRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
     #ifndef YAW_3508
-        chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i))));
+        chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #else
         chassisYawRelativeVelocityCurrentDisplay = modm::toDegree(gimbal->getYawMotorRPM(i));
     #endif
