@@ -191,6 +191,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
+    drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
 #ifdef YAW_3508
     drivers->revEncoder.execute();
 #endif

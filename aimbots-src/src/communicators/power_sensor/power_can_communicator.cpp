@@ -23,11 +23,14 @@ void PowerSensor::initialize() {
 }
 
 
-bool sendSuccDisplay = false;
+int sendSuccDisplay = 69;
 void PowerSensor::requestTest() {
-    // if (drivers->can.isReadyToSend(canBus)) {
+     if (drivers->can.isReadyToSend(canBus)) {
         sendSuccDisplay = drivers->can.sendMessage(canBus, 0b01000101); // 68 +- 1 HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA
-    // }
+        sendSuccDisplay = -5;
+     }else{
+        sendSuccDisplay = 67;
+     }
     
 }
 
