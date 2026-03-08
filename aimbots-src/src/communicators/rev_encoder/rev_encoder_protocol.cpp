@@ -10,6 +10,9 @@ namespace src::Informants{
     using Spi2Miso = modm::platform::GpioB14;
     using Spi2Mosi = modm::platform::GpioB15;
 
+    float positionDisplay = 0.0f;
+    float velocityDisplay = 0.0f;
+
     RevEncoder::RevEncoder(src::Drivers* drivers) : drivers(drivers) {}
 
     void RevEncoder::initialize() {  
@@ -50,6 +53,7 @@ namespace src::Informants{
         readData();
         revEncoderVelocity();
         debug_data = data;
+        positionDisplay = data;
     }  
 
     float debug_vel = 0;
@@ -66,6 +70,7 @@ namespace src::Informants{
             velocity = dAngle / dt;
             debug_vel = velocity;
         }
+        velocityDisplay = velocity;
 
         lastAngle = currentAngle;
         lastTimeMs = currentTimeMs;

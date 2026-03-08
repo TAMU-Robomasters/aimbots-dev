@@ -64,7 +64,6 @@ float currentYawAxisAngleByMotorDisplay = 0;
 
 float pitchLimitedOutputDisplay = 0;
 float yawErrDisplay = 0;
-float sumDisplay = 0.0f;
 
 void GimbalSubsystem::refresh() {
     int yawOnlineCount = 0;
@@ -94,7 +93,6 @@ void GimbalSubsystem::refresh() {
         currentYawAxisAnglesByMotor[i]->setWrappedValue(wrappedYawAxisAngle);
 
         yawAxisAngleSum += wrappedYawAxisAngle;
-        
         ////////////////
         // DEBUG VARS //
         ////////////////
@@ -123,7 +121,6 @@ void GimbalSubsystem::refresh() {
         setDesiredOutputToYawMotor(i);
     }
     yawOnlineCountDisplay = yawOnlineCount;
-    sumDisplay = yawAxisAngleSum;
 
     int pitchOnlineCount = 0;
     float pitchAxisAngleSum = 0.0f;
