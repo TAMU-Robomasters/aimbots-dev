@@ -22,6 +22,31 @@ void PowerSensor::initialize() {
     this->heartbeat.restart(0);
 }
 
+// void TurretMCBCanComm::sendData()
+// {
+//     if (sendMcbDataTimer.execute())
+//     {
+//         modm::can::Message txMsg(TURRET_MCB_TX_CAN_ID, 1);
+//         txMsg.setExtended(false);
+//         txMsg.data[0] = txCommandMsgBitmask.value;
+//         drivers->can.sendMessage(canBus, txMsg);
+
+//         if (txCommandMsgBitmask.any(TxCommandMsgBitmask::RECALIBRATE_IMU))
+//         {
+//             yawRevolutions = 0;
+//             pitchRevolutions = 0;
+//         }
+
+//         // set this calibrate flag to false so the calibrate command is only sent once
+//         txCommandMsgBitmask.reset(TxCommandMsgBitmask::RECALIBRATE_IMU);
+//     }
+
+//     if (!isConnected())
+//     {
+//         yawRevolutions = 0;
+//         pitchRevolutions = 0;
+//     }
+// }
 
 int sendSuccDisplay = 69;
 void PowerSensor::requestTest() {
