@@ -125,6 +125,7 @@ int main() {
             drivers->musicPlayer.playMusic();
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
+
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
@@ -144,8 +145,11 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
+    #ifdef YAW_3508
+        drivers->revEncoder.initialize();
+    #endif
     drivers->powerCommunicator.initialize();
-    // drivers->turretCommunicator.init();
+
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
@@ -187,7 +191,10 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-    drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
+#ifdef YAW_3508
+    drivers->revEncoder.execute();
+#endif
+
    // drivers->powerCommunicator.updateSerial();
 #else
    // drivers->turretCommunicator.sendIMUData();

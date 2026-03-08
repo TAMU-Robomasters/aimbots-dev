@@ -37,6 +37,9 @@ public:
     void runYawController(std::optional<float> velocityLimit = std::nullopt) override;
     void runPitchController(std::optional<float> velocityLimit = std::nullopt) override;
 
+    void runYawVelocityController(std::optional<float> velocityLimit = std::nullopt);
+    void runPitchVelocityController(std::optional<float> velocityLimit = std::nullopt);
+
     bool isOnline() const;
 
     void setTargetYaw(AngleUnit unit, float targetYaw) override {
@@ -55,6 +58,17 @@ public:
         targetPitch =
             tap::algorithms::limitVal(targetPitch, softLow, softHigh);  // this doesn't work if robot is upside down
         fieldRelativePitchTarget.setWrappedValue(targetPitch);
+    }
+
+    // for PID testing
+    void setTargetVelocityYaw(AngleUnit unit, float targetVelocityYaw) {
+        targetVelocityYaw = (unit == AngleUnit::Radians) ? targetVelocityYaw : modm::toRadian(targetVelocityYaw);
+        fieldRelativeVelocityYawTarget = targetVelocityYaw;
+    }
+
+    void setTargetVelocityPitch(AngleUnit unit, float targetVelocityPitch) {
+        targetVelocityPitch = (unit == AngleUnit::Radians) ? targetVelocityPitch : modm::toRadian(targetVelocityPitch);
+        fieldRelativeVelocityPitchTarget = targetVelocityPitch;
     }
 
     bool allOnlineYawControllersSettled(float errTolerance, uint32_t errTimeout) {
@@ -87,12 +101,25 @@ public:
                                             : modm::toDegree(fieldRelativePitchTarget.getWrappedValue());
     }
 
+     float getTargetVelocityYaw(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? fieldRelativeVelocityYawTarget
+                                            : modm::toDegree(fieldRelativeVelocityYawTarget);
+    }
+
+    float getTargetVelocityPitch(AngleUnit unit) const {
+        return (unit == AngleUnit::Radians) ? fieldRelativeVelocityPitchTarget
+                                            : modm::toDegree(fieldRelativeVelocityPitchTarget);
+    }
+
 private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
 
     tap::algorithms::WrappedFloat fieldRelativeYawTarget;
     tap::algorithms::WrappedFloat fieldRelativePitchTarget;
+
+    float fieldRelativeVelocityYawTarget;
+    float fieldRelativeVelocityPitchTarget;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
@@ -104,6 +131,7 @@ private:
     std::array<src::Utils::Filters::EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
 
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
+    std::array<src::Utils::Filters::EMAFilter*, PITCH_MOTOR_COUNT> pitchVelocityFilters;
 };
 
 }  // namespace src::Gimbal

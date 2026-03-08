@@ -3,6 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
+#define YAW_3508
 
 #define GIMBAL_UNTETHERED
 
@@ -12,7 +13,7 @@
 
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
-static constexpr uint8_t YAW_MOTOR_COUNT = 1;
+static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 #if defined(TARGET_SENTRY_BRAVO)
@@ -28,22 +29,28 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 #elif defined(TARGET_SENTRY_SWERVE)
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(0.416577296)+M_PI};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(0.416577296)+M_PI, wrapTo0To2PIRange(0.416577296)+M_PI};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(147.8f)+((5*M_PI)/18))};
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
+ // Chassis Relative Velocity Yaw Feedforward Equation
+// Derived by setting the desired yaw voltage to different values and measuring the velocity of the yaw
+// static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
+//     return (desiredYawVelocity + 3.5803f) / 0.0011;
+// }
+
 #endif
 
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR8};//TODO
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false, false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR8, MotorID::MOTOR5};//TODO
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1", "Yaw Motor 2"};
 
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 2.0f);  // for 2024 Sentry
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentry
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
@@ -59,6 +66,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Se
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
+
+
 /**
  * @brief Position PID constants
  * 
@@ -69,7 +78,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 0.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -94,11 +103,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,  // 35
+    .kp = 1.0f,  // 35
     .ki = 0.0f,
-    .kd = 0.15f,
+    .kd = 0.0f,
     .maxICumulative = 1000.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -123,11 +132,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,
+    .kp = 0.0f,
     .ki = 0.0f,
-    .kd =   0.0f,
+    .kd = 0.0f,
     .maxICumulative = 2000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

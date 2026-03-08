@@ -31,6 +31,8 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
@@ -123,6 +125,26 @@ GimbalPatrolConfig patrolConfig = {
     .pitchPatrolOffset = -modm::toRadian(2.0f),
 };
 
+GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 60.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
+};
+
 // Match Controllers ------------------------------------------------
 SentryMatchFiringControlCommand matchFiringControlCommand(
     drivers(),
@@ -202,6 +224,20 @@ GimbalChaseCommand gimbalChaseCommand2(
     SHOOTER_SPEED_MATRIX[0][0]);
 // only for when dirving with remote
 
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawVelocityTunningConfig,
+    gimbalPitchVelocityTunningConfig);
+
+GimbalPositionTunningCommand gimbalPositionTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
+
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
@@ -267,7 +303,7 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
+    {/*&imuCalibrateCommand,*/ /*&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand,*/ &gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
@@ -336,6 +372,7 @@ void registerIOMappings(src::Drivers *drivers) {
 
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
+
 }
 
 }  // namespace SentryControl
