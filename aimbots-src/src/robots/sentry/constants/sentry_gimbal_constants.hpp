@@ -105,7 +105,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
     .kp = 1.0f,  // 35
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.1f,
     .maxICumulative = 1000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -132,7 +132,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 1.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,
@@ -141,7 +141,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.1f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 

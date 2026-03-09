@@ -23,14 +23,23 @@ public:
 
 private:
     src::Drivers* drivers;
-    uint16_t data;
-    float velocity;
 
-    float lastAngle;
+    uint16_t data = 0;
+    float velocity = 0.0f;
+
+    float lastAngle = 0.0f;
     uint32_t lastTimeMs = 0;
-    uint32_t currentTimeMs;
-    uint32_t dtMs;
+    uint32_t currentTimeMs = 0;
+    uint32_t dtMs = 0;
 
+    float filteredAngle = 0.0f;
+    bool angleFilterInitialized = false;
+
+    float filteredVelocity = 0.0f;
+    bool velocityFilterInitialized = false;
+
+    static constexpr float kPositionAlpha = 0.10f;
+    static constexpr float kVelocityAlpha = 0.20f;
 }; // class RevEncoder
 
 } // namespace src::Informants
