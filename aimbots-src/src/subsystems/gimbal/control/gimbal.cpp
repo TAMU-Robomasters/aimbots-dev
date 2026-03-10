@@ -34,6 +34,7 @@ void GimbalSubsystem::initialize() {
 
 float pitchOutputDisplay = 0.0f;
 float yawOutputDisplay = 0.0f;
+int64_t currentYawEncoderPositionDisplay = 0;
 
 float currentYawAxisAngleDisplay = 0.0f;
 float currByFuncYawAngleDisplay = 0;
@@ -81,7 +82,8 @@ void GimbalSubsystem::refresh() {
     #ifndef YAW_3508
         int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
     #else
-        int16_t currentYawEncoderPosition = drivers->revEncoder.getData();
+        int64_t currentYawEncoderPosition = drivers->revEncoder.getUnwrappedPosition();
+        currentYawEncoderPositionDisplay = currentYawEncoderPosition;
     #endif
         // https://www.desmos.com/calculator/bducsk7y6v
     #ifndef YAW_3508
@@ -89,7 +91,8 @@ void GimbalSubsystem::refresh() {
             GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
     #else
         float wrappedYawAxisAngle =
-            GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition));
+            GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition - 13815.0f)); // Yaw offset, move later
+            
     #endif
         currentYawAxisAnglesByMotor[i]->setWrappedValue(wrappedYawAxisAngle);
 

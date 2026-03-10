@@ -3,32 +3,40 @@
 #include "modm/platform/spi/spi_master_2.hpp"
 #include "utils/tools/common_types.hpp"
 #include <tap/algorithms/wrapped_float.hpp>
+#include <cstdint>
 
 namespace src {
 class Drivers;
-}  // namespace src
+}
 
 namespace src::Informants {
 
-class RevEncoder {
+class RevEncoder
+{
 public:
-    RevEncoder(src::Drivers* drivers);
-    ~RevEncoder() = default;
+    explicit RevEncoder(src::Drivers* drivers);
 
     void initialize();
-    void readData();
     void execute();
-    void revEncoderVelocity();
+
     uint16_t getData() const;
     float getVelocity() const;
+    int64_t getUnwrappedPosition() const;
 
 private:
+    void readData();
+    void revEncoderVelocity();
+
     src::Drivers* drivers;
 
     uint16_t data = 0;
     float velocity = 0.0f;
 
-    tap::algorithms::WrappedFloat lastAngle{0.0,-M_PI,M_PI};
+    int64_t unwrappedPosition = 0;
+    uint16_t lastRawCount = 0;
+    bool unwrappedInitialized = false;
+
+    tap::algorithms::WrappedFloat lastAngle{0.0f, -M_PI, M_PI};
     uint32_t lastTimeMs = 0;
     uint32_t currentTimeMs = 0;
     uint32_t dtMs = 0;
@@ -41,6 +49,6 @@ private:
 
     static constexpr float kPositionAlpha = 0.10f;
     static constexpr float kVelocityAlpha = 0.20f;
-}; // class RevEncoder
+};
 
-} // namespace src::Informants
+}  // namespace src::Informants
