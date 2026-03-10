@@ -47,6 +47,8 @@ void GimbalVelocityTunningCommand::execute() {
     controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
     controller->runYawVelocityController();
     controller->runPitchVelocityController();
+
+  //  runYawVelocityStepOscillation(500.0f);
 }
 
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second
@@ -87,6 +89,8 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
     }
 }
 
+float currRPMDisplay = 0.0f;
+
 /**
  * @brief Runs the yaw motor's velocity as a ramping up square wave. 
  * Run motors at 1000 then -1000 then 2000 then -2000 and so on until 25,000.
@@ -95,18 +99,30 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
  * How long the entire ramp sequence is
  */
 void GimbalVelocityTunningCommand::runYawVelocityStepOscillation(float periodSeconds) {
+    averageRPM = 0.0f;
+    for(int i=0;i<YAW_MOTOR_COUNT;i++){
+        averageRPM += gimbal->getYawMotorRPM(i);
+    }
+    averageRPM = averageRPM / YAW_MOTOR_COUNT;
+    
+    yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
+    currRPMDisplay = yawVelocityFilter->getValue();
     uint32_t periodForSingleStep_ms = periodSeconds * 1E3 / 50.0f;
     float stepSize = 1000.0f;
 
-    for (size_t i = 0; i < 26; i++) {
+    for (size_t i = 0; i < 32; i++) {
         uint32_t stepNumber = fmod(getRelativeTime() / periodForSingleStep_ms, 51);
         if ((i == stepNumber / 2) && (stepNumber % 2 == 0)) {
             yawVelocityFeedforwardDisplay = stepSize*i;
-            gimbal->setDesiredYawMotorOutput(0, stepSize*i);
+            for(int j = 0; j< YAW_MOTOR_COUNT;j++){
+                gimbal->setDesiredYawMotorOutput(j, stepSize*i);
+            }
         }
         else if ((i == stepNumber / 2) && (stepNumber % 2 == 1)) {
             yawVelocityFeedforwardDisplay = -stepSize*i;
-            gimbal->setDesiredYawMotorOutput(0, -stepSize*i);
+            for(int j= 0; j< YAW_MOTOR_COUNT;j++){
+                gimbal->setDesiredYawMotorOutput(j, -stepSize*i);
+            }
         }
     }
 }
@@ -115,7 +131,10 @@ void GimbalVelocityTunningCommand::runPitchVelocityStepOscillation(float periodS
     return;
 }
 
-void GimbalVelocityTunningCommand::initialize() { initTime = tap::arch::clock::getTimeMilliseconds(); }
+void GimbalVelocityTunningCommand::initialize() { 
+    initTime = tap::arch::clock::getTimeMilliseconds(); 
+    yawVelocityFilter = new src::Utils::Filters::EMAFilter(0.1);
+}
 
 bool GimbalVelocityTunningCommand::isReady() { return true; }
 

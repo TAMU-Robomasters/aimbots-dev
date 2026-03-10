@@ -19,19 +19,19 @@ public:
     void initialize() override;
 
     void BuildPIDControllers() {
-        for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawVelocityPID = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
+        yawVelocityFilter = new src::Utils::Filters::EMAFilter(0.05);
+        // smoothing yaw velocity heavily for display purposes
+        for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
-            yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
-
-            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
-            // smoothing yaw velocity heavily for display purposes
         }
+
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
             pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
             pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
-            pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
+            pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.01);
         }
     }
 
@@ -121,6 +121,7 @@ private:
 
     float fieldRelativeVelocityYawTarget;
     float fieldRelativeVelocityPitchTarget;
+    float averageRPM;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
@@ -128,8 +129,8 @@ private:
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionCascadePIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionCascadePIDs;
 
-    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVelocityPIDs;
-    std::array<src::Utils::Filters::EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
+    SmoothPID* yawVelocityPID;
+    src::Utils::Filters::EMAFilter* yawVelocityFilter;
 
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
     std::array<src::Utils::Filters::EMAFilter*, PITCH_MOTOR_COUNT> pitchVelocityFilters;
