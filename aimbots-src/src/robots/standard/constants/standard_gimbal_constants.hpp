@@ -92,7 +92,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 10000.0f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
@@ -151,7 +151,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 1000.0f,
+    .errDeadzone = 00.0f,
     .errorDerivativeFloor = 0.0f,
 };
 
