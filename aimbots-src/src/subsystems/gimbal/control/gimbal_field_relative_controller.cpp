@@ -213,7 +213,6 @@ float pitchVelocityIDebug= 0.0f;
 float pitchVelocityDDebug= 0.0f;
 bool updatePitchVelocityPIDsDebug = false;
 
-float chassisRelativeVelocityYawFeedforward = 0.0f;
 float kinematicPitchAngleDisplay = 0.0f;
 float velocityErrorDisplay = 69.0f;
 
@@ -247,10 +246,10 @@ void GimbalFieldRelativeController::runYawVelocityController(
                                            GIMBAL_YAW_GEAR_RATIO);
 
 
-        // float velocityFeedforward = tap::algorithms::limitVal(
-        //     0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
-        //     -GM6020_MAX_OUTPUT,
-        //     GM6020_MAX_OUTPUT);
+        float velocityFeedforward = tap::algorithms::limitVal(
+            0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
+            -GM6020_MAX_OUTPUT,
+            GM6020_MAX_OUTPUT);
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 

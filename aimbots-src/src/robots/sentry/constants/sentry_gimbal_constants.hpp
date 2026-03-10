@@ -38,9 +38,9 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 
  // Chassis Relative Velocity Yaw Feedforward Equation
 // Derived by setting the desired yaw voltage to different values and measuring the velocity of the yaw
-// static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
-//     return (desiredYawVelocity + 3.5803f) / 0.0011;
-// }
+static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
+    return (desiredYawVelocity + 3.5803f) / 0.0011;
+}
 
 #endif
 
