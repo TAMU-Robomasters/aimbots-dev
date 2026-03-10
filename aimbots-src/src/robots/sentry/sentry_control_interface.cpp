@@ -16,7 +16,7 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.008f;
+static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.02f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
 static constexpr int16_t MOUSE_YAW_MAX = 1000;
