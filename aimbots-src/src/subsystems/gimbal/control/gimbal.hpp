@@ -124,7 +124,7 @@ public:
     #ifndef YAW_3508
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
     #else
-        return (yawMotors[YawIdx]->isMotorOnline()) ? drivers->revEncoder.getVelocity() : 0;
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
     #endif
     }
 

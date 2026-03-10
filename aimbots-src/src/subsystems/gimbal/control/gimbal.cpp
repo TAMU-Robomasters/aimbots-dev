@@ -47,6 +47,7 @@ float currentPitchMotorAngleDisplay = 0.0f;
 float pitchErrorDisplay = 0.0f;
 float targePitchAngleDisplay = 0.0f;
 float targetPitchAxisAngleDisplay = 0.0f;
+float pitchRPMDisplay = 0.0f;
 
 float yawAxisMotorSpeedDisplay = 0.0f;
 
@@ -149,7 +150,7 @@ void GimbalSubsystem::refresh() {
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
         pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx,AngleUnit::Radians);
         targePitchAngleDisplay = targetPitchAxisAngle.getWrappedValue();
-
+        pitchRPMDisplay = pitchMotors[pitchDisplayMotorIdx]->getShaftRPM();
         // flush the desired output to the motor
         setDesiredOutputToPitchMotor(i);
     }

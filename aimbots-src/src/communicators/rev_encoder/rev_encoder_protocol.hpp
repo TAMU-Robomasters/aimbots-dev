@@ -2,6 +2,7 @@
 
 #include "modm/platform/spi/spi_master_2.hpp"
 #include "utils/tools/common_types.hpp"
+#include <tap/algorithms/wrapped_float.hpp>
 
 namespace src {
 class Drivers;
@@ -27,7 +28,7 @@ private:
     uint16_t data = 0;
     float velocity = 0.0f;
 
-    float lastAngle = 0.0f;
+    tap::algorithms::WrappedFloat lastAngle{0.0,-M_PI,M_PI};
     uint32_t lastTimeMs = 0;
     uint32_t currentTimeMs = 0;
     uint32_t dtMs = 0;

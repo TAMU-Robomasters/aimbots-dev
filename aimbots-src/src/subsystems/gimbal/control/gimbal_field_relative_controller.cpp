@@ -114,7 +114,7 @@ void GimbalFieldRelativeController::runYawController(
     #ifndef YAW_3508
         yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #else
-        yawVelocityFilters[i]->update(gimbal->getYawMotorRPM(i));
+        yawVelocityFilters[i]->update(RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #endif
 
     #ifndef YAW_3508
@@ -130,7 +130,7 @@ void GimbalFieldRelativeController::runYawController(
             gimbal->getYawMotorRPM(i)+ drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians) /
-                                                          GIMBAL_YAW_GEAR_RATIO);
+                                                          GIMBAL_YAW_MOTOR_GEAR_RATIO);
     #endif
 
         // float chassisRelativeVelocityTarget = sinf(speedTarget) * 2.0f;
@@ -181,6 +181,7 @@ void GimbalFieldRelativeController::runYawController(
         velocityPIDOutputDisplay = velocityControllerOutput;
 
         gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+       // gimbal->setDesiredOutputToYawMotor(i);
     }
 }
 
@@ -214,6 +215,7 @@ bool updatePitchVelocityPIDsDebug = false;
 
 float chassisRelativeVelocityYawFeedforward = 0.0f;
 float kinematicPitchAngleDisplay = 0.0f;
+float velocityErrorDisplay = 69.0f;
 
 // for PID testing
 void GimbalFieldRelativeController::runYawVelocityController(
@@ -229,7 +231,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
     #ifndef YAW_3508
         yawVelocityFilters[i]->update(modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i))));
     #else
-        yawVelocityFilters[i]->update(modm::toDegree(gimbal->getYawMotorRPM(i)));
+        yawVelocityFilters[i]->update(modm::toDegree(RPM_TO_RADPS(gimbal->getYawMotorRPM(i))));
     #endif
         float fieldRelativeVelocityTarget = this->getTargetVelocityYaw(AngleUnit::Radians);
 
@@ -277,9 +279,10 @@ void GimbalFieldRelativeController::runYawVelocityController(
             gimbal->getYawMotorTorque(i));
     #else
         float velocityControllerOutput = yawVelocityPIDs[i]->runController(
-            chassisRelativeVelocityTarget - gimbal->getYawMotorRPM(i),
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
     #endif
+        velocityErrorDisplay = i;
         fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
@@ -392,7 +395,7 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
             ;
 
         chassisPitchRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        chassisPitchRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));
+       // chassisPitchRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));
         chassisPitchRelativeVelocityCurrentDisplay = pitchVelocityFilters[0]->getValue();
         pitchGimbalMotorPositionDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
         pitchGimbalMotorPositionTargetDisplay = gimbal->getTargetPitchAxisAngle(AngleUnit::Radians);

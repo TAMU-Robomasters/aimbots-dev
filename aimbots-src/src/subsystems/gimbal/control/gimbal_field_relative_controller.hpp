@@ -24,13 +24,14 @@ public:
             yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
             yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
 
-            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
+            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
             // smoothing yaw velocity heavily for display purposes
         }
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
             pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
             pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
+            pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.1);
         }
     }
 

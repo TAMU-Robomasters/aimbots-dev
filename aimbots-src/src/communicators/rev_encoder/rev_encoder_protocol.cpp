@@ -81,12 +81,12 @@ void RevEncoder::revEncoderVelocity() {
     currentTimeMs = tap::arch::clock::getTimeMilliseconds();
     dtMs = currentTimeMs - lastTimeMs;
 
-    float currentAngle = M_TWOPI * (data / 65535.0f);
+    tap::algorithms::WrappedFloat currentAngle(M_TWOPI * (data / 65535.0f),-M_PI,M_PI);
 
     if (lastTimeMs != 0 && dtMs > 0) {
         float dt = dtMs / 1000.0f;
 
-        float dAngle = fmodf((currentAngle - lastAngle) + M_PI, M_TWOPI) - M_PI;
+        float dAngle = currentAngle.minDifference(lastAngle);
         float rawVelocity = dAngle / dt;
 
         if (!velocityFilterInitialized) {
@@ -97,13 +97,13 @@ void RevEncoder::revEncoderVelocity() {
             filteredVelocity += kVelocityAlpha * (rawVelocity - filteredVelocity);
         }
 
-        velocity = filteredVelocity;
+        velocity = filteredVelocity * (30.0/M_PI);
         debug_vel = velocity;
     }
 
     velocityDisplay = velocity;
     lastAngle = currentAngle;
-    lastTimeMs = currentTimeMs;
+    lastTimeMs = std::move(currentTimeMs);
 }
 
 uint16_t RevEncoder::getData() const {
