@@ -56,6 +56,7 @@ enum NoteFreq : uint32_t {
     A6 = 1760,
     Bb6 = 1864,
     D7 = 2349,
+    Ds4 = 311,
 };
 
 struct MusicNote {
