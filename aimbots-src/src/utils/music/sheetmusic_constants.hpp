@@ -243,4 +243,19 @@ Song boonie = {boonieBPM, Q_N, {{C6, Q_N}, {C6, Q_N}, {E6, Q_N}, {E6, Q_N},
 // https://onlinesequencer.net/5250667
 
 
+
+static constexpr uint32_t WeenWaoBPM = 138;
+Song WeenWao = {WeenWaoBPM, Q_N, {{D6, S_N}, {E6, EH_N}, {E6, E_N}, {D6, QH_N},
+                                {Db6, QH_N}, {A6, S_N}, {B6, EH_N}, {B6, E_N},
+                                {A6, Q_N}, {Ab6, E_N}, {B6, Q_N}, {A6, S_N},
+                                {B6, S_N}, {B6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {B6, EH_N}, {B6, S_N}, {END, Q_N} }};
+
+// Ween Wao
+// https://onlinesequencer.net/5274337
+
+
 }  // namespace utils::Jukebox
