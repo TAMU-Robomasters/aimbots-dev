@@ -176,7 +176,7 @@ Song Dune_Theme = {DUNE_BPM, Q_N, {{F5,S_N}, {Ab5,Q_N}, {A5,EH_N}, {F5,S_N}, {Ab
                                    {Bb5,Q_N}, {Ab5,Q_N}, {A5,EH_N}, {F5,S_N}, {Ab5,E_N}, {A5,H_N},
                                    {END, Q_N}}};
 //Based on:
-//https://onlinesequencer.net/4735533
+//Golden
 
 // FreeBird
 
@@ -221,12 +221,12 @@ Song FreeBird = {FreeBPM, Q_N, {{G5, E_N}, {D5, E_N}, {F5, E_N}, {G5, E_N}, {G5,
 // All custom made for this
 
 static constexpr uint32_t BadPiggiesBPM = 154;
-Song BadPiggies = {BadPiggiesBPM, Q_N, {{C6, Q_N}, {C6, E_N}, {Ds4, S_N}, {Bb5, S_N}, {C6, E_N}, {Bb5, E_N}, {Ab6, E_N}, {G5, E_N}, {Bb5, S_N}, {Ab6, S_N}, {G5, S_N}, {F5, S_N}, {Eb5, S_N}, {REST, S_N}, {F5, S_N},
-                                        {REST, S_N}, {G5, Q_N}, {G5, Q_N}, {Bb5, E_N}, {F4, S_N}, {Ab5, S_N}, {G5, E_N}, {F5, E_N}, {Eb5, E_N}, {F5, E_N}, {G5, S_N}, {Eb5, S_N}, {C5, S_N}, {Eb5, S_N}, {G5, S_N},
-                                        {REST, S_N}, {F5, S_N}, {REST, S_N}, {Eb5, Q_N}, {D5, Q_N}, {G5, Q_N},
-                                        {C6, Q_N}, {C6, E_N}, {Ds4, S_N}, {Bb5, S_N}, {C6, E_N}, {Bb5, E_N}, {Ab6, E_N}, {G5, E_N}, {Bb5, S_N}, {Ab6, S_N}, {G5, S_N}, {F5, S_N}, {Eb5, S_N}, {REST, S_N}, {F5, S_N},
-                                        {REST, S_N}, {G5, Q_N}, {G5, Q_N}, {Bb5, E_N}, {F4, S_N}, {Ab5, S_N}, {G5, E_N}, {F5, E_N}, {Eb5, E_N}, {F5, E_N}, {G5, S_N}, {Eb5, S_N}, {C5, S_N}, {Eb5, S_N}, {G5, S_N},
-                                        {REST, S_N}, {F5, S_N}, {REST, S_N}, {Eb5, Q_N}, {D5, Q_N}, {G5, Q_N},
+Song BadPiggies = {BadPiggiesBPM, Q_N, {{C6, Q_N}, {C6, EH_N}, {Bb5, S_N}, {C6, E_N}, {Bb5, E_N}, {Ab6, E_N}, {G5, E_N}, {Bb5, S_N}, {Ab6, S_N}, {G5, S_N}, {F5, S_N}, {Eb5, S_N}, {REST, S_N}, {F5, S_N},
+                                        {REST, S_N}, {G5, H_N}, {Bb5, Q_N}, {Bb5, EH_N}, {Ab5, S_N}, {G5, E_N}, {F5, E_N}, {Eb5, E_N}, {F5, E_N}, {G5, S_N}, {Eb5, S_N}, {C5, S_N}, {Eb5, S_N}, {G5, S_N}, {REST, S_N},
+                                        {F5, S_N}, {REST, S_N}, {Eb5, Q_N}, {D5, Q_N},
+                                        {C6, Q_N}, {C6, EH_N}, {Bb5, S_N}, {C6, E_N}, {Bb5, E_N}, {Ab6, E_N}, {G5, E_N}, {Bb5, S_N}, {Ab6, S_N}, {G5, S_N}, {F5, S_N}, {Eb5, S_N}, {REST, S_N}, {F5, S_N},
+                                        {REST, S_N}, {G5, H_N}, {Bb5, Q_N}, {Bb5, EH_N}, {Ab5, S_N}, {G5, E_N}, {F5, E_N}, {Eb5, E_N}, {F5, E_N}, {G5, S_N}, {Eb5, S_N}, {C5, S_N}, {Eb5, S_N}, {G5, S_N}, {REST, S_N},
+                                        {F5, S_N}, {REST, S_N}, {Eb5, Q_N}, {D5, Q_N},
                                         {END, Q_N}}};
 // Based on:
 // https://onlinesequencer.net/5250585
@@ -241,5 +241,21 @@ Song boonie = {boonieBPM, Q_N, {{C6, Q_N}, {C6, Q_N}, {E6, Q_N}, {E6, Q_N},
 
 // BOONIE
 // https://onlinesequencer.net/5250667
+
+
+
+static constexpr uint32_t WeenWaoBPM = 138;
+Song WeenWao = {WeenWaoBPM, Q_N, {{D6, S_N}, {E6, EH_N}, {E6, E_N}, {D6, QH_N},
+                                {Db6, QH_N}, {A6, S_N}, {B6, EH_N}, {B6, E_N},
+                                {A6, Q_N}, {Ab6, E_N}, {B6, Q_N}, {A6, S_N},
+                                {B6, S_N}, {B6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {A6, S_N}, {A6, S_N}, {A6, S_N}, {A6, S_N},
+                                {B6, EH_N}, {B6, S_N}, {END, Q_N} }};
+
+// Ween Wao
+// https://onlinesequencer.net/5274337
+
 
 }  // namespace utils::Jukebox
