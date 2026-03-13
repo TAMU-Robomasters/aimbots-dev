@@ -278,8 +278,8 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-   // {&chassisTokyoCommand, &gimbalChaseCommand2},
-   {&gimbalVelocityTunningCommand},
+    {&chassisTokyoCommand, &gimbalChaseCommand2},
+   //{&gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -348,7 +348,7 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+ //   drivers->commandScheduler.addCommand(&clientDisplayCommand);
     drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 

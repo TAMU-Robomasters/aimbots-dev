@@ -16,6 +16,11 @@ using namespace tap::algorithms;
 int8_t finalXWatch = 0;
 uint32_t timeCtr = 0;
 
+static constexpr float INPUT_X_INC = 0.003f;
+static constexpr float INPUT_Y_INC = 0.003f;
+static constexpr float INPUT_XY_STOP_INC = 0.03f;
+static constexpr float INPUT_R_INC = 0.003f;
+
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.02f;
 static constexpr float PITCH_JOYSTICK_INPUT_SENSITIVITY = 0.015f;
 
@@ -43,17 +48,19 @@ float OperatorInterface::getChassisXInput() {
         prevUpdateCounterX = updateCounter;
     }
 
-    float analogX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    float digitalX = drivers->remote.keyPressed(Remote::Key::D) - drivers->remote.keyPressed(Remote::Key::A);
 
-    float finalX = analogX;  // TODO: Add digital values from keyboard as well
+    float finalX = limitVal<float>(chassisXInput.getInterpolatedValue(currTime) + digitalX, -1.0f, 1.0f);
 
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
-    finalX *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
-    finalX *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
+    chassisXRamp.setTarget(finalX);
 
-    finalXWatch = (int8_t)(finalX * 127.0f);
+    finalXWatch = digitalX;
 
-    return finalX;
+    if (chassisXRamp.getTarget() == 0.0f)
+        chassisXRamp.update(INPUT_XY_STOP_INC);
+    else
+        chassisXRamp.update(INPUT_X_INC);
+    return chassisXRamp.getValue();
 }
 
 /**
@@ -65,21 +72,28 @@ float OperatorInterface::getChassisXInput() {
 float OperatorInterface::getChassisYInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    lastYInputCallTime = currTime;
 
     if (prevUpdateCounterY != updateCounter) {
         chassisYInput.update(drivers->remote.getChannel(Remote::Channel::LEFT_VERTICAL), currTime);
         prevUpdateCounterY = updateCounter;
     }
 
-    float analogY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime), -1.0f, 1.0f);
+    float digitalY = drivers->remote.keyPressed(Remote::Key::W) - drivers->remote.keyPressed(Remote::Key::S);
 
-    float finalY = analogY;  // TODO: Add digital values from keyboard as well
+    float finalY = limitVal<float>(chassisYInput.getInterpolatedValue(currTime) + digitalY, -1.0f, 1.0f);
 
-    // Scales analog values by values defined in standard_constants.hpp to speedshift input
+    // Scales analog values by values defined in hero_constants.hpp to speedshift input
     finalY *= drivers->remote.keyPressed(Remote::Key::CTRL) ? CTRL_SCALAR : 1.0f;
     finalY *= drivers->remote.keyPressed(Remote::Key::SHIFT) ? SHIFT_SCALAR : 1.0f;
 
-    return finalY;
+    chassisYRamp.setTarget(finalY);
+
+    if (chassisYRamp.getTarget() == 0.0f)
+        chassisYRamp.update(INPUT_XY_STOP_INC);
+    else
+        chassisYRamp.update(INPUT_Y_INC);
+    return chassisYRamp.getValue();
 }
 
 /**
