@@ -172,8 +172,8 @@ Song LG_WashSong = {LG_BPM, Q_N, {{Db6, QH_N}, {Gb6, E_N},  {F6, E_N},  {Eb6, E_
 //Dune theme
 
 static constexpr uint32_t DUNE_BPM = 48;
-Song Dune_Theme = {DUNE_BPM, Q_N, {{D5,Q_N}, {A5,Q_N}, {Bb5,E_N}, {D5,E_N}, {A5,E_N}, {Bb5,H_N},
-                                   {C6,Q_N}, {A5,Q_N}, {Bb5,E_N}, {D5,E_N}, {A5,E_N}, {Bb5,H_N},
+Song Dune_Theme = {DUNE_BPM, Q_N, {{F5,S_N}, {Ab5,Q_N}, {A5,EH_N}, {F5,S_N}, {Ab5,E_N}, {A5,W_N},
+                                   {Bb5,Q_N}, {Ab5,Q_N}, {A5,EH_N}, {F5,S_N}, {Ab5,E_N}, {A5,W_N},
                                    {END, Q_N}}};
 //Based on:
 //https://onlinesequencer.net/4735533
