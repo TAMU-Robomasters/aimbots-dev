@@ -49,6 +49,8 @@ private:
 
     static constexpr float kPositionAlpha = 0.10f;
     static constexpr float kVelocityAlpha = 0.20f;
+
+    MilliTimeout startupThreshold;
 };
 
 }  // namespace src::Informants

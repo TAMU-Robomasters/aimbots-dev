@@ -33,6 +33,7 @@ namespace src::Informants
             Spi2Hal::DataOrder::MsbFirst,
             Spi2Hal::DataSize::Bit8
         );
+        startupThreshold.restart(500);
     }
 
     uint8_t debug_byte[2];
@@ -115,6 +116,7 @@ namespace src::Informants
 
     void RevEncoder::execute()
     {
+        if(!startupThreshold.execute())
         readData();
         revEncoderVelocity();
         debug_data = data;
