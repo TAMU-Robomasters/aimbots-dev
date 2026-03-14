@@ -58,6 +58,9 @@ private:
 
     src::Informants::Vision::AutoAimAngles desiredAngles;
 
+    tap::arch::MilliTimeout targetSeenTimeout;
+
+    static constexpr uint32_t TARGET_SEEN_TIMEOUT_MS = 500;
 
     bool wasQPressed = false;
     bool wasEPressed = false;

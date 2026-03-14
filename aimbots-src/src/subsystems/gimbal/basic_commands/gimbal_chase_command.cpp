@@ -19,12 +19,15 @@ GimbalChaseCommand::GimbalChaseCommand(
       refHelper(refHelper),
       ballisticsSolver(ballisticsSolver),
       defaultLaunchSpeed(defaultLaunchSpeed),
-      desiredAngles({0.0f, 0.0f})  //
+      desiredAngles({0.0f, 0.0f}),  //
+      targetSeenTimeout()
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalChaseCommand::initialize() {}
+void GimbalChaseCommand::initialize() {
+    targetSeenTimeout.restart(0);
+}
 
 float targetPitchAxisAngleDisplay2 = 0.0f;
 float targetYawAxisAngleDisplay2 = 0.0f;
@@ -83,9 +86,10 @@ void GimbalChaseCommand::execute() {
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
 
-    if (drivers->cvCommunicator.isJetsonOnline()) { 
+    if (drivers->cvCommunicator.isJetsonOnline() && !targetSeenTimeout.isExpired()) { 
         if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
-            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();   
+            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
+            targetSeenTimeout.restart(TARGET_SEEN_TIMEOUT_MS);
         }
         controller->setTargetYaw(AngleUnit::Radians, desiredAngles.yaw);
         controller->setTargetPitch(AngleUnit::Radians, desiredAngles.pitch);
@@ -95,6 +99,11 @@ void GimbalChaseCommand::execute() {
         controller->runYawController();
         controller->runPitchController();
     } else {
+        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
+            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
+            targetSeenTimeout.restart(TARGET_SEEN_TIMEOUT_MS);
+        }
+
         // Yaw counterclockwise is positive angle
         targetYawAxisAngle = controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
                              drivers->controlOperatorInterface.getGimbalYawInput();
