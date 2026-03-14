@@ -451,11 +451,11 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
     yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
-    YawPosEncoder = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    YawAngularVelocityEncoder = (gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/2.0f;
+    YawPosEncoder = drivers->revEncoder.getUnwrappedPosition();
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    YawAngularVelocityEncoder = -((gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/GIMBAL_YAW_MOTOR_GEAR_RATIO) + IMUAngularVelocities.z;
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 

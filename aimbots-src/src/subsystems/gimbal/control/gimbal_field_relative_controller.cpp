@@ -134,7 +134,7 @@ void GimbalFieldRelativeController::runYawController(
             gimbal->getYawMotorRPM(i)+ drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians) /
-                                                          GIMBAL_YAW_MOTOR_GEAR_RATIO);
+                                                          GIMBAL_YAW_GEAR_RATIO);
     #endif
 
         // float chassisRelativeVelocityTarget = sinf(speedTarget) * 2.0f;
@@ -217,6 +217,7 @@ bool updatePitchVelocityPIDsDebug = false;
 
 float kinematicPitchAngleDisplay = 0.0f;
 float velocityErrorDisplay = 69.0f;
+float chassisVelocityDisplay = 0.0f;
 
 // for PID testing
 void GimbalFieldRelativeController::runYawVelocityController(
@@ -259,7 +260,9 @@ void GimbalFieldRelativeController::runYawVelocityController(
                                                AngleUnit::Radians) /
                                            GIMBAL_YAW_MOTOR_GEAR_RATIO);
 
+        chassisVelocityDisplay = chassisRelativeVelocityTarget;
 
+                
         float velocityFeedforward = tap::algorithms::limitVal(
             0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
             -M3508_MAX_OUTPUT,

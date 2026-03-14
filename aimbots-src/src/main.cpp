@@ -215,9 +215,9 @@ static void updateIo(src::Drivers *drivers) {
      rollDisplay =
          drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
-    // gZDisplay =
-    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
-    //     AngleUnit::Radians);
+     gZDisplay =
+         drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+         AngleUnit::Radians);
     // gYDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS,
     //     AngleUnit::Radians);

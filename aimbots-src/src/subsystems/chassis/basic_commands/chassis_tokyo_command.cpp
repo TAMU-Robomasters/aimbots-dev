@@ -64,7 +64,7 @@ void ChassisTokyoCommand::execute() {
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+        #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)||defined(SENTRY_SWERVE)
             maxWheelSpeed = 4000;
         #endif
 
