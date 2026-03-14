@@ -148,7 +148,7 @@ void GimbalFieldRelativeController::runYawController(
             fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)
-                /GIMBAL_YAW_GEAR_RATIO);
+                /GIMBAL_YAW_MOTOR_GEAR_RATIO);
 
     #ifndef YAW_3508
         // float velocityFeedforward = tap::algorithms::limitVal(
