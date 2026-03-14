@@ -14,7 +14,6 @@ enum LimitSwitchState {
     RELEASED = 0,
 };
 
-using C5 = Board::DigitalInPinC5;
 using C6 = Board::DigitalInPinC6;
 using C7 = Board::DigitalInPinC7;
 

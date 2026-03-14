@@ -213,8 +213,46 @@ public:
      */
     mockable bool isSubsystemRegistered(const Subsystem* subsystem) const;
 
-    mockable void startHardwareTests();
-    mockable void stopHardwareTests();
+    /**
+     * Runs all hardware tests from subsystems that have a test command.
+     */
+    mockable void runAllHardwareTests();
+
+    /**
+     * Runs the hardware test command, if available, for the specific subsystem.
+     *
+     * @param[in] subsystem the subsystem to run
+     */
+    mockable void runHardwareTest(const Subsystem* subsystem);
+
+    /**
+     * Stop all hardware tests from subsystems that have a running test command.
+     */
+    mockable void stopAllHardwareTests();
+
+    /**
+     * Stops the hardware test command, if running, for the specific subsystem.
+     *
+     * @param[in] subsystem the subsystem to stop
+     */
+    mockable void stopHardwareTest(const Subsystem* subsystem);
+
+    /**
+     * @return the count of subsystems currently running a test.
+     */
+    mockable int countRunningHardwareTests();
+
+    /**
+     * @param[in] subsystem the subsystem to check
+     * @return `true` if the test command is running, `false` otherwise.
+     */
+    mockable bool isRunningTest(const Subsystem* subsystem);
+
+    /**
+     * @param[in] subsystem the subsystem to check
+     * @return `true` if the test command has passed, `false` otherwise.
+     */
+    mockable bool hasPassedTest(const Subsystem* subsystem);
 
     /**
      * @return The number of subsystems registered with the scheduler.
@@ -370,9 +408,16 @@ private:
     /**
      * Each bit in the bitmap corresponds to an index into the subsystem registrar. If a
      * bit is set, it means that the subsystem in the registrar has a command associated
-     * in in this scheduler.
+     * in this scheduler.
      */
     subsystem_scheduler_bitmap_t subsystemsAssociatedWithCommandBitmap = 0;
+
+    /**
+     * Each bit in the bitmap corresponds to an index into the subsystem registrar. If a
+     * bit is set, it means that the subsystem in the registrar has passed a hardware test
+     * in this scheduler.
+     */
+    subsystem_scheduler_bitmap_t subsystemsPassingHardwareTests = 0;
 
     /**
      * If a command has been added and is running, the associated bit in this bitmap will
@@ -381,8 +426,6 @@ private:
     command_scheduler_bitmap_t addedCommandBitmap = 0;
 
     bool isMasterScheduler = false;
-
-    bool runningHardwareTests = false;
 };  // class CommandScheduler
 
 }  // namespace control

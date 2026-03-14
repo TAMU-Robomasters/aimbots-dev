@@ -4,7 +4,6 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
-#include "utils/filters/first_order_butterworth_filter.hpp"
 
 #include "subsystems/gimbal/gimbal_constants.hpp"
 
@@ -15,8 +14,6 @@
 // }
 
 namespace src::Gimbal {
-
-static const size_t lowPassFilterOrder = 3;
 
 enum GimbalAxis { YAW_AXIS = 0, PITCH_AXIS = 1 };
 
@@ -124,8 +121,11 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
-        float shaftRPM = (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
-        return lpf.update(shaftRPM);
+    #ifndef YAW_3508
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+    #else
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+    #endif
     }
 
     inline int16_t getPitchMotorRPM(uint8_t PitchIdx) const {
@@ -181,17 +181,17 @@ public:
     }
 
     inline float getYawMotorAngleUnwrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderUnwrapped())
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoder()->getPosition().getUnwrappedValue() /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
 
     inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderWrapped())
+        return (yawMotors[YawIdx]->isMotorOnline()) ? getEncoderWrapped(yawMotors[YawIdx]) //CHANGED HERE /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
     inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
         return (pitchMotors[PitchIdx]->isMotorOnline())
-                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoderWrapped())
+                   ? DJIEncoderValueToRadians(getEncoderWrapped(pitchMotors[PitchIdx]))
                    : 0.0f;
     }
 
@@ -241,7 +241,6 @@ public:
 private:
     src::Drivers* drivers;
 
-    mutable src::Utils::Filters::FirstOrderButterworthLPF<lowPassFilterOrder> lpf;
     std::array<DJIMotor*, YAW_MOTOR_COUNT> yawMotors;
     std::array<DJIMotor*, PITCH_MOTOR_COUNT> pitchMotors;
 
@@ -264,6 +263,7 @@ private:
     void setDesiredOutputToPitchMotor(uint8_t PitchIdx);
 
     static const uint32_t GIMBAL_BUFFER_SIZE = 40;
+
     // gimbal yaw / pitch buffer
     // yaw is first, pitch is second, respectively in the pair
     Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;

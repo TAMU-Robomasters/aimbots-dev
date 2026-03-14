@@ -26,7 +26,6 @@
 
 #include "tap/algorithms/cmsis_mat.hpp"
 #include "tap/algorithms/math_user_utils.hpp"
-// #include "tap/algorithms/euler_angles.hpp"
 
 namespace tap::algorithms::transforms
 {
@@ -49,6 +48,11 @@ public:
 
     inline Orientation(CMSISMat<3, 3>&& matrix) : matrix_(std::move(matrix)) {}
 
+    inline Orientation compose(const Orientation& other) const
+    {
+        return Orientation(this->matrix_ * other.matrix_);
+    }
+
     /**
      * Returns roll as values between [-pi, +pi].
      *
@@ -63,7 +67,25 @@ public:
 
     const inline CMSISMat<3, 3>& matrix() const { return matrix_; }
 
+    /**
+     * Generates a 3x3 rotation matrix from euler angles (in radians)
+     */
+    static CMSISMat<3, 3> fromEulerAngles(const float roll, const float pitch, const float yaw)
+    {
+        return tap::algorithms::CMSISMat<3, 3>(
+            {cosf(yaw) * cosf(pitch),
+             (cosf(yaw) * sinf(pitch) * sinf(roll)) - (sinf(yaw) * cosf(roll)),
+             (cosf(yaw) * sinf(pitch) * cosf(roll)) + sinf(yaw) * sinf(roll),
+             sinf(yaw) * cosf(pitch),
+             sinf(yaw) * sinf(pitch) * sinf(roll) + cosf(yaw) * cosf(roll),
+             sinf(yaw) * sinf(pitch) * cosf(roll) - cosf(yaw) * sinf(roll),
+             -sinf(pitch),
+             cosf(pitch) * sinf(roll),
+             cosf(pitch) * cosf(roll)});
+    }
+
     friend class Transform;
+    friend class DynamicOrientation;
 
 private:
     CMSISMat<3, 3> matrix_;

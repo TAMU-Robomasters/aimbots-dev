@@ -7,8 +7,6 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/ref_system/ref_helper_turreted.hpp"
 
-#include "communicators/jetson/jetson_protocol.hpp"
-
 #include "drivers.hpp"
 
 #ifdef FEEDER_COMPATIBLE
@@ -25,8 +23,6 @@ bool isFiring = false;
 bool loaderDormant = false;
 bool underHeat = false;
 int limitSwitchDownTime;
-
-bool currFireStateDisplay = 0.0f;
 
 FeederLimitCommand::FeederLimitCommand(
     src::Drivers* drivers,
@@ -47,27 +43,14 @@ void FeederLimitCommand::initialize() {
     limitswitchInactive.restart(0);
 }
 
-bool limitPressedDisplay = false;
-bool remoteDisplay = false;
-
 void FeederLimitCommand::execute() {
     //underHeat = refHelper->canCurrBarrelShootSafely();
     // Updates the limit switch state (is pressed or not)
-
-    if(LIMIT_INVERTED){
-        limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
-    } else{
-        limitPressed = feeder->getPressed();
-    }
-    limitPressedDisplay = limitPressed;
+    limitPressed = !feeder->getPressed();  // Logic inverted because of a wire oopsie
     // Updates the previous controller switch state (is up or not)
     prevFireState = currFireState;
     // Updates the current controller switch state
-    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP 
-                    || drivers->remote.getMouseL()==true
-                    || drivers->cvCommunicator.shouldFire());
-    currFireStateDisplay = currFireState;
-    remoteDisplay = drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP;
+    currFireState = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true);
     // States how long the limit switch is ignored when firing a projectile
     limitSwitchDownTime = 200;
     // States the speed of the feeder wheel when firing
@@ -86,19 +69,19 @@ void FeederLimitCommand::execute() {
     // }
 
     if (!limitPressed && !loaderDormant) {
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
         if (fabs(feeder->getCurrentRPM(0)) <= 5.0f && unjamTimer.isExpired()){
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
         if (!unjamTimer.isExpired() && startupThreshold.isExpired()) {
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::unjamFeederMotor);
+            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::unjamFeederMotor);
             currLoadState=false;
         }else{
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
             currLoadState = true;
         }
         if(prevLoadState == false && currLoadState == true){
-            startupThreshold.restart(FEEDER_LIMIT_RESTART);
+            startupThreshold.restart(1000);
         }
 
         // if (!unjamTimer.execute()) {
@@ -108,10 +91,10 @@ void FeederLimitCommand::execute() {
         //     startupThreshold.restart(500);
         // }
     } else {
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+        feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
         currLoadState = false;
         if (isFiring) {
-            feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
         }
         loaderDormant = true;
     }
@@ -121,11 +104,7 @@ void FeederLimitCommand::execute() {
     // If so, it (should) launch the currently loaded ball and turn off until the controller exits semi auto (ie cSwitch goes
     // to mid)
     if (currFireState && !prevFireState) {
-         if(FEEDER_MOTOR_COUNT == 2){
-             feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
-         }else{
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
-        }
+        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
         isFiring = true;
         loaderDormant = false;
         limitswitchInactive.restart(limitSwitchDownTime);

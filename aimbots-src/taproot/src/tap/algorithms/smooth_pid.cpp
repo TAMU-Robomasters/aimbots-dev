@@ -44,20 +44,29 @@ float SmoothPid::runController(float error, float errorDerivative, float dt)
     {
         error = 0.0f;
     }
+    else if (config.smoothDeadzone)
+    {
+        error += (error > 0 ? -config.errDeadzone : config.errDeadzone);
+    }
 
     // p
     currErrorP = config.kp * proportionalKalman.filterData(error);
     // i
-    currErrorI = limitVal<float>(
-        currErrorI + config.ki * proportionalKalman.getLastFiltered() * dt,
-        -config.maxICumulative,
-        config.maxICumulative);
+    // Only integrate if the output is not saturated as there's no point in integrating
+    // when the output is already at the max value.
+    if (!(config.antiSaturation && abs(output) >= config.maxOutput))
+    {
+        currErrorI = limitVal<float>(
+            currErrorI + config.ki * proportionalKalman.getLastFiltered() * dt,
+            -config.maxICumulative,
+            config.maxICumulative);
+    }
     // d
     currErrorD = -config.kd * derivativeKalman.filterData(errorDerivative);
     if (fabs(error) < config.errorDerivativeFloor)
     {
         // the error is less than some amount, so round derivative output to 0
-        // done to avoid high frequency control oscilations in some systems
+        // done to avoid high frequency control oscillations in some systems
         currErrorD = 0.0f;
     }
     // total

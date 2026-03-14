@@ -299,29 +299,33 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
-    // {&gimbalPositionTunningCommand},
-    // {&gimbalVelocityTunningCommand},
+    {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
      //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
-    {/*&chassisTokyoCommand*/ &gimbalChaseCommand
-     /*&gimbalChaseCommand*/},
+    // {/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
+// Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
     {&feederShotTimingCommand, &runShooterCommand}, // shot timing
+    // {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder
-HoldRepeatCommandMapping rightSwitchUp(
+HoldCommandMapping rightSwitchUp(
     drivers(),
-    {&runFeederCommand, &runShooterWithFeederCommand}, // continuously feed
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
+    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping leftClickMouse(
+    drivers(),
+    {&runFeederCommandFromMouse},
+    RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -370,6 +374,8 @@ void registerIOMappings(src::Drivers *drivers) {
 
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&leftClickMouse);
+
 }
 
 }  // namespace SentryControl

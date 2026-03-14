@@ -25,6 +25,7 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+//#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -33,8 +34,8 @@
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
@@ -160,7 +161,7 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .velocityAmplitudeDegreesPerSec = 60.0f,
     .frequencyHz = .2f,
 };
 
@@ -233,6 +234,7 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
+
 GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
     drivers(), 
     &gimbal,     
@@ -270,14 +272,14 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    // {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
-    {&gimbalVelocityTunningCommand}, 
+    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
     {&chassisTokyoCommand, &gimbalChaseCommand2},
+   //{&gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
@@ -346,7 +348,7 @@ void startupCommands(src::Drivers *drivers) {
     //       that will move all the parts so we
     //       can make sure they're fully operational.
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
+ //   drivers->commandScheduler.addCommand(&clientDisplayCommand);
     drivers->commandScheduler.addCommand(&clientDisplayCommand);
 }
 

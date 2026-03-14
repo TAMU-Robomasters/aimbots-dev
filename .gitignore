@@ -641,3 +641,4 @@ settings/home/.gitconfig
 settings/home/.mongorc.js
 settings/home/.ungitrc
 settings/home/.vuerc
+aimbots-src/taproot/modm/scons/site_tools/size.py

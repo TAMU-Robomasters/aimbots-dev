@@ -29,7 +29,7 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
 void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
     // drivers->bmi088.requestRecalibration(imuCalibrationEuler);
     UNUSED(imuCalibrationEuler);
-    drivers->bmi088.requestRecalibration();
+    drivers->bmi088.requestCalibration();
 };
 
 tap::communication::sensors::imu::ImuInterface::ImuState KinematicInformant::getIMUState() {
@@ -40,34 +40,34 @@ Vector3f KinematicInformant::getLocalIMUAngles() {
     Vector3f imuAngles = {
         -drivers->bmi088.getPitch(),  // inverts pitch
         drivers->bmi088.getRoll(),
-        drivers->bmi088.getYaw() - 180.0f};  // for some reason yaw is 180.0 degrees rotated
-    return imuAngles * (M_PI / 180.0f);      // Convert to rad
+        drivers->bmi088.getYaw()}; 
+    return imuAngles;      // Convert to rad
 }
 float KinematicInformant::getLocalIMUAngle(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getPitch());
+            return -drivers->bmi088.getPitch();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getRoll());
+            return drivers->bmi088.getRoll();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getYaw() - 180.0f);  // for some reason yaw is 180.0 degrees rotated
+            return drivers->bmi088.getYaw();
     }
     return 0;
 }
 
 Vector3f KinematicInformant::getIMUAngularVelocities() {  // Gets IMU Angular Velocity in IMU FRAME
     Vector3f imuAngularVelocities = {-drivers->bmi088.getGy(), drivers->bmi088.getGx(), drivers->bmi088.getGz()};
-    return imuAngularVelocities * (M_PI / 180.0f);  // Convert to rad/s
+    return imuAngularVelocities;
 }
 
 float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU angles in IMU Frame
     switch (axis) {
         case PITCH_AXIS:
-            return -modm::toRadian(drivers->bmi088.getGy());
+            return -drivers->bmi088.getGy();
         case ROLL_AXIS:
-            return modm::toRadian(drivers->bmi088.getGx());
+            return drivers->bmi088.getGx();
         case YAW_AXIS:
-            return modm::toRadian(drivers->bmi088.getGz());
+            return drivers->bmi088.getGz();
     }
     return 0;
 }
@@ -127,6 +127,7 @@ Vector3f IMUAnglesDisplay;
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    
 
     IMUAnglesDisplay = IMUAngles;
 
@@ -179,6 +180,8 @@ Vector3f alphaDisplay = {0.0f, 0.0f, 0.0f};
 Vector3f rDisplay = {0.0f, 0.0f, 0.0f};
 Vector3f aDisplay = {0.0f, 0.0f, 0.0f};
 
+float tapAXDisplay = 0.0f;
+
 float aXDisplay = 0.0f;
 float aYDisplay = 0.0f;
 float aZDisplay = 0.0f;
@@ -186,6 +189,7 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     Vector<KinematicStateVector, 3> imuLinearKSV,
     Vector<KinematicStateVector, 3> imuAngularKSV,
     Vector3f r) {
+    drivers->bmi088.read();
     Vector3f w = {
         imuAngularKSV[X_AXIS].getVelocity(),
         imuAngularKSV[Y_AXIS].getVelocity(),
@@ -207,6 +211,8 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     aXDisplay = a.getX();
     aYDisplay = a.getY();
     aZDisplay = a.getZ();
+  //  drivers->bmi088.read();
+    tapAXDisplay = modm::toDegree(drivers->bmi088.getYaw());
 
     wDisplay = w;
     alphaDisplay = alpha;
@@ -290,12 +296,17 @@ tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalP
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
     float cosGimbYaw = cosf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
-
     float chassisRoll = getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Radians);
+    #ifdef HERO
+        float chassisRoll = 0;
+    #endif
     float sinChasRoll = sinf(chassisRoll);
     float cosChasRoll = cosf(chassisRoll);
 
     float chassisPitch = getChassisIMUAngle(src::Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
+    #ifdef HERO
+        float chassisPitch = 0;
+    #endif
     float sinChasPitch = sinf(chassisPitch);
     float cosChasPitch = cosf(chassisPitch);
 
@@ -431,29 +442,22 @@ float IMUAnglesDisplayX;
 float IMUAnglesDisplayY;
 float IMUAnglesDisplayZ;
 float rawYawVel;
-
-float IMUAngularVelocityDisplayZ = 0.0f;
+float yawMotorRPMDisplay;
 
 float IMUYawAngleDisplayGood;
-
-float YawPosEncoderDisplay = 0.0f;
-float YawAngularVelocityEncoderDisplay = 0.0f;
 
 void KinematicInformant::updateChassisIMUAngles() {
     YawAngularAccelDisplay = getIMUAngularAccelerations().z;
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
-    YawPosEncoder = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
-    YawAngularVelocityEncoder = GIMBAL_YAW_GEAR_RATIO * RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0));
-    YawPosEncoderDisplay = YawPosEncoder;
-    YawAngularVelocityEncoderDisplay = YawAngularVelocityEncoder;
+    yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
+    YawPosEncoder = drivers->revEncoder.getUnwrappedPosition();
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
+    YawAngularVelocityEncoder = -((gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/GIMBAL_YAW_MOTOR_GEAR_RATIO) + IMUAngularVelocities.z;
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
-
-    IMUAngularVelocityDisplayZ = IMUAngularVelocities.z;
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
@@ -529,6 +533,7 @@ Vector3f KinematicInformant::removeFalseAcceleration(
     Vector<KinematicStateVector, 3> imuLinearKSV,
     Vector<KinematicStateVector, 3> imuAngularKSV,
     Vector3f r) {
+    drivers->bmi088.read(); 
     Vector3f w = {
         imuAngularKSV[X_AXIS].getVelocity(),
         imuAngularKSV[Y_AXIS].getVelocity(),
@@ -704,10 +709,7 @@ void KinematicInformant::updateRobotFrames() {
     robotLocationDisplay = robotLocation;
 }
 
-float frameDelayDisplay = 0.0f;
-float pastGimbalYawAngleDisplay = 0.0f;
-float pastGimbalPitchAngleDisplay = 0.0f;
-
+float frameDelayDisplay = 0;
 
 void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     frameDelayDisplay = frameDelay_ms;
@@ -717,9 +719,6 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
     robotFrames.mirrorPastCameraFrame(gimbalAngles.first, gimbalAngles.second, AngleUnit::Radians);
 
     std::pair<float, float> gimbalFieldAngles = getGimbalFieldOrientationAtTime(frameDelay_ms);
-
-    pastGimbalYawAngleDisplay = modm::toDegree(gimbalFieldAngles.first);
-    pastGimbalPitchAngleDisplay = modm::toDegree(gimbalFieldAngles.second);
 
     turretFrames.mirrorPastCameraFrame(gimbalFieldAngles.first, gimbalFieldAngles.second, AngleUnit::Radians);
 }

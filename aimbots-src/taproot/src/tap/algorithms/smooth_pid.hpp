@@ -51,6 +51,11 @@ struct SmoothPidConfig
                                         * error will be set to 0. */
     float errorDerivativeFloor = 0.0f; /**< Minimum error value at which the PID controller will
                                         * compute and apply the derivative term. */
+    bool smoothDeadzone = false;       /**< If true, the error will be smoothed by subtracting
+                                        * errDeadzone from positive errors and adding it to
+                                        * negative errors. */
+    bool antiSaturation = false;       /**< If true the controller will not
+                                        * integrate when the controller is at max output */
 };
 
 class SmoothPid
@@ -81,6 +86,12 @@ public:
     inline void setMaxICumulative(float maxICumulative) { config.maxICumulative = maxICumulative; }
     inline void setMaxOutput(float maxOutput) { config.maxOutput = maxOutput; }
     inline void setErrDeadzone(float errDeadzone) { config.errDeadzone = errDeadzone; }
+    inline void setErrorDerivativeFloor(float errorDerivativeFloor)
+    {
+        config.errorDerivativeFloor = errorDerivativeFloor;
+    }
+    inline void smoothDeadzone(bool smoothDeadzone) { config.smoothDeadzone = smoothDeadzone; }
+    inline void setAntiSaturation(bool antiSaturation) { config.antiSaturation = antiSaturation; }
 
 private:
     // gains and constants, to be set by the user
