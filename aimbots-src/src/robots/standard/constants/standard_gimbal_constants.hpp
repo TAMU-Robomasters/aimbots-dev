@@ -80,6 +80,10 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2024 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
+static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
+    return (desiredYawVelocity + 3.6566f) / 0.0013;
+}
+
 /**
  * @brief Position PID constants
  */

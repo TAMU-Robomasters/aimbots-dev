@@ -5,16 +5,16 @@
 #define FEEDER_COMPATIBLE
 
 static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
-    .kp = 70.0f,  // 40
+    .kp = 50.0f,  // 40
     .ki = 0.0f,
-    .kd = 0.9f,  // 0.01
+    .kd = 0.8f,  // 0.01
     .maxICumulative = 10.0f,
     .maxOutput = M2006_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.5f,
+    .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
 

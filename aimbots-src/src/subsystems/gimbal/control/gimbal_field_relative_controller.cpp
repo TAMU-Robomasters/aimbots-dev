@@ -148,11 +148,11 @@ void GimbalFieldRelativeController::runYawController(
             fieldRelativeVelocityTarget ;
 
     #ifndef YAW_3508
-        float velocityFeedforward = tap::algorithms::limitVal(
-            CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-                YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
-            -GM6020_MAX_OUTPUT,
-            GM6020_MAX_OUTPUT);
+        // float velocityFeedforward = tap::algorithms::limitVal(
+        //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+        //         YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+        //     -GM6020_MAX_OUTPUT,
+        //     GM6020_MAX_OUTPUT);
     #else
         // float velocityFeedforward = tap::algorithms::limitVal(
         //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
@@ -173,7 +173,7 @@ void GimbalFieldRelativeController::runYawController(
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
-        gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+        gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward + */velocityControllerOutput);
     #else
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
@@ -265,8 +265,8 @@ void GimbalFieldRelativeController::runYawVelocityController(
                 
         float velocityFeedforward = tap::algorithms::limitVal(
             0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
-            -M3508_MAX_OUTPUT,
-            M3508_MAX_OUTPUT);
+            -GM6020_MAX_OUTPUT,
+            GM6020_MAX_OUTPUT);
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
