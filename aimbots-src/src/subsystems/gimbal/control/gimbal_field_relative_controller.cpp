@@ -164,8 +164,8 @@ void GimbalFieldRelativeController::runYawController(
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
         chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
-        chassisRelativeVelocityCurrentDisplay = gimbal->getYawMotorRPM(i);
-        // chassisRelativeVelocityCurrentDisplay = yawVelocityFilters[0]->getValue();
+       // chassisRelativeVelocityCurrentDisplay = gimbal->getYawMotorRPM(i)/GIMBAL_YAW_MOTOR_GEAR_RATIO;
+         chassisRelativeVelocityCurrentDisplay = yawVelocityFilter->getValue()/GIMBAL_YAW_MOTOR_GEAR_RATIO;
         yawGimbalMotorPositionDisplay = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
