@@ -455,7 +455,7 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
-    YawAngularVelocityEncoder = -((gimbalSubsystem->getYawMotorRPM(0) * (3.14159265358979323846 * 2.0) / 60.0f)/GIMBAL_YAW_MOTOR_GEAR_RATIO) + IMUAngularVelocities.z;
+    YawAngularVelocityEncoder = RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0) * GIMBAL_YAW_MOTOR_GEAR_RATIO);
     Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 

@@ -68,6 +68,7 @@ float kinematicYawAngleDisplay = 0;
 float kinematicYawAngleRadDisplay = 0;
 
 float speedTarget = 0.0f;
+float speedDiffDisplay = 0.0f;
 
 // ozone pid tuning
 
@@ -149,6 +150,9 @@ void GimbalFieldRelativeController::runYawController(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)
                 /GIMBAL_YAW_MOTOR_GEAR_RATIO);
+                speedDiffDisplay = (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                src::Informants::AngularAxis::YAW_AXIS,
+                AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
 
     #ifndef YAW_3508
         // float velocityFeedforward = tap::algorithms::limitVal(
