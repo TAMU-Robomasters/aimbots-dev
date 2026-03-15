@@ -7,7 +7,11 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::WEENWAO;
+#if defined(TARGET_STANDARD_BLASTOISE)
+    static constexpr SongTitle STARTUP_SONG = SongTitle::CHAINSAW_MAN;
+#else
+    static constexpr SongTitle STARTUP_SONG = SongTitle::CRAB_RAVE;
+#endif
 
 /**
  * @brief Defines the number of motors created for the chassis.
