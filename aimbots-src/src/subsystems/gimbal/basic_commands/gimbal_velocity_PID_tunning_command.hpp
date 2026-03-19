@@ -5,6 +5,7 @@
 #include <tap/control/command.hpp>
 
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
+#include "utils/filters/ema.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 namespace src::Gimbal {
@@ -35,7 +36,11 @@ private:
     GimbalVelocityTunningConfig yawConfig;
     GimbalVelocityTunningConfig pitchConfig;
 
+    src::Utils::Filters::EMAFilter* yawVelocityFilter;
+
     uint32_t initTime = 0;
+
+    float averageRPM;
 
     float getYawTargetVelocity();
     float getPitchTargetVelocity();

@@ -55,7 +55,15 @@ private:
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
-    JetsonMessage lastMessage;
+    JetsonMessage lastMessage {
+        .magic = 0,
+        .messageType = 0,
+        .pitch = 0.0f,
+        .yaw = 0.0f,
+        .timeUntilNextFire = 0,
+        .cvState = CVState::NOT_FOUND
+    };
+    EmbeddedTransformationMessage transformationMessageToJetson;
     uint32_t lastFoundTargetTime;
 
     PlateKinematicState lastPlateKinematicState;

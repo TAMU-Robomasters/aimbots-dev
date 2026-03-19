@@ -76,7 +76,41 @@ void JetsonCommunicator::updateSerial() {
             // we wouldn't have gotten this far.
             if (nextByteIndex == sizeof(decltype(JETSON_MESSAGE_MAGIC))) {
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
+            } 
+            else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
+                uint8_t frameDelay_ms = 0.0f; 
+                //!!! potential issue where not enough time has passed and we don't read anything
+                READ(&frameDelay_ms, 1);
+                
+                drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
+
+                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+                src::Informants::Transformers::CoordinateFrame cameraFrame =
+                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+                
+                Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
+
+                transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+                transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+                
+                std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
+                // Send data to Jetson
+                WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
+
+                // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
+ 
+            // restart everything if nothing matches
+            else {
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            } 
+             
             break;
         }
         // ...found message start, assemble message...

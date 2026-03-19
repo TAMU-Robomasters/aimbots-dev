@@ -145,10 +145,9 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
-    #ifdef YAW_3508
-        drivers->revEncoder.initialize();
-    #endif
-    drivers->powerCommunicator.initialize();
+#ifdef YAW_3508
+    drivers->revEncoder.initialize();
+#endif
 
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
@@ -191,7 +190,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-    drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
 #ifdef YAW_3508
     drivers->revEncoder.execute();
 #endif
@@ -217,9 +215,9 @@ static void updateIo(src::Drivers *drivers) {
      rollDisplay =
          drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
-    // gZDisplay =
-    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
-    //     AngleUnit::Radians);
+     gZDisplay =
+         drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+         AngleUnit::Radians);
     // gYDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS,
     //     AngleUnit::Radians);

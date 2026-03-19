@@ -3,11 +3,10 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
-#define TURRET_IMU
-//#define CHASSIS_IMU 
 
 #if defined(TARGET_SENTRY_SWERVE)
 #define SWERVE
+#define TURRET_IMU
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 
 static constexpr MotorID LEFT_BACK_YAW_ID = MotorID::MOTOR5;

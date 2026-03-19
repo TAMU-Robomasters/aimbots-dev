@@ -18,12 +18,15 @@ GimbalChaseCommand::GimbalChaseCommand(
       controller(gimbalController),
       refHelper(refHelper),
       ballisticsSolver(ballisticsSolver),
-      defaultLaunchSpeed(defaultLaunchSpeed)  //
+      defaultLaunchSpeed(defaultLaunchSpeed),
+      desiredAngles({0.0f, 0.0f})  //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
 }
 
-void GimbalChaseCommand::initialize() {}
+void GimbalChaseCommand::initialize() {
+    targetSeenTimeout.restart(0);
+}
 
 float targetPitchAxisAngleDisplay2 = 0.0f;
 float targetYawAxisAngleDisplay2 = 0.0f;
@@ -75,59 +78,24 @@ void GimbalChaseCommand::execute() {
     float targetPitchAxisAngle = 0.0f;
 
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
-    // projectileSpeed = 30.0f;
 
-    if (projectileSpeed == 0) {
-        projectileSpeed = 25;
-    }
-
-    predictedProjectileSpeedDisplay = projectileSpeed;
-
-    std::optional<src::Utils::Ballistics::BallisticsSolver::BallisticsSolution> ballisticsSolution =
-        ballisticsSolver->solve(projectileSpeed);  // returns nullopt if no solution is available
-
-    if (ballisticsSolution != std::nullopt) {
-        // Convert ballistics solutions to field-relative angles
-        uint32_t frameCaptureDelay = drivers->cvCommunicator.getLastFrameCaptureDelay();
-
-        std::pair<float, float> fieldTurretAngleAtFrameDelay =
-            drivers->kinematicInformant.getGimbalFieldOrientationAtTime(frameCaptureDelay);
-
-        // yawAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getZ();
-        // pitchAtFrameDelayDisplay = chassisIMUAngleAtFrameDelay.getX();
-        yawAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.first);
-        pitchAtFrameDelayDisplay = modm::toDegree(fieldTurretAngleAtFrameDelay.second);
-
-        yawRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians);
-        pitchRawDisplay =
-            drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians);
-
-        targetYawAxisAngle = /*chassisIMUAngleAtFrameDelay.getZ() + */ ballisticsSolution->yawAngle;
-        targetPitchAxisAngle = /*chassisIMUAngleAtFrameDelay.getX() + */ ballisticsSolution->pitchAngle;
-        // targetYawAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->yawAngle;
-        // targetPitchAxisAngle =
-        //     drivers->kinematicInformant.getChassisIMUAngle(Informants::AngularAxis::PITCH_AXIS, AngleUnit::Radians) +
-        //     ballisticsSolution->pitchAngle;
-
-        bSolTargetYawDisplay = modm::toDegree(targetYawAxisAngle);
-        bSolTargetPitchDisplay = modm::toDegree(targetPitchAxisAngle);
-        bSolDistanceDisplay = ballisticsSolution->distanceToTarget;
-
-        // Comment when Z axis stops being silly
-        // targetPitchAxisAngle =
-        //     controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput();
-
-        controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
-        controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
-
+    if (drivers->cvCommunicator.isJetsonOnline()) { 
+        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
+            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();   
+        }
+        controller->setTargetYaw(AngleUnit::Radians, desiredAngles.yaw);
+        controller->setTargetPitch(AngleUnit::Radians, desiredAngles.pitch);
+    
         // controller->runYawController(
         //     src::Utils::Ballistics::YAW_VELOCITY_LIMITER.interpolate(ballisticsSolution->distanceToTarget));
-        controller->runYawController(5.0f);
+        controller->runYawController(100.0f);
         controller->runPitchController(5.0f);
     } else {
+        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
+            desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
+            targetSeenTimeout.restart(TARGET_SEEN_TIMEOUT_MS);
+        }
+
         // Yaw counterclockwise is positive angle
         targetYawAxisAngle = controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
                              drivers->controlOperatorInterface.getGimbalYawInput();

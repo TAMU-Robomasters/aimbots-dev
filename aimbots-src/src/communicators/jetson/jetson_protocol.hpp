@@ -19,7 +19,15 @@ struct JetsonMessage {
     CVState cvState;
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonMessage) == 15, "JetsonMessage is not the correct size");
+struct EmbeddedTransformationMessage {
+    uint8_t magic;
+    float yaw;
+    float pitch;
+    float matrix[16];
+} __attribute__((packed));
+
+static_assert(sizeof(JetsonMessage) == 12, "JetsonMessage is not the correct size");
+static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
 
 static constexpr size_t JETSON_MESSAGE_SIZE = sizeof(JetsonMessage);
 }  // namespace src::Informants::Vision

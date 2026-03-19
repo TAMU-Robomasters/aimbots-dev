@@ -19,18 +19,19 @@ public:
     void initialize() override;
 
     void BuildPIDControllers() {
+        yawVelocityPID = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
+        yawVelocityFilter = new src::Utils::Filters::EMAFilter(0.1);
+        yawPositionCascadePID = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
+        // smoothing yaw velocity heavily for display purposes
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawPositionPIDs[i] = new SmoothPID(YAW_POSITION_PID_CONFIG);
-            yawPositionCascadePIDs[i] = new SmoothPID(YAW_POSITION_CASCADE_PID_CONFIG);
-            yawVelocityPIDs[i] = new SmoothPID(YAW_VELOCITY_PID_CONFIG);
-
-            yawVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.02);
-            // smoothing yaw velocity heavily for display purposes
         }
+
         for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
             pitchPositionPIDs[i] = new SmoothPID(PITCH_POSITION_PID_CONFIG);
             pitchPositionCascadePIDs[i] = new SmoothPID(PITCH_POSITION_CASCADE_PID_CONFIG);
             pitchVelocityPIDs[i] = new SmoothPID(PITCH_VELOCITY_PID_CONFIG);
+            pitchVelocityFilters[i] = new src::Utils::Filters::EMAFilter(0.01);
         }
     }
 
@@ -75,7 +76,7 @@ public:
         bool controllersSettled = false;
         for (int i = 0; i < YAW_MOTOR_COUNT; i++) {
             if (gimbal->isYawMotorOnline(i)) {
-                controllersSettled = yawPositionCascadePIDs[i]->isSettled(errTolerance, errTimeout);
+                controllersSettled = yawPositionCascadePID->isSettled(errTolerance, errTimeout);
             }
         }
         return controllersSettled;
@@ -120,15 +121,16 @@ private:
 
     float fieldRelativeVelocityYawTarget;
     float fieldRelativeVelocityPitchTarget;
+    float averageRPM;
 
     std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionPIDs;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionPIDs;
 
-    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawPositionCascadePIDs;
+    SmoothPID* yawPositionCascadePID;
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchPositionCascadePIDs;
 
-    std::array<SmoothPID*, YAW_MOTOR_COUNT> yawVelocityPIDs;
-    std::array<src::Utils::Filters::EMAFilter*, YAW_MOTOR_COUNT> yawVelocityFilters;
+    SmoothPID* yawVelocityPID;
+    src::Utils::Filters::EMAFilter* yawVelocityFilter;
 
     std::array<SmoothPID*, PITCH_MOTOR_COUNT> pitchVelocityPIDs;
     std::array<src::Utils::Filters::EMAFilter*, PITCH_MOTOR_COUNT> pitchVelocityFilters;
