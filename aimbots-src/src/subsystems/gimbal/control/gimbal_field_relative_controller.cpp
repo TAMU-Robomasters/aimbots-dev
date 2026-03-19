@@ -155,11 +155,11 @@ void GimbalFieldRelativeController::runYawController(
                 AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
 
     #ifndef YAW_3508
-        // float velocityFeedforward = tap::algorithms::limitVal(
-        //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-        //         YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
-        //     -GM6020_MAX_OUTPUT,
-        //     GM6020_MAX_OUTPUT);
+        float velocityFeedforward = tap::algorithms::limitVal(
+            CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+                YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
+            -GM6020_MAX_OUTPUT,
+            GM6020_MAX_OUTPUT);
     #else
         // float velocityFeedforward = tap::algorithms::limitVal(
         //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
