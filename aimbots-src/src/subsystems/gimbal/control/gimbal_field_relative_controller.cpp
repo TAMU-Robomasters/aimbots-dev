@@ -146,10 +146,10 @@ void GimbalFieldRelativeController::runYawController(
         }
 
         float chassisRelativeVelocityTarget =
-            fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+            fieldRelativeVelocityTarget /*- (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)
-                /GIMBAL_YAW_MOTOR_GEAR_RATIO);
+                /GIMBAL_YAW_MOTOR_GEAR_RATIO)*/;
                 speedDiffDisplay = (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
