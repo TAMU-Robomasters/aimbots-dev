@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tap/architecture/periodic_timer.hpp"
 #include "tap/architecture/timeout.hpp"
 #include "tap/communication/can/can_rx_listener.hpp"
 #include "tap/communication/sensors/current/current_sensor_interface.hpp"
@@ -40,6 +41,7 @@ private:
     float power = 0;
 
     tap::arch::MilliTimeout heartbeat;
+    tap::arch::PeriodicMilliTimer sendDataTimer;
 };
 }  
 

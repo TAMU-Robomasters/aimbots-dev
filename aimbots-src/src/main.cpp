@@ -148,13 +148,14 @@ static void initializeIo(src::Drivers *drivers) {
 #ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
+drivers->powerCommunicator.initialize();
 
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
-   // drivers->powerCommunicator.initialize();
+    drivers->powerCommunicator.initialize();
   //  drivers->kinematicInformant.recalibrateIMU(
    //     {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
 // #else
@@ -190,6 +191,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
+    drivers->powerCommunicator.requestTest(); // TEST FUNC ZHENG-HAO
 #ifdef YAW_3508
     drivers->revEncoder.execute();
 #endif

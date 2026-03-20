@@ -126,7 +126,7 @@ void GimbalSubsystem::refresh() {
         setDesiredOutputToYawMotor(i);
     }
     yawOnlineCountDisplay = yawOnlineCount;
-    sumDisplay = yawAxisAngleSum;
+ //   sumDisplay = yawAxisAngleSum;
 
     int pitchOnlineCount = 0;
     float pitchAxisAngleSum = 0.0f;

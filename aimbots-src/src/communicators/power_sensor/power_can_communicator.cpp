@@ -3,7 +3,9 @@
 namespace src::Informants::PowerComms
 {
 PowerSensor::PowerSensor(tap::Drivers* drivers, tap::can::CanBus canBus)
-    : tap::can::CanRxListener(drivers, CHASSIS_SENSOR_CAN_ID, canBus) { }
+    : tap::can::CanRxListener(drivers, CHASSIS_SENSOR_CAN_ID, canBus),
+    sendDataTimer(500) // temp 500 ms make constant later ZHENG-HAO
+    { }
 
 
 float voltageDisplay = 67.0;
@@ -20,6 +22,7 @@ void PowerSensor::processMessage(const modm::can::Message& message) {
 void PowerSensor::initialize() {
     this->attachSelfToRxHandler();
     this->heartbeat.restart(0);
+    
 }
 
 // void TurretMCBCanComm::sendData()
@@ -50,12 +53,13 @@ void PowerSensor::initialize() {
 
 int sendSuccDisplay = 69;
 void PowerSensor::requestTest() {
-     if (drivers->can.isReadyToSend(canBus)) {
+    
+    if (sendDataTimer.execute()) {
         sendSuccDisplay = drivers->can.sendMessage(canBus, 0b01000101); // 68 +- 1 HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA
         sendSuccDisplay = -5;
-     }else{
+    }else{
         sendSuccDisplay = 67;
-     }
+    }
     
 }
 

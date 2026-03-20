@@ -8,14 +8,18 @@ enum CVState : uint8_t {
     FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a';
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
+static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
+// Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
+static constexpr uint8_t JETSON_TRANSFORMATION_QUERY = 't';
+static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'b'; // header for devboard -> jetson comms
 
 struct JetsonMessage {
     uint8_t magic;
-    float targetX;
-    float targetY;
-    float targetZ;
-    uint8_t delay;  // ms
+    uint8_t messageType;
+    float pitch;
+    float yaw;
+    uint8_t timeUntilNextFire;
     CVState cvState;
 } __attribute__((packed));
 
