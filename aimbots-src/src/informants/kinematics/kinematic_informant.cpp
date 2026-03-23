@@ -287,11 +287,16 @@ tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalY
     return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
+
+float gimbalPitchAngleDisplay = 0.0;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentPitchAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisPitchAngleInGimbalDirection();
-    return WrappedFloat(currGimbalAngle + currChassisAngle - PITCH_AXIS_START_ANGLE, -M_PI, M_PI);
+    WrappedFloat out(currGimbalAngle + currChassisAngle - PITCH_AXIS_START_ANGLE, -M_PI, M_PI);
+    gimbalPitchAngleDisplay = out.getWrappedValue();
+    return out;
 }
+
 
 float KinematicInformant::getChassisPitchAngleInGimbalDirection() {
     float sinGimbYaw = sinf(gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians));
