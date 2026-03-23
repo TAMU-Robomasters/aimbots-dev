@@ -258,4 +258,27 @@ Song WeenWao = {WeenWaoBPM, Q_N, {{D6, S_N}, {E6, EH_N}, {E6, E_N}, {D6, QH_N},
 // https://onlinesequencer.net/5274337
 
 
+
+static constexpr uint32_t GIORNO_BPM = 130;
+Song giornoTheme = {GIORNO_BPM, Q_N, {
+                                {B4, S_N}, {REST, S_N}, {B4, S_N}, {REST, S_N}, {B4, S_N}, {A4, S_N}, {REST, S_N}, {B4, S_N},
+                                {REST, S_N}, {D5, S_N}, {REST, S_N}, {B4, S_N}, {REST, S_N}, {Gb4, S_N}, {A4, E_N}, {B4, S_N},
+                                {REST, S_N}, {B4, S_N}, {REST, S_N}, {B4, S_N}, {A4, S_N}, {REST, S_N}, {B4, S_N}, {REST, S_N},
+                                {F5, S_N}, {REST, S_N}, {E5, S_N}, {REST, S_N}, {D5, S_N}, {A4, E_N}, {B4, S_N}, {REST, S_N},
+                                {B4, S_N}, {REST, S_N}, {B4, S_N}, {A4, S_N}, {REST, S_N}, {B4, S_N}, {REST, S_N}, {D5, S_N},
+                                {REST, S_N}, {B4, S_N}, {REST, S_N}, {Gb4, S_N}, {A4, E_N}, {B4, S_N}, {REST, S_N}, {B4, S_N},
+                                {REST, S_N}, {B4, S_N}, {REST, S_N}, {A4, S_N}, {B4, S_N}, {REST, Q_N}, {B4, S_N}, {D5, S_N},
+                                {E5, S_N}, {F5, S_N}, {Gb5, QH_N}, {F5, QH_N}, {REST, E_N}, {D5, S_N}, {E5, S_N}, {F5, EH_N},
+                                {E5, EH_N}, {D5, E_N}, {Db5, EH_N}, {D5, EH_N}, {E5, E_N}, {Gb5, QH_N}, {B5, QH_N}, {B4, E_N},
+                                {Db5, E_N}, {D5, EH_N}, {E5, EH_N}, {D5, E_N}, {Db5, EH_N}, {A5, EH_N}, {G5, E_N}, {Gb5, QH_N},
+                                {F5, QH_N}, {REST, E_N}, {D5, S_N}, {E5, S_N}, {F5, EH_N}, {E5, EH_N}, {D5, E_N}, {Db5, EH_N},
+                                {D5, EH_N}, {E5, E_N}, {Gb5, QH_N}, {B5, QH_N}, {B5, E_N}, {Db6, E_N}, {D6, EH_N}, {G6, EH_N},
+                                {Gb6, E_N}, {F6, EH_N}, {D7, EH_N}, {Bb6, E_N}, {B6, Q_N},
+                                {END, Q_N}
+}};
+
+// Giorno's Theme
+// https://musescore.com/user/7469986/scores/5297193?srsltid=AfmBOor-r0c5ByhC0nfCWxiiZu3o8P53ZtNGtwCh6O1PC3vo2bQ_tCA8
+
+
 }  // namespace utils::Jukebox
