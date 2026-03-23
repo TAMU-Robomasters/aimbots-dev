@@ -32,7 +32,7 @@ static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(0.416577296)+M_PI, wrapTo0To2PIRange(0.416577296)+M_PI};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(147.8f)+((5*M_PI)/18))};
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(0.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-20.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(40.0f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
@@ -62,7 +62,8 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 
-static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
+//set using field relative angle in kinematic informants, not gimbal.cpp motor angle
+static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(18.0f);
 
 static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // for 2023 Sentry
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
