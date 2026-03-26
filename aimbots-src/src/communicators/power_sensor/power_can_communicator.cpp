@@ -54,15 +54,16 @@ void PowerSensor::initialize() {
 int sendSuccDisplay = 69;
 void PowerSensor::requestTest() {
     
-    if (sendDataTimer.execute()) {
-        modm::can::Message txMsg(CHASSIS_SENSOR_CAN_ID, 16,0b01000101);
+    // if (sendDataTimer.execute()) {
+        modm::can::Message txMsg(CHASSIS_SENSOR_CAN_ID, 1, 0b01000101);
         txMsg.setExtended(false);
        // txMsg.data[0] = 0b01000101;
         sendSuccDisplay = drivers->can.sendMessage(canBus, txMsg); // 68 +- 1 HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA
       //  sendSuccDisplay = -5;
-    }else{
+    // }
+    // else{
        // sendSuccDisplay = 0;
-    }
+    // }
     
 }
 
