@@ -51,7 +51,7 @@ public:
       #ifdef YAW_3508
           revEncoder(this),
       #endif
-          powerCommunicator(this, CANBus::CAN_BUS2),
+          powerCommunicator(this, CANBus::CAN_BUS1),
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
