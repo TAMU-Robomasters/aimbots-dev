@@ -241,7 +241,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
     }
     averageRPM = averageRPM / YAW_MOTOR_COUNT;
 
-    yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
+    yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM*GIMBAL_YAW_MOTOR_GEAR_RATIO)));
 
         // for PID tunning through Ozone
     if (updateYawVelocityPIDsDebug) {
