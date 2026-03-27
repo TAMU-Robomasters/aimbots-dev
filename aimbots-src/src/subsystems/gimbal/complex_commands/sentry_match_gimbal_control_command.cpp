@@ -42,8 +42,8 @@ void SentryMatchGimbalControlCommand::execute() {
         return;
     }
 
-    if (drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FOUND ||
-        drivers->cvCommunicator.getLastValidMessage().cvState == src::Informants::Vision::FIRE) {
+    if (drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FOUND ||
+        drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FIRE) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
      //   descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
         chaseTimeout.restart(chaseTimeoutMillis);
