@@ -281,4 +281,22 @@ Song giornoTheme = {GIORNO_BPM, Q_N, {
 // https://musescore.com/user/7469986/scores/5297193?srsltid=AfmBOor-r0c5ByhC0nfCWxiiZu3o8P53ZtNGtwCh6O1PC3vo2bQ_tCA8
 
 
+static constexpr uint32_t grannyBPM = 90;
+Song granny = {grannyBPM, Q_N, { {B5, S_N}, {B5, S_N}, {B5, S_N}, {Db6, S_N},
+                               {Eb6, S_N}, {Db6, S_N}, {B5, S_N}, {B5, S_N},
+                               {B5, S_N}, {B5, S_N}, {B5, S_N}, {G5, S_N},
+                               {Eb6, S_N}, {Db6, S_N}, {REST, E_N},
+                               {B5, S_N}, {B5, S_N}, {B5, S_N}, {B5, S_N},
+                               {Db6, S_N},{Eb6, S_N}, {Db6, S_N}, {B5, S_N},
+                               {B5, S_N}, {B5, S_N}, {B5, S_N}, {B5, S_N},
+                               {G5, S_N}, {Eb6, E_N},
+                               {Db6, Q_N}, 
+                               {REST, H_N},
+                               {B5, E_N}, {Db6, QH_N},
+                               {END, Q_N}}};
+
+// RIP my granny
+// https://onlinesequencer.net/5305807
+
+
 }  // namespace utils::Jukebox
