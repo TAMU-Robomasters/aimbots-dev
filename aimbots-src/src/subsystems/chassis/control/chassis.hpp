@@ -174,10 +174,10 @@ public:
             Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
 
             // yaw values in radians
-            float left_front_yaw_actual  = yawToRad(motors[LF][1]->getEncoderWrapped(),  LEFT_FRONT_YAW_OFFSET);
-            float right_front_yaw_actual = yawToRad(motors[RF][1]->getEncoderWrapped(), RIGHT_FRONT_YAW_OFFSET);
-            float left_back_yaw_actual   = yawToRad(motors[LB][1]->getEncoderWrapped(),  LEFT_BACK_YAW_OFFSET);
-            float right_back_yaw_actual  = yawToRad(motors[RB][1]->getEncoderWrapped(), RIGHT_BACK_YAW_OFFSET);
+            float left_front_yaw_actual  = yawToRad(getEncoderWrapped(motors[LF][1]),  LEFT_FRONT_YAW_OFFSET);
+            float right_front_yaw_actual = yawToRad(getEncoderWrapped(motors[RF][1]), RIGHT_FRONT_YAW_OFFSET);
+            float left_back_yaw_actual   = yawToRad(getEncoderWrapped(motors[LB][1]),  LEFT_BACK_YAW_OFFSET);
+            float right_back_yaw_actual  = yawToRad(getEncoderWrapped(motors[RB][1]), RIGHT_BACK_YAW_OFFSET);
 
             wheelVelocities[2*LF+0][0] = leftFrontWheel.getShaftRPM()*std::cos(left_front_yaw_actual);
             wheelVelocities[2*LF+1][0] = leftFrontWheel.getShaftRPM()*std::sin(left_front_yaw_actual);
