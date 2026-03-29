@@ -303,11 +303,11 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     //{&gimbalVelocityTunningCommand},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
-    {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
+    // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Runs shooter only
