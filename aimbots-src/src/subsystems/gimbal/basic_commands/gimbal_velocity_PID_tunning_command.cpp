@@ -70,6 +70,7 @@ float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per s
     }
 }
 
+bool goingUp = true;
 float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per second
     // For PID tunning through Ozone
     if (updatePitchVelocityConfigDebug) {
@@ -78,15 +79,27 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
         updatePitchVelocityConfigDebug = false;
     }
 
-    float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
-    
-    float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
-    
-    if (timeInPeriod < periodMilliseconds / 2.0f) {
+    if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) >= PITCH_AXIS_SOFTSTOP_HIGH && goingUp){
+        goingUp = false;
+    }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) <= PITCH_AXIS_SOFTSTOP_LOW && !goingUp){
+        goingUp = true;
+    }
+
+    if (goingUp) {
         return pitchConfig.velocityAmplitudeDegreesPerSec;
     } else {
         return -pitchConfig.velocityAmplitudeDegreesPerSec;
     }
+
+    // float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
+    
+    // float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
+    
+    // if (timeInPeriod < periodMilliseconds / 2.0f) {
+    //     return pitchConfig.velocityAmplitudeDegreesPerSec;
+    // } else {
+    //     return -pitchConfig.velocityAmplitudeDegreesPerSec;
+    // }
 }
 
 float currRPMDisplay = 0.0f;
