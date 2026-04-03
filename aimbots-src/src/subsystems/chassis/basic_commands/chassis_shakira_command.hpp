@@ -16,6 +16,7 @@ class BallisticsSolver;
 
 namespace src::Chassis {
 
+[[deprecated( "js use sin spin" )]]
 class ChassisShakiraCommand : public TapCommand {
 public:
     ChassisShakiraCommand(

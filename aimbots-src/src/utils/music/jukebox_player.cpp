@@ -20,6 +20,7 @@ static constexpr Song* songsList[] = {
     &boonie,
     &WeenWao,
     &giornoTheme,
+    &granny,
 };
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}

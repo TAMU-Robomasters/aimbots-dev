@@ -36,8 +36,8 @@ static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(-19.6f) + M_PI};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-50)+((5*M_PI)/18)};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.48;//modm::toRadian(250.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.20;//modm::toRadian(355.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 

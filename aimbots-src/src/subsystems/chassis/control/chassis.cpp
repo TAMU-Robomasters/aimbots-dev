@@ -377,6 +377,8 @@ float xDisplay = 0.0f;
 float yDisplay = 0.0f;
 float rotDisplay = 0.0f;
 
+float outDriveRPMDisplay = 0.0;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // if (updateSteeringPositioPIDsDebug) {
     //     for (size_t i = 0; i < 4; i++) {
@@ -480,6 +482,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
                 lastCmdYawRad[moduleIdx] = targetYawRad; // update latch
             }
         }
+        outDriveRPMDisplay = outDriveRPM;
 
         outSteerTicksFloat = radToTicksFloat(targetYawRad, offsetTicks);
         outSteerDbgInt     = static_cast<int>(std::lround(outSteerTicksFloat));
