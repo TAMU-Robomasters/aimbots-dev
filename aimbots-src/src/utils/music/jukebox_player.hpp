@@ -40,6 +40,8 @@ enum NoteFreq : uint32_t {
     C4  = 262,
     Db4 = 277,
     D4  = 294,
+    Eb4 = 311,
+    Ds4 = 311,
     E4  = 330,
     F4 = 340,
     Gb4 = 370,
@@ -75,7 +77,6 @@ enum NoteFreq : uint32_t {
     B6 = 1976,
     C7 = 2093, 
     D7 = 2349,
-    Ds4 = 311,
 };
 
 struct MusicNote {

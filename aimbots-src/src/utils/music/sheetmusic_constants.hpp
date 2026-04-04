@@ -343,4 +343,21 @@ Song fallenDown = {fallenDownBPM, Q_N, {
 // Fallen Down
 //https://onlinesequencer.net/4737279#
 
+static constexpr uint32_t RED_BARON_BPM = 95;
+
+Song redBaron = {RED_BARON_BPM, Q_N, {
+    {C4, Q_N}, {G4, Q_N}, {Eb4, QH_N}, {D4, E_N}, {C4, E_N},
+    {Eb4, E_N}, {D4, E_N}, {C4, E_N}, {B4, E_N}, {D4, E_N},
+    {G3, Q_N}, {C4, E_N}, {G3, E_N}, {D4, E_N}, {G3, E_N},
+    {Eb4, E_N}, {D4, S_N}, {C4, S_N}, {D4, E_N}, {G3, E_N},
+    {C4, E_N}, {G3, S_N}, {C4, S_N}, {D4, E_N}, {G3, S_N},
+    {D4, S_N}, {Eb4, E_N}, {D4, S_N}, {C4, S_N}, {D4, S_N},
+    {G3, S_N}, {G4, S_N}, {F4, S_N}, {Eb4, S_N}, {D4, S_N},
+    {C4, S_N}, {Eb4, S_N}, {D4, S_N}, {C4, S_N}, {B3, S_N},
+    {D4, S_N}, {C4, Q_N}, {END, Q_N}
+}};
+
+// Sabaton Red Baron intro
+// https://onlinesequencer.net/3590527#
+
 }  // namespace utils::Jukebox
