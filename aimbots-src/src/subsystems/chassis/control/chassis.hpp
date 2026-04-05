@@ -174,10 +174,10 @@ public:
             Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
 
             // yaw values in radians
-            float left_front_yaw_actual  = yawToRad(getEncoderWrapped(motors[LF][1]),  LEFT_FRONT_YAW_OFFSET);
-            float right_front_yaw_actual = yawToRad(getEncoderWrapped(motors[RF][1]), RIGHT_FRONT_YAW_OFFSET);
-            float left_back_yaw_actual   = yawToRad(getEncoderWrapped(motors[LB][1]),  LEFT_BACK_YAW_OFFSET);
-            float right_back_yaw_actual  = yawToRad(getEncoderWrapped(motors[RB][1]), RIGHT_BACK_YAW_OFFSET);
+            float left_front_yaw_actual  = yawToRad(motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_FRONT_YAW_OFFSET);
+            float right_front_yaw_actual = yawToRad(motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_FRONT_YAW_OFFSET);
+            float left_back_yaw_actual   = yawToRad(motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_BACK_YAW_OFFSET);
+            float right_back_yaw_actual  = yawToRad(motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_BACK_YAW_OFFSET);
 
             wheelVelocities[2*LF+0][0] = leftFrontWheel.getShaftRPM()*std::cos(left_front_yaw_actual);
             wheelVelocities[2*LF+1][0] = leftFrontWheel.getShaftRPM()*std::sin(left_front_yaw_actual);
@@ -187,7 +187,7 @@ public:
             wheelVelocities[2*LB+1][0] = leftBackWheel.getShaftRPM()*std::sin(left_back_yaw_actual);
             wheelVelocities[2*RB+0][0] = rightBackWheel.getShaftRPM()*std::cos(right_back_yaw_actual);
             wheelVelocities[2*RB+1][0] = rightBackWheel.getShaftRPM()*std::sin(right_back_yaw_actual);
-            static constexpr float ratio = (CHASSIS_GEARBOX_RATIO * 0.10668 * M_PI / 60.0f); //4.2 in diameter wheels (0.10668m), 60 to convert from rpm to rps
+            static constexpr float ratio = (CHASSIS_GEARBOX_RATIO * 0.127 * M_PI / 60.0f); //127mm in diameter wheels (0.127m), 60 to convert from rpm to rps
             return forward_swerve_kinematics * (ratio * wheelVelocities);
         #endif
         
