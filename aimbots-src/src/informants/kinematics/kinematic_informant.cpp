@@ -119,6 +119,9 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 }
 
 #ifdef CHASSIS_IMU
+float chassisAnglesConvertedDisplayX;
+float chassisAnglesConvertedDisplayY;
+float chassisAnglesConvertedDisplayZ;
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
@@ -138,6 +141,10 @@ void KinematicInformant::updateChassisIMUAngles() {
             .getPointInFrame(
                 drivers->kinematicInformant.getRobotFrames().getFrame(Transformers::FrameType::CHASSIS_FRAME),
                 IMUAngles);
+    
+    chassisAnglesConvertedDisplayX = chassisAngles.x;
+    chassisAnglesConvertedDisplayY = chassisAngles.y;
+    chassisAnglesConvertedDisplayZ = chassisAngles.z;
 
     chassisAnglesConvertedDisplay = chassisAngles;
 
@@ -449,7 +456,9 @@ float IMUAnglesDisplayZ;
 float rawYawVel;
 float yawMotorRPMDisplay;
 
-float IMUYawAngleDisplayGood;
+float IMUYawAngleDisplayGoodX;
+float IMUYawAngleDisplayGoodY;
+float IMUYawAngleDisplayGoodZ;
 
 void KinematicInformant::updateChassisIMUAngles() {
     YawAngularAccelDisplay = getIMUAngularAccelerations().z;
@@ -457,11 +466,12 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
     YawPosEncoder = drivers->revEncoder.getUnwrappedPosition();
+    float wrappedYawAxisAngle = GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(YawPosEncoder)/* - YAW_MOTOR_OFFSET_ANGLES[i]*/);
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     YawAngularVelocityEncoder = RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0) * GIMBAL_YAW_MOTOR_GEAR_RATIO);
-    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
+    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,wrapNegPIPI(IMUAngles.z)/* - wrappedYawAxisAngle*/);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
@@ -469,7 +479,9 @@ void KinematicInformant::updateChassisIMUAngles() {
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
     
-    IMUYawAngleDisplayGood = getLocalIMUAngles().z;
+    IMUYawAngleDisplayGoodX = drivers->bmi088.getPitch();
+    IMUYawAngleDisplayGoodY = drivers->bmi088.getRoll();
+    IMUYawAngleDisplayGoodZ = drivers->bmi088.getYaw();
 
     // this transform doesn't exist yet
 

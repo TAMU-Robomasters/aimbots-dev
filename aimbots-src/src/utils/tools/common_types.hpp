@@ -35,7 +35,7 @@ static inline float wrapTo0To2PIRange(float angle) { // suppsed  be [-pi pi] ZHE
     }
 }
 
-static inline float wrapNegPIPI(float angle) { // suppsed  be [-pi pi] ZHENG-HA
+static inline float wrapNegPIPI(float angle) { // suppsed  be [-pi pi] ZHENG-HAO 
     if(angle < -M_PI) {
         return angle + M_TWOPI;
     }

@@ -123,7 +123,7 @@ void GimbalFieldRelativeController::runYawController(
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
 
     #ifndef YAW_3508
-        float fieldRelativeVelocityTarget = yawPositionCascadePID->runController(
+        float fieldRelativeVelocityTarget = yawPositionCascadePID->runController( // investigate this ZHENG-HAO
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                           src::Informants::AngularAxis::YAW_AXIS,
@@ -144,15 +144,12 @@ void GimbalFieldRelativeController::runYawController(
             fieldRelativeVelocityTarget =
                 tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
         }
-
-        float chassisRelativeVelocityTarget =
-            fieldRelativeVelocityTarget /*- (drivers->kinematicInformant.getChassisIMUAngularVelocity(
-                src::Informants::AngularAxis::YAW_AXIS,
-                AngleUnit::Radians)
-                /GIMBAL_YAW_MOTOR_GEAR_RATIO)*/;
-                speedDiffDisplay = (drivers->kinematicInformant.getChassisIMUAngularVelocity(
-                src::Informants::AngularAxis::YAW_AXIS,
-                AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
+        // fieldRelativeVelocityTargetDisplay;
+        float chassisRelativeVelocityTarget = fieldRelativeVelocityTarget/* - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO)*/;
+        speedDiffDisplay = fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+            src::Informants::AngularAxis::YAW_AXIS,
+            AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
 
     #ifndef YAW_3508
         float velocityFeedforward = tap::algorithms::limitVal(

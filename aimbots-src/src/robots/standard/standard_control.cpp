@@ -25,6 +25,8 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_sinusodal_spin_command.hpp"
+
 //#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
@@ -194,6 +196,14 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, false, randomizerConfig);
 
+ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,
+    randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
+
 ChassisAutoNavCommand chassisAutoNavCommand(
     drivers(),
     &chassis,
@@ -278,7 +288,7 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
+    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalChaseCommand2},
    //{&gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 

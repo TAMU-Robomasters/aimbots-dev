@@ -204,6 +204,7 @@ int chassisRotateDisplay;
 int leftBackRotationRatioDisplay;
 int xDisplay;
 int yDisplay;
+float tickYaw2RadDisplay = 0.67;
 
 void ChassisSubsystem::calculateHolonomic(float x, float y, float r, float maxWheelSpeed) {
     xInputDisplay = x;
@@ -269,6 +270,7 @@ float prev_right_front_yaw;
 float prev_left_back_yaw;
 float prev_right_back_yaw;
 
+
 bool lockWatch;
 
 static inline float wrap0N(float x, float N) {
@@ -288,7 +290,10 @@ static inline float wrap0To2Pi(float a) {
 static constexpr float kTicksPerRev = 8192.0f; // why wasn't there a variable for this already?
 static constexpr float kTwoPi       = 2.0f * static_cast<float>(M_PI);
 
+
+
 float ChassisSubsystem::yawToRad(float ticks, int offsetTicks) {
+    // tickYaw2RadDisplay = ticks;
     const float deltaTicks = wrap0N(ticks - static_cast<float>(offsetTicks), kTicksPerRev);
     return deltaTicks * (kTwoPi / kTicksPerRev);
 }
