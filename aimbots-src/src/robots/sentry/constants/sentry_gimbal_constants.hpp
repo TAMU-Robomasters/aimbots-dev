@@ -196,6 +196,69 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 const modm::interpolation::Linear<modm::Pair<float, float>> YAW_VELOCITY_FEEDFORWARD(YAW_FEEDFORWARD_VELOCITIES, 11);
 const modm::interpolation::Linear<modm::Pair<float, float>> PITCH_VELOCITY_FEEDFORWARD(PITCH_FEEDFORWARD_VELOCITIES, 11);
 
+// Maps field-relative pitch angle (radians) to gravity compensation voltage.
+// Voltage peaks near horizontal (0 rad) where gravity torque is greatest,
+// and tapers off toward the soft stops. Replace with measured values.
+// clang-format off
+const modm::Pair<float, float> FIELD_RELATIVE_PITCH_ANGLE_FEEDFORWARD_POINTS[54] = {
+    {modm::toRadian(-14.66f),  1600.0f},
+    {modm::toRadian(-14.63f),  1500.0f},
+    {modm::toRadian(-14.63f),  1200.0f},
+    {modm::toRadian(-14.61f),  1700.0f},
+    {modm::toRadian(-14.61f),  1100.0f},
+    {modm::toRadian(-14.58f),  1000.0f},
+    {modm::toRadian(-14.58f),  1300.0f},
+    {modm::toRadian(-14.57f),  1400.0f},
+    {modm::toRadian(-14.52f),  1900.0f},
+    {modm::toRadian(-14.52f),  1800.0f},
+    {modm::toRadian(-14.51f),  2000.0f},
+    {modm::toRadian(-14.46f),  2100.0f},
+    {modm::toRadian(-14.40f),  2200.0f},
+    {modm::toRadian(-14.30f),  2300.0f},
+    {modm::toRadian(-14.24f),  2400.0f},
+    {modm::toRadian(-14.13f),  2500.0f},
+    {modm::toRadian(-14.01f),  2600.0f},
+    {modm::toRadian(-13.92f),  2700.0f},
+    {modm::toRadian(-13.79f),  2800.0f},
+    {modm::toRadian(-13.64f),  2900.0f},
+    {modm::toRadian(-13.47f),  3000.0f},
+    {modm::toRadian(-13.36f),  3100.0f},
+    {modm::toRadian(-13.29f),  3200.0f},
+    {modm::toRadian(-13.15f),  3300.0f},
+    {modm::toRadian(-13.02f),  3400.0f},
+    {modm::toRadian(-12.87f),  3500.0f},
+    {modm::toRadian(-11.97f),  3600.0f},
+    {modm::toRadian(-10.35f),  3700.0f},
+    {modm::toRadian(-10.09f),  3800.0f},
+    {modm::toRadian( -8.63f),  3900.0f},
+    {modm::toRadian( -8.47f),  4000.0f},
+    {modm::toRadian( -8.25f),  4100.0f},
+    {modm::toRadian( -7.84f),  4200.0f},
+    {modm::toRadian( -7.43f),  4300.0f},
+    {modm::toRadian( -7.22f),  4400.0f},
+    {modm::toRadian( -5.02f),  4500.0f},
+    {modm::toRadian( -4.23f),  4600.0f},
+    {modm::toRadian( -2.99f),  4700.0f},
+    {modm::toRadian( -2.85f),  4800.0f},
+    {modm::toRadian( -2.55f),  4900.0f},
+    {modm::toRadian( -1.57f),  5000.0f},
+    {modm::toRadian( -0.95f),  5100.0f},
+    {modm::toRadian(  1.95f),  5200.0f},
+    {modm::toRadian(  2.75f),  5300.0f},
+    {modm::toRadian(  3.45f),  5400.0f},
+    {modm::toRadian(  3.71f),  5500.0f},
+    {modm::toRadian(  4.92f),  5600.0f},
+    {modm::toRadian(  6.57f),  5700.0f},
+    {modm::toRadian(  7.21f),  5800.0f},
+    {modm::toRadian(  8.67f),  5900.0f},
+    {modm::toRadian(  9.65f),  6000.0f},
+    {modm::toRadian( 11.25f),  6100.0f},
+    {modm::toRadian( 12.06f),  6200.0f},
+    {modm::toRadian( 12.31f),  6300.0f}
+};
+const modm::interpolation::Linear<modm::Pair<float, float>> fieldRelativePitchAngleFeedforward(
+    FIELD_RELATIVE_PITCH_ANGLE_FEEDFORWARD_POINTS, 54);
+
 static constexpr float GIMBAL_X_OFFSET = 0.0f;  //-0.05
 static constexpr float GIMBAL_Y_OFFSET = 0.0f;  //-0.05
 
