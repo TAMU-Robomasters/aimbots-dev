@@ -37,18 +37,20 @@ float currGimbalTestTargetYawVelocityDisplay = 0.0f;
 float currGimbalTestTargetPitchVelocityDisplay = 0.0f;
 
 void GimbalVelocityTunningCommand::execute() {
-    float yawTargetVelocity = getYawTargetVelocity();
-    float pitchTargetVelocity = getPitchTargetVelocity();
+    // float yawTargetVelocity = getYawTargetVelocity();
+    // float pitchTargetVelocity = getPitchTargetVelocity();
 
-    currGimbalTestTargetYawVelocityDisplay = yawTargetVelocity;
-    currGimbalTestTargetPitchVelocityDisplay = pitchTargetVelocity;
+    // currGimbalTestTargetYawVelocityDisplay = yawTargetVelocity;
+    // currGimbalTestTargetPitchVelocityDisplay = pitchTargetVelocity;
 
-    controller->setTargetVelocityYaw(AngleUnit::Degrees, yawTargetVelocity);
-    controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
-    controller->runYawVelocityController();
-    controller->runPitchVelocityController();
+    // controller->setTargetVelocityYaw(AngleUnit::Degrees, yawTargetVelocity);
+    // controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
+    // controller->runYawVelocityController();
+    // controller->runPitchVelocityController();
 
   //  runYawVelocityStepOscillation(500.0f);
+
+  runPitchVelocityStepUp(1000.0f);
 }
 
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second
@@ -136,6 +138,24 @@ void GimbalVelocityTunningCommand::runYawVelocityStepOscillation(float periodSec
             for(int j= 0; j< YAW_MOTOR_COUNT;j++){
                 gimbal->setDesiredYawMotorOutput(j, -stepSize*i);
             }
+        }
+    }
+}
+
+void GimbalVelocityTunningCommand::runPitchVelocityStepUp(float periodSeconds) {
+    const float iterations = 500; // should always be even
+    uint32_t periodForSingleStep_ms = periodSeconds * 1E3 / iterations;
+    float stepSize = 100.0f;
+
+    for (size_t i = 0; i < (iterations / 2) + 1; i++) {
+        uint32_t stepNumber = fmod(getRelativeTime() / periodForSingleStep_ms, (iterations / 2) + 1);
+        if ((i == stepNumber / 2) && (stepNumber % 2 == 0)) {
+            pitchVelocityFeedforwardDisplay = stepSize*i;
+            gimbal->setDesiredPitchMotorOutput(0, stepSize*i);
+        }
+        else if ((i == stepNumber / 2) && (stepNumber % 2 == 1)) {
+            pitchVelocityFeedforwardDisplay = 0;
+            gimbal->setDesiredPitchMotorOutput(0, 0*i);
         }
     }
 }

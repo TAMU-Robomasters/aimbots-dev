@@ -46,6 +46,7 @@ private:
     float getPitchTargetVelocity();
     void runYawVelocityStepOscillation(float periodSeconds);
     void runPitchVelocityStepOscillation(float periodSeconds);
+    void runPitchVelocityStepUp(float periodSeconds);
     
     uint32_t getRelativeTime() {return tap::arch::clock::getTimeMilliseconds() - initTime;}
 };
