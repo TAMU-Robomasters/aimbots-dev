@@ -24,8 +24,8 @@
 #include "subsystems/slide/basic_commands/slide_hold_command.hpp"
 #include "subsystems/slide/control/slide.hpp"
 //
-#include "subsystems/wrist/basic_commands/wrist_control_command.hpp"
-#include "subsystems/wrist/basic_commands/wrist_move_command.hpp"
+// #include "subsystems/wrist/basic_commands/wrist_control_command.hpp"
+// #include "subsystems/wrist/basic_commands/wrist_move_command.hpp"
 #include "subsystems/wrist/control/wrist.hpp"
 //
 #include "subsystems/grabber/basic_commands/suction_command.hpp"
@@ -46,7 +46,7 @@ src::driversFunc drivers = src::DoNotUse_getDrivers;
 using namespace tap;
 using namespace tap::control;
 using namespace src::Slide;
-using namespace src::Wrist;
+// using namespace src::Wrist;
 using namespace src::Grabber;
 using namespace src::Gimbal;
 using namespace src::Utils::ClientDisplay;
@@ -57,7 +57,7 @@ namespace EngineerControl {
 ChassisSubsystem chassis(drivers());
 GimbalSubsystem gimbal(drivers());
 SlideSubsystem slide(drivers());
-WristSubsystem wrist(drivers());
+// WristSubsystem wrist(drivers());
 GrabberSubsystem grabber(drivers());
 ClientDisplaySubsystem clientDisplay(drivers());
 
@@ -69,8 +69,8 @@ SlideGoToCommand goHome(drivers(), &slide, 0, 0.05f);
 SlideControlCommand slideControlCommand(drivers(), &slide);
 SlideHoldCommand slideHoldCommand(drivers(), &slide);
 //
-WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
-WristControlCommand wristControlCommand(drivers(), &wrist);
+// WristMoveCommand wristHomeCommand(drivers(), &wrist, 0.0f, 0.0f, 0.0f);
+// WristControlCommand wristControlCommand(drivers(), &wrist);
 
 Suction_Command suctionCommand(drivers(), &grabber);
 
@@ -113,7 +113,7 @@ HoldCommandMapping rightSwitchMid(
 void registerSubsystems(src::Drivers *drivers) {
     drivers->commandScheduler.registerSubsystem(&chassis);
     drivers->commandScheduler.registerSubsystem(&slide);
-    drivers->commandScheduler.registerSubsystem(&wrist);
+    // drivers->commandScheduler.registerSubsystem(&wrist);
     drivers->commandScheduler.registerSubsystem(&grabber);
     drivers->commandScheduler.registerSubsystem(&clientDisplay);
 }
@@ -122,7 +122,7 @@ void registerSubsystems(src::Drivers *drivers) {
 void initializeSubsystems() {
     chassis.initialize();
     slide.initialize();
-    wrist.initialize();
+    // wrist.initialize();
     grabber.initialize();
     clientDisplay.initialize();
 }

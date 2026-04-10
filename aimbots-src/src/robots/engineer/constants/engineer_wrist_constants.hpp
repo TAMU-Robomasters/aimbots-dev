@@ -20,4 +20,4 @@ static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {
     MotorID::MOTOR1,
     MotorID::MOTOR2,
     MotorID::MOTOR3};  // Yaw, Pitch, Roll
-static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw Motor", "Pitch Motor", "Roll Motor"};
+static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw/Pitch Motor 1", "Yaw/Pitch Motor 2", "Roll Motor"};

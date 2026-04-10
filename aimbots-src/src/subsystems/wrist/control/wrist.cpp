@@ -1,74 +1,68 @@
 #include "subsystems/wrist/control/wrist.hpp"
 
-#include "utils/tools/common_types.hpp"
+#include <utils/tools/common_types.hpp>
 
 #ifdef WRIST_COMPATIBLE
 
-namespace src::Wrist {
+namespace src::Feeder {
 
-WristSubsystem::WristSubsystem(src::Drivers* drivers)
-    : Subsystem(drivers),
-      motors{buildMotor(YAW), buildMotor(PITCH), buildMotor(ROLL)},
-      positionPIDs{
-          SmoothPID(YAW_POSITION_PID_CONFIG),
-          SmoothPID(PITCH_POSITION_PID_CONFIG),
-          SmoothPID(ROLL_POSITION_PID_CONFIG)},
-      velocityPIDs{
-          SmoothPID(YAW_VELOCITY_PID_CONFIG),
-          SmoothPID(PITCH_VELOCITY_PID_CONFIG),
-          SmoothPID(ROLL_VELOCITY_PID_CONFIG)} {}
-
-void WristSubsystem::initialize() { forAllWristMotors(&DJIMotor::initialize); }
-
-void WristSubsystem::refresh() { forAllWristMotors(&WristSubsystem::setDesiredOutputToMotor); }
-
-void WristSubsystem::calculateArmAngles(uint16_t x, uint16_t y, uint16_t z) {
-    // TODO: not implemented at the moment
-    UNUSED(x);
-    UNUSED(y);
-    UNUSED(z);
+FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
+    : tap::control::Subsystem(drivers),
+      drivers(drivers) {
+    BuildWristMotors();
+    BuildPIDControllers();
 }
 
-void WristSubsystem::updateAllPIDs() {
-    // if (motor_control_setting == VELOCITY) {
-    //     forAllWristMotors(&WristSubsystem::updateMotorPIDVelocity);
-    // } else if (motor_control_setting == POSITION) {
-    //     forAllWristMotors(&WristSubsystem::updateMotorPID);
-    // }
-    forAllWristMotors(&WristSubsystem::updateMotorPID);
+void WristSubsystem::initialize() {
+    ForAllWristMotors(&DJIMotor::initialize);
+
+    setAllDesiredWristMotorOutputs(0);
+    ForAllWRistMotors(&WristSubsystem::setDesiredOutputToWristMotor);
+
+    for (auto i = 0; i < WRIST_MOTOR_COUNT; i++) {
+        wristVelocityPIDs[i]->pid.reset();
+    }
 }
 
-void WristSubsystem::updateMotorPID(MotorIndex idx) {
-    float errorRadians = targetAnglesRads[idx] - getScaledUnwrappedRadiansOffset(idx);
-    float errorDerivative = getMotorRPM(idx);
-    float output = positionPIDs[idx].runController(errorRadians, errorDerivative);
+float wristTargetRPMDisplay = 0;
 
-    desiredMotorOutputs[idx] = output;
+// refreshes the velocity PID given the target RPM and the current RPM
+void WristSubsystem::refresh() {
+    double desiredYaw = 0;
+    double desiredPitch = 0;
+    double motor1CurrAngle = 0;
+    double motor2CurrAngle = 0;
+    
+    vector<double> difference = diffE(desiredYaw, desiredPitch, motor1CurrAngle, motor2CurrAngle);
+
+    for (auto i = 0; i < WRIST_MOTOR_COUNT - 1; i++) {
+        if (!wristMotors[i]->isMotorOnline()) {
+            continue;
+        }
+
+        wristTargetRPMDisplay = wristTargetRPMs[i];
+
+        updateMotorVelocityPID(i, difference[i]);
+        setDesiredOutputToWristMotor(i);
+    }
 }
 
-void WristSubsystem::updateMotorPIDVelocity(MotorIndex idx) {
-    float motorRpm = getMotorRPM(idx);
-    float rpm_error = targetRPMs[idx] - motorRpm;
-    float output = velocityPIDs[idx].runControllerDerivateError(rpm_error);
-
-    output = output;  //Suppressing a warning
+void WristSubsystem::updateMotorVelocityPID(uint8_t WristIdx, double error) {
+    float desiredOutput = wristVelocityPIDs[dx]->runController(
+        error,
+        getWristMotorTorque(WristIdx));
+    setDesiredWristMotorOutput(WristIdx, desiredOutput);
 }
 
-float WristSubsystem::getScaledUnwrappedRadians(MotorIndex motorIdx) const {
-    float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
-    float unwrappedRadians = DJIEncoderValueToRadians(motors[motorIdx].getEncoder()->getPosition().getUnwrappedValue());
+void WristSubsystem::setTargetRPM(uint8_t WristIdx, float rpm) { wristTargetRPMs[WristIdx] = rpm; }
 
-    return unwrappedRadians / inPerOut;
+void WristSubsystem::setDesiredOutputToWristMotor(uint8_t WristIdx) {
+    // takes the input from the velocity PID and sets the motor to that RPM
+    wristMotors[WristIdx]->setDesiredOutput(desiredWristMotorOutputs[WristIdx]);
 }
 
-float WristSubsystem::getMotorScaledRadsPs(MotorIndex motorIdx) const {
-    float inPerOut = WRIST_MOTOR_IN_PER_OUT_RATIOS[motorIdx];
-    float radsPerSecond = RPM_TO_RADPS(getMotorRPM(motorIdx));
-    float scaledOutput = radsPerSecond / inPerOut;
+//bool FeederSubsystem::getPressed() { return limitSwitch.readSwitch(); }
 
-    return scaledOutput;
-}
+}  // namespace src::Feeder
 
-};  // namespace src::Wrist
-
-#endif  // #ifdef WRIST_COMPATIBLE
+#endif  // #ifdef FEEDER_COMPATIBLE
