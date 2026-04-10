@@ -121,6 +121,11 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+FeedForwardConfig ffConfig = {
+    .time = 3.0f,
+    .increments = 20,
+};
+
 GimbalPatrolConfig patrolConfig = {
     .pitchPatrolAmplitude = modm::toRadian(4.0f),
     .pitchPatrolFrequency = 1.0f * M_PI,

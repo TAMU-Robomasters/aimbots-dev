@@ -6,28 +6,29 @@
 namespace src::Gimbal {
 
 
-GimbalPositionTunningCommand::GimbalPositionTunningCommand(
+GimbalFeedforwardTunningCommand::GimbalFeedforwardTunningCommand(
     src::Drivers* drivers, 
     GimbalSubsystem* gimbalSubsystem,
-    GimbalFieldRelativeController* controller)
+    GimbalFieldRelativeController* controller, 
+    GimbalFeedForwardConfig& ffconfig)
     : drivers(drivers), 
       gimbal(gimbalSubsystem), 
-      controller(controller)
+      controller(controller),
+      ffConfig(ffConfig)
     {
         addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
     }
 
-void GimbalPositionTunningCommand::execute() {
- //   float yawTargetPosition = getYawTargetPosition();
-    float pitchTargetPosition = getPitchTargetPosition();
+float holdTime; //Place holder
+int numPoints
 
-//    currGimbalTargetYawPositionDisplay = yawTargetPosition;
+void GimbalFeedforwardTunningCommand::execute() {
+
+    vector<float, numPoints> pitchPositionTargets = getPitchTargetPosition();
+
+
     currGimbalTargetPitchPositionDisplay = pitchTargetPosition;
-
-  //  controller->setTargetYaw(AngleUnit::Degrees, yawTargetPosition);
     controller->setTargetPitch(AngleUnit::Degrees, pitchTargetPosition);
-
- //   controller->runYawController(); 
     controller->runPitchController();
 }
 
@@ -49,33 +50,29 @@ void GimbalPositionTunningCommand::execute() {
 //         return -yawConfig.positionAmplitudeDegrees;
 //     }
 // }
-float holdTime; //Place holder
 
-float GimbalPositionTunningCommand::getPitchTargetPosition() { // in degrees
+vector<float> GimbalFeedforwardTunningCommand::getPitchTargets() { // in degrees
+    vector<float,numPoints> positionTargets;
+    float angleDiff = (PITCH_AXIS_SOFTSTOP_HIGH - PITCH_AXIS_SOFTSTOP_LOW)/(numPoints-1);
 
-    float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
-    
-    float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
-    
-    if (timeInPeriod < periodMilliseconds / 2.0f) {
-        return pitchConfig.positionAmplitudeDegrees;
-    } else {
-        return -pitchConfig.positionAmplitudeDegrees;
+    for(int i=0;i<numPoints;i++){
+        positionTargets[i] = PITCH_AXIS_SOFTSTOP_LOW+(angleDiff*i);
     }
+    return positionTargets;    
 }
 
-void GimbalPositionTunningCommand::initialize() { initTime = tap::arch::clock::getTimeMilliseconds(); }
+void GimbalFeedforwardTunningCommand::initialize() { initTime = tap::arch::clock::getTimeMilliseconds(); }
 
-bool GimbalPositionTunningCommand::isReady() { return true; }
+bool GimbalFeedforwardTunningCommand::isReady() { return true; }
 
-bool GimbalPositionTunningCommand::isFinished() const { return false; }
+bool GimbalFeedforwardTunningCommand::isFinished() const { return false; }
 
-void GimbalPositionTunningCommand::end(bool) {
+void GimbalFeedforwardTunningCommand::end(bool) {
     gimbal->setAllDesiredYawMotorOutputs(0);
     gimbal->setAllDesiredPitchMotorOutputs(0);
 }
 
-float GimbalPositionTunningCommand::getRelativeTime() const {
+float GimbalFeedforwardTunningCommand::getRelativeTime() const {
     return tap::arch::clock::getTimeMilliseconds() - initTime;
 }
 

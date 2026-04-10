@@ -6,17 +6,20 @@
 
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 
+#include "subsystems/gimbal/control/gimbal_helper.hpp"
+
 #ifdef GIMBAL_COMPATIBLE
 namespace src::Gimbal {
 
 
 
-class GimbalPositionTunningCommand : public tap::control::Command {
+class GimbalFeedforwardTunningCommand : public tap::control::Command {
 public:
-    GimbalPositionTunningCommand(
+    GimbalFeedforwardTunningCommand(
         src::Drivers* drivers,
         GimbalSubsystem* gimbalSubsystem,
-        GimbalFieldRelativeController* controller);
+        GimbalFieldRelativeController* controller,
+        GimbalFeedForwardConfig& ffconfig);
 
     void initialize() override;
     void execute() override;
@@ -30,11 +33,11 @@ private:
     src::Drivers* drivers;
     GimbalSubsystem* gimbal;
     GimbalFieldRelativeController* controller;
+    GimbalFeedForwardConfig ffConfig
     uint32_t initTime;
-    flaot 
 
     float getYawTargetPosition();
-    float getPitchTargetPosition();
+    vector<float> getPitchTargets();
     float getRelativeTime() const;
 };
 
