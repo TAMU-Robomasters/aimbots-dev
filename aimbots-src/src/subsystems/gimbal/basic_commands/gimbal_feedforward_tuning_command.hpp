@@ -35,6 +35,7 @@ private:
     GimbalFieldRelativeController* controller;
     GimbalFeedForwardConfig ffConfig
     uint32_t initTime;
+    Vector<float> pitchTargets;
 
     float getYawTargetPosition();
     vector<float> getPitchTargets();

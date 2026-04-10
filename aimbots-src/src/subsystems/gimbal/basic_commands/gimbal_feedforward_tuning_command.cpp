@@ -21,11 +21,14 @@ GimbalFeedforwardTunningCommand::GimbalFeedforwardTunningCommand(
 
 float holdTime; //Place holder
 int numPoints
+float currGimbalTargetPitchPositionDisplay = 0.0f;
 
 void GimbalFeedforwardTunningCommand::execute() {
-
-    vector<float, numPoints> pitchPositionTargets = getPitchTargetPosition();
-
+    float pitchTargetPosition = 0.0f;
+    floa
+    if(getRelativeTime < (holdTime * numTimes)){
+        pitchTargetPosition = pitchTargets[]//todo, figure out which target depending on time
+    }
 
     currGimbalTargetPitchPositionDisplay = pitchTargetPosition;
     controller->setTargetPitch(AngleUnit::Degrees, pitchTargetPosition);
@@ -61,7 +64,10 @@ vector<float> GimbalFeedforwardTunningCommand::getPitchTargets() { // in degrees
     return positionTargets;    
 }
 
-void GimbalFeedforwardTunningCommand::initialize() { initTime = tap::arch::clock::getTimeMilliseconds(); }
+void GimbalFeedforwardTunningCommand::initialize() { 
+    initTime = tap::arch::clock::getTimeMilliseconds(); 
+    pitchTargets = getPitchTargetPosition();
+}
 
 bool GimbalFeedforwardTunningCommand::isReady() { return true; }
 
