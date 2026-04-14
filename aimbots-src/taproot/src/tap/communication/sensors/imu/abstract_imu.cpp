@@ -43,7 +43,7 @@ void AbstractIMU::requestCalibration()
 
 void AbstractIMU::setMountingTransform(const Transform& transform)
 {
-    mountingTransform = transform.getInverse();
+    mountingTransform = transform;
 }
 
 void AbstractIMU::periodicIMUUpdate()

@@ -109,9 +109,9 @@ private:
     /**
      * The last update time for the encoder. Used in velocity calculations.
      */
-    uint32_t lastUpdateTime;
+    uint64_t lastUpdateTime;
 
-    uint32_t deltaTime;
+    uint64_t deltaTime;
 };
 
 }  // namespace tap::encoder

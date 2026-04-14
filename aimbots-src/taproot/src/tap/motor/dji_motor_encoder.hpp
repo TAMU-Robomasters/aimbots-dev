@@ -57,13 +57,13 @@ public:
     // 0 - 8191 for dji motors
     static constexpr uint16_t ENC_RESOLUTION = 8192;
 
-    // Internal gear ratio of the following motors. Output / Input
-    static constexpr float GEAR_RATIO_M3508 = 187.0f / 3591.0f;
-    static constexpr float GEAR_RATIO_GM3510_L1 = 1.0f / 3.7f;
-    static constexpr float GEAR_RATIO_GM3510_L2 = 1.0f / 5.2f;
-    static constexpr float GEAR_RATIO_GM3510_L3 = 1.0f / 19.0f;
-    static constexpr float GEAR_RATIO_GM3510_L4 = 1.0f / 27.0f;
-    static constexpr float GEAR_RATIO_M2006 = 1.0f / 36.0f;
+    // Internal gear ratio of the following motors
+    static constexpr float GEAR_RATIO_M3508 = 3591.0f / 187.0f;
+    static constexpr float GEAR_RATIO_GM3510_L1 = 3.7f / 1.0f;
+    static constexpr float GEAR_RATIO_GM3510_L2 = 5.2f / 1.0f;
+    static constexpr float GEAR_RATIO_GM3510_L3 = 19.0f / 1.0f;
+    static constexpr float GEAR_RATIO_GM3510_L4 = 27.0f / 1.0f;
+    static constexpr float GEAR_RATIO_M2006 = 36.0f / 1.0f;
     static constexpr float GEAR_RATIO_GM6020 = 1.0f / 1.0f;
 
     /**

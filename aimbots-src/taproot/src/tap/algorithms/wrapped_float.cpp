@@ -128,9 +128,15 @@ void WrappedFloat::shiftBounds(const float shiftMagnitude)
 void WrappedFloat::wrapValue()
 {
     float oldValue = wrapped;
-    float dRev = floor((oldValue - lowerBound) / (upperBound - lowerBound));
-    this->revolutions += dRev;
-    this->wrapped = oldValue - (upperBound - lowerBound) * dRev;
+    if (oldValue < lowerBound)
+    {
+        this->wrapped = upperBound + fmodf(oldValue - upperBound, upperBound - lowerBound);
+    }
+    else if (oldValue >= upperBound)
+    {
+        this->wrapped = lowerBound + fmodf(oldValue - lowerBound, upperBound - lowerBound);
+    }
+    this->revolutions += floor((oldValue - lowerBound) / (upperBound - lowerBound));
 }
 
 float WrappedFloat::limitValue(
