@@ -347,7 +347,7 @@ static constexpr uint32_t RED_BARON_BPM = 95;
 
 Song redBaron = {RED_BARON_BPM, Q_N, {
     {C4, Q_N}, {G4, Q_N}, {Eb4, QH_N}, {D4, E_N}, {C4, E_N},
-    {Eb4, E_N}, {D4, E_N}, {C4, E_N}, {B4, E_N}, {D4, E_N},
+    {Eb4, E_N}, {D4, E_N}, {C4, E_N}, {B3, E_N}, {D4, E_N},
     {G3, Q_N}, {C4, E_N}, {G3, E_N}, {D4, E_N}, {G3, E_N},
     {Eb4, E_N}, {D4, S_N}, {C4, S_N}, {D4, E_N}, {G3, E_N},
     {C4, E_N}, {G3, S_N}, {C4, S_N}, {D4, E_N}, {G3, S_N},
