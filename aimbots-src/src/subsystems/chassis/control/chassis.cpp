@@ -336,10 +336,10 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
     targetYaw = currYaw + delta;
 
     //flip wheel direction if turn is greater than 90 + hysteresis degrees
-    if (std::fabs(delta) > (static_cast<float>(M_PI) / 2.0f + hysteresis)) {
-        targetRPMDrive = -targetRPMDrive;
-        targetYaw += (delta > 0.0f) ? -static_cast<float>(M_PI) : static_cast<float>(M_PI);
-    }
+    // if (std::fabs(delta) > (static_cast<float>(M_PI) / 2.0f + hysteresis)) {
+    //     targetRPMDrive = -targetRPMDrive;
+    //     targetYaw += (delta > 0.0f) ? -static_cast<float>(M_PI) : static_cast<float>(M_PI);
+    // }
 
     targetYaw = wrap0To2Pi(targetYaw);
 }
