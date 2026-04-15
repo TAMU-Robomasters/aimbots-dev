@@ -336,10 +336,10 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
     targetYaw = currYaw + delta;
 
     //flip wheel direction if turn is greater than 90 + hysteresis degrees
-    // if (std::fabs(delta) > (static_cast<float>(M_PI) / 2.0f + hysteresis)) {
-    //     targetRPMDrive = -targetRPMDrive;
-    //     targetYaw += (delta > 0.0f) ? -static_cast<float>(M_PI) : static_cast<float>(M_PI);
-    // }
+    if (std::fabs(delta) > (static_cast<float>(M_PI) / 2.0f + hysteresis)) {
+        targetRPMDrive = -targetRPMDrive;
+        targetYaw += (delta > 0.0f) ? -static_cast<float>(M_PI) : static_cast<float>(M_PI);
+    }
 
     targetYaw = wrap0To2Pi(targetYaw);
 }
@@ -403,7 +403,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     // deadband system to prevent chassis from updating when x,y and r are less than a specified value
     // tune these to prevent yaw motors from always being in "rotation mode" due to chassis follow gimbal pid
     auto deadband = [](float v, float eps) { return (std::fabs(v) < eps) ? 0.0f : v; };
-    static constexpr float kXYDeadband = 0.02f;
+    static constexpr float kXYDeadband = 10.0f;
     static constexpr float kRDeadband  = 100.0f;
     x = deadband(x, kXYDeadband);
     y = deadband(y, kXYDeadband);
@@ -478,7 +478,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
                 outDriveRPM  = 0.0f;
             } else {
                 targetYawRad = std::atan2(vy, vx) + 1.5f * static_cast<float>(M_PI);
-                optimizeSwerve(outDriveRPM, targetYawRad, currYawRad);
+                //optimizeSwerve(outDriveRPM, targetYawRad, currYawRad);
                 lastCmdYawRad[moduleIdx] = targetYawRad; // update latch
             }
         }
