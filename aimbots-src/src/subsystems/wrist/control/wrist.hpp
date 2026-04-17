@@ -97,6 +97,9 @@ public:
     // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
     int64_t getEncoderUnwrapped(uint8_t wristIdx = 0) const {
+        if(wristIdx == 2) {
+            return wristMotors[wristIdx]->getEncoder()->getPosition().getUnwrappedValue();
+        }
         //TODO Need to use rev encoders
         return 0;
     }
@@ -125,7 +128,7 @@ public:
 
     void deactivateWristMotor(uint8_t WristIdx = 0) { setTargetRPM(WristIdx, 0.0f); }
 
-    void unjamWristMotor(uint8_t WristIdx = 0) { setTargetRPM(WristIdx, -abs(WRIST_UNJAM_RPMS[WristIdx])); }
+    
 
     vector<double> diffE(double desiredPitchAngle, double desiredYawAngle, double currAngleL, double currAngleR) {
         double directionL = 1;
@@ -141,6 +144,11 @@ public:
         double thetaR_target = directionR * (e_yaw - e_pitch);
 
         return vector<double> {thetaL_target, thetaR_target};
+    }
+
+    double calcPitchTargets(double desiredPos, double currPos) {
+        double difference = desiredPos - (currPos * 3.5);
+        return difference;
     }
 
 private:

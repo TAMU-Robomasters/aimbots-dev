@@ -13,6 +13,8 @@ FeederSubsystem::FeederSubsystem(src::Drivers* drivers)
     BuildPIDControllers();
 }
 
+
+
 void WristSubsystem::initialize() {
     ForAllWristMotors(&DJIMotor::initialize);
 
@@ -35,16 +37,48 @@ void WristSubsystem::refresh() {
     
     vector<double> difference = diffE(desiredYaw, desiredPitch, motor1CurrAngle, motor2CurrAngle);
 
-    for (auto i = 0; i < WRIST_MOTOR_COUNT - 1; i++) {
+    double bottomPitchDesiredPos = 0;
+
+    double armYawMotorDesired = 0;
+
+    double differenceFullPitch = calcPitchTargets();
+
+    double armPitchIntermediateDesired = 0;
+
+    for (auto i = 0; i < WRIST_MOTOR_COUNT; i++) {
         if (!wristMotors[i]->isMotorOnline()) {
             continue;
         }
+        if(i < WRIST_MOTOR_COUNT - 5) {
+            wristTargetRPMDisplay = wristTargetRPMs[i];
 
-        wristTargetRPMDisplay = wristTargetRPMs[i];
+            updateMotorVelocityPID(i, difference[i]);
+            setDesiredOutputToWristMotor(i);
+        } else if(i < WRIST_MOTOR_COUNT - 4) {
+            wristTargetRPMDisplay = wristTargetRPMs[i];
 
-        updateMotorVelocityPID(i, difference[i]);
-        setDesiredOutputToWristMotor(i);
+            updateMotorVelocityPID(i, bottomPitchDesiredPos - getEncoderUnwrapped(i));
+            setDesiredOutputToWristMotor(i);
+        } else if(i < WRIST_MOTOR_COUNT - 3) {
+            wristTargetRPMDisplay = wristTargetRPMs[i];
+
+            updateMotorVelocityPID(i, armYawMotorDesired - getEncoderUnwrapped(i));
+            setDesiredOutputToWristMotor(i);
+        } else if(i < WRIST_MOTOR_COUNT - 2) {
+            wristTargetRPMDisplay = wristTargetRPMs[i];
+
+            updateMotorVelocityPID(i, differenceFullPitch);
+            setDesiredOutputToWristMotor(i);
+        } else {
+            wristTargetRPMDisplay = wristTargetRPMs[i];
+
+            updateMotorVelocityPID(i, armPitchIntermediateDesired - getEncoderUnwrapped(i));
+            setDesiredOutputToWristMotor(i);
+        }
     }
+
+
+
 }
 
 void WristSubsystem::updateMotorVelocityPID(uint8_t WristIdx, double error) {
