@@ -1,6 +1,6 @@
-// #include <cmath>
-// #include "gimbal_feedforward_tunning_command.hpp"
-// #include "utils/tools/common_types.hpp"
+#include <cmath>
+#include "gimbal_feedforward_tuning_command.hpp"
+#include "utils/tools/common_types.hpp"
 
 // #ifdef GIMBAL_COMPATIBLE
 // namespace src::Gimbal {

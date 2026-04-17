@@ -14,9 +14,21 @@ namespace src::Informants {
 class RevEncoder
 {
 public:
+    enum class EncoderID : uint8_t
+    {
+        REV_ENCODER_1 = 0b000,
+        REV_ENCODER_2 = 0b001,
+        REV_ENCODER_3 = 0b010,
+        REV_ENCODER_4 = 0b011,
+        REV_ENCODER_5 = 0b100,
+        REV_ENCODER_6 = 0b101,
+        REV_ENCODER_7 = 0b110
+    };
+
     explicit RevEncoder(src::Drivers* drivers);
 
     void initialize();
+    void selectEncoder(EncoderID encoder);
     void execute();
 
     uint16_t getData() const;
@@ -24,12 +36,14 @@ public:
     int64_t getUnwrappedPosition() const;
 
 private:
-    void readData();
+    uint16_t readData(EncoderID encoder);
+    void readAll();
     void revEncoderVelocity();
 
     src::Drivers* drivers;
 
     uint16_t data = 0;
+    uint16_t allData[6];
     float velocity = 0.0f;
 
     int64_t unwrappedPosition = 0;
