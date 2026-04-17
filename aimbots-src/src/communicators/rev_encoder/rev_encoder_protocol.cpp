@@ -10,6 +10,10 @@ namespace src::Informants
     using Spi2Miso = modm::platform::GpioB14;
     using Spi2Mosi = modm::platform::GpioB15;
 
+    using MuxS0 = modm::platform::GpioC3;
+    using MuxS1 = modm::platform::GpioC4;
+    using MuxS2 = modm::platform::GpioC5;
+
     float positionDisplay = 0.0f;
     float velocityDisplay = 0.0f;
 
@@ -26,6 +30,14 @@ namespace src::Informants
         Spi2Nss::setOutput(modm::platform::Gpio::OutputType::PushPull);
         Spi2Nss::set();
 
+        MuxS0::setOutput(modm::platform::Gpio::OutputType::PushPull);
+        MuxS1::setOutput(modm::platform::Gpio::OutputType::PushPull);
+        MuxS2::setOutput(modm::platform::Gpio::OutputType::PushPull);
+
+        MuxS0::reset();
+        MuxS1::reset();
+        MuxS2::reset();
+
         Spi2Hal::initialize(
             Spi2Hal::Prescaler::Div16,
             Spi2Hal::MasterSelection::Master,
@@ -36,11 +48,21 @@ namespace src::Informants
         startupThreshold.restart(500);
     }
 
+    void RevEncoder::selectEncoder(EncoderID encoder) 
+    {
+        uint8_t encoderValue = static_cast<uint8_t>(encoder);
+        (encoderValue & 0b001) ? MuxS0::set() : MuxS0::reset();
+        (encoderValue & 0b010) ? MuxS1::set() : MuxS1::reset();
+        (encoderValue & 0b100) ? MuxS2::set() : MuxS2::reset();
+    }
+
     uint8_t debug_byte[2];
 
-    void RevEncoder::readData()
+    uint16_t RevEncoder::readData(EncoderID encoder)
     {
         uint8_t rx[2];
+
+        selectEncoder(encoder);
 
         Spi2Nss::reset();
         Spi2Master::transferBlocking(nullptr, rx, 2);
@@ -112,12 +134,22 @@ namespace src::Informants
         data = static_cast<uint16_t>((filteredAngle / M_TWOPI) * 65535.0f);
     }
 
+    uint16_t debug_allData[6];
+
+    void RevEncoder::readAll() 
+    {
+        allData[0] = readData(RevEncoder::EncoderID::REV_ENCODER_1);
+        allData[1] = readData(RevEncoder::EncoderID::REV_ENCODER_2);
+        debug_allData[0] = allData[0];
+        debug_allData[1] = allData[1];
+    }
+
     uint16_t debug_data = 0;
 
     void RevEncoder::execute()
     {
         if(!startupThreshold.execute())
-        readData();
+        readAll();
         revEncoderVelocity();
         debug_data = data;
         positionDisplay = data;
