@@ -655,10 +655,13 @@ public:
         } modm_packed;
 
         /**
-         * As defined as the rate (in hz) at which the 0x0301 message is sent to the referee
-         * system.
+         * You cannot send messages faster than this speed to the referee system.
+         *
+         * Source: https://bbs.robomaster.com/forum.php?mod=viewthread&tid=9120
+         *
+         * Changed from 1280 to 1000 as the HUD was still unreliable.
          */
-        static constexpr uint8_t ROBOT_INTERACTION_DATA_RATE = 30;
+        static constexpr uint32_t MAX_TRANSMIT_SPEED_BYTES_PER_S = 1000;
 
         /**
          * Get the min wait time after which you can send more data to the client. Sending faster
@@ -686,7 +689,7 @@ public:
                 "Invalid type, getWaitTimeAfterGraphicSendMs only takes in ref serial message "
                 "types.");
 
-            return 1'000 / ROBOT_INTERACTION_DATA_RATE;
+            return sizeof(T) * 1'000 / MAX_TRANSMIT_SPEED_BYTES_PER_S;
         }
     };
 };

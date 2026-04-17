@@ -62,7 +62,7 @@ public:
     void initialize() override;
     tap::encoder::EncoderInterface* getEncoder() const override
     {
-        return const_cast<tap::encoder::EncoderInterface*>(this->encoder);
+        return const_cast<tap::encoder::MultiEncoder<3>*>(&this->encoder);
     }
     void setDesiredOutput(int32_t desiredOutput) override;
     bool isMotorOnline() const override;
@@ -81,7 +81,7 @@ protected:
     DjiMotor motorOne;
     DjiMotor motorTwo;
 #endif
-    tap::encoder::EncoderInterface* encoder;
+    tap::encoder::MultiEncoder<3> encoder;
 };
 }  // namespace tap::motor
 

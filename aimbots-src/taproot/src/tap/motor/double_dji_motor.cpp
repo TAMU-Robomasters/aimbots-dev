@@ -60,7 +60,11 @@ DoubleDjiMotor::DoubleDjiMotor(
           nameTwo,
           currentControl,
           gearRatio),
-      encoder(externalEncoder != nullptr ? externalEncoder : CAST_ENC(motorOne.getInternalEncoder()))
+      encoder(
+          {externalEncoder != nullptr ? externalEncoder : CAST_ENC(motorOne.getInternalEncoder()),
+           externalEncoder != nullptr ? CAST_ENC(motorOne.getInternalEncoder())
+                                      : CAST_ENC(motorTwo.getInternalEncoder()),
+           externalEncoder != nullptr ? CAST_ENC(motorTwo.getInternalEncoder()) : nullptr})
 {
 }
 
@@ -70,7 +74,7 @@ void DoubleDjiMotor::initialize()
     motorTwo.initialize();
     // This is weird because the initialize is called twice for the internal encoders. This is
     // fine because the internal encoders have no initialize logic.
-    this->encoder->initialize();
+    encoder.initialize();
 }
 
 void DoubleDjiMotor::setDesiredOutput(int32_t desiredOutput)

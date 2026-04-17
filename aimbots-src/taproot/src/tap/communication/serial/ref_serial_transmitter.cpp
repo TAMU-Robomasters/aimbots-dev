@@ -234,7 +234,7 @@ modm::ResumableResult<void> RefSerialTransmitter::deleteGraphicLayer(
         reinterpret_cast<uint8_t*>(&deleteGraphicLayerMessage),
         sizeof(Tx::DeleteGraphicLayerMessage));
 
-    drivers->refSerial.releaseTransmissionSemaphore();
+    drivers->refSerial.releaseTransmissionSemaphore(sizeof(Tx::DeleteGraphicLayerMessage));
 
     RF_END();
 }
@@ -285,7 +285,7 @@ modm::ResumableResult<void> RefSerialTransmitter::sendGraphic_(
             reinterpret_cast<uint8_t*>(graphicMsg),
             sizeof(*graphicMsg));
 
-        drivers->refSerial.releaseTransmissionSemaphore();
+        drivers->refSerial.releaseTransmissionSemaphore(sizeof(GRAPHIC));
     }
     RF_END();
 }
@@ -433,7 +433,8 @@ modm::ResumableResult<void> RefSerialTransmitter::sendRobotToRobotMsg(
         reinterpret_cast<uint8_t*>(robotToRobotMsg),
         FULL_MSG_SIZE_LESS_MSGLEN + msgLen + sizeof(uint16_t));
 
-    drivers->refSerial.releaseTransmissionSemaphore();
+    drivers->refSerial.releaseTransmissionSemaphore(
+        FULL_MSG_SIZE_LESS_MSGLEN + msgLen + sizeof(uint16_t));
 
     RF_END();
 }

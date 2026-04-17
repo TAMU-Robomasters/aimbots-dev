@@ -63,11 +63,6 @@ public:
      */
     virtual uint32_t getLastComputedOdometryTime() const = 0;
 
-    /**
-     * Resets odometry to initial pose.
-     */
-    virtual void reset() = 0;
-
     virtual void overrideOdometryPosition(const float positionX, const float positionY) = 0;
 };
 

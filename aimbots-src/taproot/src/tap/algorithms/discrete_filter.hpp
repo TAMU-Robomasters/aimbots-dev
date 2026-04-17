@@ -27,26 +27,10 @@
 #include <array>
 #include <cstdint>
 
-namespace tap::algorithms::filter
+namespace tap
 {
-/**
- * @struct Coefficients
- * @brief Represents the coefficients used in a discrete filter.
- *
- * This structure holds two sets of coefficients:
- * - `naturalResponseCoefficients`: Coefficients related to the natural response of the system.
- * - `forcedResponseCoefficients`: Coefficients related to the forced response of the system.
- *
- * @tparam T The data type of the coefficients (e.g., float, double).
- * @tparam SIZE The size of the coefficient arrays.
- */
-template <uint8_t SIZE, typename T = float>
-struct Coefficients
+namespace algorithms
 {
-    std::array<T, SIZE> naturalResponseCoefficients;
-    std::array<T, SIZE> forcedResponseCoefficients;
-};
-
 /**
  * @brief DiscreteFilter class implements a discrete-time filter using the finite difference
  * equation.
@@ -68,17 +52,10 @@ public:
      * state to zero.
      */
     DiscreteFilter(
-        std::array<T, SIZE> naturalResponseCoefficients,
-        std::array<T, SIZE> forcedResponseCoefficients)
+        std::array<T, SIZE> &naturalResponseCoefficients,
+        std::array<T, SIZE> &forcedResponseCoefficients)
         : naturalResponseCoefficients(naturalResponseCoefficients),
           forcedResponseCoefficients(forcedResponseCoefficients)
-    {
-        reset();
-    }
-
-    DiscreteFilter(const Coefficients<SIZE, T> coefficients)
-        : naturalResponseCoefficients(coefficients.naturalResponseCoefficients),
-          forcedResponseCoefficients(coefficients.forcedResponseCoefficients)
     {
         reset();
     }
@@ -135,34 +112,13 @@ public:
     T getLastFiltered() { return naturalResponse[0]; }
 
     /** @brief Resets the filter's state to zero, keeps the coefficients  */
+
     T reset()
     {
         // Reset the filter state to zero
         naturalResponse.fill(0.0f);
         forcedResponse.fill(0.0f);
         return 0.0f;
-    }
-
-    /** @brief Allows for setting a steady state value, good if starting at a non-zero value */
-    T setSteadyState(T steadyState)
-    {
-        naturalResponse.fill(steadyState);
-        forcedResponse.fill(steadyState);
-        return steadyState;
-    }
-
-    void setCoefficients(Coefficients<SIZE, T> coe)
-    {
-        this->naturalResponseCoefficients = coe.naturalResponseCoefficients;
-        this->forcedResponseCoefficients = coe.forcedResponseCoefficients;
-    }
-
-    void setCoefficients(
-        std::array<T, SIZE> naturalResponseCoefficients,
-        std::array<T, SIZE> forcedResponseCoefficients)
-    {
-        this->naturalResponseCoefficients = naturalResponseCoefficients;
-        this->forcedResponseCoefficients = forcedResponseCoefficients;
     }
 
 private:
@@ -172,6 +128,8 @@ private:
     std::array<T, SIZE> forcedResponse;
 };
 
-}  // namespace tap::algorithms::filter
+}  // namespace algorithms
+
+}  // namespace tap
 
 #endif  // TAPROOT_DISCRETE_FILTER_HPP_

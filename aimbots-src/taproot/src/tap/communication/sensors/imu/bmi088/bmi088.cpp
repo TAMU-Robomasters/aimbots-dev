@@ -175,14 +175,15 @@ bool Bmi088::read()
     float rawGyroZ = bigEndianInt16ToFloat(rxBuff + 4);
     imuData.gyroRaw = tap::algorithms::transforms::Vector(rawGyroX, rawGyroY, rawGyroZ);
 
-    applyMountingTransformToRaw(imuData);
-
     Bmi088Hal::bmi088AccReadMultiReg(Acc::TEMP_MSB, rxBuff, 2);
     imuData.temperature = parseTemp(rxBuff[0], rxBuff[1]);
 
     imuData.gyroRadPerSec =
         (imuData.gyroRaw - imuData.gyroOffsetRaw) * GYRO_RAD_PER_S_PER_GYRO_COUNT;
     imuData.accG = (imuData.accRaw - imuData.accOffsetRaw) * ACC_G_PER_ACC_COUNT;
+
+    applyTransform(imuData);
+
     return true;
 }
 
