@@ -36,6 +36,15 @@ public:
     bool isOnline() const { return !this->heartbeat.isExpired(); }
 
 private:
+    struct PowerData
+    {
+        uint8_t current1;
+        uint8_t current2;
+        uint8_t voltage1;
+        uint8_t voltage2;
+        uint8_t power1;
+        uint8_t power2;
+    };
     float voltage = 0;
     float current = 0;
     float power = 0;
