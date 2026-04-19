@@ -1,5 +1,12 @@
 #include "chassis_kf_odometry.hpp"
 
+
+
+short odomXDisplay = 0;
+short odomYDisplay = 0;
+
+
+
 namespace src::Informants::Odometry {
 
 ChassisKFOdometry::ChassisKFOdometry(float initialXPos, float initialYPos)
@@ -51,6 +58,9 @@ void ChassisKFOdometry::updateChassisStateFromKF(float chassisYaw) {
 
     location.setOrientation(chassisYaw);
     location.setPosition(x[static_cast<int>(OdomState::POS_X)], x[static_cast<int>(OdomState::POS_Y)]);
+
+    odomXDisplay = location.getX();
+    odomYDisplay = location.getY();
 }
 
 void ChassisKFOdometry::updateMeasurementCovariance(const modm::Matrix<float, 3, 1>& chassisVelocity) {
