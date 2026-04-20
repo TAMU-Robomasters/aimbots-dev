@@ -91,6 +91,8 @@ public:
 
     void setTargetRPM(uint8_t FeederIdx, float rpm);
 
+    void setAllTargetRPMs(float rpm);
+
     float getCurrentRPM(uint8_t FeederIdx = 0) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ? -feederMotors[FeederIdx]->getShaftRPM() : 0;
     }

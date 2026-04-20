@@ -121,9 +121,9 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 25.0f,
+    .kp = 100.0f,
     .ki = 0.0f,
-    .kd = 0.1f,
+    .kd = 0.0f,
     .maxICumulative = 1000.0f,
     .maxOutput = 35.0f,
     .tQDerivativeKalman = 1.0f,
@@ -151,9 +151,9 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .kp = 900.0f,
-    .ki = 30.0f,
+    .ki = 150.0f,
     .kd = 0.0f,
-    .maxICumulative = 10.0f,
+    .maxICumulative = 2000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
