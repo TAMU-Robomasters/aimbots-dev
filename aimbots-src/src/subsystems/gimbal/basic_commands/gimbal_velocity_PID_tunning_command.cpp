@@ -45,12 +45,12 @@ void GimbalVelocityTunningCommand::execute() {
 
     controller->setTargetVelocityYaw(AngleUnit::Degrees, yawTargetVelocity);
     controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
-  //  controller->runYawVelocityController();
+    controller->runYawVelocityController();
     controller->runPitchVelocityController();
 
   //  runYawVelocityStepOscillation(500.0f);
 
- // runPitchVelocityStepUp(1000.0f);
+//   runPitchVelocityStepUp(1000.0f);
 }
 
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second
@@ -81,16 +81,26 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
         updatePitchVelocityConfigDebug = false;
     }
 
+    // if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) >= PITCH_AXIS_SOFTSTOP_HIGH && goingUp){
+    //     goingUp = false;
+    // }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) <= PITCH_AXIS_SOFTSTOP_LOW && !goingUp){
+    //     goingUp = true;
+    // }
+
+    // if (goingUp) {
+    //     return pitchConfig.velocityAmplitudeDegreesPerSec;
+    // } else {
+    //     return -pitchConfig.velocityAmplitudeDegreesPerSec;
+    // }
 
     float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
     
     float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
     
     if (timeInPeriod < periodMilliseconds / 2.0f) {
-        return pitchConfig.velocityAmplitudeDegreesPerSec;     
-    }   
-     else {
-        return -pitchConfig.velocityAmplitudeDegreesPerSec;     
+        return pitchConfig.velocityAmplitudeDegreesPerSec;
+    } else {
+        return -pitchConfig.velocityAmplitudeDegreesPerSec;
     }
 }
 

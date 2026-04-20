@@ -311,17 +311,18 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
     pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
 
-    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) {
-        if (updatePitchPositionPIDsDebug) {
-            pitchPositionPIDs[i]->pid.setP(pitchPositionPDebug);
-            pitchPositionPIDs[i]->pid.setI(pitchPositionIDebug);
-            pitchPositionPIDs[i]->pid.setD(pitchPositionDDebug);
-            pitchPositionPIDs[i]->pid.reset();
-            updatePitchPositionPIDsDebug = false;
-        }
+
+         // for PID tunning through Ozone
     
 
-
+    for (auto i = 0; i < PITCH_MOTOR_COUNT; i++) { 
+        if (updatePitchPositionPIDsDebug) {
+            pitchPositionCascadePIDs[i]->pid.setP(pitchPositionPDebug);
+            pitchPositionCascadePIDs[i]->pid.setI(pitchPositionIDebug);
+            pitchPositionCascadePIDs[i]->pid.setD(pitchPositionDDebug);
+            pitchPositionCascadePIDs[i]->pid.reset();
+            updatePitchPositionPIDsDebug = false;
+        }
         float fieldRelativeVelocityTarget = pitchPositionCascadePIDs[i]->runController(
             gimbal->getPitchMotorSetpointError(i, AngleUnit::Radians),
             RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(

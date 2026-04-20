@@ -28,6 +28,7 @@
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
+#include "subsystems/feeder/basic_commands/feeder_velocity_pid_tunning.hpp"
 #include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
 #include "subsystems/feeder/complex_commands/feeder_shot_timing_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
@@ -145,6 +146,11 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
     .frequencyHz = 0.5f,
 };
 
+FeederVelocityTunningConfig feederVelocityTunningConfig = {
+    .VelocityAmplitudeRPM = 60.0f,
+    .frequencyHz = 1.0f,
+};
+
 // Define commands here ---------------------------------------------------
 
 // ?: Chat do we still need this what is this for
@@ -250,6 +256,11 @@ DualBarrelFeederCommand dualBarrelsFeederCommandFromMouse(drivers(), &feeder, &r
 
 StopFeederCommand stopFeederCommand(drivers(), &feeder);
 
+FeederVelocityTunningCommand feederVelocityTunningCommand(
+    drivers(), 
+    &feeder,     
+    feederVelocityTunningConfig); 
+
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
@@ -298,15 +309,18 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
+    // {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    //{&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+    // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+    {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
-    //  {&gimbalVelocityTunningCommand},
-    {&chassisTokyoCommand, &gimbalChaseCommand2},
+    // {&gimbalVelocityTunningCommand},
+    // {&gimbalPositionTunningCommand},
+    // {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
