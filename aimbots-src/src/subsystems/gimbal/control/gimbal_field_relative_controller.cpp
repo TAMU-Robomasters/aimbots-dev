@@ -308,7 +308,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
     pitchAngularErrorDisplay = pitchAngularError;
 
     float chassisRelativePitchTarget = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) + pitchAngularError;
-    pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Degrees);
+    pitchAngleDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
     gimbal->setTargetPitchAxisAngle(AngleUnit::Radians, chassisRelativePitchTarget);
 
 
@@ -344,14 +344,15 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             kGRAVITY *
             cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
 
-        float velocityFeedforward = 0.0f;
-        if (sgn(chassisRelativeVelocityTarget) > 0) { // trying to go up
-            velocityFeedforward = fieldRelativePitchAngleFeedforward.interpolate(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
-        } else { // trying to go down
-            velocityFeedforward = -1500.0f; // hopefully enough to get over static friction
-        }
-        velocityFeedforward *= 1.0f;     
-        
+        float velocityFeedforward = gravityCompensationFeedforward +
+                                    CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
+                                    CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
+                                        drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
+                                    + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
+            ;
+
+        velocityFeedforward = tap::algorithms::limitVal(velocityFeedforward, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
 
         // chassisRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         // chassisRelativeVelocityCurrentDisplay = RPM_TO_RADPS(gimbal->getPitchMotorRPM(i));
@@ -407,14 +408,13 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
             kGRAVITY *
             cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
 
-
-        float velocityFeedforward = 0.0f;
-        if (sgn(chassisRelativeVelocityTarget) > 0) { // trying to go up
-            velocityFeedforward = fieldRelativePitchAngleFeedforward.interpolate(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
-        } else { // trying to go down
-            velocityFeedforward = -1000.0f; // hopefully enough to get over static friction
-        }
-        velocityFeedforward *= 1.0f;
+        float velocityFeedforward = gravityCompensationFeedforward +
+                                    CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
+                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
+                                    CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
+                                        drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
+                                    + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
+            ;
 
         chassisPitchRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
        // chassisPitchRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));
