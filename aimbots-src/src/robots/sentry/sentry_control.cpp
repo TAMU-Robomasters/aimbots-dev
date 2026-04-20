@@ -315,8 +315,8 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
-    {&feederVelocityTunningCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+    // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
