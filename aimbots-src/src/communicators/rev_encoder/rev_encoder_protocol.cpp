@@ -167,6 +167,11 @@ namespace src::Informants
         return data;
     }
 
+    uint16_t RevEncoder::getAngleRadians() const
+    {
+        return RevEncoderValueToRadians(data);
+    }
+
     float RevEncoder::getVelocity() const
     {
         return velocity;

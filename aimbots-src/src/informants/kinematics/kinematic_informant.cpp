@@ -425,7 +425,7 @@ void KinematicInformant::mirrorPastRobotFrame(uint32_t frameDelay_ms) {
 
 #endif
 
-//turret IMU stuff ---------------------------------------------------------------------------------------------------------
+//turret IMU stuff ---------------------------------------------------------------------------------------------------------------------------------------
 #ifdef TURRET_IMU
 
 Vector3f chassisAnglesConvertedDisplay;
