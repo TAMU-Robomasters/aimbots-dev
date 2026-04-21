@@ -96,8 +96,8 @@ public:
 
     // float getCurrentRPM() const { return feederMotor.getShaftRPM(); }
 
-    int64_t getEncoderUnwrapped(uint8_t wristIdx = 0) const {
-        if(wristIdx == 2) {
+    int64_t getEncoderUnwrapped(uint8_t wristIdx = 0, bool revEncoder = false) const {
+        if(revEncoder) {
             return wristMotors[wristIdx]->getEncoder()->getPosition().getUnwrappedValue();
         }
         //TODO Need to use rev encoders

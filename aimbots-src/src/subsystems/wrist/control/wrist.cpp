@@ -28,7 +28,6 @@ void WristSubsystem::initialize() {
 
 float wristTargetRPMDisplay = 0;
 
-// refreshes the velocity PID given the target RPM and the current RPM
 void WristSubsystem::refresh() {
     double desiredYaw = 0;
     double desiredPitch = 0;
@@ -40,8 +39,9 @@ void WristSubsystem::refresh() {
     double bottomPitchDesiredPos = 0;
 
     double armYawMotorDesired = 0;
+    double armYawMotorCurrent = 0;
 
-    double differenceFullPitch = calcPitchTargets();
+    double differenceFullPitch = calcPitchTargets(armYawMotorDesired, armYawMotorCurrent);
 
     double armPitchIntermediateDesired = 0;
 
@@ -49,31 +49,43 @@ void WristSubsystem::refresh() {
         if (!wristMotors[i]->isMotorOnline()) {
             continue;
         }
-        if(i < WRIST_MOTOR_COUNT - 5) {
-            wristTargetRPMDisplay = wristTargetRPMs[i];
 
+        switch (i) {
+        case (Yaw_Pitch_Motor_1):
             updateMotorVelocityPID(i, difference[i]);
             setDesiredOutputToWristMotor(i);
-        } else if(i < WRIST_MOTOR_COUNT - 4) {
-            wristTargetRPMDisplay = wristTargetRPMs[i];
 
+            break;
+        case (Yaw_Pitch_Motor_2):
+            updateMotorVelocityPID(i, difference[i]);
+            setDesiredOutputToWristMotor(i);
+
+            break;
+        case (Yaw_Wrist_Motor):
             updateMotorVelocityPID(i, bottomPitchDesiredPos - getEncoderUnwrapped(i));
             setDesiredOutputToWristMotor(i);
-        } else if(i < WRIST_MOTOR_COUNT - 3) {
-            wristTargetRPMDisplay = wristTargetRPMs[i];
 
+            break;
+        case (Arm_Yaw_Motor):
             updateMotorVelocityPID(i, armYawMotorDesired - getEncoderUnwrapped(i));
             setDesiredOutputToWristMotor(i);
-        } else if(i < WRIST_MOTOR_COUNT - 2) {
-            wristTargetRPMDisplay = wristTargetRPMs[i];
 
+            break;
+        case (Master_Full_Pitch):
             updateMotorVelocityPID(i, differenceFullPitch);
             setDesiredOutputToWristMotor(i);
-        } else {
-            wristTargetRPMDisplay = wristTargetRPMs[i];
 
+            break;
+        case (Slave_Full_Pitch):
+            updateMotorVelocityPID(i, differenceFullPitch);
+            setDesiredOutputToWristMotor(i);
+
+            break;
+        case (Intermediate_Pitch):
             updateMotorVelocityPID(i, armPitchIntermediateDesired - getEncoderUnwrapped(i));
             setDesiredOutputToWristMotor(i);
+
+            break;
         }
     }
 
