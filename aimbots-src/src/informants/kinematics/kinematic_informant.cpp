@@ -456,7 +456,7 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
     yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
-    YawPosEncoder = drivers->revEncoder.getUnwrappedPosition();
+    YawPosEncoder = drivers->revEncoder.getAngleRadians();
 
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
