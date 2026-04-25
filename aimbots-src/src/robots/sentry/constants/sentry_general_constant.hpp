@@ -2,7 +2,7 @@
 #include "utils/tools/common_types.hpp"
 #include "utils/math/matrix_helpers.hpp"
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::CAN_YOU_HEAR_THE_DUB;
+static constexpr SongTitle STARTUP_SONG = SongTitle::DUNE;
 
 static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 
