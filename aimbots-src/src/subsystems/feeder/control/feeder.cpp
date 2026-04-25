@@ -77,7 +77,8 @@ void FeederSubsystem::refresh() {
         updateMotorVelocityPID(i);
         setDesiredOutputToFeederMotor(i);
     }
-    feederRPMDisplay = getCurrentRPM(feederWatchIdx);
+    feederRPMFilter->update(getCurrentRPM(feederWatchIdx));
+    feederRPMDisplay = feederRPMFilter->getValue();
     wKeyDisplay = drivers->remote.keyPressed(Remote::Key::W);
     eKeyDisplay = drivers->remote.keyPressed(Remote::Key::E);
     rightMouseDisplay = drivers->remote.getMouseR();
