@@ -122,6 +122,7 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
+float IMUAngleZ;
 
 
 void KinematicInformant::updateChassisIMUAngles() {
@@ -130,6 +131,7 @@ void KinematicInformant::updateChassisIMUAngles() {
     
 
     IMUAnglesDisplay = IMUAngles;
+    IMUAngleZ = IMUAngles.z;
 
     // Gets chassis angles
     Vector3f chassisAngles =
