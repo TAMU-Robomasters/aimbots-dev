@@ -349,7 +349,10 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
                                         PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
+                                #ifdef TARGET_SENTRY
                                     + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
+                                #endif
+
             ;
 
         velocityFeedforward = tap::algorithms::limitVal(velocityFeedforward, -GM6020_MAX_OUTPUT, GM6020_MAX_OUTPUT);
@@ -413,7 +416,9 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
                                         PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
+                                #ifdef TARGET_SENTRY
                                     + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
+                                #endif
             ;
 
         chassisPitchRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
