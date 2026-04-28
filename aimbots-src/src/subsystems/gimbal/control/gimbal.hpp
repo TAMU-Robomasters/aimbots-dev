@@ -121,7 +121,16 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
+    #ifndef YAW_3508
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+    #else
+        float averageRPM = 0.0f;
+        for(int i=0;i<YAW_MOTOR_COUNT;i++){
+            averageRPM += yawMotors[i]->getShaftRPM();
+        }
+        averageRPM = averageRPM / YAW_MOTOR_COUNT;
+        return (yawMotors[YawIdx]->isMotorOnline()) ? static_cast<int16_t>(averageRPM) : 0;
+    #endif
     }
 
     inline int16_t getPitchMotorRPM(uint8_t PitchIdx) const {

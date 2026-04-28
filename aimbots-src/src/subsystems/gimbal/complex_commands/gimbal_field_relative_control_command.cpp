@@ -22,6 +22,7 @@ GimbalFieldRelativeControlCommand::GimbalFieldRelativeControlCommand(
 
 void GimbalFieldRelativeControlCommand::initialize() {}
 
+float gimbalTargetYaw = 0.0f;
 float gimbalYawInputDisplay = 0.0f;
 float targetPitchAngleDisplay = 0;
 float PitchAngleTest = 0;
@@ -56,6 +57,7 @@ void GimbalFieldRelativeControlCommand::execute() {
         quickTurnOffset -= this->quickTurnOffset.value_or(M_PI_2);
     }
 
+    gimbalTargetYaw = controller->getTargetYaw(AngleUnit::Radians);
     gimbalYawInputDisplay = drivers->controlOperatorInterface.getGimbalYawInput();
     targetPitchAngleDisplay = controller->getTargetPitch(AngleUnit::Radians);
 

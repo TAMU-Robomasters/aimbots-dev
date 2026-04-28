@@ -125,6 +125,7 @@ int main() {
             drivers->musicPlayer.playMusic();
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
+
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
@@ -144,17 +145,22 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
+#ifdef YAW_3508
+    drivers->revEncoder.initialize();
+#endif
+
+//drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
    // drivers->powerCommunicator.initialize();
-    drivers->kinematicInformant.recalibrateIMU(
-        {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
-#else
-    drivers->kinematicInformant.recalibrateIMU(
-        {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
+  //  drivers->kinematicInformant.recalibrateIMU(
+   //     {CIMU_CALIBRATION_EULER_X, CIMU_CALIBRATION_EULER_Y, CIMU_CALIBRATION_EULER_Z});
+// #else
+//     drivers->kinematicInformant.recalibrateIMU(
+//         {TIMU_CALIBRATION_EULER_X, TIMU_CALIBRATION_EULER_Y, TIMU_CALIBRATION_EULER_Z});
 #endif
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
@@ -185,6 +191,10 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
+#ifdef YAW_3508
+    drivers->revEncoder.execute();
+#endif
+
    // drivers->powerCommunicator.updateSerial();
 #else
     drivers->turretCommunicator.sendIMUData();
@@ -206,9 +216,9 @@ static void updateIo(src::Drivers *drivers) {
      rollDisplay =
          drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::ROLL_AXIS, AngleUnit::Degrees);
 
-    // gZDisplay =
-    //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
-    //     AngleUnit::Radians);
+     gZDisplay =
+         drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::YAW_AXIS,
+         AngleUnit::Radians);
     // gYDisplay =
     //     drivers->kinematicInformant.getChassisIMUAngularVelocity(src::Informants::AngularAxis::PITCH_AXIS,
     //     AngleUnit::Radians);

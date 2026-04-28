@@ -5,6 +5,7 @@
 #include "informants/sensors/limit_switch.hpp"
 #include "subsystems/feeder/feeder_constants.hpp"
 #include "utils/tools/common_types.hpp"
+#include "utils/filters/ema.hpp"
 
 #include "drivers.hpp"
 
@@ -16,6 +17,7 @@ public:
     FeederSubsystem(src::Drivers* drivers);
     // tagging on building the target RPM array here
     void BuildFeederMotors() {
+        feederRPMFilter = new src::Utils::Filters::EMAFilter(0.1);
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
                 new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
@@ -91,6 +93,8 @@ public:
 
     void setTargetRPM(uint8_t FeederIdx, float rpm);
 
+    void setAllTargetRPMs(float rpm);
+
     float getCurrentRPM(uint8_t FeederIdx = 0) const {
         return (feederMotors[FeederIdx]->isMotorOnline()) ? -feederMotors[FeederIdx]->getShaftRPM() : 0;
     }
@@ -152,6 +156,8 @@ private:
     // DJIMotor feederMotor;
 
     src::Informants::LimitSwitch limitSwitch;
+
+    src::Utils::Filters::EMAFilter* feederRPMFilter;
     //#endif
 
     // commands
