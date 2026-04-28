@@ -20,9 +20,7 @@ public:
         REV_ENCODER_2 = 0b001,
         REV_ENCODER_3 = 0b010,
         REV_ENCODER_4 = 0b011,
-        REV_ENCODER_5 = 0b100,
-        REV_ENCODER_6 = 0b101,
-        REV_ENCODER_7 = 0b110
+        REV_ENCODER_5 = 0b100
     };
 
     explicit RevEncoder(src::Drivers* drivers);
@@ -43,7 +41,7 @@ private:
     src::Drivers* drivers;
 
     uint16_t data = 0;
-    uint16_t allData[6];
+    uint16_t allData[2];
     float velocity = 0.0f;
 
     int64_t unwrappedPosition = 0;
@@ -65,6 +63,7 @@ private:
     static constexpr float kVelocityAlpha = 0.20f;
 
     MilliTimeout startupThreshold;
+    MilliTimeout muxDelay;
 };
 
 }  // namespace src::Informants

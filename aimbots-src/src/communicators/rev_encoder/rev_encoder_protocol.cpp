@@ -10,9 +10,9 @@ namespace src::Informants
     using Spi2Miso = modm::platform::GpioB14;
     using Spi2Mosi = modm::platform::GpioB15;
 
-    using MuxS0 = modm::platform::GpioC3;
-    using MuxS1 = modm::platform::GpioC4;
-    using MuxS2 = modm::platform::GpioC5;
+    using MuxS0 = modm::platform::GpioC2;
+    using MuxS1 = modm::platform::GpioC3;
+    using MuxS2 = modm::platform::GpioC4;
 
     float positionDisplay = 0.0f;
     float velocityDisplay = 0.0f;
@@ -33,7 +33,6 @@ namespace src::Informants
         MuxS0::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS1::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS2::setOutput(modm::platform::Gpio::OutputType::PushPull);
-
         MuxS0::reset();
         MuxS1::reset();
         MuxS2::reset();
@@ -61,10 +60,22 @@ namespace src::Informants
     uint16_t RevEncoder::readData(EncoderID encoder)
     {
         uint8_t rx[2];
+        
+        Spi2Nss::set();
+        muxDelay.restart(1);
+        while(!muxDelay.isExpired()) {}
 
-        selectEncoder(encoder);
-
+        if (encoder == EncoderID::REV_ENCODER_1)
+        {
+           MuxS0::reset();
+        } else if (encoder == EncoderID::REV_ENCODER_2)
+        {
+           MuxS0::set();
+        }
         Spi2Nss::reset();
+        muxDelay.restart(1);
+        while(!muxDelay.isExpired()) {}
+        
         Spi2Master::transferBlocking(nullptr, rx, 2);
         Spi2Nss::set();
 
@@ -132,9 +143,10 @@ namespace src::Informants
         }
 
         data = static_cast<uint16_t>((filteredAngle / M_TWOPI) * 65535.0f);
+        return data;
     }
 
-    uint16_t debug_allData[6];
+    uint16_t debug_allData[2];
 
     void RevEncoder::readAll() 
     {
