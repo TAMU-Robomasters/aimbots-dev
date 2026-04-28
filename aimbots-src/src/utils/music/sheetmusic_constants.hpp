@@ -360,4 +360,28 @@ Song redBaron = {RED_BARON_BPM, Q_N, {
 // Sabaton Red Baron intro
 // https://onlinesequencer.net/3590527#
 
+static constexpr uint32_t CRAZY_TRAIN_BPM = 139;
+
+Song crazyTrain = {CRAZY_TRAIN_BPM, Q_N, {
+
+    {D4, E_N}, {D4, E_N}, {REST, Q_N}, {E3, E_N}, {E3, E_N}, {REST, Q_N},
+
+    {Gb4, E_N}, {Gb4, E_N}, {Db5, E_N}, {Gb4, E_N},
+    {D5, E_N},  {Gb4, E_N}, {Db5, E_N}, {Gb4, E_N},
+    {B4, E_N},  {A4, E_N},  {Ab4, E_N}, {A4, E_N},
+    {B4, E_N},  {A4, E_N},  {Ab4, E_N}, {E4, E_N},
+
+    {Gb4, E_N}, {Gb4, E_N}, {Db5, E_N}, {Gb4, E_N},
+    {D5, E_N},  {Gb4, E_N}, {Db5, E_N}, {Gb4, E_N},
+    {B4, E_N},  {A4, E_N},  {Ab4, E_N}, {A4, E_N},
+    {B4, E_N},  {A4, E_N},  {Ab4, E_N}, {E4, E_N},
+
+    {Gb4, H_N},
+
+    {END, Q_N}
+}};
+
+// Ozzy Osbourne Crazy Train
+// https://onlinesequencer.net/4881721#
+
 }  // namespace utils::Jukebox
