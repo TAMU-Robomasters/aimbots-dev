@@ -87,7 +87,7 @@ void GimbalChaseCommand::execute() {
     float projectileSpeed = refHelper->getPredictedProjectileSpeed().value_or(0.0f);
 
     if (drivers->cvCommunicator.isJetsonOnline() && !targetSeenTimeout.isExpired()) { 
-        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
+        if (drivers->cvCommunicator.getLastValidAimMessage().cvState) { // update angles if we see target or we want to fire
             desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
             targetSeenTimeout.restart(TARGET_SEEN_TIMEOUT_MS);
         }
@@ -99,7 +99,7 @@ void GimbalChaseCommand::execute() {
         controller->runYawController();
         controller->runPitchController();
     } else {
-        if (drivers->cvCommunicator.getLastValidMessage().cvState) { // update angles if we see target or we want to fire
+        if (drivers->cvCommunicator.getLastValidAimMessage().cvState) { // update angles if we see target or we want to fire
             desiredAngles = drivers->cvCommunicator.getAutoAimAngles();
             targetSeenTimeout.restart(TARGET_SEEN_TIMEOUT_MS);
         }

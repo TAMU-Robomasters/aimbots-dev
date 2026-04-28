@@ -16,8 +16,10 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       nextByteIndex(0),
       jetsonOfflineTimeout(),
       fireTimeout(),
-      lastMessage(),
-      transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}})
+      lastAimMessage(),
+      lastLocalizationMessage(),
+      transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}}),
+      odometryMessageToJetson({EMBEDDED_MESSAGE_MAGIC, 0.0f, 0.0f, 0.0f})
 {}
 
 void JetsonCommunicator::initialize() {
@@ -25,7 +27,7 @@ void JetsonCommunicator::initialize() {
     drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
-uint8_t displayBuffer[JETSON_MESSAGE_SIZE];
+uint8_t displayBuffer[JETSON_MAX_MESSAGE_SIZE];
 int displayBufIndex = 0;
 size_t nextByteIndexDisplay = 0;
 uint32_t timeDisplay = 0;
@@ -42,10 +44,17 @@ int lastMsgTimeDisplay = 0;
 int msBetweenLastMessageDisplay = 0;
 
 float frameDelayOffsetDisplay_ms = 0.0f;
-
 uint32_t fireTimeoutTimeRemainingDisplay = 0.0f;
 
-float messageTypeDisplay = 0.0f;
+uint8_t messageTypeDisplay = 0;
+
+float odoXDisplay = 0;
+float odoYDisplay = 0;
+float odoThetaDisplay = 0;
+
+float lidarXDisplay = 0.0f;
+float lidarYDisplay = 0.0f;
+float lidarThetaDisplay = 0.0f;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
@@ -59,10 +68,13 @@ float messageTypeDisplay = 0.0f;
  * When we receive the message-agnostic end byte we unload from the buffer, check the message length, and reinterpret a
  * JetsonMessage from our received bytes.
  */
-alignas(JetsonMessage) uint8_t rawSerialDisplay[sizeof(JetsonMessage)];
+uint8_t rawSerialDisplay[JETSON_MAX_MESSAGE_SIZE];
 
 void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
+    timeDisplay = currTime;
+
+    fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
     timeDisplay = currTime;
 
     fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
@@ -71,11 +83,9 @@ void JetsonCommunicator::updateSerial() {
     if (bytesRead != 1) return;
 
     nextByteIndexDisplay = 1;
+    nextByteIndexDisplay = 1;
     // We've successfully read a new byte from the Jetson, so we can restart this.
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-
-    displayBuffer[displayBufIndex] = rawSerialBuffer[0];            // copy byte to display buffer
-    displayBufIndex = (displayBufIndex + 1) % JETSON_MESSAGE_SIZE;  // increment display index and wrap around if necessary
 
     switch (currentSerialState) {
         // ...looking for message start...
@@ -94,14 +104,20 @@ void JetsonCommunicator::updateSerial() {
             }
             break;
         }
-        
+        // ...received packet from Jetson, decide what to do
         case JetsonCommunicatorSerialState::HandleMessageType: {
             uint8_t messageType = rawSerialBuffer[nextByteIndex];
             messageTypeDisplay = messageType;
             if (messageType == JETSON_AIM_MESSAGE) {
                 nextByteIndex++;
-                currentSerialState = JetsonCommunicatorSerialState::AssemblingMessage;
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingAimMessage;
             } 
+
+            else if (messageType == JETSON_LOCALIZATION_MESSAGE) {
+                nextByteIndex++;
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingLocalizationMessage;
+            }
+            
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
                 uint8_t frameDelay_ms = 0.0f; 
                 //!!! potential issue where not enough time has passed and we don't read anything
@@ -129,23 +145,38 @@ void JetsonCommunicator::updateSerial() {
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
- 
+            else if (messageType == JETSON_ODOMETRY_QUERY) { // Respond to Query
+                odometryMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
+                odometryMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+                odometryMessageToJetson.theta = drivers->kinematicInformant.getGimbalIMUAngle(src::Informants::YAW_AXIS, AngleUnit::Radians);
+
+                odoXDisplay = odometryMessageToJetson.x;
+                odoYDisplay = odometryMessageToJetson.y;
+                odoThetaDisplay = modm::toDegree(odometryMessageToJetson.theta);
+
+                // Send data to Jetson
+                WRITE((uint8_t*)&odometryMessageToJetson, sizeof(odometryMessageToJetson));
+
+                // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            }
+
             // restart everything if nothing matches
             else {
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             } 
-             
             break;
         }
         // ...found message start, assemble message...
-        case JetsonCommunicatorSerialState::AssemblingMessage: {
+        case JetsonCommunicatorSerialState::AssemblingAimMessage: {
             nextByteIndex++;
 
             // Increment the byte index until we reach the expected end of a message, then parse the message.
-            if (nextByteIndex == JETSON_MESSAGE_SIZE) {
-                // Reinterpret the received bytes into a JetsonMessage
-                lastMessage = *reinterpret_cast<JetsonMessage*>(&rawSerialBuffer);
+            if (nextByteIndex == JETSON_AIM_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonAimMessage
+                std::memcpy(&lastAimMessage, rawSerialBuffer, sizeof(JetsonAimMessage));
 
                 // Update last message time and time between last message and now.
                 if (lastMsgTimeDisplay == 0) {
@@ -156,24 +187,22 @@ void JetsonCommunicator::updateSerial() {
                     lastMsgTimeDisplay = currTime;
                 }
 
-                targetYawDisplay = modm::toDegree(lastMessage.yaw);
-                targetPitchDisplay = modm::toDegree(lastMessage.pitch);
-                timeUntilNextFireDisplay = lastMessage.timeUntilNextFire;
-                cvStateDisplay = lastMessage.cvState;
-
-                if (lastMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
+                targetYawDisplay = modm::toDegree(lastAimMessage.yaw);
+                targetPitchDisplay = modm::toDegree(lastAimMessage.pitch);
+                timeUntilNextFireDisplay = lastAimMessage.timeUntilNextFire;
+                cvStateDisplay = lastAimMessage.cvState;
+                if (lastAimMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
-                    fireTimeout.restart(lastMessage.timeUntilNextFire);
+                    fireTimeout.restart(lastAimMessage.timeUntilNextFire);
 
-                    // position is relative to camera
                     lastFoundTargetTime = tap::arch::clock::getTimeMicroseconds();
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
-                if (lastMessage.cvState == CVState::FOUND) {
+                if (lastAimMessage.cvState == CVState::FOUND) {
                     tap::buzzer::playNote(&drivers->pwm, 0);
-                } else if (lastMessage.cvState == CVState::FIRE) {
+                } else if (lastAimMessage.cvState == CVState::FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
@@ -181,29 +210,47 @@ void JetsonCommunicator::updateSerial() {
 
                 // As we've received a full message, reset the byte index and go back to searching for the magic number.
                 nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;  
+            }
+
+            break;
+        }
+
+        case JetsonCommunicatorSerialState::AssemblingLocalizationMessage: {
+            nextByteIndex++;
+
+            // Increment the byte index until we reach the expected end of a message, then parse the message.
+            if (nextByteIndex == JETSON_LOCALIZATION_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonLocalizationMessage
+                std::memcpy(&lastLocalizationMessage, rawSerialBuffer, sizeof(JetsonLocalizationMessage));
+                        
+                // Localization data from Jetson
+                lidarXDisplay = lastLocalizationMessage.x;
+                lidarYDisplay = lastLocalizationMessage.y;
+                lidarThetaDisplay = modm::toDegree(lastLocalizationMessage.theta);
+
+                // As we've received a full message, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
-            } else {
-                rawSerialDisplay[nextByteIndex] = rawSerialBuffer[nextByteIndex];
             }
 
             break;
         }
     }
-
-    // if (!isJetsonOnline()) {
-    //     lastMessage.targetX = 0.0f;
-    //     lastMessage.targetY = 0.0f;
-    // }
 }
 
 PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
     return visionDataConverter.getPlatePrediction(dt);
 }
 
+modm::Location2D<float> JetsonCommunicator::getLocationEstimate() const {
+    return modm::Location2D(lastLocalizationMessage.x, lastLocalizationMessage.y, lastLocalizationMessage.theta);
+}
+
 AutoAimAngles JetsonCommunicator::getAutoAimAngles() const {
     AutoAimAngles angles;
-    angles.yaw = lastMessage.yaw;
-    angles.pitch = lastMessage.pitch;
+    angles.yaw = lastAimMessage.yaw;
+    angles.pitch = lastAimMessage.pitch;
     return angles;
 }
 
@@ -217,5 +264,5 @@ bool JetsonCommunicator::shouldFire() {
     fireTimeout.stop(); // stop timer so we don't keep sending true
     return true;
 }
-
+   
 }  // namespace src::Informants::Vision

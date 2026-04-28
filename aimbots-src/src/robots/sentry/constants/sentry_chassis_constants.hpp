@@ -15,9 +15,9 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 23.0f, //30.0f
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.01f,
     .maxICumulative = 0.9f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -28,10 +28,10 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int LEFT_FRONT_YAW_OFFSET = 2090;
-static constexpr int RIGHT_FRONT_YAW_OFFSET = 7460;
-static constexpr int LEFT_BACK_YAW_OFFSET = 6117;
-static constexpr int RIGHT_BACK_YAW_OFFSET = 7500;
+static constexpr int LEFT_FRONT_YAW_OFFSET = 7457;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 7573;
+static constexpr int LEFT_BACK_YAW_OFFSET = 645;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 4779;
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -77,7 +77,7 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR2;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.0635f;
+static constexpr float WHEEL_RADIUS = 0.0524f;
 
 static constexpr float WHEELBASE_WIDTH = 0.393f;
 

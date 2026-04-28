@@ -29,6 +29,8 @@ float path_x = 0.0f;
 float path_y = 0.0f;
 float myX = 0.0f;
 float myY = 0.0f;
+float vX = 0.0f;
+float vY = 0.0f;
 bool settled = false;
 
 void ChassisAutoNavCommand::initialize() {
@@ -82,6 +84,8 @@ void ChassisAutoNavCommand::execute() {
     myX = currentWorldLocation.getX();
     myY = currentWorldLocation.getY();
     modm::Vector2f currentWorldVelocity = drivers->kinematicInformant.getRobotVelocity2D();
+    vX = currentWorldVelocity[0];
+    vY = currentWorldVelocity[1];
 
     autoNavigator.update(currentWorldLocation);
     autoNavigator.getDesiredInput(&xError, &yError, &rotationError);
@@ -105,7 +109,7 @@ void ChassisAutoNavCommand::execute() {
 
     Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredR);
 
-    chassis->setTargetRPMs(desiredX, desiredY, desiredR);
+    // chassis->setTargetRPMs(desiredX, desiredY, desiredR);
 }
 
 bool ChassisAutoNavCommand::isReady() { return true; }

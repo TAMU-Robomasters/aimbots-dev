@@ -14,16 +14,49 @@ ChassisKFOdometry::ChassisKFOdometry(float initialXPos, float initialYPos)
     kf.init(initialX);
 }
 
+float vel_x_display = -1;
+float vel_y_display = -1;
+float vel_theta_display = -1;
+
+
+double xPosDis2=0.0f;
+double yPosDis2=0.0f;
+float headingDis = 0.0f;
+uint32_t last_time = 0.0f;
+
+double xPosDis3=0.0f;
+double yPosDis3=0.0f;
+
 void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yChassisAccel) {
     if (chassis == nullptr) return;
 
     this->chassisYaw = chassisYaw;
 
+    headingDis = chassisYaw;
+
     auto chassisVelocity = chassis->getActualVelocityChassisRelative();  // get chassis-relative velocity
+
+    vel_x_display = *chassisVelocity[0];
+    vel_y_display = *chassisVelocity[1];
+    vel_theta_display = *chassisVelocity[2];
+    
+
+    uint32_t currTime = tap::arch::clock::getTimeMicroseconds();
+    const uint32_t dt = currTime - last_time;
+    last_time = currTime;
+
+    xPosDis2 += chassisVelocity[0][0]*dt/1000000.0f;
+    yPosDis2 += chassisVelocity[0][1]*dt/1000000.0f;
+
+    
+
 
     tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
         chassisVelocity,
         chassisYaw);  // convert to world-relative velocity using chassis orientation
+
+    xPosDis3 += chassisVelocity[0][0]*dt/1000000.0f;
+    yPosDis3 += chassisVelocity[0][1]*dt/1000000.0f;
 
     updateMeasurementCovariance(chassisVelocity);
 
@@ -53,10 +86,18 @@ void ChassisKFOdometry::updateChassisStateFromKF(float chassisYaw) {
     location.setPosition(x[static_cast<int>(OdomState::POS_X)], x[static_cast<int>(OdomState::POS_Y)]);
 }
 
+double xPosDis=0.0f;
+double yPosDis=0.0f;
+double timeDis = 0.0f;
+
 void ChassisKFOdometry::updateMeasurementCovariance(const modm::Matrix<float, 3, 1>& chassisVelocity) {
     const uint32_t currTime = tap::arch::clock::getTimeMicroseconds();
     const uint32_t dt = currTime - lastComputedOdometryTime;
     lastComputedOdometryTime = currTime;
+    timeDis = dt/1000000.0f;
+
+    xPosDis += chassisVelocity[0][0]*dt/1000000.0f;
+    yPosDis += chassisVelocity[0][1]*dt/1000000.0f;
 
     // return if first time computing odometry
     if (lastComputedOdometryTime == 0) {

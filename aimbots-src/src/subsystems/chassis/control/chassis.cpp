@@ -75,8 +75,36 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     wheelVelToChassisVelMat[R][RB] = 1.0f / WHEELBASE_HYPOTENUSE;
 
     wheelVelToChassisVelMat *= (WHEEL_RADIUS / 4);
+    
+    #ifdef SWERVE
 
-#ifdef SWERVE
+    //magic matrix. Found by doing psuedo-inverse(inverse_swerve_kinematics) in a python file somewhere.
+    // forward_swerve_kinematics * [BL x, BL y, TL x, TL y, TR x, TR y, BR x, BR y]^T = least squares chassis velocity
+    forward_swerve_kinematics[0][0] = 0.25;
+    forward_swerve_kinematics[0][1] = 0.0;
+    forward_swerve_kinematics[0][2] = 0.25;
+    forward_swerve_kinematics[0][3] = 0.0;
+    forward_swerve_kinematics[0][4] = 0.25;
+    forward_swerve_kinematics[0][5] = 0.0;
+    forward_swerve_kinematics[0][6] = 0.25;
+    forward_swerve_kinematics[0][7] = 0.0;
+    forward_swerve_kinematics[1][0] = 0.0;
+    forward_swerve_kinematics[1][1] = 0.25;
+    forward_swerve_kinematics[1][2] = 0.0;
+    forward_swerve_kinematics[1][3] = 0.25;
+    forward_swerve_kinematics[1][4] = 0.0;
+    forward_swerve_kinematics[1][5] = 0.25;
+    forward_swerve_kinematics[1][6] = 0.0;
+    forward_swerve_kinematics[1][7] = 0.25;
+    forward_swerve_kinematics[2][0] = 0.6410256410256407;
+    forward_swerve_kinematics[2][1] = 0.6410256410256407;
+    forward_swerve_kinematics[2][2] = -0.6410256410256407;
+    forward_swerve_kinematics[2][3] = -0.6410256410256409;
+    forward_swerve_kinematics[2][4] = -0.6410256410256409;
+    forward_swerve_kinematics[2][5] = 0.6410256410256409;
+    forward_swerve_kinematics[2][6] = 0.6410256410256409;
+    forward_swerve_kinematics[2][7] = -0.6410256410256409;
+
     // SWERVE ROBOTS
     motors[LB][1] = &leftBackYaw;
     motors[LF][1] = &leftFrontYaw;
@@ -349,6 +377,8 @@ float xDisplay = 0.0f;
 float yDisplay = 0.0f;
 float rotDisplay = 0.0f;
 
+float outDriveRPMDisplay = 0.0;
+
 void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheelSpeed) {
     // if (updateSteeringPositioPIDsDebug) {
     //     for (size_t i = 0; i < 4; i++) {
@@ -373,7 +403,7 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     // deadband system to prevent chassis from updating when x,y and r are less than a specified value
     // tune these to prevent yaw motors from always being in "rotation mode" due to chassis follow gimbal pid
     auto deadband = [](float v, float eps) { return (std::fabs(v) < eps) ? 0.0f : v; };
-    static constexpr float kXYDeadband = 0.02f;
+    static constexpr float kXYDeadband = 10.0f;
     static constexpr float kRDeadband  = 100.0f;
     x = deadband(x, kXYDeadband);
     y = deadband(y, kXYDeadband);
@@ -448,10 +478,11 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
                 outDriveRPM  = 0.0f;
             } else {
                 targetYawRad = std::atan2(vy, vx) + 1.5f * static_cast<float>(M_PI);
-                optimizeSwerve(outDriveRPM, targetYawRad, currYawRad);
+                //optimizeSwerve(outDriveRPM, targetYawRad, currYawRad);
                 lastCmdYawRad[moduleIdx] = targetYawRad; // update latch
             }
         }
+        outDriveRPMDisplay = outDriveRPM;
 
         outSteerTicksFloat = radToTicksFloat(targetYawRad, offsetTicks);
         outSteerDbgInt     = static_cast<int>(std::lround(outSteerTicksFloat));
