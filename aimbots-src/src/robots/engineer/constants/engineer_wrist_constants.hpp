@@ -69,12 +69,23 @@ static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_OFFSET_ANGLES = {
 // TODO: SET THESE GEAR RATIOS PLEASE
 static const std::array<float, WRIST_MOTOR_COUNT> WRIST_MOTOR_IN_PER_OUT_RATIOS{365.0f, 361.0f, 361.0f};
 static const std::array<bool, WRIST_MOTOR_COUNT> WRIST_MOTOR_DIRECTIONS = {true, false, false, false, false, true, false};
+
+/*
+Link 1 has two speed controllers. The inside controller is ID 6(free), 
+the outside is ID 5 (on the Al link). The Link 2 has one motor and its ID is 2. 
+I tried to count my best, but the flashes were quick.
+*/
+
 static const std::array<MotorID, WRIST_MOTOR_COUNT> WRIST_MOTOR_IDS = {
     MotorID::MOTOR1,
     MotorID::MOTOR2,
     MotorID::MOTOR3,
     MotorID::MOTOR4,
-    MotorID::MOTOR5,
     MotorID::MOTOR6,
-    MotorID::MOTOR7};  // Yaw, Pitch, Roll
+    MotorID::MOTOR5,
+    MotorID::MOTOR2
+};  // Yaw, Pitch, Roll
+
 static const std::array<const char*, WRIST_MOTOR_COUNT> WRIST_MOTOR_NAMES = {"Yaw/Pitch Motor 1", "Yaw/Pitch Motor 2", "Yaw Wrist Motor", "Arm Yaw Motor", "Master Full Pitch", "Slave Full Pitch", "Intermediate Pitch"};
+
+enum MotorShortHands {Yaw_Pitch_Motor_1, Yaw_Pitch_Motor_2, Yaw_Wrist_Motor, Arm_Yaw_Motor, Master_Full_Pitch, Slave_Full_Pitch, Intermediate_Pitch};

@@ -49,6 +49,21 @@ namespace src::Control {
  *
  * @return float The current X input from the operator.
  */
+
+void incrementPitch(){
+    int increment = 0;
+    while(drivers->remote.keyPressed(Remote::Key::A)){
+        increment++;
+    }
+    chassisXRamp.update(increment); 
+}
+void decrementPitch(){
+    int decrement = 0;
+    while(drivers->remote.keyPressed(Remote::Key::Z)){
+        decrement++;
+    }
+    chassisXRamp.update(-1 * decrement); 
+}
 float OperatorInterface::getChassisXInput() {
     uint32_t updateCounter = drivers->remote.getUpdateCounter();
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
@@ -106,7 +121,7 @@ float OperatorInterface::getChassisYInput() {
     chassisYRamp.setTarget(finalY);
 
     if (chassisYRamp.getTarget() == 0.0f)
-        chassisYRamp.update(INPUT_XY_STOP_INC);
+        chassisYRamp.update();
     else
         chassisYRamp.update(INPUT_Y_INC);
     return chassisYRamp.getValue();

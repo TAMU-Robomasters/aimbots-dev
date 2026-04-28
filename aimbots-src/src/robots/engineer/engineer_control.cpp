@@ -88,7 +88,8 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 //     {&slideControlCommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
-
+PressCommandMapping aCtrlPressed(drivers(), {}, RemoteMapState({Remote::Key::CTRL, Remote::Key::A}));
+PressCommandMapping zCtrlPressed(drivers(), {}, RemoteMapState({Remote::Key::CTRL, Remote::Key::Z}));
 HoldCommandMapping leftSwitchUp(
     drivers(),
     {&slideControlCommand},
