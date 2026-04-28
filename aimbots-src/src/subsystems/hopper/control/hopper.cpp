@@ -28,10 +28,10 @@ float hopperAngleSetDisplay = 0.0f;
 void HopperSubsystem::setHopperAngle(float desiredAngle) {
     desiredAngle = tap::algorithms::limitVal<float>(
         desiredAngle,
-        HOPPER_MIN_ANGLE,
-        HOPPER_MAX_ANGLE);  // Limit inputs to min/max of motor
+        0.0f,
+        0.99f);  // Limit inputs to min/max of motor
     hopperAngleSetDisplay = desiredAngle;
-    hopperMotor.setTargetPwm(REMAP(desiredAngle, HOPPER_MIN_ANGLE, HOPPER_MAX_ANGLE, HOPPER_MIN_PWM, HOPPER_MAX_PWM));
+    hopperMotor.setTargetPwm(desiredAngle);
     actionStartTime = tap::arch::clock::getTimeMilliseconds();
 }
 
