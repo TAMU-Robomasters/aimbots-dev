@@ -1,0 +1,152 @@
+\doxysection{prescaler.\+hpp}
+\hypertarget{prescaler_8hpp_source}{}\label{prescaler_8hpp_source}\index{src/modm/math/algorithm/prescaler.hpp@{src/modm/math/algorithm/prescaler.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2021,\ Raphael\ Lehmann}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <modm/math/units.hpp>}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <concepts>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <initializer\_list>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}<std::\textcolor{keywordtype}{unsigned}\_\textcolor{keywordtype}{int}egral\ T>}
+\DoxyCodeLine{00033\ \textcolor{keyword}{class}}
+\DoxyCodeLine{00034\ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler}{GenericPrescaler}}}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{struct\ }Result}
+\DoxyCodeLine{00038\ \ \ \ \ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ Result(T\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}},}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a42a76796a20b5f2d943175a9e4a03f92}{desired\_frequency}},}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a2faf84196c9df89143b60af80ed61f93}{index}},\ uint32\_t\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}})\ :}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a2faf84196c9df89143b60af80ed61f93}{index}}\{\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a2faf84196c9df89143b60af80ed61f93}{index}}\},\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}}\{\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}}\},}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a8038bf877068c4907115ef150edea120}{frequency}}\{\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}}\ /\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}}\},}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}}\{\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}}\},}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a42a76796a20b5f2d943175a9e4a03f92}{desired\_frequency}}\{\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a42a76796a20b5f2d943175a9e4a03f92}{desired\_frequency}}\},}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a7af6dd0d5e95b4c5a99189e9dd138c6b}{error}}\{1.f\ -\/\ float(\doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}}\ /\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}})\ /\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a42a76796a20b5f2d943175a9e4a03f92}{desired\_frequency}}\}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \{\}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a2faf84196c9df89143b60af80ed61f93}{index}};}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_aa55c14601ca90600b89701144d14f70a}{prescaler}};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a8038bf877068c4907115ef150edea120}{frequency}};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a6633af4037523e248716318f6da539de}{input\_frequency}};}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a42a76796a20b5f2d943175a9e4a03f92}{desired\_frequency}};}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result_a7af6dd0d5e95b4c5a99189e9dd138c6b}{error}};}
+\DoxyCodeLine{00060\ \ \ \ \ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ Iterator>}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_generic_prescaler_1_1_result}{Result}}}
+\DoxyCodeLine{00067\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a1333606b4d6a01715d0f14c0bc963347}{from\_iterator}}(T\ input\_frequency,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ desired\_frequency,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Iterator\ prescalers)}
+\DoxyCodeLine{00070\ \ \ \ \ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ desired\ =\ double(input\_frequency)\ /\ desired\_frequency;}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ uint32\_t\ prescaler\_floor\{*prescalers.begin()\};}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ uint32\_t\ prescaler\_ceiling\{*prescalers.begin()\};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ uint32\_t\ ii\_floor\{0\},\ ii\_ceiling\{0\};}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (desired\ <=\ prescaler\_floor\ or\ prescalers.size()\ ==\ 1)}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ 0,\ prescaler\_floor\};}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (uint32\_t\ prescaler\ :\ prescalers)}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ prescaler\_ceiling\ =\ prescaler;\ ii\_ceiling++;}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (prescaler\_floor\ <=\ desired\ and\ desired\ <\ prescaler\_ceiling)}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ prescaler\_floor\ =\ prescaler;\ ii\_floor++;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ baud\_lower\ =\ input\_frequency\ /\ prescaler\_ceiling;}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ baud\_upper\ =\ input\_frequency\ /\ prescaler\_floor;}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ baud\_middle\ =\ (baud\_upper\ +\ baud\_lower)\ /\ 2.0;}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (desired\_frequency\ <=\ baud\_middle)}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ ii\_ceiling-\/1,\ prescaler\_ceiling\};}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ ii\_floor-\/1,\ prescaler\_floor\};}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Result}
+\DoxyCodeLine{00095\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a00fce9568e24d9086d481c1bba3b4624}{from\_list}}(T\ input\_frequency,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ desired\_frequency,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::initializer\_list<uint32\_t>\ prescalers)}
+\DoxyCodeLine{00098\ \ \ \ \ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a1333606b4d6a01715d0f14c0bc963347}{from\_iterator}}(input\_frequency,\ desired\_frequency,\ prescalers);}
+\DoxyCodeLine{00100\ \ \ \ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ Function\ >}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Result}
+\DoxyCodeLine{00106\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a7b7cb5fe442c5dfc77b492fd6beaae9e}{from\_function}}(T\ input\_frequency,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ desired\_frequency,}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ begin,\ uint32\_t\ end,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Function\ prescaler\_modifier)}
+\DoxyCodeLine{00110\ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }linear\_range\_iterator}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ state;}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Function\ modifier;}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ operator*()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ modifier(state);\ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ linear\_range\_iterator\&\ operator++()\ \{\ state++;\ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};\ \}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ linear\_range\_iterator\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ state\ !=\ o.state;\ \}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }linear\_range}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ m\_begin;}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ m\_end;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Function\ modifier;}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ linear\_range\_iterator\ begin()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ linear\_range\_iterator\{m\_begin,\ modifier\};\ \}}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ linear\_range\_iterator\ end()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ linear\_range\_iterator\{m\_end,\ modifier\};\ \}}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ size()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ m\_end\ -\/\ m\_begin;\ \}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ linear\_range\ range\{begin,\ end+1,\ prescaler\_modifier\};}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a1333606b4d6a01715d0f14c0bc963347}{from\_iterator}}(input\_frequency,\ desired\_frequency,\ range);}
+\DoxyCodeLine{00130\ \ \ \ \ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Result}
+\DoxyCodeLine{00135\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a48e586fd655a4ceb8529b2d58ca23448}{from\_range}}(T\ input\_frequency,}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ desired\_frequency,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ begin,\ uint32\_t\ end)}
+\DoxyCodeLine{00138\ \ \ \ \ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ desired\ =\ double(input\_frequency)\ /\ desired\_frequency;}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ prescaler\_floor\ =\ std::max(uint32\_t(std::floor(desired)),\ begin);}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ prescaler\_ceiling\ =\ std::min(uint32\_t(std::ceil(desired)),\ end);}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ baud\_lower\ =\ input\_frequency\ /\ prescaler\_ceiling;}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ baud\_upper\ =\ input\_frequency\ /\ prescaler\_floor;}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ baud\_middle\ =\ (baud\_upper\ +\ baud\_lower)\ /\ 2.0;}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (desired\_frequency\ <=\ baud\_middle)}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ prescaler\_ceiling\ -\/\ begin,\ prescaler\_ceiling\};}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ prescaler\_floor\ -\/\ begin,\ prescaler\_floor\};}
+\DoxyCodeLine{00148\ \ \ \ \ \}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Result}
+\DoxyCodeLine{00155\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a0cff6354b4b8c27ad057951778c5f904}{from\_power}}(T\ input\_frequency,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ T\ desired\_frequency,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ begin,\ uint32\_t\ end)}
+\DoxyCodeLine{00158\ \ \ \ \ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{double}\ desired\ =\ double(input\_frequency)\ /\ desired\_frequency;}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ uint32\_t\ ii\{0\};\ uint32\_t\ power\{begin\};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (;\ power\ <\ end;\ power\ *=\ 2,\ ii++)}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (desired\ <=\ \textcolor{keywordtype}{double}(power\ *\ 4.0/3))\ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \{input\_frequency,\ desired\_frequency,\ ii,\ power\};}
+\DoxyCodeLine{00164\ \ \ \ \ \}}
+\DoxyCodeLine{00165\ \};}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{keyword}{using\ }Prescaler\ =\ GenericPrescaler<uint64\_t>;}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+
+\end{DoxyCode}

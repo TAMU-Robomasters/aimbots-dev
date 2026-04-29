@@ -1,0 +1,34 @@
+\doxysection{modm::\+Resumable\+Result\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmodm_1_1_resumable_result}{}\label{structmodm_1_1_resumable_result}\index{modm::ResumableResult$<$ T $>$@{modm::ResumableResult$<$ T $>$}}
+
+
+{\ttfamily \+\#include $<$resumable.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_resumable_result_a1f78ca60d3af320a37a84b0ab779943c}\label{structmodm_1_1_resumable_result_a1f78ca60d3af320a37a84b0ab779943c} 
+{\bfseries Resumable\+Result} (uint\+\_\+fast8\+\_\+t state)
+\begin{DoxyCompactList}\small\item\em Return only the {\ttfamily state}. The {\ttfamily result} will be initialized by it\textquotesingle{}s default constructor. \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_resumable_result_a6ce6d2d21d14cb7903d94bf11f596e38}\label{structmodm_1_1_resumable_result_a6ce6d2d21d14cb7903d94bf11f596e38} 
+{\bfseries Resumable\+Result} (uint\+\_\+fast8\+\_\+t state, T result)
+\begin{DoxyCompactList}\small\item\em Return {\ttfamily state} and valid {\ttfamily result}. \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_resumable_result_ac59bd0efabf33bf466865683bed93eb5}\label{structmodm_1_1_resumable_result_ac59bd0efabf33bf466865683bed93eb5} 
+uint\+\_\+fast8\+\_\+t {\bfseries get\+State} ()
+\item 
+\Hypertarget{structmodm_1_1_resumable_result_a917566d445866e9916374e85e427246e}\label{structmodm_1_1_resumable_result_a917566d445866e9916374e85e427246e} 
+T {\bfseries get\+Result} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct modm::\+\+Resumable\+Result$<$ T $>$}
+All resumable functions return an encapsulated result type. \begin{DoxyWarning}{Warning}
+The result type {\bfseries{must}} have a default constructor! 
+\end{DoxyWarning}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+processing/\+resumable/\+resumable.\+hpp\end{DoxyCompactItemize}

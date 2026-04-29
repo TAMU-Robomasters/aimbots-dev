@@ -1,0 +1,117 @@
+\doxysection{modm::\+Smart\+Pointer Class Reference}
+\hypertarget{classmodm_1_1_smart_pointer}{}\label{classmodm_1_1_smart_pointer}\index{modm::SmartPointer@{modm::SmartPointer}}
+
+
+Container which destroys itself when the last copy is destroyed.  
+
+
+
+
+{\ttfamily \+\#include $<$smart\+\_\+pointer.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899}\label{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899} 
+{\bfseries Smart\+Pointer} ()
+\begin{DoxyCompactList}\small\item\em default constructor with empty payload \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_smart_pointer_a6a6562e5dff516155b553d6e359a637c}{Smart\+Pointer}} (uint16\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Allocates memory from the given size. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_smart_pointer_ab11e33c9917e5acfa6df394710bd721f}\label{classmodm_1_1_smart_pointer_ab11e33c9917e5acfa6df394710bd721f} 
+{\footnotesize template$<$typename T$>$ }\\{\bfseries Smart\+Pointer} (const T \texorpdfstring{$\ast$}{*}data)
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_a10409f48b1c5b239988ca9475202927e}\label{classmodm_1_1_smart_pointer_a10409f48b1c5b239988ca9475202927e} 
+{\bfseries Smart\+Pointer} (const Smart\+Pointer \&other)
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_a797336bfc0d489026aa8e1d5a6316fa6}\label{classmodm_1_1_smart_pointer_a797336bfc0d489026aa8e1d5a6316fa6} 
+const uint8\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries get\+Pointer} () const
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_a0465073360673c8e50ed38ea46eafd1a}\label{classmodm_1_1_smart_pointer_a0465073360673c8e50ed38ea46eafd1a} 
+uint8\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries get\+Pointer} ()
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_ae7ed55cb4de4df510203192b24f00761}\label{classmodm_1_1_smart_pointer_ae7ed55cb4de4df510203192b24f00761} 
+uint16\+\_\+t {\bfseries get\+Size} () const
+\item 
+{\footnotesize template$<$typename T$>$ }\\const T \& \doxymbox{\hyperlink{classmodm_1_1_smart_pointer_a1ff293a66fcb545c7dfd08fcf9830507}{get}} () const
+\item 
+{\footnotesize template$<$typename T$>$ }\\bool \doxymbox{\hyperlink{classmodm_1_1_smart_pointer_ae2f93b6afe967b1ab6bf255b072d6aec}{get}} (T \&value) const
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_ad68bc9d4ace026158f635ba06538c85b}\label{classmodm_1_1_smart_pointer_ad68bc9d4ace026158f635ba06538c85b} 
+bool {\bfseries operator==} (const \doxymbox{\hyperlink{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899}{Smart\+Pointer}} \&other)
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_aafe959eb13cb2c73e6d8c720a3b8d419}\label{classmodm_1_1_smart_pointer_aafe959eb13cb2c73e6d8c720a3b8d419} 
+\doxymbox{\hyperlink{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899}{Smart\+Pointer}} \& {\bfseries operator=} (const \doxymbox{\hyperlink{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899}{Smart\+Pointer}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_a9ea9a34e7ec959e5425f65cb82373d3d}\label{classmodm_1_1_smart_pointer_a9ea9a34e7ec959e5425f65cb82373d3d} 
+uint8\+\_\+t \texorpdfstring{$\ast$}{*} {\bfseries ptr}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_smart_pointer_a6eeff84fc58ceecc7671c4445a9cbc75}\label{classmodm_1_1_smart_pointer_a6eeff84fc58ceecc7671c4445a9cbc75} 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}} \& {\bfseries operator$<$$<$} (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::\+\+IOStream}} \&s, const \doxymbox{\hyperlink{classmodm_1_1_smart_pointer_ad1a23b4df542cb1860f54fa40ad4e899}{Smart\+Pointer}} \&s\+Ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Container which destroys itself when the last copy is destroyed. 
+
+This container saves a copy of the given data on the heap. It provides the functionality of a shared pointer =\texorpdfstring{$>$}{>} pointer object records when it is copied -\/ when the last copy is destroyed the memory is released. 
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1_smart_pointer_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1_smart_pointer_a6a6562e5dff516155b553d6e359a637c}\index{modm::SmartPointer@{modm::SmartPointer}!SmartPointer@{SmartPointer}}
+\index{SmartPointer@{SmartPointer}!modm::SmartPointer@{modm::SmartPointer}}
+\doxysubsubsection{\texorpdfstring{SmartPointer()}{SmartPointer()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_smart_pointer_a6a6562e5dff516155b553d6e359a637c} 
+modm::\+\+Smart\+Pointer::\+\+Smart\+Pointer (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+
+
+
+Allocates memory from the given size. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em size} & the amount of memory to be allocated, has to be smaller than 65530 \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_smart_pointer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_smart_pointer_a1ff293a66fcb545c7dfd08fcf9830507}\index{modm::SmartPointer@{modm::SmartPointer}!get@{get}}
+\index{get@{get}!modm::SmartPointer@{modm::SmartPointer}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_smart_pointer_a1ff293a66fcb545c7dfd08fcf9830507} 
+template$<$typename T$>$ \\
+const T \& modm::\+\+Smart\+Pointer::\+get (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get the value that are stored in the pointer casted to the given type. \begin{DoxyNote}{Note}
+This method has no checking mechanism, use get(\+T) to have at least some.
+\end{DoxyNote}
+\begin{DoxyReturn}{Returns}
+the stored value converted to {\ttfamily T} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_smart_pointer_ae2f93b6afe967b1ab6bf255b072d6aec}\index{modm::SmartPointer@{modm::SmartPointer}!get@{get}}
+\index{get@{get}!modm::SmartPointer@{modm::SmartPointer}}
+\doxysubsubsection{\texorpdfstring{get()}{get()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_smart_pointer_ae2f93b6afe967b1ab6bf255b072d6aec} 
+template$<$typename T$>$ \\
+bool modm::\+\+Smart\+Pointer::\+get (\begin{DoxyParamCaption}\item[{T \&}]{value}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Get the value that are stored in the pointer casted to the given type. The method checks only the size but not the type of the stored data
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the type fit 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+container/\+smart\+\_\+pointer.\+hpp\item 
+src/\+modm/\+container/\+smart\+\_\+pointer.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,66 @@
+\doxysection{delay\+\_\+impl.\+hpp}
+\hypertarget{delay__impl_8hpp_source}{}\label{delay__impl_8hpp_source}\index{src/modm/platform/core/delay\_impl.hpp@{src/modm/platform/core/delay\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2014,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2014-\/2016,\ 2019-\/2021\ Niklas\ Hauser}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ Kevin\ Läufer}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}delay\_ns.hpp"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/assert.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ MODM\_DELAY\_NS\_IS\_ACCURATE\ 1}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{extern}\ uint16\_t\ delay\_ns\_per\_loop;}
+\DoxyCodeLine{00030\ \textcolor{keyword}{extern}\ uint16\_t\ delay\_fcpu\_MHz;}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{constexpr}\ uint8\_t\ delay\_fcpu\_MHz\_shift(4);}
+\DoxyCodeLine{00033\ \textcolor{keyword}{constexpr}\ uint16\_t\ computeDelayMhz(uint32\_t\ hz)}
+\DoxyCodeLine{00034\ \{\ \textcolor{keywordflow}{return}\ std::round(hz\ /\ 1'000'000.f\ *\ (1ul\ <<\ delay\_fcpu\_MHz\_shift));\ \}}
+\DoxyCodeLine{00035\ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ modm\_always\_inline}
+\DoxyCodeLine{00038\ \textcolor{keywordtype}{void}\ delay\_ns(uint32\_t\ ns)}
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mov\ r0,\ \%0\ \(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}blx\ \%1"{}}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ ::\ \textcolor{stringliteral}{"{}r"{}}\ (ns),\ \textcolor{stringliteral}{"{}l"{}}\ (platform::delay\_ns)\ :\ \textcolor{stringliteral}{"{}r0"{}},\ \textcolor{stringliteral}{"{}r1"{}},\ \textcolor{stringliteral}{"{}r2"{}});}
+\DoxyCodeLine{00044\ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keywordtype}{void}\ delay\_us(uint32\_t\ us);}
+\DoxyCodeLine{00048\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ delay\_ms(uint32\_t\ ms)}
+\DoxyCodeLine{00049\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordflow}{while}(1)}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ms\ <=\ 1000)\ \{}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ delay\_us(ms\ *\ 1000);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ delay\_us(1'000'000);}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ ms\ -\/=\ 1000;}
+\DoxyCodeLine{00058\ \ \ \ \ \}}
+\DoxyCodeLine{00059\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \}}
+
+\end{DoxyCode}

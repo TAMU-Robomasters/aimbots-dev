@@ -1,0 +1,135 @@
+\doxysection{timeout.\+hpp}
+\hypertarget{timeout_8hpp_source}{}\label{timeout_8hpp_source}\index{src/modm/processing/timer/timeout.hpp@{src/modm/processing/timer/timeout.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ 2015,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Sascha\ Schade}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2015,\ 2020,\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ Raphael\ Lehmann}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}timestamp.hpp"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/math/utils/arithmetic\_traits.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/clock.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/assert.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00029\ TimerState\ :\ uint8\_t}
+\DoxyCodeLine{00030\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ Stopped\ =\ 0b001,}
+\DoxyCodeLine{00032\ \ \ \ \ Expired\ =\ 0b010,}
+\DoxyCodeLine{00033\ \ \ \ \ Armed\ \ \ =\ 0b100,}
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ forward\ declaration\ for\ friending}}
+\DoxyCodeLine{00037\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Clock,\ \textcolor{keyword}{class}\ Duration\ >}
+\DoxyCodeLine{00038\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_generic_periodic_timer}{GenericPeriodicTimer}};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Clock,\ \textcolor{keyword}{class}\ Duration\ >}
+\DoxyCodeLine{00055\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a6fbaa697a609c298a4edf316fc7c313b}{GenericTimeout}}}
+\DoxyCodeLine{00056\ \{}
+\DoxyCodeLine{00057\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{using\ }clock\ =\ Clock;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{using\ }period\ =\ \textcolor{keyword}{typename}\ Duration::period;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{using\ }rep\ =\ \textcolor{keyword}{typename}\ Duration::rep;}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{using\ }time\_point\ =\ std::chrono::time\_point<Clock,\ Duration>;}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{using\ }duration\ =\ Duration;}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{using\ }wide\_signed\_duration\ =\ std::chrono::duration<}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{modm::WideType<std::make\_signed\_t<rep>}}>,\ period>;}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00067\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a6fbaa697a609c298a4edf316fc7c313b}{GenericTimeout}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ Rep,\ \textcolor{keyword}{typename}\ Period\ >}
+\DoxyCodeLine{00071\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_ac6c2029ac840a12e064fec8283864e8a}{GenericTimeout}}(std::chrono::duration<Rep,\ Period>\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}});}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_aa704a4ac99437d7b92e3c82067f648fc}{restart}}();}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ Rep,\ \textcolor{keyword}{typename}\ Period\ >}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a31f150bea68739d1cc7cef5c79989da4}{restart}}(std::chrono::duration<Rep,\ Period>\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}});}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00081\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a266525c875fe7e448a97a1d30e4539d0}{stop}}();}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00084\ \ \ \ \ wide\_signed\_duration}
+\DoxyCodeLine{00085\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_ac0afbbfe2244eb0374786b7919f80cfa}{remaining}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00088\ \ \ \ \ duration}
+\DoxyCodeLine{00089\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00092\ \ \ \ \ TimerState}
+\DoxyCodeLine{00093\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a70943959bde3ab886fb61766294e2f64}{state}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00097\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_add9757f42c39f2d4af2a0833c3491bcb}{isStopped}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00101\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a3f9ae9c2019b5c4813f9d9010c870512}{isExpired}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00105\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a62315bbb6d0cf13b40a00bb074335f7c}{isArmed}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00109\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_ad045c5a2e3fd69662ee1e15e6e05b2a0}{execute}}();}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00112\ \ \ \ \ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}std::chrono::\{milli,micro\}seconds`\ for\ interval\ instead!"{}})]]}
+\DoxyCodeLine{00113\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a6fbaa697a609c298a4edf316fc7c313b}{GenericTimeout}}(rep\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}})\ :}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a6fbaa697a609c298a4edf316fc7c313b}{GenericTimeout}}(duration(\doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}}))\ \{\}}
+\DoxyCodeLine{00115\ \ \ \ \ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}std::chrono::\{milli,micro\}seconds`\ for\ interval\ instead!"{}})]]}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_aa704a4ac99437d7b92e3c82067f648fc}{restart}}(rep\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}})}
+\DoxyCodeLine{00117\ \ \ \ \ \{\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_aa704a4ac99437d7b92e3c82067f648fc}{restart}}(duration(\doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a5bf6fd34c5c6fedf45d994fa4e13d449}{interval}}));\ \}}
+\DoxyCodeLine{00118\ \ \ \ \ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}Timeout.state()`\ instead!"{}})]]}
+\DoxyCodeLine{00119\ \ \ \ \ TimerState\ getState()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout_a70943959bde3ab886fb61766294e2f64}{state}}();\ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00124\ \ \ \ \ checkExpiration()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ time\_point}
+\DoxyCodeLine{00127\ \ \ \ \ now()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{enum}}
+\DoxyCodeLine{00130\ \ \ \ \ InternalState\ :\ uint8\_t}
+\DoxyCodeLine{00131\ \ \ \ \ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ STOPPED\ \ =\ int(TimerState::Stopped),}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ EXPIRED\ \ =\ int(TimerState::Expired),}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ ARMED\ \ \ \ =\ int(TimerState::Armed),}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ EXECUTED\ =\ 0b1000,}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ STATUS\_MASK\ =\ (EXPIRED\ |\ ARMED\ |\ STOPPED)}
+\DoxyCodeLine{00137\ \ \ \ \ \};}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \ \ \ \ time\_point\ \_start\{duration\{0\}\};}
+\DoxyCodeLine{00140\ \ \ \ \ duration\ \_interval\{0\};}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{mutable}\ uint8\_t\ \_state\{STOPPED\};}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class}}
+\DoxyCodeLine{00144\ \ \ \ \ GenericPeriodicTimer<Clock,\ Duration>;}
+\DoxyCodeLine{00145\ \};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00160\ \textcolor{keyword}{using\ \ \ \ \ \ \ \ }ShortTimeout\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout}{GenericTimeout<\ Clock,\ ShortDuration\ >}};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00164\ \textcolor{keyword}{using\ \ \ \ \ \ \ \ \ \ \ \ \ }Timeout\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout}{GenericTimeout<\ Clock,\ Duration\ >}};}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00168\ \textcolor{keyword}{using\ }ShortPreciseTimeout\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout}{GenericTimeout<\ PreciseClock,\ ShortPreciseDuration\ >}};}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00172\ \textcolor{keyword}{using\ \ \ \ \ \ }PreciseTimeout\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_timeout}{GenericTimeout<\ PreciseClock,\ PreciseDuration\ >}};}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00175\ \textcolor{keyword}{using\ }TimeoutState\ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}modm::TimerState`\ instead!"{}})]]\ =\ TimerState;}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{preprocessor}{\#include\ "{}timeout\_impl.hpp"{}}}
+
+\end{DoxyCode}

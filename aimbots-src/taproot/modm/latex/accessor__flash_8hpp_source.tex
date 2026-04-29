@@ -1,0 +1,186 @@
+\doxysection{accessor\+\_\+flash.\+hpp}
+\hypertarget{accessor__flash_8hpp_source}{}\label{accessor__flash_8hpp_source}\index{src/modm/architecture/interface/accessor\_flash.hpp@{src/modm/architecture/interface/accessor\_flash.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2016-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_INTERFACE\_ACCESSOR\_FLASH\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_INTERFACE\_ACCESSOR\_FLASH\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#ifdef\ \ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#define\ FLASH\_STORAGE(var)}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ EXTERN\_FLASH\_STORAGE(var)}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#define\ FLASH\_STORAGE\_STRING(s)}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ EXTERN\_FLASH\_STORAGE\_STRING(s)}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ IFSS(s)\ ((const\ char\ *)(s))}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#else\ }\textcolor{comment}{//\ !\_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <modm/platform/core/flash\_reader\_impl.hpp>}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00052\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{namespace\ }accessor}
+\DoxyCodeLine{00055\ \{}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00070\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00071\ \textcolor{keyword}{class\ }Flash}
+\DoxyCodeLine{00072\ \{}
+\DoxyCodeLine{00073\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{explicit}\ Flash(\textcolor{keyword}{const}\ T*\ addr\ =\ 0)\ :}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ address(addr)}
+\DoxyCodeLine{00077\ \ \ \ \ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00081\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{explicit}\ Flash(\textcolor{keyword}{const}\ Flash<U>\&\ rhs)\ :}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ address((T*)\ rhs.address)}
+\DoxyCodeLine{00084\ \ \ \ \ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{const}\ T}
+\DoxyCodeLine{00089\ \ \ \ \ operator\ *()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00090\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ FlashReader<T,\ \textcolor{keyword}{sizeof}(T)>::read(address);}
+\DoxyCodeLine{00092\ \ \ \ \ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{const}\ T}
+\DoxyCodeLine{00096\ \ \ \ \ operator\ [](\textcolor{keywordtype}{size\_t}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00097\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ FlashReader<T,\ \textcolor{keyword}{sizeof}(T)>::read(address\ +\ index);}
+\DoxyCodeLine{00099\ \ \ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00102\ \ \ \ \ Flash\&}
+\DoxyCodeLine{00103\ \ \ \ \ operator++()}
+\DoxyCodeLine{00104\ \ \ \ \ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ *\textcolor{keyword}{this}\ +=\ 1;}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00107\ \ \ \ \ \}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00110\ \ \ \ \ Flash}
+\DoxyCodeLine{00111\ \ \ \ \ operator++(\textcolor{keywordtype}{int})}
+\DoxyCodeLine{00112\ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ Flash\ ret\ =\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ ++*\textcolor{keyword}{this};}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00116\ \ \ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00119\ \ \ \ \ Flash\&}
+\DoxyCodeLine{00120\ \ \ \ \ operator-\/-\/()}
+\DoxyCodeLine{00121\ \ \ \ \ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ *\textcolor{keyword}{this}\ -\/=\ 1;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00127\ \ \ \ \ Flash\&}
+\DoxyCodeLine{00128\ \ \ \ \ operator-\/-\/(\textcolor{keywordtype}{int})}
+\DoxyCodeLine{00129\ \ \ \ \ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ Flash\ ret\ =\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ -\/-\/*\textcolor{keyword}{this};}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{00133\ \ \ \ \ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00136\ \ \ \ \ Flash\&}
+\DoxyCodeLine{00137\ \ \ \ \ operator+=(\textcolor{keywordtype}{size\_t}\ rhs)}
+\DoxyCodeLine{00138\ \ \ \ \ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ address\ +=\ rhs;}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00141\ \ \ \ \ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00144\ \ \ \ \ Flash\&}
+\DoxyCodeLine{00145\ \ \ \ \ operator-\/=(\textcolor{keywordtype}{size\_t}\ rhs)}
+\DoxyCodeLine{00146\ \ \ \ \ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ address\ -\/=\ rhs;}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00153\ \ \ \ \ isValid()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00154\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (address\ !=\ 0);}
+\DoxyCodeLine{00156\ \ \ \ \ \}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{const}\ T*}
+\DoxyCodeLine{00160\ \ \ \ \ getPointer()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00161\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ address;}
+\DoxyCodeLine{00163\ \ \ \ \ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{const}\ T*\ address;}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00168\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keyword}{friend}\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&}
+\DoxyCodeLine{00171\ \ \ \ \ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&,\ \textcolor{keyword}{const}\ Flash<U>\&);}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00173\ \};}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00177\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00178\ modm\_always\_inline\ ::modm::accessor::Flash<T>}
+\DoxyCodeLine{00179\ asFlash(\textcolor{keyword}{const}\ T*\ ptr)}
+\DoxyCodeLine{00180\ \{}
+\DoxyCodeLine{00181\ \ \ \ \ return\ ::modm::accessor::Flash<T>(ptr);}
+\DoxyCodeLine{00182\ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \}\ \ \ \textcolor{comment}{//\ namespace\ accessor}}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00189\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00190\ \{}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00196\ \textcolor{keyword}{inline}\ modm::IOStream\&}
+\DoxyCodeLine{00197\ operator\ <<\ (modm::IOStream\&\ os,\ modm::accessor::Flash<char>\ ptr)}
+\DoxyCodeLine{00198\ \{}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keywordtype}{char}\ c;}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keywordflow}{while}\ ((c\ =\ *ptr++))\ \{}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ os\ <<\ c;}
+\DoxyCodeLine{00202\ \ \ \ \ \}}
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keywordflow}{return}\ os;}
+\DoxyCodeLine{00204\ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_INTERFACE\_ACCESSOR\_FLASH\_HPP}}
+
+\end{DoxyCode}

@@ -1,0 +1,117 @@
+\doxysection{can\+\_\+bit\+\_\+timings.\+hpp}
+\hypertarget{can__bit__timings_8hpp_source}{}\label{can__bit__timings_8hpp_source}\index{src/modm/platform/can/can\_bit\_timings.hpp@{src/modm/platform/can/can\_bit\_timings.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Antal\ Szabó}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Kevin\ Läufer}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2018,\ Christopher\ Durand}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_COMMON\_CAN\_BIT\_TIMINGS\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_COMMON\_CAN\_BIT\_TIMINGS\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/clock.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/math/units.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/math/utils/misc.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_can_bit_timing_configuration}{CanBitTimingConfiguration}}}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ uint8\_t\ bs1;}
+\DoxyCodeLine{00030\ \ \ \ \ uint8\_t\ bs2;}
+\DoxyCodeLine{00031\ \ \ \ \ uint8\_t\ sjw;}
+\DoxyCodeLine{00032\ \ \ \ \ uint16\_t\ prescaler;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{float}\ error;}
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{template}<\textcolor{keywordtype}{int}32\_t\ Clk,\ \textcolor{keywordtype}{int}32\_t\ Bitrate,\ u\textcolor{keywordtype}{int}8\_t\ prescaler\_w\textcolor{keywordtype}{id}th\ =\ 10,\ u\textcolor{keywordtype}{int}8\_t\ bs1\_w\textcolor{keywordtype}{id}th\ =\ 4,\ u\textcolor{keywordtype}{int}8\_t\ bs2\_w\textcolor{keywordtype}{id}th\ =\ 3,\ u\textcolor{keywordtype}{int}8\_t\ sjw\_w\textcolor{keywordtype}{id}th\ =\ 2>}
+\DoxyCodeLine{00059\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_can_bit_timing}{CanBitTiming}}}
+\DoxyCodeLine{00060\ \{}
+\DoxyCodeLine{00061\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t\ round\_uint32(\textcolor{keywordtype}{float}\ f)}
+\DoxyCodeLine{00063\ \ \ \ \ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ uint32\_t\ f\_int\ =\ (uint32\_t)\ f;}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(f\ -\/\ f\_int\ >\ 0.5)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ f\_int\ +\ 1;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ f\_int;}
+\DoxyCodeLine{00069\ \ \ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_can_bit_timing_configuration}{CanBitTimingConfiguration}}\ calculateBestConfig()}
+\DoxyCodeLine{00072\ \ \ \ \ \{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ minBs1Bs2\ =\ 14;}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ maxBs1Bs2\ =\ 20;}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ minError\ =\ 10'000.0;}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ uint16\_t\ bestPrescaler\ =\ 0;}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ uint8\_t\ bestBs1Bs2\ =\ 0;}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(uint8\_t\ bs1Bs2\ =\ minBs1Bs2;\ bs1Bs2\ <=\ maxBs1Bs2;\ ++bs1Bs2)\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ idealPrescaler\ =\ float(Clk)\ /\ (Bitrate\ *\ (1\ +\ bs1Bs2));}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ intPrescaler\ =\ round\_uint32(idealPrescaler);}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(intPrescaler\ <\ ((1\ <<\ prescaler\_width)\ -\/\ 1))\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ error\ =\ \doxymbox{\hyperlink{group__modm__math__utils_ga31a4e76db095e86012f758c64b7aa038}{constexpr\_fabs}}(1\ -\/\ intPrescaler/idealPrescaler);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(error\ <=\ minError)\ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bestPrescaler\ =\ intPrescaler;}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ minError\ =\ error;}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bestBs1Bs2\ =\ bs1Bs2;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ uint8\_t\ bs2\ =\ round\_uint32(0.275f\ *\ (bestBs1Bs2\ +\ 1));}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ uint8\_t\ bs1\ =\ bestBs1Bs2\ -\/\ bs2;}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_can_bit_timing_configuration}{CanBitTimingConfiguration}}\{bs1,\ bs2,\ 1,\ bestPrescaler,\ minError\};}
+\DoxyCodeLine{00098\ \ \ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_can_bit_timing_configuration}{CanBitTimingConfiguration}}\ BestConfig\ =\ calculateBestConfig();}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ getBS1()\ \{\ \textcolor{keywordflow}{return}\ BestConfig.bs1;\ \}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ getBS2()\ \{\ \textcolor{keywordflow}{return}\ BestConfig.bs2;\ \}}
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ getSJW()\ \{\ \textcolor{keywordflow}{return}\ BestConfig.sjw;\ \}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ getPrescaler()\ \{\ \textcolor{keywordflow}{return}\ BestConfig.prescaler;\ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_can_bit_timing_configuration}{CanBitTimingConfiguration}}}
+\DoxyCodeLine{00109\ \ \ \ \ getBitTimings()}
+\DoxyCodeLine{00110\ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ BestConfig;}
+\DoxyCodeLine{00112\ \ \ \ \ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{template}<percent\_t\ tolerance>}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{void}\ assertBitrateInTolerance()}
+\DoxyCodeLine{00116\ \ \ \ \ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(pct2f(tolerance)\ >=\ BestConfig.error,}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}The\ closest\ available\ bitrate\ exceeds\ the\ specified\ maximum\ tolerance!"{}});}
+\DoxyCodeLine{00119\ \ \ \ \ \}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{comment}{//\ check\ assertions}}
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{static\_assert}(getPrescaler()\ >\ 0,\ \textcolor{stringliteral}{"{}CAN\ bitrate\ is\ too\ high\ for\ standard\ bit\ timings!"{}});}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{static\_assert}(getPrescaler()\ <=\ (1\ <<\ prescaler\_width),\ \textcolor{stringliteral}{"{}Prescaler\ value\ too\ large"{}});}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keyword}{static\_assert}(getBS1()\ <=\ (1\ <<\ bs1\_width),\ \textcolor{stringliteral}{"{}BS1\ value\ too\ large"{}});}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{static\_assert}(getBS2()\ <=\ (1\ <<\ bs2\_width),\ \textcolor{stringliteral}{"{}BS2\ value\ too\ large"{}});}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keyword}{static\_assert}(getSJW()\ <=\ (1\ <<\ sjw\_width),\ \textcolor{stringliteral}{"{}SJW\ value\ too\ large"{}});}
+\DoxyCodeLine{00128\ \};}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_COMMON\_CAN\_BIT\_TIMINGS\_HPP}}
+\DoxyCodeLine{00133\ }
+
+\end{DoxyCode}

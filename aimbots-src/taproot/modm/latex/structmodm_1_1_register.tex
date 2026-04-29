@@ -1,0 +1,108 @@
+\doxysection{modm::\+Register\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmodm_1_1_register}{}\label{structmodm_1_1_register}\index{modm::Register$<$ T $>$@{modm::Register$<$ T $>$}}
+
+
+{\ttfamily \+\#include $<$register.\+hpp$>$}
+
+Inheritance diagram for modm::\+Register\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.935484cm]{structmodm_1_1_register}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}\label{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd} 
+typedef T {\bfseries Underlying\+Type}
+\begin{DoxyCompactList}\small\item\em The integer type internally used to represent the register. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}\label{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04} 
+constexpr {\bfseries Register} ()
+\begin{DoxyCompactList}\small\item\em Default constructor initializes {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} to zero. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\textbf{ }\par
+\begin{DoxyCompactItemize}
+\item 
+constexpr \doxymbox{\hyperlink{structmodm_1_1_register_aca49e332e09a999a9c10182c44a0ddff}{operator bool}} () const
+\item 
+\Hypertarget{structmodm_1_1_register_a959d3b687497e1485faec27887cd8925}\label{structmodm_1_1_register_a959d3b687497e1485faec27887cd8925} 
+constexpr bool {\bfseries operator!} () const
+\begin{DoxyCompactList}\small\item\em Returns {\ttfamily true} if {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} is zero. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}\label{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68} 
+\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{Underlying\+Type}} {\bfseries value}
+\begin{DoxyCompactList}\small\item\em The underlying integer value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_register_a0be64189534db7c1d386fdbfc9e1dfb4}\label{structmodm_1_1_register_a0be64189534db7c1d386fdbfc9e1dfb4} 
+constexpr {\bfseries Register} (\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{Underlying\+Type}} initial\+Value)
+\begin{DoxyCompactList}\small\item\em This class is meant to be subclassed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct modm::\+\+Register$<$ T $>$}
+Class for holding a register value.
+
+You can cast any \doxylink{structmodm_1_1_flags}{Flags}, \doxylink{structmodm_1_1_configuration}{Configuration} or \doxylink{structmodm_1_1_value}{Value} type into the approprate \doxylink{structmodm_1_1_register}{Register} type.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Control\_t\ control\ =\ Control::EN;}
+\DoxyCodeLine{Register8\ base\ =\ control;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ functions\ can\ also\ be\ overloaded\ to\ accept\ *any*\ register\ of\ x\ bits}}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ function(Register8\ arg);}
+\DoxyCodeLine{function(control);}
+
+\end{DoxyCode}
+
+
+Apart from the boolean operators, this base class deletes all other implicit operator overloadings. Since any type information is lost during casting, you should not be able to use any operations involving specific flags, configurations or values.
+
+Instead you have to explicitly use the integral {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} to perform your potentially unsafe operations.
+
+This class makes heavy use of {\ttfamily constexpr}, so that as many values and operation can take place at compile time for efficiency.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & the (unsigned) underlying integer type:\+ uint8\+\_\+t, uint16\+\_\+t, uint32\+\_\+t \\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxySeeAlso}{See also}
+Register8, Register16, Register32
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{structmodm_1_1_register_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structmodm_1_1_register_aca49e332e09a999a9c10182c44a0ddff}\index{modm::Register$<$ T $>$@{modm::Register$<$ T $>$}!operator bool@{operator bool}}
+\index{operator bool@{operator bool}!modm::Register$<$ T $>$@{modm::Register$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator bool()}{operator bool()}}
+{\footnotesize\ttfamily \label{structmodm_1_1_register_aca49e332e09a999a9c10182c44a0ddff} 
+template$<$typename T$>$ \\
+\doxymbox{\hyperlink{structmodm_1_1_register}{modm::\+\+Register}}$<$ T $>$::\+operator bool (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}, {\ttfamily [constexpr]}}
+
+Returns {\ttfamily true} if {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} is non-\/zero
+
+The compiler will allow implicit conversions to bool in the following contexts:\+
+\begin{DoxyItemize}
+\item conditions of if, while, for, do-\/while statements
+\item logical operators (\&\&, \texorpdfstring{$\vert$}{|}\texorpdfstring{$\vert$}{|})
+\item negation (operator !)
+\item static\+\_\+assert 
+\end{DoxyItemize}
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+register.\+hpp\end{DoxyCompactItemize}

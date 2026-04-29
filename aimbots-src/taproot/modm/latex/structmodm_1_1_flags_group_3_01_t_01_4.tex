@@ -1,0 +1,92 @@
+\doxysection{modm::\+Flags\+Group\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmodm_1_1_flags_group_3_01_t_01_4}{}\label{structmodm_1_1_flags_group_3_01_t_01_4}\index{modm::FlagsGroup$<$ T $>$@{modm::FlagsGroup$<$ T $>$}}
+
+
+{\ttfamily \+\#include $<$register.\+hpp$>$}
+
+Inheritance diagram for modm::\+Flags\+Group\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structmodm_1_1_flags_group_3_01_t_01_4}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d}\label{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d} 
+constexpr {\bfseries Flags\+Group} ()
+\begin{DoxyCompactList}\small\item\em default constructor initializes {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} to zero \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_flags_group_3_01_t_01_4_a38877c747189b94b67be6580696b7fb6}\label{structmodm_1_1_flags_group_3_01_t_01_4_a38877c747189b94b67be6580696b7fb6} 
+constexpr {\bfseries Flags\+Group} (Flags\+Group const \&o)
+\begin{DoxyCompactList}\small\item\em copy constructor \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_flags_group_3_01_t_01_4_a7148c7cc1f17ee8ac3eb57e85333c467}\label{structmodm_1_1_flags_group_3_01_t_01_4_a7148c7cc1f17ee8ac3eb57e85333c467} 
+constexpr {\bfseries Flags\+Group} (typename T::\+\+Underlying\+Type \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})
+\begin{DoxyCompactList}\small\item\em explicit underlying type constructor \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_flags_group_3_01_t_01_4_a9a5fee8fdf82b064cbc52bc7b2eb4819}\label{structmodm_1_1_flags_group_3_01_t_01_4_a9a5fee8fdf82b064cbc52bc7b2eb4819} 
+constexpr {\bfseries Flags\+Group} (typename T::\+\+Enum\+Type \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})
+\begin{DoxyCompactList}\small\item\em enum type constructor \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_flags_group_3_01_t_01_4_ae1634aedff55964b9bbf5ec71ae94a78}\label{structmodm_1_1_flags_group_3_01_t_01_4_ae1634aedff55964b9bbf5ec71ae94a78} 
+constexpr {\bfseries Flags\+Group} (\doxymbox{\hyperlink{structmodm_1_1_flags_operators}{::\+modm::\+\+Flags\+Operators}}$<$ typename T::\+\+Enum\+Type, typename T::\+\+Underlying\+Type $>$ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1_flags}{Flags} operators and \doxylink{structmodm_1_1_flags}{Flags} constructor. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{structmodm_1_1_register}{modm::\+\+Register$<$ T::\+\+Underlying\+Type $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+constexpr {\bfseries Register} ()
+\begin{DoxyCompactList}\small\item\em Default constructor initializes {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} to zero. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+constexpr \doxymbox{\hyperlink{structmodm_1_1_register_aca49e332e09a999a9c10182c44a0ddff}{operator bool}} () const
+\item 
+constexpr bool {\bfseries operator!} () const
+\begin{DoxyCompactList}\small\item\em Returns {\ttfamily true} if {\ttfamily \doxylink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}} is zero. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{structmodm_1_1_register}{modm::\+\+Register$<$ T::\+\+Underlying\+Type $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef T {\bfseries Underlying\+Type}
+\begin{DoxyCompactList}\small\item\em The integer type internally used to represent the register. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \doxymbox{\hyperlink{structmodm_1_1_register}{modm::\+\+Register$<$ T::\+\+Underlying\+Type $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{Underlying\+Type}} {\bfseries value}
+\begin{DoxyCompactList}\small\item\em The underlying integer value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct modm::\+\+Flags\+Group$<$ T $>$}
+Class for grouping several \doxylink{structmodm_1_1_flags}{Flags} classes together.
+
+This variadic template class allows you to create a type which provides constructor overloads for the provided types.
+
+This will allow you to cast the passed \doxylink{structmodm_1_1_flags}{Flags} classes into one class, but not other classes. Notice that this cast destroys type information (naturally) and therefore you cannot use any of the \doxylink{structmodm_1_1_flags}{Flags} classes type-\/safe operator overloads. The same reasoning applies here as in the \doxylink{structmodm_1_1_register}{Register} class.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ Flags8<Control1>\ Control1\_t;}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ Flags8<Control2>\ Control2\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d}{FlagsGroup<Control1\_t,\ Control2\_t>}}\ Control\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ function(Control\_t\ control);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ both\ call\ the\ same\ function}}
+\DoxyCodeLine{function(Control1\_t(0x20));}
+\DoxyCodeLine{function(Control2\_t(0x10));}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T...} & the \doxylink{structmodm_1_1_flags}{Flags} classes to be grouped. Must all have the same underlying types.\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+register.\+hpp\end{DoxyCompactItemize}

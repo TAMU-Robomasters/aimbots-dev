@@ -1,0 +1,87 @@
+\doxysection{i2c\+\_\+master.\+hpp}
+\hypertarget{i2c__master_8hpp_source}{}\label{i2c__master_8hpp_source}\index{src/modm/architecture/interface/i2c\_master.hpp@{src/modm/architecture/interface/i2c\_master.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2015,\ 2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_INTERFACE\_I2C\_MASTER\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_INTERFACE\_I2C\_MASTER\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}i2c.hpp"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}i2c\_transaction.hpp"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}peripheral.hpp"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_i2c_master}{I2cMaster}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{::modm::PeripheralDriver}},\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_i2c}{::modm::I2c}}}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00039\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8}{Error}}\ :\ uint8\_t}
+\DoxyCodeLine{00040\ \ \ \ \ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8a70a47cae4eb221930f2663fd244369ea}{NoError}},\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8ad1d43f321d5a6d263a887e033e3e1145}{SoftwareReset}},\ \ \ \ \ \ }
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8a56f991230a68b28c915c9edf0a29e9eb}{AddressNack}},\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8a2cfa78cc4ecdfe41a0ab44e8d53bc602}{DataNack}},\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8a2dd6ed6c891cbb02a2919b02931d31a4}{ArbitrationLost}},\ \ \ \ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8ac61259eafa8417c3438d27e43dd087fb}{BusCondition}},\ \ \ \ \ \ \ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8aa2575641a386e96d4981f9069a59dbfa}{BusBusy}},\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8a88183b946cc5f0e8c96b2e66e1c74a7e}{Unknown}}\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00052\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91c}{PullUps}}}
+\DoxyCodeLine{00053\ \ \ \ \ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91cab206a1b4ea1097761f78e8876f6da779}{External}},\ \ \ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91caafbf0897a5a83fdd873dfb032ec695d3}{Internal}}\ \ \ \ }
+\DoxyCodeLine{00056\ \ \ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00059\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcb}{ResetDevices}}\ :\ uint32\_t}
+\DoxyCodeLine{00060\ \ \ \ \ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcba24e03e17ea30a9d76a0c19f0f6c16c7f}{NoReset}}\ \ =\ \ \ \ \ \ \ \ 0,\ \ \ \ }
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcbaaca8a1df3a15a21abda1cc6ca484bccc}{LowSpeed}}\ =\ \ \ 10'000,\ \ \ \ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcbaeb6d8ae6f20283755b339c0dc273988b}{Standard}}\ =\ \ 100'000,\ \ \ \ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcbae16b5b7f26f54214445cbe38d72c2828}{Fast}}\ \ \ \ \ =\ \ 400'000,\ \ \ \ }
+\DoxyCodeLine{00065\ \ \ \ \ \};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00068\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ TransactionBufferSize\ =\ 8;}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}...\ Signals,\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcb}{ResetDevices}}\ reset\ =\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcbaeb6d8ae6f20283755b339c0dc273988b}{ResetDevices::Standard}}\ >}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00091\ \ \ \ \ connect(\doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91c}{PullUps}}\ pullups\ =\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91cab206a1b4ea1097761f78e8876f6da779}{PullUps::External}});}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ baudrate\_t\ baudrate=100\_kBd,\ percent\_t\ tolerance=5\_pct\ >}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00105\ \ \ \ \ initialize();}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00117\ \ \ \ \ start(\doxymbox{\hyperlink{classmodm_1_1_i2c_transaction}{I2cTransaction}}\ *transaction,\ \doxymbox{\hyperlink{structmodm_1_1_i2c_acc3232e086891a4564399117a4e0e450}{ConfigurationHandler}}\ handler\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00127\ \ \ \ \ reset();}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8}{Error}}}
+\DoxyCodeLine{00135\ \ \ \ \ getErrorState();}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00137\ \};}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_INTERFACE\_I2C\_MASTER\_HPP}}
+
+\end{DoxyCode}

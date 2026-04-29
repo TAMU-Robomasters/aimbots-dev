@@ -1,0 +1,395 @@
+\doxysection{register.\+hpp}
+\hypertarget{register_8hpp_source}{}\label{register_8hpp_source}\index{src/modm/architecture/interface/register.hpp@{src/modm/architecture/interface/register.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2016,\ 2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015-\/2016,\ Sascha\ Schade}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Christopher\ Durand}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_REGISTER\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_REGISTER\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/math/utils/bit\_constants.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/detect.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00059\ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00060\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}}
+\DoxyCodeLine{00061\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{typedef}\ T\ \doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}};\ \ \ }
+\DoxyCodeLine{00063\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}};\ \ \ \ \ \ \ }
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}()}
+\DoxyCodeLine{00067\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}(0)\ \{\}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{operator}\ bool()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00080\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ bool(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_register_a959d3b687497e1485faec27887cd8925}{operator!}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00084\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ not\ bool(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{friend}\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&}
+\DoxyCodeLine{00090\ \ \ \ \ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&\ s,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_register}{Register<T>}}\&\ m)}
+\DoxyCodeLine{00091\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ (s\ <<\ m.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00092\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_register_a0be64189534db7c1d386fdbfc9e1dfb4}{Register}}(\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}\ initialValue)}
+\DoxyCodeLine{00097\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}(initialValue)\ \{\}}
+\DoxyCodeLine{00098\ \};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00102\ \textcolor{keyword}{using\ }Register8\ \ =\ Register<uint8\_t>;\ \ \ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{using\ }Register16\ =\ Register<uint16\_t>;\ \ }
+\DoxyCodeLine{00104\ \textcolor{keyword}{using\ }Register32\ =\ Register<uint32\_t>;\ \ }
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00124\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Enum,\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00125\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_register}{::modm::Register}}<T>}
+\DoxyCodeLine{00126\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{typedef}\ T\ \doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}};}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{using\ }\doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<T>\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{::value}};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{typedef}\ Enum\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a9df5a6983573bcc224398c2020d6459c}{EnumType}};\ \ }
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{comment}{//\ MARK:\ Constructors\ and\ assignments}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}()\ \{\}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_adcf3c618c16f217e8ec1ac5ce825b726}{FlagsOperators}}(Enum\ flag)\ :}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<T>(T(flag))\ \{\}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a69210167d06c667cc1363652ebb4720f}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}\ flag)\ :}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<T>(flag)\ \{\}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aeac8d1600b0567c340a62eae299a434e}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register<T>}}\ \textcolor{keyword}{const}\ \&o)\ :}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<T>(o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})\ \{\}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_ae60e3d89b041aea0a242c8c332843849}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};\ \ \ \ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a5a15da92c03131959f00fe3122d3f2b0}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};\ \ \ \ \ }
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00158\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_ae0054f0bbd2d1241fe8b26d61b4fb37d}{operator=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};\ \ \ }
+\DoxyCodeLine{00159\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a74b7de802812e1c0313e3c8f3cd9048b}{operator=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a5c3fbed98d9c8aa6bdbae7aa2d40fc7a}{mask}}()\ \ }
+\DoxyCodeLine{00163\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(T(-\/1));\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{comment}{//\ flags\ binary\ operations}}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa92025455589054692cce6ad6329ca38}{operator\string~}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(\string~\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa94de83b8f1da10e21c380504807b53f}{operator\&}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ \&\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a600cfb6f6939c33ff1dd555ff7c4757e}{operator|}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ |\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_acd0240578bf6dde719f39464c82002be}{operator\string^}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ \string^\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}});\ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00182\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_ac313185cba49d52ee7d5cf293b56fa15}{operator\&=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\ \{\ \ \textcolor{keywordflow}{return}\ (\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ \&=\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}},\ *\textcolor{keyword}{this});\ \}}
+\DoxyCodeLine{00184\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_ab5a8b3f82fbd825f7e06b5dc298972c0}{operator|=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\ \{\ \textcolor{keywordflow}{return}\ (\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ |=\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}},\ *\textcolor{keyword}{this});\ \}}
+\DoxyCodeLine{00186\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a90dc23c6e78003940e81d50cfa926a75}{operator\string^=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\ \{\ \textcolor{keywordflow}{return}\ (\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ \string^=\ o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}},\ *\textcolor{keyword}{this});\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00192\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_af51c2d5ce1bded0e19dedc34b7bc57a5}{operator\&=}}(Enum\ \textcolor{keyword}{const}\ \&flag)\ \{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_af51c2d5ce1bded0e19dedc34b7bc57a5}{operator\&=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00194\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa018903e554ae0fbbf802e26d90ddbcf}{operator|=}}(Enum\ \textcolor{keyword}{const}\ \&flag)\ \{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa018903e554ae0fbbf802e26d90ddbcf}{operator|=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00196\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_afc55d1d688bd4a2693e0be8550cd5874}{operator\string^=}}(Enum\ \textcolor{keyword}{const}\ \&flag)\ \{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_afc55d1d688bd4a2693e0be8550cd5874}{operator\string^=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a0055457982bc6186ce072df5f52043e9}{operator\&}}(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b)\ \{\ \textcolor{keywordflow}{return}\ b\ \&\ a;\ \}}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a94848dda5041d305f367abc4c39f327a}{operator|}}(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b)\ \{\ \textcolor{keywordflow}{return}\ b\ |\ a;\ \}}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a3a49f7e1c7caf05575bb4f2e4bfec29e}{operator\string^}}(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b)\ \{\ \textcolor{keywordflow}{return}\ b\ \string^\ a;\ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#ifndef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa94de83b8f1da10e21c380504807b53f}{operator\&}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa94de83b8f1da10e21c380504807b53f}{operator\&}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a600cfb6f6939c33ff1dd555ff7c4757e}{operator|}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a600cfb6f6939c33ff1dd555ff7c4757e}{operator|}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_acd0240578bf6dde719f39464c82002be}{operator\string^}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_acd0240578bf6dde719f39464c82002be}{operator\string^}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}(flag));\ \}}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ ==\ T(flag);\ \}}
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ !=\ T(flag);\ \}}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b)\ \{\ \textcolor{keywordflow}{return}\ b\ ==\ a;\ \}}
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b)\ \{\ \textcolor{keywordflow}{return}\ b\ !=\ a;\ \}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ ==\ o.value;\ \}}
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}\ !=\ o.value;\ \}}
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa94de83b8f1da10e21c380504807b53f}{operator\&}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a600cfb6f6939c33ff1dd555ff7c4757e}{operator|}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_acd0240578bf6dde719f39464c82002be}{operator\string^}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_aa94de83b8f1da10e21c380504807b53f}{operator\&}}(Enum\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a600cfb6f6939c33ff1dd555ff7c4757e}{operator|}}(Enum\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_acd0240578bf6dde719f39464c82002be}{operator\string^}}(Enum\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&a,\ Enum\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(Enum\ \textcolor{keyword}{const}\ \&a,\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}\ \textcolor{keyword}{const}\ \&b);}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00251\ \}\ modm\_packed;}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00289\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Enum,\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00290\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators}{::modm::FlagsOperators}}<Enum,\ T>}
+\DoxyCodeLine{00291\ \{}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{typedef}\ T\ \doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}};}
+\DoxyCodeLine{00294\ \ \ \ \ \textcolor{keyword}{using\ }\doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<Enum,\ T>\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{::value}};}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{typedef}\ Enum\ \doxymbox{\hyperlink{structmodm_1_1_flags_a294dad1fc92ce4271eac214d1c0a1734}{EnumType}};\ \ }
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ \ \ \textcolor{comment}{//\ MARK:\ Constructors\ and\ assignments}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00304\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}()\ \{\}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_adf1048d496cc54f247bc2bcab12647d2}{Flags}}(Enum\ flag)\ :}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<Enum,\ T>(flag)\ \{\}}
+\DoxyCodeLine{00309\ }
+\DoxyCodeLine{00310\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators}{FlagsOperators<Enum,\ T>}}\ \textcolor{keyword}{const}\ \&flag)\ :}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators}{FlagsOperators}}<Enum,\ T>(flag)\ \{\}}
+\DoxyCodeLine{00312\ }
+\DoxyCodeLine{00314\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a8ad3275d92c73da7e59928c80619dfca}{Flags}}(\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}\ flag)\ :}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<Enum,\ T>(flag)\ \{\}}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a63c43abd307bc5c2b41c7827b18f5077}{Flags}}(\doxymbox{\hyperlink{structmodm_1_1_register}{Register<T>}}\ \textcolor{keyword}{const}\ \&o)\ :}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<Enum,\ T>(o)\ \{\}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_aff877c855c486349f00ad084c8f64ed8}{Flags}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};\ \ }
+\DoxyCodeLine{00322\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a3e34cb727c204a19d0de418fc42c0ee5}{Flags}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};\ \ \ \ \ \ \ }
+\DoxyCodeLine{00324\ }
+\DoxyCodeLine{00326\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_a5c47142bcd21620659e91c6f77ee4cd4}{operator=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};\ }
+\DoxyCodeLine{00327\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\&\ \doxymbox{\hyperlink{structmodm_1_1_flags_ae28793ffbfd447b15b7821687999dd19}{operator=}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};\ \ \ \ \ \ }
+\DoxyCodeLine{00329\ }
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{comment}{//\ MARK:\ convenience\ methods}}
+\DoxyCodeLine{00333\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_afe997e268170e4e791a85bbfd9ca8e9a}{set}}(Enum\ \textcolor{keyword}{const}\ \&flag)}
+\DoxyCodeLine{00334\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ |=\ flag;\ \}}
+\DoxyCodeLine{00336\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a911eae45284b91358a66a2727543ebe3}{set}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)}
+\DoxyCodeLine{00337\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ |=\ o;\ \}}
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00340\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a776c0666be4b3d48d9aeed03044ee3e1}{reset}}(Enum\ \textcolor{keyword}{const}\ \&flag)}
+\DoxyCodeLine{00341\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ \&=\ \string~flag;\ \}}
+\DoxyCodeLine{00343\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_adb2e1692c3a0217b9728b9a11a29a1f6}{reset}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)}
+\DoxyCodeLine{00344\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ \&=\ \string~o;\ \}}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a24ca9c7e0766cb3c065811e2d99104ba}{toggle}}(Enum\ \textcolor{keyword}{const}\ \&flag)}
+\DoxyCodeLine{00348\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ \string^=\ flag;\ \}}
+\DoxyCodeLine{00350\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_ab4990802f5681340bdb58b40a5912441}{toggle}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)}
+\DoxyCodeLine{00351\ \ \ \ \ \{\ *\textcolor{keyword}{this}\ \string^=\ o;\ \}}
+\DoxyCodeLine{00352\ }
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a2333f4014dc94b57b07c6b15a3da114e}{update}}(Enum\ \textcolor{keyword}{const}\ \&flag,\ \textcolor{keywordtype}{bool}\ valueToCompare)}
+\DoxyCodeLine{00355\ \ \ \ \ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (valueToCompare)\ *\textcolor{keyword}{this}\ |=\ flag;}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ *\textcolor{keyword}{this}\ \&=\ \string~flag;}
+\DoxyCodeLine{00358\ \ \ \ \ \}}
+\DoxyCodeLine{00360\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_flags_aac505fc46eaf9fac37eef2bafd4f92a4}{update}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o,\ \textcolor{keywordtype}{bool}\ valueToCompare)}
+\DoxyCodeLine{00361\ \ \ \ \ \{}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (valueToCompare)\ *\textcolor{keyword}{this}\ |=\ o;}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ *\textcolor{keyword}{this}\ \&=\ \string~o;}
+\DoxyCodeLine{00364\ \ \ \ \ \}}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00370\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a2167d6ea6c2239779aa192cf40b63e96}{all}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00371\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ bool(*\textcolor{keyword}{this}\ \&\ flag);\ \}}
+\DoxyCodeLine{00373\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a8afe92c413d55f0a87f7982586c45c52}{any}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00374\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ bool(*\textcolor{keyword}{this}\ \&\ flag);\ \}}
+\DoxyCodeLine{00376\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a56c0110b171d673f71350f02bccecb1d}{none}}(Enum\ \textcolor{keyword}{const}\ \&flag)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00377\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ !(*\textcolor{keyword}{this}\ \&\ flag);\ \}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00383\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a67d98d337f11352d3b56355c72f59314}{all}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00384\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ (*\textcolor{keyword}{this}\ \&\ o)\ ==\ o;\ \}}
+\DoxyCodeLine{00386\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_a831e65bd3ea8f683efb4b4f9434eb92c}{any}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00387\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ bool(*\textcolor{keyword}{this}\ \&\ o);\ \}}
+\DoxyCodeLine{00389\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_flags_ae9963c70710652358b093cc7fce27630}{none}}(\doxymbox{\hyperlink{structmodm_1_1_flags_a55665951baa22b91b244c77fdf76ff68}{Flags}}\ \textcolor{keyword}{const}\ \&o)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00390\ \textcolor{keyword}{\ \ \ \ }\{\ \textcolor{keywordflow}{return}\ (*\textcolor{keyword}{this}\ \&\ o).value\ ==\ 0;\ \}}
+\DoxyCodeLine{00392\ \}\ modm\_packed;}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00396\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Enum\ =\ u\textcolor{keywordtype}{int}8\_t\ >}
+\DoxyCodeLine{00397\ \textcolor{keyword}{using\ }Flags8\ =\ Flags<Enum,\ uint8\_t>;\ \ \ \ }
+\DoxyCodeLine{00398\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Enum\ =\ u\textcolor{keywordtype}{int}16\_t\ >}
+\DoxyCodeLine{00399\ \textcolor{keyword}{using\ }Flags16\ =\ Flags<Enum,\ uint16\_t>;\ \ }
+\DoxyCodeLine{00400\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Enum\ =\ u\textcolor{keywordtype}{int}32\_t\ >}
+\DoxyCodeLine{00401\ \textcolor{keyword}{using\ }Flags32\ =\ Flags<Enum,\ uint32\_t>;\ \ }
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00406\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}...\ T\ >}
+\DoxyCodeLine{00407\ \textcolor{keyword}{struct\ }FlagsGroup\ \{\}\ modm\_packed;}
+\DoxyCodeLine{00408\ }
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00410\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Ts\ >}
+\DoxyCodeLine{00411\ \textcolor{keyword}{struct\ }FlagsGroup<T,\ Ts...>\ :\ \textcolor{keyword}{public}\ FlagsGroup<Ts...>}
+\DoxyCodeLine{00412\ \{}
+\DoxyCodeLine{00413\ \ \ \ \ \textcolor{comment}{//\ use\ inherited\ constructors}}
+\DoxyCodeLine{00414\ \ \ \ \ \textcolor{keyword}{using\ }FlagsGroup<Ts...>::FlagsGroup;}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00417\ \ \ \ \ \textcolor{keyword}{constexpr}\ FlagsGroup()\ \{\};}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00419\ \ \ \ \ \textcolor{comment}{//\ enum\ class}}
+\DoxyCodeLine{00420\ \ \ \ \ \textcolor{keyword}{constexpr}\ FlagsGroup(\textcolor{keyword}{typename}\ T::EnumType\ value)}
+\DoxyCodeLine{00421\ \ \ \ \ :\ \ \ FlagsGroup<Ts...>(typename\ T::UnderlyingType(value))\ \{\}}
+\DoxyCodeLine{00423\ \ \ \ \ \textcolor{keyword}{constexpr}\ FlagsGroup(::modm::FlagsOperators<typename\ T::EnumType,\ typename\ T::UnderlyingType>\ value)}
+\DoxyCodeLine{00424\ \ \ \ \ :\ \ \ FlagsGroup<Ts...>(value.value)\ \{\}}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \}\ modm\_packed;}
+\DoxyCodeLine{00428\ }
+\DoxyCodeLine{00460\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00461\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ T...\ >}
+\DoxyCodeLine{00462\ \textcolor{keyword}{struct\ }FlagsGroup<T...>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_register}{Register}}<T::UnderlyingType>}
+\DoxyCodeLine{00463\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00464\ template\ <\ typename\ T\ >}
+\DoxyCodeLine{00465\ struct\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d}{FlagsGroup}}<T>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<typename\ T::UnderlyingType>}
+\DoxyCodeLine{00466\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00467\ \{}
+\DoxyCodeLine{00469\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d}{FlagsGroup}}()\ \{\};}
+\DoxyCodeLine{00470\ }
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a38877c747189b94b67be6580696b7fb6}{FlagsGroup}}(\doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a790231453fe1f57f8f061996eb9f838d}{FlagsGroup}}\ \textcolor{keyword}{const}\ \&o)}
+\DoxyCodeLine{00473\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<typename\ T::\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}>(o.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})\ \{\}}
+\DoxyCodeLine{00475\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a7148c7cc1f17ee8ac3eb57e85333c467}{FlagsGroup}}(\textcolor{keyword}{typename}\ T::UnderlyingType\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})}
+\DoxyCodeLine{00476\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<typename\ T::\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}>(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})\ \{\}}
+\DoxyCodeLine{00477\ }
+\DoxyCodeLine{00479\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_a9a5fee8fdf82b064cbc52bc7b2eb4819}{FlagsGroup}}(\textcolor{keyword}{typename}\ T::EnumType\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})}
+\DoxyCodeLine{00480\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<typename\ T::\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}>(typename\ T::\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}))\ \{\}}
+\DoxyCodeLine{00482\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_flags_group_3_01_t_01_4_ae1634aedff55964b9bbf5ec71ae94a78}{FlagsGroup}}(\doxymbox{\hyperlink{structmodm_1_1_flags_operators}{::modm::FlagsOperators<typename\ T::EnumType,\ typename\ T::UnderlyingType>}}\ \doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})}
+\DoxyCodeLine{00483\ \ \ \ \ :\ \ \ \doxymbox{\hyperlink{structmodm_1_1_register_a6011e04b6402adbf7a4497e11dfb9b04}{Register}}<typename\ T::\doxymbox{\hyperlink{structmodm_1_1_register_a01eabc4e19471d308132e16098f245cd}{UnderlyingType}}>(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}}.\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{value}})\ \{\}}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00485\ \}\ modm\_packed;}
+\DoxyCodeLine{00486\ }
+\DoxyCodeLine{00563\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Parent,\ \textcolor{keyword}{typename}\ Enum,\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ Mask,\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ Position\ =\ 0\ >}
+\DoxyCodeLine{00564\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_configuration_a5ec48a181b69a0449fea9f4be17e43ba}{Configuration}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators}{::modm::FlagsOperators}}<typename\ Parent::EnumType,\ typename\ Parent::UnderlyingType>}
+\DoxyCodeLine{00565\ \{}
+\DoxyCodeLine{00566\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00567\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ UnderlyingType;}
+\DoxyCodeLine{00568\ \ \ \ \ \textcolor{keyword}{typedef}\ UnderlyingType\ UType;\ \ \ \textcolor{comment}{//\ lazy}}
+\DoxyCodeLine{00569\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Parent::EnumType\ EType;\ \ \ \ \textcolor{comment}{//\ lazy}}
+\DoxyCodeLine{00570\ }
+\DoxyCodeLine{00571\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00573\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_a5ec48a181b69a0449fea9f4be17e43ba}{Configuration}}(UnderlyingType\ config)\ :}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<EType,\ UType>(config\ <<\ Position)\ \{\}}
+\DoxyCodeLine{00576\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_a6290307c60e58959878d0fcee2139d5c}{Configuration}}(Enum\ config)\ :}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<EType,\ UType>(UType(config)\ <<\ Position)\ \{\}}
+\DoxyCodeLine{00578\ }
+\DoxyCodeLine{00580\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_a065e33a67abe6e57966ce718c6456b9e}{Configuration}}(\doxymbox{\hyperlink{structmodm_1_1_configuration_a5ec48a181b69a0449fea9f4be17e43ba}{Configuration}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00582\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_a3bf31e71f6913ca780a55e367a033d46}{Configuration}}(\doxymbox{\hyperlink{structmodm_1_1_configuration_a5ec48a181b69a0449fea9f4be17e43ba}{Configuration}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00583\ }
+\DoxyCodeLine{00585\ }
+\DoxyCodeLine{00587\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_abf0d5fb3a94e6809c81cb1d58ed03086}{set}}(Parent\ \&parent,\ Enum\ config)}
+\DoxyCodeLine{00588\ \ \ \ \ \{\ \ \ parent.value\ =\ (parent.value\ \&\ \string~(Mask\ <<\ Position))\ |\ (UType(config)\ <<\ Position);\ \}}
+\DoxyCodeLine{00589\ }
+\DoxyCodeLine{00591\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_configuration_a59636838699c9ba89267fcb801e01a81}{reset}}(Parent\ \&parent)}
+\DoxyCodeLine{00592\ \ \ \ \ \{\ \ \ parent.value\ \&=\ \string~(Mask\ <<\ Position);\ \}}
+\DoxyCodeLine{00593\ }
+\DoxyCodeLine{00595\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Enum\ \doxymbox{\hyperlink{structmodm_1_1_configuration_ac29740c6f4c3adf62b7fdacdea673331}{get}}(Parent\ \textcolor{keyword}{const}\ \&parent)}
+\DoxyCodeLine{00596\ \ \ \ \ \{\ \ \ \textcolor{keywordflow}{return}\ Enum((parent.value\ \&\ (Mask\ <<\ Position))\ >>\ Position);\ \}}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00600\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Parent\ \doxymbox{\hyperlink{structmodm_1_1_configuration_aedefe9e8396caa9a6364562759a155ae}{mask}}()}
+\DoxyCodeLine{00601\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ Parent((Mask\ <<\ Position));\ \}}
+\DoxyCodeLine{00602\ }
+\DoxyCodeLine{00604\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{operator}\ Parent()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00605\ \textcolor{keyword}{\ \ \ \ }\{\ \ \ \textcolor{keywordflow}{return}\ Parent(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{FlagsOperators<EType,\ UType>::value}});\ \}}
+\DoxyCodeLine{00607\ \}\ modm\_packed;}
+\DoxyCodeLine{00608\ }
+\DoxyCodeLine{00630\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{typename}\ Parent,\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ W\textcolor{keywordtype}{id}th,\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ Position\ =\ 0\ >}
+\DoxyCodeLine{00631\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_value_afdfea1c5224fa3c7b9e2190cc0db5eb6}{Value}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_flags_operators}{::modm::FlagsOperators}}<typename\ Parent::EnumType,\ typename\ Parent::UnderlyingType>}
+\DoxyCodeLine{00632\ \{}
+\DoxyCodeLine{00633\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00634\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Parent::UnderlyingType\ UnderlyingType;}
+\DoxyCodeLine{00635\ \ \ \ \ \textcolor{keyword}{typedef}\ UnderlyingType\ UType;\ \ \ \textcolor{comment}{//\ lazy}}
+\DoxyCodeLine{00636\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Parent::EnumType\ EType;\ \ \ \ \textcolor{comment}{//\ lazy}}
+\DoxyCodeLine{00637\ }
+\DoxyCodeLine{00638\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ UType\ Mask\ =\ ((1\ <<\ Width)\ -\/\ 1)\ <<\ Position;}
+\DoxyCodeLine{00639\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00641\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_value_afdfea1c5224fa3c7b9e2190cc0db5eb6}{Value}}(UnderlyingType\ config)\ :}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_flags_operators_a1979ef9b9355bdc69e938c43dd89dcb6}{FlagsOperators}}<EType,\ UType>((config\ <<\ Position)\ \&\ Mask)\ \{\}}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00645\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_value_a7b67689a82848f4593f7b6de98e80305}{Value}}(\doxymbox{\hyperlink{structmodm_1_1_value_afdfea1c5224fa3c7b9e2190cc0db5eb6}{Value}}\ \textcolor{keyword}{const}\ \&o)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00647\ \ \ \ \ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_value_adac33e46d931b668bf79fcb2af894b0d}{Value}}(\doxymbox{\hyperlink{structmodm_1_1_value_afdfea1c5224fa3c7b9e2190cc0db5eb6}{Value}}\ \&\&o)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00648\ }
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00652\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_value_ab5b3424978e70f77929104ed56a83092}{set}}(Parent\ \&parent,\ UnderlyingType\ config)}
+\DoxyCodeLine{00653\ \ \ \ \ \{\ \ \ parent.value\ =\ (parent.value\ \&\ \string~Mask)\ |\ ((config\ <<\ Position)\ \&\ Mask);\ \}}
+\DoxyCodeLine{00654\ }
+\DoxyCodeLine{00656\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{structmodm_1_1_value_a730f548166221c1a94f2216c0ab17f5f}{reset}}(Parent\ \&parent)}
+\DoxyCodeLine{00657\ \ \ \ \ \{\ \ \ parent.value\ \&=\ \string~Mask;\ \}}
+\DoxyCodeLine{00658\ }
+\DoxyCodeLine{00660\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ UType\ \doxymbox{\hyperlink{structmodm_1_1_value_a275d3ad40cb2e49643ac8e2ef210877f}{get}}(Parent\ \textcolor{keyword}{const}\ \&parent)}
+\DoxyCodeLine{00661\ \ \ \ \ \{\ \ \ \textcolor{keywordflow}{return}\ (parent.value\ \&\ Mask)\ >>\ Position;\ \}}
+\DoxyCodeLine{00663\ }
+\DoxyCodeLine{00665\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Parent\ \doxymbox{\hyperlink{structmodm_1_1_value_afc5a062e18e0fd345756a8349c9be268}{mask}}()}
+\DoxyCodeLine{00666\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ Parent(Mask);\ \}}
+\DoxyCodeLine{00667\ }
+\DoxyCodeLine{00669\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{operator}\ Parent()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00670\ \textcolor{keyword}{\ \ \ \ }\{\ \ \ \textcolor{keywordflow}{return}\ Parent(\doxymbox{\hyperlink{structmodm_1_1_register_a4d86255f7cd8fc09c9f88d1776535f68}{FlagsOperators<EType,\ UType>::value}});\ \}}
+\DoxyCodeLine{00672\ \}\ modm\_packed;}
+\DoxyCodeLine{00673\ }
+\DoxyCodeLine{00674\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00675\ }
+\DoxyCodeLine{00676\ \textcolor{comment}{//\ these\ operator\ overloadings\ will\ overload\ *ALL*\ possible\ enum\ classes}}
+\DoxyCodeLine{00677\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00678\ \textcolor{comment}{template\ <typename\ Enum>}}
+\DoxyCodeLine{00679\ \textcolor{comment}{constexpr\ ::modm::Flags<Enum>\ operator\string~(Enum\ const\ \&lhs)\ \{\ return\ \string~::modm::Flags<Enum>(lhs);\ \}}}
+\DoxyCodeLine{00680\ \textcolor{comment}{template\ <typename\ Enum>}}
+\DoxyCodeLine{00681\ \textcolor{comment}{constexpr\ ::modm::Flags<Enum>\ operator|(Enum\ const\ \&a,\ Enum\ const\ \&b)\ \{\ return\ ::modm::Flags<Enum>(a)\ |\ b;\ \ \}}}
+\DoxyCodeLine{00682\ \textcolor{comment}{template\ <typename\ Enum>}}
+\DoxyCodeLine{00683\ \textcolor{comment}{constexpr\ ::modm::Flags<Enum>\ operator\&(Enum\ const\ \&a,\ Enum\ const\ \&b)\ \{\ return\ ::modm::Flags<Enum>(a)\ \&\ b;\ \}}}
+\DoxyCodeLine{00684\ \textcolor{comment}{template\ <typename\ Enum>}}
+\DoxyCodeLine{00685\ \textcolor{comment}{constexpr\ ::modm::Flags<Enum>\ operator\string^(Enum\ const\ \&a,\ Enum\ const\ \&b)\ \{\ return\ ::modm::Flags<Enum>(a)\ \string^\ b;\ \}}}
+\DoxyCodeLine{00686\ \textcolor{comment}{//*/}}
+\DoxyCodeLine{00687\ }
+\DoxyCodeLine{00702\ \textcolor{preprocessor}{\#define\ MODM\_FLAGS8(Enum)\ \(\backslash\)}}
+\DoxyCodeLine{00703\ \textcolor{preprocessor}{\ \ \ \ typedef\ ::modm::Flags8<Enum>\ MODM\_CONCAT(Enum,\ \_t);\ \(\backslash\)}}
+\DoxyCodeLine{00704\ \textcolor{preprocessor}{\ \ \ \ MODM\_INT\_TYPE\_FLAGS(MODM\_CONCAT(Enum,\ \_t))}}
+\DoxyCodeLine{00705\ }
+\DoxyCodeLine{00720\ \textcolor{preprocessor}{\#define\ MODM\_FLAGS16(Enum)\ \(\backslash\)}}
+\DoxyCodeLine{00721\ \textcolor{preprocessor}{\ \ \ \ typedef\ ::modm::Flags16<Enum>\ MODM\_CONCAT(Enum,\ \_t);\ \(\backslash\)}}
+\DoxyCodeLine{00722\ \textcolor{preprocessor}{\ \ \ \ MODM\_INT\_TYPE\_FLAGS(MODM\_CONCAT(Enum,\ \_t))}}
+\DoxyCodeLine{00723\ }
+\DoxyCodeLine{00738\ \textcolor{preprocessor}{\#define\ MODM\_FLAGS32(Enum)\ \(\backslash\)}}
+\DoxyCodeLine{00739\ \textcolor{preprocessor}{\ \ \ \ typedef\ ::modm::Flags32<Enum>\ MODM\_CONCAT(Enum,\ \_t);\ \(\backslash\)}}
+\DoxyCodeLine{00740\ \textcolor{preprocessor}{\ \ \ \ MODM\_INT\_TYPE\_FLAGS(MODM\_CONCAT(Enum,\ \_t))}}
+\DoxyCodeLine{00741\ }
+\DoxyCodeLine{00754\ \textcolor{preprocessor}{\#define\ MODM\_TYPE\_FLAGS(Parent)\ \(\backslash\)}}
+\DoxyCodeLine{00755\ \textcolor{preprocessor}{\ \ \ \ MODM\_INTERNAL\_FLAGS(Parent,)}}
+\DoxyCodeLine{00756\ }
+\DoxyCodeLine{00772\ \textcolor{preprocessor}{\#define\ MODM\_FLAGS\_CONFIG(Parent,\ Config)\ \(\backslash\)}}
+\DoxyCodeLine{00773\ \textcolor{preprocessor}{\ \ \ \ using\ MODM\_CONCAT(Config,\ \_t)\ =\ \(\backslash\)}}
+\DoxyCodeLine{00774\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ ::modm::Configuration<\ MODM\_CONCAT(Parent,\ \_t),\ Config,\ \(\backslash\)}}
+\DoxyCodeLine{00775\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ MODM\_CONCAT(Parent,\ \_t)::UnderlyingType(MODM\_CONCAT(Parent::Config,\ \_Mask))\ >}}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00778\ \textcolor{preprocessor}{\#define\ MODM\_INT\_TYPE\_FLAGS(Parent)\ \(\backslash\)}}
+\DoxyCodeLine{00779\ \textcolor{preprocessor}{\ \ \ \ MODM\_INTERNAL\_FLAGS(Parent,\ friend)}}
+\DoxyCodeLine{00780\ }
+\DoxyCodeLine{00781\ \textcolor{preprocessor}{\#define\ MODM\_INTERNAL\_FLAGS(Parent,\ scope)\ \(\backslash\)}}
+\DoxyCodeLine{00782\ \textcolor{preprocessor}{\ \ \ \ scope\ constexpr\ Parent\ operator\ compl\ (typename\ Parent::EnumType\ const\ \&lhs)\ \(\backslash\)}}
+\DoxyCodeLine{00783\ \textcolor{preprocessor}{\ \ \ \ \{\ return\ compl\ Parent(lhs);\ \}\ \(\backslash\)}}
+\DoxyCodeLine{00784\ \textcolor{preprocessor}{\ \ \ \ MODM\_INTERNAL\_FLAGS\_EOP(type,\ Parent,\ \&,\ scope)\ \(\backslash\)}}
+\DoxyCodeLine{00785\ \textcolor{preprocessor}{\ \ \ \ MODM\_INTERNAL\_FLAGS\_EOP(type,\ Parent,\ |,\ scope)\ \(\backslash\)}}
+\DoxyCodeLine{00786\ \textcolor{preprocessor}{\ \ \ \ MODM\_INTERNAL\_FLAGS\_EOP(type,\ Parent,\ \string^,\ scope)}}
+\DoxyCodeLine{00787\ }
+\DoxyCodeLine{00788\ \textcolor{preprocessor}{\#define\ MODM\_INTERNAL\_FLAGS\_EOP(type,\ Parent,\ op,\ scope)\ \(\backslash\)}}
+\DoxyCodeLine{00789\ \textcolor{preprocessor}{\ \ \ \ scope\ constexpr\ Parent\ operator\ op\ (typename\ Parent::EnumType\ const\ \&lhs,\ typename\ Parent::EnumType\ const\ \&rhs)\ \(\backslash\)}}
+\DoxyCodeLine{00790\ \textcolor{preprocessor}{\ \ \ \ \{\ \(\backslash\)}}
+\DoxyCodeLine{00791\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ using\ EnumType\ =\ typename\ Parent::EnumType;\ \(\backslash\)}}
+\DoxyCodeLine{00792\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ using\ UnderlyingType\ =\ typename\ Parent::UnderlyingType;\ \(\backslash\)}}
+\DoxyCodeLine{00793\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ Parent(EnumType(UnderlyingType(lhs)\ op\ UnderlyingType(rhs)));\ \(\backslash\)}}
+\DoxyCodeLine{00794\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{00796\ }
+\DoxyCodeLine{00797\ }
+\DoxyCodeLine{00798\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_REGISTER\_HPP}}
+
+\end{DoxyCode}

@@ -1,0 +1,713 @@
+\doxysection{port.\+hpp}
+\hypertarget{port_8hpp_source}{}\label{port_8hpp_source}\index{src/modm/platform/gpio/port.hpp@{src/modm/platform/gpio/port.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_GPIO\_PORT\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_GPIO\_PORT\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}base.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}set.hpp"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/math/utils/bit\_operation.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{template}<\ Gpio::Port\ port\ >}
+\DoxyCodeLine{00028\ \textcolor{keyword}{struct\ }GpioPortInfo;}
+\DoxyCodeLine{00029\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio,\ \textcolor{keywordtype}{int}8\_t\ W\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00030\ \textcolor{keyword}{struct\ }GpioSetShim}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ Width>\ check;}
+\DoxyCodeLine{00033\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio,\ \textcolor{keywordtype}{int}8\_t\ W\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00038\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_port}{GpioPort}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port}{::modm::GpioPort}},\ \textcolor{keyword}{public}\ GpioSetShim<StartGpio,\ Width>\ }
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{using\ }PinSet\ =\ GpioSetShim<StartGpio,\ Width>;}
+\DoxyCodeLine{00041\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{using\ }PinSet::width;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{static\_assert}(width\ <=\ 16,\ \textcolor{stringliteral}{"{}Only\ a\ maximum\ of\ 16\ pins\ are\ supported\ by\ GpioPort!"{}});}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{using\ }PortType\ =\ std::conditional\_t<\ (width\ >\ 8),}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint16\_t,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ >;}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33}{DataOrder}}\ getDataOrder()}
+\DoxyCodeLine{00048\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ Width\ >\ 0\ ?\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a960b44c579bc2f6818d2daaf9e4c16f0}{GpioPort::DataOrder::Normal}}\ :\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{GpioPort::DataOrder::Reversed}};\ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{using\ }PinSet::mask;}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{using\ }PinSet::inverted;}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ StartPin\ =\ Width\ >\ 0\ ?\ StartGpio::pin\ :\ StartGpio::pin\ -\/\ width\ +\ 1;}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ StartPinReversed\ =\ (8\ -\/\ StartPin\ -\/\ width)\ +\ 8;}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{static}\ PortType\ isSet()}
+\DoxyCodeLine{00058\ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ uint16\_t\ r\{0\};}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ r\ =\ (GPIOA-\/>ODR\ \&\ mask(0))\ \string^\ inverted(0);}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ r\ =\ (GPIOB-\/>ODR\ \&\ mask(1))\ \string^\ inverted(1);}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ r\ =\ (GPIOC-\/>ODR\ \&\ mask(2))\ \string^\ inverted(2);}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ r\ =\ (GPIOD-\/>ODR\ \&\ mask(3))\ \string^\ inverted(3);}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ r\ =\ (GPIOE-\/>ODR\ \&\ mask(4))\ \string^\ inverted(4);}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ r\ =\ (GPIOF-\/>ODR\ \&\ mask(5))\ \string^\ inverted(5);}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ r\ =\ (GPIOG-\/>ODR\ \&\ mask(6))\ \string^\ inverted(6);}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ r\ =\ (GPIOH-\/>ODR\ \&\ mask(7))\ \string^\ inverted(7);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ r\ =\ (GPIOI-\/>ODR\ \&\ mask(8))\ \string^\ inverted(8);}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (getDataOrder()\ ==\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{modm::GpioPort::DataOrder::Reversed}})}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(r)\ >>\ StartPinReversed;}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ \ \ \ \ \ \ \ \ \ \ \ r\ \ >>\ StartPin;}
+\DoxyCodeLine{00072\ \ \ \ \ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{static}\ PortType\ read()}
+\DoxyCodeLine{00075\ \ \ \ \ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ uint16\_t\ r\{0\};}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ r\ =\ (GPIOA-\/>IDR\ \&\ mask(0))\ \string^\ inverted(0);}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ r\ =\ (GPIOB-\/>IDR\ \&\ mask(1))\ \string^\ inverted(1);}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ r\ =\ (GPIOC-\/>IDR\ \&\ mask(2))\ \string^\ inverted(2);}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ r\ =\ (GPIOD-\/>IDR\ \&\ mask(3))\ \string^\ inverted(3);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ r\ =\ (GPIOE-\/>IDR\ \&\ mask(4))\ \string^\ inverted(4);}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ r\ =\ (GPIOF-\/>IDR\ \&\ mask(5))\ \string^\ inverted(5);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ r\ =\ (GPIOG-\/>IDR\ \&\ mask(6))\ \string^\ inverted(6);}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ r\ =\ (GPIOH-\/>IDR\ \&\ mask(7))\ \string^\ inverted(7);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ r\ =\ (GPIOI-\/>IDR\ \&\ mask(8))\ \string^\ inverted(8);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (getDataOrder()\ ==\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{modm::GpioPort::DataOrder::Reversed}})}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(r)\ >>\ StartPinReversed;}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ \ \ \ \ \ \ \ \ \ \ \ r\ \ >>\ StartPin;}
+\DoxyCodeLine{00089\ \ \ \ \ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ write(PortType\ data)}
+\DoxyCodeLine{00092\ \ \ \ \ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ uint16\_t\ p;}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (getDataOrder()\ ==\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{modm::GpioPort::DataOrder::Reversed}})}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ p\ =\ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(uint16\_t(uint16\_t(data)\ <<\ StartPinReversed));}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ p\ =\ \ \ \ \ \ \ \ \ \ \ \ uint16\_t(data)\ <<\ StartPin;}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{\ p\ \string^=\ inverted(0);}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>BSRR\ =\ ((\string~p\ \&\ mask(0))\ <<\ 16)\ |\ (p\ \&\ mask(0));}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{\ p\ \string^=\ inverted(1);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>BSRR\ =\ ((\string~p\ \&\ mask(1))\ <<\ 16)\ |\ (p\ \&\ mask(1));}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{\ p\ \string^=\ inverted(2);}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>BSRR\ =\ ((\string~p\ \&\ mask(2))\ <<\ 16)\ |\ (p\ \&\ mask(2));}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{\ p\ \string^=\ inverted(3);}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>BSRR\ =\ ((\string~p\ \&\ mask(3))\ <<\ 16)\ |\ (p\ \&\ mask(3));}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{\ p\ \string^=\ inverted(4);}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>BSRR\ =\ ((\string~p\ \&\ mask(4))\ <<\ 16)\ |\ (p\ \&\ mask(4));}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{\ p\ \string^=\ inverted(5);}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>BSRR\ =\ ((\string~p\ \&\ mask(5))\ <<\ 16)\ |\ (p\ \&\ mask(5));}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{\ p\ \string^=\ inverted(6);}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>BSRR\ =\ ((\string~p\ \&\ mask(6))\ <<\ 16)\ |\ (p\ \&\ mask(6));}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{\ p\ \string^=\ inverted(7);}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>BSRR\ =\ ((\string~p\ \&\ mask(7))\ <<\ 16)\ |\ (p\ \&\ mask(7));}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{\ p\ \string^=\ inverted(8);}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>BSRR\ =\ ((\string~p\ \&\ mask(8))\ <<\ 16)\ |\ (p\ \&\ mask(8));}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ \};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/\ Port\ Width\ Information\ -\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00129\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00130\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::A>}
+\DoxyCodeLine{00131\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00138\ \ \ \ \ \{}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00149\ \ \ \ \ \};}
+\DoxyCodeLine{00150\ \};}
+\DoxyCodeLine{00151\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00152\ \textcolor{keyword}{struct\ }GpioPortInfo<Gpio::Port::B>}
+\DoxyCodeLine{00153\ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00160\ \ \ \ \ \{}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00171\ \ \ \ \ \};}
+\DoxyCodeLine{00172\ \};}
+\DoxyCodeLine{00173\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00174\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::C>}
+\DoxyCodeLine{00175\ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00182\ \ \ \ \ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00193\ \ \ \ \ \};}
+\DoxyCodeLine{00194\ \};}
+\DoxyCodeLine{00195\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00196\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::D>}
+\DoxyCodeLine{00197\ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00204\ \ \ \ \ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00215\ \ \ \ \ \};}
+\DoxyCodeLine{00216\ \};}
+\DoxyCodeLine{00217\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00218\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::E>}
+\DoxyCodeLine{00219\ \{}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00226\ \ \ \ \ \{}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00237\ \ \ \ \ \};}
+\DoxyCodeLine{00238\ \};}
+\DoxyCodeLine{00239\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00240\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::F>}
+\DoxyCodeLine{00241\ \{}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00248\ \ \ \ \ \{}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00259\ \ \ \ \ \};}
+\DoxyCodeLine{00260\ \};}
+\DoxyCodeLine{00261\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00262\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::G>}
+\DoxyCodeLine{00263\ \{}
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00270\ \ \ \ \ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00281\ \ \ \ \ \};}
+\DoxyCodeLine{00282\ \};}
+\DoxyCodeLine{00283\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00284\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::H>}
+\DoxyCodeLine{00285\ \{}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 16;}
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00292\ \ \ \ \ \{}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 16."{}});}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 15."{}});}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00303\ \ \ \ \ \};}
+\DoxyCodeLine{00304\ \};}
+\DoxyCodeLine{00305\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00306\ \textcolor{keyword}{struct\ }GpioPortInfo<\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}::Port::I>}
+\DoxyCodeLine{00307\ \{}
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ Width\ =\ 12;}
+\DoxyCodeLine{00309\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ StartPin\ =\ 0;}
+\DoxyCodeLine{00310\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ EndPin\ =\ StartPin\ +\ Width;}
+\DoxyCodeLine{00311\ }
+\DoxyCodeLine{00312\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}8\_t\ QueryStartPin,\ \textcolor{keywordtype}{int}8\_t\ QueryW\textcolor{keywordtype}{id}th\ >}
+\DoxyCodeLine{00313\ \ \ \ \ \textcolor{keyword}{struct\ }check}
+\DoxyCodeLine{00314\ \ \ \ \ \{}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNormal\ =\ QueryWidth\ >\ 0;}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isReversed\ =\ QueryWidth\ <\ 0;}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ width\ =\ isNormal\ ?\ QueryWidth\ :\ -\/QueryWidth;}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ width\ <=\ Width,}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ Width\ out\ of\ bounds!\ Maximum\ is\ 12."{}});}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isReversed\ or\ (QueryStartPin\ +\ QueryWidth\ <=\ EndPin),}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ +\ Width\ out\ of\ bounds!\ Maximum\ is\ 11."{}});}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(isNormal\ or\ (StartPin\ <=\ QueryStartPin\ +\ QueryWidth\ +\ 1),}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioPort\ StartPin\ -\/\ Width\ out\ of\ bounds!\ Minimum\ is\ 0."{}});}
+\DoxyCodeLine{00325\ \ \ \ \ \};}
+\DoxyCodeLine{00326\ \};}
+\DoxyCodeLine{00327\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/\ Translator\ classes\ from\ Gpio\ +\ Width\ -\/>\ GpioSet\ -\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00328\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio,\ \textcolor{keywordtype}{int}8\_t\ offset\ >}
+\DoxyCodeLine{00329\ \textcolor{keyword}{struct\ }GpioShim}
+\DoxyCodeLine{00330\ \{}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{typename}\ StartGpio::Port\ port\ =\ StartGpio::port;}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ mask\ =\ (1ul\ <<\ (StartGpio::pin\ +\ offset));}
+\DoxyCodeLine{00333\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isInverted\ =\ StartGpio::isInverted;}
+\DoxyCodeLine{00334\ \};}
+\DoxyCodeLine{00335\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00336\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/16>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>,}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/11>,}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/12>,}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/13>,}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/14>,}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/15>}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/16>\ check;\ \};}
+\DoxyCodeLine{00354\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00355\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/15>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>,}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/11>,}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/12>,}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/13>,}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/14>}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/15>\ check;\ \};}
+\DoxyCodeLine{00372\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00373\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/14>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>,}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/11>,}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/12>,}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/13>}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/14>\ check;\ \};}
+\DoxyCodeLine{00389\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00390\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/13>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00396\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>,}
+\DoxyCodeLine{00402\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/11>,}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/12>}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/13>\ check;\ \};}
+\DoxyCodeLine{00405\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00406\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/12>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>,}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/11>}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/12>\ check;\ \};}
+\DoxyCodeLine{00420\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00421\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/11>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>,}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/10>}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/11>\ check;\ \};}
+\DoxyCodeLine{00434\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00435\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/10>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00436\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00437\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00438\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00442\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>,}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/9>}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/10>\ check;\ \};}
+\DoxyCodeLine{00447\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00448\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/9>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>,}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/8>}
+\DoxyCodeLine{00458\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/9>\ check;\ \};}
+\DoxyCodeLine{00459\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00460\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/8>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>,}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/7>}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/8>\ check;\ \};}
+\DoxyCodeLine{00470\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00471\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/7>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00472\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>,}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/6>}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/7>\ check;\ \};}
+\DoxyCodeLine{00480\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00481\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/6>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>,}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/5>}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/6>\ check;\ \};}
+\DoxyCodeLine{00489\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00490\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/5>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>,}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/4>}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/5>\ check;\ \};}
+\DoxyCodeLine{00497\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00498\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/4>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>,}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/3>}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/4>\ check;\ \};}
+\DoxyCodeLine{00504\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00505\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/3>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>,}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/2>}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/3>\ check;\ \};}
+\DoxyCodeLine{00510\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00511\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/2>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>,}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ -\/1>}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/2>\ check;\ \};}
+\DoxyCodeLine{00515\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00516\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ -\/1>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ -\/1>\ check;\ \};}
+\DoxyCodeLine{00519\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00520\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 0>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 0>\ check;\ \};}
+\DoxyCodeLine{00522\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00523\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 1>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 1>\ check;\ \};}
+\DoxyCodeLine{00526\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00527\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 2>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 2>\ check;\ \};}
+\DoxyCodeLine{00531\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00532\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 3>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00533\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00534\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 3>\ check;\ \};}
+\DoxyCodeLine{00537\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00538\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 4>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 4>\ check;\ \};}
+\DoxyCodeLine{00544\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00545\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 5>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 5>\ check;\ \};}
+\DoxyCodeLine{00552\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00553\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 6>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00555\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 6>\ check;\ \};}
+\DoxyCodeLine{00561\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00562\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 7>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00569\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 7>\ check;\ \};}
+\DoxyCodeLine{00571\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00572\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 8>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 8>\ check;\ \};}
+\DoxyCodeLine{00582\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00583\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 9>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00585\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00591\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 9>\ check;\ \};}
+\DoxyCodeLine{00594\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00595\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 10>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00599\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00603\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00605\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 10>\ check;\ \};}
+\DoxyCodeLine{00607\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00608\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 11>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00611\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00613\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00617\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00619\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 11>\ check;\ \};}
+\DoxyCodeLine{00621\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00622\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 12>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 11>,}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00632\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00633\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00634\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 12>\ check;\ \};}
+\DoxyCodeLine{00636\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00637\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 13>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 12>,}
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 11>,}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00645\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00646\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00647\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00648\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 13>\ check;\ \};}
+\DoxyCodeLine{00652\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00653\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 14>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 13>,}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 12>,}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 11>,}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 14>\ check;\ \};}
+\DoxyCodeLine{00669\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00670\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 15>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 14>,}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 13>,}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 12>,}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 11>,}
+\DoxyCodeLine{00675\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00676\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00680\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 15>\ check;\ \};}
+\DoxyCodeLine{00687\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ StartGpio\ >}
+\DoxyCodeLine{00688\ \textcolor{keyword}{struct\ }GpioSetShim<StartGpio,\ 16>\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}<}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 15>,}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 14>,}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 13>,}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 12>,}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 11>,}
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 10>,}
+\DoxyCodeLine{00695\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 9>,}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 8>,}
+\DoxyCodeLine{00697\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 7>,}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 6>,}
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 5>,}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 4>,}
+\DoxyCodeLine{00701\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 3>,}
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 2>,}
+\DoxyCodeLine{00703\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 1>,}
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \ \ GpioShim<StartGpio,\ 0>}
+\DoxyCodeLine{00705\ \ \ \ \ \ \ \ \ >\ \{\ \textcolor{keyword}{static}\ \textcolor{keyword}{typename}\ GpioPortInfo<StartGpio::port>::template\ check<StartGpio::pin,\ 16>\ check;\ \};}
+\DoxyCodeLine{00707\ }
+\DoxyCodeLine{00708\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00711\ }
+\DoxyCodeLine{00712\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_GPIO\_PORT\_HPP}}
+
+\end{DoxyCode}

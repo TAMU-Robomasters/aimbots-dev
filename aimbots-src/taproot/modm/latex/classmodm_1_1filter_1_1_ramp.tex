@@ -1,0 +1,82 @@
+\doxysection{modm::\+filter::\+Ramp\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1filter_1_1_ramp}{}\label{classmodm_1_1filter_1_1_ramp}\index{modm::filter::Ramp$<$ T $>$@{modm::filter::Ramp$<$ T $>$}}
+
+
+\doxylink{classmodm_1_1filter_1_1_ramp}{Ramp}.  
+
+
+
+
+{\ttfamily \+\#include $<$ramp.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1filter_1_1_ramp_a4754b028e17f5b82f02256e6bbf7ad5c}{Ramp}} (const T \&increment, const T \&decrement, const T \&initial\+Value=T())
+\begin{DoxyCompactList}\small\item\em Create a ramp generator. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1filter_1_1_ramp_aaeefea48a502345943ecf954b42d531b}\label{classmodm_1_1filter_1_1_ramp_aaeefea48a502345943ecf954b42d531b} 
+void {\bfseries set\+Target} (const T \&target)
+\item 
+\Hypertarget{classmodm_1_1filter_1_1_ramp_a3d101fdae691e39a0c29b57dc9651d5c}\label{classmodm_1_1filter_1_1_ramp_a3d101fdae691e39a0c29b57dc9651d5c} 
+void {\bfseries update} ()
+\begin{DoxyCompactList}\small\item\em Calculate the next step. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1filter_1_1_ramp_a82c40d0ee22cc6262c2ee97ac4eb4cd9}\label{classmodm_1_1filter_1_1_ramp_a82c40d0ee22cc6262c2ee97ac4eb4cd9} 
+void {\bfseries reset} (const T \&value=T())
+\item 
+\Hypertarget{classmodm_1_1filter_1_1_ramp_a426c4b52b57b89162e64a464e9a0fe8b}\label{classmodm_1_1filter_1_1_ramp_a426c4b52b57b89162e64a464e9a0fe8b} 
+const T \& {\bfseries get\+Value} () const
+\item 
+\Hypertarget{classmodm_1_1filter_1_1_ramp_a9d20650340312dac7704ea99bc651141}\label{classmodm_1_1filter_1_1_ramp_a9d20650340312dac7704ea99bc651141} 
+bool {\bfseries is\+Target\+Reached} () const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class modm::\+filter::\+\+Ramp$<$ T $>$}
+\doxylink{classmodm_1_1filter_1_1_ramp}{Ramp}. 
+
+The output value is incremented or decremented at every call to update until target has been reached by increment or decrement.
+
+The final value is always set to target after several calls to update.
+
+Example:\+ \begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000009}{Todo}}]example\end{DoxyRefDesc}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000010}{Todo}}]documentation\end{DoxyRefDesc}
+
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1filter_1_1_ramp_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1filter_1_1_ramp_a4754b028e17f5b82f02256e6bbf7ad5c}\index{modm::filter::Ramp$<$ T $>$@{modm::filter::Ramp$<$ T $>$}!Ramp@{Ramp}}
+\index{Ramp@{Ramp}!modm::filter::Ramp$<$ T $>$@{modm::filter::Ramp$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{Ramp()}{Ramp()}}
+{\footnotesize\ttfamily \label{classmodm_1_1filter_1_1_ramp_a4754b028e17f5b82f02256e6bbf7ad5c} 
+template$<$typename T$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1filter_1_1_ramp}{modm::\+filter::\+\+Ramp}}$<$ T $>$::\+\+Ramp (\begin{DoxyParamCaption}\item[{const T \&}]{increment}{, }\item[{const T \&}]{decrement}{, }\item[{const T \&}]{initial\+Value}{ = {\ttfamily T()}}\end{DoxyParamCaption})}
+
+
+
+Create a ramp generator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em increment} & Step size for positive direction \\
+\hline
+{\em decrement} & Step size for the negative direction. {\bfseries{Needs to be positive!}} \\
+\hline
+{\em initial\+Value} & Starting value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyWarning}{Warning}
+Both values for increment and decrement needs to be positive! 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+filter/\+ramp.\+hpp\item 
+src/\+modm/\+math/\+filter/\+ramp\+\_\+impl.\+hpp\end{DoxyCompactItemize}

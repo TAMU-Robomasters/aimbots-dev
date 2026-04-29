@@ -1,0 +1,157 @@
+\doxysection{can\+\_\+message.\+hpp}
+\hypertarget{can__message_8hpp_source}{}\label{can__message_8hpp_source}\index{src/modm/architecture/interface/can\_message.hpp@{src/modm/architecture/interface/can\_message.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ 2016,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015-\/2016,\ Sascha\ Schade}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_CAN\_MESSAGE\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_CAN\_MESSAGE\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <string.h>}\ \ \textcolor{comment}{//\ strlen}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }modm::can}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{struct\ }Message}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{inline}\ Message(uint32\_t\ inIdentifier\ =\ 0,\ uint8\_t\ inLength\ =\ 0)\ :}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ identifier(inIdentifier),\ flags(),\ length(inLength)}
+\DoxyCodeLine{00030\ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ Create\ CAN\ message\ from\ long\ data\ in\ Network\ Order.}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{inline}\ Message(uint32\_t\ inIdentifier,\ uint8\_t\ inLength,\ \textcolor{keyword}{const}\ uint64\_t\ \&inData,\ \textcolor{keywordtype}{bool}\ extended=\textcolor{keyword}{false})\ :}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ identifier(inIdentifier),\ length(std::min(inLength,\ uint8\_t(8)))}
+\DoxyCodeLine{00036\ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ flags.extended\ =\ extended;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ *inDataB\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }uint8\_t\ *\textcolor{keyword}{>}(\&inData);}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (uint8\_t\ ii\ =\ 0;\ ii\ <\ length;\ ++ii)}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \ \ data[ii]\ =\ inDataB[length\ -\/\ ii\ -\/\ 1];}
+\DoxyCodeLine{00041\ \ \ \ \ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{inline}\ uint32\_t}
+\DoxyCodeLine{00044\ \ \ \ \ getIdentifier()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00045\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ identifier;}
+\DoxyCodeLine{00047\ \ \ \ \ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00050\ \ \ \ \ setIdentifier(uint32\_t\ \textcolor{keywordtype}{id})}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ identifier\ =\ id;}
+\DoxyCodeLine{00053\ \ \ \ \ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00056\ \ \ \ \ setExtended(\textcolor{keywordtype}{bool}\ extended\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00057\ \ \ \ \ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ flags.extended\ =\ (extended)\ ?\ 1\ :\ 0;}
+\DoxyCodeLine{00059\ \ \ \ \ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00062\ \ \ \ \ isExtended()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00063\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (flags.extended\ !=\ 0);}
+\DoxyCodeLine{00065\ \ \ \ \ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00068\ \ \ \ \ setRemoteTransmitRequest(\textcolor{keywordtype}{bool}\ rtr\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00069\ \ \ \ \ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ flags.rtr\ =\ (rtr)\ ?\ 1\ :\ 0;}
+\DoxyCodeLine{00071\ \ \ \ \ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00074\ \ \ \ \ isRemoteTransmitRequest()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00075\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (flags.rtr\ !=\ 0);}
+\DoxyCodeLine{00077\ \ \ \ \ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00080\ \ \ \ \ getLength()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00081\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ length;}
+\DoxyCodeLine{00083\ \ \ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00086\ \ \ \ \ setLength(uint8\_t\ len)}
+\DoxyCodeLine{00087\ \ \ \ \ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ length\ =\ len;}
+\DoxyCodeLine{00089\ \ \ \ \ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00092\ \ \ \ \ uint32\_t\ identifier;}
+\DoxyCodeLine{00093\ \ \ \ \ uint8\_t\ modm\_aligned(4)\ data[8];}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{struct\ }Flags}
+\DoxyCodeLine{00095\ \ \ \ \ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ Flags()\ :}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ rtr(0),\ extended(1)}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ rtr\ :\ 1;}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ extended\ :\ 1;}
+\DoxyCodeLine{00103\ \ \ \ \ \}\ flags;}
+\DoxyCodeLine{00104\ \ \ \ \ uint8\_t\ length;}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00108\ \ \ \ \ operator\ ==\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{modm::can::Message}}\&\ rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00109\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ((this-\/>identifier\ \ \ \ \ ==\ rhs.identifier)\ and}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (this-\/>length\ \ \ \ \ \ \ \ \ ==\ rhs.length)\ \ \ \ \ and}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (this-\/>flags.rtr\ \ \ \ \ \ ==\ rhs.flags.rtr)\ \ and}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (this-\/>flags.extended\ ==\ rhs.flags.extended)\ and}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::equal(data,\ data\ +\ length,\ rhs.data));}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00118\ \ \ \ \ operator\ <\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{modm::can::Message}}\&\ rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00119\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (this-\/>identifier\ <<\ (this-\/>flags.extended\ ?\ 0\ :\ 18))}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ <\ (rhs.identifier\ <<\ (rhs.flags.extended\ ?\ 0\ :\ 18));}
+\DoxyCodeLine{00122\ \ \ \ \ \}}
+\DoxyCodeLine{00123\ \};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm::can}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#include\ <inttypes.h>}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00132\ \{}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{keyword}{inline}\ modm::IOStream\&}
+\DoxyCodeLine{00135\ operator\ <<\ (modm::IOStream\&\ s,\ \textcolor{keyword}{const}\ modm::can::Message\&\ m)}
+\DoxyCodeLine{00136\ \{}
+\DoxyCodeLine{00137\ \ \ \ \ s.printf(\textcolor{stringliteral}{"{}id\ =\ \%04"{}}\ PRIx32\ \textcolor{stringliteral}{"{},\ len\ =\ "{}},\ m.identifier);}
+\DoxyCodeLine{00138\ \ \ \ \ s\ <<\ m.length;}
+\DoxyCodeLine{00139\ \ \ \ \ s.printf(\textcolor{stringliteral}{"{},\ flags\ =\ \%c\%c,\ data\ =\ "{}},}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ m.flags.rtr\ ?\ \textcolor{charliteral}{'R'}\ :\ \textcolor{charliteral}{'r'},}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ m.flags.extended\ ?\ \textcolor{charliteral}{'E'}\ :\ \textcolor{charliteral}{'e'});}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ m.isRemoteTransmitRequest())\ \{}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ ii\ =\ 0;\ ii\ <\ m.length;\ ++ii)\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ s.printf(\textcolor{stringliteral}{"{}\%02x\ "{}},\ m.data[ii]);}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00146\ \ \ \ \ \}}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordflow}{return}\ s;}
+\DoxyCodeLine{00148\ \}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \}\ \textcolor{comment}{//\ modm\ namespace}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_CAN\_MESSAGE\_HPP}}
+
+\end{DoxyCode}

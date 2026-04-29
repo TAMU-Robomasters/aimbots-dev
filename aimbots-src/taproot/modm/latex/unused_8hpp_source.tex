@@ -1,0 +1,1420 @@
+\doxysection{unused.\+hpp}
+\hypertarget{unused_8hpp_source}{}\label{unused_8hpp_source}\index{src/modm/platform/gpio/unused.hpp@{src/modm/platform/gpio/unused.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_GPIO\_PIN\_UNUSED\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_GPIO\_PIN\_UNUSED\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}base.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/gpio.hpp>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00056\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused}{GpioUnused}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}},\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_i_o}{::modm::GpioIO}}}
+\DoxyCodeLine{00057\ \{}
+\DoxyCodeLine{00058\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{using\ }Output\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused}{GpioUnused}};}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{using\ }Input\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused}{GpioUnused}};}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{using\ }IO\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused}{GpioUnused}};}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{using\ }Type\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused}{GpioUnused}};}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isInverted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}}\ port\ =\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}}(-\/1);}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ pin\ =\ uint8\_t(-\/1);}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ mask\ =\ 0;}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setAlternateFunction(uint8\_t)\ \{\}}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setAnalogInput()\ \{\}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ GpioOutput}}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput()\ \{\}}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\textcolor{keywordtype}{bool})\ \{\}}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set()\ \{\}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set(\textcolor{keywordtype}{bool})\ \{\}}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ reset()\ \{\}}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ toggle()\ \{\}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isSet()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{comment}{//\ stop\ documentation\ inherited}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}},\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ =\ OutputSpeed::MHz50)\ \{\}}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}},\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ =\ OutputSpeed::MHz50)\ \{\}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{comment}{//\ GpioInput}}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput()\ \{\}}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ read()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{comment}{//\ end\ documentation\ inherited}}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}})\ \{\}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}})\ \{\}}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ External\ Interrupts}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ enableExternalInterrupt()\ \{\}}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disableExternalInterrupt()\ \{\}}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ enableExternalInterruptVector(\textcolor{keyword}{const}\ uint32\_t)\ \{\}}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disableExternalInterruptVector()\ \{\}}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInputTrigger(\textcolor{keyword}{const}\ InputTrigger)\ \{\}}
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ getExternalInterruptFlag()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \}}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_unused_a693bc526f6c1343de48e3cca693dc196}{acknowledgeExternalInterruptFlag}}()\ \{\}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ GpioIO}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}\ getDirection()\ \{\ \textcolor{keywordflow}{return}\ Direction::Special;\ \}}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{comment}{//\ end\ documentation\ inherited}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ lock()\ \{\}}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disconnect()\ \{\}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{struct\ }A0}
+\DoxyCodeLine{00116\ \ \ \ \ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A0;}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00120\ \ \ \ \ \};}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{struct\ }A1}
+\DoxyCodeLine{00123\ \ \ \ \ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A1;}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00127\ \ \ \ \ \};}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{struct\ }A10}
+\DoxyCodeLine{00130\ \ \ \ \ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A10;}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00134\ \ \ \ \ \};}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{struct\ }A11}
+\DoxyCodeLine{00137\ \ \ \ \ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A11;}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00141\ \ \ \ \ \};}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{struct\ }A12}
+\DoxyCodeLine{00144\ \ \ \ \ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A12;}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00148\ \ \ \ \ \};}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keyword}{struct\ }A13}
+\DoxyCodeLine{00151\ \ \ \ \ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A13;}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00155\ \ \ \ \ \};}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keyword}{struct\ }A14}
+\DoxyCodeLine{00158\ \ \ \ \ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A14;}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00162\ \ \ \ \ \};}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{struct\ }A15}
+\DoxyCodeLine{00165\ \ \ \ \ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A15;}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00169\ \ \ \ \ \};}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keyword}{struct\ }A16}
+\DoxyCodeLine{00172\ \ \ \ \ \{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A16;}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00176\ \ \ \ \ \};}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keyword}{struct\ }A17}
+\DoxyCodeLine{00179\ \ \ \ \ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A17;}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00183\ \ \ \ \ \};}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{struct\ }A18}
+\DoxyCodeLine{00186\ \ \ \ \ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A18;}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00190\ \ \ \ \ \};}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keyword}{struct\ }A19}
+\DoxyCodeLine{00193\ \ \ \ \ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A19;}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00197\ \ \ \ \ \};}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keyword}{struct\ }A2}
+\DoxyCodeLine{00200\ \ \ \ \ \{}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A2;}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00204\ \ \ \ \ \};}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{struct\ }A20}
+\DoxyCodeLine{00207\ \ \ \ \ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A20;}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00211\ \ \ \ \ \};}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keyword}{struct\ }A21}
+\DoxyCodeLine{00214\ \ \ \ \ \{}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A21;}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00218\ \ \ \ \ \};}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{struct\ }A22}
+\DoxyCodeLine{00221\ \ \ \ \ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A22;}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00225\ \ \ \ \ \};}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keyword}{struct\ }A23}
+\DoxyCodeLine{00228\ \ \ \ \ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A23;}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00232\ \ \ \ \ \};}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keyword}{struct\ }A24}
+\DoxyCodeLine{00235\ \ \ \ \ \{}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A24;}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00239\ \ \ \ \ \};}
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keyword}{struct\ }A25}
+\DoxyCodeLine{00242\ \ \ \ \ \{}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A25;}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00246\ \ \ \ \ \};}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keyword}{struct\ }A3}
+\DoxyCodeLine{00249\ \ \ \ \ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A3;}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00253\ \ \ \ \ \};}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00255\ \ \ \ \ \textcolor{keyword}{struct\ }A4}
+\DoxyCodeLine{00256\ \ \ \ \ \{}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A4;}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00260\ \ \ \ \ \};}
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00262\ \ \ \ \ \textcolor{keyword}{struct\ }A5}
+\DoxyCodeLine{00263\ \ \ \ \ \{}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A5;}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00267\ \ \ \ \ \};}
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keyword}{struct\ }A6}
+\DoxyCodeLine{00270\ \ \ \ \ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A6;}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00274\ \ \ \ \ \};}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keyword}{struct\ }A7}
+\DoxyCodeLine{00277\ \ \ \ \ \{}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A7;}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00281\ \ \ \ \ \};}
+\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00283\ \ \ \ \ \textcolor{keyword}{struct\ }A8}
+\DoxyCodeLine{00284\ \ \ \ \ \{}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A8;}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00288\ \ \ \ \ \};}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00290\ \ \ \ \ \textcolor{keyword}{struct\ }A9}
+\DoxyCodeLine{00291\ \ \ \ \ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::A9;}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00295\ \ \ \ \ \};}
+\DoxyCodeLine{00296\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{struct\ }Af1}
+\DoxyCodeLine{00298\ \ \ \ \ \{}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Af1;}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00302\ \ \ \ \ \};}
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00304\ \ \ \ \ \textcolor{keyword}{struct\ }Af2}
+\DoxyCodeLine{00305\ \ \ \ \ \{}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Af2;}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00309\ \ \ \ \ \};}
+\DoxyCodeLine{00310\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00311\ \ \ \ \ \textcolor{keyword}{struct\ }Ale}
+\DoxyCodeLine{00312\ \ \ \ \ \{}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ale;}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00316\ \ \ \ \ \};}
+\DoxyCodeLine{00317\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keyword}{struct\ }Bkin}
+\DoxyCodeLine{00319\ \ \ \ \ \{}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Bkin;}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00323\ \ \ \ \ \};}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00325\ \ \ \ \ \textcolor{keyword}{struct\ }Cd}
+\DoxyCodeLine{00326\ \ \ \ \ \{}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Cd;}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00330\ \ \ \ \ \};}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keyword}{struct\ }Ch1}
+\DoxyCodeLine{00333\ \ \ \ \ \{}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch1;}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00337\ \ \ \ \ \};}
+\DoxyCodeLine{00338\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00339\ \ \ \ \ \textcolor{keyword}{struct\ }Ch1n}
+\DoxyCodeLine{00340\ \ \ \ \ \{}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch1n;}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00344\ \ \ \ \ \};}
+\DoxyCodeLine{00345\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{keyword}{struct\ }Ch2}
+\DoxyCodeLine{00347\ \ \ \ \ \{}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch2;}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00351\ \ \ \ \ \};}
+\DoxyCodeLine{00352\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00353\ \ \ \ \ \textcolor{keyword}{struct\ }Ch2n}
+\DoxyCodeLine{00354\ \ \ \ \ \{}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch2n;}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00358\ \ \ \ \ \};}
+\DoxyCodeLine{00359\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00360\ \ \ \ \ \textcolor{keyword}{struct\ }Ch3}
+\DoxyCodeLine{00361\ \ \ \ \ \{}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch3;}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00365\ \ \ \ \ \};}
+\DoxyCodeLine{00366\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00367\ \ \ \ \ \textcolor{keyword}{struct\ }Ch3n}
+\DoxyCodeLine{00368\ \ \ \ \ \{}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch3n;}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00372\ \ \ \ \ \};}
+\DoxyCodeLine{00373\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00374\ \ \ \ \ \textcolor{keyword}{struct\ }Ch4}
+\DoxyCodeLine{00375\ \ \ \ \ \{}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ch4;}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00379\ \ \ \ \ \};}
+\DoxyCodeLine{00380\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00381\ \ \ \ \ \textcolor{keyword}{struct\ }Ck}
+\DoxyCodeLine{00382\ \ \ \ \ \{}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ck;}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00386\ \ \ \ \ \};}
+\DoxyCodeLine{00387\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00388\ \ \ \ \ \textcolor{keyword}{struct\ }Ckin}
+\DoxyCodeLine{00389\ \ \ \ \ \{}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ckin;}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00393\ \ \ \ \ \};}
+\DoxyCodeLine{00394\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00395\ \ \ \ \ \textcolor{keyword}{struct\ }Cle}
+\DoxyCodeLine{00396\ \ \ \ \ \{}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Cle;}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00400\ \ \ \ \ \};}
+\DoxyCodeLine{00401\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00402\ \ \ \ \ \textcolor{keyword}{struct\ }Clk}
+\DoxyCodeLine{00403\ \ \ \ \ \{}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Clk;}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00407\ \ \ \ \ \};}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00409\ \ \ \ \ \textcolor{keyword}{struct\ }Cmd}
+\DoxyCodeLine{00410\ \ \ \ \ \{}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Cmd;}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00414\ \ \ \ \ \};}
+\DoxyCodeLine{00415\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00416\ \ \ \ \ \textcolor{keyword}{struct\ }Col}
+\DoxyCodeLine{00417\ \ \ \ \ \{}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Col;}
+\DoxyCodeLine{00420\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00421\ \ \ \ \ \};}
+\DoxyCodeLine{00422\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00423\ \ \ \ \ \textcolor{keyword}{struct\ }Crs}
+\DoxyCodeLine{00424\ \ \ \ \ \{}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Crs;}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00428\ \ \ \ \ \};}
+\DoxyCodeLine{00429\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00430\ \ \ \ \ \textcolor{keyword}{struct\ }Cts}
+\DoxyCodeLine{00431\ \ \ \ \ \{}
+\DoxyCodeLine{00432\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00433\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Cts;}
+\DoxyCodeLine{00434\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00435\ \ \ \ \ \};}
+\DoxyCodeLine{00436\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00437\ \ \ \ \ \textcolor{keyword}{struct\ }D0}
+\DoxyCodeLine{00438\ \ \ \ \ \{}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00440\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D0;}
+\DoxyCodeLine{00441\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00442\ \ \ \ \ \};}
+\DoxyCodeLine{00443\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00444\ \ \ \ \ \textcolor{keyword}{struct\ }D1}
+\DoxyCodeLine{00445\ \ \ \ \ \{}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D1;}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00449\ \ \ \ \ \};}
+\DoxyCodeLine{00450\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00451\ \ \ \ \ \textcolor{keyword}{struct\ }D10}
+\DoxyCodeLine{00452\ \ \ \ \ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00454\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D10;}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00456\ \ \ \ \ \};}
+\DoxyCodeLine{00457\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00458\ \ \ \ \ \textcolor{keyword}{struct\ }D11}
+\DoxyCodeLine{00459\ \ \ \ \ \{}
+\DoxyCodeLine{00460\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D11;}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00463\ \ \ \ \ \};}
+\DoxyCodeLine{00464\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keyword}{struct\ }D12}
+\DoxyCodeLine{00466\ \ \ \ \ \{}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D12;}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00470\ \ \ \ \ \};}
+\DoxyCodeLine{00471\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keyword}{struct\ }D13}
+\DoxyCodeLine{00473\ \ \ \ \ \{}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D13;}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00477\ \ \ \ \ \};}
+\DoxyCodeLine{00478\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00479\ \ \ \ \ \textcolor{keyword}{struct\ }D14}
+\DoxyCodeLine{00480\ \ \ \ \ \{}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D14;}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00484\ \ \ \ \ \};}
+\DoxyCodeLine{00485\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00486\ \ \ \ \ \textcolor{keyword}{struct\ }D15}
+\DoxyCodeLine{00487\ \ \ \ \ \{}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D15;}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00491\ \ \ \ \ \};}
+\DoxyCodeLine{00492\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00493\ \ \ \ \ \textcolor{keyword}{struct\ }D2}
+\DoxyCodeLine{00494\ \ \ \ \ \{}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D2;}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00498\ \ \ \ \ \};}
+\DoxyCodeLine{00499\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00500\ \ \ \ \ \textcolor{keyword}{struct\ }D3}
+\DoxyCodeLine{00501\ \ \ \ \ \{}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D3;}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00505\ \ \ \ \ \};}
+\DoxyCodeLine{00506\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00507\ \ \ \ \ \textcolor{keyword}{struct\ }D4}
+\DoxyCodeLine{00508\ \ \ \ \ \{}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D4;}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00512\ \ \ \ \ \};}
+\DoxyCodeLine{00513\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00514\ \ \ \ \ \textcolor{keyword}{struct\ }D5}
+\DoxyCodeLine{00515\ \ \ \ \ \{}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D5;}
+\DoxyCodeLine{00518\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00519\ \ \ \ \ \};}
+\DoxyCodeLine{00520\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00521\ \ \ \ \ \textcolor{keyword}{struct\ }D6}
+\DoxyCodeLine{00522\ \ \ \ \ \{}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D6;}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00526\ \ \ \ \ \};}
+\DoxyCodeLine{00527\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00528\ \ \ \ \ \textcolor{keyword}{struct\ }D7}
+\DoxyCodeLine{00529\ \ \ \ \ \{}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00531\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D7;}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00533\ \ \ \ \ \};}
+\DoxyCodeLine{00534\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00535\ \ \ \ \ \textcolor{keyword}{struct\ }D8}
+\DoxyCodeLine{00536\ \ \ \ \ \{}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D8;}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00540\ \ \ \ \ \};}
+\DoxyCodeLine{00541\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00542\ \ \ \ \ \textcolor{keyword}{struct\ }D9}
+\DoxyCodeLine{00543\ \ \ \ \ \{}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::D9;}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00547\ \ \ \ \ \};}
+\DoxyCodeLine{00548\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00549\ \ \ \ \ \textcolor{keyword}{struct\ }Da0}
+\DoxyCodeLine{00550\ \ \ \ \ \{}
+\DoxyCodeLine{00551\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da0;}
+\DoxyCodeLine{00553\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00554\ \ \ \ \ \};}
+\DoxyCodeLine{00555\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00556\ \ \ \ \ \textcolor{keyword}{struct\ }Da1}
+\DoxyCodeLine{00557\ \ \ \ \ \{}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da1;}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00561\ \ \ \ \ \};}
+\DoxyCodeLine{00562\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00563\ \ \ \ \ \textcolor{keyword}{struct\ }Da10}
+\DoxyCodeLine{00564\ \ \ \ \ \{}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da10;}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00568\ \ \ \ \ \};}
+\DoxyCodeLine{00569\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00570\ \ \ \ \ \textcolor{keyword}{struct\ }Da11}
+\DoxyCodeLine{00571\ \ \ \ \ \{}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da11;}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00575\ \ \ \ \ \};}
+\DoxyCodeLine{00576\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00577\ \ \ \ \ \textcolor{keyword}{struct\ }Da12}
+\DoxyCodeLine{00578\ \ \ \ \ \{}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da12;}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00582\ \ \ \ \ \};}
+\DoxyCodeLine{00583\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00584\ \ \ \ \ \textcolor{keyword}{struct\ }Da13}
+\DoxyCodeLine{00585\ \ \ \ \ \{}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00587\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da13;}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00589\ \ \ \ \ \};}
+\DoxyCodeLine{00590\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00591\ \ \ \ \ \textcolor{keyword}{struct\ }Da14}
+\DoxyCodeLine{00592\ \ \ \ \ \{}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da14;}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00596\ \ \ \ \ \};}
+\DoxyCodeLine{00597\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00598\ \ \ \ \ \textcolor{keyword}{struct\ }Da15}
+\DoxyCodeLine{00599\ \ \ \ \ \{}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da15;}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00603\ \ \ \ \ \};}
+\DoxyCodeLine{00604\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00605\ \ \ \ \ \textcolor{keyword}{struct\ }Da2}
+\DoxyCodeLine{00606\ \ \ \ \ \{}
+\DoxyCodeLine{00607\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da2;}
+\DoxyCodeLine{00609\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00610\ \ \ \ \ \};}
+\DoxyCodeLine{00611\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00612\ \ \ \ \ \textcolor{keyword}{struct\ }Da3}
+\DoxyCodeLine{00613\ \ \ \ \ \{}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00615\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da3;}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00617\ \ \ \ \ \};}
+\DoxyCodeLine{00618\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00619\ \ \ \ \ \textcolor{keyword}{struct\ }Da4}
+\DoxyCodeLine{00620\ \ \ \ \ \{}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da4;}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00624\ \ \ \ \ \};}
+\DoxyCodeLine{00625\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00626\ \ \ \ \ \textcolor{keyword}{struct\ }Da5}
+\DoxyCodeLine{00627\ \ \ \ \ \{}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da5;}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00631\ \ \ \ \ \};}
+\DoxyCodeLine{00632\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00633\ \ \ \ \ \textcolor{keyword}{struct\ }Da6}
+\DoxyCodeLine{00634\ \ \ \ \ \{}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da6;}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00638\ \ \ \ \ \};}
+\DoxyCodeLine{00639\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00640\ \ \ \ \ \textcolor{keyword}{struct\ }Da7}
+\DoxyCodeLine{00641\ \ \ \ \ \{}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00643\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da7;}
+\DoxyCodeLine{00644\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00645\ \ \ \ \ \};}
+\DoxyCodeLine{00646\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00647\ \ \ \ \ \textcolor{keyword}{struct\ }Da8}
+\DoxyCodeLine{00648\ \ \ \ \ \{}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da8;}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00652\ \ \ \ \ \};}
+\DoxyCodeLine{00653\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00654\ \ \ \ \ \textcolor{keyword}{struct\ }Da9}
+\DoxyCodeLine{00655\ \ \ \ \ \{}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Da9;}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00659\ \ \ \ \ \};}
+\DoxyCodeLine{00660\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00661\ \ \ \ \ \textcolor{keyword}{struct\ }Dm}
+\DoxyCodeLine{00662\ \ \ \ \ \{}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Dm;}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00666\ \ \ \ \ \};}
+\DoxyCodeLine{00667\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00668\ \ \ \ \ \textcolor{keyword}{struct\ }Dp}
+\DoxyCodeLine{00669\ \ \ \ \ \{}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Dp;}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00673\ \ \ \ \ \};}
+\DoxyCodeLine{00674\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00675\ \ \ \ \ \textcolor{keyword}{struct\ }Etr}
+\DoxyCodeLine{00676\ \ \ \ \ \{}
+\DoxyCodeLine{00677\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00678\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Etr;}
+\DoxyCodeLine{00679\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00680\ \ \ \ \ \};}
+\DoxyCodeLine{00681\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00682\ \ \ \ \ \textcolor{keyword}{struct\ }Extsd}
+\DoxyCodeLine{00683\ \ \ \ \ \{}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00685\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Extsd;}
+\DoxyCodeLine{00686\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00687\ \ \ \ \ \};}
+\DoxyCodeLine{00688\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00689\ \ \ \ \ \textcolor{keyword}{struct\ }Hsync}
+\DoxyCodeLine{00690\ \ \ \ \ \{}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Hsync;}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00694\ \ \ \ \ \};}
+\DoxyCodeLine{00695\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00696\ \ \ \ \ \textcolor{keyword}{struct\ }Id}
+\DoxyCodeLine{00697\ \ \ \ \ \{}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00699\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Id;}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00701\ \ \ \ \ \};}
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00703\ \ \ \ \ \textcolor{keyword}{struct\ }In0}
+\DoxyCodeLine{00704\ \ \ \ \ \{}
+\DoxyCodeLine{00705\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In0;}
+\DoxyCodeLine{00707\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00708\ \ \ \ \ \};}
+\DoxyCodeLine{00709\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00710\ \ \ \ \ \textcolor{keyword}{struct\ }In1}
+\DoxyCodeLine{00711\ \ \ \ \ \{}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00713\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In1;}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00715\ \ \ \ \ \};}
+\DoxyCodeLine{00716\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00717\ \ \ \ \ \textcolor{keyword}{struct\ }In10}
+\DoxyCodeLine{00718\ \ \ \ \ \{}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00720\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In10;}
+\DoxyCodeLine{00721\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00722\ \ \ \ \ \};}
+\DoxyCodeLine{00723\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00724\ \ \ \ \ \textcolor{keyword}{struct\ }In11}
+\DoxyCodeLine{00725\ \ \ \ \ \{}
+\DoxyCodeLine{00726\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00727\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In11;}
+\DoxyCodeLine{00728\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00729\ \ \ \ \ \};}
+\DoxyCodeLine{00730\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00731\ \ \ \ \ \textcolor{keyword}{struct\ }In12}
+\DoxyCodeLine{00732\ \ \ \ \ \{}
+\DoxyCodeLine{00733\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00734\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In12;}
+\DoxyCodeLine{00735\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00736\ \ \ \ \ \};}
+\DoxyCodeLine{00737\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00738\ \ \ \ \ \textcolor{keyword}{struct\ }In13}
+\DoxyCodeLine{00739\ \ \ \ \ \{}
+\DoxyCodeLine{00740\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00741\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In13;}
+\DoxyCodeLine{00742\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00743\ \ \ \ \ \};}
+\DoxyCodeLine{00744\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00745\ \ \ \ \ \textcolor{keyword}{struct\ }In14}
+\DoxyCodeLine{00746\ \ \ \ \ \{}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00748\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In14;}
+\DoxyCodeLine{00749\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00750\ \ \ \ \ \};}
+\DoxyCodeLine{00751\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00752\ \ \ \ \ \textcolor{keyword}{struct\ }In15}
+\DoxyCodeLine{00753\ \ \ \ \ \{}
+\DoxyCodeLine{00754\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00755\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In15;}
+\DoxyCodeLine{00756\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00757\ \ \ \ \ \};}
+\DoxyCodeLine{00758\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00759\ \ \ \ \ \textcolor{keyword}{struct\ }In2}
+\DoxyCodeLine{00760\ \ \ \ \ \{}
+\DoxyCodeLine{00761\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00762\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In2;}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00764\ \ \ \ \ \};}
+\DoxyCodeLine{00765\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00766\ \ \ \ \ \textcolor{keyword}{struct\ }In3}
+\DoxyCodeLine{00767\ \ \ \ \ \{}
+\DoxyCodeLine{00768\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00769\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In3;}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00771\ \ \ \ \ \};}
+\DoxyCodeLine{00772\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00773\ \ \ \ \ \textcolor{keyword}{struct\ }In4}
+\DoxyCodeLine{00774\ \ \ \ \ \{}
+\DoxyCodeLine{00775\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00776\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In4;}
+\DoxyCodeLine{00777\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00778\ \ \ \ \ \};}
+\DoxyCodeLine{00779\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00780\ \ \ \ \ \textcolor{keyword}{struct\ }In5}
+\DoxyCodeLine{00781\ \ \ \ \ \{}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00783\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In5;}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00785\ \ \ \ \ \};}
+\DoxyCodeLine{00786\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00787\ \ \ \ \ \textcolor{keyword}{struct\ }In6}
+\DoxyCodeLine{00788\ \ \ \ \ \{}
+\DoxyCodeLine{00789\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00790\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In6;}
+\DoxyCodeLine{00791\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00792\ \ \ \ \ \};}
+\DoxyCodeLine{00793\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00794\ \ \ \ \ \textcolor{keyword}{struct\ }In7}
+\DoxyCodeLine{00795\ \ \ \ \ \{}
+\DoxyCodeLine{00796\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00797\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In7;}
+\DoxyCodeLine{00798\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00799\ \ \ \ \ \};}
+\DoxyCodeLine{00800\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00801\ \ \ \ \ \textcolor{keyword}{struct\ }In8}
+\DoxyCodeLine{00802\ \ \ \ \ \{}
+\DoxyCodeLine{00803\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00804\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In8;}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00806\ \ \ \ \ \};}
+\DoxyCodeLine{00807\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00808\ \ \ \ \ \textcolor{keyword}{struct\ }In9}
+\DoxyCodeLine{00809\ \ \ \ \ \{}
+\DoxyCodeLine{00810\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::In9;}
+\DoxyCodeLine{00812\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00813\ \ \ \ \ \};}
+\DoxyCodeLine{00814\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00815\ \ \ \ \ \textcolor{keyword}{struct\ }Int2}
+\DoxyCodeLine{00816\ \ \ \ \ \{}
+\DoxyCodeLine{00817\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00818\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Int2;}
+\DoxyCodeLine{00819\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00820\ \ \ \ \ \};}
+\DoxyCodeLine{00821\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00822\ \ \ \ \ \textcolor{keyword}{struct\ }Int3}
+\DoxyCodeLine{00823\ \ \ \ \ \{}
+\DoxyCodeLine{00824\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00825\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Int3;}
+\DoxyCodeLine{00826\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00827\ \ \ \ \ \};}
+\DoxyCodeLine{00828\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00829\ \ \ \ \ \textcolor{keyword}{struct\ }Intr}
+\DoxyCodeLine{00830\ \ \ \ \ \{}
+\DoxyCodeLine{00831\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00832\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Intr;}
+\DoxyCodeLine{00833\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00834\ \ \ \ \ \};}
+\DoxyCodeLine{00835\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00836\ \ \ \ \ \textcolor{keyword}{struct\ }Jtck}
+\DoxyCodeLine{00837\ \ \ \ \ \{}
+\DoxyCodeLine{00838\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00839\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Jtck;}
+\DoxyCodeLine{00840\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00841\ \ \ \ \ \};}
+\DoxyCodeLine{00842\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00843\ \ \ \ \ \textcolor{keyword}{struct\ }Jtdi}
+\DoxyCodeLine{00844\ \ \ \ \ \{}
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Jtdi;}
+\DoxyCodeLine{00847\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00848\ \ \ \ \ \};}
+\DoxyCodeLine{00849\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00850\ \ \ \ \ \textcolor{keyword}{struct\ }Jtdo}
+\DoxyCodeLine{00851\ \ \ \ \ \{}
+\DoxyCodeLine{00852\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00853\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Jtdo;}
+\DoxyCodeLine{00854\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00855\ \ \ \ \ \};}
+\DoxyCodeLine{00856\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00857\ \ \ \ \ \textcolor{keyword}{struct\ }Jtms}
+\DoxyCodeLine{00858\ \ \ \ \ \{}
+\DoxyCodeLine{00859\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00860\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Jtms;}
+\DoxyCodeLine{00861\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00862\ \ \ \ \ \};}
+\DoxyCodeLine{00863\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00864\ \ \ \ \ \textcolor{keyword}{struct\ }Jtrst}
+\DoxyCodeLine{00865\ \ \ \ \ \{}
+\DoxyCodeLine{00866\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Jtrst;}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00869\ \ \ \ \ \};}
+\DoxyCodeLine{00870\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00871\ \ \ \ \ \textcolor{keyword}{struct\ }Mck}
+\DoxyCodeLine{00872\ \ \ \ \ \{}
+\DoxyCodeLine{00873\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00874\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mck;}
+\DoxyCodeLine{00875\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00876\ \ \ \ \ \};}
+\DoxyCodeLine{00877\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00878\ \ \ \ \ \textcolor{keyword}{struct\ }Mco1}
+\DoxyCodeLine{00879\ \ \ \ \ \{}
+\DoxyCodeLine{00880\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00881\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mco1;}
+\DoxyCodeLine{00882\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00883\ \ \ \ \ \};}
+\DoxyCodeLine{00884\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00885\ \ \ \ \ \textcolor{keyword}{struct\ }Mco2}
+\DoxyCodeLine{00886\ \ \ \ \ \{}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mco2;}
+\DoxyCodeLine{00889\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00890\ \ \ \ \ \};}
+\DoxyCodeLine{00891\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00892\ \ \ \ \ \textcolor{keyword}{struct\ }Mdc}
+\DoxyCodeLine{00893\ \ \ \ \ \{}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00895\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mdc;}
+\DoxyCodeLine{00896\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00897\ \ \ \ \ \};}
+\DoxyCodeLine{00898\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00899\ \ \ \ \ \textcolor{keyword}{struct\ }Mdio}
+\DoxyCodeLine{00900\ \ \ \ \ \{}
+\DoxyCodeLine{00901\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00902\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mdio;}
+\DoxyCodeLine{00903\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00904\ \ \ \ \ \};}
+\DoxyCodeLine{00905\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00906\ \ \ \ \ \textcolor{keyword}{struct\ }Miso}
+\DoxyCodeLine{00907\ \ \ \ \ \{}
+\DoxyCodeLine{00908\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00909\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Miso;}
+\DoxyCodeLine{00910\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00911\ \ \ \ \ \};}
+\DoxyCodeLine{00912\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00913\ \ \ \ \ \textcolor{keyword}{struct\ }Mosi}
+\DoxyCodeLine{00914\ \ \ \ \ \{}
+\DoxyCodeLine{00915\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00916\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Mosi;}
+\DoxyCodeLine{00917\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00918\ \ \ \ \ \};}
+\DoxyCodeLine{00919\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00920\ \ \ \ \ \textcolor{keyword}{struct\ }Nbl0}
+\DoxyCodeLine{00921\ \ \ \ \ \{}
+\DoxyCodeLine{00922\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00923\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nbl0;}
+\DoxyCodeLine{00924\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00925\ \ \ \ \ \};}
+\DoxyCodeLine{00926\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00927\ \ \ \ \ \textcolor{keyword}{struct\ }Nbl1}
+\DoxyCodeLine{00928\ \ \ \ \ \{}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00930\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nbl1;}
+\DoxyCodeLine{00931\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00932\ \ \ \ \ \};}
+\DoxyCodeLine{00933\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00934\ \ \ \ \ \textcolor{keyword}{struct\ }Nce2}
+\DoxyCodeLine{00935\ \ \ \ \ \{}
+\DoxyCodeLine{00936\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00937\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nce2;}
+\DoxyCodeLine{00938\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00939\ \ \ \ \ \};}
+\DoxyCodeLine{00940\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00941\ \ \ \ \ \textcolor{keyword}{struct\ }Nce3}
+\DoxyCodeLine{00942\ \ \ \ \ \{}
+\DoxyCodeLine{00943\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00944\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nce3;}
+\DoxyCodeLine{00945\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00946\ \ \ \ \ \};}
+\DoxyCodeLine{00947\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00948\ \ \ \ \ \textcolor{keyword}{struct\ }Nce41}
+\DoxyCodeLine{00949\ \ \ \ \ \{}
+\DoxyCodeLine{00950\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nce41;}
+\DoxyCodeLine{00952\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00953\ \ \ \ \ \};}
+\DoxyCodeLine{00954\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00955\ \ \ \ \ \textcolor{keyword}{struct\ }Nce42}
+\DoxyCodeLine{00956\ \ \ \ \ \{}
+\DoxyCodeLine{00957\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00958\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nce42;}
+\DoxyCodeLine{00959\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00960\ \ \ \ \ \};}
+\DoxyCodeLine{00961\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00962\ \ \ \ \ \textcolor{keyword}{struct\ }Ne1}
+\DoxyCodeLine{00963\ \ \ \ \ \{}
+\DoxyCodeLine{00964\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00965\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ne1;}
+\DoxyCodeLine{00966\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00967\ \ \ \ \ \};}
+\DoxyCodeLine{00968\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00969\ \ \ \ \ \textcolor{keyword}{struct\ }Ne2}
+\DoxyCodeLine{00970\ \ \ \ \ \{}
+\DoxyCodeLine{00971\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00972\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ne2;}
+\DoxyCodeLine{00973\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00974\ \ \ \ \ \};}
+\DoxyCodeLine{00975\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00976\ \ \ \ \ \textcolor{keyword}{struct\ }Ne3}
+\DoxyCodeLine{00977\ \ \ \ \ \{}
+\DoxyCodeLine{00978\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00979\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ne3;}
+\DoxyCodeLine{00980\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00981\ \ \ \ \ \};}
+\DoxyCodeLine{00982\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00983\ \ \ \ \ \textcolor{keyword}{struct\ }Ne4}
+\DoxyCodeLine{00984\ \ \ \ \ \{}
+\DoxyCodeLine{00985\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00986\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ne4;}
+\DoxyCodeLine{00987\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00988\ \ \ \ \ \};}
+\DoxyCodeLine{00989\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00990\ \ \ \ \ \textcolor{keyword}{struct\ }Niord}
+\DoxyCodeLine{00991\ \ \ \ \ \{}
+\DoxyCodeLine{00992\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00993\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Niord;}
+\DoxyCodeLine{00994\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00995\ \ \ \ \ \};}
+\DoxyCodeLine{00996\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{00997\ \ \ \ \ \textcolor{keyword}{struct\ }Niowr}
+\DoxyCodeLine{00998\ \ \ \ \ \{}
+\DoxyCodeLine{00999\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01000\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Niowr;}
+\DoxyCodeLine{01001\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01002\ \ \ \ \ \};}
+\DoxyCodeLine{01003\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01004\ \ \ \ \ \textcolor{keyword}{struct\ }Nl}
+\DoxyCodeLine{01005\ \ \ \ \ \{}
+\DoxyCodeLine{01006\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01007\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nl;}
+\DoxyCodeLine{01008\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01009\ \ \ \ \ \};}
+\DoxyCodeLine{01010\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01011\ \ \ \ \ \textcolor{keyword}{struct\ }Noe}
+\DoxyCodeLine{01012\ \ \ \ \ \{}
+\DoxyCodeLine{01013\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01014\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Noe;}
+\DoxyCodeLine{01015\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01016\ \ \ \ \ \};}
+\DoxyCodeLine{01017\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01018\ \ \ \ \ \textcolor{keyword}{struct\ }Nreg}
+\DoxyCodeLine{01019\ \ \ \ \ \{}
+\DoxyCodeLine{01020\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01021\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nreg;}
+\DoxyCodeLine{01022\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01023\ \ \ \ \ \};}
+\DoxyCodeLine{01024\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01025\ \ \ \ \ \textcolor{keyword}{struct\ }Nss}
+\DoxyCodeLine{01026\ \ \ \ \ \{}
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01028\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nss;}
+\DoxyCodeLine{01029\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01030\ \ \ \ \ \};}
+\DoxyCodeLine{01031\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01032\ \ \ \ \ \textcolor{keyword}{struct\ }Nwait}
+\DoxyCodeLine{01033\ \ \ \ \ \{}
+\DoxyCodeLine{01034\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01035\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nwait;}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01037\ \ \ \ \ \};}
+\DoxyCodeLine{01038\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01039\ \ \ \ \ \textcolor{keyword}{struct\ }Nwe}
+\DoxyCodeLine{01040\ \ \ \ \ \{}
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Nwe;}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01044\ \ \ \ \ \};}
+\DoxyCodeLine{01045\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01046\ \ \ \ \ \textcolor{keyword}{struct\ }Osc32in}
+\DoxyCodeLine{01047\ \ \ \ \ \{}
+\DoxyCodeLine{01048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Osc32in;}
+\DoxyCodeLine{01050\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01051\ \ \ \ \ \};}
+\DoxyCodeLine{01052\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01053\ \ \ \ \ \textcolor{keyword}{struct\ }Osc32out}
+\DoxyCodeLine{01054\ \ \ \ \ \{}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Osc32out;}
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01058\ \ \ \ \ \};}
+\DoxyCodeLine{01059\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01060\ \ \ \ \ \textcolor{keyword}{struct\ }Oscin}
+\DoxyCodeLine{01061\ \ \ \ \ \{}
+\DoxyCodeLine{01062\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01063\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Oscin;}
+\DoxyCodeLine{01064\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01065\ \ \ \ \ \};}
+\DoxyCodeLine{01066\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01067\ \ \ \ \ \textcolor{keyword}{struct\ }Oscout}
+\DoxyCodeLine{01068\ \ \ \ \ \{}
+\DoxyCodeLine{01069\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Oscout;}
+\DoxyCodeLine{01071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01072\ \ \ \ \ \};}
+\DoxyCodeLine{01073\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01074\ \ \ \ \ \textcolor{keyword}{struct\ }Out1}
+\DoxyCodeLine{01075\ \ \ \ \ \{}
+\DoxyCodeLine{01076\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Out1;}
+\DoxyCodeLine{01078\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01079\ \ \ \ \ \};}
+\DoxyCodeLine{01080\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01081\ \ \ \ \ \textcolor{keyword}{struct\ }Out2}
+\DoxyCodeLine{01082\ \ \ \ \ \{}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Out2;}
+\DoxyCodeLine{01085\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01086\ \ \ \ \ \};}
+\DoxyCodeLine{01087\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01088\ \ \ \ \ \textcolor{keyword}{struct\ }Pixclk}
+\DoxyCodeLine{01089\ \ \ \ \ \{}
+\DoxyCodeLine{01090\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01091\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Pixclk;}
+\DoxyCodeLine{01092\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01093\ \ \ \ \ \};}
+\DoxyCodeLine{01094\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01095\ \ \ \ \ \textcolor{keyword}{struct\ }Ppsout}
+\DoxyCodeLine{01096\ \ \ \ \ \{}
+\DoxyCodeLine{01097\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01098\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ppsout;}
+\DoxyCodeLine{01099\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01100\ \ \ \ \ \};}
+\DoxyCodeLine{01101\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01102\ \ \ \ \ \textcolor{keyword}{struct\ }Rcccrsdv}
+\DoxyCodeLine{01103\ \ \ \ \ \{}
+\DoxyCodeLine{01104\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01105\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rcccrsdv;}
+\DoxyCodeLine{01106\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01107\ \ \ \ \ \};}
+\DoxyCodeLine{01108\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01109\ \ \ \ \ \textcolor{keyword}{struct\ }Refclk}
+\DoxyCodeLine{01110\ \ \ \ \ \{}
+\DoxyCodeLine{01111\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Refclk;}
+\DoxyCodeLine{01113\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01114\ \ \ \ \ \};}
+\DoxyCodeLine{01115\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01116\ \ \ \ \ \textcolor{keyword}{struct\ }Refin}
+\DoxyCodeLine{01117\ \ \ \ \ \{}
+\DoxyCodeLine{01118\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Refin;}
+\DoxyCodeLine{01120\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01121\ \ \ \ \ \};}
+\DoxyCodeLine{01122\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01123\ \ \ \ \ \textcolor{keyword}{struct\ }Rts}
+\DoxyCodeLine{01124\ \ \ \ \ \{}
+\DoxyCodeLine{01125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01126\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rts;}
+\DoxyCodeLine{01127\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01128\ \ \ \ \ \};}
+\DoxyCodeLine{01129\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01130\ \ \ \ \ \textcolor{keyword}{struct\ }Rx}
+\DoxyCodeLine{01131\ \ \ \ \ \{}
+\DoxyCodeLine{01132\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01133\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rx;}
+\DoxyCodeLine{01134\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01135\ \ \ \ \ \};}
+\DoxyCodeLine{01136\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01137\ \ \ \ \ \textcolor{keyword}{struct\ }Rxclk}
+\DoxyCodeLine{01138\ \ \ \ \ \{}
+\DoxyCodeLine{01139\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxclk;}
+\DoxyCodeLine{01141\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01142\ \ \ \ \ \};}
+\DoxyCodeLine{01143\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01144\ \ \ \ \ \textcolor{keyword}{struct\ }Rxd0}
+\DoxyCodeLine{01145\ \ \ \ \ \{}
+\DoxyCodeLine{01146\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxd0;}
+\DoxyCodeLine{01148\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01149\ \ \ \ \ \};}
+\DoxyCodeLine{01150\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01151\ \ \ \ \ \textcolor{keyword}{struct\ }Rxd1}
+\DoxyCodeLine{01152\ \ \ \ \ \{}
+\DoxyCodeLine{01153\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01154\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxd1;}
+\DoxyCodeLine{01155\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01156\ \ \ \ \ \};}
+\DoxyCodeLine{01157\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01158\ \ \ \ \ \textcolor{keyword}{struct\ }Rxd2}
+\DoxyCodeLine{01159\ \ \ \ \ \{}
+\DoxyCodeLine{01160\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01161\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxd2;}
+\DoxyCodeLine{01162\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01163\ \ \ \ \ \};}
+\DoxyCodeLine{01164\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01165\ \ \ \ \ \textcolor{keyword}{struct\ }Rxd3}
+\DoxyCodeLine{01166\ \ \ \ \ \{}
+\DoxyCodeLine{01167\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01168\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxd3;}
+\DoxyCodeLine{01169\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01170\ \ \ \ \ \};}
+\DoxyCodeLine{01171\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01172\ \ \ \ \ \textcolor{keyword}{struct\ }Rxdv}
+\DoxyCodeLine{01173\ \ \ \ \ \{}
+\DoxyCodeLine{01174\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01175\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxdv;}
+\DoxyCodeLine{01176\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01177\ \ \ \ \ \};}
+\DoxyCodeLine{01178\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01179\ \ \ \ \ \textcolor{keyword}{struct\ }Rxer}
+\DoxyCodeLine{01180\ \ \ \ \ \{}
+\DoxyCodeLine{01181\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01182\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Rxer;}
+\DoxyCodeLine{01183\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01184\ \ \ \ \ \};}
+\DoxyCodeLine{01185\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01186\ \ \ \ \ \textcolor{keyword}{struct\ }Sck}
+\DoxyCodeLine{01187\ \ \ \ \ \{}
+\DoxyCodeLine{01188\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01189\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Sck;}
+\DoxyCodeLine{01190\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01191\ \ \ \ \ \};}
+\DoxyCodeLine{01192\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01193\ \ \ \ \ \textcolor{keyword}{struct\ }Scl}
+\DoxyCodeLine{01194\ \ \ \ \ \{}
+\DoxyCodeLine{01195\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01196\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Scl;}
+\DoxyCodeLine{01197\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01198\ \ \ \ \ \};}
+\DoxyCodeLine{01199\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01200\ \ \ \ \ \textcolor{keyword}{struct\ }Sd}
+\DoxyCodeLine{01201\ \ \ \ \ \{}
+\DoxyCodeLine{01202\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01203\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Sd;}
+\DoxyCodeLine{01204\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01205\ \ \ \ \ \};}
+\DoxyCodeLine{01206\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01207\ \ \ \ \ \textcolor{keyword}{struct\ }Sda}
+\DoxyCodeLine{01208\ \ \ \ \ \{}
+\DoxyCodeLine{01209\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01210\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Sda;}
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01212\ \ \ \ \ \};}
+\DoxyCodeLine{01213\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01214\ \ \ \ \ \textcolor{keyword}{struct\ }Smba}
+\DoxyCodeLine{01215\ \ \ \ \ \{}
+\DoxyCodeLine{01216\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Smba;}
+\DoxyCodeLine{01218\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01219\ \ \ \ \ \};}
+\DoxyCodeLine{01220\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01221\ \ \ \ \ \textcolor{keyword}{struct\ }Sof}
+\DoxyCodeLine{01222\ \ \ \ \ \{}
+\DoxyCodeLine{01223\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Sof;}
+\DoxyCodeLine{01225\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01226\ \ \ \ \ \};}
+\DoxyCodeLine{01227\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01228\ \ \ \ \ \textcolor{keyword}{struct\ }Swclk}
+\DoxyCodeLine{01229\ \ \ \ \ \{}
+\DoxyCodeLine{01230\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01231\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Swclk;}
+\DoxyCodeLine{01232\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01233\ \ \ \ \ \};}
+\DoxyCodeLine{01234\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01235\ \ \ \ \ \textcolor{keyword}{struct\ }Swdio}
+\DoxyCodeLine{01236\ \ \ \ \ \{}
+\DoxyCodeLine{01237\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01238\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Swdio;}
+\DoxyCodeLine{01239\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01240\ \ \ \ \ \};}
+\DoxyCodeLine{01241\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01242\ \ \ \ \ \textcolor{keyword}{struct\ }Swo}
+\DoxyCodeLine{01243\ \ \ \ \ \{}
+\DoxyCodeLine{01244\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01245\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Swo;}
+\DoxyCodeLine{01246\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01247\ \ \ \ \ \};}
+\DoxyCodeLine{01248\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01249\ \ \ \ \ \textcolor{keyword}{struct\ }Traceclk}
+\DoxyCodeLine{01250\ \ \ \ \ \{}
+\DoxyCodeLine{01251\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01252\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Traceclk;}
+\DoxyCodeLine{01253\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01254\ \ \ \ \ \};}
+\DoxyCodeLine{01255\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01256\ \ \ \ \ \textcolor{keyword}{struct\ }Traced0}
+\DoxyCodeLine{01257\ \ \ \ \ \{}
+\DoxyCodeLine{01258\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01259\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Traced0;}
+\DoxyCodeLine{01260\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01261\ \ \ \ \ \};}
+\DoxyCodeLine{01262\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01263\ \ \ \ \ \textcolor{keyword}{struct\ }Traced1}
+\DoxyCodeLine{01264\ \ \ \ \ \{}
+\DoxyCodeLine{01265\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01266\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Traced1;}
+\DoxyCodeLine{01267\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01268\ \ \ \ \ \};}
+\DoxyCodeLine{01269\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01270\ \ \ \ \ \textcolor{keyword}{struct\ }Traced2}
+\DoxyCodeLine{01271\ \ \ \ \ \{}
+\DoxyCodeLine{01272\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01273\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Traced2;}
+\DoxyCodeLine{01274\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01275\ \ \ \ \ \};}
+\DoxyCodeLine{01276\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01277\ \ \ \ \ \textcolor{keyword}{struct\ }Traced3}
+\DoxyCodeLine{01278\ \ \ \ \ \{}
+\DoxyCodeLine{01279\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01280\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Traced3;}
+\DoxyCodeLine{01281\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01282\ \ \ \ \ \};}
+\DoxyCodeLine{01283\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01284\ \ \ \ \ \textcolor{keyword}{struct\ }Tx}
+\DoxyCodeLine{01285\ \ \ \ \ \{}
+\DoxyCodeLine{01286\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01287\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Tx;}
+\DoxyCodeLine{01288\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01289\ \ \ \ \ \};}
+\DoxyCodeLine{01290\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01291\ \ \ \ \ \textcolor{keyword}{struct\ }Txclk}
+\DoxyCodeLine{01292\ \ \ \ \ \{}
+\DoxyCodeLine{01293\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01294\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txclk;}
+\DoxyCodeLine{01295\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01296\ \ \ \ \ \};}
+\DoxyCodeLine{01297\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01298\ \ \ \ \ \textcolor{keyword}{struct\ }Txd0}
+\DoxyCodeLine{01299\ \ \ \ \ \{}
+\DoxyCodeLine{01300\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01301\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txd0;}
+\DoxyCodeLine{01302\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01303\ \ \ \ \ \};}
+\DoxyCodeLine{01304\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01305\ \ \ \ \ \textcolor{keyword}{struct\ }Txd1}
+\DoxyCodeLine{01306\ \ \ \ \ \{}
+\DoxyCodeLine{01307\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01308\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txd1;}
+\DoxyCodeLine{01309\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01310\ \ \ \ \ \};}
+\DoxyCodeLine{01311\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01312\ \ \ \ \ \textcolor{keyword}{struct\ }Txd2}
+\DoxyCodeLine{01313\ \ \ \ \ \{}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01315\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txd2;}
+\DoxyCodeLine{01316\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01317\ \ \ \ \ \};}
+\DoxyCodeLine{01318\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01319\ \ \ \ \ \textcolor{keyword}{struct\ }Txd3}
+\DoxyCodeLine{01320\ \ \ \ \ \{}
+\DoxyCodeLine{01321\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01322\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txd3;}
+\DoxyCodeLine{01323\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01324\ \ \ \ \ \};}
+\DoxyCodeLine{01325\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01326\ \ \ \ \ \textcolor{keyword}{struct\ }Txen}
+\DoxyCodeLine{01327\ \ \ \ \ \{}
+\DoxyCodeLine{01328\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01329\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Txen;}
+\DoxyCodeLine{01330\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01331\ \ \ \ \ \};}
+\DoxyCodeLine{01332\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01333\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpick}
+\DoxyCodeLine{01334\ \ \ \ \ \{}
+\DoxyCodeLine{01335\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01336\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpick;}
+\DoxyCodeLine{01337\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01338\ \ \ \ \ \};}
+\DoxyCodeLine{01339\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01340\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid0}
+\DoxyCodeLine{01341\ \ \ \ \ \{}
+\DoxyCodeLine{01342\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01343\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid0;}
+\DoxyCodeLine{01344\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01345\ \ \ \ \ \};}
+\DoxyCodeLine{01346\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01347\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid1}
+\DoxyCodeLine{01348\ \ \ \ \ \{}
+\DoxyCodeLine{01349\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01350\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid1;}
+\DoxyCodeLine{01351\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01352\ \ \ \ \ \};}
+\DoxyCodeLine{01353\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01354\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid2}
+\DoxyCodeLine{01355\ \ \ \ \ \{}
+\DoxyCodeLine{01356\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01357\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid2;}
+\DoxyCodeLine{01358\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01359\ \ \ \ \ \};}
+\DoxyCodeLine{01360\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01361\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid3}
+\DoxyCodeLine{01362\ \ \ \ \ \{}
+\DoxyCodeLine{01363\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01364\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid3;}
+\DoxyCodeLine{01365\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01366\ \ \ \ \ \};}
+\DoxyCodeLine{01367\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01368\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid4}
+\DoxyCodeLine{01369\ \ \ \ \ \{}
+\DoxyCodeLine{01370\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01371\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid4;}
+\DoxyCodeLine{01372\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01373\ \ \ \ \ \};}
+\DoxyCodeLine{01374\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01375\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid5}
+\DoxyCodeLine{01376\ \ \ \ \ \{}
+\DoxyCodeLine{01377\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01378\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid5;}
+\DoxyCodeLine{01379\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01380\ \ \ \ \ \};}
+\DoxyCodeLine{01381\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01382\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid6}
+\DoxyCodeLine{01383\ \ \ \ \ \{}
+\DoxyCodeLine{01384\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01385\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid6;}
+\DoxyCodeLine{01386\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01387\ \ \ \ \ \};}
+\DoxyCodeLine{01388\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01389\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpid7}
+\DoxyCodeLine{01390\ \ \ \ \ \{}
+\DoxyCodeLine{01391\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01392\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpid7;}
+\DoxyCodeLine{01393\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01394\ \ \ \ \ \};}
+\DoxyCodeLine{01395\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01396\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpidir}
+\DoxyCodeLine{01397\ \ \ \ \ \{}
+\DoxyCodeLine{01398\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01399\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpidir;}
+\DoxyCodeLine{01400\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01401\ \ \ \ \ \};}
+\DoxyCodeLine{01402\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01403\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpinxt}
+\DoxyCodeLine{01404\ \ \ \ \ \{}
+\DoxyCodeLine{01405\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01406\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpinxt;}
+\DoxyCodeLine{01407\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01408\ \ \ \ \ \};}
+\DoxyCodeLine{01409\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01410\ \ \ \ \ \textcolor{keyword}{struct\ }Ulpistp}
+\DoxyCodeLine{01411\ \ \ \ \ \{}
+\DoxyCodeLine{01412\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01413\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ulpistp;}
+\DoxyCodeLine{01414\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01415\ \ \ \ \ \};}
+\DoxyCodeLine{01416\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01417\ \ \ \ \ \textcolor{keyword}{struct\ }Vbus}
+\DoxyCodeLine{01418\ \ \ \ \ \{}
+\DoxyCodeLine{01419\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01420\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Vbus;}
+\DoxyCodeLine{01421\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01422\ \ \ \ \ \};}
+\DoxyCodeLine{01423\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01424\ \ \ \ \ \textcolor{keyword}{struct\ }Vsync}
+\DoxyCodeLine{01425\ \ \ \ \ \{}
+\DoxyCodeLine{01426\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01427\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Vsync;}
+\DoxyCodeLine{01428\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01429\ \ \ \ \ \};}
+\DoxyCodeLine{01430\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01431\ \ \ \ \ \textcolor{keyword}{struct\ }Wkup}
+\DoxyCodeLine{01432\ \ \ \ \ \{}
+\DoxyCodeLine{01433\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01434\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Wkup;}
+\DoxyCodeLine{01435\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01436\ \ \ \ \ \};}
+\DoxyCodeLine{01437\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ \_\ >}
+\DoxyCodeLine{01438\ \ \ \ \ \textcolor{keyword}{struct\ }Ws}
+\DoxyCodeLine{01439\ \ \ \ \ \{}
+\DoxyCodeLine{01440\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{01441\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Ws;}
+\DoxyCodeLine{01442\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{01443\ \ \ \ \ \};}
+\DoxyCodeLine{01445\ \};}
+\DoxyCodeLine{01446\ }
+\DoxyCodeLine{01447\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{01448\ }
+\DoxyCodeLine{01449\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{01450\ }
+\DoxyCodeLine{01451\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_GPIO\_PIN\_UNUSED\_HPP}}
+
+\end{DoxyCode}

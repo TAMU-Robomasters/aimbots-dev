@@ -1,0 +1,108 @@
+\doxysection{modm::\+Can Class Reference}
+\hypertarget{classmodm_1_1_can}{}\label{classmodm_1_1_can}\index{modm::Can@{modm::Can}}
+
+
+{\ttfamily \+\#include $<$can.\+hpp$>$}
+
+Inheritance diagram for modm::\+Can:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classmodm_1_1_can}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}{Mode}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a960b44c579bc2f6818d2daaf9e4c16f0}{Normal}} = 0b00
+, \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a3db5be2c0f1a2c52d4efc1d475551ba9}{Listen\+Only}} = 0b01
+, \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a2bedeeb051e4212e3c53f13f85845fde}{Loop\+Back}} = 0b10
+, \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a45987c21827015f2000fff5769b231a2}{Listen\+Only\+Loop\+Back}} = 0b11
+ \}
+\begin{DoxyCompactList}\small\item\em Possible modes of the CAN controller. \end{DoxyCompactList}\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{Bus\+State}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1ea2ec0d16e4ca169baedb9b2d50ec5c6d7}{Connected}} = 0
+, \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf6838fe3c9b719640b817473e714ac47}{Error\+Warning}} = 1
+, \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf2dddaa52fc350a733bae4d166aed1fe}{Error\+Passive}} = 2
+, {\bfseries Off} = 3
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{modm::\+\+Peripheral\+Driver}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$baudrate\+\_\+t available, baudrate\+\_\+t requested, percent\+\_\+t tolerance$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver_a5c336ff9889c347e7eadb810bf984ebd}{assert\+Baudrate\+In\+Tolerance}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface to the CAN bus 
+
+\label{doc-enum-members}
+\Hypertarget{classmodm_1_1_can_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}\index{modm::Can@{modm::Can}!BusState@{BusState}}
+\index{BusState@{BusState}!modm::Can@{modm::Can}}
+\doxysubsubsection{\texorpdfstring{BusState}{BusState}}
+{\footnotesize\ttfamily \label{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e} 
+enum class \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{modm::\+\+Can::\+\+Bus\+State}} :\+ uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Connected@{Connected}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!Connected@{Connected}}
+}\Hypertarget{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1ea2ec0d16e4ca169baedb9b2d50ec5c6d7}\label{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1ea2ec0d16e4ca169baedb9b2d50ec5c6d7} 
+Connected&This bit is set by hardware when the warning limit has been reached (Receive Error Counter or Transmit Error Counter ≥ 96). \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ErrorWarning@{ErrorWarning}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!ErrorWarning@{ErrorWarning}}
+}\Hypertarget{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf6838fe3c9b719640b817473e714ac47}\label{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf6838fe3c9b719640b817473e714ac47} 
+Error\+Warning&This bit is set by hardware when the Error Passive limit has been reached (Receive Error Counter or Transmit Error Counter \texorpdfstring{$>$}{>} 127). \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ErrorPassive@{ErrorPassive}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!ErrorPassive@{ErrorPassive}}
+}\Hypertarget{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf2dddaa52fc350a733bae4d166aed1fe}\label{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf2dddaa52fc350a733bae4d166aed1fe} 
+Error\+Passive&This bit is set by hardware when it enters the bus-\/off state. The bus-\/off state is entered on TEC overflow, greater than 255 \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}\index{modm::Can@{modm::Can}!Mode@{Mode}}
+\index{Mode@{Mode}!modm::Can@{modm::Can}}
+\doxysubsubsection{\texorpdfstring{Mode}{Mode}}
+{\footnotesize\ttfamily \label{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95} 
+enum class \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}{modm::\+\+Can::\+\+Mode}} :\+ uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+Possible modes of the CAN controller. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Normal@{Normal}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!Normal@{Normal}}
+}\Hypertarget{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a960b44c579bc2f6818d2daaf9e4c16f0}\label{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a960b44c579bc2f6818d2daaf9e4c16f0} 
+Normal&standard operation mode \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ListenOnly@{ListenOnly}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!ListenOnly@{ListenOnly}}
+}\Hypertarget{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a3db5be2c0f1a2c52d4efc1d475551ba9}\label{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a3db5be2c0f1a2c52d4efc1d475551ba9} 
+Listen\+Only&only possible to receive messages \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{LoopBack@{LoopBack}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!LoopBack@{LoopBack}}
+}\Hypertarget{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a2bedeeb051e4212e3c53f13f85845fde}\label{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a2bedeeb051e4212e3c53f13f85845fde} 
+Loop\+Back&messages sent are immediately received by own controller \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ListenOnlyLoopBack@{ListenOnlyLoopBack}!modm::Can@{modm::Can}}
+\index{modm::Can@{modm::Can}!ListenOnlyLoopBack@{ListenOnlyLoopBack}}
+}\Hypertarget{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a45987c21827015f2000fff5769b231a2}\label{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a45987c21827015f2000fff5769b231a2} 
+Listen\+Only\+Loop\+Back&combination of both modes \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+can.\+hpp\end{DoxyCompactItemize}

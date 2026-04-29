@@ -1,0 +1,73 @@
+\doxysection{modm::\+cortex::\+Sys\+Tick\+Timer Class Reference}
+\hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer}{}\label{classmodm_1_1cortex_1_1_sys_tick_timer}\index{modm::cortex::SysTickTimer@{modm::cortex::SysTickTimer}}
+
+
+Sys\+Tick Timer.  
+
+
+
+
+{\ttfamily \+\#include $<$systick\+\_\+timer.\+hpp$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class System\+Clock, percent\+\_\+t tolerance = pct(0)$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1cortex_1_1_sys_tick_timer_aa97f3d6f0aad94e31a32ffb437b1f369}{initialize}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1cortex_1_1_sys_tick_timer_af500dfc70483559b0fc132fe4d751e91}{disable}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer_ac476998301b8600c799cb5540999ff97}\label{classmodm_1_1cortex_1_1_sys_tick_timer_ac476998301b8600c799cb5540999ff97} 
+class {\bfseries modm::\+chrono::\+milli\+\_\+clock}
+\item 
+\Hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer_a6f933a73927b914f4607127981bd11c5}\label{classmodm_1_1cortex_1_1_sys_tick_timer_a6f933a73927b914f4607127981bd11c5} 
+class {\bfseries modm::\+chrono::\+micro\+\_\+clock}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Sys\+Tick Timer. 
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer_af500dfc70483559b0fc132fe4d751e91}\index{modm::cortex::SysTickTimer@{modm::cortex::SysTickTimer}!disable@{disable}}
+\index{disable@{disable}!modm::cortex::SysTickTimer@{modm::cortex::SysTickTimer}}
+\doxysubsubsection{\texorpdfstring{disable()}{disable()}}
+{\footnotesize\ttfamily \label{classmodm_1_1cortex_1_1_sys_tick_timer_af500dfc70483559b0fc132fe4d751e91} 
+void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_sys_tick_timer_af500dfc70483559b0fc132fe4d751e91}{modm::\+platform::\+\+Sys\+Tick\+Timer::\+disable}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Disables Sys\+Tick Timer.
+
+\begin{DoxyWarning}{Warning}
+If the Sys\+Tick Timer is disabled modm::\+\+Clock is not incremented automatically. Workflow classes which rely on modm::\+\+Clock will not work if modm::\+\+Clock is not incremented. 
+\end{DoxyWarning}
+\Hypertarget{classmodm_1_1cortex_1_1_sys_tick_timer_aa97f3d6f0aad94e31a32ffb437b1f369}\index{modm::cortex::SysTickTimer@{modm::cortex::SysTickTimer}!initialize@{initialize}}
+\index{initialize@{initialize}!modm::cortex::SysTickTimer@{modm::cortex::SysTickTimer}}
+\doxysubsubsection{\texorpdfstring{initialize()}{initialize()}}
+{\footnotesize\ttfamily \label{classmodm_1_1cortex_1_1_sys_tick_timer_aa97f3d6f0aad94e31a32ffb437b1f369} 
+template$<$class System\+Clock, percent\+\_\+t tolerance = pct(0)$>$ \\
+void modm::\+platform::\+\+Sys\+Tick\+Timer::\+initialize (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Initializes the Sys\+Tick Timer to generate periodic events.
+
+\begin{DoxyWarning}{Warning}
+The Sys\+Tick Timer is used by default to increment modm::\+\+Clock, which is used by modm::\+\+Timeout and other similar processing classes. You must not increment the modm::\+\+Clock additionally somewhere else.
+\end{DoxyWarning}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em System\+Clock} & the currently active system clock \\
+\hline
+{\em rate} & the desired update rate of the modm::\+\+Clock \\
+\hline
+{\em tolerance} & the allowed absolute tolerance for the resulting clock rate \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+clock/\+systick\+\_\+timer.\+hpp\item 
+src/\+modm/\+platform/\+clock/\+systick\+\_\+timer.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,241 @@
+\doxysection{modm::\+platform::\+Gpio\+B13 Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_gpio_b13}{}\label{classmodm_1_1platform_1_1_gpio_b13}\index{modm::platform::GpioB13@{modm::platform::GpioB13}}
+
+
+{\ttfamily \+\#include $<$gpio\+\_\+\+B13.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Gpio\+B13:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classmodm_1_1platform_1_1_gpio_b13}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a29f5ffd1891290fc9fe97845e93af171}\label{classmodm_1_1platform_1_1_gpio_b13_a29f5ffd1891290fc9fe97845e93af171} 
+using {\bfseries Output} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13}{Gpio\+B13}}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ac282c0c82393bfebbfaf9865d690f3e1}\label{classmodm_1_1platform_1_1_gpio_b13_ac282c0c82393bfebbfaf9865d690f3e1} 
+using {\bfseries Input} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13}{Gpio\+B13}}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a17a671e8053e7e4bdd2425f59686dd27}\label{classmodm_1_1platform_1_1_gpio_b13_a17a671e8053e7e4bdd2425f59686dd27} 
+using {\bfseries IO} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13}{Gpio\+B13}}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a7a1f1116087f2dc6c90f01381cecb763}\label{classmodm_1_1platform_1_1_gpio_b13_a7a1f1116087f2dc6c90f01381cecb763} 
+using {\bfseries Type} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13}{Gpio\+B13}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{modm::\+platform::\+\+Gpio}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Floating}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{Pull\+Up}} = 0x1
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b}{Pull\+Down}} = 0x2
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{Push\+Pull}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{Open\+Drain}} = 0x1
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} \{ \newline
+{\bfseries Low} = 0
+, {\bfseries Medium} = 0x1
+, {\bfseries High} = 0x2
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}{Very\+High}} = 0x3
+, \newline
+{\bfseries MHz2} = Low
+, {\bfseries MHz25} = Medium
+, {\bfseries MHz50} = High
+, {\bfseries MHz100} = Very\+High
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5}\label{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5} 
+enum class {\bfseries Input\+Trigger} \{ {\bfseries Rising\+Edge}
+, {\bfseries Falling\+Edge}
+, {\bfseries Both\+Edges}
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}\label{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}} \{ \newline
+{\bfseries A} = 0
+, {\bfseries B} = 1
+, {\bfseries C} = 2
+, {\bfseries D} = 3
+, \newline
+{\bfseries E} = 4
+, {\bfseries F} = 5
+, {\bfseries G} = 6
+, {\bfseries H} = 7
+, \newline
+{\bfseries I} = 8
+ \}
+\begin{DoxyCompactList}\small\item\em The \doxylink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port} a \doxylink{structmodm_1_1platform_1_1_gpio}{Gpio} Pin is connected to. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{structmodm_1_1_gpio}{modm::\+\+Gpio}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}\label{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b} 
+enum class \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}} \{ {\bfseries In} = 0
+, {\bfseries Out} = 1
+, {\bfseries In\+Out} = 2
+, {\bfseries Special} = 3
+ \}
+\begin{DoxyCompactList}\small\item\em Declares the direction of a GPIO. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ab42d11d93434da97888725a8e10925e0}\label{classmodm_1_1platform_1_1_gpio_b13_ab42d11d93434da97888725a8e10925e0} 
+static void {\bfseries set\+Output} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a76197c00b32071e87dd9e78fe5a19aea}\label{classmodm_1_1platform_1_1_gpio_b13_a76197c00b32071e87dd9e78fe5a19aea} 
+static void {\bfseries set\+Output} (bool status)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a6452e5ac418d0a0013e84eb6aae9e79d}\label{classmodm_1_1platform_1_1_gpio_b13_a6452e5ac418d0a0013e84eb6aae9e79d} 
+static void {\bfseries set} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a23527fb0ebdda1d5f228bf527367162b}\label{classmodm_1_1platform_1_1_gpio_b13_a23527fb0ebdda1d5f228bf527367162b} 
+static void {\bfseries set} (bool status)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_afa09cd90c14364f0bc73ef13ed941f73}\label{classmodm_1_1platform_1_1_gpio_b13_afa09cd90c14364f0bc73ef13ed941f73} 
+static void {\bfseries reset} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a34679e3385af99a9a5c1c1fa158a57f3}\label{classmodm_1_1platform_1_1_gpio_b13_a34679e3385af99a9a5c1c1fa158a57f3} 
+static bool {\bfseries toggle} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ad5096434f88ac34e91dcd6a5ce566026}\label{classmodm_1_1platform_1_1_gpio_b13_ad5096434f88ac34e91dcd6a5ce566026} 
+static bool {\bfseries is\+Set} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a18748a1c26f0651dec16a922cea712c7}\label{classmodm_1_1platform_1_1_gpio_b13_a18748a1c26f0651dec16a922cea712c7} 
+static void {\bfseries configure} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} type, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} speed=Output\+Speed::\+\+MHz50)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ae108ed2e170e4f9c8c5f38b9161b6d25}\label{classmodm_1_1platform_1_1_gpio_b13_ae108ed2e170e4f9c8c5f38b9161b6d25} 
+static void {\bfseries set\+Output} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} type, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} speed=Output\+Speed::\+\+MHz50)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a56346739c0e2c5a40bcc43e2b53564f8}\label{classmodm_1_1platform_1_1_gpio_b13_a56346739c0e2c5a40bcc43e2b53564f8} 
+static void {\bfseries set\+Input} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ad5e79c38fb0e5b85daa73a10ac2b01f9}\label{classmodm_1_1platform_1_1_gpio_b13_ad5e79c38fb0e5b85daa73a10ac2b01f9} 
+static bool {\bfseries read} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_aad8812bd351b8c2f27e74508f6fd85e9}\label{classmodm_1_1platform_1_1_gpio_b13_aad8812bd351b8c2f27e74508f6fd85e9} 
+static void {\bfseries configure} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} type)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ad5106e6d0a57bf219ee65ec844f5bc53}\label{classmodm_1_1platform_1_1_gpio_b13_ad5106e6d0a57bf219ee65ec844f5bc53} 
+static void {\bfseries set\+Input} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} type)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a4f5e4d3fd78309b171cc7b96eacdd2b0}\label{classmodm_1_1platform_1_1_gpio_b13_a4f5e4d3fd78309b171cc7b96eacdd2b0} 
+static void {\bfseries enable\+External\+Interrupt} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a914393075bb55f28fee688f2f09f380d}\label{classmodm_1_1platform_1_1_gpio_b13_a914393075bb55f28fee688f2f09f380d} 
+static void {\bfseries disable\+External\+Interrupt} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ad3e9508f1dc005909f056b9a17aea086}\label{classmodm_1_1platform_1_1_gpio_b13_ad3e9508f1dc005909f056b9a17aea086} 
+static void {\bfseries enable\+External\+Interrupt\+Vector} (const uint32\+\_\+t priority)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a3510de29e62efaa4e69335a5f0af641f}\label{classmodm_1_1platform_1_1_gpio_b13_a3510de29e62efaa4e69335a5f0af641f} 
+static void {\bfseries disable\+External\+Interrupt\+Vector} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a8d4017babd9345a7c736b5d4767b95f3}\label{classmodm_1_1platform_1_1_gpio_b13_a8d4017babd9345a7c736b5d4767b95f3} 
+static void {\bfseries set\+Input\+Trigger} (const Input\+Trigger trigger)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a84fb29eda157c94e388dc610d1d8ecc1}\label{classmodm_1_1platform_1_1_gpio_b13_a84fb29eda157c94e388dc610d1d8ecc1} 
+static bool {\bfseries get\+External\+Interrupt\+Flag} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a8022083bf0afc2b0529bcd241e6155bc}\label{classmodm_1_1platform_1_1_gpio_b13_a8022083bf0afc2b0529bcd241e6155bc} 
+static void {\bfseries acknowledge\+External\+Interrupt\+Flag} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_affce32a5a9a1edb87494ef8c3c444fa3}\label{classmodm_1_1platform_1_1_gpio_b13_affce32a5a9a1edb87494ef8c3c444fa3} 
+static \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}} {\bfseries get\+Direction} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a09c8e32405e3e64c62dbe3940c495bec}\label{classmodm_1_1platform_1_1_gpio_b13_a09c8e32405e3e64c62dbe3940c495bec} 
+static void {\bfseries lock} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a169dea2e871573e8df7087f482120ac4}\label{classmodm_1_1platform_1_1_gpio_b13_a169dea2e871573e8df7087f482120ac4} 
+static void {\bfseries disconnect} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_af8d4cc5a86afb6e35608353d38478192}\label{classmodm_1_1platform_1_1_gpio_b13_af8d4cc5a86afb6e35608353d38478192} 
+static constexpr bool {\bfseries is\+Inverted} = false
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a51a1c9bf9a5204f727406dd6028382c3}\label{classmodm_1_1platform_1_1_gpio_b13_a51a1c9bf9a5204f727406dd6028382c3} 
+static constexpr \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}} {\bfseries port} = Port::\+B
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port} name. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28}\label{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28} 
+static constexpr uint8\+\_\+t {\bfseries pin} = 13
+\begin{DoxyCompactList}\small\item\em Pin number. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a2fe1ad1b4a4c947b27d40e1f15b5383f}\label{classmodm_1_1platform_1_1_gpio_b13_a2fe1ad1b4a4c947b27d40e1f15b5383f} 
+static constexpr IRQn\+\_\+\+Type {\bfseries External\+Interrupt\+IRQ} = EXTI15\+\_\+10\+\_\+\+IRQn
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_gpio_i_o}{modm::\+\+Gpio\+IO}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}} {\bfseries direction} = Direction::\+\+In\+Out
+\begin{DoxyCompactList}\small\item\em Declares the Pin direction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_gpio_output}{modm::\+\+Gpio\+Output}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}} {\bfseries direction} = Direction::\+\+Out
+\begin{DoxyCompactList}\small\item\em Declares the Pin direction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{structmodm_1_1_gpio}{modm::\+\+Gpio}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr bool \doxymbox{\hyperlink{structmodm_1_1_gpio_a85ddb071ba8af1c2b89b4e8c079ea58f}{Low}} = false
+\item 
+static constexpr bool {\bfseries High} = true
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_gpio_input}{modm::\+\+Gpio\+Input}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}} {\bfseries direction} = Direction::\+\+In
+\begin{DoxyCompactList}\small\item\em Declares the Pin direction. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ab5e55f70af39dd2f52aebe602ca24721}\label{classmodm_1_1platform_1_1_gpio_b13_ab5e55f70af39dd2f52aebe602ca24721} 
+static constexpr uint16\+\_\+t {\bfseries mask} = 0x1 $<$$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28}{pin}}
+\begin{DoxyCompactList}\small\item\em Bitmask for registers that contain a 1bit value for every pin. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a8a9cb7f438d2879e2b750553eb0f58f5}\label{classmodm_1_1platform_1_1_gpio_b13_a8a9cb7f438d2879e2b750553eb0f58f5} 
+static constexpr uint32\+\_\+t {\bfseries mask2} = 0x3 $<$$<$ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28}{pin}} \texorpdfstring{$\ast$}{*} 2)
+\begin{DoxyCompactList}\small\item\em Bitmask for registers that contain a 2bit value for every pin. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_aa369d82358568091b4b40d00a017fef4}\label{classmodm_1_1platform_1_1_gpio_b13_aa369d82358568091b4b40d00a017fef4} 
+static constexpr uint8\+\_\+t {\bfseries port\+\_\+nr} = uint8\+\_\+t(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_a51a1c9bf9a5204f727406dd6028382c3}{port}})
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port} Number. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a809162a6ccccafe438133deda81c9cb3}\label{classmodm_1_1platform_1_1_gpio_b13_a809162a6ccccafe438133deda81c9cb3} 
+static constexpr uint8\+\_\+t {\bfseries af\+\_\+id} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28}{pin}} /\+ 8
+\begin{DoxyCompactList}\small\item\em Alternate Function register id. 0 for pin 0-\/7. 1 for pin 8-\/15. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a85e3a51851a13917cbf5b5e624c349ee}\label{classmodm_1_1platform_1_1_gpio_b13_a85e3a51851a13917cbf5b5e624c349ee} 
+static constexpr uint8\+\_\+t {\bfseries af\+\_\+offset} = (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_aec6d528b7a64ad1f7667e0118efc7f28}{pin}} \texorpdfstring{$\ast$}{*} 4) \% 32
+\begin{DoxyCompactList}\small\item\em Alternate Function offset. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_ac0c50b7a9ce7ac2eb7f161cc2c7ae81c}\label{classmodm_1_1platform_1_1_gpio_b13_ac0c50b7a9ce7ac2eb7f161cc2c7ae81c} 
+static constexpr uint32\+\_\+t {\bfseries af\+\_\+mask} = 0xf $<$$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_b13_a85e3a51851a13917cbf5b5e624c349ee}{af\+\_\+offset}}
+\begin{DoxyCompactList}\small\item\em Alternate Function register mask. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a4e7835d7980cbc422c366c10fdbc1f77}\label{classmodm_1_1platform_1_1_gpio_b13_a4e7835d7980cbc422c366c10fdbc1f77} 
+{\footnotesize template$<$class... Gpios$>$ }\\class {\bfseries Gpio\+Set}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a6f211b1a6fb32c7354ec26cb136397d7}\label{classmodm_1_1platform_1_1_gpio_b13_a6f211b1a6fb32c7354ec26cb136397d7} 
+class {\bfseries Adc}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a408d9d1af47860a0d441db9e682a0286}\label{classmodm_1_1platform_1_1_gpio_b13_a408d9d1af47860a0d441db9e682a0286} 
+class {\bfseries Adc1}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_aa23e1a089c072f958a021d20e3999d1d}\label{classmodm_1_1platform_1_1_gpio_b13_aa23e1a089c072f958a021d20e3999d1d} 
+class {\bfseries Adc2}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a5ed7caa4b9cdb2a9e493c0d14f0969ab}\label{classmodm_1_1platform_1_1_gpio_b13_a5ed7caa4b9cdb2a9e493c0d14f0969ab} 
+class {\bfseries Adc3}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_b13_a448248fc7a1c51bccc4b77743edcb11f}\label{classmodm_1_1platform_1_1_gpio_b13_a448248fc7a1c51bccc4b77743edcb11f} 
+class {\bfseries Adc4}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+IO class for Pin B13 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+gpio/\+gpio\+\_\+\+B13.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,71 @@
+\doxysection{aligned\+\_\+storage.\+hpp}
+\hypertarget{aligned__storage_8hpp_source}{}\label{aligned__storage_8hpp_source}\index{src/modm/utils/aligned\_storage.hpp@{src/modm/utils/aligned\_storage.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Boost\ Software\ License\ -\/\ Version\ 1.0\ -\/\ August\ 17th,\ 2003}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Permission\ is\ hereby\ granted,\ free\ of\ charge,\ to\ any\ person\ or\ organization}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ obtaining\ a\ copy\ of\ the\ software\ and\ accompanying\ documentation\ covered\ by}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ this\ license\ (the\ "{}Software"{})\ to\ use,\ reproduce,\ display,\ distribute,}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ execute,\ and\ transmit\ the\ Software,\ and\ to\ prepare\ derivative\ works\ of\ the}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ Software,\ and\ to\ permit\ third-\/parties\ to\ whom\ the\ Software\ is\ furnished\ to}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ do\ so,\ all\ subject\ to\ the\ following:}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ The\ copyright\ notices\ in\ the\ Software\ and\ this\ entire\ statement,\ including}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ the\ above\ license\ grant,\ this\ restriction\ and\ the\ following\ disclaimer,}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ must\ be\ included\ in\ all\ copies\ of\ the\ Software,\ in\ whole\ or\ in\ part,\ and}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ all\ derivative\ works\ of\ the\ Software,\ unless\ such\ copies\ or\ derivative}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ works\ are\ solely\ in\ the\ form\ of\ machine-\/executable\ object\ code\ generated\ by}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *\ a\ source\ language\ processor.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ THE\ SOFTWARE\ IS\ PROVIDED\ "{}AS\ IS"{},\ WITHOUT\ WARRANTY\ OF\ ANY\ KIND,\ EXPRESS\ OR}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ IMPLIED,\ INCLUDING\ BUT\ NOT\ LIMITED\ TO\ THE\ WARRANTIES\ OF\ MERCHANTABILITY,}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ FITNESS\ FOR\ A\ PARTICULAR\ PURPOSE,\ TITLE\ AND\ NON-\/INFRINGEMENT.\ IN\ NO\ EVENT}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ SHALL\ THE\ COPYRIGHT\ HOLDERS\ OR\ ANYONE\ DISTRIBUTING\ THE\ SOFTWARE\ BE\ LIABLE}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ FOR\ ANY\ DAMAGES\ OR\ OTHER\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ TORT\ OR\ OTHERWISE,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ ARISING\ FROM,\ OUT\ OF\ OR\ IN\ CONNECTION\ WITH\ THE\ SOFTWARE\ OR\ THE\ USE\ OR\ OTHER}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ DEALINGS\ IN\ THE\ SOFTWARE.}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifndef\ MODM\_ALIGNED\_STORAGE\_HPP}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ MODM\_ALIGNED\_STORAGE\_HPP}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00033\ \textcolor{keyword}{namespace\ }aligned\_storage\_impl}
+\DoxyCodeLine{00034\ \{}
+\DoxyCodeLine{00035\ \textcolor{keyword}{template}<\textcolor{keywordtype}{size\_t}\ Cap>}
+\DoxyCodeLine{00036\ \textcolor{keyword}{union\ }aligned\_storage\_helper}
+\DoxyCodeLine{00037\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{struct\ }double1\ \{\ \textcolor{keywordtype}{double}\ a;\ \};}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{struct\ }double4\ \{\ \textcolor{keywordtype}{double}\ a[4];\ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>\ \textcolor{keyword}{using\ }maybe\ =\ std::conditional\_t<(Cap\ >=\ \textcolor{keyword}{sizeof}(T)),\ T,\ \textcolor{keywordtype}{char}>;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{char}\ real\_data[Cap];}
+\DoxyCodeLine{00042\ \ \ \ \ maybe<int>\ a;}
+\DoxyCodeLine{00043\ \ \ \ \ maybe<long>\ b;}
+\DoxyCodeLine{00044\ \ \ \ \ maybe<long\ long>\ c;}
+\DoxyCodeLine{00045\ \ \ \ \ maybe<void*>\ d;}
+\DoxyCodeLine{00046\ \ \ \ \ maybe<void(*)()>\ e;}
+\DoxyCodeLine{00047\ \ \ \ \ maybe<double1>\ f;}
+\DoxyCodeLine{00048\ \ \ \ \ maybe<double4>\ g;}
+\DoxyCodeLine{00049\ \ \ \ \ maybe<long\ double>\ h;}
+\DoxyCodeLine{00050\ \};}
+\DoxyCodeLine{00051\ \}\ \textcolor{comment}{//\ namespace\ aligned\_storage\_impl}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{template}<\textcolor{keywordtype}{size\_t}\ Cap,\ \textcolor{keywordtype}{size\_t}\ Align\ =\ alignof(aligned\_storage\_impl::aligned\_storage\_helper<Cap>)>}
+\DoxyCodeLine{00063\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1aligned__storage}{aligned\_storage}}\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ std::aligned\_storage\_t<Cap,\ Align>;}
+\DoxyCodeLine{00065\ \};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \textcolor{keyword}{template}<\textcolor{keywordtype}{size\_t}\ Cap,\ \textcolor{keywordtype}{size\_t}\ Align\ =\ alignof(aligned\_storage\_impl::aligned\_storage\_helper<Cap>)>}
+\DoxyCodeLine{00068\ \textcolor{keyword}{using\ }aligned\_storage\_t\ =\ \textcolor{keyword}{typename}\ aligned\_storage<Cap,\ Align>::type;}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}(aligned\_storage\_t<\textcolor{keyword}{sizeof}(\textcolor{keywordtype}{void}*)>)\ ==\ \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{void}*));}
+\DoxyCodeLine{00071\ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{alignof}(aligned\_storage\_t<\textcolor{keyword}{sizeof}(\textcolor{keywordtype}{void}*)>)\ ==\ \textcolor{keyword}{alignof}(\textcolor{keywordtype}{void}*));}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_ALIGNED\_STORAGE\_HPP}}
+
+\end{DoxyCode}

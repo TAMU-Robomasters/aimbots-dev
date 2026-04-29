@@ -1,0 +1,58 @@
+\doxysection{modm::\+filter::\+Moving\+Average\texorpdfstring{$<$}{<} T, N \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1filter_1_1_moving_average}{}\label{classmodm_1_1filter_1_1_moving_average}\index{modm::filter::MovingAverage$<$ T, N $>$@{modm::filter::MovingAverage$<$ T, N $>$}}
+
+
+Moving average filter.  
+
+
+
+
+{\ttfamily \+\#include $<$moving\+\_\+average.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1filter_1_1_moving_average_a7b5a208123e2c22f1c020406513805bd}\label{classmodm_1_1filter_1_1_moving_average_a7b5a208123e2c22f1c020406513805bd} 
+{\bfseries Moving\+Average} (const T \&initial\+Value=0)
+\item 
+\Hypertarget{classmodm_1_1filter_1_1_moving_average_af3fd8560a5fb6f1dd89ecd39d1b77ae2}\label{classmodm_1_1filter_1_1_moving_average_af3fd8560a5fb6f1dd89ecd39d1b77ae2} 
+void {\bfseries update} (const T \&input)
+\begin{DoxyCompactList}\small\item\em Append new value. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1filter_1_1_moving_average_a4dbaa1fb9e750bcb4157502d044ae4d8}\label{classmodm_1_1filter_1_1_moving_average_a4dbaa1fb9e750bcb4157502d044ae4d8} 
+const T {\bfseries get\+Value} () const
+\begin{DoxyCompactList}\small\item\em Get filtered value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, std::\+size\+\_\+t N$>$\newline
+class modm::\+filter::\+\+Moving\+Average$<$ T, N $>$}
+Moving average filter. 
+
+Calculates the average of N newest values, i.\+a. the sum of the last N values have been passed to update(...), divided by N. If less than N values have been passed to the filter, the division factor is still N, so missing values are assumed to be zero.
+
+For integer types this implementation stores the current sum of all values in the buffer and updates this value with every call of \doxylink{classmodm_1_1filter_1_1_moving_average_af3fd8560a5fb6f1dd89ecd39d1b77ae2}{update()} by subtracting the overwritten buffer index and adding the new one.
+
+Due to numerical instabillity for floating value types, inside the update function the sum has to be recalculated making it less efficient.
+
+The internal sum is always up to date and the \doxylink{classmodm_1_1filter_1_1_moving_average_a4dbaa1fb9e750bcb4157502d044ae4d8}{get\+Value()} method consists of only one division.
+
+\begin{DoxyWarning}{Warning}
+Input range is limited by the following equation 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{N\ *\ input::maxValue\ <\ T::maxValue\ }
+
+\end{DoxyCode}
+ The sum off the last N input values must not be greater than the maximum value of T, otherwise an overflow will occur.
+\end{DoxyWarning}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Input type \\
+\hline
+{\em N} & Number of samples (maximum is 65356 or 2\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}16) \\
+\hline
+\end{DoxyTemplParams}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+filter/\+moving\+\_\+average.\+hpp\end{DoxyCompactItemize}

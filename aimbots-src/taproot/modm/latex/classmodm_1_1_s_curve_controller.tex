@@ -1,0 +1,94 @@
+\doxysection{modm::\+SCurve\+Controller\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_s_curve_controller}{}\label{classmodm_1_1_s_curve_controller}\index{modm::SCurveController$<$ T $>$@{modm::SCurveController$<$ T $>$}}
+
+
+S-\/\+Curve trajectory generation with feedback.  
+
+
+
+
+{\ttfamily \+\#include $<$s\+\_\+curve\+\_\+controller.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1_s_curve_controller_1_1_parameter}{Parameter}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_ac0e54ca24ddcb034889972dd7aab923d}\label{classmodm_1_1_s_curve_controller_ac0e54ca24ddcb034889972dd7aab923d} 
+{\bfseries SCurve\+Controller} (const \doxymbox{\hyperlink{structmodm_1_1_s_curve_controller_1_1_parameter}{Parameter}} \&parameter)
+\item 
+void \doxymbox{\hyperlink{classmodm_1_1_s_curve_controller_a82bf93992caf2021b76254e816826fcc}{set\+Parameter}} (const \doxymbox{\hyperlink{structmodm_1_1_s_curve_controller_1_1_parameter}{Parameter}} \&parameter)
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_ab18c60ed0516f4d0e5f50bea4974f53e}\label{classmodm_1_1_s_curve_controller_ab18c60ed0516f4d0e5f50bea4974f53e} 
+void {\bfseries set\+Speed\+Maximum} (const T \&speed)
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_a54b39e16d3654a52f2aad4c4a5d40a38}\label{classmodm_1_1_s_curve_controller_a54b39e16d3654a52f2aad4c4a5d40a38} 
+void {\bfseries set\+Speed\+Minimim} (const T \&speed)
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_a052d1be4c012d885e83f767e78581f8a}\label{classmodm_1_1_s_curve_controller_a052d1be4c012d885e83f767e78581f8a} 
+void {\bfseries set\+Speed\+Target} (const T \&speed)
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_a23c4cf41413e4230a7d0bee7284cf806}\label{classmodm_1_1_s_curve_controller_a23c4cf41413e4230a7d0bee7284cf806} 
+bool {\bfseries is\+Target\+Reached} () const
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_a79601a4cfaf4c2a709ed76fd48c5abf0}\label{classmodm_1_1_s_curve_controller_a79601a4cfaf4c2a709ed76fd48c5abf0} 
+void {\bfseries update} (T error, const T \&speed)
+\item 
+\Hypertarget{classmodm_1_1_s_curve_controller_aaec8e8ca8e27cec744ad21473d100795}\label{classmodm_1_1_s_curve_controller_aaec8e8ca8e27cec744ad21473d100795} 
+const T \& {\bfseries get\+Value} () const
+\begin{DoxyCompactList}\small\item\em setpoint output for the speed value \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class modm::\+\+SCurve\+Controller$<$ T $>$}
+S-\/\+Curve trajectory generation with feedback. 
+
+closed-\/loop
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{SCurveController<int16\_t>\ controller;}
+\DoxyCodeLine{}
+\DoxyCodeLine{controller.update(positionTarget\ -\/\ currentPosition,\ currentSpeed);}
+
+\end{DoxyCode}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000011}{Todo}}]documentation\end{DoxyRefDesc}
+
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+
+Georgi Grinshpun 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_s_curve_controller_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_s_curve_controller_a82bf93992caf2021b76254e816826fcc}\index{modm::SCurveController$<$ T $>$@{modm::SCurveController$<$ T $>$}!setParameter@{setParameter}}
+\index{setParameter@{setParameter}!modm::SCurveController$<$ T $>$@{modm::SCurveController$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{setParameter()}{setParameter()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_s_curve_controller_a82bf93992caf2021b76254e816826fcc} 
+template$<$typename T$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1_s_curve_controller}{modm::\+\+SCurve\+Controller}}$<$ T $>$::\+set\+Parameter (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structmodm_1_1_s_curve_controller_1_1_parameter}{Parameter}} \&}]{parameter}{}\end{DoxyParamCaption})}
+
+Reset the parameters of the controller.
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameter} & list of the controller \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+filter/\+s\+\_\+curve\+\_\+controller.\+hpp\item 
+src/\+modm/\+math/\+filter/\+s\+\_\+curve\+\_\+controller\+\_\+impl.\+hpp\end{DoxyCompactItemize}

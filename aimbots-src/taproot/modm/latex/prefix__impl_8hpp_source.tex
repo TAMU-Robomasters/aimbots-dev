@@ -1,0 +1,72 @@
+\doxysection{prefix\+\_\+impl.\+hpp}
+\hypertarget{prefix__impl_8hpp_source}{}\label{prefix__impl_8hpp_source}\index{src/modm/debug/logger/style/prefix\_impl.hpp@{src/modm/debug/logger/style/prefix\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_LOG\_PREFIX\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\ \ \ \ \#error\ "{}Don't\ include\ this\ file\ directly,\ use\ 'prefix.hpp'\ instead!"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00019\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ STYLE>}
+\DoxyCodeLine{00020\ modm::log::Prefix<T,\ STYLE>::Prefix(\ \textcolor{keyword}{const}\ T\&\ str,\ STYLE\ style\ )\ :}
+\DoxyCodeLine{00021\ \ \ \ \ Style<STYLE>\ (\ style\ ),}
+\DoxyCodeLine{00022\ \ \ \ \ flushed\ (\ true\ )}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ \ \ \ \ std::memcpy(\ \&this-\/>value,\ \&str,\ \textcolor{keyword}{sizeof}(T)\ );}
+\DoxyCodeLine{00025\ \}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ STYLE>}
+\DoxyCodeLine{00028\ modm::log::Prefix<T,\ STYLE>::Prefix(\ \textcolor{keyword}{const}\ T\&\ str,\ IODevice\ \&device\ )\ :}
+\DoxyCodeLine{00029\ \ \ \ \ Style<STYLE>\ (\ device\ ),}
+\DoxyCodeLine{00030\ \ \ \ \ flushed\ (\ true\ )}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ std::memcpy(\ \&this-\/>value,\ \&str,\ \textcolor{keyword}{sizeof}(T)\ );}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ STYLE>}
+\DoxyCodeLine{00037\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00038\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_prefix_aac9580649f56e03baebe907635185f09}{modm::log::Prefix<T,\ STYLE>::write}}(\ \textcolor{keywordtype}{char}\ c\ )}
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordflow}{if}(\ this-\/>flushed\ )\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ this-\/>flushed\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ this-\/>\doxymbox{\hyperlink{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663}{Style<STYLE>::write}}(\ this-\/>value\ );}
+\DoxyCodeLine{00043\ \ \ \ \ \}}
+\DoxyCodeLine{00044\ \ \ \ \ this-\/>\doxymbox{\hyperlink{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663}{Style<STYLE>::write}}(\ c\ );}
+\DoxyCodeLine{00045\ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ STYLE>}
+\DoxyCodeLine{00048\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00049\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_prefix_aac9580649f56e03baebe907635185f09}{modm::log::Prefix<T,\ STYLE>::write}}(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s\ )}
+\DoxyCodeLine{00050\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordflow}{if}(\ this-\/>flushed\ )\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ this-\/>flushed\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ this-\/>\doxymbox{\hyperlink{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663}{Style<STYLE>::write}}(\ this-\/>value\ );}
+\DoxyCodeLine{00054\ \ \ \ \ \}}
+\DoxyCodeLine{00055\ \ \ \ \ this-\/>\doxymbox{\hyperlink{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663}{Style<STYLE>::write}}(\ s\ );}
+\DoxyCodeLine{00056\ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00059\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ STYLE>}
+\DoxyCodeLine{00060\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00061\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_prefix_af4b45b58c3b805150bbf02a3f65235f4}{modm::log::Prefix<T,\ STYLE>::flush}}()}
+\DoxyCodeLine{00062\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ this-\/>flushed\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00064\ \ \ \ \ this-\/>\doxymbox{\hyperlink{classmodm_1_1log_1_1_style_a2e65bfc8363ba3e1e33ca619f1153f31}{Style<STYLE>::flush}}();}
+\DoxyCodeLine{00065\ \}}
+\DoxyCodeLine{00066\ }
+
+\end{DoxyCode}

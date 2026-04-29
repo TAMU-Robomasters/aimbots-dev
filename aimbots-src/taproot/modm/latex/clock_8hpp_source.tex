@@ -1,0 +1,97 @@
+\doxysection{clock.\+hpp}
+\hypertarget{clock_8hpp_source}{}\label{clock_8hpp_source}\index{src/modm/architecture/interface/clock.hpp@{src/modm/architecture/interface/clock.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ 2013,\ 2015,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2019,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015-\/2016,\ Sascha\ Schade}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ Raphael\ Lehmann}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }chrono}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1chrono_1_1milli__clock}{milli\_clock}}}
+\DoxyCodeLine{00047\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{using\ }duration\ =\ std::chrono::duration<uint32\_t,\ std::milli>;}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{using\ }rep\ =\ duration::rep;}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{using\ }period\ =\ duration::period;}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{using\ }time\_point\ =\ std::chrono::time\_point<milli\_clock,\ duration>;}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_steady\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{static}\ time\_point}
+\DoxyCodeLine{00056\ \ \ \ \ now()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00057\ \};}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1chrono_1_1micro__clock}{micro\_clock}}}
+\DoxyCodeLine{00077\ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{using\ }duration\ =\ std::chrono::duration<uint32\_t,\ std::micro>;}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{using\ }rep\ =\ duration::rep;}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{using\ }period\ =\ duration::period;}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{using\ }time\_point\ =\ std::chrono::time\_point<micro\_clock,\ duration>;}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ is\_steady\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{static}\ time\_point}
+\DoxyCodeLine{00086\ \ \ \ \ now()\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00087\ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \}\ \textcolor{comment}{//\ namespace\ chrono}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{keyword}{using\ }Clock\ =\ \doxymbox{\hyperlink{structmodm_1_1chrono_1_1milli__clock}{chrono::milli\_clock}};}
+\DoxyCodeLine{00092\ \textcolor{keyword}{using\ }PreciseClock\ =\ \doxymbox{\hyperlink{structmodm_1_1chrono_1_1micro__clock}{chrono::micro\_clock}};}
+\DoxyCodeLine{00093\ \textcolor{keyword}{using\ namespace\ }::std::chrono\_literals;}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#if\ MODM\_HAS\_IOSTREAM}}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00101\ \{}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ C,\ \textcolor{keyword}{class}\ D>}
+\DoxyCodeLine{00104\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::IOStream}}\&}
+\DoxyCodeLine{00105\ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::IOStream}}\&\ s,\ \textcolor{keyword}{const}\ std::chrono::time\_point<C,\ D>\&\ m)}
+\DoxyCodeLine{00106\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ s\ <<\ m.time\_since\_epoch();}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordflow}{return}\ s;}
+\DoxyCodeLine{00109\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T,\ \textcolor{keyword}{class}\ R>}
+\DoxyCodeLine{00112\ modm::IOStream\&}
+\DoxyCodeLine{00113\ operator\ <<\ (modm::IOStream\&\ s,\ \textcolor{keyword}{const}\ std::chrono::duration<T,\ R>\&\ m)}
+\DoxyCodeLine{00114\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ s\ <<\ m.count();}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<R,\ std::nano>)\ \ s\ <<\ \textcolor{stringliteral}{"{}ns"{}};}
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<R,\ std::micro>)\ s\ <<\ \textcolor{stringliteral}{"{}us"{}};}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<R,\ std::milli>)\ s\ <<\ \textcolor{stringliteral}{"{}ms"{}};}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<R,\ std::ratio<60>>)\ s\ <<\ \textcolor{stringliteral}{"{}min"{}};}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (std::is\_same\_v<R,\ std::ratio<3600>>)\ s\ <<\ \textcolor{charliteral}{'h'};}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keywordflow}{return}\ s;}
+\DoxyCodeLine{00122\ \}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \}\ \textcolor{comment}{//\ modm\ namespace}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

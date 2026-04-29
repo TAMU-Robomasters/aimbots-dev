@@ -1,0 +1,98 @@
+\doxysection{modm::\+Resumable\texorpdfstring{$<$}{<} Functions \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_resumable}{}\label{classmodm_1_1_resumable}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+
+
+{\ttfamily \+\#include $<$resumable.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_resumable_a9ae029f475d31b35645fe8831bb35f5c}\label{classmodm_1_1_resumable_a9ae029f475d31b35645fe8831bb35f5c} 
+void {\bfseries stop\+All\+Resumables} ()
+\begin{DoxyCompactList}\small\item\em Force all resumable functions to stop running. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_resumable_a9380d3c94670c1527792d09675ca0463}\label{classmodm_1_1_resumable_a9380d3c94670c1527792d09675ca0463} 
+bool {\bfseries stop\+Resumable} (uint8\+\_\+t id)
+\begin{DoxyCompactList}\small\item\em Force the specified resumable function to stop running. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable_a0c740e13791ac3e3a80291b7a5f4fe94}{is\+Resumable\+Running}} (uint8\+\_\+t id) const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable_a1809254b9ee44c4c8a18848c9c5da887}{are\+Any\+Resumables\+Running}} () const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable_a1dfe1ea6df251c28620d7f2d2ff1b3e6}{are\+Any\+Resumables\+Running}} (std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$ ids) const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable_add237012a198066220d1223e2b308f14}{are\+All\+Resumables\+Running}} (std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$ ids) const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable_a54150e987abca974321b00e3b928c453}{join\+Resumables}} (std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$ ids) const
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$uint8\+\_\+t Functions = 1$>$\newline
+class modm::\+\+Resumable$<$ Functions $>$}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Functions} & the number of resumable functions that are available in this class. Must be non-\/zero! \\
+\hline
+\end{DoxyTemplParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_resumable_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_resumable_add237012a198066220d1223e2b308f14}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}!areAllResumablesRunning@{areAllResumablesRunning}}
+\index{areAllResumablesRunning@{areAllResumablesRunning}!modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+\doxysubsubsection{\texorpdfstring{areAllResumablesRunning()}{areAllResumablesRunning()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_resumable_add237012a198066220d1223e2b308f14} 
+template$<$uint8\+\_\+t Functions = 1$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable}{modm::\+\+Resumable}}$<$ Functions $>$::\+are\+All\+Resumables\+Running (\begin{DoxyParamCaption}\item[{std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$}]{ids}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if all of the specified resumable function are running, else {\ttfamily false} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_resumable_a1809254b9ee44c4c8a18848c9c5da887}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}!areAnyResumablesRunning@{areAnyResumablesRunning}}
+\index{areAnyResumablesRunning@{areAnyResumablesRunning}!modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+\doxysubsubsection{\texorpdfstring{areAnyResumablesRunning()}{areAnyResumablesRunning()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_resumable_a1809254b9ee44c4c8a18848c9c5da887} 
+template$<$uint8\+\_\+t Functions = 1$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable}{modm::\+\+Resumable}}$<$ Functions $>$::\+are\+Any\+Resumables\+Running (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if any resumable function of this class is running, else {\ttfamily false} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_resumable_a1dfe1ea6df251c28620d7f2d2ff1b3e6}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}!areAnyResumablesRunning@{areAnyResumablesRunning}}
+\index{areAnyResumablesRunning@{areAnyResumablesRunning}!modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+\doxysubsubsection{\texorpdfstring{areAnyResumablesRunning()}{areAnyResumablesRunning()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_resumable_a1dfe1ea6df251c28620d7f2d2ff1b3e6} 
+template$<$uint8\+\_\+t Functions = 1$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable}{modm::\+\+Resumable}}$<$ Functions $>$::\+are\+Any\+Resumables\+Running (\begin{DoxyParamCaption}\item[{std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$}]{ids}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if any of the specified resumable function are running, else {\ttfamily false} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_resumable_a0c740e13791ac3e3a80291b7a5f4fe94}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}!isResumableRunning@{isResumableRunning}}
+\index{isResumableRunning@{isResumableRunning}!modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+\doxysubsubsection{\texorpdfstring{isResumableRunning()}{isResumableRunning()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_resumable_a0c740e13791ac3e3a80291b7a5f4fe94} 
+template$<$uint8\+\_\+t Functions = 1$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable}{modm::\+\+Resumable}}$<$ Functions $>$::\+is\+Resumable\+Running (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{id}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the specified resumable function is running, else {\ttfamily false} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_resumable_a54150e987abca974321b00e3b928c453}\index{modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}!joinResumables@{joinResumables}}
+\index{joinResumables@{joinResumables}!modm::Resumable$<$ Functions $>$@{modm::Resumable$<$ Functions $>$}}
+\doxysubsubsection{\texorpdfstring{joinResumables()}{joinResumables()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_resumable_a54150e987abca974321b00e3b928c453} 
+template$<$uint8\+\_\+t Functions = 1$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_resumable}{modm::\+\+Resumable}}$<$ Functions $>$::\+join\+Resumables (\begin{DoxyParamCaption}\item[{std::\+initializer\+\_\+list$<$ uint8\+\_\+t $>$}]{ids}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if none of the specified resumable function are running, else {\ttfamily false} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+processing/\+resumable/\+resumable.\+hpp\end{DoxyCompactItemize}

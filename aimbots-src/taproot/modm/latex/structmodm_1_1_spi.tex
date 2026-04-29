@@ -1,0 +1,71 @@
+\doxysection{modm::\+Spi Struct Reference}
+\hypertarget{structmodm_1_1_spi}{}\label{structmodm_1_1_spi}\index{modm::Spi@{modm::Spi}}
+Inheritance diagram for modm::\+Spi:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{structmodm_1_1_spi}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820}{Data\+Mode}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a315436bae0e85636381fc939db06aee5}{Mode0}} = 0b00
+, \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a7a2ea225a084605104f8c39b3ae9657c}{Mode1}} = 0b01
+, \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a04c542f260d16590ec60c594f67a30e7}{Mode2}} = 0b10
+, \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820ab68fa4884da8d22e83f37b4f209295f1}{Mode3}} = 0b11
+ \}
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1_spi}{Spi} Data Mode, Mode0 is the most common mode. \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_spi_a738c2058b5a1778735b4c78df0bb6839}\label{structmodm_1_1_spi_a738c2058b5a1778735b4c78df0bb6839} 
+enum class \doxymbox{\hyperlink{structmodm_1_1_spi_a738c2058b5a1778735b4c78df0bb6839}{Data\+Order}} :\+ uint8\+\_\+t \{ {\bfseries Msb\+First} = 0b0
+, {\bfseries Lsb\+First} = 0b1
+ \}
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1_spi}{Spi} Data Order, Msb\+First is the most common mode. \end{DoxyCompactList}\item 
+\Hypertarget{structmodm_1_1_spi_a0d609550a29c439aa83e5999f584447d}\label{structmodm_1_1_spi_a0d609550a29c439aa83e5999f584447d} 
+using {\bfseries Configuration\+Handler} = void(\texorpdfstring{$\ast$}{*})()
+\begin{DoxyCompactList}\small\item\em The signature of the configuration function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-enum-members}
+\Hypertarget{structmodm_1_1_spi_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820}\index{modm::Spi@{modm::Spi}!DataMode@{DataMode}}
+\index{DataMode@{DataMode}!modm::Spi@{modm::Spi}}
+\doxysubsubsection{\texorpdfstring{DataMode}{DataMode}}
+{\footnotesize\ttfamily \label{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820} 
+enum class \doxymbox{\hyperlink{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820}{modm::\+\+Spi::\+\+Data\+Mode}} :\+ uint8\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+
+
+\doxylink{structmodm_1_1_spi}{Spi} Data Mode, Mode0 is the most common mode. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode0@{Mode0}!modm::Spi@{modm::Spi}}
+\index{modm::Spi@{modm::Spi}!Mode0@{Mode0}}
+}\Hypertarget{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a315436bae0e85636381fc939db06aee5}\label{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a315436bae0e85636381fc939db06aee5} 
+Mode0&clock normal, sample on rising edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode1@{Mode1}!modm::Spi@{modm::Spi}}
+\index{modm::Spi@{modm::Spi}!Mode1@{Mode1}}
+}\Hypertarget{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a7a2ea225a084605104f8c39b3ae9657c}\label{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a7a2ea225a084605104f8c39b3ae9657c} 
+Mode1&clock normal, sample on falling edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode2@{Mode2}!modm::Spi@{modm::Spi}}
+\index{modm::Spi@{modm::Spi}!Mode2@{Mode2}}
+}\Hypertarget{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a04c542f260d16590ec60c594f67a30e7}\label{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820a04c542f260d16590ec60c594f67a30e7} 
+Mode2&clock inverted, sample on rising edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode3@{Mode3}!modm::Spi@{modm::Spi}}
+\index{modm::Spi@{modm::Spi}!Mode3@{Mode3}}
+}\Hypertarget{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820ab68fa4884da8d22e83f37b4f209295f1}\label{structmodm_1_1_spi_a00c4c03fc5d3c23c677740fb804ae820ab68fa4884da8d22e83f37b4f209295f1} 
+Mode3&clock inverted, sample on falling edge \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+spi.\+hpp\end{DoxyCompactItemize}

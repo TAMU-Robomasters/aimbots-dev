@@ -1,0 +1,521 @@
+\doxysection{modm::\+platform::\+Timer4 Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_timer4}{}\label{classmodm_1_1platform_1_1_timer4}\index{modm::platform::Timer4@{modm::platform::Timer4}}
+
+
+{\ttfamily \+\#include $<$timer\+\_\+4.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Timer4:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classmodm_1_1platform_1_1_timer4}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_aa178c170a02a4f37d005154a81407c17}\label{classmodm_1_1platform_1_1_timer4_aa178c170a02a4f37d005154a81407c17} 
+enum class {\bfseries Master\+Mode} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Reset} = 0
+, {\bfseries Enable} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+0
+, {\bfseries Update} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+1
+, {\bfseries Pulse} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+0
+, \newline
+{\bfseries Compare\+Oc1\+Ref} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+2
+, {\bfseries Compare\+Oc2\+Ref} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+0
+, {\bfseries Compare\+Oc3\+Ref} = TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CR2\+\_\+\+MMS\+\_\+1
+, {\bfseries Compare\+Oc4\+Ref}
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a9131030fe8d0ca4b11156c4b84223ff5}\label{classmodm_1_1platform_1_1_timer4_a9131030fe8d0ca4b11156c4b84223ff5} 
+enum class {\bfseries Slave\+Mode\+Trigger} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Internal1} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+0
+, {\bfseries Internal2} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+1
+, {\bfseries Timer\+Input1\+Edge\+Detector} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+2
+, {\bfseries Timer\+Input1\+Filtered} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+0
+, \newline
+{\bfseries Timer\+Input2\+Filtered} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+1
+, {\bfseries External} = TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+TS\+\_\+0
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bc}{Slave\+Mode}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcab9f5c797ebbf55adccdd8539a65a0241}{Disabled}} = 0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaeab78540afa91903d1f96817465ec459}{Encoder1}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaca9b200633c80dd4289f3dfce0d4f6eb}{Encoder2}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaed1cc454f94843f62cd27d42237b4e05}{Encoder3}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca526d688f37a86d3c3f27d0c5016eb71d}{Reset}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+2
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcae33f92b6ec382adfd412624ff0c83644}{Gated}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaf698f67f5666aff10729d8a1cb1c14d2}{Trigger}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca14ee9760e49bcbcdf1fd53dacf282df8}{External\+Clock}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_aa3e1ace02ea6c9a4754031c522d1cb58}\label{classmodm_1_1platform_1_1_timer4_aa3e1ace02ea6c9a4754031c522d1cb58} 
+typedef uint16\+\_\+t {\bfseries Value}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer}{modm::\+platform::\+\+General\+Purpose\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a4f017a249b3dcf933902761eb4ebbb05}\label{classmodm_1_1platform_1_1_general_purpose_timer_a4f017a249b3dcf933902761eb4ebbb05} 
+enum class {\bfseries Dma\+Request\+Enable} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Update} = TIM\+\_\+\+DIER\+\_\+\+UDE
+, {\bfseries Capture\+Compare1} = TIM\+\_\+\+DIER\+\_\+\+CC1\+DE
+, {\bfseries Capture\+Compare2} = TIM\+\_\+\+DIER\+\_\+\+CC2\+DE
+, {\bfseries Capture\+Compare3} = TIM\+\_\+\+DIER\+\_\+\+CC3\+DE
+, \newline
+{\bfseries Capture\+Compare4} = TIM\+\_\+\+DIER\+\_\+\+CC4\+DE
+, {\bfseries COM} = TIM\+\_\+\+DIER\+\_\+\+COMDE
+, {\bfseries Trigger} = TIM\+\_\+\+DIER\+\_\+\+TDE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a4ab766ffb6c442dbd8cf383fcc7bc3f7}\label{classmodm_1_1platform_1_1_general_purpose_timer_a4ab766ffb6c442dbd8cf383fcc7bc3f7} 
+enum class {\bfseries Interrupt} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Update} = TIM\+\_\+\+DIER\+\_\+\+UIE
+, {\bfseries Capture\+Compare1} = TIM\+\_\+\+DIER\+\_\+\+CC1\+IE
+, {\bfseries Capture\+Compare2} = TIM\+\_\+\+DIER\+\_\+\+CC2\+IE
+, {\bfseries Capture\+Compare3} = TIM\+\_\+\+DIER\+\_\+\+CC3\+IE
+, \newline
+{\bfseries Capture\+Compare4} = TIM\+\_\+\+DIER\+\_\+\+CC4\+IE
+, {\bfseries Trigger} = TIM\+\_\+\+DIER\+\_\+\+TIE
+, {\bfseries COM} = TIM\+\_\+\+DIER\+\_\+\+COMIE
+, {\bfseries Break} = TIM\+\_\+\+DIER\+\_\+\+BIE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_ab8691bfc494af58e76d759882db5911a}\label{classmodm_1_1platform_1_1_general_purpose_timer_ab8691bfc494af58e76d759882db5911a} 
+enum class {\bfseries Interrupt\+Flag} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Update} = TIM\+\_\+\+SR\+\_\+\+UIF
+, {\bfseries Capture\+Compare1} = TIM\+\_\+\+SR\+\_\+\+CC1\+IF
+, {\bfseries Capture\+Compare2} = TIM\+\_\+\+SR\+\_\+\+CC2\+IF
+, {\bfseries Capture\+Compare3} = TIM\+\_\+\+SR\+\_\+\+CC3\+IF
+, \newline
+{\bfseries Capture\+Compare4} = TIM\+\_\+\+SR\+\_\+\+CC4\+IF
+, {\bfseries Trigger} = TIM\+\_\+\+SR\+\_\+\+TIF
+, {\bfseries Overcapture1} = TIM\+\_\+\+SR\+\_\+\+CC1\+OF
+, {\bfseries Overcapture2} = TIM\+\_\+\+SR\+\_\+\+CC2\+OF
+, \newline
+{\bfseries Overcapture3} = TIM\+\_\+\+SR\+\_\+\+CC3\+OF
+, {\bfseries Overcapture4} = TIM\+\_\+\+SR\+\_\+\+CC4\+OF
+, {\bfseries COM} = TIM\+\_\+\+SR\+\_\+\+COMIF
+, {\bfseries Break} = TIM\+\_\+\+SR\+\_\+\+BIF
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a163e2460141ab5b0e114a88d6a7e56dc}\label{classmodm_1_1platform_1_1_general_purpose_timer_a163e2460141ab5b0e114a88d6a7e56dc} 
+enum class {\bfseries Slave\+Mode\+Trigger} :\+ uint32\+\_\+t 
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a9b86fefeb2b8bb680d2e7caa35628727}{Slave\+Mode}} :\+ uint32\+\_\+t \{ {\bfseries Disabled} = 0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a9b86fefeb2b8bb680d2e7caa35628727aeab78540afa91903d1f96817465ec459}{Encoder1}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a9b86fefeb2b8bb680d2e7caa35628727aca9b200633c80dd4289f3dfce0d4f6eb}{Encoder2}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a9b86fefeb2b8bb680d2e7caa35628727aed1cc454f94843f62cd27d42237b4e05}{Encoder3}} = TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+SMCR\+\_\+\+SMS\+\_\+0
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Up\+Counter} = 0
+, {\bfseries Down\+Counter} = TIM\+\_\+\+CR1\+\_\+\+DIR
+, {\bfseries One\+Shot\+Up\+Counter} = TIM\+\_\+\+CR1\+\_\+\+OPM
+, {\bfseries One\+Shot\+Down\+Counter} = TIM\+\_\+\+CR1\+\_\+\+DIR \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CR1\+\_\+\+OPM
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734caf76a56532351c9a91c6409443a82a30e}{Center\+Aligned1}} = TIM\+\_\+\+CR1\+\_\+\+CMS\+\_\+0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734ca753a9038215335c58a6533c44c63ea09}{Center\+Aligned2}} = TIM\+\_\+\+CR1\+\_\+\+CMS\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734ca94b3dbd534312288e9106a20e0c318e2}{Center\+Aligned3}} = TIM\+\_\+\+CR1\+\_\+\+CMS\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CR1\+\_\+\+CMS\+\_\+0
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162}{Output\+Compare\+Mode}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a3cab03c00dbd11bc3569afa0748013f0}{Inactive}} = 0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a355c2687ebfcd4c0314a0fa3240a7e8c}{High\+On\+Match}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162ae9b5bca22ac7fdaea0cce1ed00bd4023}{Low\+On\+Match}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162aa8875bbe4272c0bdd786cfaaedf77921}{Toggle}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+0
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a9b374174f01144d4a47809157a8f9f8a}{Force\+Inactive}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+2
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a8edad726f1d4262527ff0633cfd8c640}{Force\+Active}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+0
+, {\bfseries Force\+Low} = Force\+Inactive
+, {\bfseries Force\+High} = Force\+Active
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a3247919499520123b35c6081c8f42727}{Pwm}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+1
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162a6e13e320529007be6ddee8cdb7e8b492}{Pwm2}} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+2 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+1 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCMR1\+\_\+\+OC1\+M\+\_\+0
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_adc75f312c3b30bf7552a7e0d5873369c}\label{classmodm_1_1platform_1_1_general_purpose_timer_adc75f312c3b30bf7552a7e0d5873369c} 
+enum class {\bfseries Output\+Compare\+Preload} :\+ uint32\+\_\+t \{ {\bfseries Disable} = 0
+, {\bfseries Enable} = TIM\+\_\+\+CCMR1\+\_\+\+OC1\+PE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a553e8248847d265617456bf040e7f97c}\label{classmodm_1_1platform_1_1_general_purpose_timer_a553e8248847d265617456bf040e7f97c} 
+enum class {\bfseries Output\+Compare\+Polarity} :\+ uint32\+\_\+t \{ {\bfseries Active\+High} = 0
+, {\bfseries Active\+Low} = TIM\+\_\+\+CCER\+\_\+\+CC1P
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a176bb4227ea0210d299c014508e260e1}{Input\+Capture\+Mapping}} :\+ uint32\+\_\+t \{ {\bfseries Input\+Own} = 1
+, {\bfseries Input\+Other} = 2
+, {\bfseries Internal\+Trigger} = 3
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_aab1812d8de2db99712c704124a3a5cc8}\label{classmodm_1_1platform_1_1_general_purpose_timer_aab1812d8de2db99712c704124a3a5cc8} 
+enum class {\bfseries Input\+Capture\+Polarity} :\+ uint32\+\_\+t \{ {\bfseries Rising} = 0
+, {\bfseries Falling} = TIM\+\_\+\+CCER\+\_\+\+CC1P
+, {\bfseries Both} = TIM\+\_\+\+CCER\+\_\+\+CC1\+NP \texorpdfstring{$\vert$}{|} TIM\+\_\+\+CCER\+\_\+\+CC1P
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a0e1e28883cd04ceeb50b9a6021530ea0}\label{classmodm_1_1platform_1_1_general_purpose_timer_a0e1e28883cd04ceeb50b9a6021530ea0} 
+enum class {\bfseries Input\+Capture\+Prescaler} :\+ uint32\+\_\+t \{ {\bfseries Div1} = 0
+, {\bfseries Div2} = 1
+, {\bfseries Div4} = 2
+, {\bfseries Div8} = 3
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_ae01229bf3de06e608d019847c4d8aa88}\label{classmodm_1_1platform_1_1_general_purpose_timer_ae01229bf3de06e608d019847c4d8aa88} 
+enum class {\bfseries Pin\+State} :\+ uint32\+\_\+t \{ {\bfseries Disable} = 0
+, {\bfseries Enable} = 1
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a8f1ee5d70f2fa8a2c7c3407b7a64fe13}\label{classmodm_1_1platform_1_1_general_purpose_timer_a8f1ee5d70f2fa8a2c7c3407b7a64fe13} 
+enum class {\bfseries Dead\+Time\+Resolution} :\+ uint32\+\_\+t \{ {\bfseries From0\+With125ns\+Step} = 0
+, {\bfseries From16us\+With250ns\+Step} = TIM\+\_\+\+BDTR\+\_\+\+DTG\+\_\+7
+, {\bfseries From32us\+With1us\+Step} = TIM\+\_\+\+BDTR\+\_\+\+DTG\+\_\+7 \texorpdfstring{$\vert$}{|} TIM\+\_\+\+BDTR\+\_\+\+DTG\+\_\+6
+, {\bfseries From64us\+With2us\+Step}
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_abb97ba80eceb1f729bea5208b929d28e}\label{classmodm_1_1platform_1_1_general_purpose_timer_abb97ba80eceb1f729bea5208b929d28e} 
+enum class {\bfseries Off\+State\+For\+Run\+Mode} :\+ uint32\+\_\+t \{ {\bfseries Disable} = 0
+, {\bfseries Enable} = TIM\+\_\+\+BDTR\+\_\+\+OSSR
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_general_purpose_timer_a726b7b2af2041973947dee6e0d53c9c9}\label{classmodm_1_1platform_1_1_general_purpose_timer_a726b7b2af2041973947dee6e0d53c9c9} 
+enum class {\bfseries Off\+State\+For\+Idle\+Mode} :\+ uint32\+\_\+t \{ {\bfseries Disable} = 0
+, {\bfseries Enable} = TIM\+\_\+\+BDTR\+\_\+\+OSSI
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer}{modm::\+platform::\+\+Basic\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_ae79609753399533b77903c3c42ff65a2}\label{classmodm_1_1platform_1_1_basic_timer_ae79609753399533b77903c3c42ff65a2} 
+enum class {\bfseries Mode} :\+ uint32\+\_\+t \{ {\bfseries Up\+Counter} = 0
+, {\bfseries One\+Shot\+Up\+Counter} = TIM\+\_\+\+CR1\+\_\+\+OPM
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a6ab330516e8221330ec2db8319992b15}\label{classmodm_1_1platform_1_1_basic_timer_a6ab330516e8221330ec2db8319992b15} 
+enum class {\bfseries Interrupt} :\+ uint32\+\_\+t \{ {\bfseries Update} = TIM\+\_\+\+DIER\+\_\+\+UIE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a77c851e009c1a0239dabf9f3451766a2}\label{classmodm_1_1platform_1_1_basic_timer_a77c851e009c1a0239dabf9f3451766a2} 
+enum class {\bfseries Interrupt\+Flag} :\+ uint32\+\_\+t \{ {\bfseries Update} = TIM\+\_\+\+SR\+\_\+\+UIF
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a3afaae24d2aff5fd4bdb37b91afd3998}\label{classmodm_1_1platform_1_1_timer4_a3afaae24d2aff5fd4bdb37b91afd3998} 
+{\footnotesize template$<$template$<$ Peripheral \+\_\+ $>$ class... Signals$>$ }\\static void {\bfseries connect} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_ad2761d346de893eb86f63c6e08ae54f1}\label{classmodm_1_1platform_1_1_timer4_ad2761d346de893eb86f63c6e08ae54f1} 
+static void {\bfseries clock\+Enable} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a9db181e194914155ab9e2e0214374e21}\label{classmodm_1_1platform_1_1_timer4_a9db181e194914155ab9e2e0214374e21} 
+static void {\bfseries enable} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_af660f58697c89746856dbecf84ea2b7a}\label{classmodm_1_1platform_1_1_timer4_af660f58697c89746856dbecf84ea2b7a} 
+static void {\bfseries disable} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a293db361465732eca0ef79baddd59503}\label{classmodm_1_1platform_1_1_timer4_a293db361465732eca0ef79baddd59503} 
+static void {\bfseries pause} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a8e7781eb2da747404e7e5c8bc5c4e877}\label{classmodm_1_1platform_1_1_timer4_a8e7781eb2da747404e7e5c8bc5c4e877} 
+static void {\bfseries start} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a2e69d5c4905f415350fe0468fbf3eed8}\label{classmodm_1_1platform_1_1_timer4_a2e69d5c4905f415350fe0468fbf3eed8} 
+static void {\bfseries set\+Mode} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}} mode, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bc}{Slave\+Mode}} slave\+Mode=\doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcab9f5c797ebbf55adccdd8539a65a0241}{Slave\+Mode::\+\+Disabled}}, Slave\+Mode\+Trigger slave\+Mode\+Trigger=static\+\_\+cast$<$ Slave\+Mode\+Trigger $>$(0), Master\+Mode master\+Mode=Master\+Mode::\+\+Reset, bool enable\+One\+Pulse\+Mode=false, bool buffer\+Auto\+Reload\+Register=true, bool limit\+Update\+Event\+Request\+Source=true)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a0c4e7fe2c6a5d6828da9f742f5b76fe8}\label{classmodm_1_1platform_1_1_timer4_a0c4e7fe2c6a5d6828da9f742f5b76fe8} 
+static void {\bfseries set\+Prescaler} (uint16\+\_\+t prescaler)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a0a073d6be6c806f7c30f4cd888deacd2}\label{classmodm_1_1platform_1_1_timer4_a0a073d6be6c806f7c30f4cd888deacd2} 
+static uint16\+\_\+t {\bfseries get\+Prescaler} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_af965542800f1279452d0d25c78f5eead}\label{classmodm_1_1platform_1_1_timer4_af965542800f1279452d0d25c78f5eead} 
+static void {\bfseries set\+Overflow} (Value overflow)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a42beeed2ff824daff4f251455693b1b8}\label{classmodm_1_1platform_1_1_timer4_a42beeed2ff824daff4f251455693b1b8} 
+{\footnotesize template$<$class System\+Clock$>$ }\\static Value {\bfseries set\+Period} (uint32\+\_\+t microseconds, bool auto\+Apply=true)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a579b02a4043cd8483465001878f4b57e}\label{classmodm_1_1platform_1_1_timer4_a579b02a4043cd8483465001878f4b57e} 
+{\footnotesize template$<$class System\+Clock$>$ }\\static uint32\+\_\+t {\bfseries get\+Tick\+Frequency} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a230453f565cf36b78f829813f74d72b9}\label{classmodm_1_1platform_1_1_timer4_a230453f565cf36b78f829813f74d72b9} 
+static void {\bfseries apply\+And\+Reset} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a569d7b440ab1b124d100aab5e5a46d41}\label{classmodm_1_1platform_1_1_timer4_a569d7b440ab1b124d100aab5e5a46d41} 
+static Value {\bfseries get\+Value} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a74d10feef8b69a9d0a283b81c70f0bb4}\label{classmodm_1_1platform_1_1_timer4_a74d10feef8b69a9d0a283b81c70f0bb4} 
+static void {\bfseries set\+Value} (Value value)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a34c5ebb69d27f2c3a94016dc7a8a8706}\label{classmodm_1_1platform_1_1_timer4_a34c5ebb69d27f2c3a94016dc7a8a8706} 
+static void {\bfseries enable\+Output} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a086fd5f8d200a7220fba34d85d6e918e}\label{classmodm_1_1platform_1_1_timer4_a086fd5f8d200a7220fba34d85d6e918e} 
+static void {\bfseries disable\+Output} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a7fec400c059e999d2018a71c71239645}\label{classmodm_1_1platform_1_1_timer4_a7fec400c059e999d2018a71c71239645} 
+static void {\bfseries set\+Automatic\+Update} (bool enable)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a875a34c5f1d2cf7bcd8f58c88cf5370f}\label{classmodm_1_1platform_1_1_timer4_a875a34c5f1d2cf7bcd8f58c88cf5370f} 
+static void {\bfseries set\+Off\+State} (Off\+State\+For\+Run\+Mode run\+Mode, Off\+State\+For\+Idle\+Mode idle\+Mode)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_aba37c5c77e2ebe00aa4a42ba68e939bd}\label{classmodm_1_1platform_1_1_timer4_aba37c5c77e2ebe00aa4a42ba68e939bd} 
+static void {\bfseries set\+Dead\+Time} (uint8\+\_\+t dead\+Time)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a9e734ac5e1977fa284b0bc70be5848a6}\label{classmodm_1_1platform_1_1_timer4_a9e734ac5e1977fa284b0bc70be5848a6} 
+static void {\bfseries set\+Dead\+Time} (Dead\+Time\+Resolution resolution, uint8\+\_\+t dead\+Time)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a324b23766acc53689336916d7aa433b8}\label{classmodm_1_1platform_1_1_timer4_a324b23766acc53689336916d7aa433b8} 
+static void {\bfseries configure\+Input\+Channel} (uint32\+\_\+t channel, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a176bb4227ea0210d299c014508e260e1}{Input\+Capture\+Mapping}} input, Input\+Capture\+Prescaler prescaler, Input\+Capture\+Polarity polarity, uint8\+\_\+t \doxymbox{\hyperlink{namespacemodm_1_1filter}{filter}}, bool xor\+\_\+ch1\+\_\+3=false)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a753e91576a89315d4c50dbf00069df3c}\label{classmodm_1_1platform_1_1_timer4_a753e91576a89315d4c50dbf00069df3c} 
+static void {\bfseries configure\+Output\+Channel} (uint32\+\_\+t channel, Output\+Compare\+Mode\+\_\+t mode, Value compare\+Value, Pin\+State out=Pin\+State::\+\+Enable, bool enable\+Compare\+Preload=true)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a2cfc725a0a505103dae4b284d5707c04}{set\+Inverted\+Pwm}} (uint32\+\_\+t channel)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a0a3214df3af856ae157fda5ab0ab08c4}{set\+Normal\+Pwm}} (uint32\+\_\+t channel)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_aced545a53ec1e6fbba2a2ff56675cff1}{force\+Inactive}} (uint32\+\_\+t channel)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_af7d62a8240e1967073f15ef81e70dd19}{force\+Active}} (uint32\+\_\+t channel)
+\item 
+static bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_afa46978382828b70b97381c6fb03d17f}{is\+Channel\+Configured\+As\+Input}} (uint32\+\_\+t channel)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a7877d7bf8bd489c6a2452074ba316846}\label{classmodm_1_1platform_1_1_timer4_a7877d7bf8bd489c6a2452074ba316846} 
+static void {\bfseries set\+Compare\+Value} (uint32\+\_\+t channel, Value value)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a5aa588012fb755f4fca70078d76e99cc}\label{classmodm_1_1platform_1_1_timer4_a5aa588012fb755f4fca70078d76e99cc} 
+static Value {\bfseries get\+Compare\+Value} (uint32\+\_\+t channel)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a94e53adaca214b9598e78f2214e618df}\label{classmodm_1_1platform_1_1_timer4_a94e53adaca214b9598e78f2214e618df} 
+static void {\bfseries enable\+Interrupt\+Vector} (bool enable, uint32\+\_\+t priority)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a969c25faeb4e55dd3ab68826c517d477}\label{classmodm_1_1platform_1_1_timer4_a969c25faeb4e55dd3ab68826c517d477} 
+static void {\bfseries enable\+Interrupt} (Interrupt\+\_\+t interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a6730f63dedd81e6cff1d54b11bea53a2}\label{classmodm_1_1platform_1_1_timer4_a6730f63dedd81e6cff1d54b11bea53a2} 
+static void {\bfseries disable\+Interrupt} (Interrupt\+\_\+t interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_ae15cfb8c3da3d51e41bdd8d4b03c8259}\label{classmodm_1_1platform_1_1_timer4_ae15cfb8c3da3d51e41bdd8d4b03c8259} 
+static Interrupt\+Flag\+\_\+t {\bfseries get\+Enabled\+Interrupts} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_ac1231cc13144a3095e24b805ee750022}\label{classmodm_1_1platform_1_1_timer4_ac1231cc13144a3095e24b805ee750022} 
+static void {\bfseries enable\+Dma\+Request} (Dma\+Request\+Enable dma\+Requests)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a91bcee1e106488983231bc098282e5f5}\label{classmodm_1_1platform_1_1_timer4_a91bcee1e106488983231bc098282e5f5} 
+static void {\bfseries disable\+Dma\+Request} (Dma\+Request\+Enable dma\+Requests)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_aa2f78d2390030e5e3cb7acd3aefc81be}\label{classmodm_1_1platform_1_1_timer4_aa2f78d2390030e5e3cb7acd3aefc81be} 
+static Interrupt\+Flag\+\_\+t {\bfseries get\+Interrupt\+Flags} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a398ae181655dff53efcca6d825691171}\label{classmodm_1_1platform_1_1_timer4_a398ae181655dff53efcca6d825691171} 
+static void {\bfseries acknowledge\+Interrupt\+Flags} (Interrupt\+Flag\+\_\+t flags)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer}{modm::\+platform::\+\+General\+Purpose\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1764b6e7c844d23d00da17c653bf0835}{set\+Mode}} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}} mode, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a9b86fefeb2b8bb680d2e7caa35628727}{Slave\+Mode}} slave\+Mode=Slave\+Mode::\+\+Disabled, Slave\+Mode\+Trigger slave\+Mode\+Trigger=(Slave\+Mode\+Trigger) 0)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a6d26a0dbc78b6659a91da1489986af57}{configure\+Output\+Channel}} (uint32\+\_\+t channel, Output\+Compare\+Mode\+\_\+t mode, uint16\+\_\+t compare\+Value)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a347e30fbb1c1159423216da07ac98442}{set\+Compare\+Value}} (uint32\+\_\+t channel, uint16\+\_\+t value)
+\item 
+static uint16\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_ae747e8964b2088106d8b3a408d625ec8}{get\+Compare\+Value}} (uint32\+\_\+t channel)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer}{modm::\+platform::\+\+Basic\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b}{disable}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}{pause}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}{start}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a428bd4fbf1acbae6cd25ab2d3f2182fc}{set\+Mode}} (Mode mode)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d}{set\+Prescaler}} (uint16\+\_\+t prescaler)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf}{set\+Overflow}} (uint16\+\_\+t overflow)
+\item 
+static uint16\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106}{set\+Period}} (uint32\+\_\+t microseconds, bool auto\+Apply=true)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{apply\+And\+Reset}} ()
+\begin{DoxyCompactList}\small\item\em Reset the counter, and update the prescaler and overflow values. \end{DoxyCompactList}\item 
+static uint16\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7}{get\+Value}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2a1caea6b9c0cce8ee8a83d91eaf83bd}{set\+Value}} (uint16\+\_\+t value)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4}{enable\+Interrupt\+Vector}} (bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}}, uint8\+\_\+t priority)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0125bc3626a0051dbdc53a5483b985c8}{enable\+Interrupt}} (Interrupt\+\_\+t interrupt)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_add0832893feb247cee7b7cbf9fba06d5}{disable\+Interrupt}} (Interrupt\+\_\+t interrupt)
+\item 
+static Interrupt\+Flag\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714}{get\+Interrupt\+Flags}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a5b2488893edd8afd43e8b4750256c391}{acknowledge\+Interrupt\+Flags}} (Interrupt\+Flag\+\_\+t flags)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer}{modm::\+platform::\+\+General\+Purpose\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt)
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt\+Flag)
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162}{Output\+Compare\+Mode}})
+\item 
+void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a0a209ada07028cd763e16ab28e354932}{configure\+Input\+Channel}} (uint32\+\_\+t channel, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a176bb4227ea0210d299c014508e260e1}{Input\+Capture\+Mapping}} input, Input\+Capture\+Prescaler prescaler, Input\+Capture\+Polarity polarity, uint8\+\_\+t \doxymbox{\hyperlink{namespacemodm_1_1filter}{filter}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer}{modm::\+platform::\+\+Basic\+Timer}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt)
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt\+Flag)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+General Purpose Timer 4
+
+Interrupt handler:\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MODM\_ISR(TIM4)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ Timer4::resetInterruptFlags(Timer4::...);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ ...}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyWarning}{Warning}
+The Timer has much more possibilities than presented by this interface (e.\+g. Input Capture, Trigger for other Timers, DMA). It might be expanded in the future.
+\end{DoxyWarning}
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-enum-members}
+\Hypertarget{classmodm_1_1platform_1_1_timer4_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bc}\index{modm::platform::Timer4@{modm::platform::Timer4}!SlaveMode@{SlaveMode}}
+\index{SlaveMode@{SlaveMode}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{SlaveMode}{SlaveMode}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bc} 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bc}{modm::\+platform::\+\+Timer4::\+\+Slave\+Mode}} :\+ uint32\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Disabled@{Disabled}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Disabled@{Disabled}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcab9f5c797ebbf55adccdd8539a65a0241}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcab9f5c797ebbf55adccdd8539a65a0241} 
+Disabled&Slave mode disabled -\/ if CEN = \textquotesingle{}1\textquotesingle{} then the prescaler is clocked directly by the internal clock. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Encoder1@{Encoder1}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Encoder1@{Encoder1}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaeab78540afa91903d1f96817465ec459}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaeab78540afa91903d1f96817465ec459} 
+Encoder1&Counter counts up/\+down on TI2\+FP2 edge depending on TI1\+FP1 level. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Encoder2@{Encoder2}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Encoder2@{Encoder2}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaca9b200633c80dd4289f3dfce0d4f6eb}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaca9b200633c80dd4289f3dfce0d4f6eb} 
+Encoder2&Counter counts up/\+down on TI1\+FP1 edge depending on TI2\+FP2 level. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Encoder3@{Encoder3}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Encoder3@{Encoder3}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaed1cc454f94843f62cd27d42237b4e05}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaed1cc454f94843f62cd27d42237b4e05} 
+Encoder3&Counter counts up/\+down on both TI1\+FP1 and TI2\+FP2 edges depending on the level of the other input. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Reset@{Reset}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Reset@{Reset}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca526d688f37a86d3c3f27d0c5016eb71d}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca526d688f37a86d3c3f27d0c5016eb71d} 
+Reset&Rising edge of the selected trigger input (TRGI) reinitializes the counter and generates an update of the registers. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Gated@{Gated}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Gated@{Gated}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcae33f92b6ec382adfd412624ff0c83644}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcae33f92b6ec382adfd412624ff0c83644} 
+Gated&The counter clock is enabled when the trigger input (TRGI) is high. The counter stops (but is not reset) as soon as the trigger becomes low. Both start and stop of the counter are controlled. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Trigger@{Trigger}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!Trigger@{Trigger}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaf698f67f5666aff10729d8a1cb1c14d2}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bcaf698f67f5666aff10729d8a1cb1c14d2} 
+Trigger&The counter starts at a rising edge of the trigger TRGI (but it is not reset). Only the start of the counter is controlled. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ExternalClock@{ExternalClock}!modm::platform::Timer4@{modm::platform::Timer4}}
+\index{modm::platform::Timer4@{modm::platform::Timer4}!ExternalClock@{ExternalClock}}
+}\Hypertarget{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca14ee9760e49bcbcdf1fd53dacf282df8}\label{classmodm_1_1platform_1_1_timer4_a97c8e3b55d936d70c4cf1a25d33f31bca14ee9760e49bcbcdf1fd53dacf282df8} 
+External\+Clock&Rising edges of the selected trigger (TRGI) clock the counter. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1platform_1_1_timer4_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_timer4_af7d62a8240e1967073f15ef81e70dd19}\index{modm::platform::Timer4@{modm::platform::Timer4}!forceActive@{forceActive}}
+\index{forceActive@{forceActive}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{forceActive()}{forceActive()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_af7d62a8240e1967073f15ef81e70dd19} 
+void modm::\+platform::\+\+Timer4::\+force\+Active (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{channel}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Switch to Active \doxylink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}
+
+The channel output will be forced to the active level. {\bfseries{Please note}}:\+ Timer will not be disabled while switching modes. \Hypertarget{classmodm_1_1platform_1_1_timer4_aced545a53ec1e6fbba2a2ff56675cff1}\index{modm::platform::Timer4@{modm::platform::Timer4}!forceInactive@{forceInactive}}
+\index{forceInactive@{forceInactive}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{forceInactive()}{forceInactive()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_aced545a53ec1e6fbba2a2ff56675cff1} 
+void modm::\+platform::\+\+Timer4::\+force\+Inactive (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{channel}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Switch to Inactive \doxylink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}
+
+The channel output will be forced to the inactive level. {\bfseries{Please note}}:\+ Timer will not be disabled while switching modes. \Hypertarget{classmodm_1_1platform_1_1_timer4_afa46978382828b70b97381c6fb03d17f}\index{modm::platform::Timer4@{modm::platform::Timer4}!isChannelConfiguredAsInput@{isChannelConfiguredAsInput}}
+\index{isChannelConfiguredAsInput@{isChannelConfiguredAsInput}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{isChannelConfiguredAsInput()}{isChannelConfiguredAsInput()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_afa46978382828b70b97381c6fb03d17f} 
+bool modm::\+platform::\+\+Timer4::\+is\+Channel\+Configured\+As\+Input (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{channel}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Returns if the capture/\+compare channel of the timer is configured as input.
+
+
+\begin{DoxyParams}{Parameters}
+{\em channel} & may be \+[1..4]\+ \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+{\ttfamily false} if configured as {\itshape output}; {\ttfamily true} if configured as {\itshape input} 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1platform_1_1_timer4_a2cfc725a0a505103dae4b284d5707c04}\index{modm::platform::Timer4@{modm::platform::Timer4}!setInvertedPwm@{setInvertedPwm}}
+\index{setInvertedPwm@{setInvertedPwm}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{setInvertedPwm()}{setInvertedPwm()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_a2cfc725a0a505103dae4b284d5707c04} 
+void modm::\+platform::\+\+Timer4::\+set\+Inverted\+Pwm (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{channel}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Switch to Pwm \doxylink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode} 2
+
+While upcounting channel will be active as long as the time value is smaller than the compare value, else inactive. Timer will not be disabled while switching modes. \Hypertarget{classmodm_1_1platform_1_1_timer4_a0a3214df3af856ae157fda5ab0ab08c4}\index{modm::platform::Timer4@{modm::platform::Timer4}!setNormalPwm@{setNormalPwm}}
+\index{setNormalPwm@{setNormalPwm}!modm::platform::Timer4@{modm::platform::Timer4}}
+\doxysubsubsection{\texorpdfstring{setNormalPwm()}{setNormalPwm()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_timer4_a0a3214df3af856ae157fda5ab0ab08c4} 
+void modm::\+platform::\+\+Timer4::\+set\+Normal\+Pwm (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{channel}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Switch to Pwm \doxylink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode} 1
+
+While upcounting channel will be inactive as long as the time value is smaller than the compare value, else active. {\bfseries{Please note}}:\+ Timer will not be disabled while switching modes. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+timer/\+timer\+\_\+4.\+hpp\item 
+src/\+modm/\+platform/\+timer/\+timer\+\_\+4.\+cpp\end{DoxyCompactItemize}

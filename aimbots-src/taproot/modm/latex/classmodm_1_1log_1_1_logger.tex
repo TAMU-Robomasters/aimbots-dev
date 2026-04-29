@@ -1,0 +1,132 @@
+\doxysection{modm::\+log::\+Logger Class Reference}
+\hypertarget{classmodm_1_1log_1_1_logger}{}\label{classmodm_1_1log_1_1_logger}\index{modm::log::Logger@{modm::log::Logger}}
+
+
+Interface to the \doxylink{classmodm_1_1log_1_1_logger}{Logger}.  
+
+
+
+
+{\ttfamily \+\#include $<$logger.\+hpp$>$}
+
+Inheritance diagram for modm::\+log::\+Logger:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1log_1_1_logger}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_logger_a46f602d1482100890c136f692c0a7abd}\label{classmodm_1_1log_1_1_logger_a46f602d1482100890c136f692c0a7abd} 
+{\bfseries Logger} (\doxymbox{\hyperlink{classmodm_1_1_i_o_device}{::\+modm::\+\+IODevice}} \&output\+Device)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::\+\+IOStream}}}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} (\doxymbox{\hyperlink{classmodm_1_1_i_o_device}{IODevice}} \&odevice)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries write} (char c)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries get} (char \&c)
+\begin{DoxyCompactList}\small\item\em Reads one character and returns it if available. Otherwise, returns IOStream::\+eof. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& \doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a26740511b5907ccf3c9442c05c73b0cd}{get}} (char \texorpdfstring{$\ast$}{*}s, size\+\_\+t n)
+\item 
+{\footnotesize template$<$size\+\_\+t N$>$ }\\\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries get} (char(\&s)\+[N]\+)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries flush} ()
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries endl} ()
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries bin} ()
+\begin{DoxyCompactList}\small\item\em set the output mode to binary style for integer types \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries hex} ()
+\begin{DoxyCompactList}\small\item\em set the output mode to hexadecimal style for integer types \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries ascii} ()
+\begin{DoxyCompactList}\small\item\em set the output mode to ASCII style for integer types \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const bool \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const char \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const uint8\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const int16\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const uint16\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const int32\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const uint32\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const int64\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const uint64\+\_\+t \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const int \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const unsigned int \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const float \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const double \&v)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const char \texorpdfstring{$\ast$}{*}s)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (const void \texorpdfstring{$\ast$}{*}p)
+\begin{DoxyCompactList}\small\item\em write the hex value of a pointer \end{DoxyCompactList}\item 
+{\footnotesize template$<$class Ret, class... Args$>$ }\\\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (Ret(\texorpdfstring{$\ast$}{*}pointer)(Args...))
+\begin{DoxyCompactList}\small\item\em Write the hex value of any function pointer. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries operator$<$$<$} (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \&(\texorpdfstring{$\ast$}{*}format)(\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \&))
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries printf} (const char \texorpdfstring{$\ast$}{*}fmt,...) \+\_\+\+\_\+attribute\+\_\+\+\_\+((format(printf
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}} \& {\bfseries vprintf} (const char \texorpdfstring{$\ast$}{*}fmt, va\+\_\+list vlist) \+\_\+\+\_\+attribute\+\_\+\+\_\+((format(printf
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::\+\+IOStream}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr char {\bfseries eof} = -\/1
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::\+\+IOStream}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T$>$ }\\void {\bfseries write\+Integer\+Mode} (const T v)
+\item 
+void {\bfseries write\+Integer} (int16\+\_\+t value)
+\item 
+void {\bfseries write\+Integer} (uint16\+\_\+t value)
+\item 
+void {\bfseries write\+Integer} (int32\+\_\+t value)
+\item 
+void {\bfseries write\+Integer} (uint32\+\_\+t value)
+\item 
+void {\bfseries write\+Integer} (int64\+\_\+t value)
+\item 
+void {\bfseries write\+Integer} (uint64\+\_\+t value)
+\item 
+void {\bfseries write\+Float} (float value)
+\item 
+void {\bfseries write\+Double} (const double \&value)
+\item 
+void {\bfseries write\+Pointer} (const void \texorpdfstring{$\ast$}{*}value)
+\item 
+void {\bfseries write\+Hex} (uint8\+\_\+t value)
+\item 
+void {\bfseries write\+Bin} (uint8\+\_\+t value)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface to the \doxylink{classmodm_1_1log_1_1_logger}{Logger}. 
+
+It is used by the macros defined below. This class overloads the shift-\/operator so that it is possible to write different message types to the logger.
+
+\begin{DoxyAuthor}{Author}
+Martin Rosekeit \href{mailto:martin.rosekeit@rwth-aachen.de}{\texttt{martin.\+rosekeit@rwth-\/aachen.\+de}} 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+debug/\+logger/\+logger.\+hpp\end{DoxyCompactItemize}

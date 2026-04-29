@@ -1,0 +1,186 @@
+\doxysection{modm::\+Vector\texorpdfstring{$<$}{<} T, 1 \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4}{}\label{classmodm_1_1_vector_3_01_t_00_011_01_4}\index{modm::Vector$<$ T, 1 $>$@{modm::Vector$<$ T, 1 $>$}}
+
+
+Class for handling common vector operations (1D).  
+
+
+
+
+{\ttfamily \+\#include $<$vector1.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_abbe316b3ceae616ea1307415a36bff6e}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_abbe316b3ceae616ea1307415a36bff6e} 
+{\bfseries Vector} (T inX)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_af46a779de47d0583e53753f0d0cb75cf}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_af46a779de47d0583e53753f0d0cb75cf} 
+{\bfseries Vector} (const \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 1, 1 $>$ \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a88beb19421b1929113736c09e8d717f2}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a88beb19421b1929113736c09e8d717f2} 
+void {\bfseries set} (const T \&x)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a39230e8cf1956690c3def54bd2bc17ef}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a39230e8cf1956690c3def54bd2bc17ef} 
+void {\bfseries setX} (const T \&value)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a903012057e53bfe04475b6d011e4a70f}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a903012057e53bfe04475b6d011e4a70f} 
+const T \& {\bfseries getX} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a7cda905a49b98fbec9935ac5737925a4}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a7cda905a49b98fbec9935ac5737925a4} 
+Vector \& {\bfseries operator=} (const \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 1, 1 $>$ \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a523ab8c1f1f54d92d1c25a845686576a}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a523ab8c1f1f54d92d1c25a845686576a} 
+bool {\bfseries operator==} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a5c0df769b4a9a16d13d04545fd986bc8}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a5c0df769b4a9a16d13d04545fd986bc8} 
+bool {\bfseries operator!=} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a51f76ca61d4656fe2e2f2a18cdad01a2}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a51f76ca61d4656fe2e2f2a18cdad01a2} 
+bool {\bfseries operator$<$} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a9b42c1b2a8486a82ef645fc489fb76c6}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a9b42c1b2a8486a82ef645fc489fb76c6} 
+bool {\bfseries operator$<$=} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a69b1c5833385fb26ef7a5c997a65242f}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a69b1c5833385fb26ef7a5c997a65242f} 
+bool {\bfseries operator$>$} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a1a9ed9f5b723dd92482f1601faffbf20}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a1a9ed9f5b723dd92482f1601faffbf20} 
+bool {\bfseries operator$>$=} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_abcf64b6216aa7c92b566f2ca6dd4619b}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_abcf64b6216aa7c92b566f2ca6dd4619b} 
+const T \& {\bfseries operator\+[$\,$]\+} (uint8\+\_\+t index) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a8c946b2b9fff58b8c4389d084b305082}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a8c946b2b9fff58b8c4389d084b305082} 
+T \& {\bfseries operator\+[$\,$]\+} (uint8\+\_\+t index)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a57481e50ab47b95e7a0b0a3a6fab1b5c}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a57481e50ab47b95e7a0b0a3a6fab1b5c} 
+T \texorpdfstring{$\ast$}{*} {\bfseries ptr} ()
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a27118694a0c00783945ffdf44998d77f}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a27118694a0c00783945ffdf44998d77f} 
+const T \texorpdfstring{$\ast$}{*} {\bfseries ptr} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a414382d80ad48ad61a36f1b16afd4921}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a414382d80ad48ad61a36f1b16afd4921} 
+Vector {\bfseries operator-\/} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a55e53ed3c5aab5bcb4af44ddd7b76adf}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a55e53ed3c5aab5bcb4af44ddd7b76adf} 
+Vector {\bfseries operator+} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a74aef375414464a4801f0ad9059cbff4}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a74aef375414464a4801f0ad9059cbff4} 
+Vector {\bfseries operator-\/} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_adfbe997fa943d76a98c85dda98c7c113}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_adfbe997fa943d76a98c85dda98c7c113} 
+T {\bfseries operator\texorpdfstring{$\ast$}{*}} (const Vector \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a89fefdb1010afcd942d23dae52aee399}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a89fefdb1010afcd942d23dae52aee399} 
+Vector {\bfseries operator\texorpdfstring{$\ast$}{*}} (const T \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a7b6b1c7e602f5482df5bd87ea45de9dc}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a7b6b1c7e602f5482df5bd87ea45de9dc} 
+Vector {\bfseries operator/\+} (const T \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a879929a486f9b9609946acc6e38762a5}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a879929a486f9b9609946acc6e38762a5} 
+Vector \& {\bfseries operator+=} (const Vector \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_afd620c5232dab147bbd2c5ba8ff469ce}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_afd620c5232dab147bbd2c5ba8ff469ce} 
+Vector \& {\bfseries operator-\/=} (const Vector \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a8451f2f81a57333a409f68b9523db9dc}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a8451f2f81a57333a409f68b9523db9dc} 
+Vector \& {\bfseries operator\texorpdfstring{$\ast$}{*}=} (const T \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_af39866b6a22a4c93a3806bfcd98cea12}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_af39866b6a22a4c93a3806bfcd98cea12} 
+Vector \& {\bfseries operator/\+=} (const T \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a6998f5216fc5fde913d9d91ae5a73eb5}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a6998f5216fc5fde913d9d91ae5a73eb5} 
+T {\bfseries get\+Length} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a8b79b8f466d60c0db06d1fb538616c52}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a8b79b8f466d60c0db06d1fb538616c52} 
+T {\bfseries get\+Length\+Squared} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_aee179793444eb097bfbe0c0547fdd130}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_aee179793444eb097bfbe0c0547fdd130} 
+\doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 1, 1 $>$ \& {\bfseries as\+Matrix} ()
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_ab537147bc75883fd74bea9a211d1c856}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_ab537147bc75883fd74bea9a211d1c856} 
+const \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 1, 1 $>$ \& {\bfseries as\+Matrix} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a34a3b0d84281a42666f9492774dcc4a8}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a34a3b0d84281a42666f9492774dcc4a8} 
+bool {\bfseries has\+Nan} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a35636b2004ee55f94acb31d7c6fb9f99}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a35636b2004ee55f94acb31d7c6fb9f99} 
+bool {\bfseries has\+Inf} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_ae73290f105a754ca8f0c5b6e84d248bb}\label{classmodm_1_1_vector_ae73290f105a754ca8f0c5b6e84d248bb} 
+int16\+\_\+t {\bfseries get\+Length} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_a51597de4aa660e8364b724802abed176}\label{classmodm_1_1_vector_a51597de4aa660e8364b724802abed176} 
+int32\+\_\+t {\bfseries get\+Length\+Squared} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_ac3f4cafe61ca255168e3d5558d02ecb5}\label{classmodm_1_1_vector_ac3f4cafe61ca255168e3d5558d02ecb5} 
+int32\+\_\+t {\bfseries dot} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ int16\+\_\+t, 2 $>$ \&other) const
+\item 
+\Hypertarget{classmodm_1_1_vector_acbef44e0d4b36017192202d628eadb8f}\label{classmodm_1_1_vector_acbef44e0d4b36017192202d628eadb8f} 
+Vector$<$ double, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_afd7cf735c015939c8acd526c2c33bf0c}\label{classmodm_1_1_vector_afd7cf735c015939c8acd526c2c33bf0c} 
+Vector$<$ float, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_ae73290f105a754ca8f0c5b6e84d248bb}\label{classmodm_1_1_vector_ae73290f105a754ca8f0c5b6e84d248bb} 
+int16\+\_\+t {\bfseries get\+Length} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_a51597de4aa660e8364b724802abed176}\label{classmodm_1_1_vector_a51597de4aa660e8364b724802abed176} 
+int32\+\_\+t {\bfseries get\+Length\+Squared} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_ac3f4cafe61ca255168e3d5558d02ecb5}\label{classmodm_1_1_vector_ac3f4cafe61ca255168e3d5558d02ecb5} 
+int32\+\_\+t {\bfseries dot} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ int16\+\_\+t, 2 $>$ \&other) const
+\item 
+\Hypertarget{classmodm_1_1_vector_acbef44e0d4b36017192202d628eadb8f}\label{classmodm_1_1_vector_acbef44e0d4b36017192202d628eadb8f} 
+Vector$<$ double, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_afd7cf735c015939c8acd526c2c33bf0c}\label{classmodm_1_1_vector_afd7cf735c015939c8acd526c2c33bf0c} 
+Vector$<$ float, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_a8242c1fee72b10f1bfcb08cc0e9500c8}\label{classmodm_1_1_vector_a8242c1fee72b10f1bfcb08cc0e9500c8} 
+Vector$<$ U, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_af9e284235f733fbecfd3cf56afa99899}\label{classmodm_1_1_vector_af9e284235f733fbecfd3cf56afa99899} 
+Vector$<$ U, 2 $>$ {\bfseries convert} () const
+\item 
+\Hypertarget{classmodm_1_1_vector_a6c70d4b26b1b04aa584ed75220bc57ac}\label{classmodm_1_1_vector_a6c70d4b26b1b04aa584ed75220bc57ac} 
+\doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 1, N $>$ \& {\bfseries as\+Transposed\+Matrix} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_vector_a4d257eb35c84a141de8141d60d36af0c}\label{classmodm_1_1_vector_a4d257eb35c84a141de8141d60d36af0c} 
+static uint8\+\_\+t {\bfseries get\+Size} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_vector_3_01_t_00_011_01_4_a59778f7b90588de8f519d7cff1c3797e}\label{classmodm_1_1_vector_3_01_t_00_011_01_4_a59778f7b90588de8f519d7cff1c3797e} 
+T {\bfseries x}
+\item 
+\Hypertarget{classmodm_1_1_vector_acf23210a664bb1cd30c031d3dae9afa5}\label{classmodm_1_1_vector_acf23210a664bb1cd30c031d3dae9afa5} 
+T {\bfseries coords} \+[N]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class modm::\+\+Vector$<$ T, 1 $>$}
+Class for handling common vector operations (1D). 
+
+Adapted from the implementation of Gaspard Petit (\href{mailto:gaspardpetit@gmail.com}{\texttt{gaspardpetit@gmail.\+com}}).
+
+\begin{DoxySeeAlso}{See also}
+\texorpdfstring{$<$}{<}a href"{}http:\+/\+/\+www-\/etud.\+iro.\+umontreal.\+ca/\+\texorpdfstring{$\sim$}{\string~}petitg/\+cpp/\+point.\+html"{}\texorpdfstring{$>$}{>}Homepage
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+geometry/\+vector1.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+vector1\+\_\+impl.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+vector\+\_\+impl.\+hpp\end{DoxyCompactItemize}

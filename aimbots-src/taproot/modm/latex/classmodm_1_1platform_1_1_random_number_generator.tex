@@ -1,0 +1,57 @@
+\doxysection{modm::\+platform::\+Random\+Number\+Generator Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_random_number_generator}{}\label{classmodm_1_1platform_1_1_random_number_generator}\index{modm::platform::RandomNumberGenerator@{modm::platform::RandomNumberGenerator}}
+
+
+{\ttfamily \+\#include $<$random\+\_\+number\+\_\+generator.\+hpp$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_random_number_generator_a8cb9b40303872128a6f56fb1f03d76cd}\label{classmodm_1_1platform_1_1_random_number_generator_a8cb9b40303872128a6f56fb1f03d76cd} 
+static void {\bfseries enable} ()
+\item 
+static bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_random_number_generator_a70c161059e0f64ca394720bf9aa9e94b}{is\+Ready}} ()
+\item 
+static uint32\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_random_number_generator_a9284ba3de70d8afab9b262c4686ee0a7}{get\+Value}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Random Number Generator
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000016}{Todo}}]check error status\end{DoxyRefDesc}
+
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1platform_1_1_random_number_generator_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_random_number_generator_a9284ba3de70d8afab9b262c4686ee0a7}\index{modm::platform::RandomNumberGenerator@{modm::platform::RandomNumberGenerator}!getValue@{getValue}}
+\index{getValue@{getValue}!modm::platform::RandomNumberGenerator@{modm::platform::RandomNumberGenerator}}
+\doxysubsubsection{\texorpdfstring{getValue()}{getValue()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_random_number_generator_a9284ba3de70d8afab9b262c4686ee0a7} 
+uint32\+\_\+t modm::\+platform::\+\+Random\+Number\+Generator::\+get\+Value (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Read the generated 32-\/bit random number
+
+Once read \doxylink{classmodm_1_1platform_1_1_random_number_generator_a70c161059e0f64ca394720bf9aa9e94b}{is\+Ready()} will return {\ttfamily false} until a new number has be generated. \Hypertarget{classmodm_1_1platform_1_1_random_number_generator_a70c161059e0f64ca394720bf9aa9e94b}\index{modm::platform::RandomNumberGenerator@{modm::platform::RandomNumberGenerator}!isReady@{isReady}}
+\index{isReady@{isReady}!modm::platform::RandomNumberGenerator@{modm::platform::RandomNumberGenerator}}
+\doxysubsubsection{\texorpdfstring{isReady()}{isReady()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_random_number_generator_a70c161059e0f64ca394720bf9aa9e94b} 
+bool modm::\+platform::\+\+Random\+Number\+Generator::\+is\+Ready (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Check if a new random number is ready
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if a new random number has been generated and can be read via \doxylink{classmodm_1_1platform_1_1_random_number_generator_a9284ba3de70d8afab9b262c4686ee0a7}{get\+Value()} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+random/\+random\+\_\+number\+\_\+generator.\+hpp\end{DoxyCompactItemize}

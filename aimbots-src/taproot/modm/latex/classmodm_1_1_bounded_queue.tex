@@ -1,0 +1,61 @@
+\doxysection{modm::\+Bounded\+Queue\texorpdfstring{$<$}{<} T, N, Container \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_bounded_queue}{}\label{classmodm_1_1_bounded_queue}\index{modm::BoundedQueue$<$ T, N, Container $>$@{modm::BoundedQueue$<$ T, N, Container $>$}}
+
+
+Bounded queue.  
+
+
+
+
+{\ttfamily \+\#include $<$queue.\+hpp$>$}
+
+Inheritance diagram for modm::\+Bounded\+Queue\texorpdfstring{$<$}{<} T, N, Container \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1_bounded_queue}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1_queue}{modm::\+\+Queue$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef Container::\+\+Size {\bfseries Size}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_queue}{modm::\+\+Queue$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries is\+Empty} () const
+\item 
+bool {\bfseries is\+Not\+Empty} () const
+\item 
+bool {\bfseries is\+Full} () const
+\item 
+bool {\bfseries is\+Not\+Full} () const
+\item 
+Size {\bfseries get\+Size} () const
+\item 
+Size {\bfseries get\+Max\+Size} () const
+\item 
+T \& {\bfseries get} ()
+\begin{DoxyCompactList}\small\item\em Access first element. \end{DoxyCompactList}\item 
+const T \& {\bfseries get} () const
+\begin{DoxyCompactList}\small\item\em Access first element. \end{DoxyCompactList}\item 
+bool {\bfseries push} (const T \&value)
+\item 
+void {\bfseries pop} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_queue}{modm::\+\+Queue$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+Container {\bfseries c}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, std::\+size\+\_\+t N, typename Container = Bounded\+Deque$<$\+T, N$>$$>$\newline
+class modm::\+\+Bounded\+Queue$<$ T, N, Container $>$}
+Bounded queue. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+container/\+queue.\+hpp\end{DoxyCompactItemize}

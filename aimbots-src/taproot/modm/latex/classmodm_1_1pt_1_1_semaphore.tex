@@ -1,0 +1,115 @@
+\doxysection{modm::\+pt::\+Semaphore Class Reference}
+\hypertarget{classmodm_1_1pt_1_1_semaphore}{}\label{classmodm_1_1pt_1_1_semaphore}\index{modm::pt::Semaphore@{modm::pt::Semaphore}}
+
+
+Counting semaphore.  
+
+
+
+
+{\ttfamily \+\#include $<$semaphore.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1pt_1_1_semaphore_a9e6e0a291ab278780a06bd84512f89ad}{Semaphore}} (uint16\+\_\+t initial)
+\begin{DoxyCompactList}\small\item\em Create a counting semaphore. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}{acquire}} ()
+\begin{DoxyCompactList}\small\item\em Acquire the semaphore. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}{release}} ()
+\begin{DoxyCompactList}\small\item\em Release the semaphore. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_ac4de7620941b9ad3b5182f62ed47bdc7}\label{classmodm_1_1pt_1_1_semaphore_ac4de7620941b9ad3b5182f62ed47bdc7} 
+uint16\+\_\+t {\bfseries count}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Counting semaphore. 
+
+This module implements counting semaphores on top of protothreads. Semaphores are a synchronization primitive that provide two operations:\+ \doxylink{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}{acquire()} and \doxylink{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}{release()}. Sometimes these operations are also called {\ttfamily wait} and {\ttfamily signal}. The \doxylink{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}{acquire()} operation checks the semaphore counter and "{}blocks"{} the thread if the counter is zero. The \doxylink{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}{release()} operation increases the semaphore counter but does not block. If another thread has blocked waiting for the semaphore that is signalled, the blocked thread will become runnable again.
+
+This class can for example be used for resource limiting or credit tracking:\+
+
+Resource limit:\+
+\begin{DoxyItemize}
+\item {\ttfamily initial} = number of resources
+\item \doxylink{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}{acquire()} to gain access to a resource
+\item \doxylink{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}{release()} to release the resource
+\end{DoxyItemize}
+
+Credit tracking:\+
+\begin{DoxyItemize}
+\item {\ttfamily initial} = 0
+\item \doxylink{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}{acquire()} to increment (credit)
+\item \doxylink{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}{release()} to consume (debit)
+\end{DoxyItemize}
+
+As protothreads implement a form cooperative multithreading no synchronisation is needed for accessing global variables or for critical sections. Just don\textquotesingle{}t use PT\+\_\+\+YIELD() or PT\+\_\+\+WAIT\+\_\+\+UNTIL() inside a critical sections and you\textquotesingle{}re fine.
+
+Therefore there\textquotesingle{}s no Mutex implementation, it isn\textquotesingle{}t needed. 
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_a9e6e0a291ab278780a06bd84512f89ad}\index{modm::pt::Semaphore@{modm::pt::Semaphore}!Semaphore@{Semaphore}}
+\index{Semaphore@{Semaphore}!modm::pt::Semaphore@{modm::pt::Semaphore}}
+\doxysubsubsection{\texorpdfstring{Semaphore()}{Semaphore()}}
+{\footnotesize\ttfamily \label{classmodm_1_1pt_1_1_semaphore_a9e6e0a291ab278780a06bd84512f89ad} 
+modm::\+pt::\+\+Semaphore::\+\+Semaphore (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{initial}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Create a counting semaphore. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em initial} & Initial value \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89}\index{modm::pt::Semaphore@{modm::pt::Semaphore}!acquire@{acquire}}
+\index{acquire@{acquire}!modm::pt::Semaphore@{modm::pt::Semaphore}}
+\doxysubsubsection{\texorpdfstring{acquire()}{acquire()}}
+{\footnotesize\ttfamily \label{classmodm_1_1pt_1_1_semaphore_a08448026d80df889cf78d17250526f89} 
+bool modm::\+pt::\+\+Semaphore::\+acquire (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Acquire the semaphore. 
+
+The "{}acquire"{} or "{}wait"{} operation causes the protothread to block while the counter is zero. When the counter reaches a value larger than zero, the protothread will continue.
+
+Use this always within a PT\+\_\+\+WAIT\+\_\+\+UNITL() macro inside a modm::\+pt::\+\+Thread::\+run() method.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{PT\_WAIT\_UNTIL(semaphore.acquire());}
+
+\end{DoxyCode}
+
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily false} if the \doxylink{classmodm_1_1pt_1_1_semaphore}{Semaphore} count not be acquired, {\ttfamily true} if the operation was successful. 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0}\index{modm::pt::Semaphore@{modm::pt::Semaphore}!release@{release}}
+\index{release@{release}!modm::pt::Semaphore@{modm::pt::Semaphore}}
+\doxysubsubsection{\texorpdfstring{release()}{release()}}
+{\footnotesize\ttfamily \label{classmodm_1_1pt_1_1_semaphore_a4ad53508e0f6bb5a68e4e6b41782bad0} 
+void modm::\+pt::\+\+Semaphore::\+release (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Release the semaphore. 
+
+The "{}release"{} or "{}signal"{} operation increments the counter inside the semaphore, which eventually will cause waiting protothreads to continue executing. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+processing/\+protothread/\+semaphore.\+hpp\end{DoxyCompactItemize}

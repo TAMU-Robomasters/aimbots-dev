@@ -1,0 +1,24 @@
+\doxysection{modm::\+aligned\+\_\+storage\texorpdfstring{$<$}{<} Cap, Align \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structmodm_1_1aligned__storage}{}\label{structmodm_1_1aligned__storage}\index{modm::aligned\_storage$<$ Cap, Align $>$@{modm::aligned\_storage$<$ Cap, Align $>$}}
+
+
+{\ttfamily \+\#include $<$aligned\+\_\+storage.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1aligned__storage_afb0b44dadf0f23c29fe727451e490cc9}\label{structmodm_1_1aligned__storage_afb0b44dadf0f23c29fe727451e490cc9} 
+using {\bfseries type} = std::\+aligned\+\_\+storage\+\_\+t$<$Cap, Align$>$
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$size\+\_\+t Cap, size\+\_\+t Align = alignof(aligned\+\_\+storage\+\_\+impl::\+aligned\+\_\+storage\+\_\+helper$<$\+Cap$>$)$>$\newline
+struct modm::\+aligned\+\_\+storage$<$ Cap, Align $>$}
+Implementation of std::\+aligned\+\_\+storage that avoids GCC bug \#61458 which can cause excessive size for types smaller than the maximum alignment. See:\+ \href{https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61458}{\texttt{https:\+/\+/\+gcc.\+gnu.\+org/\+bugzilla/\+show\+\_\+bug.\+cgi?id=61458}}
+
+The implementation is derived from:\+ \href{https://github.com/WG21-SG14/SG14/blob/master/SG14/inplace_function.h}{\texttt{https:\+/\+/\+github.\+com/\+\+WG21-\/\+SG14/\+\+SG14/\+blob/\+master/\+\+SG14/\+inplace\+\_\+function.\+h}} 
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+utils/\+aligned\+\_\+storage.\+hpp\end{DoxyCompactItemize}

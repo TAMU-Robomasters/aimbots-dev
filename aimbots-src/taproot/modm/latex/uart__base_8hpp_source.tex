@@ -1,0 +1,113 @@
+\doxysection{uart\+\_\+base.\+hpp}
+\hypertarget{uart__base_8hpp_source}{}\label{uart__base_8hpp_source}\index{src/modm/platform/uart/uart\_base.hpp@{src/modm/platform/uart/uart\_base.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_UART\_BASE\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_UART\_BASE\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/interrupt.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ STM\ has\ some\ weird\ ideas\ about\ continuity}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#ifndef\ USART\_BRR\_DIV\_MANTISSA}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#define\ USART\_BRR\_DIV\_MANTISSA\ \ USART\_BRR\_DIV\_Mantissa}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#ifndef\ USART\_BRR\_DIV\_FRACTION}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ USART\_BRR\_DIV\_FRACTION\ \ USART\_BRR\_DIV\_Fraction}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{namespace\ }modm::platform}
+\DoxyCodeLine{00034\ \{}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base}{UartBase}}}
+\DoxyCodeLine{00045\ \{}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00049\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}}\ :\ uint32\_t}
+\DoxyCodeLine{00050\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78}{ParityError}}\ =\ USART\_CR1\_PEIE,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619}{TxEmpty}}\ \ \ \ \ =\ USART\_CR1\_TXEIE,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85}{TxComplete}}\ \ =\ USART\_CR1\_TCIE,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae}{RxNotEmpty}}\ \ =\ USART\_CR1\_RXNEIE,}
+\DoxyCodeLine{00059\ \ \ \ \ \};}
+\DoxyCodeLine{00060\ \ \ \ \ MODM\_FLAGS32(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}});}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00063\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{InterruptFlag}}\ :\ uint32\_t}
+\DoxyCodeLine{00064\ \ \ \ \ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619}{TxEmpty}}\ \ \ \ \ \ \ \ \ =\ USART\_SR\_TXE,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85}{TxComplete}}\ \ \ \ \ \ =\ USART\_SR\_TC,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae}{RxNotEmpty}}\ \ \ \ \ \ =\ USART\_SR\_RXNE,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa1e5b45a006f87ca231075ff2d2efbbb1}{OverrunError}}\ \ \ \ =\ USART\_SR\_ORE,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fac2a32feb763cf02d22c6ea35051b7b43}{FramingError}}\ \ \ \ =\ USART\_SR\_FE,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78}{ParityError}}\ \ \ \ \ =\ USART\_SR\_PE,}
+\DoxyCodeLine{00077\ \ \ \ \ \};}
+\DoxyCodeLine{00078\ \ \ \ \ MODM\_FLAGS32(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{InterruptFlag}});}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00081\ \ \ \ \ Parity\ :\ uint32\_t}
+\DoxyCodeLine{00082\ \ \ \ \ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ Disabled\ \ \ \ =\ 0,}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ Even\ \ \ \ \ \ \ \ =\ USART\_CR1\_PCE,}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ Odd\ \ \ \ \ \ \ \ \ =\ USART\_CR1\_PCE\ |\ USART\_CR1\_PS,}
+\DoxyCodeLine{00086\ \ \ \ \ \};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00089\ \ \ \ \ WordLength\ :\ uint32\_t}
+\DoxyCodeLine{00090\ \ \ \ \ \{}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\#ifdef\ USART\_CR1\_M1}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ Bit7\ =\ USART\_CR1\_M1,}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ Bit8\ =\ 0,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ Bit9\ =\ USART\_CR1\_M0,}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ Bit8\ =\ 0,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ Bit9\ =\ USART\_CR1\_M,}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00099\ \ \ \ \ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00102\ \ \ \ \ SpiClock\ :\ uint32\_t}
+\DoxyCodeLine{00103\ \ \ \ \ \{}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ Disabled\ =\ 0b0,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ Enabled\ \ =\ USART\_CR2\_CLKEN,}
+\DoxyCodeLine{00106\ \ \ \ \ \};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00109\ \ \ \ \ LastBitClockPulse\ :\ uint32\_t}
+\DoxyCodeLine{00110\ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ DoNotOutput\ =\ 0b0,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ Output\ =\ USART\_CR2\_LBCL,}
+\DoxyCodeLine{00113\ \ \ \ \ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00116\ \ \ \ \ SpiDataMode\ :\ uint32\_t}
+\DoxyCodeLine{00117\ \ \ \ \ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ Mode0\ =\ 0b00,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ Mode1\ =\ USART\_CR2\_CPHA,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ Mode2\ =\ USART\_CR2\_CPOL,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ Mode3\ =\ USART\_CR2\_CPOL\ |\ USART\_CR2\_CPHA,}
+\DoxyCodeLine{00122\ \ \ \ \ \};}
+\DoxyCodeLine{00123\ \};}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm::platform}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_UART\_BASE\_HPP}}
+
+\end{DoxyCode}

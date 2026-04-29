@@ -1,0 +1,339 @@
+\doxysection{vector\+\_\+impl.\+hpp}
+\hypertarget{vector__impl_8hpp_source}{}\label{vector__impl_8hpp_source}\index{src/modm/math/geometry/vector\_impl.hpp@{src/modm/math/geometry/vector\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_VECTOR\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\ \ \ \ \#error\ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'vector.hpp'\ instead!"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00018\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00019\ modm::Vector<T,\ N>::Vector()}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00024\ modm::Vector<T,\ N>::Vector(\textcolor{keyword}{const}\ T\ *ptData)}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ memcpy(coords,\ ptData,\ \textcolor{keyword}{sizeof}(T)\ *\ N);}
+\DoxyCodeLine{00027\ \}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00030\ modm::Vector<T,\ N>::Vector(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}\ \&rhs)}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ memcpy(coords,\ \&rhs,\ \textcolor{keyword}{sizeof}(T)\ *\ N);}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00037\ uint8\_t}
+\DoxyCodeLine{00038\ modm::Vector<T,\ N>::getSize()}
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordflow}{return}\ N;}
+\DoxyCodeLine{00041\ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00044\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00045\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00046\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ =\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}\ \&rhs)}
+\DoxyCodeLine{00047\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ memcpy(coords,\ \&rhs,\ \textcolor{keyword}{sizeof}(T)\ *\ N);}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00050\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00054\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00055\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ ==\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00056\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordflow}{return}\ memcmp(coords,\ rhs.coords,\ \textcolor{keyword}{sizeof}(T)*N)\ ==\ 0;}
+\DoxyCodeLine{00058\ \}}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00061\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00062\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00063\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ !=\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00064\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordflow}{return}\ memcmp(coords,\ rhs.coords,\ \textcolor{keyword}{sizeof}(T)*N)\ !=\ 0;}
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00069\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00070\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00071\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ <\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00072\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)}
+\DoxyCodeLine{00074\ \ \ \ \ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ <\ rhs[i])\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ >\ rhs[i])\ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00083\ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00086\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00088\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ <=\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00089\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)}
+\DoxyCodeLine{00091\ \ \ \ \ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ <\ rhs[i])\ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ >\ rhs[i])\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00098\ \ \ \ \ \}}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00100\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00104\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00105\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ >\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00106\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)}
+\DoxyCodeLine{00108\ \ \ \ \ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ >\ rhs[i])\ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ <\ rhs[i])\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00117\ \}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00120\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00121\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00122\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ >=\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00123\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)}
+\DoxyCodeLine{00125\ \ \ \ \ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ >\ rhs[i])\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((*\textcolor{keyword}{this})[i]\ <\ rhs[i])\ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00132\ \ \ \ \ \}}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00134\ \}}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00137\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00138\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00139\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ []\ }}(uint8\_t\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00140\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{return}\ coords[index];}
+\DoxyCodeLine{00142\ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00145\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00146\ T\&}
+\DoxyCodeLine{00147\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ []\ }}(uint8\_t\ index)}
+\DoxyCodeLine{00148\ \{}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordflow}{return}\ coords[index];}
+\DoxyCodeLine{00150\ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00153\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00154\ T*}
+\DoxyCodeLine{00155\ modm::Vector<T,\ N>::ptr()}
+\DoxyCodeLine{00156\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}T*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00158\ \}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00161\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00162\ \textcolor{keyword}{const}\ T*}
+\DoxyCodeLine{00163\ modm::Vector<T,\ N>::ptr()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00164\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00166\ \}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00169\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00170\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}}
+\DoxyCodeLine{00171\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ +\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00172\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00173\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ pt;}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ pt[i]\ =\ coords[i]\ +\ rhs.coords[i];}
+\DoxyCodeLine{00176\ \ \ \ \ \}}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keywordflow}{return}\ pt;}
+\DoxyCodeLine{00178\ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00181\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00182\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}}
+\DoxyCodeLine{00183\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ -\/\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00184\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00185\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ pt;}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ pt[i]\ =\ coords[i]\ -\/\ rhs.coords[i];}
+\DoxyCodeLine{00188\ \ \ \ \ \}}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keywordflow}{return}\ pt;}
+\DoxyCodeLine{00190\ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00193\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00194\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}\&}
+\DoxyCodeLine{00195\ modm::Vector<T,\ N>::asMatrix()}
+\DoxyCodeLine{00196\ \{}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{reinterpret\_cast<}\doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00198\ \}}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00201\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}\&}
+\DoxyCodeLine{00202\ modm::Vector<T,\ N>::asMatrix()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00203\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ 1>}}*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00205\ \}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00208\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00209\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 1,\ N>}}\&}
+\DoxyCodeLine{00210\ modm::Vector<T,\ N>::asTransposedMatrix()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00211\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 1,\ N>}}*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00213\ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00216\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 1,\ N>}}\&}
+\DoxyCodeLine{00217\ modm::Vector<T,\ N>::asTransposedMatrix()}
+\DoxyCodeLine{00218\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{reinterpret\_cast<}\doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 1,\ N>}}*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00220\ \}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00223\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00224\ T}
+\DoxyCodeLine{00225\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ *\ }}(\textcolor{keyword}{const}\ Vector\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00226\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00227\ \ \ \ \ T\ v\ =\ 0;}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ v\ +=\ (*this)[i]*rhs[i];}
+\DoxyCodeLine{00230\ \ \ \ \ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keywordflow}{return}\ v;}
+\DoxyCodeLine{00233\ \}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00236\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00237\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}}
+\DoxyCodeLine{00238\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ *\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00239\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00240\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ pt;}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ pt[i]\ =\ coords[i]\ *\ rhs;}
+\DoxyCodeLine{00243\ \ \ \ \ \}}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keywordflow}{return}\ pt;}
+\DoxyCodeLine{00245\ \}}
+\DoxyCodeLine{00246\ }
+\DoxyCodeLine{00247\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00248\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00249\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}}
+\DoxyCodeLine{00250\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ /\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00251\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00252\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\ pt;}
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ pt[i]\ =\ coords[i]\ /\ rhs;}
+\DoxyCodeLine{00255\ \ \ \ \ \}}
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keywordflow}{return}\ pt;}
+\DoxyCodeLine{00257\ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00260\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00261\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00262\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ +=\ }}(\textcolor{keyword}{const}\ Vector\ \&rhs)}
+\DoxyCodeLine{00263\ \{}
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ coords[i]\ +=\ rhs.coords[i];}
+\DoxyCodeLine{00266\ \ \ \ \ \}}
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00268\ \}}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00270\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00271\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00272\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00273\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ -\/=\ }}(\textcolor{keyword}{const}\ Vector\ \&rhs)}
+\DoxyCodeLine{00274\ \{}
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ coords[i]\ -\/=\ rhs.coords[i];}
+\DoxyCodeLine{00277\ \ \ \ \ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00279\ \}}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00282\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00283\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00284\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ *=\ }}(\textcolor{keyword}{const}\ T\ \&rhs)}
+\DoxyCodeLine{00285\ \{}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ coords[i]\ -\/=\ rhs;}
+\DoxyCodeLine{00288\ \ \ \ \ \}}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00290\ \}}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00293\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00294\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00295\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ /=\ }}(\textcolor{keyword}{const}\ T\ \&rhs)}
+\DoxyCodeLine{00296\ \{}
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ coords[i]\ /=\ rhs;}
+\DoxyCodeLine{00299\ \ \ \ \ \}}
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00301\ \}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00304\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00305\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>}}\&}
+\DoxyCodeLine{00306\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ N>::operator\ -\/\ }}()}
+\DoxyCodeLine{00307\ \{}
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ coords[i]\ =\ -\/coords[i];}
+\DoxyCodeLine{00310\ \ \ \ \ \}}
+\DoxyCodeLine{00311\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00312\ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00315\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00316\ T}
+\DoxyCodeLine{00317\ modm::Vector<T,\ N>::getLength()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00318\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00319\ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(getLengthSquared());}
+\DoxyCodeLine{00320\ \}}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00323\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00324\ T}
+\DoxyCodeLine{00325\ modm::Vector<T,\ N>::getLengthSquared()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00326\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00327\ \ \ \ \ T\ len2\ =\ 0;}
+\DoxyCodeLine{00328\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ N;\ ++i)\ \{}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ len2\ +=\ (*this)[i]*(*this)[i];}
+\DoxyCodeLine{00330\ \ \ \ \ \}}
+\DoxyCodeLine{00331\ }
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keywordflow}{return}\ len2;}
+\DoxyCodeLine{00333\ \}}
+
+\end{DoxyCode}

@@ -1,0 +1,136 @@
+\doxysection{gpio.\+hpp}
+\hypertarget{gpio_8hpp_source}{}\label{gpio_8hpp_source}\index{src/modm/architecture/interface/gpio.hpp@{src/modm/architecture/interface/gpio.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ Sascha\ Schade}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_GPIO\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_GPIO\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_gpio}{Gpio}}}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a85ddb071ba8af1c2b89b4e8c079ea58f}{Low}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ High\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00036\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}}
+\DoxyCodeLine{00037\ \ \ \ \ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ In\ =\ 0,\ \ \ \ \ \ \ \ \ \textcolor{comment}{//<\ GPIO\ is\ an\ Input}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ Out\ =\ 1,\ \ \ \ \ \ \ \ \textcolor{comment}{//<\ GPIO\ is\ an\ Output}}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ InOut\ =\ 2,\ \ \ \ \ \ \textcolor{comment}{//<\ GPIO\ is\ both\ Input\ and\ Output}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ Special\ =\ 3,\ \ \ \ \textcolor{comment}{//<\ GPIO\ is\ configured\ with\ a\ special\ purpose}}
+\DoxyCodeLine{00042\ \ \ \ \ \};}
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_gpio_input}{GpioInput}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_gpio}{Gpio}}}
+\DoxyCodeLine{00053\ \{}
+\DoxyCodeLine{00054\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_input_ac74cb3cc7adff9eefce8073771a0a034}{direction}}\ =\ Direction::In;}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00061\ \ \ \ \ setInput();}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00065\ \ \ \ \ read();}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00067\ \};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00076\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_gpio_output}{GpioOutput}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1_gpio}{Gpio}}}
+\DoxyCodeLine{00077\ \{}
+\DoxyCodeLine{00078\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_output_a129151096af66ea8b05d430c964f57c3}{direction}}\ =\ Direction::Out;}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00085\ \ \ \ \ setOutput();}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00089\ \ \ \ \ setOutput(\textcolor{keywordtype}{bool}\ value);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00093\ \ \ \ \ set();}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00097\ \ \ \ \ set(\textcolor{keywordtype}{bool}\ value);}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00101\ \ \ \ \ reset();}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00105\ \ \ \ \ toggle();}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00110\ \ \ \ \ isSet();}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00112\ \};}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00118\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_gpio_i_o}{GpioIO}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_output}{GpioOutput}},\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_input}{GpioInput}}}
+\DoxyCodeLine{00119\ \{}
+\DoxyCodeLine{00120\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_i_o_ac3e00d004cfc8c6268085b4468e22684}{direction}}\ =\ Direction::InOut;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}}
+\DoxyCodeLine{00127\ \ \ \ \ getDirection();}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00129\ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00141\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_gpio_port}{GpioPort}}}
+\DoxyCodeLine{00142\ \{}
+\DoxyCodeLine{00143\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00146\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33}{DataOrder}}\ :\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00147\ \ \ \ \ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a960b44c579bc2f6818d2daaf9e4c16f0}{Normal}}\ =\ \textcolor{keyword}{false},\ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{Reversed}}\ =\ \textcolor{keyword}{true}\ }
+\DoxyCodeLine{00150\ \ \ \ \ \};}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ width;}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ number\_of\_ports;}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{using\ }PortType\ =\ uint16\_t;}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33}{DataOrder}}}
+\DoxyCodeLine{00165\ \ \ \ \ getDataOrder();}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00169\ \ \ \ \ setOutput();}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00172\ \ \ \ \ setInput();}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{static}\ PortType}
+\DoxyCodeLine{00176\ \ \ \ \ read();}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00180\ \ \ \ \ write(PortType\ data);}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00184\ \ \ \ \ toggle();}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00186\ \};}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00190\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_GPIO\_HPP}}
+
+\end{DoxyCode}

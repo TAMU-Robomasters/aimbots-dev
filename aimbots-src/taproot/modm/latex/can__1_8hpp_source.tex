@@ -1,0 +1,140 @@
+\doxysection{can\+\_\+1.\+hpp}
+\hypertarget{can__1_8hpp_source}{}\label{can__1_8hpp_source}\index{src/modm/platform/can/can\_1.hpp@{src/modm/platform/can/can\_1.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2014,\ 2016,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Fabian\ Greif}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2018,\ Christopher\ Durand}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_CAN1\_HPP}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_CAN1\_HPP}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/can.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/platform/gpio/connector.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}can\_bit\_timings.hpp"{}}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}can\_filter.hpp"{}}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1}{Can1}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_can}{::modm::Can}}}
+\DoxyCodeLine{00056\ \{}
+\DoxyCodeLine{00057\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00059\ \ \ \ \ Mode\ :\ uint32\_t}
+\DoxyCodeLine{00060\ \ \ \ \ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ Normal\ \ \ \ \ \ =\ 0,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ ListenOnly\ \ =\ CAN\_BTR\_SILM,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ LoopBack\ \ \ \ =\ CAN\_BTR\_LBKM,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ ListenOnlyLoopBack\ \ =\ CAN\_BTR\_SILM\ |\ CAN\_BTR\_LBKM,}
+\DoxyCodeLine{00065\ \ \ \ \ \};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{comment}{//\ Expose\ jinja\ template\ parameters\ to\ be\ checked\ by\ e.g.\ drivers\ or\ application}}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ RxBufferSize\ =\ 32;}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ TxBufferSize\ =\ 32;}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00074\ \ \ \ \ initializeWithPrescaler(uint16\_t\ prescaler,\ uint8\_t\ bs1,\ uint8\_t\ bs2,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ interruptPriority,\ Mode\ startupMode,\ \textcolor{keywordtype}{bool}\ overwriteOnOverrun);}
+\DoxyCodeLine{00076\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00079\ \ \ \ \ connect(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Gpio::InputType}}\ inputType\ =\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Gpio::InputType::Floating}})}
+\DoxyCodeLine{00080\ \ \ \ \ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Connector\ =\ GpioConnector<Peripheral::Can1,\ Signals...>;}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Tx\ =\ \textcolor{keyword}{typename}\ Connector::template\ GetSignal<\ Gpio::Signal::Tx\ >;}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Rx\ =\ \textcolor{keyword}{typename}\ Connector::template\ GetSignal<\ Gpio::Signal::Rx\ >;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(Connector::template\ IsValid<Tx>\ and\ Connector::template\ IsValid<Rx>\ and\ \textcolor{keyword}{sizeof}...(Signals)\ ==\ 2,}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Can1::connect()\ requires\ one\ Tx\ and\ one\ Rx\ signal!"{}});}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Connector::disconnect();}}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ Tx::setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{Gpio::OutputType::PushPull}});}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ Rx::setInput(inputType);}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ Connector::connect();}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ bitrate\_t\ bitrate=kbps(125),\ percent\_t\ tolerance=pct(1)\ >}
+\DoxyCodeLine{00109\ \ \ \ \ [[nodiscard]]\ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00110\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1_a6abe06da35dcd811bba37df265d57be3}{initialize}}(\ uint32\_t\ interruptPriority,\ Mode\ startupMode\ =\ Mode::Normal,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ overwriteOnOverrun\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00112\ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Timings\ =\ \doxymbox{\hyperlink{classmodm_1_1_can_bit_timing}{CanBitTiming<SystemClock::Can1,\ bitrate>}};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ Timings::template\ assertBitrateInTolerance<tolerance>();}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ initializeWithPrescaler(}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ Timings::getPrescaler(),}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ Timings::getBS1(),}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ Timings::getBS2(),}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ interruptPriority,}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ startupMode,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ overwriteOnOverrun);}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00132\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1_afe0d1c335c70e25b2d2a3d0132fc9851}{setMode}}(\doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}{Mode}}\ mode);}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00135\ \ \ \ \ setAutomaticRetransmission(\textcolor{keywordtype}{bool}\ retransmission);}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{comment}{//\ Can\ Interface\ Methods}}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00140\ \ \ \ \ isMessageAvailable();}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00143\ \ \ \ \ getMessage(\doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{can::Message}}\&\ message,\ uint8\_t\ *filter\_id=\textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00146\ \ \ \ \ isReadyToSend();}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00149\ \ \ \ \ sendMessage(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{can::Message}}\&\ message);}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{comment}{//\ Extended\ Functionality}}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00164\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1_ae760780ffac95aaec8094a86c6d8dbfb}{getReceiveErrorCounter}}()}
+\DoxyCodeLine{00165\ \ \ \ \ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (CAN1-\/>ESR\ \&\ CAN\_ESR\_REC)\ >>\ 24;}
+\DoxyCodeLine{00167\ \ \ \ \ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00174\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1_ab409e90cfc67ba73ffc40fa07efeffa4}{getTransmitErrorCounter}}()}
+\DoxyCodeLine{00175\ \ \ \ \ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (CAN1-\/>ESR\ \&\ CAN\_ESR\_TEC)\ >>\ 16;}
+\DoxyCodeLine{00177\ \ \ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{BusState}}}
+\DoxyCodeLine{00180\ \ \ \ \ getBusState();}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00213\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can1_aa3b2768b07f7bd4d83761e663ee8a893}{enableStatusChangeInterrupt}}(uint32\_t\ interruptEnable,}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ interruptPriority);}
+\DoxyCodeLine{00215\ \};}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \}\ \ \ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \ MODM\_STM32\_CAN1\_HPP}}
+
+\end{DoxyCode}

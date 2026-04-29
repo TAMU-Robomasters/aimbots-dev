@@ -1,0 +1,273 @@
+\doxysection{modm::\+platform::\+Basic\+Timer Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_basic_timer}{}\label{classmodm_1_1platform_1_1_basic_timer}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+Inheritance diagram for modm::\+platform::\+Basic\+Timer:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.343096cm]{classmodm_1_1platform_1_1_basic_timer}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_ae79609753399533b77903c3c42ff65a2}\label{classmodm_1_1platform_1_1_basic_timer_ae79609753399533b77903c3c42ff65a2} 
+enum class {\bfseries Mode} :\+ uint32\+\_\+t \{ {\bfseries Up\+Counter} = 0
+, {\bfseries One\+Shot\+Up\+Counter} = TIM\+\_\+\+CR1\+\_\+\+OPM
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a6ab330516e8221330ec2db8319992b15}\label{classmodm_1_1platform_1_1_basic_timer_a6ab330516e8221330ec2db8319992b15} 
+enum class {\bfseries Interrupt} :\+ uint32\+\_\+t \{ {\bfseries Update} = TIM\+\_\+\+DIER\+\_\+\+UIE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a77c851e009c1a0239dabf9f3451766a2}\label{classmodm_1_1platform_1_1_basic_timer_a77c851e009c1a0239dabf9f3451766a2} 
+enum class {\bfseries Interrupt\+Flag} :\+ uint32\+\_\+t \{ {\bfseries Update} = TIM\+\_\+\+SR\+\_\+\+UIF
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_af079104534757435b4ae2f0e4603092f}\label{classmodm_1_1platform_1_1_basic_timer_af079104534757435b4ae2f0e4603092f} 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a305399fc2c5b0b23ceb2343b7944a548}\label{classmodm_1_1platform_1_1_basic_timer_a305399fc2c5b0b23ceb2343b7944a548} 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt\+Flag)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b}{disable}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}{pause}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}{start}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a428bd4fbf1acbae6cd25ab2d3f2182fc}{set\+Mode}} (Mode mode)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d}{set\+Prescaler}} (uint16\+\_\+t prescaler)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf}{set\+Overflow}} (uint16\+\_\+t overflow)
+\item 
+static uint16\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106}{set\+Period}} (uint32\+\_\+t microseconds, bool auto\+Apply=true)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{apply\+And\+Reset}} ()
+\begin{DoxyCompactList}\small\item\em Reset the counter, and update the prescaler and overflow values. \end{DoxyCompactList}\item 
+static uint16\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7}{get\+Value}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2a1caea6b9c0cce8ee8a83d91eaf83bd}{set\+Value}} (uint16\+\_\+t value)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4}{enable\+Interrupt\+Vector}} (bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}}, uint8\+\_\+t priority)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0125bc3626a0051dbdc53a5483b985c8}{enable\+Interrupt}} (Interrupt\+\_\+t interrupt)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_add0832893feb247cee7b7cbf9fba06d5}{disable\+Interrupt}} (Interrupt\+\_\+t interrupt)
+\item 
+static Interrupt\+Flag\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714}{get\+Interrupt\+Flags}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a5b2488893edd8afd43e8b4750256c391}{acknowledge\+Interrupt\+Flags}} (Interrupt\+Flag\+\_\+t flags)
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a5b2488893edd8afd43e8b4750256c391}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!acknowledgeInterruptFlags@{acknowledgeInterruptFlags}}
+\index{acknowledgeInterruptFlags@{acknowledgeInterruptFlags}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{acknowledgeInterruptFlags()}{acknowledgeInterruptFlags()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a5b2488893edd8afd43e8b4750256c391} 
+void modm::\+platform::\+\+Basic\+Timer::\+acknowledge\+Interrupt\+Flags (\begin{DoxyParamCaption}\item[{Interrupt\+Flag\+\_\+t}]{flags}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Clears one or multiple flags.
+
+
+\begin{DoxyParams}{Parameters}
+{\em flags} & Bitmap of State\+Flag \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!applyAndReset@{applyAndReset}}
+\index{applyAndReset@{applyAndReset}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{applyAndReset()}{applyAndReset()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298} 
+void modm::\+platform::\+\+Basic\+Timer::\+apply\+And\+Reset (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+Reset the counter, and update the prescaler and overflow values. 
+
+Generates an Update-\/\+Event without generating an Update-\/\+Interrupt.
+
+This will reset the counter to 0 in up-\/counting mode (the default) or to the maximal value in down-\/counting mode. It will also update the timer\textquotesingle{}s prescaler and overflow values if you have set them up to be changed using \doxylink{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d}{set\+Prescaler()} or \doxylink{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf}{set\+Overflow()} (or \doxylink{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106}{set\+Period()}).
+
+An Update-\/\+Event is also generated when the timer reaches its maximal (up-\/counting) or minimal (down-\/counting) value. The settings for Prescaler, Overflow and Compare values are applied then without calling this function. \Hypertarget{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!disable@{disable}}
+\index{disable@{disable}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{disable()}{disable()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b} 
+void modm::\+platform::\+\+Basic\+Timer::\+disable (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Disable clock.
+
+All settings are ignored in this mode and the timer is shut down. Calling any function other than \doxylink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable()} won\textquotesingle{}t have any effect. \Hypertarget{classmodm_1_1platform_1_1_basic_timer_add0832893feb247cee7b7cbf9fba06d5}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!disableInterrupt@{disableInterrupt}}
+\index{disableInterrupt@{disableInterrupt}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{disableInterrupt()}{disableInterrupt()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_add0832893feb247cee7b7cbf9fba06d5} 
+void modm::\+platform::\+\+Basic\+Timer::\+disable\+Interrupt (\begin{DoxyParamCaption}\item[{Interrupt\+\_\+t}]{interrupt}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Disables interrupts.
+
+
+\begin{DoxyParams}{Parameters}
+{\em interrupt} & Interrupts to disable \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!enable@{enable}}
+\index{enable@{enable}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{enable()}{enable()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194} 
+void modm::\+platform::\+\+Basic\+Timer::\+enable (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Enables the clock for the timer and resets all settings
+
+Has to be called before calling any other function from this class! Otherwise the settings won\textquotesingle{}t have any effect. \Hypertarget{classmodm_1_1platform_1_1_basic_timer_a0125bc3626a0051dbdc53a5483b985c8}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!enableInterrupt@{enableInterrupt}}
+\index{enableInterrupt@{enableInterrupt}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{enableInterrupt()}{enableInterrupt()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a0125bc3626a0051dbdc53a5483b985c8} 
+void modm::\+platform::\+\+Basic\+Timer::\+enable\+Interrupt (\begin{DoxyParamCaption}\item[{Interrupt\+\_\+t}]{interrupt}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Enables interrupts. Don\textquotesingle{}t forget to enable the Interrupt \doxylink{classmodm_1_1_vector}{Vector}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em interrupt} & Interrupts to enable\\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4}{enable\+Interrupt\+Vector()} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!enableInterruptVector@{enableInterruptVector}}
+\index{enableInterruptVector@{enableInterruptVector}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{enableInterruptVector()}{enableInterruptVector()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4} 
+void modm::\+platform::\+\+Basic\+Timer::\+enable\+Interrupt\+Vector (\begin{DoxyParamCaption}\item[{bool}]{enable}{, }\item[{uint8\+\_\+t}]{priority}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Enables or disables the Interrupt \doxylink{classmodm_1_1_vector}{Vector}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em \doxylink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}} & Enable/\+disable the interrupt vector \\
+\hline
+{\em priority} & Priority of the interrupt vector (0=highest to 15=lowest). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!getInterruptFlags@{getInterruptFlags}}
+\index{getInterruptFlags@{getInterruptFlags}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{getInterruptFlags()}{getInterruptFlags()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714} 
+Interrupt\+Flag\+\_\+t modm::\+platform::\+\+Basic\+Timer::\+get\+Interrupt\+Flags (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Returns a bitmap of the enum State\+Flag. Use this method while executing an interrupt or in other situations where you want to know which of the flags are set.
+
+If a flag is a cause of an enabled interrupt (and the Interrupt \doxylink{classmodm_1_1_vector}{Vector} is enabled) then interrupt will be triggered as long the flag is set.
+
+\begin{DoxyWarning}{Warning}
+You cannot use a switch statement for the returned value, since multiple flags may be set!
+\end{DoxyWarning}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{InterruptFlag\ flags\ =\ TimerX::getInterruptFlags()}
+\DoxyCodeLine{if\ (flags\ \&\ TimerX::FLAG\_XX)\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Flag\ was\ set,\ clear\ the\ flag\ since\ flags\ are\ set\ by}}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ hardware,\ but\ have\ to\ be\ cleared\ by\ software}}
+\DoxyCodeLine{\ \ \ \ TimerX::resetInterruptFlags(TIMx::FLAG\_XX)}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ \Hypertarget{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!getValue@{getValue}}
+\index{getValue@{getValue}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{getValue()}{getValue()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7} 
+uint16\+\_\+t modm::\+platform::\+\+Basic\+Timer::\+get\+Value (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Get the counter value \Hypertarget{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!pause@{pause}}
+\index{pause@{pause}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{pause()}{pause()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d} 
+void modm::\+platform::\+\+Basic\+Timer::\+pause (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Pause timer operation
+
+All settings are stored but the timer operation is suspend until \doxylink{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}{start()} is called. \Hypertarget{classmodm_1_1platform_1_1_basic_timer_a428bd4fbf1acbae6cd25ab2d3f2182fc}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!setMode@{setMode}}
+\index{setMode@{setMode}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{setMode()}{setMode()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a428bd4fbf1acbae6cd25ab2d3f2182fc} 
+void modm::\+platform::\+\+Basic\+Timer::\+set\+Mode (\begin{DoxyParamCaption}\item[{Mode}]{mode}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Set operation mode of the timer \Hypertarget{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!setOverflow@{setOverflow}}
+\index{setOverflow@{setOverflow}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{setOverflow()}{setOverflow()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf} 
+void modm::\+platform::\+\+Basic\+Timer::\+set\+Overflow (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{overflow}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Set overflow.
+
+This sets the maximum counter value of the timer. The timer is blocked if {\ttfamily overflow} is set to zero.
+
+Takes effect at next update event.
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{apply\+And\+Reset()} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!setPeriod@{setPeriod}}
+\index{setPeriod@{setPeriod}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{setPeriod()}{setPeriod()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106} 
+uint16\+\_\+t modm::\+platform::\+\+Basic\+Timer::\+set\+Period (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{microseconds}{, }\item[{bool}]{auto\+Apply}{ = {\ttfamily true}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Set period in microseconds
+
+Changes prescaler and overflow values. Takes effect at next update event.
+
+
+\begin{DoxyParams}{Parameters}
+{\em microseconds} & Requested period in microseconds \\
+\hline
+{\em auto\+Apply} & Update the new value immediately and reset the counter value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+New overflow value.
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{apply\+And\+Reset()} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!setPrescaler@{setPrescaler}}
+\index{setPrescaler@{setPrescaler}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{setPrescaler()}{setPrescaler()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d} 
+void modm::\+platform::\+\+Basic\+Timer::\+set\+Prescaler (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{prescaler}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Set new prescaler
+
+The prescaler can divide the counter clock frequency by any factor between 1 and 65\textquotesingle{}536. The new prescaler ratio is taken into account at the next update event.
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{apply\+And\+Reset()} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1platform_1_1_basic_timer_a2a1caea6b9c0cce8ee8a83d91eaf83bd}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!setValue@{setValue}}
+\index{setValue@{setValue}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{setValue()}{setValue()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_a2a1caea6b9c0cce8ee8a83d91eaf83bd} 
+void modm::\+platform::\+\+Basic\+Timer::\+set\+Value (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{value}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Set a new counter value \Hypertarget{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}\index{modm::platform::BasicTimer@{modm::platform::BasicTimer}!start@{start}}
+\index{start@{start}!modm::platform::BasicTimer@{modm::platform::BasicTimer}}
+\doxysubsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce} 
+void modm::\+platform::\+\+Basic\+Timer::\+start (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Re-\/enable timer operations
+
+Has to called after the initial configuration to start timer or after \doxylink{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}{pause()} to restart the timer. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+timer/\+basic\+\_\+base.\+hpp\end{DoxyCompactItemize}

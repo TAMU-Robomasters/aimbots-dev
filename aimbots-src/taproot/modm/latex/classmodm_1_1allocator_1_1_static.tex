@@ -1,0 +1,62 @@
+\doxysection{modm::\+allocator::\+Static\texorpdfstring{$<$}{<} T, N \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1allocator_1_1_static}{}\label{classmodm_1_1allocator_1_1_static}\index{modm::allocator::Static$<$ T, N $>$@{modm::allocator::Static$<$ T, N $>$}}
+
+
+\doxylink{classmodm_1_1allocator_1_1_static}{Static} memory allocator.  
+
+
+
+
+{\ttfamily \+\#include $<$static.\+hpp$>$}
+
+Inheritance diagram for modm::\+allocator::\+Static\texorpdfstring{$<$}{<} T, N \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1allocator_1_1_static}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1allocator_1_1_static_1_1rebind}{rebind}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1allocator_1_1_static_adcc303f83200eb62a628f41a2218b1f2}\label{classmodm_1_1allocator_1_1_static_adcc303f83200eb62a628f41a2218b1f2} 
+{\bfseries Static} (const Static \&other)
+\item 
+\Hypertarget{classmodm_1_1allocator_1_1_static_afe6322b5816c19606d3bb69f5848c859}\label{classmodm_1_1allocator_1_1_static_afe6322b5816c19606d3bb69f5848c859} 
+{\footnotesize template$<$typename U$>$ }\\{\bfseries Static} (const Static$<$ U, N $>$ \&)
+\item 
+\Hypertarget{classmodm_1_1allocator_1_1_static_a70bda2e57e5d9e0f5ee3a7a594f607f5}\label{classmodm_1_1allocator_1_1_static_a70bda2e57e5d9e0f5ee3a7a594f607f5} 
+T \texorpdfstring{$\ast$}{*} {\bfseries allocate} (std::\+size\+\_\+t other)
+\item 
+\Hypertarget{classmodm_1_1allocator_1_1_static_a156da9a1642ca044dc93c5a8a722dba2}\label{classmodm_1_1allocator_1_1_static_a156da9a1642ca044dc93c5a8a722dba2} 
+void {\bfseries deallocate} (T \texorpdfstring{$\ast$}{*})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1allocator_1_1_allocator_base}{modm::\+allocator::\+\+Allocator\+Base$<$ T $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1allocator_1_1_allocator_base_aa00e230191734784a8e0576871016fac}{construct}} (T \texorpdfstring{$\ast$}{*}p, const T \&value)
+\begin{DoxyCompactList}\small\item\em Construct an object. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{classmodm_1_1allocator_1_1_allocator_base_a3ac0e1c924c98d1ac554f27c218cd574}{destroy}} (T \texorpdfstring{$\ast$}{*}p)
+\begin{DoxyCompactList}\small\item\em Destroy an object. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, std::\+size\+\_\+t N$>$\newline
+class modm::\+allocator::\+\+Static$<$ T, N $>$}
+\doxylink{classmodm_1_1allocator_1_1_static}{Static} memory allocator. 
+
+Allocates a big static block and distributes pieces of it during run-\/time. No reallocation is done when no more pieces are available.
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+utils/\+allocator/\+static.\+hpp\end{DoxyCompactItemize}

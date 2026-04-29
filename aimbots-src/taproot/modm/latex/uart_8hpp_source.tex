@@ -1,0 +1,93 @@
+\doxysection{uart.\+hpp}
+\hypertarget{uart_8hpp_source}{}\label{uart_8hpp_source}\index{src/modm/architecture/interface/uart.hpp@{src/modm/architecture/interface/uart.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2013,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012-\/2015,\ 2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_INTERFACE\_UART\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_INTERFACE\_UART\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/peripheral.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_uart}{Uart}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{::modm::PeripheralDriver}}}
+\DoxyCodeLine{00032\ \{}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00034\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ RxBufferSize\ =\ 16;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ TxBufferSize\ =\ 16;}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00052\ \ \ \ \ connect();}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ baudrate\_t\ baudrate,\ percent\_t\ tolerance=10\_pct\ >}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00066\ \ \ \ \ initialize();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00070\ \ \ \ \ writeBlocking(uint8\_t\ data);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00074\ \ \ \ \ writeBlocking(\textcolor{keyword}{const}\ uint8\_t\ *data,\ std::size\_t\ length);}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00078\ \ \ \ \ flushWriteBuffer();}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00087\ \ \ \ \ write(uint8\_t\ data);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00100\ \ \ \ \ write(\textcolor{keyword}{const}\ uint8\_t\ *data,\ std::size\_t\ length);}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00104\ \ \ \ \ isWriteFinished();}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00115\ \ \ \ \ read(uint8\_t\ \&data);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00128\ \ \ \ \ read(uint8\_t\ *data,\ std::size\_t\ length);}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00132\ \ \ \ \ receiveBufferSize();}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00140\ \ \ \ \ discardReceiveBuffer();}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00144\ \ \ \ \ transmitBufferSize();}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{static}\ std::size\_t}
+\DoxyCodeLine{00152\ \ \ \ \ discardTransmitBuffer();}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00156\ \ \ \ \ hasError();}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00160\ \ \ \ \ clearError();}
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00162\ \};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_INTERFACE\_UART\_HPP}}
+
+\end{DoxyCode}

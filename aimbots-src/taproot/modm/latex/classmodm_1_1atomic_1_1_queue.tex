@@ -1,0 +1,98 @@
+\doxysection{modm::\+atomic::\+Queue\texorpdfstring{$<$}{<} T, N \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1atomic_1_1_queue}{}\label{classmodm_1_1atomic_1_1_queue}\index{modm::atomic::Queue$<$ T, N $>$@{modm::atomic::Queue$<$ T, N $>$}}
+
+
+Interrupt save queue.  
+
+
+
+
+{\ttfamily \+\#include $<$queue.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_a92aa5c3cd931b83f2b7cc40e1304c941}\label{classmodm_1_1atomic_1_1_queue_a92aa5c3cd931b83f2b7cc40e1304c941} 
+using {\bfseries Index} = std::\+conditional\+\_\+t$<$ (N $>$= 254), uint16\+\_\+t, uint8\+\_\+t $>$
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_a14d871139f869ebc0685f364897f7735}\label{classmodm_1_1atomic_1_1_queue_a14d871139f869ebc0685f364897f7735} 
+using {\bfseries Size} = Index
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_a41a5c805260858969b5c482c8a64e839}\label{classmodm_1_1atomic_1_1_queue_a41a5c805260858969b5c482c8a64e839} 
+modm\+\_\+always\+\_\+inline bool {\bfseries is\+Full} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_aed858a855be7e80147003dc0dcc912cf}\label{classmodm_1_1atomic_1_1_queue_aed858a855be7e80147003dc0dcc912cf} 
+modm\+\_\+always\+\_\+inline bool {\bfseries is\+Not\+Full} () const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1atomic_1_1_queue_a70a2ed1729d7f8561a463040e95d2e96}{is\+Nearly\+Full}} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_ac24c895df11668db4de6b91288a7eed5}\label{classmodm_1_1atomic_1_1_queue_ac24c895df11668db4de6b91288a7eed5} 
+modm\+\_\+always\+\_\+inline bool {\bfseries is\+Empty} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_ad85c3dcdb7bc7e3ff45cbf1371803c8d}\label{classmodm_1_1atomic_1_1_queue_ad85c3dcdb7bc7e3ff45cbf1371803c8d} 
+modm\+\_\+always\+\_\+inline bool {\bfseries is\+Not\+Empty} () const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1atomic_1_1_queue_abd3039b611344c7d2b516645e034fdfc}{is\+Nearly\+Empty}} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_a945c76349680fbe2ebc79f05fa574cdb}\label{classmodm_1_1atomic_1_1_queue_a945c76349680fbe2ebc79f05fa574cdb} 
+modm\+\_\+always\+\_\+inline Size {\bfseries get\+Max\+Size} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_a41da81cc62d565da790a232fa7da1a7a}\label{classmodm_1_1atomic_1_1_queue_a41da81cc62d565da790a232fa7da1a7a} 
+Size {\bfseries get\+Size} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_ab2e51b5538ffa94335fe7845199e26e8}\label{classmodm_1_1atomic_1_1_queue_ab2e51b5538ffa94335fe7845199e26e8} 
+const T \& {\bfseries get} () const
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_aed320ff6e098cb68e6e17f974c3449bb}\label{classmodm_1_1atomic_1_1_queue_aed320ff6e098cb68e6e17f974c3449bb} 
+bool {\bfseries push} (const T \&value)
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_queue_aaa08f1ea2a7ad217cb2d49e84173937c}\label{classmodm_1_1atomic_1_1_queue_aaa08f1ea2a7ad217cb2d49e84173937c} 
+void {\bfseries pop} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, std::\+size\+\_\+t N$>$\newline
+class modm::\+atomic::\+\+Queue$<$ T, N $>$}
+Interrupt save queue. 
+
+A maximum size of 254 is allowed for 8-\/bit microcontrollers.
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000001}{Todo}}]This implementation should work but could be improved \end{DoxyRefDesc}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1atomic_1_1_queue_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1atomic_1_1_queue_abd3039b611344c7d2b516645e034fdfc}\index{modm::atomic::Queue$<$ T, N $>$@{modm::atomic::Queue$<$ T, N $>$}!isNearlyEmpty@{isNearlyEmpty}}
+\index{isNearlyEmpty@{isNearlyEmpty}!modm::atomic::Queue$<$ T, N $>$@{modm::atomic::Queue$<$ T, N $>$}}
+\doxysubsubsection{\texorpdfstring{isNearlyEmpty()}{isNearlyEmpty()}}
+{\footnotesize\ttfamily \label{classmodm_1_1atomic_1_1_queue_abd3039b611344c7d2b516645e034fdfc} 
+template$<$typename T, std::\+size\+\_\+t N$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1atomic_1_1_queue}{modm::\+atomic::\+\+Queue}}$<$ T, N $>$::\+is\+Nearly\+Empty (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+Check if the queue is nearly empty.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if less than three elements are stored in the queue, {\ttfamily false} otherwise.
+\end{DoxyReturn}
+Only works with queue with more than three elements. TODO:\+ calculations are approximate and may include off-\/by-\/one errors. \Hypertarget{classmodm_1_1atomic_1_1_queue_a70a2ed1729d7f8561a463040e95d2e96}\index{modm::atomic::Queue$<$ T, N $>$@{modm::atomic::Queue$<$ T, N $>$}!isNearlyFull@{isNearlyFull}}
+\index{isNearlyFull@{isNearlyFull}!modm::atomic::Queue$<$ T, N $>$@{modm::atomic::Queue$<$ T, N $>$}}
+\doxysubsubsection{\texorpdfstring{isNearlyFull()}{isNearlyFull()}}
+{\footnotesize\ttfamily \label{classmodm_1_1atomic_1_1_queue_a70a2ed1729d7f8561a463040e95d2e96} 
+template$<$typename T, std::\+size\+\_\+t N$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1atomic_1_1_queue}{modm::\+atomic::\+\+Queue}}$<$ T, N $>$::\+is\+Nearly\+Full (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily false} if less than three elements can be stored in queue.
+\end{DoxyReturn}
+Only works with queue with more than three elements. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+driver/\+atomic/\+queue.\+hpp\item 
+src/\+modm/\+architecture/\+driver/\+atomic/\+queue\+\_\+impl.\+hpp\end{DoxyCompactItemize}

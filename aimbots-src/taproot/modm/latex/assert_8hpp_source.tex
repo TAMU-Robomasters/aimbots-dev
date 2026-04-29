@@ -1,0 +1,103 @@
+\doxysection{assert.\+hpp}
+\hypertarget{assert_8hpp_source}{}\label{assert_8hpp_source}\index{src/modm/architecture/interface/assert.hpp@{src/modm/architecture/interface/assert.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016-\/2018,\ 2020,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ "{}assert.h"{}}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00024\ Abandonment\ :\ uint8\_t}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ DontCare\ =\ Bit0,\ \ \ \ }
+\DoxyCodeLine{00027\ \ \ \ \ Ignore\ =\ Bit1,\ \ \ \ \ \ }
+\DoxyCodeLine{00028\ \ \ \ \ Fail\ =\ Bit2,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00029\ \ \ \ \ Debug\ =\ Bit7\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00030\ \};}
+\DoxyCodeLine{00032\ \textcolor{keyword}{using\ }AbandonmentBehavior\ =\ Flags8<Abandonment>;}
+\DoxyCodeLine{00034\ MODM\_TYPE\_FLAGS(AbandonmentBehavior);}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{struct\ }modm\_packed}
+\DoxyCodeLine{00043\ \doxymbox{\hyperlink{structmodm_1_1_assertion_info}{AssertionInfo}}}
+\DoxyCodeLine{00044\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\doxymbox{\hyperlink{structmodm_1_1_assertion_info_aafece82073e4365c082dd4d8c0fdf960}{name}};\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#if\ MODM\_ASSERTION\_INFO\_HAS\_DESCRIPTION}}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description;\ \ \ \ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00049\ \ \ \ \ uintptr\_t\ \doxymbox{\hyperlink{structmodm_1_1_assertion_info_a01daacbe2550e26014ac5a5af7284637}{context}};\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00050\ \ \ \ \ AbandonmentBehavior\ \doxymbox{\hyperlink{structmodm_1_1_assertion_info_a2a277073453dbe8f37cfed3cd376940a}{behavior}};\ \ \ }
+\DoxyCodeLine{00051\ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{using\ }AssertionHandler\ =\ Abandonment\ (*)(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_assertion_info}{AssertionInfo}}\ \&info);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#define\ MODM\_ASSERTION\_INFO\_HAS\_DESCRIPTION\ 0/1}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#define\ MODM\_ASSERTION\_HANDLER(handler)}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00087\ \textcolor{preprocessor}{\#define\ MODM\_ASSERTION\_HANDLER\_DEBUG(handler)}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00095\ modm\_noreturn\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00096\ modm\_assert(\textcolor{keywordtype}{bool}\ condition,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ uintptr\_t\ context=uintptr\_t(-\/1));}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00107\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00108\ modm\_assert\_continue\_fail(\textcolor{keywordtype}{bool}\ condition,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uintptr\_t\ context=uintptr\_t(-\/1));}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00120\ modm\_assert\_continue\_ignore(\textcolor{keywordtype}{bool}\ condition,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description,}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uintptr\_t\ context=uintptr\_t(-\/1));}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00131\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00132\ modm\_assert\_continue\_fail\_debug(\textcolor{keywordtype}{bool}\ condition,}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uintptr\_t\ context=uintptr\_t(-\/1));}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00143\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00144\ modm\_assert\_continue\_ignore\_debug(\textcolor{keywordtype}{bool}\ condition,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *name,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *description,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uintptr\_t\ context=uintptr\_t(-\/1));}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#ifdef\ MODM\_DEBUG\_BUILD}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ MODM\_ASSERTION\_HANDLER\_DEBUG(handler)\ \(\backslash\)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ MODM\_ASSERTION\_HANDLER(handler)}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\#define\ MODM\_ASSERTION\_HANDLER\_DEBUG(handler)\ \(\backslash\)}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ static\ const\ modm::AssertionHandler\ modm\_unused\ \(\backslash\)}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ handler\ \#\#\ \_assertion\_handler\_ptr\ =\ handler}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00169\ modm\_extern\_c\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00170\ modm\_abandon(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_assertion_info}{modm::AssertionInfo}}\ \&info)\ modm\_weak;}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ Core\ must\ implement\ MODM\_ASSERTION\_HANDLER(handler)}}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#include\ <modm/platform/core/assert\_impl.hpp>}}
+
+\end{DoxyCode}

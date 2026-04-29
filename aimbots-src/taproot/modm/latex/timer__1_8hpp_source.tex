@@ -1,0 +1,375 @@
+\doxysection{timer\+\_\+1.\+hpp}
+\hypertarget{timer__1_8hpp_source}{}\label{timer__1_8hpp_source}\index{src/modm/platform/timer/timer\_1.hpp@{src/modm/platform/timer/timer\_1.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ 2011-\/2012,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011,\ 2013-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ 2015,\ Sascha\ Schade}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ 2016,\ Kevin\ Läufer}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_TIMER\_1\_HPP}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_TIMER\_1\_HPP}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}advanced\_base.hpp"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/platform/gpio/connector.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer1}{Timer1}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer}{AdvancedControlTimer}}}
+\DoxyCodeLine{00065\ \{}
+\DoxyCodeLine{00066\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00069\ \ \ \ \ connect()}
+\DoxyCodeLine{00070\ \ \ \ \ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Connector\ =\ GpioConnector<Peripheral::Tim1,\ Signals...>;}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ Connector::connect();}
+\DoxyCodeLine{00073\ \ \ \ \ \}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00076\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}}();}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00079\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b}{disable}}();}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00082\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}{pause}}()}
+\DoxyCodeLine{00083\ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ TIM1-\/>CR1\ \&=\ \string~TIM\_CR1\_CEN;}
+\DoxyCodeLine{00085\ \ \ \ \ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00088\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}{start}}()}
+\DoxyCodeLine{00089\ \ \ \ \ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ TIM1-\/>CR1\ |=\ TIM\_CR1\_CEN;}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00094\ \ \ \ \ setMode(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a1fe4a077f9e662eb8af4fca59a0a734c}{Mode}}\ mode,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510f}{SlaveMode}}\ slaveMode\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510fab9f5c797ebbf55adccdd8539a65a0241}{SlaveMode::Disabled}},}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ SlaveModeTrigger\ slaveModeTrigger\ =\ SlaveModeTrigger::Internal0,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ MasterMode\ masterMode\ =\ MasterMode::Reset}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00101\ \ \ \ \ setCaptureCompareControlUpdate(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34d}{CaptureCompareControlUpdate}}\ update)}
+\DoxyCodeLine{00102\ \ \ \ \ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ TIM1-\/>CR2\ =\ \ (TIM1-\/>CR2\ \&\ \string~TIM\_CR2\_CCUS)}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(update);}
+\DoxyCodeLine{00105\ \ \ \ \ \};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00109\ \textcolor{comment}{\ \ \ \ \ *\ Enables\ Capture/Compare\ preloaded\ control}}
+\DoxyCodeLine{00110\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00111\ \textcolor{comment}{\ \ \ \ \ *\ If\ enabled\ CCxE,\ CCxNE\ and\ OCxM\ bits\ are\ preloaded\ and\ only}}
+\DoxyCodeLine{00112\ \textcolor{comment}{\ \ \ \ \ *\ updated\ when\ the\ COMG\ bit\ is\ set\ or\ on\ a\ rising\ edge\ on\ TRGI}}
+\DoxyCodeLine{00113\ \textcolor{comment}{\ \ \ \ \ *\ This\ is\ determined\ by\ the\ CaptureCompareControlUpdate\ setting.}}
+\DoxyCodeLine{00114\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00116\ \ \ \ \ enableCaptureComparePreloadedControl}
+\DoxyCodeLine{00117\ \ \ \ \ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34d}{CaptureCompareControlUpdate}}\ update\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34dae7aaf4df15e6febd2d197fdc41b4275f}{CaptureCompareControlUpdate::SetComg}})}
+\DoxyCodeLine{00118\ \ \ \ \ \{}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ TIM1-\/>CR2\ =\ (TIM1-\/>CR2\ \&\ \string~TIM\_CR2\_CCUS)}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(update)\ |\ TIM\_CR2\_CCPC;}
+\DoxyCodeLine{00121\ \ \ \ \ \}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00124\ \ \ \ \ disableCaptureComparePreloadedControl()}
+\DoxyCodeLine{00125\ \ \ \ \ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ TIM1-\/>CR2\ \&=\ \string~TIM\_CR2\_CCPC;}
+\DoxyCodeLine{00127\ \ \ \ \ \}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00130\ \ \ \ \ setPrescaler(uint16\_t\ prescaler)}
+\DoxyCodeLine{00131\ \ \ \ \ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Because\ a\ prescaler\ of\ zero\ is\ not\ possible\ the\ actual}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ prescaler\ value\ is\ \(\backslash\)p\ prescaler\ -\/\ 1\ (see\ Datasheet)}}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ TIM1-\/>PSC\ =\ prescaler\ -\/\ 1;}
+\DoxyCodeLine{00135\ \ \ \ \ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00138\ \ \ \ \ setOverflow(uint16\_t\ overflow)}
+\DoxyCodeLine{00139\ \ \ \ \ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ TIM1-\/>ARR\ =\ overflow;}
+\DoxyCodeLine{00141\ \ \ \ \ \}}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ SystemClock>}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{static}\ uint16\_t}
+\DoxyCodeLine{00145\ \ \ \ \ setPeriod(uint32\_t\ microseconds,\ \textcolor{keywordtype}{bool}\ autoApply\ =\ \textcolor{keyword}{true})}
+\DoxyCodeLine{00146\ \ \ \ \ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ will\ be\ inaccurate\ for\ non-\/smooth\ frequencies\ (last\ six\ digits}}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ unequal\ to\ zero)}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ uint32\_t\ cycles\ =\ microseconds\ *\ (SystemClock::Timer1\ /\ 1'000'000UL);}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ uint16\_t\ prescaler\ =\ (cycles\ +\ 65'535)\ /\ 65'536;\ \ \ \ \textcolor{comment}{//\ always\ round\ up}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ uint16\_t\ overflow\ =\ cycles\ /\ prescaler;}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ overflow\ =\ overflow\ -\/\ 1;\ \ \ \ \textcolor{comment}{//\ e.g.\ 36'000\ cycles\ are\ from\ 0\ to\ 35'999}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ setPrescaler(prescaler);}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ setOverflow(overflow);}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (autoApply)\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Generate\ Update\ Event\ to\ apply\ the\ new\ settings\ for\ ARR}}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ TIM1-\/>EGR\ |=\ TIM\_EGR\_UG;}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ overflow;}
+\DoxyCodeLine{00164\ \}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00167\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{applyAndReset}}()}
+\DoxyCodeLine{00168\ \ \ \ \ \{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Generate\ Update\ Event\ to\ apply\ the\ new\ settings\ for\ ARR}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ generateEvent(Event::Update);}
+\DoxyCodeLine{00171\ \ \ \ \ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00174\ \ \ \ \ generateEvent(Event\ ev)}
+\DoxyCodeLine{00175\ \ \ \ \ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ TIM1-\/>EGR\ |=\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(ev);}
+\DoxyCodeLine{00177\ \ \ \ \ \}}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00180\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7}{getValue}}()}
+\DoxyCodeLine{00181\ \ \ \ \ \{}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ TIM1-\/>CNT;}
+\DoxyCodeLine{00183\ \ \ \ \ \}}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00186\ \ \ \ \ setValue(uint16\_t\ value)}
+\DoxyCodeLine{00187\ \ \ \ \ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ TIM1-\/>CNT\ =\ value;}
+\DoxyCodeLine{00189\ \ \ \ \ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00192\ \ \ \ \ enableOutput()}
+\DoxyCodeLine{00193\ \ \ \ \ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ |=\ TIM\_BDTR\_MOE;}
+\DoxyCodeLine{00195\ \ \ \ \ \}}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00198\ \ \ \ \ disableOutput()}
+\DoxyCodeLine{00199\ \ \ \ \ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ \&=\ \string~(TIM\_BDTR\_MOE);}
+\DoxyCodeLine{00201\ \ \ \ \ \}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00204\ \textcolor{comment}{\ \ \ \ \ *\ Enable/Disable\ automatic\ set\ of\ MOE\ bit\ at\ the\ next\ update\ event}}
+\DoxyCodeLine{00205\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00207\ \ \ \ \ setAutomaticUpdate(\textcolor{keywordtype}{bool}\ enable)}
+\DoxyCodeLine{00208\ \ \ \ \ \{}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(enable)}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ |=\ TIM\_BDTR\_AOE;}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ \&=\ \string~TIM\_BDTR\_AOE;}
+\DoxyCodeLine{00213\ \ \ \ \ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00216\ \ \ \ \ setOffState(OffStateForRunMode\ runMode,\ OffStateForIdleMode\ idleMode)}
+\DoxyCodeLine{00217\ \ \ \ \ \{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ uint32\_t\ flags\ =\ TIM1-\/>BDTR;}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ flags\ \&=\ \string~(TIM\_BDTR\_OSSR\ |\ TIM\_BDTR\_OSSI);}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ flags\ |=\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(runMode);}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ flags\ |=\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(idleMode);}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ =\ flags;}
+\DoxyCodeLine{00223\ \ \ \ \ \}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00226\ \ \ \ \ setOutputIdleState(uint32\_t\ channel,\ OutputIdleState\ idle,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ OutputIdleState\ idle\_n\ =\ OutputIdleState::Reset)}
+\DoxyCodeLine{00228\ \ \ \ \ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ uint32\_t\ flags\ =\ TIM1-\/>CR2;}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ channel\ -\/=\ 1;}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ flags\ \&=\ \ (\textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(OutputIdleState::Set)\ <<\ (channel\ *\ 2))}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\ (\textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(OutputIdleState::Set)\ <<\ (channel\ *\ 2\ +\ 1));}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ flags\ |=\ (\textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(idle)\ \ \ <<\ (channel\ *\ 2));}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ flags\ |=\ (\textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(idle\_n)\ <<\ (channel\ *\ 2\ +\ 1));}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ TIM1-\/>CR2\ =\ flags;}
+\DoxyCodeLine{00236\ \ \ \ \ \}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00239\ \textcolor{comment}{\ \ \ \ \ *\ Set\ Dead\ Time\ Value}}
+\DoxyCodeLine{00240\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00241\ \textcolor{comment}{\ \ \ \ \ *\ Different\ Resolution\ Depending\ on\ DeadTime[7:5]:}}
+\DoxyCodeLine{00242\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 0xx\ =>\ \ DeadTime[6:0]\ \ \ \ \ \ \ \ \ \ \ \ *\ T(DTS)}}
+\DoxyCodeLine{00243\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 10x\ =>\ (DeadTime[5:0]\ +\ 32)\ *\ \ 2\ *\ T(DTS)}}
+\DoxyCodeLine{00244\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 110\ =>\ (DeadTime[4:0]\ +\ 4)\ \ *\ \ 8\ *\ T(DTS)}}
+\DoxyCodeLine{00245\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 111\ =>\ (DeadTime[4:0]\ +\ 2)\ \ *\ 16\ *\ T(DTS)}}
+\DoxyCodeLine{00246\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00248\ \ \ \ \ setDeadTime(uint8\_t\ deadTime)}
+\DoxyCodeLine{00249\ \ \ \ \ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ uint32\_t\ flags\ =\ TIM1-\/>BDTR;}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ flags\ \&=\ \string~TIM\_BDTR\_DTG;}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ flags\ |=\ deadTime;}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ =\ flags;}
+\DoxyCodeLine{00254\ \ \ \ \ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00257\ \textcolor{comment}{\ \ \ \ \ *\ Set\ Dead\ Time\ Value}}
+\DoxyCodeLine{00258\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00259\ \textcolor{comment}{\ \ \ \ \ *\ Different\ Resolution\ Depending\ on\ DeadTime[7:5]:}}
+\DoxyCodeLine{00260\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 0xx\ =>\ \ DeadTime[6:0]\ \ \ \ \ \ \ \ \ \ \ \ *\ T(DTS)}}
+\DoxyCodeLine{00261\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 10x\ =>\ (DeadTime[5:0]\ +\ 32)\ *\ \ 2\ *\ T(DTS)}}
+\DoxyCodeLine{00262\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 110\ =>\ (DeadTime[4:0]\ +\ 4)\ \ *\ \ 8\ *\ T(DTS)}}
+\DoxyCodeLine{00263\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ 111\ =>\ (DeadTime[4:0]\ +\ 2)\ \ *\ 16\ *\ T(DTS)}}
+\DoxyCodeLine{00264\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00266\ \ \ \ \ setDeadTime(DeadTimeResolution\ resolution,\ uint8\_t\ deadTime)}
+\DoxyCodeLine{00267\ \ \ \ \ \{}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ uint8\_t\ bitmask;}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}(resolution)\{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DeadTimeResolution::From0With125nsStep:}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bitmask\ =\ 0b01111111;}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DeadTimeResolution::From16usWith250nsStep:}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bitmask\ =\ 0b00111111;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DeadTimeResolution::From32usWith1usStep:}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ DeadTimeResolution::From64usWith2usStep:}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bitmask\ =\ 0b00011111;}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ bitmask\ =\ 0x00;}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ uint32\_t\ flags\ =\ TIM1-\/>BDTR;}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ flags\ \&=\ \string~TIM\_BDTR\_DTG;}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ flags\ |=\ (deadTime\ \&\ bitmask)\ |\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(resolution);}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ TIM1-\/>BDTR\ =\ flags;}
+\DoxyCodeLine{00288\ \ \ \ \ \}}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00292\ \ \ \ \ configureInputChannel(uint32\_t\ channel,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a176bb4227ea0210d299c014508e260e1}{InputCaptureMapping}}\ input,}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ InputCapturePrescaler\ prescaler,}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ InputCapturePolarity\ polarity,\ uint8\_t\ \doxymbox{\hyperlink{namespacemodm_1_1filter}{filter}},}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ xor\_ch1\_3=\textcolor{keyword}{false});}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00298\ \ \ \ \ configureOutputChannel(uint32\_t\ channel,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162}{OutputCompareMode}}\ mode,}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ uint16\_t\ compareValue);}
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{comment}{//\ TODO:\ Maybe\ add\ some\ functionality\ from\ the\ configureOutput}}
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ function\ below...}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00304\ \textcolor{comment}{\ \ \ \ \ *\ Configure\ Output\ Channel\ without\ changing\ the\ Compare\ Value}}
+\DoxyCodeLine{00305\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00306\ \textcolor{comment}{\ \ \ \ \ *\ Normally\ used\ to\ REconfigure\ the\ Output\ channel\ without\ touching}}
+\DoxyCodeLine{00307\ \textcolor{comment}{\ \ \ \ \ *\ the\ compare\ value.\ This\ can\ e.g.\ be\ useful\ for\ commutation\ of\ a}}
+\DoxyCodeLine{00308\ \textcolor{comment}{\ \ \ \ \ *\ bldc\ motor.}}
+\DoxyCodeLine{00309\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00310\ \textcolor{comment}{\ \ \ \ \ *\ This\ function\ probably\ won't\ be\ used\ for\ a\ one\ time\ setup\ but}}
+\DoxyCodeLine{00311\ \textcolor{comment}{\ \ \ \ \ *\ rather\ for\ adjusting\ the\ output\ setting\ periodically.}}
+\DoxyCodeLine{00312\ \textcolor{comment}{\ \ \ \ \ *\ Therefore\ it\ aims\ aims\ to\ provide\ the\ best\ performance\ possible}}
+\DoxyCodeLine{00313\ \textcolor{comment}{\ \ \ \ \ *\ without\ sacrificing\ code\ readability.}}
+\DoxyCodeLine{00314\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00315\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00316\ \ \ \ \ configureOutputChannel(uint32\_t\ channel,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer_a5352910894a1b58d7e166a293b51a162}{OutputCompareMode}}\ mode,}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ PinState\ out,\ OutputComparePolarity\ polarity,}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ PinState\ out\_n,}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ OutputComparePolarity\ polarity\_n\ =\ OutputComparePolarity::ActiveHigh,}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ OutputComparePreload\ preload\ =\ OutputComparePreload::Disable);}
+\DoxyCodeLine{00321\ }
+\DoxyCodeLine{00322\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00323\ \textcolor{comment}{\ \ \ \ \ *\ Configure\ Output\ Channel\ width\ Mode/OutputPort\ uint}}
+\DoxyCodeLine{00324\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00325\ \textcolor{comment}{\ \ \ \ \ *\ This\ is\ the\ least\ typesafe\ way\ of\ doing\ this\ and\ should\ only}}
+\DoxyCodeLine{00326\ \textcolor{comment}{\ \ \ \ \ *\ be\ done\ if\ it\ provides\ a\ necessary\ performance}}
+\DoxyCodeLine{00327\ \textcolor{comment}{\ \ \ \ \ *\ (or\ more\ or\ less)\ laziness\ benefit.}}
+\DoxyCodeLine{00328\ \textcolor{comment}{\ \ \ \ \ *\ i.e.\ if\ you\ have\ specific\ mode/output\ uints\ precalculated\ and}}
+\DoxyCodeLine{00329\ \textcolor{comment}{\ \ \ \ \ *\ just\ want\ to\ load\ them\ as\ fast\ as\ possible.}}
+\DoxyCodeLine{00330\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00331\ \textcolor{comment}{\ \ \ \ \ *\ The\ "{}mode/output"{}\ uint\ contains\ four\ bits}}
+\DoxyCodeLine{00332\ \textcolor{comment}{\ \ \ \ \ *\ that\ describe\ the\ intended\ output\ setting:}}
+\DoxyCodeLine{00333\ \textcolor{comment}{\ \ \ \ \ *\ Bit0:\ Output\ Enabled/Disabled}}
+\DoxyCodeLine{00334\ \textcolor{comment}{\ \ \ \ \ *\ Bit1:\ Output\ Polarity}}
+\DoxyCodeLine{00335\ \textcolor{comment}{\ \ \ \ \ *\ Bit2:\ Complementary\ Output\ Enable/Disable}}
+\DoxyCodeLine{00336\ \textcolor{comment}{\ \ \ \ \ *\ Bit3:\ Complementary\ Output\ Polarity}}
+\DoxyCodeLine{00337\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00338\ \textcolor{comment}{\ \ \ \ \ *\ As\ well\ as\ Mode\ Information\ (Bit6-\/Bit4)}}
+\DoxyCodeLine{00339\ \textcolor{comment}{\ \ \ \ \ *\ which\ is\ just\ an\ OutputCompareMode\ constant\ ored\ with\ the}}
+\DoxyCodeLine{00340\ \textcolor{comment}{\ \ \ \ \ *\ port\ output\ quadruple\ specified\ above.}}
+\DoxyCodeLine{00341\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00342\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00343\ \ \ \ \ configureOutputChannel(uint32\_t\ channel,\ uint32\_t\ modeOutputPorts);}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00346\ \ \ \ \ setCompareValue(uint32\_t\ channel,\ uint16\_t\ value)}
+\DoxyCodeLine{00347\ \ \ \ \ \{}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ *(\&TIM1-\/>CCR1\ +\ (channel\ -\/\ 1))\ =\ value;}
+\DoxyCodeLine{00349\ \ \ \ \ \}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00352\ \ \ \ \ getCompareValue(uint32\_t\ channel)}
+\DoxyCodeLine{00353\ \ \ \ \ \{}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *(\&TIM1-\/>CCR1\ +\ (channel\ -\/\ 1));}
+\DoxyCodeLine{00355\ \ \ \ \ \}}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00371\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00372\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_timer1_a114f769cc9b24986ea3b345fd3a67f0f}{enableInterruptVector}}(Interrupt\ interrupt,\ \textcolor{keywordtype}{bool}\ enable,\ uint32\_t\ priority);}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00375\ \ \ \ \ enableInterrupt(Interrupt\ interrupt)}
+\DoxyCodeLine{00376\ \ \ \ \ \{}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ TIM1-\/>DIER\ |=\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(interrupt);}
+\DoxyCodeLine{00378\ \ \ \ \ \}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00380\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00381\ \ \ \ \ disableInterrupt(Interrupt\ interrupt)}
+\DoxyCodeLine{00382\ \ \ \ \ \{}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ TIM1-\/>DIER\ \&=\ \string~static\_cast<uint32\_t>(interrupt);}
+\DoxyCodeLine{00384\ \ \ \ \ \}}
+\DoxyCodeLine{00385\ }
+\DoxyCodeLine{00386\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00387\ \ \ \ \ enableDmaRequest(DmaRequestEnable\ dmaRequests)}
+\DoxyCodeLine{00388\ \ \ \ \ \{}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ TIM1-\/>DIER\ |=\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(dmaRequests);}
+\DoxyCodeLine{00390\ \ \ \ \ \}}
+\DoxyCodeLine{00391\ }
+\DoxyCodeLine{00392\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00393\ \ \ \ \ disableDmaRequest(DmaRequestEnable\ dmaRequests)}
+\DoxyCodeLine{00394\ \ \ \ \ \{}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ TIM1-\/>DIER\ \&=\ \string~static\_cast<uint32\_t>(dmaRequests);}
+\DoxyCodeLine{00396\ \ \ \ \ \}}
+\DoxyCodeLine{00397\ }
+\DoxyCodeLine{00398\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ InterruptFlag}
+\DoxyCodeLine{00399\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714}{getInterruptFlags}}()}
+\DoxyCodeLine{00400\ \ \ \ \ \{}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}InterruptFlag\textcolor{keyword}{>}(TIM1-\/>SR);}
+\DoxyCodeLine{00402\ \ \ \ \ \}}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00405\ \ \ \ \ acknowledgeInterruptFlags(InterruptFlag\ flags)}
+\DoxyCodeLine{00406\ \ \ \ \ \{}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Flags\ are\ cleared\ by\ writing\ a\ zero\ to\ the\ flag\ position.}}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Writing\ a\ one\ is\ ignored.}}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ TIM1-\/>SR\ =\ \string~static\_cast<uint32\_t>(flags);}
+\DoxyCodeLine{00410\ \ \ \ \ \}}
+\DoxyCodeLine{00411\ \};}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \}\ \ \ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00414\ }
+\DoxyCodeLine{00415\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_TIMER\_1\_HPP}}
+
+\end{DoxyCode}

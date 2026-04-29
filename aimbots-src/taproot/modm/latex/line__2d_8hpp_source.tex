@@ -1,0 +1,82 @@
+\doxysection{line\+\_\+2d.\+hpp}
+\hypertarget{line__2d_8hpp_source}{}\label{line__2d_8hpp_source}\index{src/modm/math/geometry/line\_2d.hpp@{src/modm/math/geometry/line\_2d.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_LINE\_2D\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_LINE\_2D\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}vector.hpp"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}point\_set\_2d.hpp"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}geometric\_traits.hpp"{}}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//\ forward\ declaration}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_circle2_d}{Circle2D}};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_line2_d_a88cc9f9455aa7b50aa2b33660deb8bce}{Line2D}}}
+\DoxyCodeLine{00035\ \ \ \ \ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{GeometricTraits<T>::WideType}}\ WideType;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{GeometricTraits<T>::FloatType}}\ FloatType;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line2_d_a88cc9f9455aa7b50aa2b33660deb8bce}{Line2D}}();}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line2_d_a88cc9f9455aa7b50aa2b33660deb8bce}{Line2D}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ directionVector);}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ setPoint(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ getPoint()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ setDirectionVector(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ vector);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ getDirectionVector()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ set(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ directionVector);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ T}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line2_d_ab766e22de43dba7d09778cb35cafea8e}{getDistanceTo}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line2_d_a8c5f97d4539557f7aebb9a386ae330b4}{getIntersections}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_line2_d_a88cc9f9455aa7b50aa2b33660deb8bce}{Line2D}}\&\ other,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{PointSet2D<T>}}\&\ intersections)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line2_d_a8c5f97d4539557f7aebb9a386ae330b4}{getIntersections}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_circle2_d}{Circle2D<T>}}\&\ circle,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{PointSet2D<T>}}\&\ intersections)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ point;}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ directionVector;}
+\DoxyCodeLine{00099\ \ \ \ \ \};}
+\DoxyCodeLine{00100\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#include\ "{}circle\_2d.hpp"{}}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#include\ "{}line\_2d\_impl.hpp"{}}}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_LINE\_2D\_HPP}}
+
+\end{DoxyCode}

@@ -1,0 +1,68 @@
+\doxysection{modm::\+atomic::\+Flag Class Reference}
+\hypertarget{classmodm_1_1atomic_1_1_flag}{}\label{classmodm_1_1atomic_1_1_flag}\index{modm::atomic::Flag@{modm::atomic::Flag}}
+
+
+\doxylink{classmodm_1_1atomic_1_1_flag}{Flag} to signal events between interrupts and the main-\/loop.  
+
+
+
+
+{\ttfamily \+\#include $<$flag.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_a9bcfe8e82eed2cd923bdde89eadda16d}\label{classmodm_1_1atomic_1_1_flag_a9bcfe8e82eed2cd923bdde89eadda16d} 
+{\bfseries Flag} (bool state=false)
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_a1ac5b8124b90941d96e8b8f6a81f9a80}\label{classmodm_1_1atomic_1_1_flag_a1ac5b8124b90941d96e8b8f6a81f9a80} 
+{\bfseries Flag} (const Flag \&other)
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_ab35120a44f8ed9bdbbc4e4c9171d75f6}\label{classmodm_1_1atomic_1_1_flag_ab35120a44f8ed9bdbbc4e4c9171d75f6} 
+Flag \& {\bfseries operator=} (const Flag \&other)
+\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_a74bfecb5de7c0830e28ea62a94ccb56b}\label{classmodm_1_1atomic_1_1_flag_a74bfecb5de7c0830e28ea62a94ccb56b} 
+bool {\bfseries test} () const
+\begin{DoxyCompactList}\small\item\em Check state of the flag. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_a3a36ffc59a7151834e4d17187b2901f8}\label{classmodm_1_1atomic_1_1_flag_a3a36ffc59a7151834e4d17187b2901f8} 
+void {\bfseries set} ()
+\begin{DoxyCompactList}\small\item\em Set flag. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_ae594f85072478ed3008822df378c068d}\label{classmodm_1_1atomic_1_1_flag_ae594f85072478ed3008822df378c068d} 
+void {\bfseries reset} ()
+\begin{DoxyCompactList}\small\item\em Clear flag. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1atomic_1_1_flag_af79522890bc3810cbda44571770a58d7}\label{classmodm_1_1atomic_1_1_flag_af79522890bc3810cbda44571770a58d7} 
+bool {\bfseries test\+And\+Set} (bool value)
+\begin{DoxyCompactList}\small\item\em Sets the flag to a new value and returns the old one. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\doxylink{classmodm_1_1atomic_1_1_flag}{Flag} to signal events between interrupts and the main-\/loop. 
+
+This class is quite handy when exchanging flags between a interrupt routine and the main-\/loop.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{modm::atomic::Flag\ isrFlag;}
+\DoxyCodeLine{}
+\DoxyCodeLine{ISR()\ \{}
+\DoxyCodeLine{\ \ \ \ ...}
+\DoxyCodeLine{\ \ \ \ isrFlag.\doxymbox{\hyperlink{classmodm_1_1atomic_1_1_flag_a3a36ffc59a7151834e4d17187b2901f8}{set}}();}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{function()\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ flag\ =\ isrFlag.\doxymbox{\hyperlink{classmodm_1_1atomic_1_1_flag_af79522890bc3810cbda44571770a58d7}{testAndSet}}(\textcolor{keyword}{false});}
+\DoxyCodeLine{\ \ \ \ ...}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+driver/\+atomic/\+flag.\+hpp\item 
+src/\+modm/\+architecture/\+driver/\+atomic/\+flag.\+cpp\end{DoxyCompactItemize}

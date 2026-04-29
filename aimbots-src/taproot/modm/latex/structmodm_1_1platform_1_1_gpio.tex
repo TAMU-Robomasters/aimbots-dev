@@ -1,0 +1,123 @@
+\doxysection{modm::\+platform::\+Gpio Struct Reference}
+\hypertarget{structmodm_1_1platform_1_1_gpio}{}\label{structmodm_1_1platform_1_1_gpio}\index{modm::platform::Gpio@{modm::platform::Gpio}}
+Inheritance diagram for modm::\+platform::\+Gpio:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{structmodm_1_1platform_1_1_gpio}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Floating}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{Pull\+Up}} = 0x1
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b}{Pull\+Down}} = 0x2
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{Push\+Pull}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{Open\+Drain}} = 0x1
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} \{ \newline
+{\bfseries Low} = 0
+, {\bfseries Medium} = 0x1
+, {\bfseries High} = 0x2
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}{Very\+High}} = 0x3
+, \newline
+{\bfseries MHz2} = Low
+, {\bfseries MHz25} = Medium
+, {\bfseries MHz50} = High
+, {\bfseries MHz100} = Very\+High
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5}\label{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5} 
+enum class {\bfseries Input\+Trigger} \{ {\bfseries Rising\+Edge}
+, {\bfseries Falling\+Edge}
+, {\bfseries Both\+Edges}
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}\label{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}} \{ \newline
+{\bfseries A} = 0
+, {\bfseries B} = 1
+, {\bfseries C} = 2
+, {\bfseries D} = 3
+, \newline
+{\bfseries E} = 4
+, {\bfseries F} = 5
+, {\bfseries G} = 6
+, {\bfseries H} = 7
+, \newline
+{\bfseries I} = 8
+ \}
+\begin{DoxyCompactList}\small\item\em The \doxylink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port} a \doxylink{structmodm_1_1platform_1_1_gpio}{Gpio} Pin is connected to. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-enum-members}
+\Hypertarget{structmodm_1_1platform_1_1_gpio_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}\index{modm::platform::Gpio@{modm::platform::Gpio}!InputType@{InputType}}
+\index{InputType@{InputType}!modm::platform::Gpio@{modm::platform::Gpio}}
+\doxysubsubsection{\texorpdfstring{InputType}{InputType}}
+{\footnotesize\ttfamily \label{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{modm::\+platform::\+\+Gpio::\+\+Input\+Type}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Floating@{Floating}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!Floating@{Floating}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}\label{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c} 
+Floating&floating on input \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PullUp@{PullUp}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!PullUp@{PullUp}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}\label{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361} 
+Pull\+Up&pull-\/up on input \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PullDown@{PullDown}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!PullDown@{PullDown}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b}\label{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b} 
+Pull\+Down&pull-\/down on input \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}\index{modm::platform::Gpio@{modm::platform::Gpio}!OutputSpeed@{OutputSpeed}}
+\index{OutputSpeed@{OutputSpeed}!modm::platform::Gpio@{modm::platform::Gpio}}
+\doxysubsubsection{\texorpdfstring{OutputSpeed}{OutputSpeed}}
+{\footnotesize\ttfamily \label{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{modm::\+platform::\+\+Gpio::\+\+Output\+Speed}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VeryHigh@{VeryHigh}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!VeryHigh@{VeryHigh}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}\label{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd} 
+Very\+High&30 pF (80 MHz Output max speed on 15 pF) \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}\index{modm::platform::Gpio@{modm::platform::Gpio}!OutputType@{OutputType}}
+\index{OutputType@{OutputType}!modm::platform::Gpio@{modm::platform::Gpio}}
+\doxysubsubsection{\texorpdfstring{OutputType}{OutputType}}
+{\footnotesize\ttfamily \label{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{modm::\+platform::\+\+Gpio::\+\+Output\+Type}}\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PushPull@{PushPull}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!PushPull@{PushPull}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}\label{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f} 
+Push\+Pull&push-\/pull on output \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OpenDrain@{OpenDrain}!modm::platform::Gpio@{modm::platform::Gpio}}
+\index{modm::platform::Gpio@{modm::platform::Gpio}!OpenDrain@{OpenDrain}}
+}\Hypertarget{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}\label{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99} 
+Open\+Drain&open-\/drain on output \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+gpio/\+base.\+hpp\end{DoxyCompactItemize}

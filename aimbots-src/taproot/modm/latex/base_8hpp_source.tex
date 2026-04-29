@@ -1,0 +1,301 @@
+\doxysection{base.\+hpp}
+\hypertarget{base_8hpp_source}{}\label{base_8hpp_source}\index{src/modm/platform/gpio/base.hpp@{src/modm/platform/gpio/base.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_GPIO\_BASE\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_GPIO\_BASE\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/gpio.hpp>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/math/utils/bit\_operation.hpp>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/platform/core/peripherals.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm::platform}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00027\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}}
+\DoxyCodeLine{00028\ \ \ \ \ \{}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Floating}}\ =\ 0x0,\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{PullUp}}\ =\ 0x1,\ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b}{PullDown}}\ =\ 0x2,\ }
+\DoxyCodeLine{00032\ \ \ \ \ \};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00035\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}}
+\DoxyCodeLine{00036\ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{PushPull}}\ =\ 0x0,\ \ \ \ \ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{OpenDrain}}\ =\ 0x1,\ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ \};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00042\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ Low\ \ \ \ \ \ =\ 0,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ Medium\ \ \ =\ 0x1,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ High\ \ \ \ \ =\ 0x2,}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}{VeryHigh}}\ =\ 0x3,\ \ \ \ \ }
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ MHz2\ \ \ \ \ =\ Low,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ MHz25\ \ \ \ =\ Medium,}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ MHz50\ \ \ \ =\ High,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ MHz100\ \ \ =\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}{VeryHigh}},}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00055\ \ \ \ \ InputTrigger}
+\DoxyCodeLine{00056\ \ \ \ \ \{}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ RisingEdge,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ FallingEdge,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ BothEdges,}
+\DoxyCodeLine{00060\ \ \ \ \ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00064\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}}}
+\DoxyCodeLine{00065\ \ \ \ \ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ A\ =\ 0,}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ B\ =\ 1,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ C\ =\ 2,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ D\ =\ 3,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ E\ =\ 4,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ F\ =\ 5,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ G\ =\ 6,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ H\ =\ 7,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ I\ =\ 8,}
+\DoxyCodeLine{00075\ \ \ \ \ \};}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00079\ \ \ \ \ Signal}
+\DoxyCodeLine{00080\ \ \ \ \ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ BitBang,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ A0,}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ A1,}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ A10,}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ A11,}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ A12,}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ A13,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ A14,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ A15,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ A16,}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ A17,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ A18,}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ A19,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ A2,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ A20,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ A21,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ A22,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ A23,}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ A24,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ A25,}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ A3,}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ A4,}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ A5,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ A6,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ A7,}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ A8,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ A9,}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ Af1,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ Af2,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ Ale,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ Bkin,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ Cd,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ Ch1,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ Ch1n,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ Ch2,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ Ch2n,}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ Ch3,}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ Ch3n,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ Ch4,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ Ck,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ Ckin,}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ Cle,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ Clk,}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ Cmd,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ Col,}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ Crs,}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ Cts,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ D0,}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ D1,}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ D10,}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ D11,}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ D12,}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ D13,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ D14,}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ D15,}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ D2,}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ D3,}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ D4,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ D5,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ D6,}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ D7,}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ D8,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ D9,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ Da0,}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ Da1,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ Da10,}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ Da11,}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ Da12,}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ Da13,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ Da14,}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ Da15,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ Da2,}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ Da3,}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ Da4,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ Da5,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ Da6,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ Da7,}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ Da8,}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ Da9,}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ Dm,}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ Dp,}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ Etr,}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ Extsd,}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ Hsync,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ Id,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ In0,}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ In1,}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ In10,}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ In11,}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ In12,}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ In13,}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ In14,}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ In15,}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ In2,}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ In3,}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ In4,}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ In5,}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ In6,}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ In7,}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ In8,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ In9,}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ Int2,}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ Int3,}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ Intr,}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ Jtck,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ Jtdi,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ Jtdo,}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ Jtms,}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ Jtrst,}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ Mck,}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ Mco1,}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ Mco2,}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ Mdc,}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ Mdio,}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ Miso,}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ Mosi,}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ Nbl0,}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ Nbl1,}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ Nce2,}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ Nce3,}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ Nce41,}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ Nce42,}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ Ne1,}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ Ne2,}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ Ne3,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ Ne4,}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ Niord,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ Niowr,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ Nl,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ Noe,}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ Nreg,}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ Nss,}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ Nwait,}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ Nwe,}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ Osc32in,}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ Osc32out,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ Oscin,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ Oscout,}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ Out1,}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ Out2,}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ Pixclk,}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ Ppsout,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ Rcccrsdv,}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ Refclk,}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ Refin,}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ Rts,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ Rx,}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ Rxclk,}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ Rxd0,}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ Rxd1,}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ Rxd2,}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ Rxd3,}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ Rxdv,}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ Rxer,}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ Sck,}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ Scl,}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ Sd,}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ Sda,}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ Smba,}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ Sof,}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ Swclk,}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ Swdio,}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ Swo,}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ Traceclk,}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ Traced0,}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ Traced1,}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ Traced2,}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ Traced3,}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ Tx,}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ Txclk,}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ Txd0,}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ Txd1,}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ Txd2,}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ Txd3,}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ Txen,}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ Ulpick,}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ Ulpid0,}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ Ulpid1,}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ Ulpid2,}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ Ulpid3,}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ Ulpid4,}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ Ulpid5,}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ Ulpid6,}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ Ulpid7,}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ Ulpidir,}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ Ulpinxt,}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ Ulpistp,}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ Vbus,}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ Vsync,}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ Wkup,}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ Ws,}
+\DoxyCodeLine{00272\ \ \ \ \ \};}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00278\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00279\ \ \ \ \ Mode}
+\DoxyCodeLine{00280\ \ \ \ \ \{}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ Input\ \ =\ 0x0,}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ Output\ =\ 0x1,}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ AlternateFunction\ =\ 0x2,}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ Analog\ =\ 0x3,}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ Mask\ \ \ =\ 0x3,}
+\DoxyCodeLine{00286\ \ \ \ \ \};}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t}
+\DoxyCodeLine{00289\ \ \ \ \ i(Mode\ mode)\ \{\ \textcolor{keywordflow}{return}\ uint32\_t(mode);\ \}}
+\DoxyCodeLine{00290\ \ \ \ \ \textcolor{comment}{//\ Enum\ Class\ To\ Integer\ helper\ functions.}}
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t}
+\DoxyCodeLine{00292\ \ \ \ \ i(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}\ pull)\ \{\ \textcolor{keywordflow}{return}\ uint32\_t(pull);\ \}}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t}
+\DoxyCodeLine{00294\ \ \ \ \ i(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}\ out)\ \{\ \textcolor{keywordflow}{return}\ uint32\_t(out);\ \}}
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t}
+\DoxyCodeLine{00296\ \ \ \ \ i(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ speed)\ \{\ \textcolor{keywordflow}{return}\ uint32\_t(speed);\ \}}
+\DoxyCodeLine{00298\ \};}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \}\ \textcolor{comment}{//\ namespace\ modm::platform}}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_GPIO\_BASE\_HPP}}
+
+\end{DoxyCode}

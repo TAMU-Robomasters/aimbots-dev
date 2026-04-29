@@ -1,0 +1,222 @@
+\doxysection{adc\+\_\+1\+\_\+impl.\+hpp}
+\hypertarget{adc__1__impl_8hpp_source}{}\label{adc__1__impl_8hpp_source}\index{src/modm/platform/adc/adc\_1\_impl.hpp@{src/modm/platform/adc/adc\_1\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2014,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Fabian\ Greif}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_ADC1\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#\ \ \ error\ \ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'adc\_1.hpp'\ instead!"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/platform/clock/rcc.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/math/algorithm/prescaler.hpp>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ modm::frequency\_t\ frequency,\ modm::percent\_t\ tolerance\ >}
+\DoxyCodeLine{00022\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00023\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a1d50dc7691ff317c46ee0bcfb4c55fe0}{modm::platform::Adc1::initialize}}()}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ result\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a00fce9568e24d9086d481c1bba3b4624}{modm::Prescaler::from\_list}}(SystemClock::Adc,\ frequency,\ \{2,4,6,8\});}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{static\_assert}(result.frequency\ <=\ 36000000,\ \textcolor{stringliteral}{"{}Generated\ ADC\ frequency\ is\ above\ maximum\ frequency!"{}});}
+\DoxyCodeLine{00027\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver_a5c336ff9889c347e7eadb810bf984ebd}{assertBaudrateInTolerance}}<result.frequency,\ frequency,\ tolerance\ >();}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ Rcc::enable<Peripheral::Adc1>();}
+\DoxyCodeLine{00030\ \ \ \ \ ADC1-\/>CR2\ |=\ ADC\_CR2\_ADON;\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ switch\ on\ ADC}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ setPrescaler(Prescaler\{result.index\});}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00036\ modm::platform::Adc1::setPrescaler(\textcolor{keyword}{const}\ Prescaler\ prescaler)}
+\DoxyCodeLine{00037\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ ADC-\/>CCR\ =\ (ADC-\/>CCR\ \&\ \string~ADC\_CCR\_ADCPRE)\ |\ (uint32\_t(prescaler)\ <<\ ADC\_CCR\_ADCPRE\_Pos);}
+\DoxyCodeLine{00039\ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00042\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a580511e72a81381a758979acd933578e}{modm::platform::Adc1::enableTemperatureRefVMeasurement}}()}
+\DoxyCodeLine{00043\ \{}
+\DoxyCodeLine{00044\ \ \ \ \ ADC-\/>CCR\ |=\ ADC\_CCR\_TSVREFE;}
+\DoxyCodeLine{00045\ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00048\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_aed3e36c4d3da625f2457edad5ed53c37}{modm::platform::Adc1::disableTemperatureRefVMeasurement}}()}
+\DoxyCodeLine{00049\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ ADC-\/>CCR\ \&=\ \string~ADC\_CCR\_TSVREFE;}
+\DoxyCodeLine{00051\ \}}
+\DoxyCodeLine{00052\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00053\ modm::platform::Adc1::setLeftAdjustResult()}
+\DoxyCodeLine{00054\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ ADC1-\/>CR2\ |=\ ADC\_CR2\_ALIGN;}
+\DoxyCodeLine{00056\ \}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00059\ modm::platform::Adc1::setRightAdjustResult()}
+\DoxyCodeLine{00060\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ ADC1-\/>CR2\ \&=\ \string~ADC\_CR2\_ALIGN;}
+\DoxyCodeLine{00062\ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00065\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ab19490a01e1484cc56d0c57a75ffe572}{modm::platform::Adc1::setChannel}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}}\ channel,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{SampleTime}}\ sampleTime)}
+\DoxyCodeLine{00067\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordflow}{if}\ (uint32\_t(channel)\ >\ 18)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{comment}{//\ clear\ number\ of\ conversions\ in\ the\ sequence}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{comment}{//\ and\ set\ number\ of\ conversions\ to\ 1}}
+\DoxyCodeLine{00071\ \ \ \ \ ADC1-\/>SQR1\ =\ 0;}
+\DoxyCodeLine{00072\ \ \ \ \ ADC1-\/>SQR2\ =\ 0;}
+\DoxyCodeLine{00073\ \ \ \ \ ADC1-\/>SQR3\ =\ uint32\_t(channel)\ \&\ 0x1f;}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a9ec80e29a7f6eec9a0fcca7c4acb2e41}{setSampleTime}}(channel,\ sampleTime);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00077\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{modm::platform::Adc1::Channel}}}
+\DoxyCodeLine{00080\ modm::platform::Adc1::getChannel()}
+\DoxyCodeLine{00081\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{return}\ Channel(ADC1-\/>SQR3\ \&\ 0x1f);}
+\DoxyCodeLine{00083\ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00086\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac4bc9c2dbde46edcf1ec65b13b8e131d}{modm::platform::Adc1::addChannel}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}}\ channel,}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{SampleTime}}\ sampleTime)}
+\DoxyCodeLine{00088\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//\ read\ channel\ count}}
+\DoxyCodeLine{00090\ \ \ \ \ uint8\_t\ channel\_count\ =\ (ADC1-\/>SQR1\ \&\ ADC\_SQR1\_L)\ >>\ 20;}
+\DoxyCodeLine{00091\ \ \ \ \ ++channel\_count;}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordflow}{if}(channel\_count\ >\ 0x0f)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \textcolor{comment}{//\ emergency\ exit}}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{comment}{//\ write\ channel\ number}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{if}(channel\_count\ <\ 6)\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ ADC1-\/>SQR3\ |=}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ (uint32\_t(channel)\ \&\ 0x1f)\ <<\ (channel\_count*5);}
+\DoxyCodeLine{00097\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \ \textcolor{keywordflow}{if}(channel\_count\ <\ 12)\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ ADC1-\/>SQR2\ |=}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ (uint32\_t(channel)\ \&\ 0x1f)\ <<\ ((channel\_count-\/6)*5);}
+\DoxyCodeLine{00100\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ ADC1-\/>SQR1\ |=}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ (uint32\_t(channel)\ \&\ 0x1f)\ <<\ ((channel\_count-\/12)*5);}
+\DoxyCodeLine{00103\ \ \ \ \ \}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{comment}{//\ update\ channel\ count}}
+\DoxyCodeLine{00105\ \ \ \ \ ADC1-\/>SQR1\ =\ (ADC1-\/>SQR1\ \&\ \string~ADC\_SQR1\_L)\ |\ (channel\_count\ <<\ 20);}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a9ec80e29a7f6eec9a0fcca7c4acb2e41}{setSampleTime}}(channel,\ sampleTime);}
+\DoxyCodeLine{00108\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00109\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00112\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a9ec80e29a7f6eec9a0fcca7c4acb2e41}{modm::platform::Adc1::setSampleTime}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}}\ channel,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{SampleTime}}\ sampleTime)}
+\DoxyCodeLine{00114\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordflow}{if}\ (uint32\_t(channel)\ <\ 10)\ \{}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ ADC1-\/>SMPR2\ |=\ uint32\_t(sampleTime)}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ (uint32\_t(channel)\ *\ 3);}
+\DoxyCodeLine{00118\ \ \ \ \ \}}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ ADC1-\/>SMPR1\ |=\ uint32\_t(sampleTime)}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ ((uint32\_t(channel)-\/10)\ *\ 3);}
+\DoxyCodeLine{00122\ \ \ \ \ \}}
+\DoxyCodeLine{00123\ \}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00126\ modm::platform::Adc1::enableFreeRunningMode()}
+\DoxyCodeLine{00127\ \{}
+\DoxyCodeLine{00128\ \ \ \ \ ADC1-\/>CR2\ |=\ ADC\_CR2\_CONT;\ \ \textcolor{comment}{//\ set\ to\ continuous\ mode}}
+\DoxyCodeLine{00129\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00132\ modm::platform::Adc1::disableFreeRunningMode()}
+\DoxyCodeLine{00133\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ ADC1-\/>CR2\ \&=\ \string~ADC\_CR2\_CONT;\ \ \ \ \ \textcolor{comment}{//\ set\ to\ single\ mode}}
+\DoxyCodeLine{00135\ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00138\ modm::platform::Adc1::disable()}
+\DoxyCodeLine{00139\ \{}
+\DoxyCodeLine{00140\ \ \ \ \ ADC1-\/>CR2\ \&=\ \string~(ADC\_CR2\_ADON);\ \ \ \ \ \ \ \textcolor{comment}{//\ switch\ off\ ADC}}
+\DoxyCodeLine{00141\ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_ADC1EN;\ \textcolor{comment}{//\ stop\ ADC\ Clock}}
+\DoxyCodeLine{00142\ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00145\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a2604ca6860055c009684beaf22cf99d5}{modm::platform::Adc1::startConversion}}()}
+\DoxyCodeLine{00146\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_abf774abbc3e2627ce91684e0b254e0f8}{acknowledgeInterruptFlags}}(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12ceab1c94ca2fbc3e78fc30069c8d0f01680}{InterruptFlag::All}});}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//\ starts\ single\ conversion\ for\ the\ regular\ group}}
+\DoxyCodeLine{00149\ \ \ \ \ ADC1-\/>CR2\ |=\ ADC\_CR2\_SWSTART;}
+\DoxyCodeLine{00150\ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00153\ modm::platform::Adc1::isConversionFinished()}
+\DoxyCodeLine{00154\ \{}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordflow}{return}\ (ADC1-\/>SR\ \&\ ADC\_SR\_EOC);}
+\DoxyCodeLine{00156\ \}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ uint16\_t}
+\DoxyCodeLine{00159\ modm::platform::Adc1::getValue()}
+\DoxyCodeLine{00160\ \{}
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keywordflow}{return}\ ADC1-\/>DR;}
+\DoxyCodeLine{00162\ \}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ uint16\_t}
+\DoxyCodeLine{00166\ modm::platform::Adc1::readChannel(Channel\ channel)}
+\DoxyCodeLine{00167\ \{}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordflow}{if}\ (!setChannel(channel))\ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ \ \ startConversion();}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{comment}{//\ wait\ until\ the\ conversion\ is\ finished}}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordflow}{while}\ (!isConversionFinished())}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{return}\ getValue();}
+\DoxyCodeLine{00176\ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00179\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00180\ modm::platform::Adc1::enableInterruptVector(\textcolor{keyword}{const}\ uint32\_t\ priority,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ enable)}
+\DoxyCodeLine{00182\ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{const}\ IRQn\_Type\ InterruptVector\ =\ ADC\_IRQn;}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordflow}{if}\ (enable)\ \{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ NVIC\_SetPriority(InterruptVector,\ priority);}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ NVIC\_EnableIRQ(InterruptVector);}
+\DoxyCodeLine{00187\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ NVIC\_DisableIRQ(InterruptVector);}
+\DoxyCodeLine{00189\ \ \ \ \ \}}
+\DoxyCodeLine{00190\ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00193\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a5a20929483a8312359cedacaa55a8e0e}{modm::platform::Adc1::enableInterrupt}}(\textcolor{keyword}{const}\ Interrupt\_t\ interrupt)}
+\DoxyCodeLine{00194\ \{}
+\DoxyCodeLine{00195\ \ \ \ \ ADC1-\/>CR1\ |=\ interrupt.value;}
+\DoxyCodeLine{00196\ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00199\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a3d0ce8c388aba4f027a63772cd1bcde5}{modm::platform::Adc1::disableInterrupt}}(\textcolor{keyword}{const}\ Interrupt\_t\ interrupt)}
+\DoxyCodeLine{00200\ \{}
+\DoxyCodeLine{00201\ \ \ \ \ ADC1-\/>CR1\ \&=\ \string~interrupt.value;}
+\DoxyCodeLine{00202\ \}}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ modm::platform::Adc1::InterruptFlag\_t}
+\DoxyCodeLine{00205\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ad2201b4c2e15734de7c1e34a1ea3b2a6}{modm::platform::Adc1::getInterruptFlags}}()}
+\DoxyCodeLine{00206\ \{}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordflow}{return}\ InterruptFlag\_t(ADC1-\/>SR);}
+\DoxyCodeLine{00208\ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00211\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_abf774abbc3e2627ce91684e0b254e0f8}{modm::platform::Adc1::acknowledgeInterruptFlags}}(\textcolor{keyword}{const}\ InterruptFlag\_t\ flags)}
+\DoxyCodeLine{00212\ \{}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{comment}{//\ Flags\ are\ cleared\ by\ writing\ a\ one\ to\ the\ flag\ position.}}
+\DoxyCodeLine{00214\ \ \ \ \ \textcolor{comment}{//\ Writing\ a\ zero\ is\ ignored.}}
+\DoxyCodeLine{00215\ \ \ \ \ ADC1-\/>SR\ =\ flags.value;}
+\DoxyCodeLine{00216\ \}}
+
+\end{DoxyCode}

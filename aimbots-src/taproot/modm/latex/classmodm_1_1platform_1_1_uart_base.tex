@@ -1,0 +1,164 @@
+\doxysection{modm::\+platform::\+Uart\+Base Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_uart_base}{}\label{classmodm_1_1platform_1_1_uart_base}\index{modm::platform::UartBase@{modm::platform::UartBase}}
+
+
+{\ttfamily \+\#include $<$uart\+\_\+base.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Uart\+Base:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.138211cm]{classmodm_1_1platform_1_1_uart_base}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}} :\+ uint32\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78}{Parity\+Error}} = USART\+\_\+\+CR1\+\_\+\+PEIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619}{Tx\+Empty}} = USART\+\_\+\+CR1\+\_\+\+TXEIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85}{Tx\+Complete}} = USART\+\_\+\+CR1\+\_\+\+TCIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae}{Rx\+Not\+Empty}} = USART\+\_\+\+CR1\+\_\+\+RXNEIE
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{Interrupt\+Flag}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa09fedbb429a73d9217bbd05d17bf9619}{Tx\+Empty}} = USART\+\_\+\+SR\+\_\+\+TXE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa017989d109c6f8c81153605ec5479c85}{Tx\+Complete}} = USART\+\_\+\+SR\+\_\+\+TC
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8faec6a6a1dbb315c8a29a90d8f027888ae}{Rx\+Not\+Empty}} = USART\+\_\+\+SR\+\_\+\+RXNE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa1e5b45a006f87ca231075ff2d2efbbb1}{Overrun\+Error}} = USART\+\_\+\+SR\+\_\+\+ORE
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fac2a32feb763cf02d22c6ea35051b7b43}{Framing\+Error}} = USART\+\_\+\+SR\+\_\+\+FE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa63440a36bf6fd0748b3c188f3e9fda78}{Parity\+Error}} = USART\+\_\+\+SR\+\_\+\+PE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_a598033b30db9a90ea5c34a7b1cdc41e1}\label{classmodm_1_1platform_1_1_uart_base_a598033b30db9a90ea5c34a7b1cdc41e1} 
+enum class {\bfseries Parity} :\+ uint32\+\_\+t \{ {\bfseries Disabled} = 0
+, {\bfseries Even} = USART\+\_\+\+CR1\+\_\+\+PCE
+, {\bfseries Odd} = USART\+\_\+\+CR1\+\_\+\+PCE \texorpdfstring{$\vert$}{|} USART\+\_\+\+CR1\+\_\+\+PS
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_abd88a2aaa96f9ad7c22ecaa2c0540cc4}\label{classmodm_1_1platform_1_1_uart_base_abd88a2aaa96f9ad7c22ecaa2c0540cc4} 
+enum class {\bfseries Word\+Length} :\+ uint32\+\_\+t \{ {\bfseries Bit8} = 0
+, {\bfseries Bit9} = USART\+\_\+\+CR1\+\_\+M
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_aa946086fdf30e477d0a317d657c4e44f}\label{classmodm_1_1platform_1_1_uart_base_aa946086fdf30e477d0a317d657c4e44f} 
+enum class {\bfseries Spi\+Clock} :\+ uint32\+\_\+t \{ {\bfseries Disabled} = 0b0
+, {\bfseries Enabled} = USART\+\_\+\+CR2\+\_\+\+CLKEN
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_ace789bf4bb98f058efde7ab625f10e0a}\label{classmodm_1_1platform_1_1_uart_base_ace789bf4bb98f058efde7ab625f10e0a} 
+enum class {\bfseries Last\+Bit\+Clock\+Pulse} :\+ uint32\+\_\+t \{ {\bfseries Do\+Not\+Output} = 0b0
+, {\bfseries Output} = USART\+\_\+\+CR2\+\_\+\+LBCL
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_abb9ae2af6239db1ae39f2a789989e03c}\label{classmodm_1_1platform_1_1_uart_base_abb9ae2af6239db1ae39f2a789989e03c} 
+enum class {\bfseries Spi\+Data\+Mode} :\+ uint32\+\_\+t \{ {\bfseries Mode0} = 0b00
+, {\bfseries Mode1} = USART\+\_\+\+CR2\+\_\+\+CPHA
+, {\bfseries Mode2} = USART\+\_\+\+CR2\+\_\+\+CPOL
+, {\bfseries Mode3} = USART\+\_\+\+CR2\+\_\+\+CPOL \texorpdfstring{$\vert$}{|} USART\+\_\+\+CR2\+\_\+\+CPHA
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_aad9da847f6934c4a36e12bf40f3ade4d}\label{classmodm_1_1platform_1_1_uart_base_aad9da847f6934c4a36e12bf40f3ade4d} 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}})
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_a0c813164448c8f193d4594e69112d8fc}\label{classmodm_1_1platform_1_1_uart_base_a0c813164448c8f193d4594e69112d8fc} 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{Interrupt\+Flag}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for the UART classes
+
+Provides some common enum that do not depend on the specific UART.
+
+\begin{DoxyAuthor}{Author}
+Kevin Laeufer 
+\end{DoxyAuthor}
+
+
+\label{doc-enum-members}
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}\index{modm::platform::UartBase@{modm::platform::UartBase}!Interrupt@{Interrupt}}
+\index{Interrupt@{Interrupt}!modm::platform::UartBase@{modm::platform::UartBase}}
+\doxysubsubsection{\texorpdfstring{Interrupt}{Interrupt}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832} 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{modm::\+platform::\+\+Uart\+Base::\+\+Interrupt}} :\+ uint32\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ParityError@{ParityError}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!ParityError@{ParityError}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78}\label{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78} 
+Parity\+Error&Call interrupt when a parity error occurred. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TxEmpty@{TxEmpty}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!TxEmpty@{TxEmpty}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619}\label{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619} 
+Tx\+Empty&Call interrupt when transmit register is empty (i.\+e. the byte has been transfered to the shift out register. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TxComplete@{TxComplete}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!TxComplete@{TxComplete}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85}\label{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85} 
+Tx\+Complete&Called when the byte was completely transmitted. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RxNotEmpty@{RxNotEmpty}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!RxNotEmpty@{RxNotEmpty}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae}\label{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae} 
+Rx\+Not\+Empty&Call interrupt when char received (RXNE) or overrun occurred (ORE). \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}\index{modm::platform::UartBase@{modm::platform::UartBase}!InterruptFlag@{InterruptFlag}}
+\index{InterruptFlag@{InterruptFlag}!modm::platform::UartBase@{modm::platform::UartBase}}
+\doxysubsubsection{\texorpdfstring{InterruptFlag}{InterruptFlag}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f} 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{modm::\+platform::\+\+Uart\+Base::\+\+Interrupt\+Flag}} :\+ uint32\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TxEmpty@{TxEmpty}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!TxEmpty@{TxEmpty}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa09fedbb429a73d9217bbd05d17bf9619}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa09fedbb429a73d9217bbd05d17bf9619} 
+Tx\+Empty&Set if the transmit data register is empty. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TxComplete@{TxComplete}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!TxComplete@{TxComplete}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa017989d109c6f8c81153605ec5479c85}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa017989d109c6f8c81153605ec5479c85} 
+Tx\+Complete&Set if the transmission is complete. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{RxNotEmpty@{RxNotEmpty}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!RxNotEmpty@{RxNotEmpty}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8faec6a6a1dbb315c8a29a90d8f027888ae}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8faec6a6a1dbb315c8a29a90d8f027888ae} 
+Rx\+Not\+Empty&Set if the receive data register is not empty. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{OverrunError@{OverrunError}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!OverrunError@{OverrunError}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa1e5b45a006f87ca231075ff2d2efbbb1}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa1e5b45a006f87ca231075ff2d2efbbb1} 
+Overrun\+Error&Set if receive register was not cleared. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FramingError@{FramingError}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!FramingError@{FramingError}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fac2a32feb763cf02d22c6ea35051b7b43}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fac2a32feb763cf02d22c6ea35051b7b43} 
+Framing\+Error&Set if a de-\/synchronization, excessive noise or a break character is detected. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{ParityError@{ParityError}!modm::platform::UartBase@{modm::platform::UartBase}}
+\index{modm::platform::UartBase@{modm::platform::UartBase}!ParityError@{ParityError}}
+}\Hypertarget{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa63440a36bf6fd0748b3c188f3e9fda78}\label{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa63440a36bf6fd0748b3c188f3e9fda78} 
+Parity\+Error&Set if a parity error was detected. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+uart/\+uart\+\_\+base.\+hpp\end{DoxyCompactItemize}

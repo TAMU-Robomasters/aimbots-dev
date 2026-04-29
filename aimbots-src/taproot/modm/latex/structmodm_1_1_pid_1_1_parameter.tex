@@ -1,0 +1,61 @@
+\doxysection{modm::\+Pid\texorpdfstring{$<$}{<} T, Scale\+Factor \texorpdfstring{$>$}{>}::\+Parameter Struct Reference}
+\hypertarget{structmodm_1_1_pid_1_1_parameter}{}\label{structmodm_1_1_pid_1_1_parameter}\index{modm::Pid$<$ T, ScaleFactor $>$::Parameter@{modm::Pid$<$ T, ScaleFactor $>$::Parameter}}
+
+
+\doxylink{structmodm_1_1_pid_1_1_parameter}{Parameter} for a PID calculation.  
+
+
+
+
+{\ttfamily \+\#include $<$pid.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter_aecf7d0b0f133c75f2eeb51db466e51ee}{Parameter}} (const float \&kp=0, const float \&ki=0, const float \&kd=0, const T \&max\+Error\+Sum=0, const T \&max\+Output=0)
+\item 
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_a2d5684eaeb06032563a2902191a851d6}\label{structmodm_1_1_pid_1_1_parameter_a2d5684eaeb06032563a2902191a851d6} 
+void {\bfseries set\+Kp} (float kp)
+\item 
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_aa282344094c81e46595308b62426b457}\label{structmodm_1_1_pid_1_1_parameter_aa282344094c81e46595308b62426b457} 
+void {\bfseries set\+Ki} (float ki)
+\item 
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_ab24a2a654db367b5017566d32029d4eb}\label{structmodm_1_1_pid_1_1_parameter_ab24a2a654db367b5017566d32029d4eb} 
+void {\bfseries set\+Kd} (float kd)
+\item 
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_af22ed0a5356395e27f2ee82536cacca5}\label{structmodm_1_1_pid_1_1_parameter_af22ed0a5356395e27f2ee82536cacca5} 
+void {\bfseries set\+Max\+Error\+Sum} (float max\+Error\+Sum)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_aa245417dc2cd8c1415aadfb01d675ce7}\label{structmodm_1_1_pid_1_1_parameter_aa245417dc2cd8c1415aadfb01d675ce7} 
+class {\bfseries Pid}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, unsigned int Scale\+Factor = 1$>$\newline
+struct modm::\+\+Pid$<$ T, Scale\+Factor $>$::\+\+Parameter}
+\doxylink{structmodm_1_1_pid_1_1_parameter}{Parameter} for a PID calculation. 
+
+\label{doc-constructors}
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{structmodm_1_1_pid_1_1_parameter_aecf7d0b0f133c75f2eeb51db466e51ee}\index{modm::Pid$<$ T, ScaleFactor $>$::Parameter@{modm::Pid$<$ T, ScaleFactor $>$::Parameter}!Parameter@{Parameter}}
+\index{Parameter@{Parameter}!modm::Pid$<$ T, ScaleFactor $>$::Parameter@{modm::Pid$<$ T, ScaleFactor $>$::Parameter}}
+\doxysubsubsection{\texorpdfstring{Parameter()}{Parameter()}}
+{\footnotesize\ttfamily \label{structmodm_1_1_pid_1_1_parameter_aecf7d0b0f133c75f2eeb51db466e51ee} 
+template$<$typename T, unsigned int Scale\+Factor$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+\+Parameter::\+\+Parameter (\begin{DoxyParamCaption}\item[{const float \&}]{kp}{ = {\ttfamily 0}, }\item[{const float \&}]{ki}{ = {\ttfamily 0}, }\item[{const float \&}]{kd}{ = {\ttfamily 0}, }\item[{const T \&}]{max\+Error\+Sum}{ = {\ttfamily 0}, }\item[{const T \&}]{max\+Output}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000008}{Todo}}]description why we use float here! 
+
+calculate max\+Error\+Sum from the parameters \end{DoxyRefDesc}
+
+
+The documentation for this struct was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+filter/\+pid.\+hpp\item 
+src/\+modm/\+math/\+filter/\+pid\+\_\+impl.\+hpp\end{DoxyCompactItemize}

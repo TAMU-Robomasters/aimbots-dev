@@ -1,0 +1,120 @@
+\doxysection{pid.\+hpp}
+\hypertarget{pid_8hpp_source}{}\label{pid_8hpp_source}\index{src/modm/math/filter/pid.hpp@{src/modm/math/filter/pid.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_PID\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_PID\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <modm/math/utils/arithmetic\_traits.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}\ ScaleFactor\ =\ 1>}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}{Pid}}}
+\DoxyCodeLine{00057\ \ \ \ \ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{modm::WideType<T>}}\ WideType;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ T\ ValueType;}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter_aecf7d0b0f133c75f2eeb51db466e51ee}{Parameter}}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter_aecf7d0b0f133c75f2eeb51db466e51ee}{Parameter}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ kp\ =\ 0,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ ki\ =\ 0,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ kd\ =\ 0,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&\ maxErrorSum\ =\ 0,\ \textcolor{keyword}{const}\ T\&\ maxOutput\ =\ 0);}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \ \ \ \ setKp(\textcolor{keywordtype}{float}\ kp)\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>kp\ =\ \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>}(kp\ *\ ScaleFactor);}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ setKi(\textcolor{keywordtype}{float}\ ki)\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>ki\ =\ \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>}(ki\ *\ ScaleFactor);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ setKd(\textcolor{keywordtype}{float}\ kd)\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>kd\ =\ \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>}(kd\ *\ ScaleFactor);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ setMaxErrorSum(\textcolor{keywordtype}{float}\ maxErrorSum)\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>maxErrorSum\ =\ \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>}(maxErrorSum\ *\ ScaleFactor);}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ T\ kp;\ \ \ \ \ \ \ }
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ T\ ki;\ \ \ \ \ \ \ }
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ T\ kd;\ \ \ \ \ \ \ }
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ T\ maxErrorSum;\ \ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ T\ maxOutput;\ \ \ \ }
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Pid;}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}{Pid}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ kp\ =\ 0,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ ki\ =\ 0,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ kd\ =\ 0,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&\ maxErrorSum\ =\ 0,\ \textcolor{keyword}{const}\ T\&\ maxOutput\ =\ 0);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}{Pid}}(\doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}}\&\ parameter);}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_ac4c4ed849ad08d6fd511b209575107e4}{setParameter}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}}\&\ parameter);}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a03e5d738fd15d784b315ad85f14bd3ca}{reset}}();}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_aae464c0c86496efd1d8bda40bb481fd3}{update}}(\textcolor{keyword}{const}\ T\&\ input,\ \textcolor{keywordtype}{bool}\ externalLimitation\ =\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a7b6f36324d614cddf0c9171ab0d1ad72}{getValue}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00149\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ output;}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a61ffab3bd79e5d4ef9b0712f50a109bc}{getLastError}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00165\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>lastError;}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_pid_a3cc20d49741a1a3100dcf82f898d28d1}{getErrorSum}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00176\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>errorSum;}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ Parameter\ parameter;}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ T\ errorSum;}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ T\ lastError;}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ T\ output;}
+\DoxyCodeLine{00186\ \ \ \ \ \};}
+\DoxyCodeLine{00187\ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\#include\ "{}pid\_impl.hpp"{}}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_PID\_HPP}}
+
+\end{DoxyCode}

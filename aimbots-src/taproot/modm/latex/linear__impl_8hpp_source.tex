@@ -1,0 +1,71 @@
+\doxysection{linear\+\_\+impl.\+hpp}
+\hypertarget{linear__impl_8hpp_source}{}\label{linear__impl_8hpp_source}\index{src/modm/math/interpolation/linear\_impl.hpp@{src/modm/math/interpolation/linear\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Thorsten\ Lajewski}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_INTERPOLATION\_LINEAR\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\ \ \ \#error\ "{}Don't\ include\ this\ file\ directly.\ Use\ 'modm/math/interpolation/linear.hpp'\ instead!"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00019\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>\ \textcolor{keyword}{class\ }Accessor>}
+\DoxyCodeLine{00021\ \doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_linear_a9b7929382c17d8fae0f7ed1dc1bc1992}{modm::interpolation::Linear<T,\ Accessor>::Linear}}(}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ Accessor<T>\ supportingPoints,\ uint8\_t\ numberOfPoints)\ :}
+\DoxyCodeLine{00023\ \ \ \ \ supportingPoints(supportingPoints),\ numberOfPoints(numberOfPoints)}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ \}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}>\ \textcolor{keyword}{class\ }Accessor>}
+\DoxyCodeLine{00030\ \textcolor{keyword}{typename}\ modm::interpolation::Linear<T,\ Accessor>::OutputType}
+\DoxyCodeLine{00031\ \doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_linear_a6c84784b36000ab4a8825bb02f48f227}{modm::interpolation::Linear<T,\ Accessor>::interpolate}}(\textcolor{keyword}{const}\ InputType\&\ value)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00032\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00033\ \ \ \ \ T\ current(this-\/>supportingPoints[0]);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordflow}{if}\ (value\ <=\ current.getFirst())\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ current.getSecond();}
+\DoxyCodeLine{00037\ \ \ \ \ \}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ T\ last(current);}
+\DoxyCodeLine{00040\ \ \ \ \ uint8\_t\ i;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordflow}{for}\ (i\ =\ 1;\ i\ <\ this-\/>numberOfPoints;\ ++i)}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ current\ =\ this-\/>supportingPoints[i];}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value\ <=\ current.getFirst())}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \ \ \ \ InputType\ x1\_in\ =\ last.getFirst();}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ InputType\ x2\_in\ =\ current.getFirst();}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ OutputType\ x1\_out\ =\ last.getSecond();}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ OutputType\ x2\_out\ =\ current.getSecond();}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ InputType\ a\ =\ value\ -\/\ x1\_in;\ \ \ \ \ \ \ \ \textcolor{comment}{//\ >0}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ WideType\ b\ =\ \textcolor{keyword}{static\_cast<}OutputSignedType\textcolor{keyword}{>}(x2\_out)\ -\/}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}OutputSignedType\textcolor{keyword}{>}(x1\_out);}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ InputType\ c\ =\ x2\_in\ -\/\ x1\_in;\ \ \ \ \ \ \ \ \textcolor{comment}{//\ >0}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}OutputType\textcolor{keyword}{>}(((a\ *\ b)\ /\ c)\ +\ x1\_out);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ last\ =\ current;}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{return}\ current.getSecond();}
+\DoxyCodeLine{00065\ \}}
+
+\end{DoxyCode}

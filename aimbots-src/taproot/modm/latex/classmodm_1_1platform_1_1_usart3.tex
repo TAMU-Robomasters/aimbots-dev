@@ -1,0 +1,168 @@
+\doxysection{modm::\+platform::\+Usart3 Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_usart3}{}\label{classmodm_1_1platform_1_1_usart3}\index{modm::platform::Usart3@{modm::platform::Usart3}}
+
+
+{\ttfamily \+\#include $<$uart\+\_\+3.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Usart3:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classmodm_1_1platform_1_1_usart3}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_ac48714d04b92424b245955bcb17cb48a}\label{classmodm_1_1platform_1_1_usart3_ac48714d04b92424b245955bcb17cb48a} 
+using {\bfseries Hal} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_usart_hal3}{Usart\+Hal3}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base}{modm::\+platform::\+\+Uart\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}} :\+ uint32\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a63440a36bf6fd0748b3c188f3e9fda78}{Parity\+Error}} = USART\+\_\+\+CR1\+\_\+\+PEIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619}{Tx\+Empty}} = USART\+\_\+\+CR1\+\_\+\+TXEIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85}{Tx\+Complete}} = USART\+\_\+\+CR1\+\_\+\+TCIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832aec6a6a1dbb315c8a29a90d8f027888ae}{Rx\+Not\+Empty}} = USART\+\_\+\+CR1\+\_\+\+RXNEIE
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{Interrupt\+Flag}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa09fedbb429a73d9217bbd05d17bf9619}{Tx\+Empty}} = USART\+\_\+\+SR\+\_\+\+TXE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa017989d109c6f8c81153605ec5479c85}{Tx\+Complete}} = USART\+\_\+\+SR\+\_\+\+TC
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8faec6a6a1dbb315c8a29a90d8f027888ae}{Rx\+Not\+Empty}} = USART\+\_\+\+SR\+\_\+\+RXNE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa1e5b45a006f87ca231075ff2d2efbbb1}{Overrun\+Error}} = USART\+\_\+\+SR\+\_\+\+ORE
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fac2a32feb763cf02d22c6ea35051b7b43}{Framing\+Error}} = USART\+\_\+\+SR\+\_\+\+FE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8fa63440a36bf6fd0748b3c188f3e9fda78}{Parity\+Error}} = USART\+\_\+\+SR\+\_\+\+PE
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_a598033b30db9a90ea5c34a7b1cdc41e1}\label{classmodm_1_1platform_1_1_uart_base_a598033b30db9a90ea5c34a7b1cdc41e1} 
+enum class {\bfseries Parity} :\+ uint32\+\_\+t \{ {\bfseries Disabled} = 0
+, {\bfseries Even} = USART\+\_\+\+CR1\+\_\+\+PCE
+, {\bfseries Odd} = USART\+\_\+\+CR1\+\_\+\+PCE \texorpdfstring{$\vert$}{|} USART\+\_\+\+CR1\+\_\+\+PS
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_abd88a2aaa96f9ad7c22ecaa2c0540cc4}\label{classmodm_1_1platform_1_1_uart_base_abd88a2aaa96f9ad7c22ecaa2c0540cc4} 
+enum class {\bfseries Word\+Length} :\+ uint32\+\_\+t \{ {\bfseries Bit8} = 0
+, {\bfseries Bit9} = USART\+\_\+\+CR1\+\_\+M
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_aa946086fdf30e477d0a317d657c4e44f}\label{classmodm_1_1platform_1_1_uart_base_aa946086fdf30e477d0a317d657c4e44f} 
+enum class {\bfseries Spi\+Clock} :\+ uint32\+\_\+t \{ {\bfseries Disabled} = 0b0
+, {\bfseries Enabled} = USART\+\_\+\+CR2\+\_\+\+CLKEN
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_ace789bf4bb98f058efde7ab625f10e0a}\label{classmodm_1_1platform_1_1_uart_base_ace789bf4bb98f058efde7ab625f10e0a} 
+enum class {\bfseries Last\+Bit\+Clock\+Pulse} :\+ uint32\+\_\+t \{ {\bfseries Do\+Not\+Output} = 0b0
+, {\bfseries Output} = USART\+\_\+\+CR2\+\_\+\+LBCL
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_uart_base_abb9ae2af6239db1ae39f2a789989e03c}\label{classmodm_1_1platform_1_1_uart_base_abb9ae2af6239db1ae39f2a789989e03c} 
+enum class {\bfseries Spi\+Data\+Mode} :\+ uint32\+\_\+t \{ {\bfseries Mode0} = 0b00
+, {\bfseries Mode1} = USART\+\_\+\+CR2\+\_\+\+CPHA
+, {\bfseries Mode2} = USART\+\_\+\+CR2\+\_\+\+CPOL
+, {\bfseries Mode3} = USART\+\_\+\+CR2\+\_\+\+CPOL \texorpdfstring{$\vert$}{|} USART\+\_\+\+CR2\+\_\+\+CPHA
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_acd9d2d978b575923807f326fefe4dc3e}\label{classmodm_1_1platform_1_1_usart3_acd9d2d978b575923807f326fefe4dc3e} 
+{\footnotesize template$<$template$<$ Peripheral \+\_\+ $>$ class... Signals$>$ }\\static void {\bfseries connect} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Gpio::\+\+Input\+Type}} Input\+Type\+Rx=\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{Gpio::\+\+Input\+Type::\+\+Pull\+Up}}, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Gpio::\+\+Output\+Type}} Output\+Type\+Tx=\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{Gpio::\+\+Output\+Type::\+\+Push\+Pull}})
+\item 
+{\footnotesize template$<$class System\+Clock, baudrate\+\_\+t baudrate, percent\+\_\+t tolerance = pct(1)$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_usart3_a09f0e6f6974c48256190d4d01c9caa35}{initialize}} (Parity parity=Parity::\+\+Disabled, Word\+Length length=Word\+Length::\+\+Bit8)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a62d56bf1f7719089b86f33671ef3b319}\label{classmodm_1_1platform_1_1_usart3_a62d56bf1f7719089b86f33671ef3b319} 
+static void {\bfseries write\+Blocking} (uint8\+\_\+t data)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a4ce832588ddf795842cedde2b3eacb6e}\label{classmodm_1_1platform_1_1_usart3_a4ce832588ddf795842cedde2b3eacb6e} 
+static void {\bfseries write\+Blocking} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}data, std::\+size\+\_\+t length)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_ad09afc7cabf3d6a4d70274fe179bc602}\label{classmodm_1_1platform_1_1_usart3_ad09afc7cabf3d6a4d70274fe179bc602} 
+static void {\bfseries flush\+Write\+Buffer} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a77435a504fafdb0f562d09cb6b47d528}\label{classmodm_1_1platform_1_1_usart3_a77435a504fafdb0f562d09cb6b47d528} 
+static bool {\bfseries write} (uint8\+\_\+t data)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_aecc86b2de747816bf2d520e609dd047c}\label{classmodm_1_1platform_1_1_usart3_aecc86b2de747816bf2d520e609dd047c} 
+static std::\+size\+\_\+t {\bfseries write} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}data, std::\+size\+\_\+t length)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_ae0b51e05fd1d2d69474e71846f81b521}\label{classmodm_1_1platform_1_1_usart3_ae0b51e05fd1d2d69474e71846f81b521} 
+static bool {\bfseries is\+Write\+Finished} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a474e433f6f6801844c5baf22736dbb04}\label{classmodm_1_1platform_1_1_usart3_a474e433f6f6801844c5baf22736dbb04} 
+static std::\+size\+\_\+t {\bfseries transmit\+Buffer\+Size} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a10177c95f2b3ee42a738486a6901ce32}\label{classmodm_1_1platform_1_1_usart3_a10177c95f2b3ee42a738486a6901ce32} 
+static std::\+size\+\_\+t {\bfseries discard\+Transmit\+Buffer} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_ad6881e9bbe587607ecae1319ba31904c}\label{classmodm_1_1platform_1_1_usart3_ad6881e9bbe587607ecae1319ba31904c} 
+static bool {\bfseries read} (uint8\+\_\+t \&data)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a43eed673897c14afd40a3cc1d1da4a79}\label{classmodm_1_1platform_1_1_usart3_a43eed673897c14afd40a3cc1d1da4a79} 
+static std::\+size\+\_\+t {\bfseries read} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, std::\+size\+\_\+t length)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_af12c20d1e98300aaa8e17061e3f3b3af}\label{classmodm_1_1platform_1_1_usart3_af12c20d1e98300aaa8e17061e3f3b3af} 
+static std::\+size\+\_\+t {\bfseries receive\+Buffer\+Size} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_aa8687a620b41bad5d731ab5c6b163691}\label{classmodm_1_1platform_1_1_usart3_aa8687a620b41bad5d731ab5c6b163691} 
+static std::\+size\+\_\+t {\bfseries discard\+Receive\+Buffer} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a5f9bb1a92e1b3eb463553b58df1d2576}\label{classmodm_1_1platform_1_1_usart3_a5f9bb1a92e1b3eb463553b58df1d2576} 
+static bool {\bfseries has\+Error} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a6c83c9a0a703e7caf98a17c90c9c06d3}\label{classmodm_1_1platform_1_1_usart3_a6c83c9a0a703e7caf98a17c90c9c06d3} 
+static void {\bfseries clear\+Error} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{modm::\+\+Peripheral\+Driver}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$baudrate\+\_\+t available, baudrate\+\_\+t requested, percent\+\_\+t tolerance$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver_a5c336ff9889c347e7eadb810bf984ebd}{assert\+Baudrate\+In\+Tolerance}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a77a4d245d50c156ffd3bb7a7012ac08e}\label{classmodm_1_1platform_1_1_usart3_a77a4d245d50c156ffd3bb7a7012ac08e} 
+static constexpr size\+\_\+t {\bfseries Rx\+Buffer\+Size} = 256
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_usart3_ae9b585777f3e6d992f5b12e07dc68653}\label{classmodm_1_1platform_1_1_usart3_ae9b585777f3e6d992f5b12e07dc68653} 
+static constexpr size\+\_\+t {\bfseries Tx\+Buffer\+Size} = 256
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base}{modm::\+platform::\+\+Uart\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_ac9c1bc3b77588a11d520416c22a25832}{Interrupt}})
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_uart_base_a231dd8ca89bde31fb9bec6a65c1dae8f}{Interrupt\+Flag}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Universal asynchronous receiver transmitter (\doxylink{classmodm_1_1platform_1_1_usart3}{Usart3})
+
+\begin{DoxyAuthor}{Author}
+Kevin Laeufer 
+
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1platform_1_1_usart3_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_usart3_a09f0e6f6974c48256190d4d01c9caa35}\index{modm::platform::Usart3@{modm::platform::Usart3}!initialize@{initialize}}
+\index{initialize@{initialize}!modm::platform::Usart3@{modm::platform::Usart3}}
+\doxysubsubsection{\texorpdfstring{initialize()}{initialize()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_usart3_a09f0e6f6974c48256190d4d01c9caa35} 
+template$<$class System\+Clock, baudrate\+\_\+t baudrate, percent\+\_\+t tolerance = pct(1)$>$ \\
+void modm::\+platform::\+\+Usart3::\+initialize (\begin{DoxyParamCaption}\item[{Parity}]{parity}{ = {\ttfamily Parity:\+:\+Disabled}, }\item[{Word\+Length}]{length}{ = {\ttfamily WordLength:\+:\+Bit8}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\begin{DoxyWarning}{Warning}
+Remember to set word length correctly when using the parity bit! 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+uart/\+uart\+\_\+3.\+hpp\item 
+src/\+modm/\+platform/\+uart/\+uart\+\_\+3.\+cpp\end{DoxyCompactItemize}

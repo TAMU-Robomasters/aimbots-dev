@@ -1,0 +1,93 @@
+\doxysection{delay.\+hpp}
+\hypertarget{delay_8hpp_source}{}\label{delay_8hpp_source}\index{src/modm/architecture/interface/delay.hpp@{src/modm/architecture/interface/delay.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2020,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00030\ \textcolor{keywordtype}{void}\ delay(std::chrono::nanoseconds\ ns);}
+\DoxyCodeLine{00032\ \textcolor{keywordtype}{void}\ delay\_ns(uint32\_t\ ns);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ MODM\_DELAY\_NS\_IS\_ACCURATE\ bool(true\ or\ false)}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00053\ \textcolor{keywordtype}{void}\ delay(std::chrono::microseconds\ us);}
+\DoxyCodeLine{00055\ \textcolor{keywordtype}{void}\ delay\_us(uint32\_t\ us);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00062\ \textcolor{keywordtype}{void}\ delay(std::chrono::milliseconds\ ms);}
+\DoxyCodeLine{00064\ \textcolor{keywordtype}{void}\ delay\_ms(uint32\_t\ ms);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ These\ functions\ may\ be\ implemented\ as\ header\ files,\ so\ we\ cannot\ rely\ on}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//\ there\ being\ a\ link-\/able\ function\ and\ delegate\ this\ choice\ to\ the\ platform.}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#include\ <modm/platform/core/delay\_impl.hpp>}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00075\ \{}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ Forward\ everything\ to\ specialized\ functions}}
+\DoxyCodeLine{00078\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Rep\ >}
+\DoxyCodeLine{00079\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00080\ delay(std::chrono::duration<Rep,\ std::nano>\ ns\_)}
+\DoxyCodeLine{00081\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ ns\{std::chrono::duration\_cast<std::chrono::nanoseconds>(ns\_)\};}
+\DoxyCodeLine{00083\ \ \ \ \ delay\_ns(ns.count());}
+\DoxyCodeLine{00084\ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Rep\ >}
+\DoxyCodeLine{00087\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00088\ delay(std::chrono::duration<Rep,\ std::micro>\ us\_)}
+\DoxyCodeLine{00089\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ us\{std::chrono::duration\_cast<std::chrono::microseconds>(us\_)\};}
+\DoxyCodeLine{00091\ \ \ \ \ delay\_us(us.count());}
+\DoxyCodeLine{00092\ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Rep\ >}
+\DoxyCodeLine{00095\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00096\ delay(std::chrono::duration<Rep,\ std::milli>\ ms\_)}
+\DoxyCodeLine{00097\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ ms\{std::chrono::duration\_cast<std::chrono::milliseconds>(ms\_)\};}
+\DoxyCodeLine{00099\ \ \ \ \ delay\_ms(ms.count());}
+\DoxyCodeLine{00100\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ Everything\ else\ is\ cast\ to\ milliseconds}}
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ Rep,\ \textcolor{keyword}{class}\ Period>}
+\DoxyCodeLine{00104\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ delay(std::chrono::duration<Rep,\ Period>\ time)}
+\DoxyCodeLine{00105\ \{\ delay(std::chrono::duration\_cast<std::chrono::milliseconds>(time));\ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ The\ old\ methods\ are\ deprecated}}
+\DoxyCodeLine{00108\ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}modm::delay\_ns(uint32\_t\ ns)`\ instead!"{}})]]}
+\DoxyCodeLine{00109\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ delayNanoseconds(uint32\_t\ ns)\ \{\ delay\_ns(ns);\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}modm::delay\_us(uint32\_t\ us)`\ instead!"{}})]]}
+\DoxyCodeLine{00112\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ delayMicroseconds(uint32\_t\ us)\ \{\ delay\_us(us);\ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ [[deprecated(\textcolor{stringliteral}{"{}Use\ \`{}modm::delay\_ms(uint32\_t\ ms)`\ instead!"{}})]]}
+\DoxyCodeLine{00115\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ delayMilliseconds(uint32\_t\ ms)\ \{\ delay\_ms(ms);\ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \textcolor{keyword}{using\ namespace\ }::std::chrono\_literals;}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00122\ }
+
+\end{DoxyCode}

@@ -1,0 +1,97 @@
+\doxysection{connector\+\_\+detail.\+hpp}
+\hypertarget{connector__detail_8hpp_source}{}\label{connector__detail_8hpp_source}\index{src/modm/platform/gpio/connector\_detail.hpp@{src/modm/platform/gpio/connector\_detail.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_PLATFORM\_GPIO\_CONNECTOR\_DETAIL\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_PLATFORM\_GPIO\_CONNECTOR\_DETAIL\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}unused.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }detail}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ \textcolor{keyword}{class}\ GpioQ,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00029\ \textcolor{keyword}{struct\ }GpioContains;}
+\DoxyCodeLine{00030\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ \textcolor{keyword}{class}\ GpioQ,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class\ }SignalT,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00031\ \textcolor{keyword}{struct\ }GpioContains<peripheral,\ GpioQ,\ SignalT,\ Signals...>}
+\DoxyCodeLine{00032\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{using\ }SGpio\ =\ \textcolor{keyword}{typename}\ SignalT<peripheral>::Gpio;}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ value\ =\ (}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_same\_v<typename\ SGpio::Type,\ typename\ GpioQ::Type>\ ?}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ true\ :}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GpioContains<peripheral,\ GpioQ,\ Signals...>::value}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00039\ \};}
+\DoxyCodeLine{00040\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ \textcolor{keyword}{class}\ GpioQ\ >}
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }GpioContains<peripheral,\ GpioQ>}
+\DoxyCodeLine{00042\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ value\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00044\ \};}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ Gpio::Signal\ signal,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00047\ \textcolor{keyword}{struct\ }GpioGetSignal;}
+\DoxyCodeLine{00048\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ Gpio::Signal\ signal,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class\ }SignalT,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00049\ \textcolor{keyword}{struct\ }GpioGetSignal<peripheral,\ signal,\ SignalT,\ Signals...>}
+\DoxyCodeLine{00050\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ std::conditional\_t<}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (SignalT<peripheral>::Signal\ ==\ signal),}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ SignalT<peripheral>::Gpio,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ GpioGetSignal<peripheral,\ signal,\ Signals...>::Gpio}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ >;}
+\DoxyCodeLine{00056\ \};}
+\DoxyCodeLine{00057\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ Gpio::Signal\ signal\ >}
+\DoxyCodeLine{00058\ \textcolor{keyword}{struct\ }GpioGetSignal<peripheral,\ signal>}
+\DoxyCodeLine{00059\ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioUnused;}
+\DoxyCodeLine{00061\ \};}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00064\ \textcolor{keyword}{struct\ }GpioSignalConnect;}
+\DoxyCodeLine{00065\ \textcolor{keyword}{template}<\ Peripheral\ peripheral,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class\ }SignalT,\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00066\ \textcolor{keyword}{struct\ }GpioSignalConnect<peripheral,\ SignalT,\ Signals...>}
+\DoxyCodeLine{00067\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ connect()}
+\DoxyCodeLine{00069\ \ \ \ \ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ SignalT<peripheral>::connect();}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ GpioSignalConnect<peripheral,\ Signals...>::connect();}
+\DoxyCodeLine{00072\ \ \ \ \ \}}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ disconnect()}
+\DoxyCodeLine{00074\ \ \ \ \ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ SignalT<peripheral>::Gpio::disconnect();}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ GpioSignalConnect<peripheral,\ Signals...>::disconnect();}
+\DoxyCodeLine{00077\ \ \ \ \ \}}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00080\ \textcolor{keyword}{struct\ }GpioSignalConnect<peripheral>}
+\DoxyCodeLine{00081\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ disconnect()\ \{\}}
+\DoxyCodeLine{00084\ \};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_PLATFORM\_GPIO\_CONNECTOR\_DETAIL\_HPP}}
+
+\end{DoxyCode}

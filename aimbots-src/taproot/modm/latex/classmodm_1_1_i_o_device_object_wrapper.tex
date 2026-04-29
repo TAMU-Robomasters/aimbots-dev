@@ -1,0 +1,88 @@
+\doxysection{modm::\+IODevice\+Object\+Wrapper\texorpdfstring{$<$}{<} Device, behavior \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_i_o_device_object_wrapper}{}\label{classmodm_1_1_i_o_device_object_wrapper}\index{modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}}
+Inheritance diagram for modm::\+IODevice\+Object\+Wrapper\texorpdfstring{$<$}{<} Device, behavior \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1_i_o_device_object_wrapper}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_abfe881384a415005c71360cceb47cbc7}\label{classmodm_1_1_i_o_device_object_wrapper_abfe881384a415005c71360cceb47cbc7} 
+{\bfseries IODevice\+Object\+Wrapper} (Device \&device)
+\item 
+void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper_a28b8b81a6e6f8b75c80d893f73887e74}{write}} (char c) override
+\begin{DoxyCompactList}\small\item\em Write a single character. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper_aef03a1fb717e9982f8a2cc36ddb4efbf}{flush}} () override
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper_a99db6965d640b577fdef9a0e5810f7d6}{read}} (char \&c) override
+\begin{DoxyCompactList}\small\item\em Read a single character. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper_a15063dcd78363970c9e7cdc5c7ac54ce}{write}} (const char \texorpdfstring{$\ast$}{*}str)
+\begin{DoxyCompactList}\small\item\em Write a C-\/string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_aef03a1fb717e9982f8a2cc36ddb4efbf}\index{modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}!flush@{flush}}
+\index{flush@{flush}!modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}}
+\doxysubsubsection{\texorpdfstring{flush()}{flush()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i_o_device_object_wrapper_aef03a1fb717e9982f8a2cc36ddb4efbf} 
+template$<$class Device, IOBuffer behavior$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper}{modm::\+\+IODevice\+Object\+Wrapper}}$<$ Device, behavior $>$::\+flush (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_a99db6965d640b577fdef9a0e5810f7d6}\index{modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}!read@{read}}
+\index{read@{read}!modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i_o_device_object_wrapper_a99db6965d640b577fdef9a0e5810f7d6} 
+template$<$class Device, IOBuffer behavior$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper}{modm::\+\+IODevice\+Object\+Wrapper}}$<$ Device, behavior $>$::\+read (\begin{DoxyParamCaption}\item[{char \&}]{c}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Read a single character. 
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device_af20f7a971e6a59e2b2c54b271d0225fc}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_a28b8b81a6e6f8b75c80d893f73887e74}\index{modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}!write@{write}}
+\index{write@{write}!modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i_o_device_object_wrapper_a28b8b81a6e6f8b75c80d893f73887e74} 
+template$<$class Device, IOBuffer behavior$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_object_wrapper}{modm::\+\+IODevice\+Object\+Wrapper}}$<$ Device, behavior $>$::\+write (\begin{DoxyParamCaption}\item[{char}]{c}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Write a single character. 
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device_abbe05e516e38666d798194a160cea75d}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1_i_o_device_object_wrapper_a15063dcd78363970c9e7cdc5c7ac54ce}\index{modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}!write@{write}}
+\index{write@{write}!modm::IODeviceObjectWrapper$<$ Device, behavior $>$@{modm::IODeviceObjectWrapper$<$ Device, behavior $>$}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i_o_device_object_wrapper_a15063dcd78363970c9e7cdc5c7ac54ce} 
+template$<$class Device, IOBuffer behavior$>$ \\
+virtual void \doxymbox{\hyperlink{classmodm_1_1_i_o_device_abbe05e516e38666d798194a160cea75d}{modm::\+\+IODevice::\+write}} (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+Write a C-\/string. 
+
+
+
+Reimplemented from \doxymbox{\hyperlink{classmodm_1_1_i_o_device_a15063dcd78363970c9e7cdc5c7ac54ce}{modm::\+\+IODevice}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+io/\+iodevice\+\_\+wrapper.\+hpp\end{DoxyCompactItemize}

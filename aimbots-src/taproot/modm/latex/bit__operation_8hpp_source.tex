@@ -1,0 +1,215 @@
+\doxysection{bit\+\_\+operation.\+hpp}
+\hypertarget{bit__operation_8hpp_source}{}\label{bit__operation_8hpp_source}\index{src/modm/math/utils/bit\_operation.hpp@{src/modm/math/utils/bit\_operation.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ 2013,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012-\/2016,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Kevin\ Läufer}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_BIT\_OPERATION\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_BIT\_OPERATION\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <modm/architecture/detect.hpp>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00037\ \ \ \ \ modm\_always\_inline\ uint8\_t}
+\DoxyCodeLine{00038\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(uint8\_t\ n)}
+\DoxyCodeLine{00039\ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#ifdef\ MODM\_CPU\_AVR}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\_\_builtin\_constant\_p(n))\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ n\ =\ (n\ <<\ 4)\ |\ (n\ >>\ 4);}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}\ (\textcolor{stringliteral}{"{}swap\ \%0"{}}\ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)\ :\ \textcolor{stringliteral}{"{}0"{}}\ (n));}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ n\ =\ (n\ <<\ 4)\ |\ (n\ >>\ 4);}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00052\ \ \ \ \ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00055\ \ \ \ \ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00056\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(uint8\_t\&\ a,\ uint8\_t\&\ b)}
+\DoxyCodeLine{00057\ \ \ \ \ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ uint8\_t\ temp\ =\ a;}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ a\ =\ b;}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ b\ =\ temp;}
+\DoxyCodeLine{00061\ \ \ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00070\ \ \ \ \ modm\_always\_inline\ uint16\_t}
+\DoxyCodeLine{00071\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(uint16\_t\ n)}
+\DoxyCodeLine{00072\ \ \ \ \ \{}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#ifdef\ MODM\_CPU\_ARM}}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev16\ \%0,\%0"{}}\ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#elif\ defined\ MODM\_CPU\_AVR}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\_\_builtin\_constant\_p(n))\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \ \ \ \ n\ =\ (n\ <<\ 8)\ |\ (n\ >>\ 8);}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}\ (}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}eor\ \%A0,\ \%B0"{}}\ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}eor\ \%B0,\ \%A0"{}}\ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}eor\ \%A0,\ \%B0"{}}\ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00094\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ n\ =\ (n\ <<\ 8)\ |\ (n\ >>\ 8);}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00098\ \ \ \ \ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00107\ \ \ \ \ modm\_always\_inline\ uint32\_t}
+\DoxyCodeLine{00108\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(uint32\_t\ n)}
+\DoxyCodeLine{00109\ \ \ \ \ \{}
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\#if\ defined(MODM\_CPU\_ARM)\ \&\&\ !defined(\_\_aarch64\_\_)}}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev\ \%0,\%0"{}}\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\#elif\ defined(MODM\_CPU\_ARM)\ \&\&\ defined(\_\_aarch64\_\_)}}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev32\ \%0,\%0"{}}\ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ n\ =\ (n\ <<\ 24)\ |\ ((n\ <<\ 8)\ \&\ 0xff0000)\ |\ ((n\ >>\ 8)\ \&\ 0xff00)\ |\ (n\ >>\ 24);}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00128\ \ \ \ \ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \ \ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00131\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(int16\_t\&\ a,\ int16\_t\&\ b)}
+\DoxyCodeLine{00132\ \ \ \ \ \{}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ int16\_t\ temp\ =\ a;}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ a\ =\ b;}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ b\ =\ temp;}
+\DoxyCodeLine{00136\ \ \ \ \ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00149\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(uint8\_t\ n)}
+\DoxyCodeLine{00150\ \ \ \ \ \{}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#if\ defined(MODM\_CPU\_ARM)\ \&\&\ !defined(MODM\_CPU\_CORTEX\_M0)}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rbit\ \%0,\%0"{}}\ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev\ \%0,\%0"{}}\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ n\ =\ ((uint8\_t)\ (n\ >>\ 1)\ \&\ 0x55)\ |\ ((uint8\_t)\ (n\ <<\ 1)\ \&\ 0xaa);}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ n\ =\ ((uint8\_t)\ (n\ >>\ 2)\ \&\ 0x33)\ |\ ((uint8\_t)\ (n\ <<\ 2)\ \&\ 0xcc);}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(n);}
+\DoxyCodeLine{00164\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00165\ \ \ \ \ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00171\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(uint16\_t\ n)}
+\DoxyCodeLine{00172\ \ \ \ \ \{}
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#if\ defined(MODM\_CPU\_ARM)\ \&\&\ !defined(MODM\_CPU\_CORTEX\_M0)}}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rbit\ \%0,\%0"{}}\ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev16\ \%0,\%0"{}}\ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev\ \%0,\%0"{}}\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 1)\ \&\ 0x5555)\ |\ ((n\ <<\ \ 1)\ \&\ 0xaaaa);}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 2)\ \&\ 0x3333)\ |\ ((n\ <<\ \ 2)\ \&\ 0xcccc);}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 4)\ \&\ 0x0f0f)\ |\ ((n\ <<\ \ 4)\ \&\ 0xf0f0);}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{group__modm__math__utils_ga671d871cbcb60078122d969daecfa478}{swap}}(n);}
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00189\ \ \ \ \ \}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{inline}\ uint32\_t}
+\DoxyCodeLine{00195\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf059b757726ddbd2bd65c5cde94ea191}{bitReverse}}(uint32\_t\ n)}
+\DoxyCodeLine{00196\ \ \ \ \ \{}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\#if\ defined(MODM\_CPU\_ARM)\ \&\&\ !defined(MODM\_CPU\_CORTEX\_M0)\ \&\&\ !defined(\_\_aarch64\_\_)}}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rbit\ \%0,\%0"{}}\ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\#elif\ defined(\_\_aarch64\_\_)}}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \textcolor{keyword}{asm}\ \textcolor{keyword}{volatile}(}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rbit\ \%0,\%0"{}}\ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev32\ \%0,\%0"{}}\ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}rev\ \%0,\%0"{}}\ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)t"{}}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}=r"{}}\ (n)}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ \textcolor{stringliteral}{"{}0"{}}\ (n)}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 1)\ \&\ 0x55555555)\ |\ ((n\ <<\ \ 1)\ \&\ 0xaaaaaaaa);}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 2)\ \&\ 0x33333333)\ |\ ((n\ <<\ \ 2)\ \&\ 0xcccccccc);}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 4)\ \&\ 0x0f0f0f0f)\ |\ ((n\ <<\ \ 4)\ \&\ 0xf0f0f0f0);}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ \ 8)\ \&\ 0x00ff00ff)\ |\ ((n\ <<\ \ 8)\ \&\ 0xff00ff00);}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ n\ =\ ((n\ >>\ 16)\ \&\ 0x0000ffff)\ |\ ((n\ <<\ 16)\ \&\ 0xffff0000);}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ n;}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00222\ \ \ \ \ \}}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{constexpr}\ int8\_t}
+\DoxyCodeLine{00226\ \ \ \ \ leftmostBitHelper(uint32\_t\ value)}
+\DoxyCodeLine{00227\ \ \ \ \ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (value\ ==\ 0)?\ \ 0\ \ :\ \ (1\ +\ leftmostBitHelper(value\ >>\ 1));}
+\DoxyCodeLine{00229\ \ \ \ \ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00235\ \ \ \ \ \textcolor{keyword}{constexpr}\ int8\_t}
+\DoxyCodeLine{00236\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gad8ca8a97b6f8b1f20e73ca32d717dcb7}{leftmostBit}}(uint32\_t\ value)}
+\DoxyCodeLine{00237\ \ \ \ \ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ leftmostBitHelper(value)\ -\/\ 1;}
+\DoxyCodeLine{00239\ \ \ \ \ \}}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00247\ \ \ \ \ std::size\_t}
+\DoxyCodeLine{00248\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf87b61c94640fb831d3e5a4c4e5d5e54}{bitCount}}(uint8\_t\ n);}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00255\ \ \ \ \ std::size\_t}
+\DoxyCodeLine{00256\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf87b61c94640fb831d3e5a4c4e5d5e54}{bitCount}}(uint16\_t\ n);}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00259\ \ \ \ \ std::size\_t}
+\DoxyCodeLine{00260\ \ \ \ \ \doxymbox{\hyperlink{group__modm__math__utils_gaf87b61c94640fb831d3e5a4c4e5d5e54}{bitCount}}(uint32\_t\ n);}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00263\ \}}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_BIT\_OPERATION\_HPP}}
+
+\end{DoxyCode}

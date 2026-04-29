@@ -1,0 +1,30 @@
+\doxysection{modm::\+Task Class Reference}
+\hypertarget{classmodm_1_1_task}{}\label{classmodm_1_1_task}\index{modm::Task@{modm::Task}}
+
+
+{\ttfamily \+\#include $<$task.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_task_aa8692d4ebe02d77d596d64d05bc84ad4}\label{classmodm_1_1_task_aa8692d4ebe02d77d596d64d05bc84ad4} 
+virtual bool {\bfseries is\+Finished} ()=0
+\item 
+\Hypertarget{classmodm_1_1_task_adc5bb8ad2de993c501b788dcc101e39a}\label{classmodm_1_1_task_adc5bb8ad2de993c501b788dcc101e39a} 
+virtual void {\bfseries update} ()=0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Interface for a state-\/machine
+
+Every task must provide a start() method which resets the internal state and starts execution. It is not declared here because the task may need some specific information which should be passed as a parameter.
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+processing/\+task.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,189 @@
+\doxysection{polygon\+\_\+2d\+\_\+impl.\+hpp}
+\hypertarget{polygon__2d__impl_8hpp_source}{}\label{polygon__2d__impl_8hpp_source}\index{src/modm/math/geometry/polygon\_2d\_impl.hpp@{src/modm/math/geometry/polygon\_2d\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ 2013,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Kevin\ Läufer}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_POLYGON\_2D\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\ \ \ \ \#error\ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'polygon\_2d.hpp'\ instead!"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00020\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00021\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a0114b91a9f8211252d4a83f603519842}{modm::Polygon2D<T>::Polygon2D}}(SizeType\ n)\ :}
+\DoxyCodeLine{00022\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6}{PointSet2D}}<T>(n)}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00027\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a0114b91a9f8211252d4a83f603519842}{modm::Polygon2D<T>::Polygon2D}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d}{Polygon2D<T>}}\&\ other)\ :}
+\DoxyCodeLine{00028\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{PointSet2D}}<T>(other)}
+\DoxyCodeLine{00029\ \{}
+\DoxyCodeLine{00030\ \}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00033\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a0114b91a9f8211252d4a83f603519842}{modm::Polygon2D<T>::Polygon2D}}(std::initializer\_list<modm::Polygon2D<T>::PointType>\ init)\ :}
+\DoxyCodeLine{00034\ \ \ \ \ PointSet2D<T>(init)}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ \}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00039\ modm::Polygon2D<T>\&}
+\DoxyCodeLine{00040\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d}{modm::Polygon2D<T>::operator\ =\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a0114b91a9f8211252d4a83f603519842}{Polygon2D<T>}}\&\ other)}
+\DoxyCodeLine{00041\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ this-\/>points\ =\ other.points;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00044\ \}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00047\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00048\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d}{modm::Polygon2D<T>}}\&}
+\DoxyCodeLine{00049\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a1ef4a674b143a39d54b3ded1fe52ec60}{modm::Polygon2D<T>::operator\ <<\ }}(\textcolor{keyword}{const}\ modm::Polygon2D<T>::PointType\&\ point)}
+\DoxyCodeLine{00050\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ this-\/>append(point);}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00053\ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00056\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00057\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00058\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_adb66c10a6954012d6a517a312ced40ac}{modm::Polygon2D<T>::intersects}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a0114b91a9f8211252d4a83f603519842}{Polygon2D}}\&\ other)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00059\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00060\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00061\ \ \ \ \ SizeType\ m\ =\ other.points.getSize();}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)}
+\DoxyCodeLine{00064\ \ \ \ \ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ k\ =\ 0;\ k\ <\ m;\ ++k)}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ lineSegmentOwn(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n]);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ lineSegmentOther(other.points[k],\ other.points[(k\ +\ 1)\ \%\ m]);}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (lineSegmentOwn.\doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_ad7783ccdf3e82fecf35b7c7f8a3e124e}{intersects}}(lineSegmentOther))\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \ \ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00077\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00080\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00081\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00082\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_adb66c10a6954012d6a517a312ced40ac}{modm::Polygon2D<T>::intersects}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_circle2_d}{Circle2D<T>}}\&\ circle)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00083\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00084\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)}
+\DoxyCodeLine{00086\ \ \ \ \ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ segment(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n]);}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ T\ distance\ =\ segment.\doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_ab2bcfcb13c8ce8a3cb8420bb5febc7b0}{getDistanceTo}}(circle.getCenter());}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (distance\ <=\ circle.getRadius())\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00093\ \ \ \ \ \}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00096\ \}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00099\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00101\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_adb66c10a6954012d6a517a312ced40ac}{modm::Polygon2D<T>::intersects}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\&\ segment)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00102\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00103\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)}
+\DoxyCodeLine{00105\ \ \ \ \ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ ownSegment(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n]);}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (segment.\doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_ad7783ccdf3e82fecf35b7c7f8a3e124e}{intersects}}(ownSegment))\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00111\ \ \ \ \ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00114\ \}}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00117\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00118\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00119\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_adb66c10a6954012d6a517a312ced40ac}{modm::Polygon2D<T>::intersects}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{Ray2D<T>}}\&\ segment)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00120\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00121\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)}
+\DoxyCodeLine{00123\ \ \ \ \ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ ownSegment(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n]);}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (segment.\doxymbox{\hyperlink{classmodm_1_1_ray2_d_a360863b6ecd5cdde69dd238913aa3bb5}{intersects}}(ownSegment))\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00129\ \ \ \ \ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00132\ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00135\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00136\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00137\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_a187d2ec1ca27ee251c208abb8895b222}{modm::Polygon2D<T>::getIntersections}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\&\ segment,\ \doxymbox{\hyperlink{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6}{PointSet2D<T>}}\&\ intersectionPoints)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00138\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{bool}\ intersectionFound\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)}
+\DoxyCodeLine{00143\ \ \ \ \ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\ ownSegment(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n]);}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (segment.\doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_aff3049ff6c3e5f92f539de65d2a198c1}{getIntersections}}(ownSegment,\ intersectionPoints))\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ intersectionFound\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordflow}{return}\ intersectionFound;}
+\DoxyCodeLine{00152\ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00155\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00156\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00157\ \doxymbox{\hyperlink{classmodm_1_1_polygon2_d_adbd1e635cdb8f9f07923f671c5abd8d0}{modm::Polygon2D<T>::isInside}}(\textcolor{keyword}{const}\ modm::Polygon2D<T>::PointType\&\ point)}
+\DoxyCodeLine{00158\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordtype}{bool}\ cw\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keywordtype}{bool}\ ccw\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ SizeType\ n\ =\ this-\/>points.getSize();}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)\ \{}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ int\_fast8\_t\ r\ =\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>::ccw}}(this-\/>points[i],\ this-\/>points[(i\ +\ 1)\ \%\ n],\ point);}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (r)\ \{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 0:}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ point\ is\ one\ of\ the\ lines\ on\ the\ edge\ of\ the\ polygon.}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ 1:}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ cw\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ -\/1:}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ ccw\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00180\ \ \ \ \ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordflow}{return}\ (cw\ ||\ ccw);}
+\DoxyCodeLine{00183\ \}}
+
+\end{DoxyCode}

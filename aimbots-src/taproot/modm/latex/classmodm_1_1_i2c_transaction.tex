@@ -1,0 +1,333 @@
+\doxysection{modm::\+I2c\+Transaction Class Reference}
+\hypertarget{classmodm_1_1_i2c_transaction}{}\label{classmodm_1_1_i2c_transaction}\index{modm::I2cTransaction@{modm::I2cTransaction}}
+
+
+{\ttfamily \+\#include $<$i2c\+\_\+transaction.\+hpp$>$}
+
+Inheritance diagram for modm::\+I2c\+Transaction:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.814070cm]{classmodm_1_1_i2c_transaction}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_starting}{Starting}}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_writing}{Writing}}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_reading}{Reading}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a36767dc9db6bd682fd8348f402745263}{I2c\+Transaction}} (uint8\+\_\+t address)
+\item 
+void \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a04c0fbb865231d5263f4499ff6a7daeb}{set\+Address}} (uint8\+\_\+t address)
+\item 
+\doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713}{Transaction\+State}} \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a3d8a51e219912d01250e2bb732d4b227}{get\+State}} () const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a5ebc6259434dc6e279a633eff1020089}{is\+Busy}} () const
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_ae65bb90084e80349ca3b045b5dee386d}{configure\+Ping}} ()
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_aa8cc37212d9b105bce2686c19cc501ab}{configure\+Write\+Read}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}write\+Buffer, std::\+size\+\_\+t write\+Size, uint8\+\_\+t \texorpdfstring{$\ast$}{*}read\+Buffer, std::\+size\+\_\+t read\+Size)
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a2cfa7b1089b48079716d99c5d1ee328d}{configure\+Write}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, std::\+size\+\_\+t size)
+\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a5d84d47e257b81ddb3f7856bb2828c32}{configure\+Read}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, std::\+size\+\_\+t size)
+\item 
+virtual bool \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a7fc4cc4f94f1c9f7093d1944815f6ed7}{attaching}} ()
+\item 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_starting}{Starting}} \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a974f8a0785065703157b9c93984ebd6a}{starting}} ()=0
+\item 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_writing}{Writing}} \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a228135661dcee84d62f22715122551cf}{writing}} ()=0
+\item 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_reading}{Reading}} \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_ac013d2f70ccc9fd8bbfdc87b842aabb0}{reading}} ()=0
+\item 
+virtual void \doxymbox{\hyperlink{classmodm_1_1_i2c_transaction_a2729b9db6395b87b2404084a5a929d39}{detaching}} (\doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcd}{Detach\+Cause}} cause)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_i2c_transaction_aceabf617d6e44fde8d017def19546126}\label{classmodm_1_1_i2c_transaction_aceabf617d6e44fde8d017def19546126} 
+uint8\+\_\+t {\bfseries address}
+\item 
+\Hypertarget{classmodm_1_1_i2c_transaction_ae0568bb0ae518843c5642da840867805}\label{classmodm_1_1_i2c_transaction_ae0568bb0ae518843c5642da840867805} 
+volatile \doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713}{Transaction\+State}} {\bfseries state}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{structmodm_1_1_i2c}{modm::\+\+I2c}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcd}{Detach\+Cause}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcda391c51df2024fa2c540672812faaf879}{Normal\+Stop}}
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcda170dca6f1128c602c1ad7423e4e0f672}{Error\+Condition}}
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcda57871f61ec9b5f775a524aada612d196}{Failed\+To\+Attach}}
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713}{Transaction\+State}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713ae599161956d626eda4cb0a5ffb85271c}{Idle}}
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713ad8a942ef2b04672adfafef0ad817a407}{Busy}}
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713a902b0d55fddef6f8d651fe1035b7d4bd}{Error}}
+ \}
+\begin{DoxyCompactList}\small\item\em State of a \doxylink{structmodm_1_1_i2c}{I2c} Transaction. \end{DoxyCompactList}\item 
+using {\bfseries Configuration\+Handler} = void(\texorpdfstring{$\ast$}{*})()
+\begin{DoxyCompactList}\small\item\em The signature of the configuration function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_a768a0860e730f40db13d750648eb42ad}{Operation}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_a768a0860e730f40db13d750648eb42ada11a755d598c0c417f9a36758c3da7481}{Stop}} = 0
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a768a0860e730f40db13d750648eb42ada51cfbcff36da74a9fc47f3a5140f99f2}{Restart}} = 1
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a768a0860e730f40db13d750648eb42ada1129c0e4d43f2d121652a7302712cff6}{Write}} = 2
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a768a0860e730f40db13d750648eb42ada7a1a5f3e79fdc91edf2f5ead9d66abb4}{Read}} = 3
+ \}
+\begin{DoxyCompactList}\small\item\em All possible I2C Operations. \end{DoxyCompactList}\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_ae92dc2a408c98192b77d0702fd18350d}{Operation\+After\+Start}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_ae92dc2a408c98192b77d0702fd18350da11a755d598c0c417f9a36758c3da7481}{Stop}} = uint8\+\_\+t(Operation::\+Stop)
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_ae92dc2a408c98192b77d0702fd18350da1129c0e4d43f2d121652a7302712cff6}{Write}} = uint8\+\_\+t(Operation::\+Write)
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_ae92dc2a408c98192b77d0702fd18350da7a1a5f3e79fdc91edf2f5ead9d66abb4}{Read}} = uint8\+\_\+t(Operation::\+Read)
+ \}
+\begin{DoxyCompactList}\small\item\em Further operations after start operation. \end{DoxyCompactList}\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_aec4012822851f4abbe0ed0dc03c24cbb}{Operation\+After\+Write}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_aec4012822851f4abbe0ed0dc03c24cbba11a755d598c0c417f9a36758c3da7481}{Stop}} = uint8\+\_\+t(Operation::\+Stop)
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_aec4012822851f4abbe0ed0dc03c24cbba51cfbcff36da74a9fc47f3a5140f99f2}{Restart}} = uint8\+\_\+t(Operation::\+Restart)
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_aec4012822851f4abbe0ed0dc03c24cbba1129c0e4d43f2d121652a7302712cff6}{Write}} = uint8\+\_\+t(Operation::\+Write)
+ \}
+\begin{DoxyCompactList}\small\item\em Further operations after write operation. \end{DoxyCompactList}\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1_i2c_a9b3a80feb3a8f179706ee1d5afe8bb31}{Operation\+After\+Read}} :\+ uint8\+\_\+t \{ \doxymbox{\hyperlink{structmodm_1_1_i2c_a9b3a80feb3a8f179706ee1d5afe8bb31a11a755d598c0c417f9a36758c3da7481}{Stop}} = uint8\+\_\+t(Operation::\+Stop)
+, \doxymbox{\hyperlink{structmodm_1_1_i2c_a9b3a80feb3a8f179706ee1d5afe8bb31a51cfbcff36da74a9fc47f3a5140f99f2}{Restart}} = uint8\+\_\+t(Operation::\+Restart)
+ \}
+\begin{DoxyCompactList}\small\item\em Further operations after read operation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{structmodm_1_1_i2c}{modm::\+\+I2c}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class Scl, uint32\+\_\+t baudrate = 100\textquotesingle{}000$>$ }\\static void \doxymbox{\hyperlink{structmodm_1_1_i2c_a1855002ad6a0992e32db4f3ebf0432da}{reset\+Devices}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{structmodm_1_1_i2c}{modm::\+\+I2c}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr uint8\+\_\+t {\bfseries Write} = 0x00
+\begin{DoxyCompactList}\small\item\em Add the Write bit to the slave address. \end{DoxyCompactList}\item 
+static constexpr uint8\+\_\+t {\bfseries Read} = 0x01
+\begin{DoxyCompactList}\small\item\em Add the Read bit to the slave address. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Abstract class for transactions.
+
+For true asynchronous operation, the communication driver should inherit from this class, allowing multi-\/stage driver design and performance gain by premature data evaluation. This transaction object will stay attached to the {\ttfamily \doxylink{classmodm_1_1_i2c_master}{I2c\+Master}} during whole operation.
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1_i2c_master}{I2c\+Master}
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Georgi Grinshpun 
+
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1_i2c_transaction_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1_i2c_transaction_a36767dc9db6bd682fd8348f402745263}\index{modm::I2cTransaction@{modm::I2cTransaction}!I2cTransaction@{I2cTransaction}}
+\index{I2cTransaction@{I2cTransaction}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{I2cTransaction()}{I2cTransaction()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a36767dc9db6bd682fd8348f402745263} 
+modm::\+\+I2c\+Transaction::\+\+I2c\+Transaction (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{address}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em address} & the slave address not yet shifted left (address \texorpdfstring{$<$}{<} 128). \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_i2c_transaction_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_i2c_transaction_a7fc4cc4f94f1c9f7093d1944815f6ed7}\index{modm::I2cTransaction@{modm::I2cTransaction}!attaching@{attaching}}
+\index{attaching@{attaching}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{attaching()}{attaching()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a7fc4cc4f94f1c9f7093d1944815f6ed7} 
+virtual bool modm::\+\+I2c\+Transaction::\+attaching (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This method is called when the \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} is not currently in use by another transaction and can be attached.
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} if the \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} should attach this transaction, {\ttfamily false} if it should not attach it. 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_i2c_transaction_ae65bb90084e80349ca3b045b5dee386d}\index{modm::I2cTransaction@{modm::I2cTransaction}!configurePing@{configurePing}}
+\index{configurePing@{configurePing}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{configurePing()}{configurePing()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_ae65bb90084e80349ca3b045b5dee386d} 
+bool modm::\+\+I2c\+Transaction::\+configure\+Ping (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Initializes the adapter to only send the address without payload.
+
+
+\begin{DoxyRetVals}{Return values}
+{\em \`{}true\`{}} & adapter configured successfully, \\
+\hline
+{\em \`{}false\`{}} & adapter busy \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{classmodm_1_1_i2c_transaction_a5d84d47e257b81ddb3f7856bb2828c32}\index{modm::I2cTransaction@{modm::I2cTransaction}!configureRead@{configureRead}}
+\index{configureRead@{configureRead}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{configureRead()}{configureRead()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a5d84d47e257b81ddb3f7856bb2828c32} 
+bool modm::\+\+I2c\+Transaction::\+configure\+Read (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{std::\+size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+
+Initializes the adapter with the required information for a read operation.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{out}}  & {\em buffer} & buffer to be read from the slave \\
+\hline
+ & {\em size} & number of bytes to be read, set to {\ttfamily 0} to read nothing\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em \`{}true\`{}} & adapter configured successfully, \\
+\hline
+{\em \`{}false\`{}} & adapter busy \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{classmodm_1_1_i2c_transaction_a2cfa7b1089b48079716d99c5d1ee328d}\index{modm::I2cTransaction@{modm::I2cTransaction}!configureWrite@{configureWrite}}
+\index{configureWrite@{configureWrite}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{configureWrite()}{configureWrite()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a2cfa7b1089b48079716d99c5d1ee328d} 
+bool modm::\+\+I2c\+Transaction::\+configure\+Write (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{std::\+size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+
+Initializes the adapter with the required information for a write operation.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em buffer} & buffer to be written to the slave \\
+\hline
+ & {\em size} & number of bytes to be written, set to {\ttfamily 0} to write nothing\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em \`{}true\`{}} & adapter configured successfully, \\
+\hline
+{\em \`{}false\`{}} & adapter busy \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{classmodm_1_1_i2c_transaction_aa8cc37212d9b105bce2686c19cc501ab}\index{modm::I2cTransaction@{modm::I2cTransaction}!configureWriteRead@{configureWriteRead}}
+\index{configureWriteRead@{configureWriteRead}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{configureWriteRead()}{configureWriteRead()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_aa8cc37212d9b105bce2686c19cc501ab} 
+bool modm::\+\+I2c\+Transaction::\+configure\+Write\+Read (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{write\+Buffer}{, }\item[{std::\+size\+\_\+t}]{write\+Size}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{read\+Buffer}{, }\item[{std::\+size\+\_\+t}]{read\+Size}{}\end{DoxyParamCaption})}
+
+Initializes the adapter with the required information for a write/\+read operation.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em write\+Buffer} & buffer to be written to the slave \\
+\hline
+ & {\em write\+Size} & number of bytes to be written, set to {\ttfamily 0} to write nothing \\
+\hline
+\doxymbox{\texttt{out}}  & {\em read\+Buffer} & buffer to write the read bytes from the slave \\
+\hline
+ & {\em read\+Size} & number of bytes to be read, set to {\ttfamily 0} to read nothing\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em \`{}true\`{}} & adapter configured successfully, \\
+\hline
+{\em \`{}false\`{}} & adapter busy \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{classmodm_1_1_i2c_transaction_a2729b9db6395b87b2404084a5a929d39}\index{modm::I2cTransaction@{modm::I2cTransaction}!detaching@{detaching}}
+\index{detaching@{detaching}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{detaching()}{detaching()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a2729b9db6395b87b2404084a5a929d39} 
+virtual void modm::\+\+I2c\+Transaction::\+detaching (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structmodm_1_1_i2c_a0406997126d064926cdb512911a17dcd}{Detach\+Cause}}}]{cause}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+This is called when all transmissions finished and transaction object is about to be detached. The \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} will not be free until this method returns.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cause} & specifies whether the detachment was expected ({\ttfamily Normal\+Stop}), or a error occurred ({\ttfamily Error\+Condition}), which can, but does not need to be reacted upon. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1_i2c_transaction_a3d8a51e219912d01250e2bb732d4b227}\index{modm::I2cTransaction@{modm::I2cTransaction}!getState@{getState}}
+\index{getState@{getState}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{getState()}{getState()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a3d8a51e219912d01250e2bb732d4b227} 
+\doxymbox{\hyperlink{structmodm_1_1_i2c_a0ba607aa36d2c6c1e5f3ddd9a969c713}{Transaction\+State}} modm::\+\+I2c\+Transaction::\+get\+State (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily Busy} while an I2C operation is ongoing. Reinitialization is not permitted during this phase. 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_i2c_transaction_a5ebc6259434dc6e279a633eff1020089}\index{modm::I2cTransaction@{modm::I2cTransaction}!isBusy@{isBusy}}
+\index{isBusy@{isBusy}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{isBusy()}{isBusy()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a5ebc6259434dc6e279a633eff1020089} 
+bool modm::\+\+I2c\+Transaction::\+is\+Busy (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+{\ttfamily true} while adapter is busy 
+\end{DoxyReturn}
+\Hypertarget{classmodm_1_1_i2c_transaction_ac013d2f70ccc9fd8bbfdc87b842aabb0}\index{modm::I2cTransaction@{modm::I2cTransaction}!reading@{reading}}
+\index{reading@{reading}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{reading()}{reading()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_ac013d2f70ccc9fd8bbfdc87b842aabb0} 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_reading}{Reading}} modm::\+\+I2c\+Transaction::\+reading (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+This method is called before the \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} begins a read operation.
+
+\begin{DoxyReturn}{Returns}
+the {\ttfamily \doxylink{structmodm_1_1_i2c_transaction_1_1_reading}{Reading}} struct containing the read buffer and size and next operation 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{classmodm_1_1_i2c_read_transaction_a3202f5cd99ab21e729e20ab387599f7a}{modm::\+\+I2c\+Read\+Transaction}}, \doxymbox{\hyperlink{classmodm_1_1_i2c_write_read_transaction_ae5f5f13fd97cfca95217789bcf2ab6a6}{modm::\+\+I2c\+Write\+Read\+Transaction}}, and \doxymbox{\hyperlink{classmodm_1_1_i2c_write_transaction_a71480d18c4ae2ea238d89113a5348a56}{modm::\+\+I2c\+Write\+Transaction}}.
+
+\Hypertarget{classmodm_1_1_i2c_transaction_a04c0fbb865231d5263f4499ff6a7daeb}\index{modm::I2cTransaction@{modm::I2cTransaction}!setAddress@{setAddress}}
+\index{setAddress@{setAddress}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{setAddress()}{setAddress()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a04c0fbb865231d5263f4499ff6a7daeb} 
+void modm::\+\+I2c\+Transaction::\+set\+Address (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{address}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em address} & the slave address not yet shifted left (address \texorpdfstring{$<$}{<} 128). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1_i2c_transaction_a974f8a0785065703157b9c93984ebd6a}\index{modm::I2cTransaction@{modm::I2cTransaction}!starting@{starting}}
+\index{starting@{starting}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{starting()}{starting()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a974f8a0785065703157b9c93984ebd6a} 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_starting}{Starting}} modm::\+\+I2c\+Transaction::\+starting (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+This method is called when the \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} is ready to (re-\/)start an operation.
+
+\begin{DoxyReturn}{Returns}
+the {\ttfamily \doxylink{structmodm_1_1_i2c_transaction_1_1_starting}{Starting}} struct containing slave address and the next operation 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{classmodm_1_1_i2c_read_transaction_a1ebc60c3edc73da77cce9c5ad5a0885e}{modm::\+\+I2c\+Read\+Transaction}}, \doxymbox{\hyperlink{classmodm_1_1_i2c_write_read_transaction_ac5b7104a58ff1dcf9a720fdbf6ee5c82}{modm::\+\+I2c\+Write\+Read\+Transaction}}, and \doxymbox{\hyperlink{classmodm_1_1_i2c_write_transaction_af55820fbc7fded2e40b19fffe41970fb}{modm::\+\+I2c\+Write\+Transaction}}.
+
+\Hypertarget{classmodm_1_1_i2c_transaction_a228135661dcee84d62f22715122551cf}\index{modm::I2cTransaction@{modm::I2cTransaction}!writing@{writing}}
+\index{writing@{writing}!modm::I2cTransaction@{modm::I2cTransaction}}
+\doxysubsubsection{\texorpdfstring{writing()}{writing()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_i2c_transaction_a228135661dcee84d62f22715122551cf} 
+virtual \doxymbox{\hyperlink{structmodm_1_1_i2c_transaction_1_1_writing}{Writing}} modm::\+\+I2c\+Transaction::\+writing (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+This method is called before the \doxylink{classmodm_1_1_i2c_master}{I2c\+Master} begins a write operation.
+
+\begin{DoxyReturn}{Returns}
+the {\ttfamily \doxylink{structmodm_1_1_i2c_transaction_1_1_writing}{Writing}} struct containing the write buffer and size and next operation 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{classmodm_1_1_i2c_read_transaction_a020f494d1d9973bc2c635b8c8b9d3252}{modm::\+\+I2c\+Read\+Transaction}}, \doxymbox{\hyperlink{classmodm_1_1_i2c_write_read_transaction_acd1b406ce20380757291928e53fd6940}{modm::\+\+I2c\+Write\+Read\+Transaction}}, and \doxymbox{\hyperlink{classmodm_1_1_i2c_write_transaction_a1f9662798c9325ab9609b61c38f02168}{modm::\+\+I2c\+Write\+Transaction}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+i2c\+\_\+transaction.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,225 @@
+\doxysection{adc\+\_\+3.\+hpp}
+\hypertarget{adc__3_8hpp_source}{}\label{adc__3_8hpp_source}\index{src/modm/platform/adc/adc\_3.hpp@{src/modm/platform/adc/adc\_3.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2014,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Fabian\ Greif}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_ADC3\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_ADC3\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/adc.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/platform/gpio/connector.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00043\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3}{Adc3}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_adc}{modm::Adc}}}
+\DoxyCodeLine{00044\ \{}
+\DoxyCodeLine{00045\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ Resolution\ =\ 12;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00057\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}\ :\ uint8\_t\ \ \ \textcolor{comment}{//\ TODO:\ What\ is\ the\ best\ type?}}
+\DoxyCodeLine{00058\ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ Channel0\ =\ 0,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ Channel1\ =\ 1,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ Channel2\ =\ 2,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ Channel3\ =\ 3,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ Channel4\ =\ 4,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ Channel5\ =\ 5,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ Channel6\ =\ 6,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ Channel7\ =\ 7,}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ Channel8\ =\ 8,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ Channel9\ =\ 9,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ Channel10\ =\ 10,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ Channel11\ =\ 11,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ Channel12\ =\ 12,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ Channel13\ =\ 13,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ Channel14\ =\ 14,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ Channel15\ =\ 15,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ Channel16\ =\ 16,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ Channel17\ =\ 17,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ Channel18\ =\ 18,}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ BatDiv2\ =\ 18,\ }
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078ba345b3ea3fe508e0716705a05b619c5b3}{TemperatureSensor}}\ =\ 16,}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078baee534ac11d9a6aad6664a4a0ccd40648}{InternalReference}}\ =\ 17,}
+\DoxyCodeLine{00099\ \ \ \ \ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00108\ \ \ \ \ Prescaler\ :\ uint8\_t}
+\DoxyCodeLine{00109\ \ \ \ \ \{}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ Div2\ =\ 0b00,\ \ \ \ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ Div4\ =\ 0b01,\ \ \ \ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ Div6\ =\ 0b10,\ \ \ \ }
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ Div8\ =\ 0b11\ \ \ \ \ }
+\DoxyCodeLine{00114\ \ \ \ \ \};}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00123\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\ :\ uint8\_t}
+\DoxyCodeLine{00124\ \ \ \ \ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfa566b3c3160669652a57c5499de449d39}{Cycles3}}\ \ \ \ \ =\ 0b000,\ \ \ \ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfa2500aa43f1a32532aafdd1132c19fbae}{Cycles15}}\ \ \ \ =\ 0b001,\ \ \ \ }
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfaf0f7dc86377e0ac3ac709419a817a57b}{Cycles28}}\ \ \ \ =\ 0b010,\ \ \ \ }
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfab840153c6a922c709e6e0f2ce1397d7b}{Cycles56}}\ \ \ \ =\ 0b011,\ \ \ \ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfabfed02eab46aad846a310b075d4b5f15}{Cycles84}}\ \ \ \ =\ 0b100,\ \ \ \ }
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfa02071b68128c5337acb6ec1b3fcb1704}{Cycles112}}\ \ \ =\ 0b101,\ \ \ \ }
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfa9e612fe4954c9b4798fc6ecb4ecae6ca}{Cycles144}}\ \ \ =\ 0b110,\ \ \ \ }
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cfaa12282069226b28e9669a5df67d05850}{Cycles480}}\ \ \ =\ 0b111\ \ \ \ \ }
+\DoxyCodeLine{00133\ \ \ \ \ \};}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00143\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80}{Interrupt}}\ :\ uint32\_t}
+\DoxyCodeLine{00144\ \ \ \ \ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a70402160707bec39bb8fe0cf68c79080}{AnalogWatchdog}}\ \ \ \ \ \ \ \ \ \ =\ ADC\_CR1\_AWDIE,}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a7a965fe2d1303348db7923c5dd7fa47a}{EndOfRegularConversion}}\ \ =\ ADC\_CR1\_EOCIE,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80ac02d932e9cb6790b6f7189f994a97c33}{EndOfInjectedConversion}}\ =\ ADC\_CR1\_JEOCIE,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a9fa996dc830f67a458e46cf1463d5cd3}{Overrun}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ ADC\_CR1\_OVRIE,}
+\DoxyCodeLine{00153\ \ \ \ \ \};}
+\DoxyCodeLine{00154\ \ \ \ \ MODM\_FLAGS32(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80}{Interrupt}});}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00157\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_af58a128178ccf7b4a3bf79fa4bca38bc}{InterruptFlag}}\ :\ uint32\_t}
+\DoxyCodeLine{00158\ \ \ \ \ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a70402160707bec39bb8fe0cf68c79080}{AnalogWatchdog}}\ \ \ \ \ \ \ \ \ \ =\ ADC\_SR\_AWD,}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a7a965fe2d1303348db7923c5dd7fa47a}{EndOfRegularConversion}}\ \ =\ ADC\_SR\_EOC,}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80ac02d932e9cb6790b6f7189f994a97c33}{EndOfInjectedConversion}}\ =\ ADC\_SR\_JEOC,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a62e08deee4e0f7c4ba0b539164f09a80a9fa996dc830f67a458e46cf1463d5cd3}{Overrun}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ ADC\_SR\_OVR,}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_af58a128178ccf7b4a3bf79fa4bca38bcab1c94ca2fbc3e78fc30069c8d0f01680}{All}}\ \ \ \ \ \ \ \ \ \ \ \ \ =\ ADC\_SR\_AWD\ |\ ADC\_SR\_EOC\ |\ ADC\_SR\_JEOC\ |\ ADC\_SR\_OVR,}
+\DoxyCodeLine{00169\ \ \ \ \ \};}
+\DoxyCodeLine{00170\ \ \ \ \ MODM\_FLAGS32(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_af58a128178ccf7b4a3bf79fa4bca38bc}{InterruptFlag}});}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{comment}{//\ start\ inherited\ documentation}}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00176\ \ \ \ \ connect()}
+\DoxyCodeLine{00177\ \ \ \ \ \{}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Connector\ =\ GpioConnector<Peripheral::Adc3,\ Signals...>;}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ Connector::connect();}
+\DoxyCodeLine{00180\ \ \ \ \ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ frequency\_t\ frequency=MHz(10),\ percent\_t\ tolerance=pct(10)\ >}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00192\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a700eae651827a967f07d86d4becdf408}{initialize}}();}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00195\ \ \ \ \ disable();}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00209\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00210\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_aa07537377f0ca2b16697cb23da19a20d}{startConversion}}();}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00213\ \ \ \ \ isConversionFinished();}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00216\ \ \ \ \ getValue();}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ }
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00220\ \ \ \ \ readChannel(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}\ channel);}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00240\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00241\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a65926a2877af67b7c802e49812f12e68}{setChannel}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}\ channel,}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\ sampleTime\ =\ \textcolor{keyword}{static\_cast<}\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\textcolor{keyword}{>}(0b000));}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Gpio\ >}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00247\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_ab2f188d20b50be561bd5e433fc4ba208}{setPinChannel}}(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\ sampleTime\ =\ \textcolor{keyword}{static\_cast<}\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\textcolor{keyword}{>}(0b000))}
+\DoxyCodeLine{00248\ \ \ \ \ \{}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a65926a2877af67b7c802e49812f12e68}{setChannel}}(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a56f4228aea3976a1eadab630ac26d4cf}{getPinChannel<Gpio>}}(),\ sampleTime);}
+\DoxyCodeLine{00250\ \ \ \ \ \}}
+\DoxyCodeLine{00252\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ Gpio\ >}
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}}
+\DoxyCodeLine{00254\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a56f4228aea3976a1eadab630ac26d4cf}{getPinChannel}}()}
+\DoxyCodeLine{00255\ \ \ \ \ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ int8\_t\ channel\{Gpio::template\ AdcChannel<Peripheral::Adc3>\};}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(channel\ >=\ 0,\ \textcolor{stringliteral}{"{}Adc3\ does\ not\ have\ a\ channel\ for\ this\ pin!"{}});}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}(channel);}
+\DoxyCodeLine{00259\ \ \ \ \ \}}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}}
+\DoxyCodeLine{00262\ \ \ \ \ getChannel();}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00266\ \ \ \ \ enableFreeRunningMode();}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00269\ \ \ \ \ disableFreeRunningMode();}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00273\ \ \ \ \ setLeftAdjustResult();}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00276\ \ \ \ \ setRightAdjustResult();}
+\DoxyCodeLine{00277\ \ \ \ \ \textcolor{comment}{//\ stop\ documentation\ inherited}}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00281\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a192311cc8130301a6af0de311a72df79}{enableTemperatureRefVMeasurement}}();}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00285\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a285758898cce38ae9ea9c5210c98b72f}{disableTemperatureRefVMeasurement}}();}
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00288\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a6ce0125e91642b0159e3e987b6f41031}{addChannel}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}\ channel,}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\ sampleTime\ =\ \textcolor{keyword}{static\_cast<}\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\textcolor{keyword}{>}(0b000));}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00292\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00293\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_aafea9e222b2ec8c74ecfb989db327ead}{setSampleTime}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a57edd2660e953862d57639cd0d2a078b}{Channel}}\ channel,}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\ sampleTime\ =\ \textcolor{keyword}{static\_cast<}\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a579591c32f6d631374c34dc3a0cae2cf}{SampleTime}}\textcolor{keyword}{>}(0b000));}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00298\ \ \ \ \ enableInterruptVector(\textcolor{keyword}{const}\ uint32\_t\ priority,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ enable\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00319\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a9f0e9432f2542fdc854a836693885959}{enableInterrupt}}(\textcolor{keyword}{const}\ Interrupt\_t\ interrupt);}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00325\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_ac5b384b56862b7e58ae9e81d3be57f04}{disableInterrupt}}(\textcolor{keyword}{const}\ Interrupt\_t\ interrupt);}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00334\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ InterruptFlag\_t}
+\DoxyCodeLine{00335\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a7340c7b04867ce9108cef477c55eda7e}{getInterruptFlags}}();}
+\DoxyCodeLine{00336\ }
+\DoxyCodeLine{00346\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00347\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc3_a06b2807e965db871762a06d651460163}{acknowledgeInterruptFlags}}(\textcolor{keyword}{const}\ InterruptFlag\_t\ flags);}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00361\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00362\ \ \ \ \ setPrescaler(\textcolor{keyword}{const}\ Prescaler\ prescaler\ =\ Prescaler::Div8);}
+\DoxyCodeLine{00363\ \};}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00365\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00367\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \textcolor{preprocessor}{\#include\ "{}adc\_3\_impl.hpp"{}}}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00371\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_STM32\_ADC3\_HPP}}
+
+\end{DoxyCode}

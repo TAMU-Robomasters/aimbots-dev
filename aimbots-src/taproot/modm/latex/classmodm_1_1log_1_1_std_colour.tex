@@ -1,0 +1,74 @@
+\doxysection{modm::\+log::\+Std\+Colour\texorpdfstring{$<$}{<} TEXT, BACKGROUND, STYLE \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1log_1_1_std_colour}{}\label{classmodm_1_1log_1_1_std_colour}\index{modm::log::StdColour$<$ TEXT, BACKGROUND, STYLE $>$@{modm::log::StdColour$<$ TEXT, BACKGROUND, STYLE $>$}}
+
+
+This style colours the given stream in the color given by the template argument.  
+
+
+
+
+{\ttfamily \+\#include $<$std\+\_\+colour.\+hpp$>$}
+
+Inheritance diagram for modm::\+log::\+Std\+Colour\texorpdfstring{$<$}{<} TEXT, BACKGROUND, STYLE \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1log_1_1_std_colour}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_ab2de037a5b8ced891e1b65028c0acdd4}\label{classmodm_1_1log_1_1_std_colour_ab2de037a5b8ced891e1b65028c0acdd4} 
+{\bfseries Std\+Colour} (STYLE style)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_afccb1113cac2f5b8510a4daddc6b3438}\label{classmodm_1_1log_1_1_std_colour_afccb1113cac2f5b8510a4daddc6b3438} 
+{\bfseries Std\+Colour} (\doxymbox{\hyperlink{classmodm_1_1_i_o_device}{IODevice}} \&device)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_a9e53e140381fa52669aa04aa79311645}\label{classmodm_1_1log_1_1_std_colour_a9e53e140381fa52669aa04aa79311645} 
+void {\bfseries parse\+Arg} (int argc, char \texorpdfstring{$\ast$}{*}argv)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_ac2f5d09e5170e25fef3ccb84f873f9bc}\label{classmodm_1_1log_1_1_std_colour_ac2f5d09e5170e25fef3ccb84f873f9bc} 
+void {\bfseries write} (char c)
+\begin{DoxyCompactList}\small\item\em Write one char to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_a49089b3be814b3ac933ff921f906d83f}\label{classmodm_1_1log_1_1_std_colour_a49089b3be814b3ac933ff921f906d83f} 
+void {\bfseries write} (const char \texorpdfstring{$\ast$}{*}s)
+\begin{DoxyCompactList}\small\item\em Write a string that terminates with {\ttfamily \textquotesingle{}\textbackslash{}0\textquotesingle{}} to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_std_colour_af852ceee3a760a2a32f3f069e51bde64}\label{classmodm_1_1log_1_1_std_colour_af852ceee3a760a2a32f3f069e51bde64} 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em The message is complete and can be written/\+send/\+displayed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1log_1_1_style}{modm::\+log::\+\+Style$<$ Default\+Style $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Style} (\doxymbox{\hyperlink{classmodm_1_1log_1_1_default_style}{Default\+Style}} style)
+\item 
+void {\bfseries parse\+Arg} (int argc, char \texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em parse arguments that are given with the start of the program \end{DoxyCompactList}\item 
+void {\bfseries write} (char c)
+\begin{DoxyCompactList}\small\item\em Write one char to the sink. \end{DoxyCompactList}\item 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em The message is complete and can be written/\+send/\+displayed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1log_1_1_style}{modm::\+log::\+\+Style$<$ Default\+Style $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef \doxymbox{\hyperlink{classmodm_1_1log_1_1_default_style}{Default\+Style}} {\bfseries Type}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$Colour TEXT, Colour BACKGROUND, typename STYLE = Default\+Style$>$\newline
+class modm::\+log::\+\+Std\+Colour$<$ TEXT, BACKGROUND, STYLE $>$}
+This style colours the given stream in the color given by the template argument. 
+
+\begin{DoxySeeAlso}{See also}
+\href{http://mathias-kettner.de/lw_farbige_ausgabe_auf_der_konsole.html}{\texttt{http:\+/\+/\+mathias-\/kettner.\+de/\+lw\+\_\+farbige\+\_\+ausgabe\+\_\+auf\+\_\+der\+\_\+konsole.\+html}}
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Martin Rosekeit \href{mailto:martin.rosekeit@rwth-aachen.de}{\texttt{martin.\+rosekeit@rwth-\/aachen.\+de}} 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+debug/\+logger/\+style/\+std\+\_\+colour.\+hpp\item 
+src/\+modm/\+debug/\+logger/\+style/\+std\+\_\+colour\+\_\+impl.\+hpp\end{DoxyCompactItemize}

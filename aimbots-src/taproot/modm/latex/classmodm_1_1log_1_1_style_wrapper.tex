@@ -1,0 +1,107 @@
+\doxysection{modm::\+log::\+Style\+Wrapper\texorpdfstring{$<$}{<} STYLE \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1log_1_1_style_wrapper}{}\label{classmodm_1_1log_1_1_style_wrapper}\index{modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}}
+
+
+Wrapper to use the \doxylink{classmodm_1_1log_1_1_style}{Style} as a \doxylink{classmodm_1_1_i_o_device}{IODevice} in the \doxylink{classmodm_1_1log_1_1_logger}{Logger}.  
+
+
+
+
+{\ttfamily \+\#include $<$style\+\_\+wrapper.\+hpp$>$}
+
+Inheritance diagram for modm::\+log::\+Style\+Wrapper\texorpdfstring{$<$}{<} STYLE \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1log_1_1_style_wrapper}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_a11befcc553039945689187669ab91706}\label{classmodm_1_1log_1_1_style_wrapper_a11befcc553039945689187669ab91706} 
+{\bfseries Style\+Wrapper} (STYLE in\+Style)
+\item 
+virtual void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper_a24f96d63757bc8aead07b4e655a3bd44}{write}} (char c)
+\begin{DoxyCompactList}\small\item\em Write a single character. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper_a88bdb845d3dddbadc1f701c6dde3dbd3}{write}} (const char \texorpdfstring{$\ast$}{*}str)
+\begin{DoxyCompactList}\small\item\em Write a C-\/string. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper_a75dab20214ccf95e8dcfe7ecd8b1c72b}{flush}} ()
+\item 
+virtual bool \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper_a360ddf1ceb0dfd80b112e044401d16cf}{read}} (char \&)
+\begin{DoxyCompactList}\small\item\em Read a single character. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename STYLE$>$\newline
+class modm::\+log::\+\+Style\+Wrapper$<$ STYLE $>$}
+Wrapper to use the \doxylink{classmodm_1_1log_1_1_style}{Style} as a \doxylink{classmodm_1_1_i_o_device}{IODevice} in the \doxylink{classmodm_1_1log_1_1_logger}{Logger}. 
+
+\begin{DoxyAuthor}{Author}
+Martin Rosekeit \href{mailto:martin.rosekeit@rwth-aachen.de}{\texttt{martin.\+rosekeit@rwth-\/aachen.\+de}} 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_a75dab20214ccf95e8dcfe7ecd8b1c72b}\index{modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}!flush@{flush}}
+\index{flush@{flush}!modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}}
+\doxysubsubsection{\texorpdfstring{flush()}{flush()}}
+{\footnotesize\ttfamily \label{classmodm_1_1log_1_1_style_wrapper_a75dab20214ccf95e8dcfe7ecd8b1c72b} 
+template$<$typename STYLE$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper}{modm::\+log::\+\+Style\+Wrapper}}$<$ STYLE $>$::\+flush (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_a360ddf1ceb0dfd80b112e044401d16cf}\index{modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}!read@{read}}
+\index{read@{read}!modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}}
+{\footnotesize\ttfamily \label{classmodm_1_1log_1_1_style_wrapper_a360ddf1ceb0dfd80b112e044401d16cf} 
+template$<$typename STYLE$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper}{modm::\+log::\+\+Style\+Wrapper}}$<$ STYLE $>$::\+read (\begin{DoxyParamCaption}\item[{char \&}]{c}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Read a single character. 
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device_af20f7a971e6a59e2b2c54b271d0225fc}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_a24f96d63757bc8aead07b4e655a3bd44}\index{modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}!write@{write}}
+\index{write@{write}!modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1log_1_1_style_wrapper_a24f96d63757bc8aead07b4e655a3bd44} 
+template$<$typename STYLE$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper}{modm::\+log::\+\+Style\+Wrapper}}$<$ STYLE $>$::\+write (\begin{DoxyParamCaption}\item[{char}]{c}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Write a single character. 
+
+
+
+Implements \doxymbox{\hyperlink{classmodm_1_1_i_o_device_abbe05e516e38666d798194a160cea75d}{modm::\+\+IODevice}}.
+
+\Hypertarget{classmodm_1_1log_1_1_style_wrapper_a88bdb845d3dddbadc1f701c6dde3dbd3}\index{modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}!write@{write}}
+\index{write@{write}!modm::log::StyleWrapper$<$ STYLE $>$@{modm::log::StyleWrapper$<$ STYLE $>$}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1log_1_1_style_wrapper_a88bdb845d3dddbadc1f701c6dde3dbd3} 
+template$<$typename STYLE$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1log_1_1_style_wrapper}{modm::\+log::\+\+Style\+Wrapper}}$<$ STYLE $>$::\+write (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Write a C-\/string. 
+
+
+
+Reimplemented from \doxymbox{\hyperlink{classmodm_1_1_i_o_device_a15063dcd78363970c9e7cdc5c7ac54ce}{modm::\+\+IODevice}}.
+
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+debug/\+logger/\+style\+\_\+wrapper.\+hpp\end{DoxyCompactItemize}

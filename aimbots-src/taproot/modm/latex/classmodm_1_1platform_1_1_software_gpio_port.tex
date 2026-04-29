@@ -1,0 +1,236 @@
+\doxysection{modm::\+platform::\+Software\+Gpio\+Port\texorpdfstring{$<$}{<} Gpios \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1platform_1_1_software_gpio_port}{}\label{classmodm_1_1platform_1_1_software_gpio_port}\index{modm::platform::SoftwareGpioPort$<$ Gpios $>$@{modm::platform::SoftwareGpioPort$<$ Gpios $>$}}
+
+
+{\ttfamily \+\#include $<$software\+\_\+port.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Software\+Gpio\+Port\texorpdfstring{$<$}{<} Gpios \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classmodm_1_1platform_1_1_software_gpio_port}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port_a5a2913da1e7e69a3a6da5b67c9a1b891}{Port\+Type}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1_gpio_port}{modm::\+\+Gpio\+Port}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33}{Data\+Order}} :\+ bool \{ \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a960b44c579bc2f6818d2daaf9e4c16f0}{Normal}} = false
+, \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a030aa94015bd11d183b897ddb541e4e3}{Reversed}} = true
+ \}
+\begin{DoxyCompactList}\small\item\em This enum can be used to reverse the bit order of the Data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{modm::\+platform::\+\+Gpio}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Floating}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{Pull\+Up}} = 0x1
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6da4178eba6913566377ec7e0519dead47b}{Pull\+Down}} = 0x2
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} \{ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61ae5914f527c36b22ce79ba8231491b63f}{Push\+Pull}} = 0x0
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{Open\+Drain}} = 0x1
+ \}
+\item 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} \{ \newline
+{\bfseries Low} = 0
+, {\bfseries Medium} = 0x1
+, {\bfseries High} = 0x2
+, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09af0b44f10edcd3bdee6720430ac4111cd}{Very\+High}} = 0x3
+, \newline
+{\bfseries MHz2} = Low
+, {\bfseries MHz25} = Medium
+, {\bfseries MHz50} = High
+, {\bfseries MHz100} = Very\+High
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5}\label{structmodm_1_1platform_1_1_gpio_a5f683814888fa5a34c2bcf2db9b803a5} 
+enum class {\bfseries Input\+Trigger} \{ {\bfseries Rising\+Edge}
+, {\bfseries Falling\+Edge}
+, {\bfseries Both\+Edges}
+ \}
+\item 
+\Hypertarget{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}\label{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b} 
+enum class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}} \{ \newline
+{\bfseries A} = 0
+, {\bfseries B} = 1
+, {\bfseries C} = 2
+, {\bfseries D} = 3
+, \newline
+{\bfseries E} = 4
+, {\bfseries F} = 5
+, {\bfseries G} = 6
+, {\bfseries H} = 7
+, \newline
+{\bfseries I} = 8
+ \}
+\begin{DoxyCompactList}\small\item\em The \doxylink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port} a \doxylink{structmodm_1_1platform_1_1_gpio}{Gpio} Pin is connected to. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a717e863b9f0c4d1cc1fa09d8aad1766b}\label{classmodm_1_1platform_1_1_software_gpio_port_a717e863b9f0c4d1cc1fa09d8aad1766b} 
+static constexpr \doxymbox{\hyperlink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33}{Data\+Order}} {\bfseries get\+Data\+Order} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a9cc76d73462ec43b656d62c81f88dc71}\label{classmodm_1_1platform_1_1_software_gpio_port_a9cc76d73462ec43b656d62c81f88dc71} 
+static Port\+Type {\bfseries is\+Set} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_ac5bfdefc6fb8b927be65455b2cadcdaa}\label{classmodm_1_1platform_1_1_software_gpio_port_ac5bfdefc6fb8b927be65455b2cadcdaa} 
+static void {\bfseries write} (Port\+Type data)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_ab84df8ebdb316675aead53784dfd67f8}\label{classmodm_1_1platform_1_1_software_gpio_port_ab84df8ebdb316675aead53784dfd67f8} 
+static Port\+Type {\bfseries read} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{modm::\+platform::\+\+Gpio\+Set$<$ Gpios... $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+static void {\bfseries set\+Output} ()
+\item 
+static void {\bfseries set\+Output} (bool status)
+\item 
+static void {\bfseries set\+Output} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} type, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} speed=Output\+Speed::\+\+MHz50)
+\item 
+static void {\bfseries configure} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{Output\+Type}} type, \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{Output\+Speed}} speed=Output\+Speed::\+\+MHz50)
+\item 
+static void {\bfseries set\+Input} ()
+\item 
+static void {\bfseries set\+Input} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} type)
+\item 
+static void {\bfseries set\+Analog\+Input} ()
+\item 
+static void {\bfseries configure} (\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Input\+Type}} type)
+\item 
+static void {\bfseries set} ()
+\item 
+static void {\bfseries set} (bool status)
+\item 
+static void {\bfseries reset} ()
+\item 
+static void {\bfseries toggle} ()
+\item 
+static void {\bfseries lock} ()
+\item 
+static void {\bfseries disconnect} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_abec2a6602fbaf75ea0964e03f8be160c}\label{classmodm_1_1platform_1_1_software_gpio_port_abec2a6602fbaf75ea0964e03f8be160c} 
+static constexpr uint8\+\_\+t {\bfseries width}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{modm::\+platform::\+\+Gpio\+Set$<$ Gpios... $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr uint8\+\_\+t {\bfseries width}
+\item 
+static constexpr uint8\+\_\+t {\bfseries number\+\_\+of\+\_\+ports}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a27adafb45294dfffe5badc484672902f}\label{classmodm_1_1platform_1_1_software_gpio_port_a27adafb45294dfffe5badc484672902f} 
+static constexpr int8\+\_\+t {\bfseries shift\+\_\+mask} (uint8\+\_\+t id, uint8\+\_\+t pos)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_ad963118d9b39db0762a56280c21133bb}\label{classmodm_1_1platform_1_1_software_gpio_port_ad963118d9b39db0762a56280c21133bb} 
+static constexpr uint16\+\_\+t {\bfseries mask} (uint8\+\_\+t id)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a08b9e9289057904b432f94957ec61584}\label{classmodm_1_1platform_1_1_software_gpio_port_a08b9e9289057904b432f94957ec61584} 
+static constexpr uint16\+\_\+t {\bfseries inverted} (uint8\+\_\+t id)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{modm::\+platform::\+\+Gpio\+Set$<$ Gpios... $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr uint16\+\_\+t {\bfseries inverted} (uint8\+\_\+t id)
+\item 
+static constexpr uint16\+\_\+t {\bfseries mask} (uint8\+\_\+t id)
+\item 
+static constexpr uint32\+\_\+t {\bfseries mask2} (uint8\+\_\+t id, uint8\+\_\+t value=0b11)
+\item 
+static constexpr uint8\+\_\+t {\bfseries number\+Of\+Ports} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr int8\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port_a56d018b783caf19b8d8f7b119fed83d8}{shift\+\_\+masks}} \+[9]\+\+[width]\+
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{modm::\+platform::\+\+Gpio\+Set$<$ Gpios... $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr uint16\+\_\+t {\bfseries inverteds} \+[9]\+
+\item 
+static constexpr uint16\+\_\+t {\bfseries masks} \+[9]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class... Gpios$>$\newline
+class modm::\+platform::\+\+Software\+Gpio\+Port$<$ Gpios $>$}
+Create an up to 32-\/bit port from arbitrary pins.
+
+This class optimizes the data type for the {\ttfamily read()} and {\ttfamily write()} methods. Supplying up to 8 Gpios will use {\ttfamily uint8\+\_\+t}, up to 16 Gpios {\ttfamily uint16\+\_\+t} and up to 32 Gpios {\ttfamily uint32\+\_\+t}.
+
+\begin{DoxyNote}{Note}
+Since the bit order is explicitly given by the order of template arguments, this class only supports {\ttfamily \doxylink{classmodm_1_1_gpio_port_a7ff5dde1f0e7851f0059d35be50bea33a960b44c579bc2f6818d2daaf9e4c16f0}{Data\+Order::\+\+Normal}}. If you need reverse bit order, reverse the order of {\ttfamily Gpios}!
+\end{DoxyNote}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Gpios} & Up to 32 \doxylink{classmodm_1_1_gpio_i_o}{Gpio\+IO} classes, ordered MSB to LSB\\
+\hline
+\end{DoxyTemplParams}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+\label{doc-typedef-members}
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_doc-typedef-members}
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a5a2913da1e7e69a3a6da5b67c9a1b891}\index{modm::platform::SoftwareGpioPort$<$ Gpios $>$@{modm::platform::SoftwareGpioPort$<$ Gpios $>$}!PortType@{PortType}}
+\index{PortType@{PortType}!modm::platform::SoftwareGpioPort$<$ Gpios $>$@{modm::platform::SoftwareGpioPort$<$ Gpios $>$}}
+\doxysubsubsection{\texorpdfstring{PortType}{PortType}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_software_gpio_port_a5a2913da1e7e69a3a6da5b67c9a1b891} 
+template$<$class... Gpios$>$ \\
+using \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{modm::\+platform::\+\+Software\+Gpio\+Port}}$<$ Gpios $>$::\+\+Port\+Type}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{std::conditional\_t<\ (width\ >\ 8),}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::conditional\_t<\ (width\ >\ 16),}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint16\_t\ >,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ >}
+
+\end{DoxyCode}
+
+
+\label{doc-variable-members}
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_software_gpio_port_a56d018b783caf19b8d8f7b119fed83d8}\index{modm::platform::SoftwareGpioPort$<$ Gpios $>$@{modm::platform::SoftwareGpioPort$<$ Gpios $>$}!shift\_masks@{shift\_masks}}
+\index{shift\_masks@{shift\_masks}!modm::platform::SoftwareGpioPort$<$ Gpios $>$@{modm::platform::SoftwareGpioPort$<$ Gpios $>$}}
+\doxysubsubsection{\texorpdfstring{shift\_masks}{shift\_masks}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_software_gpio_port_a56d018b783caf19b8d8f7b119fed83d8} 
+template$<$class... Gpios$>$ \\
+int8\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{modm::\+platform::\+\+Software\+Gpio\+Port}}$<$ Gpios $>$::\+shift\+\_\+masks\+[9]\+\+[width]\+\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [constexpr]}, {\ttfamily [protected]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ \{}
+\DoxyCodeLine{\ \ \ \ \{(Gpios::port\ ==\ Set::Port::A\ ?\ Gpios::pin\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(Gpios::port\ ==\ Set::Port::B\ ?\ Gpios::pin\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(Gpios::port\ ==\ Set::Port::C\ ?\ Gpios::pin\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(Gpios::port\ ==\ Set::Port::D\ ?\ Gpios::pin\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(Gpios::port\ ==\ Set::Port::E\ ?\ Gpios::pin\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::port}}\ ==\ Set::Port::F\ ?\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::pin}}\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::port}}\ ==\ Set::Port::G\ ?\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::pin}}\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::port}}\ ==\ Set::Port::H\ ?\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::pin}}\ :\ -\/1)...\},}
+\DoxyCodeLine{\ \ \ \ \{(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::port}}\ ==\ Set::Port::I\ ?\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_software_gpio_port}{Gpios::pin}}\ :\ -\/1)...\},}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+gpio/\+software\+\_\+port.\+hpp\end{DoxyCompactItemize}

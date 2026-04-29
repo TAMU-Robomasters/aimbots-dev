@@ -1,0 +1,295 @@
+\doxysection{ray\+\_\+2d\+\_\+impl.\+hpp}
+\hypertarget{ray__2d__impl_8hpp_source}{}\label{ray__2d__impl_8hpp_source}\index{src/modm/math/geometry/ray\_2d\_impl.hpp@{src/modm/math/geometry/ray\_2d\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_RAY\_2D\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\ \ \ \ \#error\ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'ray\_2d.hpp'\ instead!"{}}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00017\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00018\ modm::Ray2D<T>::Ray2D()\ :}
+\DoxyCodeLine{00019\ \ \ \ \ basePoint(),\ direction()}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00024\ modm::Ray2D<T>::Ray2D(\textcolor{keyword}{const}\ Vector<T,\ 2>\&\ start,\ \textcolor{keyword}{const}\ Vector<T,\ 2>\&\ direction)\ :}
+\DoxyCodeLine{00025\ \ \ \ \ basePoint(start),\ direction(direction)}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00030\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00031\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00032\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d_a5156fb9b2c6911c5c70955090c367121}{modm::Ray2D<T>::setStartPoint}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point)}
+\DoxyCodeLine{00033\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ this-\/>basePoint\ =\ point;}
+\DoxyCodeLine{00035\ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00038\ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ 2>}}\&}
+\DoxyCodeLine{00039\ modm::Ray2D<T>::getStartPoint()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00040\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordflow}{return}\ this-\/>basePoint;}
+\DoxyCodeLine{00042\ \}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00045\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00046\ modm::Ray2D<T>::setDirectionVector(\textcolor{keyword}{const}\ Vector<T,\ 2>\&\ direction)}
+\DoxyCodeLine{00047\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ this-\/>direction\ =\ direction;}
+\DoxyCodeLine{00049\ \}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00052\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00053\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ 2>}}\&}
+\DoxyCodeLine{00054\ modm::Ray2D<T>::getDirectionVector()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00055\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordflow}{return}\ direction;}
+\DoxyCodeLine{00057\ \}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//template<typename\ T>}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//void}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//modm::Ray2D<T>::translate(const\ Vector<T,\ 2>\&\ vector)}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ \ this-\/>startPoint.translate(vector);}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//\ \ this-\/>endPoint.translate(vector);}}
+\DoxyCodeLine{00066\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//template<typename\ T>}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//T}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//modm::Ray2D<T>::getLength()\ const}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ directionVector\ =\ this-\/>endPoint\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ \ return\ directionVector.getLength();}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//template<typename\ T>}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//const\ T}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//modm::Ray2D<T>::getDistanceTo(const\ Vector<T,\ 2>\&\ point)\ const}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ \ //\ vector\ from\ the\ base\ point\ of\ the\ line\ to\ the\ new\ point}}
+\DoxyCodeLine{00084\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ startToPoint\ =\ point\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ directionVector\ =\ this-\/>endPoint\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00086\ \textcolor{comment}{//}}
+\DoxyCodeLine{00087\ \textcolor{comment}{//\ \ FloatType\ c1\ =\ startToPoint.dot(directionVector);}}
+\DoxyCodeLine{00088\ \textcolor{comment}{//\ \ if\ (c1\ <=\ 0)}}
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ \ \ \ \ \ //\ point\ is\ before\ the\ start\ point\ =>\ calculate\ distance\ to\ start\ point}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ \ \ \ \ \ return\ startToPoint.getLength();}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//}}
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ \ FloatType\ c2\ =\ directionVector.getLengthSquared();}}
+\DoxyCodeLine{00095\ \textcolor{comment}{//\ \ if\ (c2\ <=\ c1)}}
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ \ \ \ \ \ //\ point\ is\ after\ the\ end\ point\ =>\ calculate\ distance\ to\ end\ point}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ \ \ \ \ \ Vector<T,\ 2>\ endToPoint\ =\ point\ -\/\ this-\/>endPoint;}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ \ \ \ \ \ return\ endToPoint.getLength();}}
+\DoxyCodeLine{00100\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00101\ \textcolor{comment}{//}}
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ \ FloatType\ d\ =\ c1\ /\ c2;}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//}}
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ \ //\ calculate\ the\ closest\ point}}
+\DoxyCodeLine{00105\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ closestPoint\ =\ this-\/>startPoint\ +\ d\ *\ directionVector;}}
+\DoxyCodeLine{00106\ \textcolor{comment}{//}}
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ \ //\ return\ the\ length\ of\ the\ vector\ from\ the\ closest\ point\ on\ the\ line}}
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ \ //\ to\ the\ given\ point}}
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ closestPointToPoint\ =\ point\ -\/\ closestPoint;}}
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ \ return\ closestPointToPoint.getLength();}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//}}
+\DoxyCodeLine{00114\ \textcolor{comment}{//template<typename\ T>}}
+\DoxyCodeLine{00115\ \textcolor{comment}{//const\ modm::Vector<T,\ 2>}}
+\DoxyCodeLine{00116\ \textcolor{comment}{//modm::Ray2D<T>::getClosestPointTo(const\ Vector<T,\ 2>\&\ point)\ const}}
+\DoxyCodeLine{00117\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00118\ \textcolor{comment}{//\ \ //\ vector\ from\ the\ base\ point\ of\ the\ line\ to\ the\ new\ point}}
+\DoxyCodeLine{00119\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ startToPoint\ =\ point\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00120\ \textcolor{comment}{//\ \ Vector<T,\ 2>\ directionVector\ =\ this-\/>endPoint\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00121\ \textcolor{comment}{//}}
+\DoxyCodeLine{00122\ \textcolor{comment}{//\ \ FloatType\ c1\ =\ startToPoint.dot(directionVector);}}
+\DoxyCodeLine{00123\ \textcolor{comment}{//\ \ if\ (c1\ <=\ 0)}}
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ \ \ \ \ \ //\ point\ is\ before\ the\ start\ point}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ \ \ \ \ \ return\ this-\/>startPoint;}}
+\DoxyCodeLine{00127\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00128\ \textcolor{comment}{//}}
+\DoxyCodeLine{00129\ \textcolor{comment}{//\ \ FloatType\ c2\ =\ directionVector.getLengthSquared();}}
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ \ if\ (c2\ <=\ c1)}}
+\DoxyCodeLine{00131\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00132\ \textcolor{comment}{//\ \ \ \ \ \ //\ point\ is\ after\ the\ end\ point}}
+\DoxyCodeLine{00133\ \textcolor{comment}{//\ \ \ \ \ \ return\ this-\/>endPoint;}}
+\DoxyCodeLine{00134\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00135\ \textcolor{comment}{//}}
+\DoxyCodeLine{00136\ \textcolor{comment}{//\ \ FloatType\ d\ =\ c1\ /\ c2;}}
+\DoxyCodeLine{00137\ \textcolor{comment}{//}}
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ \ //\ calculate\ the\ closest\ point}}
+\DoxyCodeLine{00139\ \textcolor{comment}{//\ \ return\ (this-\/>startPoint\ +\ d\ *\ directionVector);}}
+\DoxyCodeLine{00140\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00143\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00145\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d_a360863b6ecd5cdde69dd238913aa3bb5}{modm::Ray2D<T>::intersects}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{LineSegment2D<T>}}\&\ line)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00146\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{comment}{//\ vector\ from\ the\ base\ point\ of\ the\ line\ to\ the\ new\ point}}
+\DoxyCodeLine{00148\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ startToPoint\ =\ line.getStartPoint()\ -\/\ this-\/>basePoint;}
+\DoxyCodeLine{00149\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ endToPoint\ =\ line.getEndPoint()\ -\/\ this-\/>basePoint;}
+\DoxyCodeLine{00150\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ dt\ =\ this-\/>direction.toOrthogonalVector();}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keywordflow}{if}\ ((startToPoint.dot(dt)\ *\ endToPoint.dot(dt))\ <\ 0)\ \{}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Points\ are\ on\ different\ sides\ of\ the\ ray\ (interpreted\ as}}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ continuous\ line)}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ pointToStart\ =\ this-\/>basePoint\ -\/\ line.getStartPoint();}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ lt\ =\ line.getDirectionVector().\doxymbox{\hyperlink{classmodm_1_1_vector_3_01_t_00_012_01_4_a5f886e99b65c4c6338d54435e9692e98}{toOrthogonalVector}}();}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((pointToStart.dot(lt)\ *\ this-\/>direction.dot(lt))\ <\ 0)\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Point\ and}}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00162\ \ \ \ \ \}}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00165\ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00168\ \textcolor{comment}{//template<typename\ T>}}
+\DoxyCodeLine{00169\ \textcolor{comment}{//bool}}
+\DoxyCodeLine{00170\ \textcolor{comment}{//modm::Ray2D<T>::intersects(const\ Polygon2D<T>\&\ polygon)\ const}}
+\DoxyCodeLine{00171\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00172\ \textcolor{comment}{//\ \ return\ polygon.intersects(*this);}}
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ \ ''}}
+\DoxyCodeLine{00174\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00175\ \textcolor{comment}{//}}
+\DoxyCodeLine{00177\ \textcolor{comment}{//template\ <typename\ T>}}
+\DoxyCodeLine{00178\ \textcolor{comment}{//bool}}
+\DoxyCodeLine{00179\ \textcolor{comment}{//modm::Ray2D<T>::getIntersections(const\ Ray2D\&\ other,}}
+\DoxyCodeLine{00180\ \textcolor{comment}{//\ \ \ \ \ \ PointSet2D<T>\&\ intersectionPoints)\ const}}
+\DoxyCodeLine{00181\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00182\ \textcolor{comment}{//\ \ modm::Vector<T,\ 2>\ ownDirectionVector\ =\ this-\/>endPoint\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00183\ \textcolor{comment}{//\ \ modm::Vector<T,\ 2>\ otherDirectionVector\ =\ other.endPoint\ -\/\ other.startPoint;}}
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ \ modm::Vector<T,\ 2>\ connectionVector\ =\ this-\/>startPoint\ -\/\ other.startPoint;}}
+\DoxyCodeLine{00185\ \textcolor{comment}{//}}
+\DoxyCodeLine{00186\ \textcolor{comment}{//\ \ WideType\ d\ =\ ownDirectionVector.cross(otherDirectionVector);}}
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ \ if\ (d)}}
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ \ \ \ \ \ FloatType\ t2\ =\ static\_cast<FloatType>(ownDirectionVector.cross(connectionVector))\ /}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ static\_cast<FloatType>(d);}}
+\DoxyCodeLine{00191\ \textcolor{comment}{//}}
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ \ \ \ \ \ if\ (0.f\ <=\ t2\ and\ t2\ <=\ 1.f)}}
+\DoxyCodeLine{00193\ \textcolor{comment}{//\ \ \ \ \ \ \{}}
+\DoxyCodeLine{00194\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ FloatType\ t1\ =\ static\_cast<FloatType>(otherDirectionVector.cross(connectionVector))\ /}}
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ static\_cast<FloatType>(d);}}
+\DoxyCodeLine{00196\ \textcolor{comment}{//}}
+\DoxyCodeLine{00197\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ if\ (0.f\ <=\ t1\ and\ t1\ <=\ 1.f)}}
+\DoxyCodeLine{00198\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \{}}
+\DoxyCodeLine{00199\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ intersectionPoints.append(this-\/>startPoint\ +\ ownDirectionVector\ *\ t1);}}
+\DoxyCodeLine{00200\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ return\ true;}}
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00203\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00204\ \textcolor{comment}{//\ \ return\ false;}}
+\DoxyCodeLine{00205\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00206\ \textcolor{comment}{//}}
+\DoxyCodeLine{00208\ \textcolor{comment}{//template\ <typename\ T>}}
+\DoxyCodeLine{00209\ \textcolor{comment}{//bool}}
+\DoxyCodeLine{00210\ \textcolor{comment}{//modm::Ray2D<T>::getIntersections(const\ Circle2D<T>\&\ circle,}}
+\DoxyCodeLine{00211\ \textcolor{comment}{//\ \ \ \ \ \ PointSet2D<T>\&\ intersectionPoints)\ const}}
+\DoxyCodeLine{00212\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00213\ \textcolor{comment}{//\ \ //\ Direction\ vector\ of\ line,\ from\ start\ to\ end}}
+\DoxyCodeLine{00214\ \textcolor{comment}{//\ \ modm::Vector<T,\ 2>\ directionVector\ =\ this-\/>endPoint\ -\/\ this-\/>startPoint;}}
+\DoxyCodeLine{00215\ \textcolor{comment}{//}}
+\DoxyCodeLine{00216\ \textcolor{comment}{//\ \ //\ vector\ from\ the\ center\ of\ the\ circle\ to\ line\ start}}
+\DoxyCodeLine{00217\ \textcolor{comment}{//\ \ modm::Vector<T,\ 2>\ circleToLine\ =\ this-\/>startPoint\ -\/\ circle.center;}}
+\DoxyCodeLine{00218\ \textcolor{comment}{//}}
+\DoxyCodeLine{00219\ \textcolor{comment}{//\ \ WideType\ a\ =\ directionVector.dot(directionVector);}}
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ \ WideType\ b\ =\ 2\ *\ circleToLine.dot(directionVector);}}
+\DoxyCodeLine{00221\ \textcolor{comment}{//\ \ WideType\ c\ =\ circleToLine.dot(circleToLine)\ -\/}}
+\DoxyCodeLine{00222\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ static\_cast<WideType>(circle.radius)\ *\ static\_cast<WideType>(circle.radius);;}}
+\DoxyCodeLine{00223\ \textcolor{comment}{//}}
+\DoxyCodeLine{00224\ \textcolor{comment}{//\ \ WideType\ discriminant\ =\ (b\ *\ b\ -\/\ 4\ *\ a\ *\ c);}}
+\DoxyCodeLine{00225\ \textcolor{comment}{//}}
+\DoxyCodeLine{00226\ \textcolor{comment}{//\ \ if\ (discriminant\ <\ 0)}}
+\DoxyCodeLine{00227\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00228\ \textcolor{comment}{//\ \ \ \ \ \ //\ no\ intersections}}
+\DoxyCodeLine{00229\ \textcolor{comment}{//\ \ \ \ \ \ return\ false;}}
+\DoxyCodeLine{00230\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ \ else}}
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ \ \{}}
+\DoxyCodeLine{00233\ \textcolor{comment}{//\ \ \ \ \ \ bool\ result\ =\ false;}}
+\DoxyCodeLine{00234\ \textcolor{comment}{//\ \ \ \ \ \ FloatType\ e\ =\ std::sqrt(discriminant);}}
+\DoxyCodeLine{00235\ \textcolor{comment}{//}}
+\DoxyCodeLine{00236\ \textcolor{comment}{//\ \ \ \ \ \ FloatType\ t1\ =\ static\_cast<FloatType>(-\/b\ -\/\ e)\ /\ static\_cast<FloatType>(2\ *\ a);}}
+\DoxyCodeLine{00237\ \textcolor{comment}{//\ \ \ \ \ \ if\ (0.f\ <=\ t1\ and\ t1\ <=\ 1.f)\ \{}}
+\DoxyCodeLine{00238\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ intersectionPoints.append(this-\/>startPoint\ +\ directionVector\ *\ t1);}}
+\DoxyCodeLine{00239\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ result\ =\ true;}}
+\DoxyCodeLine{00240\ \textcolor{comment}{//\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00241\ \textcolor{comment}{//}}
+\DoxyCodeLine{00242\ \textcolor{comment}{//\ \ \ \ \ \ if\ (discriminant\ ==\ 0)}}
+\DoxyCodeLine{00243\ \textcolor{comment}{//\ \ \ \ \ \ \{}}
+\DoxyCodeLine{00244\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ //\ the\ line\ is\ a\ tangent\ to\ the\ circle\ intersecting}}
+\DoxyCodeLine{00245\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ //\ it\ at\ only\ one\ point}}
+\DoxyCodeLine{00246\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ return\ result;}}
+\DoxyCodeLine{00247\ \textcolor{comment}{//\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00248\ \textcolor{comment}{//}}
+\DoxyCodeLine{00249\ \textcolor{comment}{//\ \ \ \ \ \ FloatType\ t2\ =\ static\_cast<FloatType>(-\/b\ +\ e)\ /\ static\_cast<FloatType>(2\ *\ a);}}
+\DoxyCodeLine{00250\ \textcolor{comment}{//\ \ \ \ \ \ if\ (0.f\ <=\ t2\ and\ t2\ <=\ 1.f)\ \{}}
+\DoxyCodeLine{00251\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ intersectionPoints.append(this-\/>startPoint\ +\ directionVector\ *\ t2);}}
+\DoxyCodeLine{00252\ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ result\ =\ true;}}
+\DoxyCodeLine{00253\ \textcolor{comment}{//\ \ \ \ \ \ \}}}
+\DoxyCodeLine{00254\ \textcolor{comment}{//\ \ \ \ \ \ return\ result;}}
+\DoxyCodeLine{00255\ \textcolor{comment}{//\ \ \}}}
+\DoxyCodeLine{00256\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00257\ \textcolor{comment}{//}}
+\DoxyCodeLine{00259\ \textcolor{comment}{//template\ <typename\ T>}}
+\DoxyCodeLine{00260\ \textcolor{comment}{//bool}}
+\DoxyCodeLine{00261\ \textcolor{comment}{//modm::Ray2D<T>::getIntersections(const\ Polygon2D<T>\&\ polygon,}}
+\DoxyCodeLine{00262\ \textcolor{comment}{//\ \ \ \ \ \ PointSet2D<T>\&\ intersectionPoints)\ const}}
+\DoxyCodeLine{00263\ \textcolor{comment}{//\{}}
+\DoxyCodeLine{00264\ \textcolor{comment}{//\ \ //\ invoke\ intersection\ method\ of\ the\ polygon}}
+\DoxyCodeLine{00265\ \textcolor{comment}{//\ \ return\ polygon.getIntersections(*this,\ intersectionPoints);}}
+\DoxyCodeLine{00266\ \textcolor{comment}{//\}}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00269\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00270\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00271\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d_aaaaf41c6c39f77452357491df2aab0e6}{modm::Ray2D<T>::ccw}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::Vector<T,\ 2>}}\&\ point)}
+\DoxyCodeLine{00272\ \{}
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{comment}{//\ vector\ from\ the\ base\ point\ of\ the\ line\ to\ the\ new\ point}}
+\DoxyCodeLine{00274\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ startToPoint\ =\ point\ -\/\ this-\/>basePoint;}
+\DoxyCodeLine{00275\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ t\ =\ direction.toOrthogonalVector();}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ FloatType\ c1\ =\ startToPoint.dot(t);}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordflow}{return}\ (c1\ <=\ 0);}
+\DoxyCodeLine{00280\ \}}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00283\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00284\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00285\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{modm::Ray2D<T>::operator\ ==\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{Ray2D}}\ \&other)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00286\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{keywordflow}{return}\ ((this-\/>basePoint\ ==\ other.basePoint)\ \&\&}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ (this-\/>direction\ ==\ other.direction));}
+\DoxyCodeLine{00289\ \}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00292\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00293\ \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{modm::Ray2D<T>::operator\ !=\ }}(\textcolor{keyword}{const}\ Ray2D\ \&other)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00294\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{keywordflow}{return}\ ((this-\/>basePoint\ !=\ other.basePoint)\ ||}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ (this-\/>direction\ !=\ other.direction));}
+\DoxyCodeLine{00297\ \}}
+
+\end{DoxyCode}

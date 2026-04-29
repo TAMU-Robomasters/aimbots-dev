@@ -1,0 +1,77 @@
+\doxysection{modm::\+log::\+Prefix\texorpdfstring{$<$}{<} T, STYLE \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1log_1_1_prefix}{}\label{classmodm_1_1log_1_1_prefix}\index{modm::log::Prefix$<$ T, STYLE $>$@{modm::log::Prefix$<$ T, STYLE $>$}}
+
+
+Add a prefix to the log message.  
+
+
+
+
+{\ttfamily \+\#include $<$prefix.\+hpp$>$}
+
+Inheritance diagram for modm::\+log::\+Prefix\texorpdfstring{$<$}{<} T, STYLE \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1log_1_1_prefix}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_prefix_aea82e9143c53a4310055eb5fcfa7edbf}\label{classmodm_1_1log_1_1_prefix_aea82e9143c53a4310055eb5fcfa7edbf} 
+{\bfseries Prefix} (const T \&str, STYLE style)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_prefix_a894f3883b872398ab84a7bebc34ab477}\label{classmodm_1_1log_1_1_prefix_a894f3883b872398ab84a7bebc34ab477} 
+{\bfseries Prefix} (const T \&str, \doxymbox{\hyperlink{classmodm_1_1_i_o_device}{IODevice}} \&device)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_prefix_aac9580649f56e03baebe907635185f09}\label{classmodm_1_1log_1_1_prefix_aac9580649f56e03baebe907635185f09} 
+void {\bfseries write} (char c)
+\begin{DoxyCompactList}\small\item\em Write one char to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_prefix_ade1e4481d8e16ee8fc9bdf4499fd2023}\label{classmodm_1_1log_1_1_prefix_ade1e4481d8e16ee8fc9bdf4499fd2023} 
+void {\bfseries write} (const char \texorpdfstring{$\ast$}{*}s)
+\begin{DoxyCompactList}\small\item\em Write a string that terminates with {\ttfamily \textquotesingle{}\textbackslash{}0\textquotesingle{}} to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_prefix_af4b45b58c3b805150bbf02a3f65235f4}\label{classmodm_1_1log_1_1_prefix_af4b45b58c3b805150bbf02a3f65235f4} 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em The message is complete and can be written/\+send/\+displayed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1log_1_1_style}{modm::\+log::\+\+Style$<$ Default\+Style $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Style} (\doxymbox{\hyperlink{classmodm_1_1log_1_1_default_style}{Default\+Style}} style)
+\item 
+void {\bfseries parse\+Arg} (int argc, char \texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em parse arguments that are given with the start of the program \end{DoxyCompactList}\item 
+void {\bfseries write} (char c)
+\begin{DoxyCompactList}\small\item\em Write one char to the sink. \end{DoxyCompactList}\item 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em The message is complete and can be written/\+send/\+displayed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1log_1_1_style}{modm::\+log::\+\+Style$<$ Default\+Style $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef \doxymbox{\hyperlink{classmodm_1_1log_1_1_default_style}{Default\+Style}} {\bfseries Type}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename STYLE = Default\+Style$>$\newline
+class modm::\+log::\+\+Prefix$<$ T, STYLE $>$}
+Add a prefix to the log message. 
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{modm::log::StyleWrapper<\ modm::log::Prefix<\ char[9]\ >\ >\ loggerDevicePrefix\ (}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ modm::log::Prefix<\ \textcolor{keywordtype}{char}[9]\ >\ (\ \textcolor{stringliteral}{"{}Prefix:\ "{}},\ loggerDevice\ )\ );}
+\DoxyCodeLine{\ \ \ modm::log::Logger\ loggerPrefix(\ loggerDevicePrefix\ );}
+
+\end{DoxyCode}
+
+
+\begin{DoxyAuthor}{Author}
+Martin Rosekeit \href{mailto:martin.rosekeit@rwth-aachen.de}{\texttt{martin.\+rosekeit@rwth-\/aachen.\+de}} 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+debug/\+logger/\+style/\+prefix.\+hpp\item 
+src/\+modm/\+debug/\+logger/\+style/\+prefix\+\_\+impl.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,100 @@
+\doxysection{modm::\+Point\+Set2D\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_point_set2_d}{}\label{classmodm_1_1_point_set2_d}\index{modm::PointSet2D$<$ T $>$@{modm::PointSet2D$<$ T $>$}}
+
+
+Point set.  
+
+
+
+
+{\ttfamily \+\#include $<$point\+\_\+set\+\_\+2d.\+hpp$>$}
+
+Inheritance diagram for modm::\+Point\+Set2D\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1_point_set2_d}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_aa92434dec83d127ed827d643e0958e6c}\label{classmodm_1_1_point_set2_d_aa92434dec83d127ed827d643e0958e6c} 
+using {\bfseries Size\+Type} = std::\+size\+\_\+t
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a7e72fd08abf050ddad5faedee7235a4e}\label{classmodm_1_1_point_set2_d_a7e72fd08abf050ddad5faedee7235a4e} 
+using {\bfseries Point\+Type} = \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$T, 2$>$
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a5a2f3636460fb4b30c436d65ed203d41}\label{classmodm_1_1_point_set2_d_a5a2f3636460fb4b30c436d65ed203d41} 
+typedef \doxymbox{\hyperlink{classmodm_1_1_dynamic_array}{modm::\+\+Dynamic\+Array}}$<$ Point\+Type $>$::\+iterator {\bfseries iterator}
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_ab6c4839bafb6ad424bf5a849cd3ee972}\label{classmodm_1_1_point_set2_d_ab6c4839bafb6ad424bf5a849cd3ee972} 
+typedef \doxymbox{\hyperlink{classmodm_1_1_dynamic_array}{modm::\+\+Dynamic\+Array}}$<$ Point\+Type $>$::\+const\+\_\+iterator {\bfseries const\+\_\+iterator}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6}\label{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6} 
+{\bfseries Point\+Set2D} (Size\+Type n=2)
+\begin{DoxyCompactList}\small\item\em Constructs a set capable of holding n points (default = 2). \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a22314345a40be5fc38cf661421ea0962}\label{classmodm_1_1_point_set2_d_a22314345a40be5fc38cf661421ea0962} 
+{\bfseries Point\+Set2D} (std::\+initializer\+\_\+list$<$ Point\+Type $>$ init)
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a31bb8481cfb8db5c0b99d3e779792ee2}\label{classmodm_1_1_point_set2_d_a31bb8481cfb8db5c0b99d3e779792ee2} 
+{\bfseries Point\+Set2D} (const Point\+Set2D \&other)
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_addfd0457cdc163b34c0639c5d7641176}\label{classmodm_1_1_point_set2_d_addfd0457cdc163b34c0639c5d7641176} 
+\doxymbox{\hyperlink{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6}{Point\+Set2D}} \& {\bfseries operator=} (const \doxymbox{\hyperlink{classmodm_1_1_point_set2_d_abce1a4df708458b3f7aee60cb54595e6}{Point\+Set2D}} \&other)
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a32d4e07a07fdfde05c4df3197207b71e}\label{classmodm_1_1_point_set2_d_a32d4e07a07fdfde05c4df3197207b71e} 
+Size\+Type {\bfseries get\+Number\+Of\+Points} () const
+\begin{DoxyCompactList}\small\item\em Number of points contained in the set. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a3c3124dc4e7b5c19c5f1d9b81b73593b}\label{classmodm_1_1_point_set2_d_a3c3124dc4e7b5c19c5f1d9b81b73593b} 
+void {\bfseries append} (const Point\+Type \&point)
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a32a4b99a5878b4d52de4f70ed5a3dcc8}\label{classmodm_1_1_point_set2_d_a32a4b99a5878b4d52de4f70ed5a3dcc8} 
+Point\+Type \& {\bfseries operator\+[$\,$]\+} (Size\+Type index)
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a93b565eedb727b53dbafeaf26b716a65}\label{classmodm_1_1_point_set2_d_a93b565eedb727b53dbafeaf26b716a65} 
+const Point\+Type \& {\bfseries operator\+[$\,$]\+} (Size\+Type index) const
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_aa3d4bd59ab548f54f35d25f5af946b66}\label{classmodm_1_1_point_set2_d_aa3d4bd59ab548f54f35d25f5af946b66} 
+void {\bfseries remove\+All} ()
+\begin{DoxyCompactList}\small\item\em Remove all points. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a0540f44edb22f02f3b1e9d002b086931}\label{classmodm_1_1_point_set2_d_a0540f44edb22f02f3b1e9d002b086931} 
+iterator {\bfseries begin} ()
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a602394f811d6ae8d6b976f3ee3e802bc}\label{classmodm_1_1_point_set2_d_a602394f811d6ae8d6b976f3ee3e802bc} 
+const\+\_\+iterator {\bfseries begin} () const
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_a5f15d606dda9c328a196b09332de30ad}\label{classmodm_1_1_point_set2_d_a5f15d606dda9c328a196b09332de30ad} 
+iterator {\bfseries end} ()
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_aa6e389af35a51037d6a85ddd942b477c}\label{classmodm_1_1_point_set2_d_aa6e389af35a51037d6a85ddd942b477c} 
+const\+\_\+iterator {\bfseries end} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_point_set2_d_aa2d7405b9089475830b82efd6f8f1e62}\label{classmodm_1_1_point_set2_d_aa2d7405b9089475830b82efd6f8f1e62} 
+\doxymbox{\hyperlink{classmodm_1_1_dynamic_array}{modm::\+\+Dynamic\+Array}}$<$ Point\+Type $>$ {\bfseries points}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class modm::\+\+Point\+Set2\+D$<$ T $>$}
+Point set. 
+
+Collection of points, represented by their corresponding vectors. Used for example to hold the result of a intersection-\/operation.
+
+Based on the \doxylink{classmodm_1_1_dynamic_array}{modm::\+\+Dynamic\+Array} class, therefore grows automatically if more space than currently allocated is needed. But because this is an expensive operation it should be avoid if possible.
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+geometry/\+point\+\_\+set\+\_\+2d.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+point\+\_\+set\+\_\+2d\+\_\+impl.\+hpp\end{DoxyCompactItemize}

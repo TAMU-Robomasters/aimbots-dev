@@ -1,0 +1,422 @@
+\doxysection{quaternion\+\_\+impl.\+hpp}
+\hypertarget{quaternion__impl_8hpp_source}{}\label{quaternion__impl_8hpp_source}\index{src/modm/math/geometry/quaternion\_impl.hpp@{src/modm/math/geometry/quaternion\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_QUATERNION\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#\ \ \ error\ \ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'quaternion.hpp'\ instead!"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}quaternion.hpp"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00021\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00022\ modm::Quaternion<T>::Quaternion()}
+\DoxyCodeLine{00023\ :}
+\DoxyCodeLine{00024\ \ \ \ \ w(),}
+\DoxyCodeLine{00025\ \ \ \ \ x(),}
+\DoxyCodeLine{00026\ \ \ \ \ y(),}
+\DoxyCodeLine{00027\ \ \ \ \ z()}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00032\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00033\ modm::Quaternion<T>::Quaternion(\textcolor{keyword}{const}\ U\ *array)\ :}
+\DoxyCodeLine{00034\ \ \ \ \ w(array[0]),}
+\DoxyCodeLine{00035\ \ \ \ \ x(array[1]),}
+\DoxyCodeLine{00036\ \ \ \ \ y(array[2]),}
+\DoxyCodeLine{00037\ \ \ \ \ z(array[3])}
+\DoxyCodeLine{00038\ \{}
+\DoxyCodeLine{00039\ \}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00042\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00043\ modm::Quaternion<T>::Quaternion(T\ inW,\ T\ inX,\ T\ inY,\ T\ inZ)}
+\DoxyCodeLine{00044\ :}
+\DoxyCodeLine{00045\ \ \ \ \ w(inW),}
+\DoxyCodeLine{00046\ \ \ \ \ x(inX),}
+\DoxyCodeLine{00047\ \ \ \ \ y(inY),}
+\DoxyCodeLine{00048\ \ \ \ \ z(inZ)}
+\DoxyCodeLine{00049\ \{}
+\DoxyCodeLine{00050\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00054\ modm::Quaternion<T>::Quaternion(\textcolor{keyword}{const}\ Vector<T,\ 3>\ \&axis,\ T\ angle)}
+\DoxyCodeLine{00055\ :}
+\DoxyCodeLine{00056\ \ \ \ \ w(),}
+\DoxyCodeLine{00057\ \ \ \ \ x(),}
+\DoxyCodeLine{00058\ \ \ \ \ y(),}
+\DoxyCodeLine{00059\ \ \ \ \ z()}
+\DoxyCodeLine{00060\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordtype}{float}\ sinAngleOver2\ =\ std::sin(angle\ /\ 2);}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ w\ =\ std::cos(angle\ /\ 2);}
+\DoxyCodeLine{00064\ \ \ \ \ x\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&axis)[0]*sinAngleOver2;}
+\DoxyCodeLine{00065\ \ \ \ \ y\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&axis)[1]*sinAngleOver2;}
+\DoxyCodeLine{00066\ \ \ \ \ z\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&axis)[2]*sinAngleOver2;}
+\DoxyCodeLine{00067\ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00070\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00071\ modm::Quaternion<T>::Quaternion(\textcolor{keyword}{const}\ Matrix<T,\ 4,\ 1>\ \&rhs)}
+\DoxyCodeLine{00072\ :}
+\DoxyCodeLine{00073\ \ \ \ \ w(reinterpret\_cast<const\ T*>(\&rhs)[0]),}
+\DoxyCodeLine{00074\ \ \ \ \ x(reinterpret\_cast<const\ T*>(\&rhs)[1]),}
+\DoxyCodeLine{00075\ \ \ \ \ y(reinterpret\_cast<const\ T*>(\&rhs)[2]),}
+\DoxyCodeLine{00076\ \ \ \ \ z(reinterpret\_cast<const\ T*>(\&rhs)[3])}
+\DoxyCodeLine{00077\ \{}
+\DoxyCodeLine{00078\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00081\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00082\ modm::Quaternion<T>::Quaternion(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)}
+\DoxyCodeLine{00083\ :}
+\DoxyCodeLine{00084\ \ \ \ \ w(rhs.w),}
+\DoxyCodeLine{00085\ \ \ \ \ x(rhs.x),}
+\DoxyCodeLine{00086\ \ \ \ \ y(rhs.y),}
+\DoxyCodeLine{00087\ \ \ \ \ z(rhs.z)}
+\DoxyCodeLine{00088\ \{}
+\DoxyCodeLine{00089\ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00092\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00093\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ =\ }}(\textcolor{keyword}{const}\ Matrix<T,\ 4,\ 1>\ \&rhs)}
+\DoxyCodeLine{00094\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ w\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&rhs)[0];}
+\DoxyCodeLine{00096\ \ \ \ \ x\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&rhs)[1];}
+\DoxyCodeLine{00097\ \ \ \ \ y\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&rhs)[2];}
+\DoxyCodeLine{00098\ \ \ \ \ z\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\&rhs)[3];}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00100\ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00104\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ =\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)}
+\DoxyCodeLine{00105\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ w\ =\ rhs.w;}
+\DoxyCodeLine{00107\ \ \ \ \ x\ =\ rhs.x;}
+\DoxyCodeLine{00108\ \ \ \ \ y\ =\ rhs.y;}
+\DoxyCodeLine{00109\ \ \ \ \ z\ =\ rhs.z;}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00112\ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00115\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00116\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00117\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ ==\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00118\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordflow}{return}\ (rhs.w\ ==\ w)\ \&\&\ (rhs.x\ ==\ x)\ \&\&\ (rhs.y\ ==\ y)\ \&\&\ (rhs.z\ ==\ z);}
+\DoxyCodeLine{00120\ \}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00123\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00124\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00125\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ !=\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00126\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordflow}{return}\ (rhs.w\ !=\ w)\ ||\ (rhs.x\ !=\ x)\ ||\ (rhs.y\ !=\ y)\ ||\ (rhs.z\ !=\ z);}
+\DoxyCodeLine{00128\ \}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00131\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00132\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00133\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ <\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00134\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordflow}{return}\ (w\ <\ rhs.w)\ ||\ ((w\ ==\ rhs.w)\ \&\&\ ((x\ <\ rhs.x)\ ||\ ((x\ ==\ rhs.x)\ \&\&\ ((y\ <\ rhs.y)\ ||\ ((y\ ==\ rhs.y)\ \&\&\ (z\ <\ rhs.z))))));}
+\DoxyCodeLine{00136\ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00139\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00140\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00141\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ <=\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00142\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordflow}{return}\ (w\ <\ rhs.w)\ ||\ ((w\ ==\ rhs.w)\ \&\&\ ((x\ <\ rhs.x)\ ||\ ((x\ ==\ rhs.x)\ \&\&\ ((y\ <\ rhs.y)\ ||\ ((y\ ==\ rhs.y)\ \&\&\ (z\ <=\ rhs.z))))));}
+\DoxyCodeLine{00144\ \}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00147\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00148\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00149\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ >\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00150\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordflow}{return}\ (w\ >\ rhs.w)\ ||\ ((w\ ==\ rhs.w)\ \&\&\ ((x\ >\ rhs.x)\ ||\ ((x\ ==\ rhs.x)\ \&\&\ ((y\ >\ rhs.y)\ ||\ ((y\ ==\ rhs.y)\ \&\&\ (z\ >\ rhs.z))))));}
+\DoxyCodeLine{00152\ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00155\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00156\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00157\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ >=\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00158\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{keywordflow}{return}\ (w\ >\ rhs.w)\ ||\ ((w\ ==\ rhs.w)\ \&\&\ ((x\ >\ rhs.x)\ ||\ ((x\ ==\ rhs.x)\ \&\&\ ((y\ >\ rhs.y)\ ||\ ((y\ ==\ rhs.y)\ \&\&\ (z\ >=\ rhs.z))))));}
+\DoxyCodeLine{00160\ \}}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00163\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00164\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00165\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ []\ }}(\textcolor{keywordtype}{int}\ index)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00166\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\textcolor{keyword}{this})[index];}
+\DoxyCodeLine{00168\ \}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00171\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00172\ T*}
+\DoxyCodeLine{00173\ modm::Quaternion<T>::ptr()}
+\DoxyCodeLine{00174\ \{}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}T*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00176\ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00179\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00180\ \textcolor{keyword}{const}\ T*}
+\DoxyCodeLine{00181\ modm::Quaternion<T>::ptr()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00182\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }T*\textcolor{keyword}{>}(\textcolor{keyword}{this});}
+\DoxyCodeLine{00184\ \}}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00187\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00188\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00189\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ +\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00190\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(w+rhs.w,\ x+rhs.x,\ y+rhs.y,\ z+rhs.z);}
+\DoxyCodeLine{00192\ \}}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00195\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00196\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00197\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ -\/\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00198\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(w-\/rhs.w,\ x-\/rhs.x,\ y-\/rhs.y,\ z-\/rhs.z);}
+\DoxyCodeLine{00200\ \}}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00203\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00204\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00205\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ *\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00206\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ w*rhs.w\ -\/\ x*rhs.x\ -\/\ y*rhs.y\ -\/\ z*rhs.z,}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ w*rhs.x\ +\ x*rhs.w\ +\ y*rhs.z\ -\/\ z*rhs.y,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ w*rhs.y\ +\ y*rhs.w\ +\ z*rhs.x\ -\/\ x*rhs.z,}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ w*rhs.z\ +\ z*rhs.w\ +\ x*rhs.y\ -\/\ y*rhs.x}
+\DoxyCodeLine{00212\ \ \ \ \ );}
+\DoxyCodeLine{00213\ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00216\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00217\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00218\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ *\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00219\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(w*rhs,\ x*rhs,\ y*rhs,\ z*rhs);}
+\DoxyCodeLine{00221\ \}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00224\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00225\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00226\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ /\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00227\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(w/rhs,\ x/rhs,\ y/rhs,\ z/rhs);}
+\DoxyCodeLine{00229\ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00232\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00233\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00234\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ +=\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)}
+\DoxyCodeLine{00235\ \{}
+\DoxyCodeLine{00236\ \ \ \ \ w+=\ rhs.w;\ x\ +=\ rhs.x;\ y\ +=\ rhs.y;\ z\ +=\ rhs.z;}
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00238\ \}}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00241\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00242\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00243\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ -\/=\ }}(\textcolor{keyword}{const}\ Quaternion<T>\ \&rhs)}
+\DoxyCodeLine{00244\ \{}
+\DoxyCodeLine{00245\ \ \ \ \ w\ -\/=\ rhs.w;\ x\ -\/=\ rhs.x;\ y\ -\/=\ rhs.y;\ z\ -\/=\ rhs.z;}
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00247\ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00250\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00251\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00252\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ *=\ }}(\textcolor{keyword}{const}\ T\ \&rhs)}
+\DoxyCodeLine{00253\ \{}
+\DoxyCodeLine{00254\ \ \ \ \ *\textcolor{keyword}{this}\ =\ *\textcolor{keyword}{this}\ *\ rhs;}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00257\ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00260\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00261\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00262\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ /=\ }}(\textcolor{keyword}{const}\ T\ \&rhs)}
+\DoxyCodeLine{00263\ \{}
+\DoxyCodeLine{00264\ \ \ \ \ w\ /=\ rhs;\ x\ /=\ rhs;\ y\ /=\ rhs;\ z\ /=\ rhs;}
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00266\ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00269\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00270\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00271\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>::operator\ -\/\ }}()}
+\DoxyCodeLine{00272\ \{}
+\DoxyCodeLine{00273\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(-\/w,\ -\/x,\ -\/y,\ -\/z);}
+\DoxyCodeLine{00274\ \}}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00277\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00278\ \textcolor{keywordtype}{float}}
+\DoxyCodeLine{00279\ modm::Quaternion<T>::getLength()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00280\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00281\ \ \ \ \ \textcolor{keywordflow}{return}\ std::sqrt(getLengthSquared());}
+\DoxyCodeLine{00282\ \}}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00285\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00286\ \textcolor{keywordtype}{float}}
+\DoxyCodeLine{00287\ modm::Quaternion<T>::getLengthSquared()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00288\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keywordflow}{return}\ w*w\ +\ x*x\ +\ y*y\ +\ z*z;}
+\DoxyCodeLine{00290\ \}}
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00293\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00294\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00295\ modm::Quaternion<T>::scale(\textcolor{keywordtype}{float}\ newLength)}
+\DoxyCodeLine{00296\ \{}
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keywordtype}{float}\ s\ =\ newLength\ /\ getLength();}
+\DoxyCodeLine{00298\ \ \ \ \ w\ *=\ s;}
+\DoxyCodeLine{00299\ \ \ \ \ x\ *=\ s;}
+\DoxyCodeLine{00300\ \ \ \ \ y\ *=\ s;}
+\DoxyCodeLine{00301\ \ \ \ \ z\ *=\ s;}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00304\ \}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00307\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00308\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00309\ \doxymbox{\hyperlink{classmodm_1_1_quaternion_ae5f555fa12d948775447ee4455140a00}{modm::Quaternion<T>::normalize}}()}
+\DoxyCodeLine{00310\ \{}
+\DoxyCodeLine{00311\ \ \ \ \ \textcolor{keywordflow}{return}\ scale(1.0f);}
+\DoxyCodeLine{00312\ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00315\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00316\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\&}
+\DoxyCodeLine{00317\ modm::Quaternion<T>::conjugate()}
+\DoxyCodeLine{00318\ \{}
+\DoxyCodeLine{00319\ \ \ \ \ x\ =\ -\/x;}
+\DoxyCodeLine{00320\ \ \ \ \ y\ =\ -\/y;}
+\DoxyCodeLine{00321\ \ \ \ \ z\ =\ -\/z;}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00324\ \}}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00327\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00328\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00329\ modm::Quaternion<T>::scaled(\textcolor{keywordtype}{float}\ newLength)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00330\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keywordtype}{float}\ s\ =\ newLength\ /\ getLength();}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keywordflow}{return}\ Quaternion(w*s,\ x*s,\ y*s,\ z*s);}
+\DoxyCodeLine{00333\ \}}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00336\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00337\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00338\ \doxymbox{\hyperlink{classmodm_1_1_quaternion_ad3369cdaa4f550f400acdf171348a229}{modm::Quaternion<T>::normalized}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00339\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00340\ \ \ \ \ \textcolor{keywordflow}{return}\ scaled(1.0f);}
+\DoxyCodeLine{00341\ \}}
+\DoxyCodeLine{00342\ }
+\DoxyCodeLine{00343\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00344\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00345\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00346\ modm::Quaternion<T>::conjugated()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00347\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00348\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{Quaternion}}(w,\ -\/x,\ -\/y,\ -\/z);}
+\DoxyCodeLine{00349\ \}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00352\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00353\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00354\ modm::Quaternion<T>::unitInverse()\ \ \textcolor{comment}{//\ \ assumes\ we\ have\ a\ unit\ quaternion}}
+\DoxyCodeLine{00355\ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keywordflow}{return}\ conjugate();}
+\DoxyCodeLine{00357\ \}}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00359\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00360\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00361\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00362\ modm::Quaternion<T>::inverse()}
+\DoxyCodeLine{00363\ \{}
+\DoxyCodeLine{00364\ \ \ \ \ \textcolor{keywordflow}{return}\ conjugate()\ /\ getLengthSquared();}
+\DoxyCodeLine{00365\ \}}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00367\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00368\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00369\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00370\ modm::Quaternion<T>::to4x4Matrix(Matrix<T,\ 4,\ 4>\ *outMatrix)}
+\DoxyCodeLine{00371\ \{}
+\DoxyCodeLine{00372\ \ \ \ \ \textcolor{comment}{//\ avoid\ depending\ on\ Matrix.h}}
+\DoxyCodeLine{00373\ \ \ \ \ T*\ m\ =\ \textcolor{keyword}{reinterpret\_cast<}T*\textcolor{keyword}{>}(outMatrix);}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \ \ \textcolor{keywordtype}{float}\ xx\ =\ x*x;\ \textcolor{keywordtype}{float}\ xy\ =\ x*y;}
+\DoxyCodeLine{00376\ \ \ \ \ \textcolor{keywordtype}{float}\ xz\ =\ x*z;\ \textcolor{keywordtype}{float}\ xw\ =\ x*w;}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00378\ \ \ \ \ \textcolor{keywordtype}{float}\ yy\ =\ y*y;\ \textcolor{keywordtype}{float}\ yz\ =\ y*z;}
+\DoxyCodeLine{00379\ \ \ \ \ \textcolor{keywordtype}{float}\ yw\ =\ y*w;}
+\DoxyCodeLine{00380\ }
+\DoxyCodeLine{00381\ \ \ \ \ \textcolor{keywordtype}{float}\ zz\ =\ z*z;\ \textcolor{keywordtype}{float}\ zw\ =\ z*w;}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ \ \ \ \ m[0*4+0]\ =\ 1-\/2*(yy+zz);\ m[1*4+0]\ =\ \ \ 2*(xy-\/zw);\ m[2*4+0]\ =\ \ \ 2*(xz+yw);\ m[3*4+0]\ =\ 0;}
+\DoxyCodeLine{00384\ \ \ \ \ m[0*4+1]\ =\ \ \ 2*(xy+zw);\ m[1*4+1]\ =\ 1-\/2*(xx+zz);\ m[2*4+1]\ =\ \ \ 2*(yz-\/xw);\ m[3*4+1]\ =\ 0;}
+\DoxyCodeLine{00385\ \ \ \ \ m[0*4+2]\ =\ \ \ 2*(xz-\/yw);\ m[1*4+2]\ =\ \ \ 2*(yz+xw);\ m[2*4+2]\ =\ 1-\/2*(xx+yy);\ m[3*4+2]\ =\ 0;}
+\DoxyCodeLine{00386\ \ \ \ \ m[0*4+3]\ =\ \ \ \ \ \ \ \ \ \ \ 0;\ m[1*4+3]\ =\ \ \ \ \ \ \ \ \ \ \ 0;\ m[2*4+3]\ =\ \ \ \ \ \ \ \ \ \ \ 0;\ m[3*4+3]\ =\ 1;}
+\DoxyCodeLine{00387\ \}}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00389\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00390\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00391\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00392\ modm::Quaternion<T>::to3x3Matrix(Matrix<T,\ 3,\ 3>\ *outMatrix)}
+\DoxyCodeLine{00393\ \{}
+\DoxyCodeLine{00394\ \ \ \ \ \textcolor{comment}{//\ avoid\ depending\ on\ Matrix.h}}
+\DoxyCodeLine{00395\ \ \ \ \ T*\ m\ =\ \textcolor{keyword}{reinterpret\_cast<}T*\textcolor{keyword}{>}(outMatrix);}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \ \ \ \ \textcolor{keywordtype}{float}\ xx\ =\ x*x;\ \textcolor{keywordtype}{float}\ xy\ =\ x*y;}
+\DoxyCodeLine{00398\ \ \ \ \ \textcolor{keywordtype}{float}\ xz\ =\ x*z;\ \textcolor{keywordtype}{float}\ xw\ =\ x*w;}
+\DoxyCodeLine{00399\ }
+\DoxyCodeLine{00400\ \ \ \ \ \textcolor{keywordtype}{float}\ yy\ =\ y*y;\ \textcolor{keywordtype}{float}\ yz\ =\ y*z;}
+\DoxyCodeLine{00401\ \ \ \ \ \textcolor{keywordtype}{float}\ yw\ =\ y*w;}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \ \ \ \ \textcolor{keywordtype}{float}\ zz\ =\ z*z;\ \textcolor{keywordtype}{float}\ zw\ =\ z*w;}
+\DoxyCodeLine{00404\ }
+\DoxyCodeLine{00405\ \ \ \ \ m[0*3+0]\ =\ 1-\/2*(yy+zz);\ m[1*3+0]\ =\ \ \ 2*(xy-\/zw);\ m[2*3+0]\ =\ \ \ 2*(xz+yw);}
+\DoxyCodeLine{00406\ \ \ \ \ m[0*3+1]\ =\ \ \ 2*(xy+zw);\ m[1*3+1]\ =\ 1-\/2*(xx+zz);\ m[2*3+1]\ =\ \ \ 2*(yz-\/xw);}
+\DoxyCodeLine{00407\ \ \ \ \ m[0*3+2]\ =\ \ \ 2*(xz-\/yw);\ m[1*3+2]\ =\ \ \ 2*(yz+xw);\ m[2*3+2]\ =\ 1-\/2*(xx+yy);}
+\DoxyCodeLine{00408\ \}}
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00410\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00411\ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00412\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}}
+\DoxyCodeLine{00413\ modm::operator\ *\ (\textcolor{keyword}{const}\ T\ \&lhs,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::Quaternion<T>}}\ \&rhs)}
+\DoxyCodeLine{00414\ \{}
+\DoxyCodeLine{00415\ \ \ \ \ \textcolor{keywordflow}{return}\ rhs\ *\ lhs;}
+\DoxyCodeLine{00416\ \}}
+
+\end{DoxyCode}

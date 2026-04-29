@@ -1,0 +1,90 @@
+\doxysection{modm::\+interpolation::\+Lagrange\texorpdfstring{$<$}{<} T, Accessor \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1interpolation_1_1_lagrange}{}\label{classmodm_1_1interpolation_1_1_lagrange}\index{modm::interpolation::Lagrange$<$ T, Accessor $>$@{modm::interpolation::Lagrange$<$ T, Accessor $>$}}
+
+
+{\ttfamily \+\#include $<$lagrange.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_a060bd65fe4b7eb248a74aee57635d5a0}\label{classmodm_1_1interpolation_1_1_lagrange_a060bd65fe4b7eb248a74aee57635d5a0} 
+typedef T::\+\+First\+Type {\bfseries Input\+Type}
+\item 
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_ae06bde24db60d83a218cbcacc1f95c33}\label{classmodm_1_1interpolation_1_1_lagrange_ae06bde24db60d83a218cbcacc1f95c33} 
+typedef T::\+\+Second\+Type {\bfseries Output\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_lagrange_a1a696a316e57abcdca57f2944ef60089}{Lagrange}} (Accessor$<$ T $>$ supporting\+Points, uint8\+\_\+t number\+Of\+Points)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+Output\+Type \doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_lagrange_a434d2ad34de5049c4765839e8d67e9ae}{interpolate}} (const Input\+Type \&value) const
+\begin{DoxyCompactList}\small\item\em Perform a Lagrange-\/interpolation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, template$<$ typename $>$ class Accessor = ::\+modm::\+accessor::\+\+Ram$>$\newline
+class modm::\+interpolation::\+\+Lagrange$<$ T, Accessor $>$}
+\begin{DoxyWarning}{Warning}
+Only floating points types are allowed as second type of \doxylink{classmodm_1_1_pair}{modm::\+\+Pair}, otherwise the calculation will deliver wrong results!
+\end{DoxyWarning}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Any specialization of \doxylink{classmodm_1_1_pair}{modm::\+\+Pair$<$$>$} with a floating point type as second template argument. \\
+\hline
+{\em Accessor} & Accessor class. \doxylink{classmodm_1_1_can}{Can} be \doxylink{classmodm_1_1accessor_1_1_ram}{modm::\+accessor::\+\+Ram}, \doxylink{classmodm_1_1accessor_1_1_flash}{modm::\+accessor::\+\+Flash} or any self defined accessor class. Default is \doxylink{classmodm_1_1accessor_1_1_ram}{modm::\+accessor::\+\+Ram}. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_a1a696a316e57abcdca57f2944ef60089}\index{modm::interpolation::Lagrange$<$ T, Accessor $>$@{modm::interpolation::Lagrange$<$ T, Accessor $>$}!Lagrange@{Lagrange}}
+\index{Lagrange@{Lagrange}!modm::interpolation::Lagrange$<$ T, Accessor $>$@{modm::interpolation::Lagrange$<$ T, Accessor $>$}}
+\doxysubsubsection{\texorpdfstring{Lagrange()}{Lagrange()}}
+{\footnotesize\ttfamily \label{classmodm_1_1interpolation_1_1_lagrange_a1a696a316e57abcdca57f2944ef60089} 
+template$<$typename T, template$<$ typename $>$ class Accessor$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_lagrange}{modm::\+interpolation::\+\+Lagrange}}$<$ T, Accessor $>$::\+\+Lagrange (\begin{DoxyParamCaption}\item[{Accessor$<$ T $>$}]{supporting\+Points}{, }\item[{uint8\+\_\+t}]{number\+Of\+Points}{}\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em supporting\+Points} & Supporting points of the curve. Needs to be an Array of \doxylink{classmodm_1_1_pair}{modm::\+\+Pair$<$$>$}. \\
+\hline
+{\em number\+Of\+Points} & length of {\ttfamily supporting\+Points} \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1interpolation_1_1_lagrange_a434d2ad34de5049c4765839e8d67e9ae}\index{modm::interpolation::Lagrange$<$ T, Accessor $>$@{modm::interpolation::Lagrange$<$ T, Accessor $>$}!interpolate@{interpolate}}
+\index{interpolate@{interpolate}!modm::interpolation::Lagrange$<$ T, Accessor $>$@{modm::interpolation::Lagrange$<$ T, Accessor $>$}}
+\doxysubsubsection{\texorpdfstring{interpolate()}{interpolate()}}
+{\footnotesize\ttfamily \label{classmodm_1_1interpolation_1_1_lagrange_a434d2ad34de5049c4765839e8d67e9ae} 
+template$<$typename T, template$<$ typename $>$ class Accessor$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_lagrange}{modm::\+interpolation::\+\+Lagrange}}$<$ T, Accessor $>$::\+\+Output\+Type \doxymbox{\hyperlink{classmodm_1_1interpolation_1_1_lagrange}{modm::\+interpolation::\+\+Lagrange}}$<$ T, Accessor $>$::\+interpolate (\begin{DoxyParamCaption}\item[{const Input\+Type \&}]{value}{}\end{DoxyParamCaption}) const}
+
+
+
+Perform a Lagrange-\/interpolation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & input value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+interpolated value 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+interpolation/\+lagrange.\+hpp\item 
+src/\+modm/\+math/\+interpolation/\+lagrange\+\_\+impl.\+hpp\end{DoxyCompactItemize}

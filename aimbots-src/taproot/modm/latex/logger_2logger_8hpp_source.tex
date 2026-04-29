@@ -1,0 +1,109 @@
+\doxysection{logger.\+hpp}
+\hypertarget{logger_2logger_8hpp_source}{}\label{logger_2logger_8hpp_source}\index{src/modm/debug/logger/logger.hpp@{src/modm/debug/logger/logger.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ 2013,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2010,\ 2013,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2016,\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ 2015,\ Sascha\ Schade}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Kevin\ Läufer}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#ifndef\ MODM\_LOGGER\_HPP}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ MODM\_LOGGER\_HPP}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}level.hpp"{}}}
+\DoxyCodeLine{00024\ \textcolor{preprocessor}{\#include\ "{}style.hpp"{}}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ "{}style\_wrapper.hpp"{}}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ "{}style/prefix.hpp"{}}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00029\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{namespace\ }\doxymbox{\hyperlink{namespacemodm_1_1log}{log}}}
+\DoxyCodeLine{00035\ \ \ \ \ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Logger\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{::modm::IOStream}}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Logger(\doxymbox{\hyperlink{classmodm_1_1_i_o_device}{::modm::IODevice}}\&\ outputDevice)\ :}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream_a0cc8afab06d3f6788428ac7cedb3cf05}{IOStream}}(outputDevice)}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Logger(\textcolor{keyword}{const}\ Logger\&);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Logger\&}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ operator\ =\ (\textcolor{keyword}{const}\ Logger\&);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\(\backslash\)\{}}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keyword}{extern}\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_logger}{Logger}}\ \doxymbox{\hyperlink{namespacemodm_1_1log_ae9143446ab426d7e3ebf45751c11e66a}{debug}};\ \ \ \ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keyword}{extern}\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_logger}{Logger}}\ \doxymbox{\hyperlink{namespacemodm_1_1log_a9c4f35b0f684671a61be871f3c72a5b4}{info}};\ \ \ \ \ }
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keyword}{extern}\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_logger}{Logger}}\ \doxymbox{\hyperlink{namespacemodm_1_1log_a4410a5a427bdee73d6e1fbddca0bc21a}{warning}};\ \ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{extern}\ \doxymbox{\hyperlink{classmodm_1_1log_1_1_logger}{Logger}}\ \doxymbox{\hyperlink{namespacemodm_1_1log_a71f14f07bca90829ad7f4d01b4a346d5}{error}};\ \ \ \ }
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\(\backslash\)\}}}
+\DoxyCodeLine{00076\ \ \ \ \ \}}
+\DoxyCodeLine{00077\ \}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ these\ macros\ are\ defined\ like\ this\ to\ avoid\ the\ dangling\ else\ problem.}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ if\ (condition)}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ \ \ \ \ \ MODM\_LOG\_DEBUG\ <<\ "{}string"{};}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ else}}
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ \ \ \ \ \ expression;}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00089\ \textcolor{preprocessor}{\#define\ MODM\_LOG\_OFF\ \(\backslash\)}}
+\DoxyCodeLine{00090\ \textcolor{preprocessor}{\ \ \ \ if\ (\ true\ )\{\}\ \ \ \(\backslash\)}}
+\DoxyCodeLine{00091\ \textcolor{preprocessor}{\ \ \ \ else\ modm::log::debug}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#define\ MODM\_LOG\_DEBUG\ \(\backslash\)}}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\ \ \ \ if\ (MODM\_LOG\_LEVEL\ >\ modm::log::DEBUG)\{\}\ \(\backslash\)}}
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\ \ \ \ else\ modm::log::debug}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#define\ MODM\_LOG\_INFO\ \(\backslash\)}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\ \ \ \ if\ (MODM\_LOG\_LEVEL\ >\ modm::log::INFO)\{\}\ \(\backslash\)}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\ \ \ \ else\ modm::log::info}}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#define\ MODM\_LOG\_WARNING\ \(\backslash\)}}
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\ \ \ \ if\ (MODM\_LOG\_LEVEL\ >\ modm::log::WARNING)\{\}\ \ \(\backslash\)}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\ \ \ \ else\ modm::log::warning}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#define\ MODM\_LOG\_ERROR\ \(\backslash\)}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\ \ \ \ if\ (MODM\_LOG\_LEVEL\ >\ modm::log::ERROR)\{\}\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\ \ \ \ else\ modm::log::error}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#define\ FILENAME}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#define\ MODM\_FILE\_INFO}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\#else\ \ \ }\textcolor{comment}{//\ !\_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#ifndef\ BASENAME}}
+\DoxyCodeLine{00164\ \textcolor{preprocessor}{\#\ \ \ ifndef\ \_\_BASE\_FILE\_\_}}
+\DoxyCodeLine{00165\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ FILENAME\ \_\_FILE\_\_}}
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ FILENAME\ \_\_BASE\_FILE\_\_}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\#\ \ \ define\ \ FILENAME\ \ \ \ MODM\_STRINGIFY(BASENAME)}}
+\DoxyCodeLine{00171\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#define\ MODM\_FILE\_INFO\ \ \ \ \ \ "{}["{}\ FILENAME\ "{}("{}\ MODM\_STRINGIFY(\_\_LINE\_\_)\ "{})]\ "{}}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_LOGGER\_HPP}}
+
+\end{DoxyCode}

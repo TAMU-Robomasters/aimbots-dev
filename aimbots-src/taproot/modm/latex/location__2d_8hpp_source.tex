@@ -1,0 +1,116 @@
+\doxysection{location\+\_\+2d.\+hpp}
+\hypertarget{location__2d_8hpp_source}{}\label{location__2d_8hpp_source}\index{src/modm/math/geometry/location\_2d.hpp@{src/modm/math/geometry/location\_2d.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_LOCATION\_2D\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_LOCATION\_2D\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ "{}angle.hpp"{}}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ "{}vector.hpp"{}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T\ =\ \textcolor{keywordtype}{int}16\_t>}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{class\ }Location2D}
+\DoxyCodeLine{00038\ \ \ \ \ \{}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ Location2D();}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ Location2D(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ position,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ orientation);}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ Location2D(\textcolor{keyword}{const}\ T\&\ x,\ \textcolor{keyword}{const}\ T\&\ y,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ orientation);}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ getPosition()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ getX()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ getY()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ setPosition(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ point);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ setPosition(\textcolor{keyword}{const}\ T\&\ x,\ \textcolor{keyword}{const}\ T\&\ y);}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ getOrientation()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ setOrientation(\textcolor{keyword}{const}\ \textcolor{keywordtype}{float}\&\ phi);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_location2_d_a4a2fa313d471a0bfcc0c2aef31059644}{move}}(\textcolor{keyword}{const}\ Location2D\&\ diff);}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_location2_d_a4a2fa313d471a0bfcc0c2aef31059644}{move}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ diff);}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_location2_d_a4a2fa313d471a0bfcc0c2aef31059644}{move}}(T\ x,\ \textcolor{keywordtype}{float}\ phi);}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_location2_d_a3c5691a5ca84bb339292b6932376d85d}{translated}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\&\ vector)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ Location2D<U>}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_location2_d_acd9f53e91ec113df36e48e02501a6249}{convert}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ operator\ ==\ (\textcolor{keyword}{const}\ Location2D\ \&other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ operator\ !=\ (\textcolor{keyword}{const}\ Location2D\ \&other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ operator\ <<(\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&,\ \textcolor{keyword}{const}\ Location2D<U>\&);}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<T,\ 2>}}\ position;}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ orientation;}
+\DoxyCodeLine{00118\ \ \ \ \ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{comment}{//\ Global\ functions}}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00129\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&}
+\DoxyCodeLine{00130\ \ \ \ \ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&\ os,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_location2_d}{Location2D<T>}}\&\ l);}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{comment}{//\ Declaration\ of\ specialized\ methods}}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{comment}{/*template<>}}
+\DoxyCodeLine{00136\ \textcolor{comment}{\ \ \ \ bool}}
+\DoxyCodeLine{00137\ \textcolor{comment}{\ \ \ \ Location2D<float>::operator\ ==\ (const\ Location2D\ \&other)\ const;}}
+\DoxyCodeLine{00138\ \textcolor{comment}{}}
+\DoxyCodeLine{00139\ \textcolor{comment}{\ \ \ \ template<>}}
+\DoxyCodeLine{00140\ \textcolor{comment}{\ \ \ \ bool}}
+\DoxyCodeLine{00141\ \textcolor{comment}{\ \ \ \ Location2D<double>::operator\ ==\ (const\ Location2D\ \&other)\ const;*/}}
+\DoxyCodeLine{00142\ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#include\ "{}location\_2d\_impl.hpp"{}}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_LOCATION\_2D\_HPP}}
+
+\end{DoxyCode}

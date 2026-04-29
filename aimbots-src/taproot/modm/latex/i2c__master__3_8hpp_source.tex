@@ -1,0 +1,113 @@
+\doxysection{i2c\+\_\+master\+\_\+3.\+hpp}
+\hypertarget{i2c__master__3_8hpp_source}{}\label{i2c__master__3_8hpp_source}\index{src/modm/platform/i2c/i2c\_master\_3.hpp@{src/modm/platform/i2c/i2c\_master\_3.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_I2C\_3\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_I2C\_3\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/platform/gpio/connector.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/i2c\_master.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/math/algorithm/prescaler.hpp>}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_i2c_master3}{I2cMaster3}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master}{::modm::I2cMaster}}}
+\DoxyCodeLine{00038\ \{}
+\DoxyCodeLine{00039\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ TransactionBufferSize\ =\ 8;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{template}<Peripheral\ \_>\ \textcolor{keyword}{class}...\ Signals,\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcb}{ResetDevices}}\ reset\ =\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcbaeb6d8ae6f20283755b339c0dc273988b}{ResetDevices::Standard}}>}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00045\ \ \ \ \ connect(\doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91c}{PullUps}}\ pullups\ =\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91cab206a1b4ea1097761f78e8876f6da779}{PullUps::External}})}
+\DoxyCodeLine{00046\ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Connector\ =\ GpioConnector<Peripheral::I2c3,\ Signals...>;}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Scl\ =\ \textcolor{keyword}{typename}\ Connector::template\ GetSignal<Gpio::Signal::Scl>;}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }Sda\ =\ \textcolor{keyword}{typename}\ Connector::template\ GetSignal<Gpio::Signal::Sda>;}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\textcolor{keyword}{sizeof}...(Signals)\ ==\ 2\ and}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Connector::template\ IsValid<Scl>\ and\ Connector::template\ IsValid<Sda>,}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}I2cMaster3::connect()\ requires\ one\ Scl\ and\ one\ Sda\ signal!"{}});}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{Gpio::InputType}}\ input\ =}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ (pullups\ ==\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a51438a8241ababe94f9ca4b69b75d91caafbf0897a5a83fdd873dfb032ec695d3}{PullUps::Internal}})\ ?\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dadbe269e26d8282186a4163a2424e3361}{Gpio::InputType::PullUp}}\ :\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{Gpio::InputType::Floating}};}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ Connector::disconnect();}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ Scl::configure(input);}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ Sda::configure(input);}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ Scl::setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{Gpio::OutputType::OpenDrain}});}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ Sda::setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61a8df1809fc704fe02606f58b4ba2a6c99}{Gpio::OutputType::OpenDrain}});}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (reset\ !=\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_a141efec8e032cdcd5c9766fbf0f1ddcba24e03e17ea30a9d76a0c19f0f6c16c7f}{ResetDevices::NoReset}})\ \doxymbox{\hyperlink{structmodm_1_1_i2c_a1855002ad6a0992e32db4f3ebf0432da}{resetDevices<Scl,\ uint32\_t(reset)>}}();}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ Connector::connect();}
+\DoxyCodeLine{00063\ \ \ \ \ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class}\ SystemClock,\ baudrate\_t\ baudrate=kBd(100),\ percent\_t\ tolerance=pct(5)>}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00073\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_i2c_master3_a06c86d5c96e32008f55b0c4e024c7aee}{initialize}}()}
+\DoxyCodeLine{00074\ \ \ \ \ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ calculate\ the\ expected\ clock\ ratio}}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ scalar\ =\ (baudrate\ <=\ 100'000)\ ?\ 2\ :\ ((baudrate\ <=\ 300'000)\ ?\ 3\ :\ 25);}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint16\_t\ range\_begin\ =\ (scalar\ ==\ 2)\ ?\ 4\ :\ 1;}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keyword}{auto}\ result\ =\ \doxymbox{\hyperlink{classmodm_1_1_generic_prescaler_a48e586fd655a4ceb8529b2d58ca23448}{Prescaler::from\_range}}(}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SystemClock::I2c3\ /\ scalar,\ baudrate,\ range\_begin,\ 4095);}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver_a5c336ff9889c347e7eadb810bf984ebd}{assertBaudrateInTolerance}}<\ result.frequency,\ baudrate,\ tolerance\ >();}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ the\ final\ prescaler\ value\ is\ augmented\ with\ the\ F/S\ and\ DUTY\ bit.}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ prescaler\ =\ result.prescaler\ |}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((scalar\ >=\ \ 3)\ ?\ (1\ <<\ 15)\ :\ 0)\ |}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((scalar\ ==\ 25)\ ?\ (1\ <<\ 14)\ :\ 0);}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ peripheral\ frequency\ clock}}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ freq\ =\ SystemClock::I2c3\ /\ 1'000'000;}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ maximum\ rise\ time:\ assuming\ its\ linear:}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 1000ns\ @\ 100kHz\ and\ 300ns\ @\ 400kHz}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ \ \ =>\ y\ =\ x\ *\ m\ +\ b,\ with\ m\ =\ -\/2.3333ns/kHz,\ b\ =\ 1'233.3333ns}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{float}\ max\_rise\_time\ =\ -\/2.333333f\ *\ (float(baudrate)\ /\ 1'000.f)\ +\ 1'233.333333f;}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ calculate\ trise}}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{float}\ trise\_raw\ =\ max\_rise\_time\ <\ 0\ ?\ 0\ :\ std::floor(max\_rise\_time\ /\ (1'000.f\ /\ freq));}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ trise\ =\ trise\_raw\ >\ 62\ ?\ 63\ :\ (trise\_raw\ +\ 1);}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ initializeWithPrescaler(freq,\ trise,\ prescaler);}
+\DoxyCodeLine{00100\ \ \ \ \ \}}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00104\ \ \ \ \ start(\doxymbox{\hyperlink{classmodm_1_1_i2c_transaction}{I2cTransaction}}\ *transaction,\ \doxymbox{\hyperlink{structmodm_1_1_i2c_acc3232e086891a4564399117a4e0e450}{ConfigurationHandler}}\ handler\ =\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{classmodm_1_1_i2c_master_aaeba2d490d4a099a1d45cd713106b3e8}{Error}}}
+\DoxyCodeLine{00107\ \ \ \ \ getErrorState();}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00110\ \ \ \ \ reset();}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{comment}{//\ end\ documentation\ inherited}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00115\ \ \ \ \ initializeWithPrescaler(uint8\_t\ peripheralFrequency,\ uint8\_t\ riseTime,\ uint16\_t\ prescaler);}
+\DoxyCodeLine{00116\ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_I2C\_3\_HPP}}
+
+\end{DoxyCode}

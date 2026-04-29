@@ -1,0 +1,217 @@
+\doxysection{modm::\+platform::\+Spi\+Hal2 Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_spi_hal2}{}\label{classmodm_1_1platform_1_1_spi_hal2}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+
+
+{\ttfamily \+\#include $<$spi\+\_\+hal\+\_\+2.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Spi\+Hal2:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1platform_1_1_spi_hal2}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_ad21ebc50bf1e4302ce81fd36388ba543}\label{classmodm_1_1platform_1_1_spi_hal2_ad21ebc50bf1e4302ce81fd36388ba543} 
+static void {\bfseries enable} ()
+\begin{DoxyCompactList}\small\item\em Enables the clock, resets the hardware and sets the SPE bit. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a85b83685eb32be11e0650091ffe9c657}\label{classmodm_1_1platform_1_1_spi_hal2_a85b83685eb32be11e0650091ffe9c657} 
+static void {\bfseries disable} ()
+\begin{DoxyCompactList}\small\item\em Disables the hw module (by disabling its clock line). \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_a36a46a5ae68e5b105899d0180a76917f}{initialize}} (Prescaler prescaler, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{Master\+Selection}} master\+Selection=\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c}{Master\+Selection::\+\+Master}}, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{Data\+Mode}} data\+Mode=\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5}{Data\+Mode::\+\+Mode0}}, Data\+Order data\+Order=Data\+Order::\+\+Msb\+First, Data\+Size data\+Size=Data\+Size::\+\+Bit8)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_af7daab7151b33d1bebd1f6c96e111552}\label{classmodm_1_1platform_1_1_spi_hal2_af7daab7151b33d1bebd1f6c96e111552} 
+static void {\bfseries set\+Data\+Mode} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{Data\+Mode}} data\+Mode)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a643711618edf4a04f82b744b69ba3b32}\label{classmodm_1_1platform_1_1_spi_hal2_a643711618edf4a04f82b744b69ba3b32} 
+static void {\bfseries set\+Data\+Order} (Data\+Order data\+Order)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a1560b68dddfdbe86a6069cd4ec1465b7}\label{classmodm_1_1platform_1_1_spi_hal2_a1560b68dddfdbe86a6069cd4ec1465b7} 
+static void {\bfseries set\+Data\+Size} (Data\+Size data\+Size)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a69dc4b28475b0b2407aa6df6bc54ff70}\label{classmodm_1_1platform_1_1_spi_hal2_a69dc4b28475b0b2407aa6df6bc54ff70} 
+static void {\bfseries set\+Master\+Selection} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{Master\+Selection}} master\+Selection)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a57a082597d281266ce0b8b8f8f5ac658}\label{classmodm_1_1platform_1_1_spi_hal2_a57a082597d281266ce0b8b8f8f5ac658} 
+static bool {\bfseries is\+Receive\+Register\+Not\+Empty} ()
+\begin{DoxyCompactList}\small\item\em Returns true if data has been received. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_ad4d8ad65d3b316f0b4539cf20db4c6a7}\label{classmodm_1_1platform_1_1_spi_hal2_ad4d8ad65d3b316f0b4539cf20db4c6a7} 
+static bool {\bfseries is\+Transmit\+Register\+Empty} ()
+\begin{DoxyCompactList}\small\item\em Returns true if data can be written. \end{DoxyCompactList}\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_ada1c9519bf3d30a904343c48703f2e0f}{write}} (uint16\+\_\+t data)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_ab2df5075487b6fe765c0b8cf7a1ef0ac}{write}} (uint8\+\_\+t data)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_afa0eb854c49b2a5174223336bd36f9c7}{read}} (uint8\+\_\+t \&data)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_a5ed913d503eb765affd962704ef32a7d}{read}} (uint16\+\_\+t \&data)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a3df417ba63622f3f491d510f42bedef6}\label{classmodm_1_1platform_1_1_spi_hal2_a3df417ba63622f3f491d510f42bedef6} 
+static void {\bfseries enable\+Interrupt\+Vector} (bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_ad21ebc50bf1e4302ce81fd36388ba543}{enable}}, uint32\+\_\+t priority)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a0ce098b7f15f428b24119076ad2bef9b}\label{classmodm_1_1platform_1_1_spi_hal2_a0ce098b7f15f428b24119076ad2bef9b} 
+static void {\bfseries enable\+Interrupt} (Interrupt\+\_\+t interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_aa7c5789034c706ef5918c6f617816bda}\label{classmodm_1_1platform_1_1_spi_hal2_aa7c5789034c706ef5918c6f617816bda} 
+static void {\bfseries disable\+Interrupt} (Interrupt\+\_\+t interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a3115cde795a4f7e74ed88a89e3d14c0e}\label{classmodm_1_1platform_1_1_spi_hal2_a3115cde795a4f7e74ed88a89e3d14c0e} 
+static Interrupt\+Flag\+\_\+t {\bfseries get\+Interrupt\+Flags} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_hal2_a6b7981a2203ab826b03f768ef215419b}{acknowledge\+Interrupt\+Flag}} (Interrupt\+Flag\+\_\+t flags)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base}{modm::\+platform::\+\+Spi\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a745714247fefafd092aa814b9b28b89c}\label{classmodm_1_1platform_1_1_spi_base_a745714247fefafd092aa814b9b28b89c} 
+enum class {\bfseries Interrupt} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Rx\+Buffer\+Not\+Empty} = SPI\+\_\+\+CR2\+\_\+\+RXNEIE
+, {\bfseries Tx\+Buffer\+Empty} = SPI\+\_\+\+CR2\+\_\+\+TXEIE
+, {\bfseries Error} = SPI\+\_\+\+CR2\+\_\+\+ERRIE
+, {\bfseries Rx\+Dma\+Enable} = SPI\+\_\+\+CR2\+\_\+\+RXDMAEN
+, \newline
+{\bfseries Tx\+Dma\+Enable} = SPI\+\_\+\+CR2\+\_\+\+TXDMAEN
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a1d62b5dfd3ac6e6b9d4612650fa4075b}\label{classmodm_1_1platform_1_1_spi_base_a1d62b5dfd3ac6e6b9d4612650fa4075b} 
+enum class {\bfseries Interrupt\+Flag} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Tx\+Buffer\+Empty} = SPI\+\_\+\+SR\+\_\+\+TXE
+, {\bfseries Rx\+Buffer\+Not\+Empty} = SPI\+\_\+\+SR\+\_\+\+RXNE
+, {\bfseries Crc\+Error} = SPI\+\_\+\+SR\+\_\+\+CRCERR
+, {\bfseries Mode\+Fault\+Error} = SPI\+\_\+\+SR\+\_\+\+MODF
+, \newline
+{\bfseries Overrun\+Error} = SPI\+\_\+\+SR\+\_\+\+OVR
+, {\bfseries Busy} = SPI\+\_\+\+SR\+\_\+\+BSY
+, {\bfseries Frame\+Format\+Error} = SPI\+\_\+\+SR\+\_\+\+FRE
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{Master\+Selection}} :\+ uint32\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621afe25c0ad752c03ce2361025c235b63e1}{Slave}} = 0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c}{Master}} = SPI\+\_\+\+CR1\+\_\+\+MSTR
+, {\bfseries All} = Master
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{Data\+Mode}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5}{Mode0}} = 0b00
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a7a2ea225a084605104f8c39b3ae9657c}{Mode1}} = SPI\+\_\+\+CR1\+\_\+\+CPHA
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a04c542f260d16590ec60c594f67a30e7}{Mode2}} = SPI\+\_\+\+CR1\+\_\+\+CPOL
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5ab68fa4884da8d22e83f37b4f209295f1}{Mode3}} = SPI\+\_\+\+CR1\+\_\+\+CPOL \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+CPHA
+, \newline
+{\bfseries All} = Mode3
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_ac950829992e41aa965a3ee4b31f0bebe}\label{classmodm_1_1platform_1_1_spi_base_ac950829992e41aa965a3ee4b31f0bebe} 
+enum class {\bfseries Data\+Order} :\+ uint32\+\_\+t \{ {\bfseries Msb\+First} = 0b0
+, {\bfseries Lsb\+First} = SPI\+\_\+\+CR1\+\_\+\+LSBFIRST
+, {\bfseries All} = Lsb\+First
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a7248733c75aa675204924170c888308b}\label{classmodm_1_1platform_1_1_spi_base_a7248733c75aa675204924170c888308b} 
+enum class {\bfseries Data\+Size} :\+ uint32\+\_\+t \{ {\bfseries Bit8} = 0
+, {\bfseries Bit16} = SPI\+\_\+\+CR1\+\_\+\+DFF
+, {\bfseries All} = Bit16
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a6fbd2186a894217e3e6bea2afba3a2e5}\label{classmodm_1_1platform_1_1_spi_base_a6fbd2186a894217e3e6bea2afba3a2e5} 
+enum class {\bfseries Prescaler} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Div2} = 0
+, {\bfseries Div4} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, {\bfseries Div8} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1
+, {\bfseries Div16} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, \newline
+{\bfseries Div32} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2
+, {\bfseries Div64} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, {\bfseries Div128} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1
+, {\bfseries Div256} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base}{modm::\+platform::\+\+Spi\+Base}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt)
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt\+Flag)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Serial peripheral interface (SPI2)
+
+Very basic implementation that exposes more hardware features than the regular \doxylink{structmodm_1_1_spi}{Spi} classes.
+
+\begin{DoxyAuthor}{Author}
+Kevin Laeufer 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a6b7981a2203ab826b03f768ef215419b}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!acknowledgeInterruptFlag@{acknowledgeInterruptFlag}}
+\index{acknowledgeInterruptFlag@{acknowledgeInterruptFlag}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{acknowledgeInterruptFlag()}{acknowledgeInterruptFlag()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_a6b7981a2203ab826b03f768ef215419b} 
+void modm::\+platform::\+\+Spi\+Hal2::\+acknowledge\+Interrupt\+Flag (\begin{DoxyParamCaption}\item[{Interrupt\+Flag\+\_\+t}]{flags}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\begin{DoxyWarning}{Warning}
+Not all Interrupt\+Flags can be cleared this way. 
+\end{DoxyWarning}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a36a46a5ae68e5b105899d0180a76917f}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!initialize@{initialize}}
+\index{initialize@{initialize}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{initialize()}{initialize()}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_a36a46a5ae68e5b105899d0180a76917f} 
+void modm::\+platform::\+\+Spi\+Hal2::\+initialize (\begin{DoxyParamCaption}\item[{Prescaler}]{prescaler}{, }\item[{\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{Master\+Selection}}}]{master\+Selection}{ = {\ttfamily \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c}{Master\+Selection::\+\+Master}}}, }\item[{\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{Data\+Mode}}}]{data\+Mode}{ = {\ttfamily \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5}{Data\+Mode::\+\+Mode0}}}, }\item[{Data\+Order}]{data\+Order}{ = {\ttfamily DataOrder:\+:\+MsbFirst}, }\item[{Data\+Size}]{data\+Size}{ = {\ttfamily DataSize:\+:\+Bit8}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Initialize \doxylink{structmodm_1_1_spi}{Spi} Peripheral
+
+Enables clocks, the UART peripheral Sets baudrate and parity. \Hypertarget{classmodm_1_1platform_1_1_spi_hal2_a5ed913d503eb765affd962704ef32a7d}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!read@{read}}
+\index{read@{read}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_a5ed913d503eb765affd962704ef32a7d} 
+void modm::\+platform::\+\+Spi\+Hal2::\+read (\begin{DoxyParamCaption}\item[{uint16\+\_\+t \&}]{data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns the value of the data register
+
+\begin{DoxyWarning}{Warning}
+This method does NOT do any sanity checks!! It is your responsibility to check if the register contains something useful! 
+\end{DoxyWarning}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_afa0eb854c49b2a5174223336bd36f9c7}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!read@{read}}
+\index{read@{read}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{read()}{read()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_afa0eb854c49b2a5174223336bd36f9c7} 
+void modm::\+platform::\+\+Spi\+Hal2::\+read (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \&}]{data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Returns the value of the data register
+
+\begin{DoxyWarning}{Warning}
+This method does NOT do any sanity checks!! It is your responsibility to check if the register contains something useful! 
+\end{DoxyWarning}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_ada1c9519bf3d30a904343c48703f2e0f}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!write@{write}}
+\index{write@{write}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_ada1c9519bf3d30a904343c48703f2e0f} 
+void modm::\+platform::\+\+Spi\+Hal2::\+write (\begin{DoxyParamCaption}\item[{uint16\+\_\+t}]{data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Write up to 16 Bit to the data register
+
+\begin{DoxyWarning}{Warning}
+This method does NOT do any sanity checks!! It is your responsibility to check if the register is empty! 
+\end{DoxyWarning}
+\Hypertarget{classmodm_1_1platform_1_1_spi_hal2_ab2df5075487b6fe765c0b8cf7a1ef0ac}\index{modm::platform::SpiHal2@{modm::platform::SpiHal2}!write@{write}}
+\index{write@{write}!modm::platform::SpiHal2@{modm::platform::SpiHal2}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_hal2_ab2df5075487b6fe765c0b8cf7a1ef0ac} 
+void modm::\+platform::\+\+Spi\+Hal2::\+write (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Write 8 Bit to the data register
+
+\begin{DoxyWarning}{Warning}
+This method does NOT do any sanity checks!! It is your responsibility to check if the register is empty! 
+\end{DoxyWarning}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+spi/\+spi\+\_\+hal\+\_\+2.\+hpp\item 
+src/\+modm/\+platform/\+spi/\+spi\+\_\+hal\+\_\+2\+\_\+impl.\+hpp\end{DoxyCompactItemize}

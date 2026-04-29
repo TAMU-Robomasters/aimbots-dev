@@ -1,0 +1,55 @@
+\doxysection{flash\+\_\+reader\+\_\+impl.\+hpp}
+\hypertarget{flash__reader__impl_8hpp_source}{}\label{flash__reader__impl_8hpp_source}\index{src/modm/platform/core/flash\_reader\_impl.hpp@{src/modm/platform/core/flash\_reader\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2015-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_PLATFORM\_FLASH\_READER\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_PLATFORM\_FLASH\_READER\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ simple\ implementation\ for\ all\ targets\ that\ don't\ have\ a}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ strict\ separation\ between\ Flash\ and\ RAM\ like\ the\ AVRs\ does.}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ 'const'\ implies\ internal\ linkage\ in\ C++\ if\ not\ explicit\ declared}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ as\ 'extern'.}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#define\ FLASH\_STORAGE(var)\ \ \ \ \ \ \ \ \ \ \ \ \ \ extern\ const\ var;\ const\ var}}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ EXTERN\_FLASH\_STORAGE(var)\ \ \ \ \ \ \ extern\ const\ var}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#define\ FLASH\_STORAGE\_STRING(s)\ \ \ \ \ \ \ \ \ extern\ const\ char\ s[];\ const\ char\ s[]}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#define\ EXTERN\_FLASH\_STORAGE\_STRING(s)\ \ extern\ const\ char\ s[]}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#define\ IFSS(s)\ ((const\ char\ *)(s))}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ std::\textcolor{keywordtype}{size\_t}\ size>}
+\DoxyCodeLine{00038\ \textcolor{keyword}{struct\ }FlashReader}
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{static}\ T}
+\DoxyCodeLine{00042\ \ \ \ \ read(\textcolor{keyword}{const}\ T*\ p)}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ *p;}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ \};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_PLATFORM\_FLASH\_READER\_HPP}}
+
+\end{DoxyCode}

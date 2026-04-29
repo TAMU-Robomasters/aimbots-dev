@@ -1,0 +1,649 @@
+\doxysection{bno055.\+hpp}
+\hypertarget{bno055_8hpp_source}{}\label{bno055_8hpp_source}\index{src/modm/driver/inertial/bno055.hpp@{src/modm/driver/inertial/bno055.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ push}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ ignored\ "{}-\/Waddress-\/of-\/packed-\/member"{}}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/i2c\_device.hpp>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <modm/processing/resumable.hpp>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/math/geometry/vector3.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/math/geometry/quaternion.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ forward\ declaration\ for\ friending\ with\ bno055::Data}}
+\DoxyCodeLine{00027\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{class}\ Transport\ >}
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_bno055}{Bno055}};}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1bno055}{bno055}}}
+\DoxyCodeLine{00032\ \{}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t}
+\DoxyCodeLine{00035\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a83e0d26020ae27cc4a847a7cb6b44628}{addr}}(uint8\_t\ offset\ =\ 1)}
+\DoxyCodeLine{00036\ \ \ \ \ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 0x28\ +\ (offset\ \&\ 0b1);}
+\DoxyCodeLine{00038\ \ \ \ \ \};}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00041\ \ \ \ \ Identifier\ :\ uint8\_t}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ Chip\ =\ 0xA0,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ Acc\ =\ 0xFB,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ Mag\ =\ 0x32,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ Gyr\ =\ 0x0F,}
+\DoxyCodeLine{00047\ \ \ \ \ \};}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00050\ \ \ \ \ Register\ :\ uint8\_t}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ PAGE\_ID\ =\ 0x07,}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PAGE0\ REGISTER\ DEFINITION\ START}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ CHIP\_ID\ =\ 0x00,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ ACCEL\_REV\_ID\ =\ 0x01,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ MAG\_REV\_ID\ =\ 0x02,}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ GYRO\_REV\_ID\ =\ 0x03,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ SW\_REV\_ID\_LSB\ =\ 0x04,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ SW\_REV\_ID\_MSB\ =\ 0x05,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ BL\_REV\_ID\ =\ 0x06,}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Accel\ data\ register}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_X\_LSB\ =\ 0x08,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_X\_MSB\ =\ 0x09,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_Y\_LSB\ =\ 0x0A,}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_Y\_MSB\ =\ 0x0B,}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_Z\_LSB\ =\ 0x0C,}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ ACCEL\_DATA\_Z\_MSB\ =\ 0x0D,}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Mag\ data\ register}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ MAG\_DATA\_X\_LSB\ =\ 0x0E,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ MAG\_DATA\_X\_MSB\ =\ 0x0F,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ MAG\_DATA\_Y\_LSB\ =\ 0x10,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ MAG\_DATA\_Y\_MSB\ =\ 0x11,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ MAG\_DATA\_Z\_LSB\ =\ 0x12,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ MAG\_DATA\_Z\_MSB\ =\ 0x13,}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Gyro\ data\ registers}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ GYRO\_DATA\_X\_LSB\ =\ 0x14,}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ GYRO\_DATA\_X\_MSB\ =\ 0x15,}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ GYRO\_DATA\_Y\_LSB\ =\ 0x16,}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ GYRO\_DATA\_Y\_MSB\ =\ 0x17,}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ GYRO\_DATA\_Z\_LSB\ =\ 0x18,}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ GYRO\_DATA\_Z\_MSB\ =\ 0x19,}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Euler\ data\ registers}}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ EULER\_H\_LSB\ =\ 0x1A,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ EULER\_H\_MSB\ =\ 0x1B,}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ EULER\_R\_LSB\ =\ 0x1C,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ EULER\_R\_MSB\ =\ 0x1D,}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ EULER\_P\_LSB\ =\ 0x1E,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ EULER\_P\_MSB\ =\ 0x1F,}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Quaternion\ data\ registers}}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_W\_LSB\ =\ 0x20,}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_W\_MSB\ =\ 0x21,}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_X\_LSB\ =\ 0x22,}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_X\_MSB\ =\ 0x23,}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_Y\_LSB\ =\ 0x24,}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_Y\_MSB\ =\ 0x25,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_Z\_LSB\ =\ 0x26,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ QUATERNION\_DATA\_Z\_MSB\ =\ 0x27,}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Linear\ acceleration\ data\ registers}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_X\_LSB\ =\ 0x28,}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_X\_MSB\ =\ 0x29,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_Y\_LSB\ =\ 0x2A,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_Y\_MSB\ =\ 0x2B,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_Z\_LSB\ =\ 0x2C,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ LINEAR\_ACCEL\_DATA\_Z\_MSB\ =\ 0x2D,}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Gravity\ data\ registers}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_X\_LSB\ =\ 0x2E,}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_X\_MSB\ =\ 0x2F,}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_Y\_LSB\ =\ 0x30,}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_Y\_MSB\ =\ 0x31,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_Z\_LSB\ =\ 0x32,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ GRAVITY\_DATA\_Z\_MSB\ =\ 0x33,}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Temperature\ data\ register}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ TEMP\ =\ 0x34,}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Status\ registers}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ CALIB\_STAT\ =\ 0x35,}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ SELFTEST\_RESULT\ =\ 0x36,}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ INTR\_STAT\ =\ 0x37,}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ SYS\_CLK\_STAT\ =\ 0x38,}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ SYS\_STAT\ =\ 0x39,}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ SYS\_ERR\ =\ 0x3A,}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Unit\ selection\ register}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ UNIT\_SEL\ =\ 0x3B,}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ DATA\_SELECT\ =\ 0x3C,}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Mode\ registers}}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ OPR\_MODE\ =\ 0x3D,}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ PWR\_MODE\ =\ 0x3E,}
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ SYS\_TRIGGER\ =\ 0x3F,}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ TEMP\_SOURCE\ =\ 0x40,}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Axis\ remap\ registers}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ AXIS\_MAP\_CONFIG\ =\ 0x41,}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ AXIS\_MAP\_SIGN\ =\ 0x42,}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ SIC\ registers}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_0\_LSB\ =\ 0x43,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_0\_MSB\ =\ 0x44,}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_1\_LSB\ =\ 0x45,}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_1\_MSB\ =\ 0x46,}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_2\_LSB\ =\ 0x47,}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_2\_MSB\ =\ 0x48,}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_3\_LSB\ =\ 0x49,}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_3\_MSB\ =\ 0x4A,}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_4\_LSB\ =\ 0x4B,}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_4\_MSB\ =\ 0x4C,}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_5\_LSB\ =\ 0x4D,}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_5\_MSB\ =\ 0x4E,}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_6\_LSB\ =\ 0x4F,}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_6\_MSB\ =\ 0x50,}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_7\_LSB\ =\ 0x51,}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_7\_MSB\ =\ 0x52,}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_8\_LSB\ =\ 0x53,}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ SIC\_MATRIX\_8\_MSB\ =\ 0x54,}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Accelerometer\ Offset\ registers}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_X\_LSB\ =\ 0x55,}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_X\_MSB\ =\ 0x56,}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_Y\_LSB\ =\ 0x57,}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_Y\_MSB\ =\ 0x58,}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_Z\_LSB\ =\ 0x59,}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ ACCEL\_OFFSET\_Z\_MSB\ =\ 0x5A,}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Magnetometer\ Offset\ registers}}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_X\_LSB\ =\ 0x5B,}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_X\_MSB\ =\ 0x5C,}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_Y\_LSB\ =\ 0x5D,}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_Y\_MSB\ =\ 0x5E,}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_Z\_LSB\ =\ 0x5F,}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ MAG\_OFFSET\_Z\_MSB\ =\ 0x60,}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Gyroscope\ Offset\ registers}}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_X\_LSB\ =\ 0x61,}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_X\_MSB\ =\ 0x62,}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_Y\_LSB\ =\ 0x63,}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_Y\_MSB\ =\ 0x64,}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_Z\_LSB\ =\ 0x65,}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ GYRO\_OFFSET\_Z\_MSB\ =\ 0x66,}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Radius\ registers}}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ ACCEL\_RADIUS\_LSB\ =\ 0x67,}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ ACCEL\_RADIUS\_MSB\ =\ 0x68,}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ MAG\_RADIUS\_LSB\ =\ 0x69,}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ MAG\_RADIUS\_MSB\ =\ 0x6A,}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PAGE0\ REGISTERS\ DEFINITION\ END}}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PAGE1\ REGISTERS\ DEFINITION\ START}}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ ***\ ORed\ with\ 0x80\ to\ indicate\ page\ 1\ ***}}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Configuration\ registers}}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ ACCEL\_CONFIG\ =\ 0x88,}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ MAG\_CONFIG\ =\ 0x89,}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ GYRO\_CONFIG\ =\ 0x8A,}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ GYRO\_MODE\_CONFIG\ =\ 0x8B,}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ ACCEL\_SLEEP\_CONFIG\ =\ 0x8C,}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ GYRO\_SLEEP\_CONFIG\ =\ 0x8D,}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ MAG\_SLEEP\_CONFIG\ =\ 0x8E,}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Interrupt\ registers}}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ INT\_MASK\ =\ 0x8F,}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ INT\ =\ 0x90,}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ ACCEL\_ANY\_MOTION\_THRES\ =\ 0x91,}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ ACCEL\_INTR\_SETTINGS\ =\ 0x92,}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ ACCEL\_HIGH\_G\_DURN\ =\ 0x93,}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ ACCEL\_HIGH\_G\_THRES\ =\ 0x94,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ ACCEL\_NO\_MOTION\_THRES\ =\ 0x95,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ ACCEL\_NO\_MOTION\_SET\ =\ 0x96,}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ GYRO\_INTR\_SETING\ =\ 0x97,}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ GYRO\_HIGHRATE\_X\_SET\ =\ 0x98,}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ GYRO\_DURN\_X\ =\ 0x99,}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ GYRO\_HIGHRATE\_Y\_SET\ =\ 0x9A,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ GYRO\_DURN\_Y\ =\ 0x9B,}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ GYRO\_HIGHRATE\_Z\_SET\ =\ 0x9C,}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ GYRO\_DURN\_Z\ =\ 0x9D,}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ GYRO\_ANY\_MOTION\_THRES\ =\ 0x9E,}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ GYRO\_ANY\_MOTION\_SET\ =\ 0x9F,}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Unique\ ID}}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ UNIQUE\_ID\_0\ =\ 0xD0,}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ UNIQUE\_ID\_F\ =\ 0xDF,}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PAGE1\ REGISTERS\ DEFINITION\ END}}
+\DoxyCodeLine{00233\ \ \ \ \ \};}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00238\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00239\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5eb}{SelfTestResult}}\ :\ uint8\_t}
+\DoxyCodeLine{00240\ \ \ \ \ \{}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5ebad2ab92eb4f741ea500be14d7b820a8ff}{ST\_MCU}}\ =\ Bit3,\ \ \ \ \ \ }
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5eba36bea9ea5377898f23db87197100d6f0}{ST\_GYR}}\ =\ Bit2,\ \ \ \ \ \ }
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5eba66d1e714964206dfc637e9932e5ae45e}{ST\_MAG}}\ =\ Bit1,\ \ \ \ \ \ }
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5eba1b5c4cf98de16c453d33f716d14bc5dc}{ST\_ACC}}\ =\ Bit0,\ \ \ \ \ \ }
+\DoxyCodeLine{00245\ \ \ \ \ \};}
+\DoxyCodeLine{00246\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a740c1b9bf154f5581ffe65f6f415c5eb}{SelfTestResult}});}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00251\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576}{InterruptStatus}}\ :\ uint8\_t}
+\DoxyCodeLine{00252\ \ \ \ \ \{}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a9d6ed551b33a355fea54ede9632bf629}{ACC\_NM}}\ =\ Bit7,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576aa0c81f598f0ba00ef642743cd96fa368}{ACC\_AM}}\ =\ Bit6,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a8807562c2f0a75ddaed0a8fc7f5ecead}{ACC\_HIGH\_G}}\ =\ Bit5,\ \ \ \ \ \ }
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a2c6bce4c0a137e94c93eca25367e698d}{GYR\_HIGH\_RATE}}\ =\ Bit3,\ \ \ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a73c4fd6d6295208fec8a26dc32870609}{GYRO\_AM}}\ =\ Bit2,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00259\ \ \ \ \ \};}
+\DoxyCodeLine{00260\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576}{InterruptStatus}});}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00263\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00264\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a5e5a7610379c0c4da8348b98bf87e72d}{SystemClockStatus}}\ :\ uint8\_t}
+\DoxyCodeLine{00265\ \ \ \ \ \{}
+\DoxyCodeLine{00266\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a5e5a7610379c0c4da8348b98bf87e72da951cead5617d498c86fb87761941a603}{ST\_MAIN\_CLK}}\ =\ Bit0,\ }
+\DoxyCodeLine{00267\ \ \ \ \ \};}
+\DoxyCodeLine{00268\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a5e5a7610379c0c4da8348b98bf87e72d}{SystemClockStatus}});}
+\DoxyCodeLine{00269\ }
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00272\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0}{UnitSelection}}\ :\ uint8\_t}
+\DoxyCodeLine{00273\ \ \ \ \ \{}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0a73ef4ce2019fb033dc9879dc79fd0af0}{ORI\_Android\_Windows}}\ =\ Bit7,\ }
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0a0d8494b57a55aed8c5044f45cdbc6d5a}{TEMP\_Unit}}\ =\ Bit5,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0a1dedd32ed8d971423e92d4055b7b9873}{EUL\_Unit}}\ =\ Bit2,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0af25ba0d36ace7ed1b76967958df6dfdf}{GYR\_Unit}}\ =\ Bit1,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0aa00c6913c7c8929fe5dc48e21953d341}{ACC\_Unit}}\ =\ Bit0,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00281\ \ \ \ \ \};}
+\DoxyCodeLine{00282\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a048ce653c297bef33c7c4a98422999b0}{UnitSelection}});}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00286\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2}{SystemTrigger}}\ :\ uint8\_t}
+\DoxyCodeLine{00287\ \ \ \ \ \{}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2ad2ef6ea1272739a57d49fd16baa2c1a1}{CLK\_SEL}}\ =\ Bit7,\ \ \ \ \ }
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2a3f630353fab321d63ec6e4ea6a5eb2ea}{RST\_INT}}\ =\ Bit6,\ \ \ \ \ }
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2a596b69cbd001b504942b5c489fe3882e}{RST\_SYS}}\ =\ Bit5,\ \ \ \ \ }
+\DoxyCodeLine{00291\ }
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2ad499b8ac55bb9f93b8fad65b03bb3db9}{Self\_Test}}\ =\ Bit0,\ \ \ }
+\DoxyCodeLine{00293\ \ \ \ \ \};}
+\DoxyCodeLine{00294\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2}{SystemTrigger}});}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00299\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_ad42459aa7c49f7bf24b11d5ea1873787}{AccConfig}}\ :\ uint8\_t}
+\DoxyCodeLine{00300\ \ \ \ \ \{}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ AccPowerMode\_Mask\ =\ Bit7\ |\ Bit6\ |\ Bit5,}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ AccBandwidth\_Mask\ =\ Bit4\ |\ Bit3\ |\ Bit2,}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ AccRange\_Mask\ =\ Bit1\ |\ Bit0,}
+\DoxyCodeLine{00304\ \ \ \ \ \};}
+\DoxyCodeLine{00305\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_ad42459aa7c49f7bf24b11d5ea1873787}{AccConfig}});}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00308\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00309\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a009a1b9fc051ac53afc1b7fc4fbcd3d9}{AccPowerMode}}\ :\ uint8\_t}
+\DoxyCodeLine{00310\ \ \ \ \ \{}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ Normal\ \ \ \ \ \ =\ (0\ <<\ 5),}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ Suspend\ \ \ \ \ =\ (1\ <<\ 5),}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ LowPower1\ \ \ =\ (2\ <<\ 5),}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ Standby\ \ \ \ \ =\ (3\ <<\ 5),}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ LowPower2\ \ \ =\ (4\ <<\ 5),}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ DeepSuspend\ =\ (5\ <<\ 5),}
+\DoxyCodeLine{00317\ \ \ \ \ \};}
+\DoxyCodeLine{00318\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_ad42459aa7c49f7bf24b11d5ea1873787}{AccConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a009a1b9fc051ac53afc1b7fc4fbcd3d9}{AccPowerMode}});}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00321\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00322\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a18a3dcfe976be7e96b3f2418d6e7e4aa}{AccBandwidth}}\ :\ uint8\_t}
+\DoxyCodeLine{00323\ \ \ \ \ \{}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ Hz7\_81\ \ =\ (0\ <<\ 2),}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ Hz15\_63\ =\ (1\ <<\ 2),}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ Hz31\_25\ =\ (2\ <<\ 2),}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ Hz62\_5\ \ =\ (3\ <<\ 2),}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ Hz125\ \ \ =\ (4\ <<\ 2),}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ Hz250\ \ \ =\ (5\ <<\ 2),}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ Hz500\ \ \ =\ (6\ <<\ 2),}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ Hz1000\ \ =\ (7\ <<\ 2),}
+\DoxyCodeLine{00332\ \ \ \ \ \};}
+\DoxyCodeLine{00333\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_ad42459aa7c49f7bf24b11d5ea1873787}{AccConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a18a3dcfe976be7e96b3f2418d6e7e4aa}{AccBandwidth}});}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00336\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00337\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a7b3b7ebd93a0c1f58f7ece7431dd00a7}{AccRange}}\ :\ uint8\_t}
+\DoxyCodeLine{00338\ \ \ \ \ \{}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ G2\ =\ 0,}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ G4\ =\ 1,}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ G8\ =\ 2,}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ G16\ =\ 3,}
+\DoxyCodeLine{00343\ \ \ \ \ \};}
+\DoxyCodeLine{00344\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_ad42459aa7c49f7bf24b11d5ea1873787}{AccConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a7b3b7ebd93a0c1f58f7ece7431dd00a7}{AccRange}});}
+\DoxyCodeLine{00345\ }
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00348\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00349\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a47129d79ea7d0f89ddf431c5d35d61d5}{MagConfig}}\ :\ uint8\_t}
+\DoxyCodeLine{00350\ \ \ \ \ \{}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ MagPowerMode\_Mask\ =\ Bit6\ |\ Bit5,}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ MagOperationMode\_Mask\ =\ Bit4\ |\ Bit3,}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ MagDataOutputRate\_Mask\ =\ Bit2\ |\ Bit1\ |\ Bit0,}
+\DoxyCodeLine{00354\ \ \ \ \ \};}
+\DoxyCodeLine{00355\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a47129d79ea7d0f89ddf431c5d35d61d5}{MagConfig}});}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00358\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00359\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_ae6fe4db9c45dff46e5a0a0aeaab2af14}{MagPowerMode}}\ :\ uint8\_t}
+\DoxyCodeLine{00360\ \ \ \ \ \{}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ Normal\ \ \ \ \ \ =\ (0\ <<\ 5),}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ Sleep\ \ \ \ \ \ \ =\ (1\ <<\ 5),}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ Suspend\ \ \ \ \ =\ (2\ <<\ 5),}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ ForceMode\ \ \ =\ (3\ <<\ 5),}
+\DoxyCodeLine{00365\ \ \ \ \ \};}
+\DoxyCodeLine{00366\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_a47129d79ea7d0f89ddf431c5d35d61d5}{MagConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_ae6fe4db9c45dff46e5a0a0aeaab2af14}{MagPowerMode}});}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00369\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00370\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_af99bd3c57ae46017f50b8d361539daa2}{MagOperationMode}}\ :\ uint8\_t}
+\DoxyCodeLine{00371\ \ \ \ \ \{}
+\DoxyCodeLine{00372\ \ \ \ \ \ \ \ \ LowPower\ \ \ \ \ \ \ \ =\ (0\ <<\ 3),}
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ Regular\ \ \ \ \ \ \ \ \ =\ (1\ <<\ 3),}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ EnhancedRegular\ =\ (2\ <<\ 3),}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ HighAccuracy\ \ \ \ =\ (3\ <<\ 3),}
+\DoxyCodeLine{00376\ \ \ \ \ \};}
+\DoxyCodeLine{00377\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_a47129d79ea7d0f89ddf431c5d35d61d5}{MagConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_af99bd3c57ae46017f50b8d361539daa2}{MagOperationMode}});}
+\DoxyCodeLine{00378\ }
+\DoxyCodeLine{00380\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00381\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a845f40439e82d050761807d8b035d7e0}{MagDataOutputRate}}\ :\ uint8\_t}
+\DoxyCodeLine{00382\ \ \ \ \ \{}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ Hz2\ =\ 0,}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ Hz6\ =\ 1,}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ Hz8\ =\ 2,}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ Hz10\ =\ 3,}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ Hz15\ =\ 4,}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ Hz20\ =\ 5,}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ Hz25\ =\ 6,}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ Hz30\ =\ 7,}
+\DoxyCodeLine{00391\ \ \ \ \ \};}
+\DoxyCodeLine{00392\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_a47129d79ea7d0f89ddf431c5d35d61d5}{MagConfig}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a845f40439e82d050761807d8b035d7e0}{MagDataOutputRate}});}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00396\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00397\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_afa4b6114d6a047644c86b1e82bd0b029}{GyrConfig0}}\ :\ uint8\_t}
+\DoxyCodeLine{00398\ \ \ \ \ \{}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ GyrBandwidth\_Mask\ =\ Bit5\ |\ Bit4\ |\ Bit3,}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ GyrRange\_Mask\ =\ Bit2\ |\ Bit1\ |\ Bit0,}
+\DoxyCodeLine{00401\ \ \ \ \ \};}
+\DoxyCodeLine{00402\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_afa4b6114d6a047644c86b1e82bd0b029}{GyrConfig0}});}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00405\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00406\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_af761f13cefc07016ffd93e962db7fb0e}{GyrBandwidth}}\ :\ uint8\_t}
+\DoxyCodeLine{00407\ \ \ \ \ \{}
+\DoxyCodeLine{00408\ \ \ \ \ \ \ \ \ Hz523\ \ \ =\ (0\ <<\ 3),}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ Hz230\ \ \ =\ (1\ <<\ 3),}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ Hz116\ \ \ =\ (2\ <<\ 3),}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ Hz47\ \ \ \ =\ (3\ <<\ 3),}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ Hz23\ \ \ \ =\ (4\ <<\ 3),}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ Hz12\ \ \ \ =\ (5\ <<\ 3),}
+\DoxyCodeLine{00414\ \ \ \ \ \ \ \ \ Hz64\ \ \ \ =\ (6\ <<\ 3),}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ Hz32\ \ \ \ =\ (7\ <<\ 3),}
+\DoxyCodeLine{00416\ \ \ \ \ \};}
+\DoxyCodeLine{00417\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_afa4b6114d6a047644c86b1e82bd0b029}{GyrConfig0}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_af761f13cefc07016ffd93e962db7fb0e}{GyrBandwidth}});}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00420\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00421\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a09a155dd6f931f2414b08db3dfe3e7b4}{GyrRange}}\ :\ uint8\_t}
+\DoxyCodeLine{00422\ \ \ \ \ \{}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ Dps2000\ =\ 0,}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ Dps1000\ =\ 1,}
+\DoxyCodeLine{00425\ \ \ \ \ \ \ \ \ Dps500\ \ =\ 2,}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ Dps250\ \ =\ 3,}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ Dps125\ \ =\ 4,}
+\DoxyCodeLine{00428\ \ \ \ \ \};}
+\DoxyCodeLine{00429\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_afa4b6114d6a047644c86b1e82bd0b029}{GyrConfig0}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a09a155dd6f931f2414b08db3dfe3e7b4}{GyrRange}});}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00432\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00433\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_af1418ecd0e854684a9f1f551e8de01e9}{GyrConfig1}}\ :\ uint8\_t}
+\DoxyCodeLine{00434\ \ \ \ \ \{}
+\DoxyCodeLine{00435\ \ \ \ \ \ \ \ \ GyrPowerMode\_Mask\ =\ Bit2\ |\ Bit1\ |\ Bit0,}
+\DoxyCodeLine{00436\ \ \ \ \ \};}
+\DoxyCodeLine{00437\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_af1418ecd0e854684a9f1f551e8de01e9}{GyrConfig1}});}
+\DoxyCodeLine{00438\ }
+\DoxyCodeLine{00440\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00441\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a70243b45be52aaf721158869b1bb40b1}{GyrPowerMode}}\ :\ uint8\_t}
+\DoxyCodeLine{00442\ \ \ \ \ \{}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ Normal\ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ 0,}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ FastPowerUp\ \ \ \ \ \ \ \ \ =\ 1,}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ DeepSuspend\ \ \ \ \ \ \ \ \ =\ 2,}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ Suspend\ \ \ \ \ \ \ \ \ \ \ \ \ =\ 3,}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ AdvancePowerSave\ \ \ \ =\ 4,}
+\DoxyCodeLine{00448\ \ \ \ \ \};}
+\DoxyCodeLine{00449\ \ \ \ \ MODM\_FLAGS\_CONFIG(\doxymbox{\hyperlink{structmodm_1_1bno055_af1418ecd0e854684a9f1f551e8de01e9}{GyrConfig1}},\ \doxymbox{\hyperlink{structmodm_1_1bno055_a70243b45be52aaf721158869b1bb40b1}{GyrPowerMode}});}
+\DoxyCodeLine{00450\ }
+\DoxyCodeLine{00453\ }
+\DoxyCodeLine{00459\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00460\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a49e7d7e6c12b265587dbfbaacac8e86f}{Interrupt}}\ :\ uint8\_t}
+\DoxyCodeLine{00461\ \ \ \ \ \{}
+\DoxyCodeLine{00462\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a9d6ed551b33a355fea54ede9632bf629}{ACC\_NM}}\ =\ Bit7,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576aa0c81f598f0ba00ef642743cd96fa368}{ACC\_AM}}\ =\ Bit6,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a8807562c2f0a75ddaed0a8fc7f5ecead}{ACC\_HIGH\_G}}\ =\ Bit5,\ \ \ \ \ \ }
+\DoxyCodeLine{00465\ }
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a2c6bce4c0a137e94c93eca25367e698d}{GYR\_HIGH\_RATE}}\ =\ Bit3,\ \ \ }
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_a133fdf07c7455ecae7e15425c919c576a73c4fd6d6295208fec8a26dc32870609}{GYRO\_AM}}\ =\ Bit2,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00468\ \ \ \ \ \};}
+\DoxyCodeLine{00469\ \ \ \ \ MODM\_FLAGS8(\doxymbox{\hyperlink{structmodm_1_1bno055_a49e7d7e6c12b265587dbfbaacac8e86f}{Interrupt}});}
+\DoxyCodeLine{00470\ }
+\DoxyCodeLine{00471\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00473\ \ \ \ \ TemperatureSource\ :\ uint8\_t}
+\DoxyCodeLine{00474\ \ \ \ \ \{}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ Accelerometer\ =\ 0,}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ Gyroscope\ =\ 1,}
+\DoxyCodeLine{00477\ \ \ \ \ \};}
+\DoxyCodeLine{00478\ }
+\DoxyCodeLine{00479\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00480\ \ \ \ \ OperationMode\ :\ uint8\_t}
+\DoxyCodeLine{00481\ \ \ \ \ \{}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ ConfigMode\ =\ 0b0000,}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ Acc\ =\ 0b0001,}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ Mag\ =\ 0b0010,}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ Gyro\ =\ 0b0011,}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ \ \ AccMag\ =\ 0b0100,}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ AccGyro\ =\ 0b0101,}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \ \ MagGyro\ =\ 0b0110,}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ AMG\ =\ 0b0111,}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ IMU\ =\ 0b1000,}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ Compass\ =\ 0b1001,}
+\DoxyCodeLine{00492\ \ \ \ \ \ \ \ \ M4G\ =\ 0b1010,}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ NDOF\_FMC\_Off\ =\ 0b1011,}
+\DoxyCodeLine{00494\ \ \ \ \ \ \ \ \ NDOF\ =\ 0b1100,}
+\DoxyCodeLine{00495\ \ \ \ \ \};}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00497\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00498\ \ \ \ \ PowerMode\ :\ uint8\_t}
+\DoxyCodeLine{00499\ \ \ \ \ \{}
+\DoxyCodeLine{00500\ \ \ \ \ \ \ \ \ Normal\ =\ 0,}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ LowPower\ =\ 1,}
+\DoxyCodeLine{00502\ \ \ \ \ \ \ \ \ Suspend\ =\ 2,}
+\DoxyCodeLine{00503\ \ \ \ \ \};}
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00506\ \ \ \ \ StatusCode\ :\ uint8\_t}
+\DoxyCodeLine{00507\ \ \ \ \ \{}
+\DoxyCodeLine{00508\ \ \ \ \ \ \ \ \ SystemIdle\ =\ 0,}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ SystemError\ =\ 1,}
+\DoxyCodeLine{00510\ \ \ \ \ \ \ \ \ InitializingPeripherals\ =\ 2,}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ SystemInitialization\ =\ 3,}
+\DoxyCodeLine{00512\ \ \ \ \ \ \ \ \ ExecutingSelftest\ =\ 4,}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ SensorFusionAlgorithmRunning\ =\ 5,}
+\DoxyCodeLine{00514\ \ \ \ \ \ \ \ \ SystemRunningWithoutFusionAlgorithm\ =\ 6,}
+\DoxyCodeLine{00515\ \ \ \ \ \};}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00518\ \ \ \ \ StatusError\ :\ uint8\_t}
+\DoxyCodeLine{00519\ \ \ \ \ \{}
+\DoxyCodeLine{00520\ \ \ \ \ \ \ \ \ NoError\ =\ 0,}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ PeripheralInitializationError\ =\ 1,}
+\DoxyCodeLine{00522\ \ \ \ \ \ \ \ \ SystemInitializationError\ =\ 2,}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ SelfTestResultFailed\ =\ 3,}
+\DoxyCodeLine{00524\ \ \ \ \ \ \ \ \ RegisterMapValueOutOfRange\ =\ 4,}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ RegisterMapAddressOutOfRange\ =\ 5,}
+\DoxyCodeLine{00526\ \ \ \ \ \ \ \ \ RegisterMapWriteError\ =\ 6,}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ BNOLowPowerModeNotAvailableForSelectedOperationMode\ =\ 7,}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ AccelerometerPowerModeNotAvailable\ =\ 8,}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ FusionAlgorithmConfigurationError\ =\ 9,}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ SensorConfigurationError\ =\ 0xA,}
+\DoxyCodeLine{00531\ \ \ \ \ \};}
+\DoxyCodeLine{00532\ }
+\DoxyCodeLine{00533\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00534\ \ \ \ \ \textcolor{keyword}{using\ }Registers\_t\ =\ FlagsGroup<}
+\DoxyCodeLine{00535\ \ \ \ \ \ \ \ \ SelfTestResult\_t,}
+\DoxyCodeLine{00536\ \ \ \ \ \ \ \ \ InterruptStatus\_t,}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ \ \ SystemClockStatus\_t,}
+\DoxyCodeLine{00538\ \ \ \ \ \ \ \ \ UnitSelection\_t,}
+\DoxyCodeLine{00539\ \ \ \ \ \ \ \ \ SystemTrigger\_t,}
+\DoxyCodeLine{00540\ \ \ \ \ \ \ \ \ AccConfig\_t,}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ MagConfig\_t,}
+\DoxyCodeLine{00542\ \ \ \ \ \ \ \ \ GyrConfig0\_t,}
+\DoxyCodeLine{00543\ \ \ \ \ \ \ \ \ GyrConfig1\_t,}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ Interrupt\_t,}
+\DoxyCodeLine{00545\ \ \ \ \ \ \ \ \ modm::Flags8<TemperatureSource>,}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ modm::Flags8<OperationMode>,}
+\DoxyCodeLine{00547\ \ \ \ \ \ \ \ \ modm::Flags8<PowerMode>,}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ modm::Flags8<StatusCode>,}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ modm::Flags8<StatusError>}
+\DoxyCodeLine{00550\ \ \ \ \ >;}
+\DoxyCodeLine{00551\ }
+\DoxyCodeLine{00552\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00553\ \ \ \ \ \textcolor{keyword}{struct\ }modm\_packed}
+\DoxyCodeLine{00554\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_1_1_data}{Data}}}
+\DoxyCodeLine{00555\ \ \ \ \ \{}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{class}\ I2cMaster\ >}
+\DoxyCodeLine{00557\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Bno055;}
+\DoxyCodeLine{00558\ }
+\DoxyCodeLine{00559\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Vector3f\ acceleration()\textcolor{keyword}{\ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3f(r.acceleration).scaled(1.f/16);\ \}}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Vector3f\ magnetometer()\textcolor{keyword}{\ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3f(r.magnetometer).scaled(1.f/16);\ \}}
+\DoxyCodeLine{00561\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Vector3f\ gyroscope()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3f(r.gyroscope).scaled(1.f/16);\ \}}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ heading()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ r.heading\ /\ 16.f;\ \}}
+\DoxyCodeLine{00563\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ roll()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ r.roll\ /\ 16.f;\ \}}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{float}\ pitch()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ r.pitch\ /\ 16.f;\ \}}
+\DoxyCodeLine{00565\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{Quaternion<float>}}\ quaternion()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{Quaternion<float>}}(r.quaternion).scale(1l\ <<\ 14);\ \}}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Vector3f\ linear\_acceleration()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3f(r.linear\_acceleration).scaled(1.f/100);\ \}}
+\DoxyCodeLine{00567\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ Vector3f\ gravity()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ Vector3f(r.gravity).scaled(1.f/100);\ \}}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ int8\_t\ temperature()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ r.temperature;\ \}}
+\DoxyCodeLine{00569\ }
+\DoxyCodeLine{00570\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00571\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }Raw\ \{}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ acceleration[3];}
+\DoxyCodeLine{00573\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ magnetometer[3];}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ gyroscope[3];}
+\DoxyCodeLine{00575\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ heading;}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ roll;}
+\DoxyCodeLine{00577\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ pitch;}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ quaternion[4];}
+\DoxyCodeLine{00579\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ linear\_acceleration[3];}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ \ \ \ \ int16\_t\ gravity[3];}
+\DoxyCodeLine{00581\ \ \ \ \ \ \ \ \ \ \ \ \ int8\_t\ temperature;}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \}\ r;}
+\DoxyCodeLine{00583\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ size\ =\ \textcolor{keyword}{sizeof}(Raw);}
+\DoxyCodeLine{00584\ \ \ \ \ \};}
+\DoxyCodeLine{00585\ \};\ \textcolor{comment}{//\ struct\ bno055}}
+\DoxyCodeLine{00586\ }
+\DoxyCodeLine{00591\ \textcolor{keyword}{template}\ <\ \textcolor{keyword}{class}\ I2cMaster\ >}
+\DoxyCodeLine{00592\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_bno055_a1b282cb44d109c31f2873508e8e152cd}{Bno055}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1bno055}{bno055}},\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_i2c_device}{modm::I2cDevice}}<I2cMaster,\ 4>}
+\DoxyCodeLine{00593\ \{}
+\DoxyCodeLine{00594\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00596\ \ \ \ \ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{classmodm_1_1_bno055_a1b282cb44d109c31f2873508e8e152cd}{Bno055}}(\doxymbox{\hyperlink{structmodm_1_1bno055_1_1_data}{Data}}\ \&data,\ uint8\_t\ address=\doxymbox{\hyperlink{structmodm_1_1bno055_a83e0d26020ae27cc4a847a7cb6b44628}{addr}}()):}
+\DoxyCodeLine{00597\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i2c_device_a8b2bad58a80104ddaaccf6e2c9d6b067}{I2cDevice}}<\doxymbox{\hyperlink{classmodm_1_1_i2c_master}{I2cMaster}},4>(address),\ data(data)\ \{\}}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \ \ \ \ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{structmodm_1_1_resumable_result}{modm::ResumableResult<bool>}}}
+\DoxyCodeLine{00600\ \ \ \ \ configure(OperationMode\ mode=OperationMode::NDOF)}
+\DoxyCodeLine{00601\ \ \ \ \ \{}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ updateRegister(Register::OPR\_MODE,\ mode);}
+\DoxyCodeLine{00603\ \ \ \ \ \}}
+\DoxyCodeLine{00604\ }
+\DoxyCodeLine{00605\ \ \ \ \ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{structmodm_1_1_resumable_result}{modm::ResumableResult<bool>}}}
+\DoxyCodeLine{00606\ \ \ \ \ readData()}
+\DoxyCodeLine{00607\ \ \ \ \ \{}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ readRegister(Register::ACCEL\_DATA\_X\_LSB,\ (uint8\_t*)\&data.r,\ Data::size);}
+\DoxyCodeLine{00609\ \ \ \ \ \}}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00611\ \ \ \ \ \textcolor{keyword}{inline}\ modm::ResumableResult<bool>}
+\DoxyCodeLine{00612\ \ \ \ \ enableExternalClock()}
+\DoxyCodeLine{00613\ \ \ \ \ \{}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ updateRegister(Register::SYS\_TRIGGER,\ \doxymbox{\hyperlink{structmodm_1_1bno055_a79faae58297f6cc070766790f2d13ac2ad2ef6ea1272739a57d49fd16baa2c1a1}{SystemTrigger::CLK\_SEL}},\ Registers\_t(0));}
+\DoxyCodeLine{00615\ \ \ \ \ \}}
+\DoxyCodeLine{00616\ }
+\DoxyCodeLine{00617\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00618\ \ \ \ \ \textcolor{keyword}{inline}\ modm::ResumableResult<bool>}
+\DoxyCodeLine{00619\ \ \ \ \ updateRegister(Register\ reg,\ Registers\_t\ setMask,\ Registers\_t\ clearMask\ =\ Registers\_t(0xff))}
+\DoxyCodeLine{00620\ \ \ \ \ \{}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ RF\_BEGIN();}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ RF\_CALL(setPageId(reg));}
+\DoxyCodeLine{00623\ }
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ buffer[0]\ =\ uint8\_t(reg);}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ this-\/>transaction.configureWriteRead(buffer,\ 1,\ buffer,\ 1);}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ RF\_CALL(\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_i2c_device_a118bbe0ca3198af5b5eb8c4161a00e68}{runTransaction}}()\ );}
+\DoxyCodeLine{00627\ }
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ buffer[1]\ =\ (buffer[0]\ \&\ \string~clearMask.value)\ |\ setMask.value;}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ buffer[0]\ =\ uint8\_t(reg);}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ this-\/>transaction.configureWrite(buffer,\ 2);}
+\DoxyCodeLine{00631\ \ \ \ \ \ \ \ \ RF\_END\_RETURN\_CALL(\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_i2c_device_a118bbe0ca3198af5b5eb8c4161a00e68}{runTransaction}}()\ );}
+\DoxyCodeLine{00632\ \ \ \ \ \}}
+\DoxyCodeLine{00633\ }
+\DoxyCodeLine{00634\ \ \ \ \ \textcolor{keyword}{inline}\ modm::ResumableResult<bool>}
+\DoxyCodeLine{00635\ \ \ \ \ readRegister(Register\ reg,\ uint8\_t\ *output,\ \textcolor{keywordtype}{size\_t}\ length=1)}
+\DoxyCodeLine{00636\ \ \ \ \ \{}
+\DoxyCodeLine{00637\ \ \ \ \ \ \ \ \ RF\_BEGIN();}
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ RF\_CALL(setPageId(reg));}
+\DoxyCodeLine{00639\ }
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ buffer[0]\ =\ uint8\_t(reg);}
+\DoxyCodeLine{00641\ \ \ \ \ \ \ \ \ this-\/>transaction.configureWriteRead(buffer,\ 1,\ output,\ length);}
+\DoxyCodeLine{00642\ \ \ \ \ \ \ \ \ RF\_END\_RETURN\_CALL(\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_i2c_device_a118bbe0ca3198af5b5eb8c4161a00e68}{runTransaction}}()\ );}
+\DoxyCodeLine{00643\ \ \ \ \ \}}
+\DoxyCodeLine{00644\ }
+\DoxyCodeLine{00645\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00646\ \ \ \ \ \textcolor{keyword}{inline}\ \doxymbox{\hyperlink{structmodm_1_1bno055_1_1_data}{Data}}\&}
+\DoxyCodeLine{00647\ \ \ \ \ getData()}
+\DoxyCodeLine{00648\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ data;\ \}}
+\DoxyCodeLine{00649\ }
+\DoxyCodeLine{00650\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00651\ \ \ \ \ \textcolor{keyword}{inline}\ modm::ResumableResult<bool>}
+\DoxyCodeLine{00652\ \ \ \ \ setPageId(Register\ regi)}
+\DoxyCodeLine{00653\ \ \ \ \ \{}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ uint8\_t\ reg\ =\ uint8\_t(regi);}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \ \ RF\_BEGIN();}
+\DoxyCodeLine{00656\ }
+\DoxyCodeLine{00657\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((reg\ \string^\ prev\_reg)\ \&\ 0x80)\ \{}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ \ \ \ \ buffer[0]\ =\ uint8\_t(Register::PAGE\_ID);}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ \ \ \ \ buffer[1]\ =\ reg\ >>\ 7;}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \ \ \ \ \ \ this-\/>transaction.configureWrite(buffer,\ 2);}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \ \ \ \ buffer[2]\ =\ RF\_CALL(\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_i2c_device_a118bbe0ca3198af5b5eb8c4161a00e68}{runTransaction}}()\ );}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (buffer[2])\ prev\_reg\ =\ reg;}
+\DoxyCodeLine{00663\ \ \ \ \ \ \ \ \ \ \ \ \ RF\_RETURN(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{bool}\textcolor{keyword}{>}(buffer[2]));}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \ \ RF\_END\_RETURN(\textcolor{keyword}{true});}
+\DoxyCodeLine{00667\ \ \ \ \ \}}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00669\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00670\ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1bno055_1_1_data}{Data}}\ \&data;}
+\DoxyCodeLine{00671\ \ \ \ \ uint8\_t\ buffer[3];}
+\DoxyCodeLine{00672\ \ \ \ \ uint8\_t\ prev\_reg;}
+\DoxyCodeLine{00673\ \};}
+\DoxyCodeLine{00674\ }
+\DoxyCodeLine{00675\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00676\ }
+\DoxyCodeLine{00677\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ pop}}
+
+\end{DoxyCode}

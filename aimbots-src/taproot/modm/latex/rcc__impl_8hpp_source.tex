@@ -1,0 +1,639 @@
+\doxysection{rcc\+\_\+impl.\+hpp}
+\hypertarget{rcc__impl_8hpp_source}{}\label{rcc__impl_8hpp_source}\index{src/modm/platform/clock/rcc\_impl.hpp@{src/modm/platform/clock/rcc\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ 2021\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{namespace\ }modm::platform}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{constexpr}\ Rcc::flash\_latency}
+\DoxyCodeLine{00016\ Rcc::computeFlashLatency(uint32\_t\ Core\_Hz,\ uint16\_t\ Core\_mV)}
+\DoxyCodeLine{00017\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ flash\_latency\_1800[]\ =}
+\DoxyCodeLine{00019\ \ \ \ \ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ 20000000,}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ 40000000,}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ 60000000,}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ 80000000,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ 100000000,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ 120000000,}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ 140000000,}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ 160000000,}
+\DoxyCodeLine{00028\ \ \ \ \ \};}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ flash\_latency\_2100[]\ =}
+\DoxyCodeLine{00030\ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ 22000000,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ 44000000,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ 66000000,}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ 88000000,}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ 110000000,}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ 132000000,}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ 154000000,}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ 168000000,}
+\DoxyCodeLine{00039\ \ \ \ \ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ flash\_latency\_2400[]\ =}
+\DoxyCodeLine{00041\ \ \ \ \ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ 24000000,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ 48000000,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ 72000000,}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ 96000000,}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ 120000000,}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ 144000000,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ 168000000,}
+\DoxyCodeLine{00049\ \ \ \ \ \};}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{constexpr}\ uint32\_t\ flash\_latency\_2700[]\ =}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ 30000000,}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ 60000000,}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ 90000000,}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ 120000000,}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ 150000000,}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ 168000000,}
+\DoxyCodeLine{00058\ \ \ \ \ \};}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{const}\ uint32\_t\ *lut(flash\_latency\_1800);}
+\DoxyCodeLine{00060\ \ \ \ \ uint8\_t\ lut\_size(\textcolor{keyword}{sizeof}(flash\_latency\_1800)\ /\ \textcolor{keyword}{sizeof}(uint32\_t));}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{comment}{//\ find\ the\ right\ table\ for\ the\ voltage}}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keywordflow}{if}\ (2700\ <=\ Core\_mV)\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ lut\ =\ flash\_latency\_2700;}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ lut\_size\ =\ \textcolor{keyword}{sizeof}(flash\_latency\_2700)\ /\ \textcolor{keyword}{sizeof}(uint32\_t);}
+\DoxyCodeLine{00065\ \ \ \ \ \}}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (2400\ <=\ Core\_mV)\ \{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ lut\ =\ flash\_latency\_2400;}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ lut\_size\ =\ \textcolor{keyword}{sizeof}(flash\_latency\_2400)\ /\ \textcolor{keyword}{sizeof}(uint32\_t);}
+\DoxyCodeLine{00069\ \ \ \ \ \}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (2100\ <=\ Core\_mV)\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ lut\ =\ flash\_latency\_2100;}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ lut\_size\ =\ \textcolor{keyword}{sizeof}(flash\_latency\_2100)\ /\ \textcolor{keyword}{sizeof}(uint32\_t);}
+\DoxyCodeLine{00073\ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{comment}{//\ find\ the\ next\ highest\ frequency\ in\ the\ table}}
+\DoxyCodeLine{00075\ \ \ \ \ uint8\_t\ latency(0);}
+\DoxyCodeLine{00076\ \ \ \ \ uint32\_t\ max\_freq(0);}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{while}\ (latency\ <\ lut\_size)}
+\DoxyCodeLine{00078\ \ \ \ \ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (Core\_Hz\ <=\ (max\_freq\ =\ lut[latency]))}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ latency++;}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordflow}{return}\ \{latency,\ max\_freq\};}
+\DoxyCodeLine{00084\ \}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}32\_t\ Core\_Hz,\ u\textcolor{keywordtype}{int}16\_t\ Core\_mV\ =\ 3300\ >}
+\DoxyCodeLine{00087\ uint32\_t}
+\DoxyCodeLine{00088\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_a11d50e717b5ff4971211f3066a374b6d}{Rcc::setFlashLatency}}()}
+\DoxyCodeLine{00089\ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{constexpr}\ flash\_latency\ fl\ =\ computeFlashLatency(Core\_Hz,\ Core\_mV);}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{static\_assert}(Core\_Hz\ <=\ fl.max\_frequency,\ \textcolor{stringliteral}{"{}CPU\ Frequency\ is\ too\ high\ for\ this\ core\ voltage!"{}});}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ uint32\_t\ acr\ =\ FLASH-\/>ACR\ \&\ \string~FLASH\_ACR\_LATENCY;}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{comment}{//\ set\ flash\ latency}}
+\DoxyCodeLine{00095\ \ \ \ \ acr\ |=\ fl.latency;}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{comment}{//\ enable\ flash\ prefetch\ and\ data\ and\ instruction\ cache}}
+\DoxyCodeLine{00097\ \ \ \ \ acr\ |=\ FLASH\_ACR\_PRFTEN\ |\ FLASH\_ACR\_DCEN\ |\ FLASH\_ACR\_ICEN;}
+\DoxyCodeLine{00098\ \ \ \ \ FLASH-\/>ACR\ =\ acr;}
+\DoxyCodeLine{00099\ \ \ \ \ \_\_DSB();\ \_\_ISB();}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordflow}{return}\ fl.max\_frequency;}
+\DoxyCodeLine{00101\ \}}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}32\_t\ Core\_Hz\ >}
+\DoxyCodeLine{00104\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00105\ Rcc::updateCoreFrequency()}
+\DoxyCodeLine{00106\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ SystemCoreClock\ =\ Core\_Hz;}
+\DoxyCodeLine{00108\ \ \ \ \ delay\_fcpu\_MHz\ =\ computeDelayMhz(Core\_Hz);}
+\DoxyCodeLine{00109\ \ \ \ \ delay\_ns\_per\_loop\ =\ computeDelayNsPerLoop(Core\_Hz);}
+\DoxyCodeLine{00110\ \}}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00113\ rcc\_check\_enable(Peripheral\ peripheral)}
+\DoxyCodeLine{00114\ \{}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordflow}{switch}(peripheral)\ \{}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Adc1:}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Adc2:}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Adc3:}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Can1:}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Can2:}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Crc:}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Dac:}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Dcmi:}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Dma1:}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Dma2:}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Eth:}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Fsmc:}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::I2c1:}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::I2c2:}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::I2c3:}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Rng:}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Rtc:}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Sdio:}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Spi1:}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Spi2:}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Spi3:}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim1:}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim10:}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim11:}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim12:}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim13:}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim14:}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim2:}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim3:}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim4:}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim5:}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim6:}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim7:}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim8:}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Tim9:}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Uart4:}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Uart5:}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usart1:}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usart2:}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usart3:}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usart6:}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usbotgfs:}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Usbotghs:}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ Peripheral::Wwdg:}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00163\ \ \ \ \ \}}
+\DoxyCodeLine{00164\ \}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00167\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00168\ Rcc::enable()}
+\DoxyCodeLine{00169\ \{}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keyword}{static\_assert}(rcc\_check\_enable(peripheral),}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Rcc::enable()\ doesn't\ know\ this\ peripheral!"{}});}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \_\_DSB();}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc1)}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_ADC1EN;}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc2)}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_ADC2EN;}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc3)}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_ADC3EN;}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can1)}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_CAN1EN;\ \_\_DSB();}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_CAN1RST;\ \_\_DSB();}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_CAN1RST;}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00192\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can2)}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_CAN2EN;\ \_\_DSB();}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_CAN2RST;\ \_\_DSB();}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_CAN2RST;}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Crc)}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_CRCEN;\ \_\_DSB();}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ |=\ RCC\_AHB1RSTR\_CRCRST;\ \_\_DSB();}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ \&=\ \string~RCC\_AHB1RSTR\_CRCRST;}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dac)}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_DACEN;\ \_\_DSB();}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_DACRST;\ \_\_DSB();}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_DACRST;}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dcmi)}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ |=\ RCC\_AHB2ENR\_DCMIEN;\ \_\_DSB();}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ |=\ RCC\_AHB2RSTR\_DCMIRST;\ \_\_DSB();}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ \&=\ \string~RCC\_AHB2RSTR\_DCMIRST;}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma1)}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_DMA1EN;\ \_\_DSB();}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ |=\ RCC\_AHB1RSTR\_DMA1RST;\ \_\_DSB();}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ \&=\ \string~RCC\_AHB1RSTR\_DMA1RST;}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma2)}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_DMA2EN;\ \_\_DSB();}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ |=\ RCC\_AHB1RSTR\_DMA2RST;\ \_\_DSB();}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ \&=\ \string~RCC\_AHB1RSTR\_DMA2RST;}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Eth)}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_ETHMACEN;\ \_\_DSB();}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ |=\ RCC\_AHB1RSTR\_ETHMACRST;\ \_\_DSB();}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1RSTR\ \&=\ \string~RCC\_AHB1RSTR\_ETHMACRST;\ \_\_DSB();}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_ETHMACRXEN;\ \_\_DSB();}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_ETHMACTXEN;}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Fsmc)}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB3ENR\ |=\ RCC\_AHB3ENR\_FSMCEN;\ \_\_DSB();}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB3RSTR\ |=\ RCC\_AHB3RSTR\_FSMCRST;\ \_\_DSB();}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB3RSTR\ \&=\ \string~RCC\_AHB3RSTR\_FSMCRST;}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00242\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c1)}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_I2C1EN;\ \_\_DSB();}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_I2C1RST;\ \_\_DSB();}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_I2C1RST;}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00248\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c2)}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_I2C2EN;\ \_\_DSB();}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_I2C2RST;\ \_\_DSB();}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_I2C2RST;}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c3)}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_I2C3EN;\ \_\_DSB();}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_I2C3RST;\ \_\_DSB();}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_I2C3RST;}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00260\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rng)}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ |=\ RCC\_AHB2ENR\_RNGEN;\ \_\_DSB();}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ |=\ RCC\_AHB2RSTR\_RNGRST;\ \_\_DSB();}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ \&=\ \string~RCC\_AHB2RSTR\_RNGRST;}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rtc)}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>BDCR\ |=\ RCC\_BDCR\_RTCEN;}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00270\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Sdio)}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_SDIOEN;\ \_\_DSB();}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_SDIORST;\ \_\_DSB();}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_SDIORST;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00276\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi1)}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_SPI1EN;\ \_\_DSB();}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_SPI1RST;\ \_\_DSB();}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_SPI1RST;}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00282\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi2)}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_SPI2EN;\ \_\_DSB();}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_SPI2RST;\ \_\_DSB();}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_SPI2RST;}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi3)}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_SPI3EN;\ \_\_DSB();}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_SPI3RST;\ \_\_DSB();}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_SPI3RST;}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00294\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim1)}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_TIM1EN;\ \_\_DSB();}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_TIM1RST;\ \_\_DSB();}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_TIM1RST;}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim10)}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_TIM10EN;\ \_\_DSB();}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_TIM10RST;\ \_\_DSB();}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_TIM10RST;}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00306\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim11)}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_TIM11EN;\ \_\_DSB();}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_TIM11RST;\ \_\_DSB();}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_TIM11RST;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00312\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim12)}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00314\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM12EN;\ \_\_DSB();}
+\DoxyCodeLine{00315\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM12RST;\ \_\_DSB();}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM12RST;}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00318\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim13)}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM13EN;\ \_\_DSB();}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM13RST;\ \_\_DSB();}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM13RST;}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim14)}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM14EN;\ \_\_DSB();}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM14RST;\ \_\_DSB();}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM14RST;}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00330\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim2)}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM2EN;\ \_\_DSB();}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM2RST;\ \_\_DSB();}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM2RST;}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00336\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim3)}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM3EN;\ \_\_DSB();}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM3RST;\ \_\_DSB();}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM3RST;}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00342\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim4)}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM4EN;\ \_\_DSB();}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM4RST;\ \_\_DSB();}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM4RST;}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00348\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim5)}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM5EN;\ \_\_DSB();}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM5RST;\ \_\_DSB();}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM5RST;}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00354\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim6)}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM6EN;\ \_\_DSB();}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM6RST;\ \_\_DSB();}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM6RST;}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00360\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim7)}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_TIM7EN;\ \_\_DSB();}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_TIM7RST;\ \_\_DSB();}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_TIM7RST;}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00366\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim8)}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_TIM8EN;\ \_\_DSB();}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_TIM8RST;\ \_\_DSB();}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_TIM8RST;}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00372\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim9)}
+\DoxyCodeLine{00373\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_TIM9EN;\ \_\_DSB();}
+\DoxyCodeLine{00375\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_TIM9RST;\ \_\_DSB();}
+\DoxyCodeLine{00376\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_TIM9RST;}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00378\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart4)}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_UART4EN;\ \_\_DSB();}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_UART4RST;\ \_\_DSB();}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_UART4RST;}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00384\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart5)}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_UART5EN;\ \_\_DSB();}
+\DoxyCodeLine{00387\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_UART5RST;\ \_\_DSB();}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_UART5RST;}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00390\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart1)}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_USART1EN;\ \_\_DSB();}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_USART1RST;\ \_\_DSB();}
+\DoxyCodeLine{00394\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_USART1RST;}
+\DoxyCodeLine{00395\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00396\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart2)}
+\DoxyCodeLine{00397\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00398\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_USART2EN;\ \_\_DSB();}
+\DoxyCodeLine{00399\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_USART2RST;\ \_\_DSB();}
+\DoxyCodeLine{00400\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_USART2RST;}
+\DoxyCodeLine{00401\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00402\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart3)}
+\DoxyCodeLine{00403\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00404\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_USART3EN;\ \_\_DSB();}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_USART3RST;\ \_\_DSB();}
+\DoxyCodeLine{00406\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_USART3RST;}
+\DoxyCodeLine{00407\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00408\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart6)}
+\DoxyCodeLine{00409\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00410\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ |=\ RCC\_APB2ENR\_USART6EN;\ \_\_DSB();}
+\DoxyCodeLine{00411\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ |=\ RCC\_APB2RSTR\_USART6RST;\ \_\_DSB();}
+\DoxyCodeLine{00412\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB2RSTR\ \&=\ \string~RCC\_APB2RSTR\_USART6RST;}
+\DoxyCodeLine{00413\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00414\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotgfs)}
+\DoxyCodeLine{00415\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ |=\ RCC\_AHB2ENR\_OTGFSEN;\ \_\_DSB();}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ |=\ RCC\_AHB2RSTR\_OTGFSRST;\ \_\_DSB();}
+\DoxyCodeLine{00418\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB2RSTR\ \&=\ \string~RCC\_AHB2RSTR\_OTGFSRST;}
+\DoxyCodeLine{00419\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00420\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotghs)}
+\DoxyCodeLine{00421\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00422\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_OTGHSEN;\ \_\_DSB();}
+\DoxyCodeLine{00423\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ |=\ RCC\_AHB1ENR\_OTGHSULPIEN;}
+\DoxyCodeLine{00424\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00425\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Wwdg)}
+\DoxyCodeLine{00426\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (not\ Rcc::isEnabled<peripheral>())\ \{}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ |=\ RCC\_APB1ENR\_WWDGEN;\ \_\_DSB();}
+\DoxyCodeLine{00428\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ |=\ RCC\_APB1RSTR\_WWDGRST;\ \_\_DSB();}
+\DoxyCodeLine{00429\ \ \ \ \ \ \ \ \ \ \ \ \ RCC-\/>APB1RSTR\ \&=\ \string~RCC\_APB1RSTR\_WWDGRST;}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00431\ \ \ \ \ \_\_DSB();}
+\DoxyCodeLine{00432\ \}}
+\DoxyCodeLine{00433\ }
+\DoxyCodeLine{00434\ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00435\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00436\ Rcc::disable()}
+\DoxyCodeLine{00437\ \{}
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{keyword}{static\_assert}(rcc\_check\_enable(peripheral),}
+\DoxyCodeLine{00439\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Rcc::disable()\ doesn't\ know\ this\ peripheral!"{}});}
+\DoxyCodeLine{00440\ }
+\DoxyCodeLine{00441\ \ \ \ \ \_\_DSB();}
+\DoxyCodeLine{00442\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc1)}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_ADC1EN;}
+\DoxyCodeLine{00444\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc2)}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_ADC2EN;}
+\DoxyCodeLine{00446\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc3)}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_ADC3EN;}
+\DoxyCodeLine{00448\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can1)}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_CAN1EN;}
+\DoxyCodeLine{00450\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can2)}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_CAN2EN;}
+\DoxyCodeLine{00452\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Crc)}
+\DoxyCodeLine{00453\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_CRCEN;}
+\DoxyCodeLine{00454\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dac)}
+\DoxyCodeLine{00455\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_DACEN;}
+\DoxyCodeLine{00456\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dcmi)}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ \&=\ \string~RCC\_AHB2ENR\_DCMIEN;}
+\DoxyCodeLine{00458\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma1)}
+\DoxyCodeLine{00459\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_DMA1EN;}
+\DoxyCodeLine{00460\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma2)}
+\DoxyCodeLine{00461\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_DMA2EN;}
+\DoxyCodeLine{00462\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Eth)}
+\DoxyCodeLine{00463\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_ETHMACEN;\ \_\_DSB();}
+\DoxyCodeLine{00464\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_ETHMACRXEN;\ \_\_DSB();}
+\DoxyCodeLine{00465\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_ETHMACTXEN;}
+\DoxyCodeLine{00466\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Fsmc)}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \ \ RCC-\/>AHB3ENR\ \&=\ \string~RCC\_AHB3ENR\_FSMCEN;}
+\DoxyCodeLine{00468\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c1)}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_I2C1EN;}
+\DoxyCodeLine{00470\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c2)}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_I2C2EN;}
+\DoxyCodeLine{00472\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c3)}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_I2C3EN;}
+\DoxyCodeLine{00474\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rng)}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ \&=\ \string~RCC\_AHB2ENR\_RNGEN;}
+\DoxyCodeLine{00476\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rtc)}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ RCC-\/>BDCR\ \&=\ \string~RCC\_BDCR\_RTCEN;}
+\DoxyCodeLine{00478\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Sdio)}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_SDIOEN;}
+\DoxyCodeLine{00480\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi1)}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_SPI1EN;}
+\DoxyCodeLine{00482\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi2)}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_SPI2EN;}
+\DoxyCodeLine{00484\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi3)}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_SPI3EN;}
+\DoxyCodeLine{00486\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim1)}
+\DoxyCodeLine{00487\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_TIM1EN;}
+\DoxyCodeLine{00488\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim10)}
+\DoxyCodeLine{00489\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_TIM10EN;}
+\DoxyCodeLine{00490\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim11)}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_TIM11EN;}
+\DoxyCodeLine{00492\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim12)}
+\DoxyCodeLine{00493\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM12EN;}
+\DoxyCodeLine{00494\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim13)}
+\DoxyCodeLine{00495\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM13EN;}
+\DoxyCodeLine{00496\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim14)}
+\DoxyCodeLine{00497\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM14EN;}
+\DoxyCodeLine{00498\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim2)}
+\DoxyCodeLine{00499\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM2EN;}
+\DoxyCodeLine{00500\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim3)}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM3EN;}
+\DoxyCodeLine{00502\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim4)}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM4EN;}
+\DoxyCodeLine{00504\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim5)}
+\DoxyCodeLine{00505\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM5EN;}
+\DoxyCodeLine{00506\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim6)}
+\DoxyCodeLine{00507\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM6EN;}
+\DoxyCodeLine{00508\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim7)}
+\DoxyCodeLine{00509\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_TIM7EN;}
+\DoxyCodeLine{00510\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim8)}
+\DoxyCodeLine{00511\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_TIM8EN;}
+\DoxyCodeLine{00512\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim9)}
+\DoxyCodeLine{00513\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_TIM9EN;}
+\DoxyCodeLine{00514\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart4)}
+\DoxyCodeLine{00515\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_UART4EN;}
+\DoxyCodeLine{00516\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart5)}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_UART5EN;}
+\DoxyCodeLine{00518\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart1)}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_USART1EN;}
+\DoxyCodeLine{00520\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart2)}
+\DoxyCodeLine{00521\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_USART2EN;}
+\DoxyCodeLine{00522\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart3)}
+\DoxyCodeLine{00523\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_USART3EN;}
+\DoxyCodeLine{00524\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart6)}
+\DoxyCodeLine{00525\ \ \ \ \ \ \ \ \ RCC-\/>APB2ENR\ \&=\ \string~RCC\_APB2ENR\_USART6EN;}
+\DoxyCodeLine{00526\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotgfs)}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ RCC-\/>AHB2ENR\ \&=\ \string~RCC\_AHB2ENR\_OTGFSEN;}
+\DoxyCodeLine{00528\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotghs)}
+\DoxyCodeLine{00529\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_OTGHSEN;\ \_\_DSB();}
+\DoxyCodeLine{00530\ \ \ \ \ \ \ \ \ RCC-\/>AHB1ENR\ \&=\ \string~RCC\_AHB1ENR\_OTGHSULPIEN;}
+\DoxyCodeLine{00531\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Wwdg)}
+\DoxyCodeLine{00532\ \ \ \ \ \ \ \ \ RCC-\/>APB1ENR\ \&=\ \string~RCC\_APB1ENR\_WWDGEN;}
+\DoxyCodeLine{00533\ \ \ \ \ \_\_DSB();}
+\DoxyCodeLine{00534\ \}}
+\DoxyCodeLine{00535\ }
+\DoxyCodeLine{00536\ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00537\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00538\ Rcc::isEnabled()}
+\DoxyCodeLine{00539\ \{}
+\DoxyCodeLine{00540\ \ \ \ \ \textcolor{keyword}{static\_assert}(rcc\_check\_enable(peripheral),}
+\DoxyCodeLine{00541\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Rcc::isEnabled()\ doesn't\ know\ this\ peripheral!"{}});}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc1)}
+\DoxyCodeLine{00544\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_ADC1EN;}
+\DoxyCodeLine{00545\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc2)}
+\DoxyCodeLine{00546\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_ADC2EN;}
+\DoxyCodeLine{00547\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Adc3)}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_ADC3EN;}
+\DoxyCodeLine{00549\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can1)}
+\DoxyCodeLine{00550\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_CAN1EN;}
+\DoxyCodeLine{00551\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Can2)}
+\DoxyCodeLine{00552\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_CAN2EN;}
+\DoxyCodeLine{00553\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Crc)}
+\DoxyCodeLine{00554\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB1ENR\ \&\ RCC\_AHB1ENR\_CRCEN;}
+\DoxyCodeLine{00555\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dac)}
+\DoxyCodeLine{00556\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_DACEN;}
+\DoxyCodeLine{00557\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dcmi)}
+\DoxyCodeLine{00558\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB2ENR\ \&\ RCC\_AHB2ENR\_DCMIEN;}
+\DoxyCodeLine{00559\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma1)}
+\DoxyCodeLine{00560\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB1ENR\ \&\ RCC\_AHB1ENR\_DMA1EN;}
+\DoxyCodeLine{00561\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Dma2)}
+\DoxyCodeLine{00562\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB1ENR\ \&\ RCC\_AHB1ENR\_DMA2EN;}
+\DoxyCodeLine{00563\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Eth)}
+\DoxyCodeLine{00564\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB1ENR\ \&\ RCC\_AHB1ENR\_ETHMACEN;}
+\DoxyCodeLine{00565\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Fsmc)}
+\DoxyCodeLine{00566\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB3ENR\ \&\ RCC\_AHB3ENR\_FSMCEN;}
+\DoxyCodeLine{00567\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c1)}
+\DoxyCodeLine{00568\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_I2C1EN;}
+\DoxyCodeLine{00569\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c2)}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_I2C2EN;}
+\DoxyCodeLine{00571\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::I2c3)}
+\DoxyCodeLine{00572\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_I2C3EN;}
+\DoxyCodeLine{00573\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rng)}
+\DoxyCodeLine{00574\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB2ENR\ \&\ RCC\_AHB2ENR\_RNGEN;}
+\DoxyCodeLine{00575\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Rtc)}
+\DoxyCodeLine{00576\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>BDCR\ \&\ RCC\_BDCR\_RTCEN;}
+\DoxyCodeLine{00577\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Sdio)}
+\DoxyCodeLine{00578\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_SDIOEN;}
+\DoxyCodeLine{00579\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi1)}
+\DoxyCodeLine{00580\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_SPI1EN;}
+\DoxyCodeLine{00581\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi2)}
+\DoxyCodeLine{00582\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_SPI2EN;}
+\DoxyCodeLine{00583\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Spi3)}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_SPI3EN;}
+\DoxyCodeLine{00585\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim1)}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_TIM1EN;}
+\DoxyCodeLine{00587\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim10)}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_TIM10EN;}
+\DoxyCodeLine{00589\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim11)}
+\DoxyCodeLine{00590\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_TIM11EN;}
+\DoxyCodeLine{00591\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim12)}
+\DoxyCodeLine{00592\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM12EN;}
+\DoxyCodeLine{00593\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim13)}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM13EN;}
+\DoxyCodeLine{00595\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim14)}
+\DoxyCodeLine{00596\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM14EN;}
+\DoxyCodeLine{00597\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim2)}
+\DoxyCodeLine{00598\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM2EN;}
+\DoxyCodeLine{00599\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim3)}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM3EN;}
+\DoxyCodeLine{00601\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim4)}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM4EN;}
+\DoxyCodeLine{00603\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim5)}
+\DoxyCodeLine{00604\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM5EN;}
+\DoxyCodeLine{00605\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim6)}
+\DoxyCodeLine{00606\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM6EN;}
+\DoxyCodeLine{00607\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim7)}
+\DoxyCodeLine{00608\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_TIM7EN;}
+\DoxyCodeLine{00609\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim8)}
+\DoxyCodeLine{00610\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_TIM8EN;}
+\DoxyCodeLine{00611\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Tim9)}
+\DoxyCodeLine{00612\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_TIM9EN;}
+\DoxyCodeLine{00613\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart4)}
+\DoxyCodeLine{00614\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_UART4EN;}
+\DoxyCodeLine{00615\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Uart5)}
+\DoxyCodeLine{00616\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_UART5EN;}
+\DoxyCodeLine{00617\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart1)}
+\DoxyCodeLine{00618\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_USART1EN;}
+\DoxyCodeLine{00619\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart2)}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_USART2EN;}
+\DoxyCodeLine{00621\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart3)}
+\DoxyCodeLine{00622\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_USART3EN;}
+\DoxyCodeLine{00623\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usart6)}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB2ENR\ \&\ RCC\_APB2ENR\_USART6EN;}
+\DoxyCodeLine{00625\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotgfs)}
+\DoxyCodeLine{00626\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB2ENR\ \&\ RCC\_AHB2ENR\_OTGFSEN;}
+\DoxyCodeLine{00627\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Usbotghs)}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>AHB1ENR\ \&\ RCC\_AHB1ENR\_OTGHSEN;}
+\DoxyCodeLine{00629\ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (peripheral\ ==\ Peripheral::Wwdg)}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ RCC-\/>APB1ENR\ \&\ RCC\_APB1ENR\_WWDGEN;}
+\DoxyCodeLine{00631\ \}}
+\DoxyCodeLine{00632\ }
+\DoxyCodeLine{00633\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm::platform}}
+
+\end{DoxyCode}

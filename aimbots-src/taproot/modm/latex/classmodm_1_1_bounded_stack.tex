@@ -1,0 +1,57 @@
+\doxysection{modm::\+Bounded\+Stack\texorpdfstring{$<$}{<} T, N, Container \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_bounded_stack}{}\label{classmodm_1_1_bounded_stack}\index{modm::BoundedStack$<$ T, N, Container $>$@{modm::BoundedStack$<$ T, N, Container $>$}}
+
+
+Bounded stack.  
+
+
+
+
+{\ttfamily \+\#include $<$stack.\+hpp$>$}
+
+Inheritance diagram for modm::\+Bounded\+Stack\texorpdfstring{$<$}{<} T, N, Container \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1_bounded_stack}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1_stack}{modm::\+\+Stack$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef Container::\+\+Size {\bfseries Size}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_stack}{modm::\+\+Stack$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries is\+Empty} ()
+\item 
+bool {\bfseries is\+Full} ()
+\item 
+Size {\bfseries get\+Size} ()
+\item 
+Size {\bfseries get\+Max\+Size} ()
+\item 
+T \& {\bfseries get} ()
+\item 
+const T \& {\bfseries get} () const
+\item 
+bool {\bfseries push} (const T \&value)
+\item 
+void {\bfseries pop} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1_stack}{modm::\+\+Stack$<$ T, Container $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+Container {\bfseries c}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, std::\+size\+\_\+t N, typename Container = Bounded\+Deque$<$\+T, N$>$$>$\newline
+class modm::\+\+Bounded\+Stack$<$ T, N, Container $>$}
+Bounded stack. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+container/\+stack.\+hpp\end{DoxyCompactItemize}

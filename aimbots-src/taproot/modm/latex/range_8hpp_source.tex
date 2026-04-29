@@ -1,0 +1,122 @@
+\doxysection{range.\+hpp}
+\hypertarget{range_8hpp_source}{}\label{range_8hpp_source}\index{src/modm/math/algorithm/range.hpp@{src/modm/math/algorithm/range.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Huu\ Nguyen}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2019,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ MIT\ License.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this\ file,\ you\ can\ obtain}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ one\ at\ https://opensource.org/licenses/MIT.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ Adapted\ for\ constexpr\ from\ https://github.com/whoshuu/cpp\_range}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//\ \#include\ <modm/architecture/interface/assert.hpp>\ //\ TODO}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }detail}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }Range}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{constexpr}\ Range(\textcolor{keyword}{const}\ T\&\ start,\ \textcolor{keyword}{const}\ T\&\ stop,\ \textcolor{keyword}{const}\ T\&\ step)\ :}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ start\_\{start\},}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ stop\_\{validate(start,stop,step)\ ?\ stop\ :\ start\},}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ step\_\{validate(start,stop,step)\ ?\ step\ :\ 1\}}
+\DoxyCodeLine{00034\ \ \ \ \ \{\}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{class\ }iterator}
+\DoxyCodeLine{00037\ \ \ \ \ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ std::forward\_iterator\_tag\ iterator\_category;}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ T\ value\_type;}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ T\&\ reference;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ T*\ pointer;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ iterator(value\_type\ value,\ T\ step,\ value\_type\ boundary)\ :}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ value\_\{value\},\ step\_\{step\},\ boundary\_\{boundary\},\ positive\_step\_(step\_\ >\ 0)}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \{\}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ iterator\ operator++()\ \{\ value\_\ +=\ step\_;\ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};\ \}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ reference\ operator*()\ \{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ pointer\ operator-\/>()\ \{\ \textcolor{keywordflow}{return}\ \&value\_;\ \}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator==(\textcolor{keyword}{const}\ iterator\&\ rhs)}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (positive\_step\_)}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (value\_\ >=\ rhs.value\_\ and\ value\_\ >\ boundary\_);}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (value\_\ <=\ rhs.value\_\ and\ value\_\ <\ boundary\_);}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ operator!=(\textcolor{keyword}{const}\ iterator\&\ rhs)}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (positive\_step\_)}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (value\_\ <\ rhs.value\_\ and\ value\_\ >=\ boundary\_);}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ (value\_\ >\ rhs.value\_\ and\ value\_\ <=\ boundary\_);}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ value\_type\ value\_;}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ step\_;}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\ boundary\_;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ positive\_step\_;}
+\DoxyCodeLine{00068\ \ \ \ \ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{constexpr}\ iterator\ begin()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ iterator(start\_,\ step\_,\ start\_);\ \}}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{constexpr}\ iterator\ end()\textcolor{keyword}{\ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ iterator(stop\_,\ \ step\_,\ start\_);\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00075\ \ \ \ \ validate(\textcolor{keyword}{const}\ T\&\ start,\ \textcolor{keyword}{const}\ T\&\ stop,\ \textcolor{keyword}{const}\ T\&\ step)}
+\DoxyCodeLine{00076\ \ \ \ \ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ step\_ok\ =\ (step\ !=\ 0);}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ order\_ok\ =\ not\ ((start\ >\ stop\ and\ step\ >\ 0)\ or\ (start\ <\ stop\ and\ step\ <\ 0));}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO:\ Use\ std::is\_constant\_evaluated()\ to\ make\ modm\_assert\ redirect\ to\ static\_assert!}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ throw\ std::invalid\_argument("{}Range\ step\ argument\ must\ not\ be\ zero"{});}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modm\_assert\_debug(step\_ok,\ "{}algorithm"{},\ "{}range"{},\ "{}step"{});}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ throw\ std::invalid\_argument("{}Range\ arguments\ must\ result\ in\ termination"{});}}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ modm\_assert\_debug(order\_ok,\ "{}algorithm"{},\ "{}range"{},\ "{}termination"{});}}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ step\_ok\ and\ order\_ok;}
+\DoxyCodeLine{00087\ \ \ \ \ \}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{const}\ T\ start\_;}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{const}\ T\ stop\_;}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{const}\ T\ step\_;}
+\DoxyCodeLine{00092\ \};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \}\ \textcolor{comment}{//\ namespace\ detail}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00103\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00104\ \textcolor{keyword}{constexpr}\ detail::Range<T>}
+\DoxyCodeLine{00105\ range(\textcolor{keyword}{const}\ T\&\ stop)}
+\DoxyCodeLine{00106\ \{}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{return}\ detail::Range<T>(T\{0\},\ stop,\ T\{1\});}
+\DoxyCodeLine{00108\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00116\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00117\ \textcolor{keyword}{constexpr}\ detail::Range<T>}
+\DoxyCodeLine{00118\ range(\textcolor{keyword}{const}\ T\&\ start,\ \textcolor{keyword}{const}\ T\&\ stop)}
+\DoxyCodeLine{00119\ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordflow}{return}\ detail::Range<T>(start,\ stop,\ T\{1\});}
+\DoxyCodeLine{00121\ \}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00130\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00131\ \textcolor{keyword}{constexpr}\ detail::Range<T>}
+\DoxyCodeLine{00132\ range(\textcolor{keyword}{const}\ T\&\ start,\ \textcolor{keyword}{const}\ T\&\ stop,\ \textcolor{keyword}{const}\ T\&\ step)}
+\DoxyCodeLine{00133\ \{}
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keywordflow}{return}\ detail::Range<T>(start,\ stop,\ step);}
+\DoxyCodeLine{00135\ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+
+\end{DoxyCode}

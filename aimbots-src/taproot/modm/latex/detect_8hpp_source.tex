@@ -1,0 +1,237 @@
+\doxysection{detect.\+hpp}
+\hypertarget{detect_8hpp_source}{}\label{detect_8hpp_source}\index{src/modm/architecture/detect.hpp@{src/modm/architecture/detect.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2012,\ 2014-\/2015,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2015,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Daniel\ Krebs}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Tarik\ TIRE}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#define\ MODM\_COMPILER\_STRING}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#define\ MODM\_COMPILER\_GCC}}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#define\ MODM\_COMPILER\_MSVC}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#define\ MODM\_OS\_STRING}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#define\ MODM\_OS\_UNIX}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#define\ MODM\_OS\_LINUX}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#define\ MODM\_OS\_OSX}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ MODM\_OS\_WIN32}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#define\ MODM\_OS\_WIN64}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#define\ MODM\_OS\_HOSTED}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#define\ MODM\_OS\_HOSTED\_64}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_STRING}}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00054\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_AVR}}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_ATXMEGA}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_ATMEGA}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_ATTINY}}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_ARM}}
+\DoxyCodeLine{00060\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_ARM7TDMI}}
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_CORTEX\_M0}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_CORTEX\_M3}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#define\ MODM\_CPU\_CORTEX\_M4}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#define\ MODM\_ALIGNMENT}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_BIG\_ENDIAN}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_LITTLE\_ENDIAN}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_PDP\_ENDIAN}}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#define\ MODM\_BYTE\_ORDER}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#define\ MODM\_IS\_BIG\_ENDIAN}}
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#define\ MODM\_IS\_LITTLE\_ENDIAN}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#define\ MODM\_SIZEOF\_POINTER}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#else\ }}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00086\ \textcolor{comment}{//\ Determine\ compilation\ environment}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#if\ defined\ \_\_clang\_\_}}
+\DoxyCodeLine{00103\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_STRING\ "{}Clang"{}}}
+\DoxyCodeLine{00104\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_CLANG\ 1}}
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#elif\ defined\ \_\_GNUC\_\_}}
+\DoxyCodeLine{00106\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_GCC\ 1}}
+\DoxyCodeLine{00107\ \textcolor{preprocessor}{\#\ \ \ if\ defined\ \_\_MINGW32\_\_}}
+\DoxyCodeLine{00108\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_COMPILER\_STRING\ "{}MinGW\ /\ MinGW-\/w64"{}}}
+\DoxyCodeLine{00109\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_COMPILER\_MINGW\ 1}}
+\DoxyCodeLine{00110\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00111\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_COMPILER\_STRING\ "{}Gnu\ GCC"{}}}
+\DoxyCodeLine{00112\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00113\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#if\ defined\ \_MSC\_VER}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_STRING\ \ \ \ \ "{}Microsoft\ Visual\ C++"{}}}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_MSVC\ 1}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{preprocessor}{\#if\ !defined\ MODM\_COMPILER\_STRING}}
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_COMPILER\_STRING\ \ \ \ \ "{}Unknown\ compiler"{}}}
+\DoxyCodeLine{00122\ \textcolor{preprocessor}{\#\ \ \ warning\ "{}Couldn't\ determine\ the\ used\ compiler!\ Please\ add\ it\ to\ <modm/architecture/detect.hpp>"{}}}
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ Determine\ target\ operating\ system}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#if\ defined\ linux\ ||\ defined\ \_\_linux\_\_}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_HOSTED\ 1}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_LINUX\ 1}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_STRING\ \ \ \ \ \ \ \ \ \ \ "{}Linux"{}}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#if\ (defined\ \_\_MWERKS\_\_\ \&\&\ defined\ \_\_powerc\ \&\&\ !defined\ macintosh)\ ||\ defined\ \_\_APPLE\_CC\_\_\ ||\ defined\ macosx}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_HOSTED\ 1}}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_OSX\ 1}}
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_STRING\ \ \ \ \ \ \ \ \ \ \ "{}MacOS\ X"{}}}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#if\ defined\ \_\_unix\_\_}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_HOSTED\ 1}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_UNIX\ 1}}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#\ \ \ if\ !defined\ MODM\_OS\_STRING}}
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_OS\_STRING\ \ \ \ \ \ \ "{}Unix-\/like(generic)"{}}}
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#if\ defined\ \_WIN32\ ||\ defined\ WIN32\ ||\ defined\ \_\_NT\_\_\ ||\ defined\ \_\_WIN32\_\_}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_HOSTED\ 1}}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_WIN32\ 1}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#\ \ \ if\ defined\ \_WIN64}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_OS\_WIN64\ 1}}
+\DoxyCodeLine{00153\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_OS\_STRING\ \ \ \ \ \ \ "{}Win64"{}}}
+\DoxyCodeLine{00154\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00155\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ if\ !defined\ MODM\_OS\_STRING}}
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ \ \ \ \ define\ MODM\_OS\_STRING\ \ \ "{}Win32"{}}}
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ endif}}
+\DoxyCodeLine{00158\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00159\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_BIG\_ENDIAN\ 4321}}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_LITTLE\_ENDIAN\ 1234}}
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#define\ MODM\_ORDER\_PDP\_ENDIAN\ 3412}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ If\ we\ did\ not\ detect\ any\ of\ Linux,\ OS\ X\ or\ Windows}}
+\DoxyCodeLine{00166\ \textcolor{preprocessor}{\#if\ !defined(MODM\_OS\_HOSTED)}}
+\DoxyCodeLine{00167\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_OS\_NONE\ 1}}
+\DoxyCodeLine{00168\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00171\ \textcolor{comment}{//\ Determine\ CPU\ type}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{preprocessor}{\#if\ defined\ \_\_AVR\_\_}}
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_CPU\_AVR\ 1}}
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_ALIGNMENT\ \ \ 1}}
+\DoxyCodeLine{00176\ \textcolor{preprocessor}{\#\ \ \ if\ defined\ \_\_AVR\_XMEGA\_\_}}
+\DoxyCodeLine{00177\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_ATXMEGA\ 1}}
+\DoxyCodeLine{00178\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}Atmel\ XMEGA"{}}}
+\DoxyCodeLine{00179\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ see\ http://www.nongnu.org/avr-\/libc/user-\/manual/using\_tools.html}}
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ if\ \_\_AVR\_ARCH\_\_\ ==\ 2\ ||\ \_\_AVR\_ARCH\_\_\ ==\ 25\ ||\ \_\_AVR\_ARCH\_\_\ ==\ 1}}
+\DoxyCodeLine{00182\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ \ \ \ \ define\ MODM\_CPU\_ATTINY\ \ 1}}
+\DoxyCodeLine{00183\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ "{}Atmel\ tinyAVR"{}}}
+\DoxyCodeLine{00184\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ else}}
+\DoxyCodeLine{00185\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ \ \ \ \ define\ MODM\_CPU\_ATMEGA\ \ 1}}
+\DoxyCodeLine{00186\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ "{}Atmel\ megaAVR"{}}}
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ endif}}
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00189\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{preprocessor}{\#if\ defined\ \_\_X86\_\_\ ||\ defined\ \_\_i386\_\_\ ||\ defined\ i386\ ||\ defined\ \_M\_IX86\ ||\ defined\ \_\_386\_\_\ ||\ defined\ \_\_x86\_64\_\_\ ||\ defined\ \_M\_X64}}
+\DoxyCodeLine{00192\ \textcolor{preprocessor}{\#\ \ \ if\ defined\ \_\_x86\_64\_\_\ ||\ defined\ \_M\_X64}}
+\DoxyCodeLine{00193\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_AMD64\ 1}}
+\DoxyCodeLine{00194\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}AMD\ x86-\/64"{}}}
+\DoxyCodeLine{00195\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_ALIGNMENT\ \ \ 8}}
+\DoxyCodeLine{00196\ \textcolor{preprocessor}{\#\ \ \ else}}
+\DoxyCodeLine{00197\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_I386\ 1}}
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}Intel\ 386+"{}}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_ALIGNMENT\ \ \ 4}}
+\DoxyCodeLine{00200\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \textcolor{preprocessor}{\#if\ defined\ \_\_arm\_\_\ ||\ defined\ \_\_aarch64\_\_}}
+\DoxyCodeLine{00204\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_CPU\_ARM\ 1}}
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_ALIGNMENT\ \ \ 4}}
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#\ \ \ if\ defined\ \_\_ARM\_ARCH\_4T\_\_}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_ARM7TDMI\ \ \ \ 1}}
+\DoxyCodeLine{00208\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM7TDMI"{}}}
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_6SM\_\_\ ||\ defined\ \_\_ARM\_ARCH\_6M\_\_}}
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_CORTEX\_M0\ \ \ 1}}
+\DoxyCodeLine{00211\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ Cortex-\/M0"{}}}
+\DoxyCodeLine{00212\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_7M\_\_}}
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_CORTEX\_M3\ \ \ 1}}
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ Cortex-\/M3"{}}}
+\DoxyCodeLine{00215\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_7EM\_\_}}
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_CORTEX\_M4\ \ \ 1}}
+\DoxyCodeLine{00217\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ Cortex-\/M4"{}}}
+\DoxyCodeLine{00218\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_6\_\_}}
+\DoxyCodeLine{00219\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_CORTEX\_A6\ \ \ 1}}
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ Cortex-\/A6"{}}}
+\DoxyCodeLine{00221\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_7A\_\_}}
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_CORTEX\_A7\ \ \ 1}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ Cortex-\/A7"{}}}
+\DoxyCodeLine{00224\ \textcolor{preprocessor}{\#\ \ \ elif\ defined\ \_\_ARM\_ARCH\_ISA\_A64}}
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_AARCH64\ 1}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}ARM\ AArch64"{}}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\#if\ !defined\ MODM\_CPU\_STRING}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\#\ \ \ error\ "{}Couldn't\ determine\ target\ CPU!"{}}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_CPU\_STRING\ \ \ \ \ \ "{}Unknown"{}}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00234\ }
+\DoxyCodeLine{00235\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00236\ \textcolor{comment}{//\ Provide\ some\ additional\ information}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \textcolor{preprocessor}{\#if\ defined\ \_\_SIZEOF\_POINTER\_\_}}
+\DoxyCodeLine{00239\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_SIZEOF\_POINTER\ \ \ \ \ \ \ \ \ \ \_\_SIZEOF\_POINTER\_\_}}
+\DoxyCodeLine{00240\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00241\ \textcolor{preprocessor}{\#\ \ \ if\ defined(MODM\_OS\_HOSTED\_64)}}
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_SIZEOF\_POINTER\ \ \ \ \ \ 8}}
+\DoxyCodeLine{00243\ \textcolor{preprocessor}{\#\ \ \ elif\ defined(MODM\_OS\_HOSTED\_32)}}
+\DoxyCodeLine{00244\ \textcolor{preprocessor}{\#\ \ \ \ \ \ \ define\ MODM\_SIZEOF\_POINTER\ \ \ \ \ \ 4}}
+\DoxyCodeLine{00245\ \textcolor{preprocessor}{\#\ \ \ endif}}
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\#if\ !defined\ MODM\_SIZEOF\_POINTER}}
+\DoxyCodeLine{00249\ \textcolor{preprocessor}{\#\ \ \ error\ "{}MODM\_SIZEOF\_POINTER\ not\ defined!\ Please\ provide\ a\ suitable\ definition."{}}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00253\ \textcolor{preprocessor}{\#if\ defined\ \_\_BYTE\_ORDER\_\_}}
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#\ \ \ define\ MODM\_BYTE\_ORDER\ \ \ \ \ \ \_\_BYTE\_ORDER\_\_}}
+\DoxyCodeLine{00255\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\#if\ !defined\ MODM\_BYTE\_ORDER}}
+\DoxyCodeLine{00258\ \textcolor{preprocessor}{\#\ \ \ error\ "{}MODM\_BYTE\_ORDER\ not\ defined!\ Please\ provide\ a\ suitable\ definition."{}}}
+\DoxyCodeLine{00259\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \textcolor{preprocessor}{\#define\ MODM\_IS\_BIG\_ENDIAN\ \ \ \ \ \ (MODM\_BYTE\_ORDER\ ==\ MODM\_ORDER\_BIG\_ENDIAN)}}
+\DoxyCodeLine{00262\ \textcolor{preprocessor}{\#define\ MODM\_IS\_LITTLE\_ENDIAN\ \ \ (MODM\_BYTE\_ORDER\ ==\ MODM\_ORDER\_LITTLE\_ENDIAN)}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \textcolor{preprocessor}{\#define\ MODM\_HAS\_IOSTREAM\ \_\_has\_include(<modm/io/iostream.hpp>)}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !\_\_DOXYGEN\_\_}}
+
+\end{DoxyCode}

@@ -1,0 +1,387 @@
+\doxysection{set.\+hpp}
+\hypertarget{set_8hpp_source}{}\label{set_8hpp_source}\index{src/modm/platform/gpio/set.hpp@{src/modm/platform/gpio/set.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_GPIO\_SET\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_GPIO\_SET\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}base.hpp"{}}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}...\ Gpios\ >}
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_set}{GpioSet}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ inverteds[9]\ =\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::A\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::B\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::C\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::D\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::E\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::F\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::G\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::H\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::I\ and\ Gpios::isInverted)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00039\ \ \ \ \ \};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ inverted(uint8\_t\ \textcolor{keywordtype}{id})\ \{\ \textcolor{keywordflow}{return}\ inverteds[id];\ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ masks[9]\ =\ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::A)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::B)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::C)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::D)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::E)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::F)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::G)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::H)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ (((Gpios::port\ ==\ Port::I)\ ?\ Gpios::mask\ :\ 0)\ |\ ...),}
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ mask(uint8\_t\ \textcolor{keywordtype}{id})\ \{\ \textcolor{keywordflow}{return}\ masks[id];\ \}}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t\ mask2(uint8\_t\ \textcolor{keywordtype}{id},\ uint8\_t\ value\ =\ 0b11)\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ uint32\_t\ r\{0\};}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ ii=0;\ ii<16;\ ii++)}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (masks[\textcolor{keywordtype}{id}]\ \&\ (1\ <<\ ii))\ r\ |=\ (uint32\_t(value)\ <<\ (ii\ *\ 2));}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ r;}
+\DoxyCodeLine{00059\ \ \ \ \ \}}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ numberOfPorts()\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ uint8\_t\ r\{0\};}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ \&m:\ masks)\ r\ +=\ (m)\ ?\ 1\ :\ 0;}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ r;}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ width\ =\ \textcolor{keyword}{sizeof}...(Gpios);}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ number\_of\_ports\ =\ numberOfPorts();}
+\DoxyCodeLine{00068\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput()}
+\DoxyCodeLine{00070\ \ \ \ \ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ GPIOA-\/>MODER\ =\ (GPIOA-\/>MODER\ \&\ \string~mask2(0))\ |\ mask2(0,\ i(Mode::Output));}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ GPIOB-\/>MODER\ =\ (GPIOB-\/>MODER\ \&\ \string~mask2(1))\ |\ mask2(1,\ i(Mode::Output));}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ GPIOC-\/>MODER\ =\ (GPIOC-\/>MODER\ \&\ \string~mask2(2))\ |\ mask2(2,\ i(Mode::Output));}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ GPIOD-\/>MODER\ =\ (GPIOD-\/>MODER\ \&\ \string~mask2(3))\ |\ mask2(3,\ i(Mode::Output));}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ GPIOE-\/>MODER\ =\ (GPIOE-\/>MODER\ \&\ \string~mask2(4))\ |\ mask2(4,\ i(Mode::Output));}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ GPIOF-\/>MODER\ =\ (GPIOF-\/>MODER\ \&\ \string~mask2(5))\ |\ mask2(5,\ i(Mode::Output));}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ GPIOG-\/>MODER\ =\ (GPIOG-\/>MODER\ \&\ \string~mask2(6))\ |\ mask2(6,\ i(Mode::Output));}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ GPIOH-\/>MODER\ =\ (GPIOH-\/>MODER\ \&\ \string~mask2(7))\ |\ mask2(7,\ i(Mode::Output));}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ GPIOI-\/>MODER\ =\ (GPIOI-\/>MODER\ \&\ \string~mask2(8))\ |\ mask2(8,\ i(Mode::Output));}
+\DoxyCodeLine{00080\ \ \ \ \ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\textcolor{keywordtype}{bool}\ status)}
+\DoxyCodeLine{00083\ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ set(status);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ setOutput();}
+\DoxyCodeLine{00086\ \ \ \ \ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}\ type,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ speed\ =\ OutputSpeed::MHz50)}
+\DoxyCodeLine{00089\ \ \ \ \ \{}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ configure(type,\ speed);}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ setOutput();}
+\DoxyCodeLine{00092\ \ \ \ \ \}}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}\ type,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ speed\ =\ OutputSpeed::MHz50)}
+\DoxyCodeLine{00095\ \ \ \ \ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>OSPEEDR\ =\ (GPIOA-\/>OSPEEDR\ \&\ \string~mask2(0))\ |\ (i(speed)\ *\ mask2(0,\ 0b01));}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>OTYPER\ \ =\ (GPIOA-\/>OTYPER\ \ \&\ \string~mask(0))\ \ |\ (i(type)\ ?\ mask(0)\ :\ 0);}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>OSPEEDR\ =\ (GPIOB-\/>OSPEEDR\ \&\ \string~mask2(1))\ |\ (i(speed)\ *\ mask2(1,\ 0b01));}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>OTYPER\ \ =\ (GPIOB-\/>OTYPER\ \ \&\ \string~mask(1))\ \ |\ (i(type)\ ?\ mask(1)\ :\ 0);}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>OSPEEDR\ =\ (GPIOC-\/>OSPEEDR\ \&\ \string~mask2(2))\ |\ (i(speed)\ *\ mask2(2,\ 0b01));}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>OTYPER\ \ =\ (GPIOC-\/>OTYPER\ \ \&\ \string~mask(2))\ \ |\ (i(type)\ ?\ mask(2)\ :\ 0);}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>OSPEEDR\ =\ (GPIOD-\/>OSPEEDR\ \&\ \string~mask2(3))\ |\ (i(speed)\ *\ mask2(3,\ 0b01));}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>OTYPER\ \ =\ (GPIOD-\/>OTYPER\ \ \&\ \string~mask(3))\ \ |\ (i(type)\ ?\ mask(3)\ :\ 0);}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>OSPEEDR\ =\ (GPIOE-\/>OSPEEDR\ \&\ \string~mask2(4))\ |\ (i(speed)\ *\ mask2(4,\ 0b01));}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>OTYPER\ \ =\ (GPIOE-\/>OTYPER\ \ \&\ \string~mask(4))\ \ |\ (i(type)\ ?\ mask(4)\ :\ 0);}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>OSPEEDR\ =\ (GPIOF-\/>OSPEEDR\ \&\ \string~mask2(5))\ |\ (i(speed)\ *\ mask2(5,\ 0b01));}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>OTYPER\ \ =\ (GPIOF-\/>OTYPER\ \ \&\ \string~mask(5))\ \ |\ (i(type)\ ?\ mask(5)\ :\ 0);}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>OSPEEDR\ =\ (GPIOG-\/>OSPEEDR\ \&\ \string~mask2(6))\ |\ (i(speed)\ *\ mask2(6,\ 0b01));}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>OTYPER\ \ =\ (GPIOG-\/>OTYPER\ \ \&\ \string~mask(6))\ \ |\ (i(type)\ ?\ mask(6)\ :\ 0);}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>OSPEEDR\ =\ (GPIOH-\/>OSPEEDR\ \&\ \string~mask2(7))\ |\ (i(speed)\ *\ mask2(7,\ 0b01));}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>OTYPER\ \ =\ (GPIOH-\/>OTYPER\ \ \&\ \string~mask(7))\ \ |\ (i(type)\ ?\ mask(7)\ :\ 0);}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>OSPEEDR\ =\ (GPIOI-\/>OSPEEDR\ \&\ \string~mask2(8))\ |\ (i(speed)\ *\ mask2(8,\ 0b01));}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>OTYPER\ \ =\ (GPIOI-\/>OTYPER\ \ \&\ \string~mask(8))\ \ |\ (i(type)\ ?\ mask(8)\ :\ 0);}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00132\ \ \ \ \ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput()}
+\DoxyCodeLine{00135\ \ \ \ \ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>MODER\ \&=\ \string~mask2(0);}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>OTYPER\ \&=\ \string~mask(0);}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>OSPEEDR\ \&=\ \string~mask2(0);}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>MODER\ \&=\ \string~mask2(1);}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>OTYPER\ \&=\ \string~mask(1);}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>OSPEEDR\ \&=\ \string~mask2(1);}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>MODER\ \&=\ \string~mask2(2);}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>OTYPER\ \&=\ \string~mask(2);}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>OSPEEDR\ \&=\ \string~mask2(2);}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>MODER\ \&=\ \string~mask2(3);}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>OTYPER\ \&=\ \string~mask(3);}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>OSPEEDR\ \&=\ \string~mask2(3);}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>MODER\ \&=\ \string~mask2(4);}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>OTYPER\ \&=\ \string~mask(4);}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>OSPEEDR\ \&=\ \string~mask2(4);}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>MODER\ \&=\ \string~mask2(5);}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>OTYPER\ \&=\ \string~mask(5);}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>OSPEEDR\ \&=\ \string~mask2(5);}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>MODER\ \&=\ \string~mask2(6);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>OTYPER\ \&=\ \string~mask(6);}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>OSPEEDR\ \&=\ \string~mask2(6);}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>MODER\ \&=\ \string~mask2(7);}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>OTYPER\ \&=\ \string~mask(7);}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>OSPEEDR\ \&=\ \string~mask2(7);}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>MODER\ \&=\ \string~mask2(8);}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>OTYPER\ \&=\ \string~mask(8);}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>OSPEEDR\ \&=\ \string~mask2(8);}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00181\ \ \ \ \ \}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}\ type)}
+\DoxyCodeLine{00184\ \ \ \ \ \{}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ configure(type);}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ setInput();}
+\DoxyCodeLine{00187\ \ \ \ \ \}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setAnalogInput()}
+\DoxyCodeLine{00190\ \ \ \ \ \{}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ GPIOA-\/>MODER\ |=\ mask2(0,\ i(Mode::Analog));}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ GPIOB-\/>MODER\ |=\ mask2(1,\ i(Mode::Analog));}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ GPIOC-\/>MODER\ |=\ mask2(2,\ i(Mode::Analog));}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ GPIOD-\/>MODER\ |=\ mask2(3,\ i(Mode::Analog));}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ GPIOE-\/>MODER\ |=\ mask2(4,\ i(Mode::Analog));}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ GPIOF-\/>MODER\ |=\ mask2(5,\ i(Mode::Analog));}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ GPIOG-\/>MODER\ |=\ mask2(6,\ i(Mode::Analog));}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ GPIOH-\/>MODER\ |=\ mask2(7,\ i(Mode::Analog));}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ GPIOI-\/>MODER\ |=\ mask2(8,\ i(Mode::Analog));}
+\DoxyCodeLine{00200\ \ \ \ \ \}}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}\ type)}
+\DoxyCodeLine{00203\ \ \ \ \ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>PUPDR\ =\ (GPIOA-\/>PUPDR\ \&\ \string~mask2(0))\ |\ (i(type)\ *\ mask2(0,\ 0b01));}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>PUPDR\ =\ (GPIOB-\/>PUPDR\ \&\ \string~mask2(1))\ |\ (i(type)\ *\ mask2(1,\ 0b01));}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>PUPDR\ =\ (GPIOC-\/>PUPDR\ \&\ \string~mask2(2))\ |\ (i(type)\ *\ mask2(2,\ 0b01));}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>PUPDR\ =\ (GPIOD-\/>PUPDR\ \&\ \string~mask2(3))\ |\ (i(type)\ *\ mask2(3,\ 0b01));}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>PUPDR\ =\ (GPIOE-\/>PUPDR\ \&\ \string~mask2(4))\ |\ (i(type)\ *\ mask2(4,\ 0b01));}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>PUPDR\ =\ (GPIOF-\/>PUPDR\ \&\ \string~mask2(5))\ |\ (i(type)\ *\ mask2(5,\ 0b01));}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>PUPDR\ =\ (GPIOG-\/>PUPDR\ \&\ \string~mask2(6))\ |\ (i(type)\ *\ mask2(6,\ 0b01));}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>PUPDR\ =\ (GPIOH-\/>PUPDR\ \&\ \string~mask2(7))\ |\ (i(type)\ *\ mask2(7,\ 0b01));}
+\DoxyCodeLine{00227\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>PUPDR\ =\ (GPIOI-\/>PUPDR\ \&\ \string~mask2(8))\ |\ (i(type)\ *\ mask2(8,\ 0b01));}
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00231\ \ \ \ \ \}}
+\DoxyCodeLine{00232\ }
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set()}
+\DoxyCodeLine{00234\ \ \ \ \ \{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ GPIOA-\/>BSRR\ =\ (inverted(0)\ <<\ 16)\ |\ (mask(0)\ \&\ \string~inverted(0));}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ GPIOB-\/>BSRR\ =\ (inverted(1)\ <<\ 16)\ |\ (mask(1)\ \&\ \string~inverted(1));}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ GPIOC-\/>BSRR\ =\ (inverted(2)\ <<\ 16)\ |\ (mask(2)\ \&\ \string~inverted(2));}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ GPIOD-\/>BSRR\ =\ (inverted(3)\ <<\ 16)\ |\ (mask(3)\ \&\ \string~inverted(3));}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ GPIOE-\/>BSRR\ =\ (inverted(4)\ <<\ 16)\ |\ (mask(4)\ \&\ \string~inverted(4));}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ GPIOF-\/>BSRR\ =\ (inverted(5)\ <<\ 16)\ |\ (mask(5)\ \&\ \string~inverted(5));}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ GPIOG-\/>BSRR\ =\ (inverted(6)\ <<\ 16)\ |\ (mask(6)\ \&\ \string~inverted(6));}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ GPIOH-\/>BSRR\ =\ (inverted(7)\ <<\ 16)\ |\ (mask(7)\ \&\ \string~inverted(7));}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ GPIOI-\/>BSRR\ =\ (inverted(8)\ <<\ 16)\ |\ (mask(8)\ \&\ \string~inverted(8));}
+\DoxyCodeLine{00244\ \ \ \ \ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set(\textcolor{keywordtype}{bool}\ status)}
+\DoxyCodeLine{00247\ \ \ \ \ \{}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (status)\ set();}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \ \ \ \ \ \ \ reset();}
+\DoxyCodeLine{00250\ \ \ \ \ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ reset()}
+\DoxyCodeLine{00253\ \ \ \ \ \{}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ GPIOA-\/>BSRR\ =\ ((uint32\_t(mask(0))\ \&\ \string~inverted(0))\ <<\ 16)\ |\ inverted(0);}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ GPIOB-\/>BSRR\ =\ ((uint32\_t(mask(1))\ \&\ \string~inverted(1))\ <<\ 16)\ |\ inverted(1);}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ GPIOC-\/>BSRR\ =\ ((uint32\_t(mask(2))\ \&\ \string~inverted(2))\ <<\ 16)\ |\ inverted(2);}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ GPIOD-\/>BSRR\ =\ ((uint32\_t(mask(3))\ \&\ \string~inverted(3))\ <<\ 16)\ |\ inverted(3);}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ GPIOE-\/>BSRR\ =\ ((uint32\_t(mask(4))\ \&\ \string~inverted(4))\ <<\ 16)\ |\ inverted(4);}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ GPIOF-\/>BSRR\ =\ ((uint32\_t(mask(5))\ \&\ \string~inverted(5))\ <<\ 16)\ |\ inverted(5);}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ GPIOG-\/>BSRR\ =\ ((uint32\_t(mask(6))\ \&\ \string~inverted(6))\ <<\ 16)\ |\ inverted(6);}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ GPIOH-\/>BSRR\ =\ ((uint32\_t(mask(7))\ \&\ \string~inverted(7))\ <<\ 16)\ |\ inverted(7);}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ GPIOI-\/>BSRR\ =\ ((uint32\_t(mask(8))\ \&\ \string~inverted(8))\ <<\ 16)\ |\ inverted(8);}
+\DoxyCodeLine{00263\ \ \ \ \ \}}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ toggle()}
+\DoxyCodeLine{00266\ \ \ \ \ \{}
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOA-\/>ODR\ \&\ mask(0));}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(0)\ \string^\ are\_set;}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOB-\/>ODR\ \&\ mask(1));}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(1)\ \string^\ are\_set;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOC-\/>ODR\ \&\ mask(2));}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(2)\ \string^\ are\_set;}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{}
+\DoxyCodeLine{00283\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOD-\/>ODR\ \&\ mask(3));}
+\DoxyCodeLine{00284\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(3)\ \string^\ are\_set;}
+\DoxyCodeLine{00285\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00286\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00287\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{}
+\DoxyCodeLine{00288\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOE-\/>ODR\ \&\ mask(4));}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(4)\ \string^\ are\_set;}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOF-\/>ODR\ \&\ mask(5));}
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(5)\ \string^\ are\_set;}
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00297\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOG-\/>ODR\ \&\ mask(6));}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(6)\ \string^\ are\_set;}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOH-\/>ODR\ \&\ mask(7));}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(7)\ \string^\ are\_set;}
+\DoxyCodeLine{00305\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_set\ =\ (GPIOI-\/>ODR\ \&\ mask(8));}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ are\_reset\ =\ mask(8)\ \string^\ are\_set;}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>BSRR\ =\ (are\_set\ <<\ 16)\ |\ are\_reset;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00312\ \ \ \ \ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ lock()}
+\DoxyCodeLine{00315\ \ \ \ \ \{}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(0))\ \{}
+\DoxyCodeLine{00317\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>LCKR\ =\ 0x10000\ |\ mask(0);}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>LCKR\ =\ 0x00000\ |\ mask(0);}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOA-\/>LCKR\ =\ 0x10000\ |\ mask(0);}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOA-\/>LCKR;}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(1))\ \{}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>LCKR\ =\ 0x10000\ |\ mask(1);}
+\DoxyCodeLine{00324\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>LCKR\ =\ 0x00000\ |\ mask(1);}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOB-\/>LCKR\ =\ 0x10000\ |\ mask(1);}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOB-\/>LCKR;}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(2))\ \{}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>LCKR\ =\ 0x10000\ |\ mask(2);}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>LCKR\ =\ 0x00000\ |\ mask(2);}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOC-\/>LCKR\ =\ 0x10000\ |\ mask(2);}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOC-\/>LCKR;}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(3))\ \{}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>LCKR\ =\ 0x10000\ |\ mask(3);}
+\DoxyCodeLine{00336\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>LCKR\ =\ 0x00000\ |\ mask(3);}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOD-\/>LCKR\ =\ 0x10000\ |\ mask(3);}
+\DoxyCodeLine{00338\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOD-\/>LCKR;}
+\DoxyCodeLine{00339\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00340\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(4))\ \{}
+\DoxyCodeLine{00341\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>LCKR\ =\ 0x10000\ |\ mask(4);}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>LCKR\ =\ 0x00000\ |\ mask(4);}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOE-\/>LCKR\ =\ 0x10000\ |\ mask(4);}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOE-\/>LCKR;}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(5))\ \{}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>LCKR\ =\ 0x10000\ |\ mask(5);}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>LCKR\ =\ 0x00000\ |\ mask(5);}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOF-\/>LCKR\ =\ 0x10000\ |\ mask(5);}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOF-\/>LCKR;}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(6))\ \{}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>LCKR\ =\ 0x10000\ |\ mask(6);}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>LCKR\ =\ 0x00000\ |\ mask(6);}
+\DoxyCodeLine{00355\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOG-\/>LCKR\ =\ 0x10000\ |\ mask(6);}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOG-\/>LCKR;}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(7))\ \{}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>LCKR\ =\ 0x10000\ |\ mask(7);}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>LCKR\ =\ 0x00000\ |\ mask(7);}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOH-\/>LCKR\ =\ 0x10000\ |\ mask(7);}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOH-\/>LCKR;}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ \textcolor{keyword}{constexpr}\ (mask(8))\ \{}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>LCKR\ =\ 0x10000\ |\ mask(8);}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>LCKR\ =\ 0x00000\ |\ mask(8);}
+\DoxyCodeLine{00367\ \ \ \ \ \ \ \ \ \ \ \ \ GPIOI-\/>LCKR\ =\ 0x10000\ |\ mask(8);}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \ \ \ \ \ \ (void)\ GPIOI-\/>LCKR;}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00370\ \ \ \ \ \}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00372\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disconnect()}
+\DoxyCodeLine{00373\ \ \ \ \ \{}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ (Gpios::disconnect(),\ ...);}
+\DoxyCodeLine{00375\ \ \ \ \ \}}
+\DoxyCodeLine{00376\ \};}
+\DoxyCodeLine{00377\ }
+\DoxyCodeLine{00378\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00379\ }
+\DoxyCodeLine{00380\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_GPIO\_SET\_HPP}}
+
+\end{DoxyCode}

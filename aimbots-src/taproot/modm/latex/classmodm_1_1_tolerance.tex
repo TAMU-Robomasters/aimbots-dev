@@ -1,0 +1,34 @@
+\doxysection{modm::\+Tolerance Class Reference}
+\hypertarget{classmodm_1_1_tolerance}{}\label{classmodm_1_1_tolerance}\index{modm::Tolerance@{modm::Tolerance}}
+
+
+{\ttfamily \+\#include $<$tolerance.\+hpp$>$}
+
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_tolerance_a0b2d12082b57c2562257805e1bff62f3}\label{classmodm_1_1_tolerance_a0b2d12082b57c2562257805e1bff62f3} 
+static constexpr int64\+\_\+t {\bfseries absolute\+Error} (uint32\+\_\+t reference, uint32\+\_\+t actual)
+\item 
+\Hypertarget{classmodm_1_1_tolerance_a98f40de93c8cbc7b683c0c171837b3f8}\label{classmodm_1_1_tolerance_a98f40de93c8cbc7b683c0c171837b3f8} 
+static constexpr float {\bfseries relative\+Error} (uint32\+\_\+t reference, uint32\+\_\+t actual)
+\item 
+\Hypertarget{classmodm_1_1_tolerance_a8213127e7c77bfcdb2e4d0e712034507}\label{classmodm_1_1_tolerance_a8213127e7c77bfcdb2e4d0e712034507} 
+static constexpr bool {\bfseries is\+Error\+In\+Tolerance} (float error, percent\+\_\+t tolerance)
+\item 
+\Hypertarget{classmodm_1_1_tolerance_a0d53708a9e63373544dd730700570c8a}\label{classmodm_1_1_tolerance_a0d53708a9e63373544dd730700570c8a} 
+static constexpr bool {\bfseries is\+Value\+In\+Tolerance} (uint32\+\_\+t reference, uint32\+\_\+t actual, percent\+\_\+t tolerance)
+\item 
+\Hypertarget{classmodm_1_1_tolerance_aee04bf1bf08985f286b032a516077210}\label{classmodm_1_1_tolerance_aee04bf1bf08985f286b032a516077210} 
+{\footnotesize template$<$uint32\+\_\+t reference, uint32\+\_\+t actual, percent\+\_\+t tolerance$>$ }\\static void {\bfseries assert\+Value\+In\+Tolerance} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class checks if values are within a certain tolerance.
+
+This can be used to guarantee the quality of certain parameters, mostly baudrate or datarate. 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+tolerance.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,111 @@
+\doxysection{modm::\+Ray2D\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_ray2_d}{}\label{classmodm_1_1_ray2_d}\index{modm::Ray2D$<$ T $>$@{modm::Ray2D$<$ T $>$}}
+
+
+{\ttfamily \+\#include $<$ray\+\_\+2d.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a7b07e93b74a3049127f82e2b42648f15}\label{classmodm_1_1_ray2_d_a7b07e93b74a3049127f82e2b42648f15} 
+typedef \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{Geometric\+Traits}}$<$ T $>$::\+\+Wide\+Type {\bfseries Wide\+Type}
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a90ee5454164b21f48fe3fe1519b06c22}\label{classmodm_1_1_ray2_d_a90ee5454164b21f48fe3fe1519b06c22} 
+typedef \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{Geometric\+Traits}}$<$ T $>$::\+\+Float\+Type {\bfseries Float\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a12b7a996fce1cfda3255105d31a8ed0a}\label{classmodm_1_1_ray2_d_a12b7a996fce1cfda3255105d31a8ed0a} 
+{\bfseries Ray2D} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&start, const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&direction)
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a5156fb9b2c6911c5c70955090c367121}\label{classmodm_1_1_ray2_d_a5156fb9b2c6911c5c70955090c367121} 
+void {\bfseries set\+Start\+Point} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&point)
+\begin{DoxyCompactList}\small\item\em Set the starting point of the ray. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_ray2_d_ab1e700664f2439c4df398c616dc90061}\label{classmodm_1_1_ray2_d_ab1e700664f2439c4df398c616dc90061} 
+const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \& {\bfseries get\+Start\+Point} () const
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_ad8b318b9d6c85e42c0d8d9a22295ab7a}\label{classmodm_1_1_ray2_d_ad8b318b9d6c85e42c0d8d9a22295ab7a} 
+void {\bfseries set\+Direction\+Vector} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&direction)
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_aae2209ab1e17b6d9aaf657115cea2e34}\label{classmodm_1_1_ray2_d_aae2209ab1e17b6d9aaf657115cea2e34} 
+const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \& {\bfseries get\+Direction\+Vector} () const
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a78c046a733211992ab6fa6e378d8967a}\label{classmodm_1_1_ray2_d_a78c046a733211992ab6fa6e378d8967a} 
+void {\bfseries translate} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&vector)
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_ab7f6f08b8726dfc7aaf70a8baeafe27a}\label{classmodm_1_1_ray2_d_ab7f6f08b8726dfc7aaf70a8baeafe27a} 
+T {\bfseries get\+Length} () const
+\begin{DoxyCompactList}\small\item\em Length of the line segment. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_ray2_d_a360863b6ecd5cdde69dd238913aa3bb5}{intersects}} (const \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{Line\+Segment2D}}$<$ T $>$ \&line) const
+\begin{DoxyCompactList}\small\item\em Shortest distance to a point. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_ray2_d_aaaaf41c6c39f77452357491df2aab0e6}{ccw}} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ \&point)
+\begin{DoxyCompactList}\small\item\em Calculate the intersection point. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_ray2_d_a06188e6d4304b895cd30a089d432c66c}\label{classmodm_1_1_ray2_d_a06188e6d4304b895cd30a089d432c66c} 
+bool {\bfseries operator==} (const Ray2D \&other) const
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a121bec89e792776fc46d9d66d242d202}\label{classmodm_1_1_ray2_d_a121bec89e792776fc46d9d66d242d202} 
+bool {\bfseries operator!=} (const Ray2D \&other) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_ae3e8c146666b7f6b402cd64f99cd1117}\label{classmodm_1_1_ray2_d_ae3e8c146666b7f6b402cd64f99cd1117} 
+\doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ {\bfseries base\+Point}
+\item 
+\Hypertarget{classmodm_1_1_ray2_d_a1a72b17422d8b48fc334854885d07021}\label{classmodm_1_1_ray2_d_a1a72b17422d8b48fc334854885d07021} 
+\doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ {\bfseries direction}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T = int16\+\_\+t$>$\newline
+class modm::\+\+Ray2\+D$<$ T $>$}
+Ray.
+
+A ray is composed of a starting point and a direction vector.
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_ray2_d_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_ray2_d_aaaaf41c6c39f77452357491df2aab0e6}\index{modm::Ray2D$<$ T $>$@{modm::Ray2D$<$ T $>$}!ccw@{ccw}}
+\index{ccw@{ccw}!modm::Ray2D$<$ T $>$@{modm::Ray2D$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ccw()}{ccw()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_ray2_d_aaaaf41c6c39f77452357491df2aab0e6} 
+template$<$typename T$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{modm::\+\+Ray2D}}$<$ T $>$::\+ccw (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ \&}]{point}{}\end{DoxyParamCaption})}
+
+
+
+Calculate the intersection point. 
+
+Calculate the intersection point(s)
+
+\begin{DoxySeeAlso}{See also}
+\href{http://local.wasp.uwa.edu.au/~pbourke/geometry/sphereline/}{\texttt{http:\+/\+/\+local.\+wasp.\+uwa.\+edu.\+au/\+\texorpdfstring{$\sim$}{\string~}pbourke/\+geometry/\+sphereline/\+}} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1_ray2_d_a360863b6ecd5cdde69dd238913aa3bb5}\index{modm::Ray2D$<$ T $>$@{modm::Ray2D$<$ T $>$}!intersects@{intersects}}
+\index{intersects@{intersects}!modm::Ray2D$<$ T $>$@{modm::Ray2D$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{intersects()}{intersects()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_ray2_d_a360863b6ecd5cdde69dd238913aa3bb5} 
+template$<$typename T$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_ray2_d}{modm::\+\+Ray2D}}$<$ T $>$::\+intersects (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{Line\+Segment2D}}$<$ T $>$ \&}]{line}{}\end{DoxyParamCaption}) const}
+
+
+
+Shortest distance to a point. 
+
+Check if two line segments intersect
+
+Uses \doxylink{classmodm_1_1_ray2_d_aaaaf41c6c39f77452357491df2aab0e6}{Ray2\+D::\+ccw()} to check if any intersection exists. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+geometry/\+polygon\+\_\+2d.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+ray\+\_\+2d.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+ray\+\_\+2d\+\_\+impl.\+hpp\end{DoxyCompactItemize}

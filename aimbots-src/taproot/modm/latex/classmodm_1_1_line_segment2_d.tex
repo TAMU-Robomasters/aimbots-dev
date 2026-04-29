@@ -1,0 +1,131 @@
+\doxysection{modm::\+Line\+Segment2D\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_line_segment2_d}{}\label{classmodm_1_1_line_segment2_d}\index{modm::LineSegment2D$<$ T $>$@{modm::LineSegment2D$<$ T $>$}}
+
+
+Line segment.  
+
+
+
+
+{\ttfamily \+\#include $<$line\+\_\+segment\+\_\+2d.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_af443b72b992452596cbb9dad115ae913}\label{classmodm_1_1_line_segment2_d_af443b72b992452596cbb9dad115ae913} 
+typedef \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{Geometric\+Traits}}$<$ T $>$::\+\+Wide\+Type {\bfseries Wide\+Type}
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a63738cac53701e6db0a3857f2a8fb917}\label{classmodm_1_1_line_segment2_d_a63738cac53701e6db0a3857f2a8fb917} 
+typedef \doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{Geometric\+Traits}}$<$ T $>$::\+\+Float\+Type {\bfseries Float\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a78f93581414efa6f933b030e01eb27b3}\label{classmodm_1_1_line_segment2_d_a78f93581414efa6f933b030e01eb27b3} 
+{\bfseries Line\+Segment2D} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&start, const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&end)
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a707ded9207b8827103e20f5b69d97d03}\label{classmodm_1_1_line_segment2_d_a707ded9207b8827103e20f5b69d97d03} 
+void {\bfseries set\+Start\+Point} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&point)
+\begin{DoxyCompactList}\small\item\em Set the starting point of the line segment. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_aba61043ee7f17c33c8a95a0e80c4075e}\label{classmodm_1_1_line_segment2_d_aba61043ee7f17c33c8a95a0e80c4075e} 
+const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \& {\bfseries get\+Start\+Point} () const
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a2d2ffdf3d207b73c714e6ea970910355}\label{classmodm_1_1_line_segment2_d_a2d2ffdf3d207b73c714e6ea970910355} 
+void {\bfseries set\+End\+Point} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&point)
+\begin{DoxyCompactList}\small\item\em Set the end point of the line segment. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a66acd4762f36963eeebb5a30ce6d4671}\label{classmodm_1_1_line_segment2_d_a66acd4762f36963eeebb5a30ce6d4671} 
+const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \& {\bfseries get\+End\+Point} () const
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a7a596975116698318686ea9d4610a20a}\label{classmodm_1_1_line_segment2_d_a7a596975116698318686ea9d4610a20a} 
+void {\bfseries set} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&start, const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&end)
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a3ec197c93428c351d978de7182450d5e}\label{classmodm_1_1_line_segment2_d_a3ec197c93428c351d978de7182450d5e} 
+void {\bfseries translate} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&vector)
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a6ca4bef695a08723cbdfa348789114e1}\label{classmodm_1_1_line_segment2_d_a6ca4bef695a08723cbdfa348789114e1} 
+T {\bfseries get\+Length} () const
+\begin{DoxyCompactList}\small\item\em Length of the line segment. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a8257834693b9e3f06cccc7130f75187a}\label{classmodm_1_1_line_segment2_d_a8257834693b9e3f06cccc7130f75187a} 
+\doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ {\bfseries get\+Direction\+Vector} () const
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_ab2bcfcb13c8ce8a3cb8420bb5febc7b0}\label{classmodm_1_1_line_segment2_d_ab2bcfcb13c8ce8a3cb8420bb5febc7b0} 
+const T {\bfseries get\+Distance\+To} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&point) const
+\begin{DoxyCompactList}\small\item\em Shortest distance to a point. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_af5cf8900944b55b6467058d2441c493f}\label{classmodm_1_1_line_segment2_d_af5cf8900944b55b6467058d2441c493f} 
+const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ {\bfseries get\+Closest\+Point\+To} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 2 $>$ \&point) const
+\begin{DoxyCompactList}\small\item\em Calculate the point on the line segment closes to the given point. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_ad7783ccdf3e82fecf35b7c7f8a3e124e}{intersects}} (const Line\+Segment2D \&other) const
+\begin{DoxyCompactList}\small\item\em Check if two line segments intersect. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a72b35fe32ce809c2f381f196e35ebab5}\label{classmodm_1_1_line_segment2_d_a72b35fe32ce809c2f381f196e35ebab5} 
+bool {\bfseries intersects} (const \doxymbox{\hyperlink{classmodm_1_1_polygon2_d}{Polygon2D}}$<$ T $>$ \&polygon) const
+\begin{DoxyCompactList}\small\item\em Check if a intersection exists. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_aff3049ff6c3e5f92f539de65d2a198c1}\label{classmodm_1_1_line_segment2_d_aff3049ff6c3e5f92f539de65d2a198c1} 
+bool {\bfseries get\+Intersections} (const Line\+Segment2D \&other, \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{Point\+Set2D}}$<$ T $>$ \&intersection\+Points) const
+\begin{DoxyCompactList}\small\item\em Calculate the intersection point. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d_a1f43940c633d9384794966fb199afbfd}{get\+Intersections}} (const \doxymbox{\hyperlink{classmodm_1_1_circle2_d}{Circle2D}}$<$ T $>$ \&circle, \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{Point\+Set2D}}$<$ T $>$ \&intersection\+Points) const
+\begin{DoxyCompactList}\small\item\em Calculate the intersection point(s). \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a0c3c4668f254adfe0c386a3bd66bea94}\label{classmodm_1_1_line_segment2_d_a0c3c4668f254adfe0c386a3bd66bea94} 
+bool {\bfseries get\+Intersections} (const \doxymbox{\hyperlink{classmodm_1_1_polygon2_d}{Polygon2D}}$<$ T $>$ \&polygon, \doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{Point\+Set2D}}$<$ T $>$ \&intersection\+Points) const
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a69b3414c9d85f62020b01734821598eb}\label{classmodm_1_1_line_segment2_d_a69b3414c9d85f62020b01734821598eb} 
+bool {\bfseries operator==} (const Line\+Segment2D \&other) const
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a65fbe3639cff519ccfdd6df63e8b3c32}\label{classmodm_1_1_line_segment2_d_a65fbe3639cff519ccfdd6df63e8b3c32} 
+bool {\bfseries operator!=} (const Line\+Segment2D \&other) const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_aa8d8bb93cb3e33c4dfe9e3af1646439d}\label{classmodm_1_1_line_segment2_d_aa8d8bb93cb3e33c4dfe9e3af1646439d} 
+\doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ {\bfseries start\+Point}
+\item 
+\Hypertarget{classmodm_1_1_line_segment2_d_a795ae1cebc3a1184ed17e159a5c55384}\label{classmodm_1_1_line_segment2_d_a795ae1cebc3a1184ed17e159a5c55384} 
+\doxymbox{\hyperlink{classmodm_1_1_vector}{modm::\+\+Vector}}$<$ T, 2 $>$ {\bfseries end\+Point}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T = int16\+\_\+t$>$\newline
+class modm::\+\+Line\+Segment2\+D$<$ T $>$}
+Line segment. 
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_line_segment2_d_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_line_segment2_d_a1f43940c633d9384794966fb199afbfd}\index{modm::LineSegment2D$<$ T $>$@{modm::LineSegment2D$<$ T $>$}!getIntersections@{getIntersections}}
+\index{getIntersections@{getIntersections}!modm::LineSegment2D$<$ T $>$@{modm::LineSegment2D$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{getIntersections()}{getIntersections()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_line_segment2_d_a1f43940c633d9384794966fb199afbfd} 
+template$<$typename T$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{modm::\+\+Line\+Segment2D}}$<$ T $>$::\+get\+Intersections (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{classmodm_1_1_circle2_d}{Circle2D}}$<$ T $>$ \&}]{circle}{, }\item[{\doxymbox{\hyperlink{classmodm_1_1_point_set2_d}{Point\+Set2D}}$<$ T $>$ \&}]{intersection\+Points}{}\end{DoxyParamCaption}) const}
+
+
+
+Calculate the intersection point(s). 
+
+\begin{DoxySeeAlso}{See also}
+\href{http://local.wasp.uwa.edu.au/~pbourke/geometry/sphereline/}{\texttt{http:\+/\+/\+local.\+wasp.\+uwa.\+edu.\+au/\+\texorpdfstring{$\sim$}{\string~}pbourke/\+geometry/\+sphereline/\+}} 
+\end{DoxySeeAlso}
+\Hypertarget{classmodm_1_1_line_segment2_d_ad7783ccdf3e82fecf35b7c7f8a3e124e}\index{modm::LineSegment2D$<$ T $>$@{modm::LineSegment2D$<$ T $>$}!intersects@{intersects}}
+\index{intersects@{intersects}!modm::LineSegment2D$<$ T $>$@{modm::LineSegment2D$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{intersects()}{intersects()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_line_segment2_d_ad7783ccdf3e82fecf35b7c7f8a3e124e} 
+template$<$typename T$>$ \\
+bool \doxymbox{\hyperlink{classmodm_1_1_line_segment2_d}{modm::\+\+Line\+Segment2D}}$<$ T $>$::\+intersects (\begin{DoxyParamCaption}\item[{const Line\+Segment2D$<$ T $>$ \&}]{other}{}\end{DoxyParamCaption}) const}
+
+
+
+Check if two line segments intersect. 
+
+Uses Vector2\+D::\+ccw() to check if any intersection exists. 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+geometry/\+circle\+\_\+2d.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+line\+\_\+segment\+\_\+2d.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+line\+\_\+segment\+\_\+2d\+\_\+impl.\+hpp\end{DoxyCompactItemize}

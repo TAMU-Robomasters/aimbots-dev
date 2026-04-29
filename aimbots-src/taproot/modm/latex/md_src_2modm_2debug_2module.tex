@@ -1,0 +1,74 @@
+\chapter{Logging }
+\hypertarget{md_src_2modm_2debug_2module}{}\label{md_src_2modm_2debug_2module}\index{Logging@{Logging}}
+\label{md_src_2modm_2debug_2module_autotoc_md2}%
+\Hypertarget{md_src_2modm_2debug_2module_autotoc_md2}%
+
+
+The {\ttfamily \doxylink{classmodm_1_1log_1_1_logger}{modm::\+log::\+\+Logger}} uses a {\ttfamily \doxylink{classmodm_1_1_i_o_stream}{modm::\+\+IOStream}} to read messages and write them to a given output device.
+
+Write a log message with streams:\+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MODM\_LOG\_DEBUG\ <<\ \textcolor{stringliteral}{"{}i="{}}\ <<\ i\ <<\ \textcolor{stringliteral}{"{},\ y="{}}\ <<\ y\ <<\ modm::flush;}
+
+\end{DoxyCode}
+
+
+The name of the stream represents the log level of the message. Available are:\+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily MODM\+\_\+\+LOG\+\_\+\+DEBUG}
+\item {\ttfamily MODM\+\_\+\+LOG\+\_\+\+INFO}
+\item {\ttfamily MODM\+\_\+\+LOG\+\_\+\+WARNING}
+\item {\ttfamily MODM\+\_\+\+LOG\+\_\+\+ERROR}
+\end{DoxyItemize}
+
+A log message can also be generated separately:\+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ a[3]\ =\ \{1,2,3\};}
+\DoxyCodeLine{MODM\_LOG\_DEBUG\ <<\ \textcolor{stringliteral}{"{}a\ =\ "{}};}
+\DoxyCodeLine{\textcolor{keywordflow}{for}(\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ \textcolor{keyword}{sizeof}(a);\ ++i)\ \{}
+\DoxyCodeLine{\ \ \ \ MODM\_LOG\_DEBUG\ <<\ a[i]\ <<\ \textcolor{stringliteral}{"{},\ "{}};}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{MODM\_LOG\_DEBUG\ <<\ modm::flush;}
+
+\end{DoxyCode}
+\hypertarget{md_src_2modm_2debug_2module_autotoc_md3}{}\doxysubsection{\texorpdfstring{Flow of a call}{Flow of a call}}\label{md_src_2modm_2debug_2module_autotoc_md3}
+This is to give an estimation how many resources a call of the logger use. All considerations are for a PC program.
+
+The given call is:\+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MODM\_LOG\_DEBUG\ <<\ 123456;}
+
+\end{DoxyCode}
+
+
+The macro resolves to:\+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if}\ (MODM\_LOG\_LEVEL\ <=\ modm::log::DEBUG)}
+\DoxyCodeLine{\ \ \ \ \doxymbox{\hyperlink{namespacemodm_1_1log_ae9143446ab426d7e3ebf45751c11e66a}{modm::log::debug}}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily \doxylink{namespacemodm_1_1log_ae9143446ab426d7e3ebf45751c11e66a}{modm::\+log::\+debug}} is an instance of {\ttfamily modm::\+\+Logger}:\+ Call of {\ttfamily modm::\+\+Logger::\+operator \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} (T)} (with {\ttfamily T = int32\+\_\+t}) which is inline
+\begin{DoxyItemize}
+\item {\ttfamily IOStream::\+operator \textbackslash{}$<$\textbackslash{}$<$ (\+T)} (with {\ttfamily T = int32\+\_\+t}) is inline
+\item {\ttfamily IOStream::\+write\+Integer(int32\+\_\+t)}
+\end{DoxyItemize}
+\item {\ttfamily IOStream::\+write\+Integer(int32\+\_\+t)} will create the formatted string
+\item virtual call of {\ttfamily IODevice::\+write(const char\texorpdfstring{$\ast$}{*})}
+\item redirect to {\ttfamily std::\+cout}
+\end{DoxyItemize}
+
+In sum there are two nested method calls with one of them being virtual. 

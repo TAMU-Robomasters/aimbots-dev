@@ -1,0 +1,96 @@
+\doxysection{modm::\+Pair\texorpdfstring{$<$}{<} T1, T2 \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_pair}{}\label{classmodm_1_1_pair}\index{modm::Pair$<$ T1, T2 $>$@{modm::Pair$<$ T1, T2 $>$}}
+
+
+\doxylink{classmodm_1_1_pair}{Pair$<$\+First\+Type, Second\+Type$>$} is a heterogeneous pair.  
+
+
+
+
+{\ttfamily \+\#include $<$pair.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_pair_ad1221d1fbc8f6e98ea9764730994c7e7}\label{classmodm_1_1_pair_ad1221d1fbc8f6e98ea9764730994c7e7} 
+typedef T1 {\bfseries First\+Type}
+\item 
+\Hypertarget{classmodm_1_1_pair_a6dafb3d620d291d44eb7df2e453dc301}\label{classmodm_1_1_pair_a6dafb3d620d291d44eb7df2e453dc301} 
+typedef T2 {\bfseries Second\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_pair_aecc50376e3c29be8302359df573747c4}\label{classmodm_1_1_pair_aecc50376e3c29be8302359df573747c4} 
+First\+Type \& {\bfseries get\+First} ()
+\item 
+\Hypertarget{classmodm_1_1_pair_a17be7c0486bc201f8cc5424ecd22d087}\label{classmodm_1_1_pair_a17be7c0486bc201f8cc5424ecd22d087} 
+const First\+Type \& {\bfseries get\+First} () const
+\item 
+\Hypertarget{classmodm_1_1_pair_ada10b82ba31aa01195667b99c537fc1b}\label{classmodm_1_1_pair_ada10b82ba31aa01195667b99c537fc1b} 
+Second\+Type \& {\bfseries get\+Second} ()
+\item 
+\Hypertarget{classmodm_1_1_pair_aaa9bda1df4e97b2059fb361dd4acdc12}\label{classmodm_1_1_pair_aaa9bda1df4e97b2059fb361dd4acdc12} 
+const Second\+Type \& {\bfseries get\+Second} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_pair_a641122d09157530217ac1df466756ec7}\label{classmodm_1_1_pair_a641122d09157530217ac1df466756ec7} 
+First\+Type {\bfseries first}
+\item 
+\Hypertarget{classmodm_1_1_pair_a4497a4fd53ef4a5063418de10174f24c}\label{classmodm_1_1_pair_a4497a4fd53ef4a5063418de10174f24c} 
+Second\+Type {\bfseries second}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T1, typename T2$>$\newline
+class modm::\+\+Pair$<$ T1, T2 $>$}
+\doxylink{classmodm_1_1_pair}{Pair$<$\+First\+Type, Second\+Type$>$} is a heterogeneous pair. 
+
+This class holds one object of type First\+Type and one object of type Second\+Type.
+
+It provides only the default constructors and public variables to enable usage as POD (plain old data) object. Only with this characteristic it is possible to storage objects of this type inside the flash-\/memory which is desirable for example for the interpolation classes.
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classmodm_1_1interpolation_1_1_linear}{modm::\+interpolation::\+\+Linear}
+\end{DoxySeeAlso}
+This constraint make a the usage rather unusual. See this example:\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{//\ construction}}
+\DoxyCodeLine{modm::Pair<uint8\_t,\ uint16\_t>\ pair\ =\ \{\ 12,\ -\/12345\ \};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ this\ typedef\ is\ necessary\ to\ be\ able\ to\ use}}
+\DoxyCodeLine{\textcolor{comment}{//\ the\ type\ inside\ the\ FLASH\ macro}}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ modm::Pair<int8\_t,\ int8\_t>\ MyPair;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ put\ some\ values\ into\ the\ flash\ memory}}
+\DoxyCodeLine{FLASH\_STORAGE(MyPair\ pairs[3])\ =}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \{\ 0,\ 10\ \},}
+\DoxyCodeLine{\ \ \ \ \{\ 2,\ 30\ \},}
+\DoxyCodeLine{\ \ \ \ \{\ 5,\ 60\ \}}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+As this class has no constructor you need to use the following syntax to initialize an instance of this class:\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{modm::Pair<int,\ float>\ pair\ =\ \{\ 1203,\ 1035.234\ \};}
+
+\end{DoxyCode}
+
+
+\begin{DoxyNote}{Note}
+Even if this class provides public attributes it is recommend to use the access methods, because as soon as C++0x is available the implementation will be changed and the attributes will be made private. Until then just ignore that you can access them directly ;-\/)
+\end{DoxyNote}
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+container/\+pair.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,128 @@
+\doxysection{device.\+hpp}
+\hypertarget{device_8hpp_source}{}\label{device_8hpp_source}\index{src/modm/platform/device.hpp@{src/modm/platform/device.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Thorsten\ Lajewski}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ 2016,\ Fabian\ Greif}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012-\/2013,\ 2016,\ 2018\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Laeufer}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ MODM\_DEVICE\_HPP}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MODM\_DEVICE\_HPP}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#define\ STM32F407xx\ 1}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ Defines\ for\ example\ the\ modm\_always\_inline\ macro}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ Include\ external\ device\ headers:}}
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#include\ <stm32f407xx.h>}}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#include\ <system\_stm32f4xx.h>}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ This\ is\ a\ hack\ to\ make\ the\ *\_Typedef's\ known\ to\ GDB,\ so\ that\ you\ can\ debug}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//\ the\ peripherals\ directly\ in\ GDB\ in\ any\ context.}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ Otherwise\ GDB\ would\ throw\ a\ "{}no\ symbol\ 'GPIO\_TypeDef'\ in\ current\ context"{}.}}
+\DoxyCodeLine{00031\ \textcolor{keyword}{extern}\ ADC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_ADC1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00032\ \textcolor{keyword}{extern}\ ADC\_Common\_TypeDef\ \ \ \ \ \ \ \_\_\_ADC123\_COMMON\ \ \ \ ;}
+\DoxyCodeLine{00033\ \textcolor{keyword}{extern}\ ADC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_ADC2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00034\ \textcolor{keyword}{extern}\ ADC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_ADC3\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00035\ \textcolor{keyword}{extern}\ CAN\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_CAN1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00036\ \textcolor{keyword}{extern}\ CAN\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_CAN2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00037\ \textcolor{keyword}{extern}\ CRC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_CRC\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00038\ \textcolor{keyword}{extern}\ CoreDebug\_Type\ \ \ \ \ \ \ \ \ \ \ \_\_\_CoreDebug\ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00039\ \textcolor{keyword}{extern}\ DAC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_DAC\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00040\ \textcolor{keyword}{extern}\ DAC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_DAC1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00041\ \textcolor{keyword}{extern}\ DBGMCU\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \_\_\_DBGMCU\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00042\ \textcolor{keyword}{extern}\ DCMI\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_DCMI\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00043\ \textcolor{keyword}{extern}\ DMA\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_DMA1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00044\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream0\ ;}
+\DoxyCodeLine{00045\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream1\ ;}
+\DoxyCodeLine{00046\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream2\ ;}
+\DoxyCodeLine{00047\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream3\ ;}
+\DoxyCodeLine{00048\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream4\ ;}
+\DoxyCodeLine{00049\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream5\ ;}
+\DoxyCodeLine{00050\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream6\ ;}
+\DoxyCodeLine{00051\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA1\_Stream7\ ;}
+\DoxyCodeLine{00052\ \textcolor{keyword}{extern}\ DMA\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_DMA2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00053\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream0\ ;}
+\DoxyCodeLine{00054\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream1\ ;}
+\DoxyCodeLine{00055\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream2\ ;}
+\DoxyCodeLine{00056\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream3\ ;}
+\DoxyCodeLine{00057\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream4\ ;}
+\DoxyCodeLine{00058\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream5\ ;}
+\DoxyCodeLine{00059\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream6\ ;}
+\DoxyCodeLine{00060\ \textcolor{keyword}{extern}\ DMA\_Stream\_TypeDef\ \ \ \ \ \ \ \_\_\_DMA2\_Stream7\ ;}
+\DoxyCodeLine{00061\ \textcolor{keyword}{extern}\ DWT\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_DWT\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00062\ \textcolor{keyword}{extern}\ ETH\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_ETH\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00063\ \textcolor{keyword}{extern}\ EXTI\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_EXTI\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00064\ \textcolor{keyword}{extern}\ FLASH\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_FLASH\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00065\ \textcolor{keyword}{extern}\ FPU\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_FPU\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00066\ \textcolor{keyword}{extern}\ FSMC\_Bank1\_TypeDef\ \ \ \ \ \ \ \_\_\_FSMC\_Bank1\ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00067\ \textcolor{keyword}{extern}\ FSMC\_Bank1E\_TypeDef\ \ \ \ \ \ \_\_\_FSMC\_Bank1E\ \ \ \ \ \ ;}
+\DoxyCodeLine{00068\ \textcolor{keyword}{extern}\ FSMC\_Bank2\_3\_TypeDef\ \_\_\_FSMC\_Bank2\_3\ ;}
+\DoxyCodeLine{00069\ \textcolor{keyword}{extern}\ FSMC\_Bank4\_TypeDef\ \ \ \ \ \ \ \_\_\_FSMC\_Bank4\ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00070\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOA\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00071\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOB\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00072\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOC\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00073\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOD\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00074\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOE\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00075\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOF\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00076\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOG\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00077\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOH\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00078\ \textcolor{keyword}{extern}\ GPIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_GPIOI\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00079\ \textcolor{keyword}{extern}\ I2C\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_I2C1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00080\ \textcolor{keyword}{extern}\ I2C\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_I2C2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00081\ \textcolor{keyword}{extern}\ I2C\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_I2C3\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00082\ \textcolor{keyword}{extern}\ SPI\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_I2S2ext\ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00083\ \textcolor{keyword}{extern}\ SPI\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_I2S3ext\ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00084\ \textcolor{keyword}{extern}\ ITM\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_ITM\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00085\ \textcolor{keyword}{extern}\ IWDG\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_IWDG\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00086\ \textcolor{keyword}{extern}\ MPU\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_MPU\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00087\ \textcolor{keyword}{extern}\ NVIC\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_NVIC\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00088\ \textcolor{keyword}{extern}\ PWR\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_PWR\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00089\ \textcolor{keyword}{extern}\ RCC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_RCC\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00090\ \textcolor{keyword}{extern}\ RNG\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_RNG\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00091\ \textcolor{keyword}{extern}\ RTC\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_RTC\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00092\ \textcolor{keyword}{extern}\ SCB\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_SCB\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00093\ \textcolor{keyword}{extern}\ SCnSCB\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_SCnSCB\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00094\ \textcolor{keyword}{extern}\ SDIO\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_SDIO\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00095\ \textcolor{keyword}{extern}\ SPI\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_SPI1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00096\ \textcolor{keyword}{extern}\ SPI\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_SPI2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00097\ \textcolor{keyword}{extern}\ SPI\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_SPI3\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00098\ \textcolor{keyword}{extern}\ SYSCFG\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \_\_\_SYSCFG\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00099\ \textcolor{keyword}{extern}\ SysTick\_Type\ \ \ \ \ \ \ \ \ \_\_\_SysTick\ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00100\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM1\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00101\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM10\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00102\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM11\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00103\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM12\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00104\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM13\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00105\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM14\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00106\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM2\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00107\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM3\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00108\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM4\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00109\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM5\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00110\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM6\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00111\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM7\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00112\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM8\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00113\ \textcolor{keyword}{extern}\ TIM\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TIM9\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00114\ \textcolor{keyword}{extern}\ TPI\_Type\ \ \ \ \ \ \ \ \ \ \ \ \ \_\_\_TPI\ \ \ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00115\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_UART4\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00116\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_UART5\ \ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00117\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_USART1\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00118\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_USART2\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00119\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_USART3\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00120\ \textcolor{keyword}{extern}\ USART\_TypeDef\ \ \ \ \ \ \ \ \ \ \ \ \_\_\_USART6\ \ \ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00121\ \textcolor{keyword}{extern}\ WWDG\_TypeDef\ \ \ \ \ \ \ \ \ \_\_\_WWDG\ \ \ \ \ \ \ \ \ ;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_DEVICE\_HPP}}
+
+\end{DoxyCode}

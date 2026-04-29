@@ -1,0 +1,177 @@
+\doxysection{modm::\+platform::\+Adc\+Interrupt1 Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_adc_interrupt1}{}\label{classmodm_1_1platform_1_1_adc_interrupt1}\index{modm::platform::AdcInterrupt1@{modm::platform::AdcInterrupt1}}
+
+
+{\ttfamily \+\#include $<$adc\+\_\+interrupt\+\_\+1.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Adc\+Interrupt1:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classmodm_1_1platform_1_1_adc_interrupt1}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_adc_interrupt1_a20d94f74ccebaa078b5299d333d14ba9}\label{classmodm_1_1platform_1_1_adc_interrupt1_a20d94f74ccebaa078b5299d333d14ba9} 
+static void {\bfseries attach\+Interrupt\+Handler} (Handler handler=modm::\+dummy)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1}{modm::\+platform::\+\+Adc1}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$template$<$ Peripheral \+\_\+ $>$ class... Signals$>$ }\\static void {\bfseries connect} ()
+\item 
+{\footnotesize template$<$class System\+Clock, frequency\+\_\+t frequency = MHz(10), percent\+\_\+t tolerance = pct(10)$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a1d50dc7691ff317c46ee0bcfb4c55fe0}{initialize}} ()
+\item 
+static void {\bfseries disable} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a2604ca6860055c009684beaf22cf99d5}{start\+Conversion}} ()
+\item 
+static bool {\bfseries is\+Conversion\+Finished} ()
+\item 
+static uint16\+\_\+t {\bfseries get\+Value} ()
+\item 
+static uint16\+\_\+t {\bfseries read\+Channel} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} channel)
+\item 
+static bool \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ab19490a01e1484cc56d0c57a75ffe572}{set\+Channel}} (const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} channel, const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} sample\+Time=static\+\_\+cast$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} $>$(0b000))
+\item 
+{\footnotesize template$<$class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}$>$ }\\static bool {\bfseries set\+Pin\+Channel} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} sample\+Time=static\+\_\+cast$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} $>$(0b000))
+\begin{DoxyCompactList}\small\item\em Setting the channel for a Pin. \end{DoxyCompactList}\item 
+{\footnotesize template$<$class \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}}$>$ }\\static constexpr \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} {\bfseries get\+Pin\+Channel} ()
+\begin{DoxyCompactList}\small\item\em Get the channel for a Pin. \end{DoxyCompactList}\item 
+static \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} {\bfseries get\+Channel} ()
+\item 
+static void {\bfseries enable\+Free\+Running\+Mode} ()
+\item 
+static void {\bfseries disable\+Free\+Running\+Mode} ()
+\item 
+static void {\bfseries set\+Left\+Adjust\+Result} ()
+\item 
+static void {\bfseries set\+Right\+Adjust\+Result} ()
+\item 
+static void {\bfseries enable\+Temperature\+Ref\+VMeasurement} ()
+\begin{DoxyCompactList}\small\item\em Switch on temperature-\/ and V\+\_\+\+REF measurement. \end{DoxyCompactList}\item 
+static void {\bfseries disable\+Temperature\+Ref\+VMeasurement} ()
+\begin{DoxyCompactList}\small\item\em Switch on temperature-\/ and V\+\_\+\+REF measurement. \end{DoxyCompactList}\item 
+static bool {\bfseries add\+Channel} (const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} channel, const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} sample\+Time=static\+\_\+cast$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} $>$(0b000))
+\begin{DoxyCompactList}\small\item\em Add a channel to conversion group. \end{DoxyCompactList}\item 
+static void {\bfseries set\+Sample\+Time} (const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} channel, const \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} sample\+Time=static\+\_\+cast$<$ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} $>$(0b000))
+\begin{DoxyCompactList}\small\item\em change sample time of ADC channel \end{DoxyCompactList}\item 
+static void {\bfseries enable\+Interrupt\+Vector} (const uint32\+\_\+t priority, const bool enable=true)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a5a20929483a8312359cedacaa55a8e0e}{enable\+Interrupt}} (const Interrupt\+\_\+t interrupt)
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_a3d0ce8c388aba4f027a63772cd1bcde5}{disable\+Interrupt}} (const Interrupt\+\_\+t interrupt)
+\item 
+static Interrupt\+Flag\+\_\+t \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ad2201b4c2e15734de7c1e34a1ea3b2a6}{get\+Interrupt\+Flags}} ()
+\item 
+static void \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_abf774abbc3e2627ce91684e0b254e0f8}{acknowledge\+Interrupt\+Flags}} (const Interrupt\+Flag\+\_\+t flags)
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{modm::\+\+Peripheral\+Driver}}}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$baudrate\+\_\+t available, baudrate\+\_\+t requested, percent\+\_\+t tolerance$>$ }\\static void \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver_a5c336ff9889c347e7eadb810bf984ebd}{assert\+Baudrate\+In\+Tolerance}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_adc_interrupt1_abb3496afe941e9b51704e79d496208fd}\label{classmodm_1_1platform_1_1_adc_interrupt1_abb3496afe941e9b51704e79d496208fd} 
+static Handler {\bfseries handler}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1}{modm::\+platform::\+\+Adc1}}}
+\begin{DoxyCompactItemize}
+\item 
+static constexpr uint8\+\_\+t {\bfseries Resolution} = 12
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1}{modm::\+platform::\+\+Adc1}}}
+\begin{DoxyCompactItemize}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1d}{Channel}} :\+ uint8\+\_\+t \{ \newline
+{\bfseries Channel0} = 0
+, {\bfseries Channel1} = 1
+, {\bfseries Channel2} = 2
+, {\bfseries Channel3} = 3
+, \newline
+{\bfseries Channel4} = 4
+, {\bfseries Channel5} = 5
+, {\bfseries Channel6} = 6
+, {\bfseries Channel7} = 7
+, \newline
+{\bfseries Channel8} = 8
+, {\bfseries Channel9} = 9
+, {\bfseries Channel10} = 10
+, {\bfseries Channel11} = 11
+, \newline
+{\bfseries Channel12} = 12
+, {\bfseries Channel13} = 13
+, {\bfseries Channel14} = 14
+, {\bfseries Channel15} = 15
+, \newline
+{\bfseries Channel16} = 16
+, {\bfseries Channel17} = 17
+, {\bfseries Channel18} = 18
+, {\bfseries Bat\+Div2} = 18
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1da345b3ea3fe508e0716705a05b619c5b3}{Temperature\+Sensor}} = 16
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_ac089556840101f3c8cd6a4dbeaa27d1daee534ac11d9a6aad6664a4a0ccd40648}{Internal\+Reference}} = 17
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016}{Sample\+Time}} :\+ uint8\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016a566b3c3160669652a57c5499de449d39}{Cycles3}} = 0b000
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016a2500aa43f1a32532aafdd1132c19fbae}{Cycles15}} = 0b001
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016af0f7dc86377e0ac3ac709419a817a57b}{Cycles28}} = 0b010
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016ab840153c6a922c709e6e0f2ce1397d7b}{Cycles56}} = 0b011
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016abfed02eab46aad846a310b075d4b5f15}{Cycles84}} = 0b100
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016a02071b68128c5337acb6ec1b3fcb1704}{Cycles112}} = 0b101
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016a9e612fe4954c9b4798fc6ecb4ecae6ca}{Cycles144}} = 0b110
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af0bcb228dad20692430ee72feeb1c016aa12282069226b28e9669a5df67d05850}{Cycles480}} = 0b111
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46ab}{Interrupt}} :\+ uint32\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46aba70402160707bec39bb8fe0cf68c79080}{Analog\+Watchdog}} = ADC\+\_\+\+CR1\+\_\+\+AWDIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46aba7a965fe2d1303348db7923c5dd7fa47a}{End\+Of\+Regular\+Conversion}} = ADC\+\_\+\+CR1\+\_\+\+EOCIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46abac02d932e9cb6790b6f7189f994a97c33}{End\+Of\+Injected\+Conversion}} = ADC\+\_\+\+CR1\+\_\+\+JEOCIE
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46aba9fa996dc830f67a458e46cf1463d5cd3}{Overrun}} = ADC\+\_\+\+CR1\+\_\+\+OVRIE
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12ce}{Interrupt\+Flag}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12cea70402160707bec39bb8fe0cf68c79080}{Analog\+Watchdog}} = ADC\+\_\+\+SR\+\_\+\+AWD
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12cea7a965fe2d1303348db7923c5dd7fa47a}{End\+Of\+Regular\+Conversion}} = ADC\+\_\+\+SR\+\_\+\+EOC
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12ceac02d932e9cb6790b6f7189f994a97c33}{End\+Of\+Injected\+Conversion}} = ADC\+\_\+\+SR\+\_\+\+JEOC
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12cea9fa996dc830f67a458e46cf1463d5cd3}{Overrun}} = ADC\+\_\+\+SR\+\_\+\+OVR
+, \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12ceab1c94ca2fbc3e78fc30069c8d0f01680}{All}} = ADC\+\_\+\+SR\+\_\+\+AWD \texorpdfstring{$\vert$}{|} ADC\+\_\+\+SR\+\_\+\+EOC \texorpdfstring{$\vert$}{|} ADC\+\_\+\+SR\+\_\+\+JEOC \texorpdfstring{$\vert$}{|} ADC\+\_\+\+SR\+\_\+\+OVR
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1}{modm::\+platform::\+\+Adc1}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46ab}{Interrupt}})
+\item 
+{\bfseries MODM\+\_\+\+FLAGS32} (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_adc1_acce8191a6273fca8bce9477430eb12ce}{Interrupt\+Flag}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Types inherited from \doxymbox{\hyperlink{classmodm_1_1_adc_interrupt}{modm::\+\+Adc\+Interrupt}}}
+\begin{DoxyCompactItemize}
+\item 
+typedef void(\texorpdfstring{$\ast$}{*} {\bfseries Handler}) ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+ADC \doxylink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46ab}{Interrupt} module
+
+This class allows you to attach functions to the ADC Conversion Complete \doxylink{classmodm_1_1platform_1_1_adc1_af3e3e6935d529268f47c5e77b0ce46ab}{Interrupt} via function pointers. Be aware however, that this implementation is slower and requires more resources than writing the function code directly into the interrupt service routines.
+
+\begin{DoxySeeAlso}{See also}
+Analog\+Sensors uses this implemenation.
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Niklas Hauser 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+adc/\+adc\+\_\+interrupt\+\_\+1.\+hpp\item 
+src/\+modm/\+platform/\+adc/\+adc\+\_\+interrupt\+\_\+1.\+cpp\end{DoxyCompactItemize}

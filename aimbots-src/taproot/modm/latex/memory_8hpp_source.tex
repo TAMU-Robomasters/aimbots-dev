@@ -1,0 +1,75 @@
+\doxysection{memory.\+hpp}
+\hypertarget{memory_8hpp_source}{}\label{memory_8hpp_source}\index{src/modm/architecture/interface/memory.hpp@{src/modm/architecture/interface/memory.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ 2020,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <new>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/architecture/utils.hpp>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00027\ MemoryTrait\ :\ uint16\_t}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \ \ \ \ AccessSBus\ =\ Bit0,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00030\ \ \ \ \ AccessDBus\ =\ Bit1,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ AccessIBus\ =\ Bit2,\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ AccessDMA\ =\ Bit3,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00034\ \ \ \ \ AccessDMA2D\ =\ Bit4,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{comment}{//\ Bit5\ -\/\ Bit12\ are\ reserved}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ TypeCoreCoupled\ =\ Bit13,\ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ TypeNonVolatile\ =\ Bit14,\ \ \ \ }
+\DoxyCodeLine{00040\ \ \ \ \ TypeExternal\ =\ Bit15,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00041\ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{using\ }MemoryTraits\ =\ Flags16<MemoryTrait>;}
+\DoxyCodeLine{00046\ MODM\_TYPE\_FLAGS(MemoryTraits);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryFastCode\ =\ (MemoryTrait::AccessIBus\ |\ MemoryTrait::TypeCoreCoupled);}
+\DoxyCodeLine{00055\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryFastData\ =\ (MemoryTrait::AccessDBus\ |\ MemoryTrait::TypeCoreCoupled);}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryDMA\ =\ (MemoryTrait::AccessSBus\ |\ MemoryTrait::AccessDMA);}
+\DoxyCodeLine{00064\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryDMA2D\ =\ (MemoryTrait::AccessSBus\ |\ MemoryTrait::AccessDMA2D);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00069\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryExternal\ =\ (MemoryTrait::AccessSBus\ |\ MemoryTrait::TypeExternal);}
+\DoxyCodeLine{00073\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryBackup\ =\ (MemoryTrait::AccessSBus\ |\ MemoryTrait::TypeNonVolatile);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{constexpr}\ MemoryTraits\ MemoryDefault\ =\ MemoryDMA;}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{void}\ *}
+\DoxyCodeLine{00089\ \textcolor{keyword}{operator}\ \textcolor{keyword}{new}(std::size\_t\ size,\ modm::MemoryTraits\ traits);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00098\ \textcolor{keywordtype}{void}\ *}
+\DoxyCodeLine{00099\ \textcolor{keyword}{operator}\ \textcolor{keyword}{new}[](std::size\_t\ size,\ modm::MemoryTraits\ traits);}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00108\ \textcolor{keywordtype}{void}\ *}
+\DoxyCodeLine{00109\ \textcolor{keyword}{operator}\ \textcolor{keyword}{new}(std::size\_t\ size,\ modm::MemoryTraits\ traits,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::nothrow\_t\&)\ \textcolor{keyword}{noexcept};}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{void}\ *}
+\DoxyCodeLine{00120\ \textcolor{keyword}{operator}\ \textcolor{keyword}{new}[](std::size\_t\ size,\ modm::MemoryTraits\ traits,}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::nothrow\_t\&)\ \textcolor{keyword}{noexcept};}
+
+\end{DoxyCode}

@@ -1,0 +1,58 @@
+\doxysection{modm::\+log::\+Style\texorpdfstring{$<$}{<} STYLE \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1log_1_1_style}{}\label{classmodm_1_1log_1_1_style}\index{modm::log::Style$<$ STYLE $>$@{modm::log::Style$<$ STYLE $>$}}
+
+
+This is the interface to all style-\/classes of the logger.  
+
+
+
+
+{\ttfamily \+\#include $<$style.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_style_a61b5f3023028f9bae5b6fa345912440f}\label{classmodm_1_1log_1_1_style_a61b5f3023028f9bae5b6fa345912440f} 
+typedef STYLE {\bfseries Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1log_1_1_style_a53a174bbb4e126ad17ea4501cac91c58}\label{classmodm_1_1log_1_1_style_a53a174bbb4e126ad17ea4501cac91c58} 
+{\bfseries Style} (STYLE style)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_style_ae5ccf42c3679c7012a55cdea32a023a8}\label{classmodm_1_1log_1_1_style_ae5ccf42c3679c7012a55cdea32a023a8} 
+{\bfseries Style} (\doxymbox{\hyperlink{classmodm_1_1_i_o_device}{IODevice}} \&device)
+\item 
+\Hypertarget{classmodm_1_1log_1_1_style_a09e41dca29111da44cd275ee1beb3748}\label{classmodm_1_1log_1_1_style_a09e41dca29111da44cd275ee1beb3748} 
+void {\bfseries parse\+Arg} (int argc, char \texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em parse arguments that are given with the start of the program \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663}\label{classmodm_1_1log_1_1_style_ae7f2441cc412613e21c6876c360e7663} 
+void {\bfseries write} (char c)
+\begin{DoxyCompactList}\small\item\em Write one char to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_style_aeed06ae796b78c42650e4cfbf478bace}\label{classmodm_1_1log_1_1_style_aeed06ae796b78c42650e4cfbf478bace} 
+void {\bfseries write} (const char \texorpdfstring{$\ast$}{*}s)
+\begin{DoxyCompactList}\small\item\em Write a string that terminates with {\ttfamily \textquotesingle{}\textbackslash{}0\textquotesingle{}} to the sink. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1log_1_1_style_a2e65bfc8363ba3e1e33ca619f1153f31}\label{classmodm_1_1log_1_1_style_a2e65bfc8363ba3e1e33ca619f1153f31} 
+void {\bfseries flush} ()
+\begin{DoxyCompactList}\small\item\em The message is complete and can be written/\+send/\+displayed. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename STYLE = Default\+Style$>$\newline
+class modm::\+log::\+\+Style$<$ STYLE $>$}
+This is the interface to all style-\/classes of the logger. 
+
+For each log level the logger provides a singleton. Because the format the log messages should be presented depends on the system and other circumstances. With the style-\/classes the user can set in the main-\/file the desired format of the output stream.
+
+This classes take the stream from the loglevel device, modify it in the given way and pass it to the next style class or device.
+
+\begin{DoxyAuthor}{Author}
+Martin Rosekeit \href{mailto:martin.rosekeit@rwth-aachen.de}{\texttt{martin.\+rosekeit@rwth-\/aachen.\+de}} 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+debug/\+logger/\+style.\+hpp\item 
+src/\+modm/\+debug/\+logger/\+style\+\_\+impl.\+hpp\end{DoxyCompactItemize}

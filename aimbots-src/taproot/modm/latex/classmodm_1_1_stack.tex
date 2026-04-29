@@ -1,0 +1,78 @@
+\doxysection{modm::\+Stack\texorpdfstring{$<$}{<} T, Container \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_stack}{}\label{classmodm_1_1_stack}\index{modm::Stack$<$ T, Container $>$@{modm::Stack$<$ T, Container $>$}}
+
+
+LIFO stack.  
+
+
+
+
+{\ttfamily \+\#include $<$stack.\+hpp$>$}
+
+Inheritance diagram for modm::\+Stack\texorpdfstring{$<$}{<} T, Container \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1_stack}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_stack_a3c565524dab9b83bd4f64bfd54d6de38}\label{classmodm_1_1_stack_a3c565524dab9b83bd4f64bfd54d6de38} 
+typedef Container::\+\+Size {\bfseries Size}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_stack_ad1bda520ff1e770210250859cb87dd4c}\label{classmodm_1_1_stack_ad1bda520ff1e770210250859cb87dd4c} 
+bool {\bfseries is\+Empty} ()
+\item 
+\Hypertarget{classmodm_1_1_stack_a55be978ee0ba1dc4ed202024e259a6f3}\label{classmodm_1_1_stack_a55be978ee0ba1dc4ed202024e259a6f3} 
+bool {\bfseries is\+Full} ()
+\item 
+\Hypertarget{classmodm_1_1_stack_a623d63a7de55950c475ab0ed9e8accb8}\label{classmodm_1_1_stack_a623d63a7de55950c475ab0ed9e8accb8} 
+Size {\bfseries get\+Size} ()
+\item 
+\Hypertarget{classmodm_1_1_stack_ab06b13a1f30af1b4ff3683a4ab9cf4d4}\label{classmodm_1_1_stack_ab06b13a1f30af1b4ff3683a4ab9cf4d4} 
+Size {\bfseries get\+Max\+Size} ()
+\item 
+\Hypertarget{classmodm_1_1_stack_a03a144df321a1762d44f786fc69dfd74}\label{classmodm_1_1_stack_a03a144df321a1762d44f786fc69dfd74} 
+T \& {\bfseries get} ()
+\item 
+\Hypertarget{classmodm_1_1_stack_a30c32b47c805accb561421e69ee3af47}\label{classmodm_1_1_stack_a30c32b47c805accb561421e69ee3af47} 
+const T \& {\bfseries get} () const
+\item 
+\Hypertarget{classmodm_1_1_stack_a1e6a9c89567781436d42521f417fa7a1}\label{classmodm_1_1_stack_a1e6a9c89567781436d42521f417fa7a1} 
+bool {\bfseries push} (const T \&value)
+\item 
+\Hypertarget{classmodm_1_1_stack_ad168c11ec842dbcdf8b6dab4867f4176}\label{classmodm_1_1_stack_ad168c11ec842dbcdf8b6dab4867f4176} 
+void {\bfseries pop} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_stack_aba2f1e88f5be68215509f72226721b6e}\label{classmodm_1_1_stack_aba2f1e88f5be68215509f72226721b6e} 
+Container {\bfseries c}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, typename Container$>$\newline
+class modm::\+\+Stack$<$ T, Container $>$}
+LIFO stack. 
+
+Elements are pushed/\+popped from the "{}back"{} of the specific container, which is known as the top of the stack.
+
+get\+Front(), remove\+Front(), prepend()
+
+\begin{DoxySeeAlso}{See also}
+Deque()
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+container/\+stack.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,174 @@
+\doxysection{matrix.\+hpp}
+\hypertarget{matrix_8hpp_source}{}\label{matrix_8hpp_source}\index{src/modm/math/matrix.hpp@{src/modm/math/matrix.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Marten\ Junga}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_MATRIX\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_MATRIX\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <string.h>}\ \ \ \ \ \textcolor{comment}{//\ for\ memset()\ and\ memcmp()}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/io/iostream.hpp>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ ROWS,\ u\textcolor{keywordtype}{int}8\_t\ COLUMNS>}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}}
+\DoxyCodeLine{00053\ \ \ \ \ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}();}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a523e7c713f29ab8dd7d3bc7e09f30715}{Matrix}}(\textcolor{keyword}{const}\ T\ *data);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a6c4c4833c8604c37f0fc65d242d2a450}{zeroMatrix}}();}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_af90bf1ead2c5c02daabbaa0d9724c6f2}{identityMatrix}}();}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <u\textcolor{keywordtype}{int}8\_t\ MR,\ u\textcolor{keywordtype}{int}8\_t\ MC>}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ MR,\ MC>}}}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_adae74691a3aedb9e594fb3f606b39ee8}{subMatrix}}(uint8\_t\ row,\ uint8\_t\ column)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ ==\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&m)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ !=\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&m)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T*}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ operator\ []\ (uint8\_t\ row)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ T*}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ operator\ []\ (uint8\_t\ row);}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ getNumberOfRows()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ getNumberOfColumns()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ 1,\ COLUMNS>}}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ getRow(uint8\_t\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS,\ 1>}}}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ getColumn(uint8\_t\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO\ remove\ these?}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T*\ ptr()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ T*\ ptr();}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ operator\ -\/\ ();}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ operator\ +\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ operator\ -\/\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a9435ed8e8f5271ff1e74d2133b07e8a8}{operator\ *\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\ \textcolor{keyword}{const};\ \ \ \ \ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_abd786d803628964c3127bb1f0b552e2e}{operator\ /\ }}(\textcolor{keyword}{const}\ T\ \&rhs)\ \textcolor{keyword}{const};\ \ \ \ \ }
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&\ operator\ +=\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&rhs);}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&\ operator\ -\/=\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&rhs);}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&\ \doxymbox{\hyperlink{classmodm_1_1_matrix_aa2584dc1dbf48a38abd46aba3f3b3962}{operator\ *=\ }}(\textcolor{keyword}{const}\ T\ \&rhs);\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&\ \doxymbox{\hyperlink{classmodm_1_1_matrix_af766b5c2ed1f5fac61a30a98e7bd132b}{operator\ /=\ }}(\textcolor{keyword}{const}\ T\ \&rhs);\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_aa2584dc1dbf48a38abd46aba3f3b3962}{operator\ *=\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\ \&rhs);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<u\textcolor{keywordtype}{int}8\_t\ RHSCOL>}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS,\ RHSCOL>}}}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a9435ed8e8f5271ff1e74d2133b07e8a8}{operator\ *\ }}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ COLUMNS,\ RHSCOL>}}\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ COLUMNS,\ ROWS>}}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ asTransposed()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_aa746412cbc7ac3db2be43265ec19e8e8}{transpose}}();}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ T}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_aef402466f0a2d05a8929ac10423e0405}{determinant}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ TODO\ Implement\ these}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*void}}
+\DoxyCodeLine{00170\ \textcolor{comment}{\ \ \ \ \ \ \ \ inverse();}}
+\DoxyCodeLine{00171\ \textcolor{comment}{}}
+\DoxyCodeLine{00172\ \textcolor{comment}{\ \ \ \ \ \ \ \ Matrix}}
+\DoxyCodeLine{00173\ \textcolor{comment}{\ \ \ \ \ \ \ \ asInversed()\ const;*/}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hasNan()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ hasInf()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a8f1af5ae8c35d329fa0adf2ac81dff80}{replace}}(\textcolor{keyword}{const}\ U\ *data);}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}<u\textcolor{keywordtype}{int}8\_t\ MW,\ u\textcolor{keywordtype}{int}8\_t\ MH>}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a8f1af5ae8c35d329fa0adf2ac81dff80}{replace}}(uint8\_t\ row,\ uint8\_t\ column,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ MW,\ MH>}}\ \&m);}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ replaceRow(uint8\_t\ index,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ 1,\ COLUMNS>}}\ \&m);}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}\&}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ replaceColumn(uint8\_t\ index,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS,\ 1>}}\ \&m);}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS,\ COLUMNS+1>}}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ addColumn(uint8\_t\ index,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS,\ 1>}}\ \&c)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ ROWS+1,\ COLUMNS>}}}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ addRow(uint8\_t\ index,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix<T,\ 1,\ COLUMNS>}}\ \&r)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}<T,\ ROWS,\ COLUMNS-\/1>}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ removeColumn(uint8\_t\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix_a0b3376b5b3feeb97b758face51682b7f}{Matrix}}<T,\ ROWS-\/1,\ COLUMNS>}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ removeRow(uint8\_t\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ T\ element[ROWS\ *\ COLUMNS];}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{size\_t}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ getSize()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ getNumberOfElements()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00219\ \ \ \ \ \};}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ WIDTH,\ u\textcolor{keywordtype}{int}8\_t\ HEIGHT>}
+\DoxyCodeLine{00222\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&}
+\DoxyCodeLine{00223\ \ \ \ \ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{IOStream}}\&,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ WIDTH,\ HEIGHT>}}\&);}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<float,\ 1,\ 1>}}\ Matrix1f;}
+\DoxyCodeLine{00226\ \ \ \ \ \textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<float,\ 2,\ 2>}}\ Matrix2f;}
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<float,\ 3,\ 3>}}\ Matrix3f;}
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{typedef}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<float,\ 4,\ 4>}}\ Matrix4f;}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00233\ \ \ \ \ T}
+\DoxyCodeLine{00234\ \ \ \ \ determinant(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 1,\ 1>}}\ \&m);}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00237\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00238\ \ \ \ \ T}
+\DoxyCodeLine{00239\ \ \ \ \ determinant(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ 2,\ 2>}}\ \&m);}
+\DoxyCodeLine{00240\ }
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00248\ \ \ \ \ T}
+\DoxyCodeLine{00249\ \ \ \ \ determinant(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{modm::Matrix<T,\ N,\ N>}}\ \&m);}
+\DoxyCodeLine{00250\ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\#include\ "{}matrix\_impl.hpp"{}}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_MATRIX\_HPP}}
+
+\end{DoxyCode}

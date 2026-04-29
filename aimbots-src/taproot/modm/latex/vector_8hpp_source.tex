@@ -1,0 +1,129 @@
+\doxysection{vector.\+hpp}
+\hypertarget{vector_8hpp_source}{}\label{vector_8hpp_source}\index{src/modm/math/geometry/vector.hpp@{src/modm/math/geometry/vector.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Georgi\ Grinshpun}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#ifndef\ MODM\_VECTOR\_HPP}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#define\ MODM\_VECTOR\_HPP}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/math/matrix.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <modm/math/utils/arithmetic\_traits.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{comment}{//\ forward\ declaration}}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ W,\ u\textcolor{keywordtype}{int}8\_t\ H>\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N>}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{class\ }Vector}
+\DoxyCodeLine{00059\ \ \ \ \ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ Vector();}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ Vector(\textcolor{keyword}{const}\ T\ *ptData);}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ Vector(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ N,\ 1>}}\ \&rhs);}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ Vector\&\ operator\ =\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ N,\ 1>}}\ \&rhs);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ ==\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ !=\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ <\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ <=\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ >\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ >=\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&\ operator\ []\ (uint8\_t\ index)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ T\&\ operator\ []\ (uint8\_t\ index);}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ T*\ ptr();}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T*\ ptr()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ Vector\ operator\ +\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ Vector\ operator\ -\/\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ T\ operator\ *\ (\textcolor{keyword}{const}\ Vector\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ Vector\ operator\ *\ (\textcolor{keyword}{const}\ T\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ Vector\ operator\ /\ (\textcolor{keyword}{const}\ T\ \&rhs)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ Vector\&\ operator\ +=\ (\textcolor{keyword}{const}\ Vector\ \&rhs);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ Vector\&\ operator\ -\/=\ (\textcolor{keyword}{const}\ Vector\ \&rhs);}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ Vector\&\ operator\ *=\ (\textcolor{keyword}{const}\ T\ \&rhs);}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ Vector\&\ operator\ /=\ (\textcolor{keyword}{const}\ T\ \&rhs);}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ Vector\&\ operator\ -\/\ ();\ \ \ \ \ \ \textcolor{comment}{//\ FIXME}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ T\ getLength()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ T\ getLengthSquared()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ N,\ 1>}}\&}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ asMatrix();}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ N,\ 1>}}\&}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ asMatrix()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ 1,\ N>}}\&}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ asTransposedMatrix();}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix<T,\ 1,\ N>}}\&}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ asTransposedMatrix()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint8\_t}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ getSize();}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ T\ coords[N];}
+\DoxyCodeLine{00111\ \ \ \ \ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N\ >}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{struct\ }detail::MakeSigned<\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}<T,\ N>\ >}
+\DoxyCodeLine{00115\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<\ SignedType<T>}},\ N\ >;\ \};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N\ >}
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{struct\ }detail::MakeUnsigned<\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}<T,\ N>\ >}
+\DoxyCodeLine{00119\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<\ UnsignedType<T>}},\ N\ >;\ \};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T,\ u\textcolor{keywordtype}{int}8\_t\ N\ >}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{struct\ }detail::WideType<\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}<T,\ N>\ >}
+\DoxyCodeLine{00123\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector<\ WideType<T>}},\ N\ >;\ \};}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#define\ IMPLEMENT\_VECTOR\_ACCESSOR2(a,b)\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ Vector<T,\ 2>\ a\#\#b()\ const\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ Vector<T,\ 2>(a,\ b);\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\#define\ IMPLEMENT\_VECTOR\_ACCESSOR3(a,\ b,\ c)\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ Vector<T,\ 3>\ a\#\#b\#\#c()\ const\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ Vector<T,\ 3>(a,\ b,\ c);\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#define\ IMPLEMENT\_VECTOR\_ACCESSOR4(a,\ b,\ c,\ d)\ \ \(\backslash\)}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ Vector<T,\ 4>\ a\#\#b\#\#c\#\#d()\ const\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ Vector<T,\ 4>(a,\ b,\ c,\ d);\ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \textcolor{preprocessor}{\#include\ "{}vector\_impl.hpp"{}}}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#include\ "{}vector1.hpp"{}}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#include\ "{}vector2.hpp"{}}}
+\DoxyCodeLine{00148\ \textcolor{preprocessor}{\#include\ "{}vector3.hpp"{}}}
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#include\ "{}vector4.hpp"{}}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_VECTOR\_HPP}}
+
+\end{DoxyCode}

@@ -10,9 +10,10 @@ namespace src::Informants
     using Spi2Miso = modm::platform::GpioB14;
     using Spi2Mosi = modm::platform::GpioB15;
 
-    using MuxS0 = modm::platform::GpioC2;
-    using MuxS1 = modm::platform::GpioC3;
-    using MuxS2 = modm::platform::GpioC4;
+    using MuxS0 = modm::platform::GpioE11;
+    using MuxS1 = modm::platform::GpioE13;
+    using MuxS2 = modm::platform::GpioE14;
+
 
     float positionDisplay = 0.0f;
     float velocityDisplay = 0.0f;
@@ -30,17 +31,22 @@ namespace src::Informants
         Spi2Nss::setOutput(modm::platform::Gpio::OutputType::PushPull);
         Spi2Nss::set();
 
+        MuxS0::disconnect();
+        MuxS1::disconnect();
+        MuxS2::disconnect();
+
         MuxS0::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS1::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS2::setOutput(modm::platform::Gpio::OutputType::PushPull);
+
         MuxS0::reset();
         MuxS1::reset();
         MuxS2::reset();
 
         Spi2Hal::initialize(
-            Spi2Hal::Prescaler::Div16,
+            Spi2Hal::Prescaler::Div64,
             Spi2Hal::MasterSelection::Master,
-            Spi2Hal::DataMode::Mode1,
+            Spi2Hal::DataMode::Mode0,
             Spi2Hal::DataOrder::MsbFirst,
             Spi2Hal::DataSize::Bit8
         );
@@ -56,116 +62,76 @@ namespace src::Informants
     }
 
     uint8_t debug_byte[2];
-
-    uint16_t RevEncoder::readData(EncoderID encoder)
-    {
-        uint8_t rx[2];
-        
-        Spi2Nss::set();
-        muxDelay.restart(1);
-        while(!muxDelay.isExpired()) {}
-
-        if (encoder == EncoderID::REV_ENCODER_1)
-        {
-           MuxS0::reset();
-        } else if (encoder == EncoderID::REV_ENCODER_2)
-        {
-           MuxS0::set();
-        }
-        Spi2Nss::reset();
-        muxDelay.restart(1);
-        while(!muxDelay.isExpired()) {}
-        
-        Spi2Master::transferBlocking(nullptr, rx, 2);
-        Spi2Nss::set();
-
-        debug_byte[0] = rx[0];
-        debug_byte[1] = rx[1];
-
-        uint16_t raw = (static_cast<uint16_t>(rx[0]) << 8) | static_cast<uint16_t>(rx[1]);
-
-        raw = static_cast<uint16_t>(0u - raw);
-
-        // goofy ass wrap crap
-        if (!unwrappedInitialized)
-        {
-            unwrappedPosition = static_cast<int64_t>(raw);
-            lastRawCount = raw;
-            unwrappedInitialized = true;
-        }
-        else
-        {
-            int32_t delta = static_cast<int32_t>(raw) - static_cast<int32_t>(lastRawCount);
-
-            if (delta > 32767)
-            {
-                delta -= 65536;
-            }
-            else if (delta < -32767)
-            {
-                delta += 65536;
-            }
-
-            unwrappedPosition += static_cast<int64_t>(delta);
-            lastRawCount = raw;
-        }
-
-        float rawAngle = M_TWOPI * (static_cast<float>(raw) / 65535.0f);
-
-        if (!angleFilterInitialized)
-        {
-            filteredAngle = rawAngle;
-            angleFilterInitialized = true;
-        }
-        else
-        {
-            float angleError = rawAngle - filteredAngle;
-
-            while (angleError > M_PI)
-            {
-                angleError -= M_TWOPI;
-            }
-            while (angleError < -M_PI)
-            {
-                angleError += M_TWOPI;
-            }
-
-            filteredAngle += kPositionAlpha * angleError;
-
-            while (filteredAngle >= M_TWOPI)
-            {
-                filteredAngle -= M_TWOPI;
-            }
-            while (filteredAngle < 0.0f)
-            {
-                filteredAngle += M_TWOPI;
-            }
-        }
-
-        data = static_cast<uint16_t>((filteredAngle / M_TWOPI) * 65535.0f);
-        return data;
-    }
-
-    uint16_t debug_allData[2];
-
-    void RevEncoder::readAll() 
-    {
-        allData[0] = readData(RevEncoder::EncoderID::REV_ENCODER_1);
-        allData[1] = readData(RevEncoder::EncoderID::REV_ENCODER_2);
-        debug_allData[0] = allData[0];
-        debug_allData[1] = allData[1];
-    }
-
+    uint16_t debug_allData[5];
     uint16_t debug_data = 0;
+
+    void RevEncoder::readData()
+    {
+        static uint32_t last = 0;
+        static EncoderID selected = EncoderID::REV_ENCODER_1;
+        static bool prepared = false;
+
+        if (!prepared)
+        {
+            Spi2Nss::set();          // disable 138
+            selectEncoder(selected); // set A/B/C
+            prepared = true;
+            last = tap::arch::clock::getTimeMilliseconds();
+            return;
+        }
+
+        if (tap::arch::clock::getTimeMilliseconds() - last >= 2)
+        {
+            uint8_t rx[2] = {0, 0};
+
+            Spi2Nss::reset(); // enable 138
+            Spi2Master::transferBlocking(nullptr, rx, 2);
+            Spi2Nss::set();   // disable 138
+
+            uint16_t raw =
+                (static_cast<uint16_t>(rx[0]) << 8) |
+                static_cast<uint16_t>(rx[1]);
+
+            uint8_t i = static_cast<uint8_t>(selected);
+
+            if (i < NUM_ENCODERS)
+            {
+                if (raw != 0 && raw != 0xFFFF)
+                {
+                    allData[i] = raw;
+                    data = raw;
+                }
+            }
+
+            debug_byte[0] = rx[0];
+            debug_byte[1] = rx[1];
+
+            uint8_t next = static_cast<uint8_t>(selected) + 1;
+            if (next >= NUM_ENCODERS)
+            {
+                next = 0;
+            }
+
+            selected = static_cast<EncoderID>(next);
+            prepared = false;
+        }
+
+        for (uint8_t i = 0; i < NUM_ENCODERS; i++)
+        {
+            debug_allData[i] = allData[i];
+        }
+
+        debug_data = data;
+    }
 
     void RevEncoder::execute()
     {
-        if(!startupThreshold.execute())
-        readAll();
-        revEncoderVelocity();
-        debug_data = data;
-        positionDisplay = data;
+        if (!startupThreshold.execute()) {
+            readData();
+            revEncoderVelocity();
+        }
     }
+
 
     float debug_vel = 0.0f;
 

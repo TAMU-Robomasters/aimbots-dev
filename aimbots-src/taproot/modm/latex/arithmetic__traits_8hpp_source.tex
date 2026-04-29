@@ -1,0 +1,180 @@
+\doxysection{arithmetic\+\_\+traits.\+hpp}
+\hypertarget{arithmetic__traits_8hpp_source}{}\label{arithmetic__traits_8hpp_source}\index{src/modm/math/utils/arithmetic\_traits.hpp@{src/modm/math/utils/arithmetic\_traits.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2012,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2014,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ 2015,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Kevin\ Läufer}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2018,\ Christopher\ Durand}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#ifndef\ MODM\_ARITHMETIC\_TRAITS\_HPP}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#define\ MODM\_ARITHMETIC\_TRAITS\_HPP}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <limits>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{namespace\ }detail}
+\DoxyCodeLine{00067\ \{}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{comment}{//\ type\ trait\ to\ determine\ next\ possibly\ larger\ int\ type}}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{comment}{//\ char\ <=\ short\ <=\ int\ <=\ long\ <=\ long\ long}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt}
+\DoxyCodeLine{00072\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ T;\ \};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{comment}{//\ char\ is\ a\ distinct\ type,\ not\ identical\ with\ signed\ char\ or\ unsigned\ char}}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<char>}
+\DoxyCodeLine{00077\ \ \ \ \ \{}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ std::conditional\_t<}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_signed\_v<char>,}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ short,}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ >;}
+\DoxyCodeLine{00083\ \ \ \ \ \};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<signed\ char>}
+\DoxyCodeLine{00087\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ short;\ \};}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<unsigned\ char>}
+\DoxyCodeLine{00091\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \textcolor{keywordtype}{unsigned}\ short;\ \};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<short>}
+\DoxyCodeLine{00095\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ int;\ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<unsigned\ short>}
+\DoxyCodeLine{00099\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \textcolor{keywordtype}{unsigned}\ int;\ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<int>}
+\DoxyCodeLine{00103\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ long;\ \};}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<unsigned\ int>}
+\DoxyCodeLine{00107\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \textcolor{keywordtype}{unsigned}\ long;\ \};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<long>}
+\DoxyCodeLine{00111\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \textcolor{keywordtype}{long}\ long;\ \};}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{struct\ }NextInt<unsigned\ long>}
+\DoxyCodeLine{00115\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ long;\ \};}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{comment}{//\ implement\ ArithmeticTraits<T>::WideType}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{struct\ }WideType}
+\DoxyCodeLine{00122\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ T;\ \};}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keyword}{struct\ }WideType<bool>}
+\DoxyCodeLine{00126\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ char;\ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keyword}{struct\ }WideType<long\ long>}
+\DoxyCodeLine{00130\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ double;\ \};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keyword}{struct\ }WideType<unsigned\ long\ long>}
+\DoxyCodeLine{00134\ \ \ \ \ \{\ \textcolor{keyword}{using\ }type\ =\ double;\ \};}
+\DoxyCodeLine{00135\ }
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ =\ std::enable\_if\_t<}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ std::is\_integral\_v<T>\ \&\&\ !std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keywordtype}{bool}>}
+\DoxyCodeLine{00138\ \ \ \ \ >\ >}
+\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keyword}{using\ }enable\_if\_int\ =\ T;}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keyword}{struct\ }WideType<enable\_if\_int<T>>}
+\DoxyCodeLine{00143\ \ \ \ \ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isNextIntLarger\ =}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ std::numeric\_limits<typename\ NextInt<T>::type>::max()\ >\ std::numeric\_limits<T>::max();}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ std::conditional\_t<}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ isNextIntLarger,}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ NextInt<T>::type,}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typename}\ WideType<typename\ NextInt<T>::type>::type}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ >;}
+\DoxyCodeLine{00152\ \ \ \ \ \};}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keyword}{struct\ }MakeSigned}
+\DoxyCodeLine{00158\ \ \ \ \ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ T;}
+\DoxyCodeLine{00160\ \ \ \ \ \};}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keyword}{struct\ }MakeSigned<enable\_if\_int<T>>}
+\DoxyCodeLine{00164\ \ \ \ \ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ std::make\_signed\_t<T>;}
+\DoxyCodeLine{00166\ \ \ \ \ \};}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keyword}{struct\ }MakeUnsigned}
+\DoxyCodeLine{00170\ \ \ \ \ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ T;}
+\DoxyCodeLine{00172\ \ \ \ \ \};}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keyword}{struct\ }MakeUnsigned<enable\_if\_int<T>>}
+\DoxyCodeLine{00176\ \ \ \ \ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \textcolor{keyword}{using\ }type\ =\ std::make\_unsigned\_t<T>;}
+\DoxyCodeLine{00178\ \ \ \ \ \};}
+\DoxyCodeLine{00179\ \}}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00183\ \textcolor{keyword}{using\ }\doxymbox{\hyperlink{structmodm_1_1_geometric_traits}{WideType}}\ =\ \textcolor{keyword}{typename}\ detail::WideType<T>::type;}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00186\ \textcolor{keyword}{using\ }SignedType\ =\ \textcolor{keyword}{typename}\ detail::MakeSigned<T>::type;}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00189\ \textcolor{keyword}{using\ }UnsignedType\ =\ \textcolor{keyword}{typename}\ detail::MakeUnsigned<T>::type;}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00191\ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00192\ \textcolor{keyword}{struct\ }ArithmeticTraits}
+\DoxyCodeLine{00193\ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isFloatingPoint\ [[deprecated(\textcolor{stringliteral}{"{}use\ std::is\_floating\_point\_v<T>\ instead!"{}})]]\ =\ std::is\_floating\_point\_v<T>;}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isInteger\ =\ std::is\_integral\_v<T>}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \&\&\ !std::is\_same\_v<std::decay\_t<T>,\ \textcolor{keywordtype}{bool}>;}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keyword}{using\ }WideType\ \ \ \ \ [[deprecated(\textcolor{stringliteral}{"{}use\ modm::WideType<T>\ instead!"{}})]]\ \ \ \ \ =\ modm::WideType<T>;}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keyword}{using\ }SignedType\ \ \ [[deprecated(\textcolor{stringliteral}{"{}use\ modm::SignedType<T>\ instead!"{}})]]\ \ \ =\ modm::SignedType<T>\ ;}
+\DoxyCodeLine{00200\ \ \ \ \ \textcolor{keyword}{using\ }UnsignedType\ [[deprecated(\textcolor{stringliteral}{"{}use\ modm::UnsignedType<T>\ instead!"{}})]]\ =\ modm::UnsignedType<T>;}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ decimalDigits\ =}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ std::ceil(std::numeric\_limits<T>::digits\ *\ log10(2))\ +\ (std::is\_signed\_v<T>\ ?\ 1\ :\ 0);}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ T\ \doxymbox{\hyperlink{group__modm__math__utils_ga3a5b19e5ae348931e63e07007ca18138}{min}}\ [[deprecated(\textcolor{stringliteral}{"{}use\ std::numeric\_limits<T>::min()\ instead!"{}})]]\ =\ std::numeric\_limits<T>::min();}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ T\ \doxymbox{\hyperlink{group__modm__math__utils_ga9724ed6e0a257a51cd7f6933927cf15d}{max}}\ [[deprecated(\textcolor{stringliteral}{"{}use\ std::numeric\_limits<T>::max()\ instead!"{}})]]\ =\ std::numeric\_limits<T>::max();}
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ T\ epsilon\ [[deprecated(\textcolor{stringliteral}{"{}use\ std::numeric\_limits<T>::epsilon()\ instead!"{}})]]\ =\ std::numeric\_limits<T>::epsilon();}
+\DoxyCodeLine{00208\ \};}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00211\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_ARITHMETIC\_TRAITS\_HPP}}
+
+\end{DoxyCode}

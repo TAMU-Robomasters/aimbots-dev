@@ -1,0 +1,161 @@
+\doxysection{doubly\+\_\+linked\+\_\+list.\+hpp}
+\hypertarget{doubly__linked__list_8hpp_source}{}\label{doubly__linked__list_8hpp_source}\index{src/modm/container/doubly\_linked\_list.hpp@{src/modm/container/doubly\_linked\_list.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2011,\ Thorsten\ Lajewski}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Sascha\ Schade}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ Daniel\ Krebs}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ MODM\_DOUBLY\_LINKED\_LIST\_HPP}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MODM\_DOUBLY\_LINKED\_LIST\_HPP}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ <modm/utils/allocator.hpp>}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator\ =\ allocator::Dynamic<T>\ >}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{class\ }DoublyLinkedList}
+\DoxyCodeLine{00035\ \ \ \ \ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ DoublyLinkedList(\textcolor{keyword}{const}\ Allocator\&\ allocator\ =\ Allocator());}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \string~DoublyLinkedList();}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_acd84a32b3c5ae92f1e80b8b1bd940bee}{isEmpty}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ std::size\_t}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a2704f3ffe76aba1fdced428f4c498120}{getSize}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a7b92a84a6303e3a7dc6089802b80e3fc}{prepend}}(\textcolor{keyword}{const}\ T\&\ value);}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a368e36ec34bb1b61e2a6e3ee3bc37ac6}{append}}(\textcolor{keyword}{const}\ T\&\ value);}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_abb61d16b75ba877758e459967b534a14}{removeFront}}();}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ removeBack();}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a25ab0566cf7f3ef08b69f3a9f56f479e}{getFront}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ T\&}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a8bbaef045adc9175c5aea3ad6fe5381b}{getBack}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \ \ \ \ T\ value;}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}\ *previous;}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}\ *next;}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ stored\ instance\ is\ not\ actually\ of\ type\ Allocator.\ Instead\ we}}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ rebind\ the\ type\ to\ Allocator<Node<T>>.\ Node<T>\ is\ not\ the\ same}}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ size\ as\ T\ (it's\ one\ pointer\ larger),\ and\ specializations\ on\ T\ may\ go}}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ unused\ because\ Node<T>\ is\ being\ bound\ instead.}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Allocator::template\ rebind<\ Node\ >::other\ NodeAllocator;}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ NodeAllocator\ nodeAllocator;}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}\ *front;}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}\ *back;}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\ :\ \textcolor{keyword}{public}\ std::iterator<std::forward\_iterator\_tag,\ T>}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }DoublyLinkedList;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }const\_iterator;}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}();}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ other);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ operator\ =\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ other);}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ operator\ ++\ ();}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ operator\ -\/-\/\ ();}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ ==\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ !=\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}\&\ other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ T\&\ operator\ *\ ();}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ T*\ operator\ -\/>\ ();}
+\DoxyCodeLine{00124\ }
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator_aba3d689f838da6278bd173c51abba767}{iterator}}(\doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}*\ node);}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}*\ node;}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\ :\ \textcolor{keyword}{public}\ std::iterator<std::forward\_iterator\_tag,\ T>}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }DoublyLinkedList;}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}();}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}}\&\ other);}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ other);}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ operator\ =\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ other);}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ operator\ ++\ ();}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ operator\ -\/-\/\ ();}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ ==\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ operator\ !=\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}\&\ other)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T\&\ operator\ *\ ()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T*\ operator\ -\/>\ ()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator_a94771c2237af9df81a42215a57d765d9}{const\_iterator}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}*\ node);}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1_doubly_linked_list_1_1_node}{Node}}*\ node;}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}}}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a11b9151c7aabebc1ee870e16e25f0ea3}{begin}}();}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator}{const\_iterator}}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a11b9151c7aabebc1ee870e16e25f0ea3}{begin}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}}}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a5ba550d7eabe47ec1fb67a12ad99eaa6}{end}}();}
+\DoxyCodeLine{00193\ }
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator}{const\_iterator}}}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a5ba550d7eabe47ec1fb67a12ad99eaa6}{end}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00201\ }
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_a9b770752312aa3c8d461d5201bdd4342}{erase}}(\doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}}\ position);}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1const__iterator}{const\_iterator}};}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_doubly_linked_list_1_1iterator}{iterator}};}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ DoublyLinkedList(\textcolor{keyword}{const}\ DoublyLinkedList\&\ other);}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ DoublyLinkedList\&}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ operator\ =\ (\textcolor{keyword}{const}\ DoublyLinkedList\&\ other);}
+\DoxyCodeLine{00219\ \ \ \ \ \};}
+\DoxyCodeLine{00220\ \}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00222\ \textcolor{preprocessor}{\#include\ "{}doubly\_linked\_list\_impl.hpp"{}}}
+\DoxyCodeLine{00223\ \textcolor{preprocessor}{\#include\ "{}doubly\_linked\_list\_iterator\_impl.hpp"{}}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_DOUBLY\_LINKED\_LIST\_HPP}}
+
+\end{DoxyCode}

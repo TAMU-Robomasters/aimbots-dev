@@ -1,0 +1,80 @@
+\doxysection{modm::\+platform::\+Gpio\+Inverted\texorpdfstring{$<$}{<} Pin \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1platform_1_1_gpio_inverted}{}\label{classmodm_1_1platform_1_1_gpio_inverted}\index{modm::platform::GpioInverted$<$ Pin $>$@{modm::platform::GpioInverted$<$ Pin $>$}}
+
+
+{\ttfamily \+\#include $<$inverted.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Gpio\+Inverted\texorpdfstring{$<$}{<} Pin \texorpdfstring{$>$}{>}:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1platform_1_1_gpio_inverted}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a8359c97ae2475206e3ef5b42ae9c24cf}\label{classmodm_1_1platform_1_1_gpio_inverted_a8359c97ae2475206e3ef5b42ae9c24cf} 
+using {\bfseries Output} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_inverted}{Gpio\+Inverted}}$<$typename Pin::\+\+Output$>$
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a5bd48c8fb564fe4d0d215486976e6a67}\label{classmodm_1_1platform_1_1_gpio_inverted_a5bd48c8fb564fe4d0d215486976e6a67} 
+using {\bfseries Input} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_inverted}{Gpio\+Inverted}}$<$typename Pin::\+\+Input$>$
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a2353a3b7dd1677fe150e809d4ba0d452}\label{classmodm_1_1platform_1_1_gpio_inverted_a2353a3b7dd1677fe150e809d4ba0d452} 
+using {\bfseries IO} = \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_inverted}{Gpio\+Inverted}}$<$typename Pin::\+\+IO$>$
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_aaba7b7ce5c5f513d3301ff59705e3894}\label{classmodm_1_1platform_1_1_gpio_inverted_aaba7b7ce5c5f513d3301ff59705e3894} 
+using {\bfseries Type} = typename Pin::\+\+Type
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_aae24355a509a9f644131e1a8cef790b3}\label{classmodm_1_1platform_1_1_gpio_inverted_aae24355a509a9f644131e1a8cef790b3} 
+static void {\bfseries set\+Output} (bool value)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a5b6eeb763901a15cdf02bc1f8afe7b13}\label{classmodm_1_1platform_1_1_gpio_inverted_a5b6eeb763901a15cdf02bc1f8afe7b13} 
+static void {\bfseries set} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_adfcaaf8520dd56530e6696d5ae94d265}\label{classmodm_1_1platform_1_1_gpio_inverted_adfcaaf8520dd56530e6696d5ae94d265} 
+static void {\bfseries set} (bool value)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a74d807e7d8dcfd6ec96352bd4f3fb62b}\label{classmodm_1_1platform_1_1_gpio_inverted_a74d807e7d8dcfd6ec96352bd4f3fb62b} 
+static void {\bfseries reset} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_ab161e85ddc1647d724e7b1000fecfbd6}\label{classmodm_1_1platform_1_1_gpio_inverted_ab161e85ddc1647d724e7b1000fecfbd6} 
+static bool {\bfseries read} ()
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_ad8789bf216d5468b52c1e61df744b7e4}\label{classmodm_1_1platform_1_1_gpio_inverted_ad8789bf216d5468b52c1e61df744b7e4} 
+static bool {\bfseries is\+Set} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_gpio_inverted_a4a4732fbc38469fdba7dc373388d776d}\label{classmodm_1_1platform_1_1_gpio_inverted_a4a4732fbc38469fdba7dc373388d776d} 
+static constexpr bool {\bfseries is\+Inverted} = not Pin::\+is\+Inverted
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class Pin$>$\newline
+class modm::\+platform::\+\+Gpio\+Inverted$<$ Pin $>$}
+Invert a pin in software.
+
+This template can be used the invert the logic level of a normal pin template.
+
+Example:\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{using\ }Led\ =\ GpioInverted<GpioOutputB0>;}
+\DoxyCodeLine{Led::setOutput();}
+\DoxyCodeLine{Led::reset();\ \textcolor{comment}{//\ -\/>\ maps\ to\ GpioOutputB0::set()}}
+
+\end{DoxyCode}
+
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+gpio/\+inverted.\+hpp\end{DoxyCompactItemize}

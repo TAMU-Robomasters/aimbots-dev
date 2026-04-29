@@ -1,0 +1,251 @@
+\doxysection{dynamic\+\_\+array\+\_\+impl.\+hpp}
+\hypertarget{dynamic__array__impl_8hpp_source}{}\label{dynamic__array__impl_8hpp_source}\index{src/modm/container/dynamic\_array\_impl.hpp@{src/modm/container/dynamic\_array\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2011,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014,\ Daniel\ Krebs}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2015,\ Kevin\ Läufer}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ MODM\_DYNAMIC\_ARRAY\_HPP}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\ \ \ \ \#error\ \ "{}Don't\ include\ this\ file\ directly,\ use\ 'vector.hpp'\ instead"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00021\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00022\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a47770f3c91eda5e58e5b83f6dbd97731}{modm::DynamicArray<T,\ Allocator>::DynamicArray}}(\textcolor{keyword}{const}\ Allocator\&\ alloc)\ :}
+\DoxyCodeLine{00023\ \ \ \ \ allocator(alloc),}
+\DoxyCodeLine{00024\ \ \ \ \ size(0),\ capacity(0),\ values(0)}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ \}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00029\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a47770f3c91eda5e58e5b83f6dbd97731}{modm::DynamicArray<T,\ Allocator>::DynamicArray}}(SizeType\ n,\ \textcolor{keyword}{const}\ Allocator\&\ alloc)\ :}
+\DoxyCodeLine{00030\ \ \ \ \ allocator(alloc),\ size(0),\ capacity(n)}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ this-\/>values\ =\ this-\/>allocator.allocate(n);}
+\DoxyCodeLine{00033\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00036\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a47770f3c91eda5e58e5b83f6dbd97731}{modm::DynamicArray<T,\ Allocator>::DynamicArray}}(SizeType\ n,\ \textcolor{keyword}{const}\ T\&\ value,\ \textcolor{keyword}{const}\ Allocator\&\ alloc)\ :}
+\DoxyCodeLine{00037\ \ \ \ \ allocator(alloc),\ size(n),\ capacity(n)}
+\DoxyCodeLine{00038\ \{}
+\DoxyCodeLine{00039\ \ \ \ \ this-\/>values\ =\ this-\/>allocator.allocate(n);}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ n;\ ++i)\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ allocator.construct(\&this-\/>values[i],\ value);}
+\DoxyCodeLine{00042\ \ \ \ \ \}}
+\DoxyCodeLine{00043\ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00046\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a47770f3c91eda5e58e5b83f6dbd97731}{modm::DynamicArray<T,\ Allocator>::DynamicArray}}(std::initializer\_list<T>\ init,\ \textcolor{keyword}{const}\ Allocator\&\ alloc)\ :}
+\DoxyCodeLine{00047\ \ \ \ \ allocator(alloc),\ size(init.size()),\ capacity(init.size())}
+\DoxyCodeLine{00048\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ this-\/>values\ =\ this-\/>allocator.allocate(init.size());}
+\DoxyCodeLine{00050\ \ \ \ \ std::size\_t\ ii\ =\ 0;}
+\DoxyCodeLine{00051\ \ \ \ \ for\ (\textcolor{keyword}{auto}\ value\ :\ init)\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ allocator.construct(\&this-\/>values[ii],\ value);}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ ++ii;}
+\DoxyCodeLine{00054\ \ \ \ \ \}}
+\DoxyCodeLine{00055\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00058\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a47770f3c91eda5e58e5b83f6dbd97731}{modm::DynamicArray<T,\ Allocator>::DynamicArray}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array}{DynamicArray}}\&\ other)\ :}
+\DoxyCodeLine{00059\ \ \ \ \ allocator(other.allocator),}
+\DoxyCodeLine{00060\ \ \ \ \ size(other.size),\ capacity(other.capacity)}
+\DoxyCodeLine{00061\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ this-\/>values\ =\ allocator.allocate(other.capacity);}
+\DoxyCodeLine{00063\ \ \ \ \ for\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ this-\/>allocator.construct(\&this-\/>values[i],\ other.values[i]);}
+\DoxyCodeLine{00065\ \ \ \ \ \}}
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00069\ modm::DynamicArray<T,\ Allocator>::\string~DynamicArray()}
+\DoxyCodeLine{00070\ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[i]);}
+\DoxyCodeLine{00073\ \ \ \ \ \}}
+\DoxyCodeLine{00074\ \ \ \ \ this-\/>allocator.deallocate(this-\/>values);}
+\DoxyCodeLine{00075\ \}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00078\ modm::DynamicArray<T,\ Allocator>\&}
+\DoxyCodeLine{00079\ modm::DynamicArray<T,\ Allocator>::operator\ =\ (\textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array}{DynamicArray}}\&\ other)}
+\DoxyCodeLine{00080\ \{}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[i]);}
+\DoxyCodeLine{00083\ \ \ \ \ \}}
+\DoxyCodeLine{00084\ \ \ \ \ this-\/>allocator.deallocate(this-\/>values);}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ this-\/>allocator\ =\ other.allocator;}
+\DoxyCodeLine{00087\ \ \ \ \ this-\/>size\ =\ other.size;}
+\DoxyCodeLine{00088\ \ \ \ \ this-\/>capacity\ =\ other.capacity;}
+\DoxyCodeLine{00089\ \ \ \ \ this-\/>values\ =\ this-\/>allocator.allocate(this-\/>capacity);}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ this-\/>allocator.construct(\&this-\/>values[i],\ other.values[i]);}
+\DoxyCodeLine{00093\ \ \ \ \ \}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordflow}{return}\ *\textcolor{keyword}{this};}
+\DoxyCodeLine{00095\ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00098\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00099\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00100\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a475613c437b7a6a9f40173f56d4047b1}{modm::DynamicArray<T,\ Allocator>::reserve}}(SizeType\ n)}
+\DoxyCodeLine{00101\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordflow}{if}\ (n\ <=\ (this-\/>capacity\ -\/\ this-\/>size))\ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ capacity\ is\ already\ big\ enough,\ nothing\ to\ do.}}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00105\ \ \ \ \ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//\ allocate\ new\ memory}}
+\DoxyCodeLine{00108\ \ \ \ \ this-\/>relocate(this-\/>size\ +\ n);}
+\DoxyCodeLine{00109\ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00112\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00114\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a8b856bfe713c7cb4a6aec85695b3b0b9}{modm::DynamicArray<T,\ Allocator>::clear}}()}
+\DoxyCodeLine{00115\ \{}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[i]);}
+\DoxyCodeLine{00118\ \ \ \ \ \}}
+\DoxyCodeLine{00119\ \ \ \ \ this-\/>allocator.deallocate(this-\/>values);}
+\DoxyCodeLine{00120\ \ \ \ \ this-\/>values\ =\ 0;}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \ \ \ \ this-\/>size\ =\ 0;}
+\DoxyCodeLine{00123\ \ \ \ \ this-\/>capacity\ =\ 0;}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00127\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00128\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00129\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a36306fdd222c10aae1dcf4cb56de3148}{modm::DynamicArray<T,\ Allocator>::removeAll}}()}
+\DoxyCodeLine{00130\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[i]);}
+\DoxyCodeLine{00133\ \ \ \ \ \}}
+\DoxyCodeLine{00134\ \ \ \ \ this-\/>size\ =\ 0;}
+\DoxyCodeLine{00135\ \}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00138\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00139\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00140\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a218210952fe3b08760dc0c81a61581a2}{modm::DynamicArray<T,\ Allocator>::append}}(\textcolor{keyword}{const}\ T\&\ value)}
+\DoxyCodeLine{00141\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{keywordflow}{if}\ (this-\/>capacity\ ==\ this-\/>size)}
+\DoxyCodeLine{00143\ \ \ \ \ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ allocate\ new\ memory\ if\ no\ more\ space\ is\ left}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ SizeType\ n\ =\ this-\/>size\ +\ (this-\/>size\ +\ 1)\ /\ 2;}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (n\ ==\ 0)\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ n\ =\ 1;}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ this-\/>relocate(n);}
+\DoxyCodeLine{00150\ \ \ \ \ \}}
+\DoxyCodeLine{00151\ }
+\DoxyCodeLine{00152\ \ \ \ \ this-\/>allocator.construct(\&this-\/>values[this-\/>size],\ value);}
+\DoxyCodeLine{00153\ \ \ \ \ ++this-\/>size;}
+\DoxyCodeLine{00154\ \}}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00157\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00158\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00159\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_afffc4aafbed104801cf6ab0fc95126d8}{modm::DynamicArray<T,\ Allocator>::removeBack}}()}
+\DoxyCodeLine{00160\ \{}
+\DoxyCodeLine{00161\ \ \ \ \ -\/-\/this-\/>size;}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{comment}{//\ call\ destructor}}
+\DoxyCodeLine{00164\ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[this-\/>size]);}
+\DoxyCodeLine{00165\ \}}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00168\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00169\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00170\ modm::DynamicArray<T,\ Allocator>::relocate(SizeType\ n)}
+\DoxyCodeLine{00171\ \{}
+\DoxyCodeLine{00172\ \ \ \ \ this-\/>capacity\ =\ n;}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \ \ \ \ T*\ newBuffer\ =\ allocator.allocate(n);}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{for}\ (SizeType\ i\ =\ 0;\ i\ <\ this-\/>size;\ ++i)\ \{}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ this-\/>allocator.construct(\&newBuffer[i],\ this-\/>values[i]);}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ this-\/>allocator.destroy(\&this-\/>values[i]);}
+\DoxyCodeLine{00178\ \ \ \ \ \}}
+\DoxyCodeLine{00179\ \ \ \ \ this-\/>allocator.deallocate(this-\/>values);}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ this-\/>values\ =\ newBuffer;}
+\DoxyCodeLine{00182\ \}}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00185\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00186\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{modm::DynamicArray<T,\ Allocator>::iterator}}}
+\DoxyCodeLine{00187\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a7e83b5e1502947c786bc5bedb1aebb24}{modm::DynamicArray<T,\ Allocator>::begin}}()}
+\DoxyCodeLine{00188\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{iterator}}(\textcolor{keyword}{this},\ 0);}
+\DoxyCodeLine{00190\ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00193\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{modm::DynamicArray<T,\ Allocator>::iterator}}}
+\DoxyCodeLine{00194\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_af97abd9ed5f128f441ace9bff6360f07}{modm::DynamicArray<T,\ Allocator>::end}}()}
+\DoxyCodeLine{00195\ \{}
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{iterator}}(\textcolor{keyword}{this},\ size);}
+\DoxyCodeLine{00197\ \}}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00199\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00200\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{modm::DynamicArray<T,\ Allocator>::iterator}}}
+\DoxyCodeLine{00201\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_acfdbd234f505e4cc182274cd182bdef6}{modm::DynamicArray<T,\ Allocator>::find}}(\textcolor{keyword}{const}\ T\&\ value)}
+\DoxyCodeLine{00202\ \{}
+\DoxyCodeLine{00203\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1iterator}{modm::DynamicArray<T,\ Allocator>::iterator}}\ iter\ =\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a7e83b5e1502947c786bc5bedb1aebb24}{begin}}();}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keywordflow}{for}(;\ iter\ !=\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_dynamic_array_af97abd9ed5f128f441ace9bff6360f07}{end}}();\ ++iter)}
+\DoxyCodeLine{00206\ \ \ \ \ \{}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}((*iter)\ ==\ value)\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00210\ \ \ \ \ \}}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{comment}{//\ return\ end()\ if\ value\ has\ not\ been\ found}}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00214\ \}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00217\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{modm::DynamicArray<T,\ Allocator>::const\_iterator}}}
+\DoxyCodeLine{00218\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a7e83b5e1502947c786bc5bedb1aebb24}{modm::DynamicArray<T,\ Allocator>::begin}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00219\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{const\_iterator}}(\textcolor{keyword}{this},\ 0);}
+\DoxyCodeLine{00221\ \}}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00223\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00224\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{modm::DynamicArray<T,\ Allocator>::const\_iterator}}}
+\DoxyCodeLine{00225\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_af97abd9ed5f128f441ace9bff6360f07}{modm::DynamicArray<T,\ Allocator>::end}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00226\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{const\_iterator}}(\textcolor{keyword}{this},\ size);}
+\DoxyCodeLine{00228\ \}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}\ Allocator>}
+\DoxyCodeLine{00231\ \textcolor{keyword}{typename}\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{modm::DynamicArray<T,\ Allocator>::const\_iterator}}}
+\DoxyCodeLine{00232\ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_acfdbd234f505e4cc182274cd182bdef6}{modm::DynamicArray<T,\ Allocator>::find}}(\textcolor{keyword}{const}\ T\&\ value)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00233\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00234\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_dynamic_array_1_1const__iterator}{modm::DynamicArray<T,\ Allocator>::const\_iterator}}\ iter\ =\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_dynamic_array_a7e83b5e1502947c786bc5bedb1aebb24}{begin}}();}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keywordflow}{for}(;\ iter\ !=\ this-\/>\doxymbox{\hyperlink{classmodm_1_1_dynamic_array_af97abd9ed5f128f441ace9bff6360f07}{end}}();\ ++iter)}
+\DoxyCodeLine{00237\ \ \ \ \ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}((*iter)\ ==\ value)\ \{}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00241\ \ \ \ \ \}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{comment}{//\ return\ end()\ if\ value\ has\ not\ been\ found}}
+\DoxyCodeLine{00244\ \ \ \ \ \textcolor{keywordflow}{return}\ iter;}
+\DoxyCodeLine{00245\ \}}
+
+\end{DoxyCode}

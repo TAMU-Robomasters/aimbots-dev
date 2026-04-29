@@ -1,0 +1,187 @@
+\doxysection{modm::\+Pid\texorpdfstring{$<$}{<} T, Scale\+Factor \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_pid}{}\label{classmodm_1_1_pid}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+
+
+A proportional-\/integral-\/derivative controller (PID controller).  
+
+
+
+
+{\ttfamily \+\#include $<$pid.\+hpp$>$}
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}}
+\begin{DoxyCompactList}\small\item\em \doxylink{structmodm_1_1_pid_1_1_parameter}{Parameter} for a PID calculation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_pid_abc6029c1c6375ea6599d9f2d8811ab4a}\label{classmodm_1_1_pid_abc6029c1c6375ea6599d9f2d8811ab4a} 
+typedef T {\bfseries Value\+Type}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}{Pid}} (const float \&kp=0, const float \&ki=0, const float \&kd=0, const T \&max\+Error\+Sum=0, const T \&max\+Output=0)
+\item 
+\doxymbox{\hyperlink{classmodm_1_1_pid_a6e6e6a3ea2ad558876847865b0d8f55c}{Pid}} (\doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}} \&parameter)
+\item 
+void \doxymbox{\hyperlink{classmodm_1_1_pid_ac4c4ed849ad08d6fd511b209575107e4}{set\+Parameter}} (const \doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}} \&parameter)
+\item 
+\Hypertarget{classmodm_1_1_pid_a03e5d738fd15d784b315ad85f14bd3ca}\label{classmodm_1_1_pid_a03e5d738fd15d784b315ad85f14bd3ca} 
+void {\bfseries reset} ()
+\begin{DoxyCompactList}\small\item\em Reset all values. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{classmodm_1_1_pid_aae464c0c86496efd1d8bda40bb481fd3}{update}} (const T \&input, bool external\+Limitation=false)
+\begin{DoxyCompactList}\small\item\em Calculate a new output value. \end{DoxyCompactList}\item 
+\Hypertarget{classmodm_1_1_pid_a7b6f36324d614cddf0c9171ab0d1ad72}\label{classmodm_1_1_pid_a7b6f36324d614cddf0c9171ab0d1ad72} 
+const T \& {\bfseries get\+Value} () const
+\begin{DoxyCompactList}\small\item\em Returns the calculated actuating variable. \end{DoxyCompactList}\item 
+const T \& \doxymbox{\hyperlink{classmodm_1_1_pid_a61ffab3bd79e5d4ef9b0712f50a109bc}{get\+Last\+Error}} () const
+\begin{DoxyCompactList}\small\item\em Get last error. \end{DoxyCompactList}\item 
+const T \& \doxymbox{\hyperlink{classmodm_1_1_pid_a3cc20d49741a1a3100dcf82f898d28d1}{get\+Error\+Sum}} () const
+\begin{DoxyCompactList}\small\item\em Get integrated error. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T, unsigned int Scale\+Factor = 1$>$\newline
+class modm::\+\+Pid$<$ T, Scale\+Factor $>$}
+A proportional-\/integral-\/derivative controller (PID controller). 
+
+The PID controller is one of the basic controlling algorithm.
+
+The {\ttfamily max\+Error\+Sum} is to be used, to limit the internal integrator and so provide an anti wind up.
+
+With the template parameter {\ttfamily Scale\+Factor} this class provides an fix point capability with integer types.
+
+Example for a motor speed control with a 10-\/bit PWM output. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}{Pid<int16\_t,\ 10>}}\ pid(0.4,\ 0.5,\ 0,\ 200,\ 512);}
+\DoxyCodeLine{}
+\DoxyCodeLine{...}
+\DoxyCodeLine{}
+\DoxyCodeLine{v\_target\ =\ ...\ \textcolor{comment}{//\ setpoint}}
+\DoxyCodeLine{v\_input\ \ =\ ...\ \textcolor{comment}{//\ input\ value}}
+\DoxyCodeLine{}
+\DoxyCodeLine{pid.update(v\_target\ -\/\ v\_input);}
+\DoxyCodeLine{pwm\ =\ pid.getValue();}
+
+\end{DoxyCode}
+
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000007}{Todo}}]use the faster avr::\+mul and avr::\+mac functions\end{DoxyRefDesc}
+
+
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-constructors}
+\Hypertarget{classmodm_1_1_pid_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!Pid@{Pid}}
+\index{Pid@{Pid}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{Pid()}{Pid()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_a070cb1f5ddd00c3a8c2a9e762696f309} 
+template$<$typename T, unsigned int Scale\+Factor$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+\+Pid (\begin{DoxyParamCaption}\item[{const float \&}]{kp}{ = {\ttfamily 0}, }\item[{const float \&}]{ki}{ = {\ttfamily 0}, }\item[{const float \&}]{kd}{ = {\ttfamily 0}, }\item[{const T \&}]{max\+Error\+Sum}{ = {\ttfamily 0}, }\item[{const T \&}]{max\+Output}{ = {\ttfamily 0}}\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em kp} & proportional gain \\
+\hline
+{\em ki} & integral gain \\
+\hline
+{\em kd} & differential gain \\
+\hline
+{\em max\+Error\+Sum} & integral will be limited to this value \\
+\hline
+{\em max\+Output} & output will be limited to this value \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1_pid_a6e6e6a3ea2ad558876847865b0d8f55c}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!Pid@{Pid}}
+\index{Pid@{Pid}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{Pid()}{Pid()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_a6e6e6a3ea2ad558876847865b0d8f55c} 
+template$<$typename T, unsigned int Scale\+Factor$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+\+Pid (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}} \&}]{parameter}{}\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameter} & list of parameters to the controller \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_pid_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_pid_a3cc20d49741a1a3100dcf82f898d28d1}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!getErrorSum@{getErrorSum}}
+\index{getErrorSum@{getErrorSum}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{getErrorSum()}{getErrorSum()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_a3cc20d49741a1a3100dcf82f898d28d1} 
+template$<$typename T, unsigned int Scale\+Factor = 1$>$ \\
+const T \& \doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+get\+Error\+Sum (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get integrated error. 
+
+This function is provided for debugging purposes only. \Hypertarget{classmodm_1_1_pid_a61ffab3bd79e5d4ef9b0712f50a109bc}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!getLastError@{getLastError}}
+\index{getLastError@{getLastError}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{getLastError()}{getLastError()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_a61ffab3bd79e5d4ef9b0712f50a109bc} 
+template$<$typename T, unsigned int Scale\+Factor = 1$>$ \\
+const T \& \doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+get\+Last\+Error (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get last error. 
+
+This function is provided for debugging purposes only.
+
+The differential term is calculated via:\+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Kd\ *\ (input\ -\/\ this-\/>lastError);}
+
+\end{DoxyCode}
+ \Hypertarget{classmodm_1_1_pid_ac4c4ed849ad08d6fd511b209575107e4}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!setParameter@{setParameter}}
+\index{setParameter@{setParameter}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{setParameter()}{setParameter()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_ac4c4ed849ad08d6fd511b209575107e4} 
+template$<$typename T, unsigned int Scale\+Factor$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+set\+Parameter (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structmodm_1_1_pid_1_1_parameter}{Parameter}} \&}]{parameter}{}\end{DoxyParamCaption})}
+
+Reset the parameters of the controller.
+
+
+\begin{DoxyParams}{Parameters}
+{\em parameter} & list of parameters to the controller \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classmodm_1_1_pid_aae464c0c86496efd1d8bda40bb481fd3}\index{modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}!update@{update}}
+\index{update@{update}!modm::Pid$<$ T, ScaleFactor $>$@{modm::Pid$<$ T, ScaleFactor $>$}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_pid_aae464c0c86496efd1d8bda40bb481fd3} 
+template$<$typename T, unsigned int Scale\+Factor$>$ \\
+void \doxymbox{\hyperlink{classmodm_1_1_pid}{modm::\+\+Pid}}$<$ T, Scale\+Factor $>$::\+update (\begin{DoxyParamCaption}\item[{const T \&}]{input}{, }\item[{bool}]{external\+Limitation}{ = {\ttfamily false}}\end{DoxyParamCaption})}
+
+
+
+Calculate a new output value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & Error \\
+\hline
+{\em external\+Limitation} & If true an external limitation is applied, this disables integral summation. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+filter/\+pid.\+hpp\item 
+src/\+modm/\+math/\+filter/\+pid\+\_\+impl.\+hpp\end{DoxyCompactItemize}

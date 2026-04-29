@@ -1,0 +1,93 @@
+\doxysection{median\+\_\+5\+\_\+impl.\+hpp}
+\hypertarget{median__5__impl_8hpp_source}{}\label{median__5__impl_8hpp_source}\index{src/modm/math/filter/median\_5\_impl.hpp@{src/modm/math/filter/median\_5\_impl.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009,\ Martin\ Rosekeit}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2009-\/2010,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00017\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keyword}{namespace\ }\doxymbox{\hyperlink{namespacemodm_1_1filter}{filter}}}
+\DoxyCodeLine{00020\ \ \ \ \ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keyword}{class\ }Median<T,\ 5>}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_acb65a4652fccc9a32ca85c3773a3cdb2}{Median}}(\textcolor{keyword}{const}\ T\&\ initialValue\ =\ 0);}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_ac28febb30ea78c8b176987ab7d26aa8a}{append}}(\textcolor{keyword}{const}\ T\&\ input);}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ update();}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ T}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_ab370c22b7af44980e49075122d0cf3b2}{getValue}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ uint\_fast8\_t\ index;}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ T\ buffer[5];}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \ \ \ \ T\ sorted[5];}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00041\ \ \ \ \ \}}
+\DoxyCodeLine{00042\ \}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00045\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00046\ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_acb65a4652fccc9a32ca85c3773a3cdb2}{modm::filter::Median<T,\ 5>::Median}}(\textcolor{keyword}{const}\ T\&\ initialValue)\ :}
+\DoxyCodeLine{00047\ \ \ \ \ index(0)}
+\DoxyCodeLine{00048\ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\_fast8\_t\ i\ =\ 0;\ i\ <\ 5;\ ++i)\ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ buffer[i]\ =\ initialValue;}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ sorted[i]\ =\ initialValue;}
+\DoxyCodeLine{00052\ \ \ \ \ \}}
+\DoxyCodeLine{00053\ \}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00056\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00057\ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_ac28febb30ea78c8b176987ab7d26aa8a}{modm::filter::Median<T,\ 5>::append}}(\textcolor{keyword}{const}\ T\&\ input)}
+\DoxyCodeLine{00058\ \{}
+\DoxyCodeLine{00059\ \ \ \ \ this-\/>buffer[index]\ =\ input;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{if}\ (++index\ >=\ 5)\ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ index\ =\ 0;}
+\DoxyCodeLine{00062\ \ \ \ \ \}}
+\DoxyCodeLine{00063\ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00066\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00067\ modm::filter::Median<T,\ 5>::update()}
+\DoxyCodeLine{00068\ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{comment}{//\ for\ small\ sample\ sizes\ it\ is\ the\ fastest\ way\ to\ just\ copy\ the}}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{comment}{//\ buffer\ and\ sort\ it\ afterwards}}
+\DoxyCodeLine{00071\ \ \ \ \ std::memcpy((\textcolor{keywordtype}{void}\ *)\ sorted,\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{void}\ *\ \textcolor{keyword}{const})\ buffer,\ \textcolor{keyword}{sizeof}(sorted));}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[0],\ sorted[1]);}
+\DoxyCodeLine{00074\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[3],\ sorted[4]);}
+\DoxyCodeLine{00075\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[0],\ sorted[3]);}
+\DoxyCodeLine{00076\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[1],\ sorted[4]);}
+\DoxyCodeLine{00077\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[1],\ sorted[2]);}
+\DoxyCodeLine{00078\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[2],\ sorted[3]);}
+\DoxyCodeLine{00079\ \ \ \ \ MODM\_MEDIAN\_SORT(sorted[1],\ sorted[2]);}
+\DoxyCodeLine{00080\ \}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00083\ \textcolor{keyword}{const}\ T}
+\DoxyCodeLine{00084\ \doxymbox{\hyperlink{classmodm_1_1filter_1_1_median_ab370c22b7af44980e49075122d0cf3b2}{modm::filter::Median<T,\ 5>::getValue}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00085\ \textcolor{keyword}{}\{}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordflow}{return}\ sorted[2];}
+\DoxyCodeLine{00087\ \}}
+
+\end{DoxyCode}

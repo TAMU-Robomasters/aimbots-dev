@@ -1,0 +1,179 @@
+\doxysection{modm::\+Quaternion\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classmodm_1_1_quaternion}{}\label{classmodm_1_1_quaternion}\index{modm::Quaternion$<$ T $>$@{modm::Quaternion$<$ T $>$}}
+
+
+\doxylink{classmodm_1_1_quaternion}{Quaternion}.  
+
+
+
+
+{\ttfamily \+\#include $<$quaternion.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_quaternion_af4e15ed300875ca5be397b11875c5b9e}\label{classmodm_1_1_quaternion_af4e15ed300875ca5be397b11875c5b9e} 
+{\footnotesize template$<$typename U$>$ }\\{\bfseries Quaternion} (const U \texorpdfstring{$\ast$}{*}array)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a5619ba74ae70d0351973cdb40b662fbf}\label{classmodm_1_1_quaternion_a5619ba74ae70d0351973cdb40b662fbf} 
+{\bfseries Quaternion} (T inW, T inX, T inY, T inZ)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a65099fd685f76c16141cc38593b320e4}\label{classmodm_1_1_quaternion_a65099fd685f76c16141cc38593b320e4} 
+{\bfseries Quaternion} (const \doxymbox{\hyperlink{classmodm_1_1_vector}{Vector}}$<$ T, 3 $>$ \&axis, T angle)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a079fe4f65eddc2c866e42841aef5f95f}\label{classmodm_1_1_quaternion_a079fe4f65eddc2c866e42841aef5f95f} 
+{\bfseries Quaternion} (const \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 4, 1 $>$ \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_adf9125dce9136e09e8e026ca5f7b3da1}\label{classmodm_1_1_quaternion_adf9125dce9136e09e8e026ca5f7b3da1} 
+{\bfseries Quaternion} (const Quaternion \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ad2fbe486c91f543109438a00038de995}\label{classmodm_1_1_quaternion_ad2fbe486c91f543109438a00038de995} 
+Quaternion \& {\bfseries operator=} (const \doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 4, 1 $>$ \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a999a7ff8c90ccceb72a449bd9e549dd9}\label{classmodm_1_1_quaternion_a999a7ff8c90ccceb72a449bd9e549dd9} 
+Quaternion \& {\bfseries operator=} (const Quaternion \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a56afe1cc92fb5dd553b70afd206e9a97}\label{classmodm_1_1_quaternion_a56afe1cc92fb5dd553b70afd206e9a97} 
+bool {\bfseries operator==} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a4f6732375001f488b3a9e9725c1632d9}\label{classmodm_1_1_quaternion_a4f6732375001f488b3a9e9725c1632d9} 
+bool {\bfseries operator!=} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_aeccca1fba6976c15c87d2c74a38a1688}\label{classmodm_1_1_quaternion_aeccca1fba6976c15c87d2c74a38a1688} 
+bool {\bfseries operator$<$} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_acc92e374bfad546acb33ab1eaea12b2e}\label{classmodm_1_1_quaternion_acc92e374bfad546acb33ab1eaea12b2e} 
+bool {\bfseries operator$<$=} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a7ed9f354709ab909f196ef4a5d5c9923}\label{classmodm_1_1_quaternion_a7ed9f354709ab909f196ef4a5d5c9923} 
+bool {\bfseries operator$>$} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a78eaedaf2576ed58a94d7a09ebe034d2}\label{classmodm_1_1_quaternion_a78eaedaf2576ed58a94d7a09ebe034d2} 
+bool {\bfseries operator$>$=} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a09ae775149598aaa6c5e49391b8e8317}\label{classmodm_1_1_quaternion_a09ae775149598aaa6c5e49391b8e8317} 
+const T \& {\bfseries operator\+[$\,$]\+} (int index) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a92317ddc362b1a44843bdae27f0017bd}\label{classmodm_1_1_quaternion_a92317ddc362b1a44843bdae27f0017bd} 
+T \texorpdfstring{$\ast$}{*} {\bfseries ptr} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a04235d9ae25a83508d1f38f571f48140}\label{classmodm_1_1_quaternion_a04235d9ae25a83508d1f38f571f48140} 
+const T \texorpdfstring{$\ast$}{*} {\bfseries ptr} () const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a89ccdd481126541fb9829f94935f2bbf}\label{classmodm_1_1_quaternion_a89ccdd481126541fb9829f94935f2bbf} 
+Quaternion {\bfseries operator-\/} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a87f815d74f561906cc3527943e9b71bc}\label{classmodm_1_1_quaternion_a87f815d74f561906cc3527943e9b71bc} 
+Quaternion {\bfseries operator+} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a45cbef984af837818be06b8f5869256b}\label{classmodm_1_1_quaternion_a45cbef984af837818be06b8f5869256b} 
+Quaternion {\bfseries operator-\/} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a9c4a7e2c8022ba038ddd4a1ce68a3d4d}\label{classmodm_1_1_quaternion_a9c4a7e2c8022ba038ddd4a1ce68a3d4d} 
+Quaternion {\bfseries operator\texorpdfstring{$\ast$}{*}} (const Quaternion \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ad5076e61c668d6d35850083c58e76a26}\label{classmodm_1_1_quaternion_ad5076e61c668d6d35850083c58e76a26} 
+Quaternion {\bfseries operator\texorpdfstring{$\ast$}{*}} (const T \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_af128972830d92a39c9556df37f6c3494}\label{classmodm_1_1_quaternion_af128972830d92a39c9556df37f6c3494} 
+Quaternion {\bfseries operator/\+} (const T \&rhs) const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_aeef30d0d97a7f026b60128df5f5c0208}\label{classmodm_1_1_quaternion_aeef30d0d97a7f026b60128df5f5c0208} 
+Quaternion \& {\bfseries operator+=} (const Quaternion \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_aa3192fda128178d4e52166f9f639ded3}\label{classmodm_1_1_quaternion_aa3192fda128178d4e52166f9f639ded3} 
+Quaternion \& {\bfseries operator-\/=} (const Quaternion \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_aac562360f7a67931b55fd8d7041dec5d}\label{classmodm_1_1_quaternion_aac562360f7a67931b55fd8d7041dec5d} 
+Quaternion \& {\bfseries operator\texorpdfstring{$\ast$}{*}=} (const T \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ad96ff59888415d849f4af53ea0765dd5}\label{classmodm_1_1_quaternion_ad96ff59888415d849f4af53ea0765dd5} 
+Quaternion \& {\bfseries operator/\+=} (const T \&rhs)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_acf2195b67cc85be858d35c351b499661}\label{classmodm_1_1_quaternion_acf2195b67cc85be858d35c351b499661} 
+float {\bfseries get\+Length} () const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_aaa6fb73e52b6f56d94ae9dd2768b1cc0}\label{classmodm_1_1_quaternion_aaa6fb73e52b6f56d94ae9dd2768b1cc0} 
+float {\bfseries get\+Length\+Squared} () const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a61e37835b889e79819b4cc799377da5e}\label{classmodm_1_1_quaternion_a61e37835b889e79819b4cc799377da5e} 
+Quaternion \& {\bfseries scale} (float new\+Length)
+\item 
+Quaternion \& \doxymbox{\hyperlink{classmodm_1_1_quaternion_ae5f555fa12d948775447ee4455140a00}{normalize}} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ae3b5079d0ae1294f8039bdb648d22d85}\label{classmodm_1_1_quaternion_ae3b5079d0ae1294f8039bdb648d22d85} 
+Quaternion \& {\bfseries conjugate} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a659a66d5f21cb1431ebff2918f6b56b3}\label{classmodm_1_1_quaternion_a659a66d5f21cb1431ebff2918f6b56b3} 
+Quaternion {\bfseries scaled} (float new\+Length) const
+\item 
+Quaternion \doxymbox{\hyperlink{classmodm_1_1_quaternion_ad3369cdaa4f550f400acdf171348a229}{normalized}} () const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a16509bc374a6eff0624f8531b6966560}\label{classmodm_1_1_quaternion_a16509bc374a6eff0624f8531b6966560} 
+Quaternion {\bfseries conjugated} () const
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ad941936fa6b4be2daaaf32a8e9c39ff6}\label{classmodm_1_1_quaternion_ad941936fa6b4be2daaaf32a8e9c39ff6} 
+Quaternion {\bfseries unit\+Inverse} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a2ea4c87f781341f6c0d05ccc85e52da0}\label{classmodm_1_1_quaternion_a2ea4c87f781341f6c0d05ccc85e52da0} 
+Quaternion {\bfseries inverse} ()
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a251ebc5b62c4f12152b0838f4f8a68eb}\label{classmodm_1_1_quaternion_a251ebc5b62c4f12152b0838f4f8a68eb} 
+void {\bfseries to4x4\+Matrix} (\doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 4, 4 $>$ \texorpdfstring{$\ast$}{*}out\+Matrix)
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ab6464185815ba4996fba8712e30505e9}\label{classmodm_1_1_quaternion_ab6464185815ba4996fba8712e30505e9} 
+void {\bfseries to3x3\+Matrix} (\doxymbox{\hyperlink{classmodm_1_1_matrix}{Matrix}}$<$ T, 3, 3 $>$ \texorpdfstring{$\ast$}{*}out\+Matrix)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1_quaternion_ad72a1ca0d7f2f89db398d8014a60308b}\label{classmodm_1_1_quaternion_ad72a1ca0d7f2f89db398d8014a60308b} 
+T {\bfseries w}
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a2c7fc6dad671c19e2096f8a188cac4d9}\label{classmodm_1_1_quaternion_a2c7fc6dad671c19e2096f8a188cac4d9} 
+T {\bfseries x}
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a4b9e2b46e2a28bb50f084999ae5b8414}\label{classmodm_1_1_quaternion_a4b9e2b46e2a28bb50f084999ae5b8414} 
+T {\bfseries y}
+\item 
+\Hypertarget{classmodm_1_1_quaternion_a987b387372f691dcf4eaf72469cd3984}\label{classmodm_1_1_quaternion_a987b387372f691dcf4eaf72469cd3984} 
+T {\bfseries z}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class modm::\+\+Quaternion$<$ T $>$}
+\doxylink{classmodm_1_1_quaternion}{Quaternion}. 
+
+Adapted from the implementation of Gaspard Petit (\href{mailto:gaspardpetit@gmail.com}{\texttt{gaspardpetit@gmail.\+com}}). \begin{DoxySeeAlso}{See also}
+\texorpdfstring{$<$}{<}a href"{}http:\+/\+/\+www-\/etud.\+iro.\+umontreal.\+ca/\+\texorpdfstring{$\sim$}{\string~}petitg/\+cpp/\+quat.\+html"{}\texorpdfstring{$>$}{>}Homepage
+\end{DoxySeeAlso}
+\begin{DoxyAuthor}{Author}
+Fabian Greif 
+\end{DoxyAuthor}
+
+
+\label{doc-func-members}
+\Hypertarget{classmodm_1_1_quaternion_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmodm_1_1_quaternion_ae5f555fa12d948775447ee4455140a00}\index{modm::Quaternion$<$ T $>$@{modm::Quaternion$<$ T $>$}!normalize@{normalize}}
+\index{normalize@{normalize}!modm::Quaternion$<$ T $>$@{modm::Quaternion$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{normalize()}{normalize()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_quaternion_ae5f555fa12d948775447ee4455140a00} 
+template$<$class T$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::\+\+Quaternion}}$<$ T $>$ \& \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::\+\+Quaternion}}$<$ T $>$::\+normalize (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+Rescale to length = 1 \Hypertarget{classmodm_1_1_quaternion_ad3369cdaa4f550f400acdf171348a229}\index{modm::Quaternion$<$ T $>$@{modm::Quaternion$<$ T $>$}!normalized@{normalized}}
+\index{normalized@{normalized}!modm::Quaternion$<$ T $>$@{modm::Quaternion$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{normalized()}{normalized()}}
+{\footnotesize\ttfamily \label{classmodm_1_1_quaternion_ad3369cdaa4f550f400acdf171348a229} 
+template$<$class T$>$ \\
+\doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::\+\+Quaternion}}$<$ T $>$ \doxymbox{\hyperlink{classmodm_1_1_quaternion}{modm::\+\+Quaternion}}$<$ T $>$::\+normalized (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+Return a new quaternion with the same direction by the length 1 
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+math/\+geometry/\+quaternion.\+hpp\item 
+src/\+modm/\+math/\+geometry/\+quaternion\+\_\+impl.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,93 @@
+\doxysection{can.\+hpp}
+\hypertarget{can_8hpp_source}{}\label{can_8hpp_source}\index{src/modm/architecture/interface/can.hpp@{src/modm/architecture/interface/can.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2015,\ 2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017,\ Sascha\ Schade}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_INTERFACE\_CAN\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_INTERFACE\_CAN\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/peripheral.hpp>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ "{}can\_message.hpp"{}}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1_can}{Can}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_peripheral_driver}{::modm::PeripheralDriver}}}
+\DoxyCodeLine{00026\ \{}
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00030\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}{Mode}}\ :\ uint8\_t}
+\DoxyCodeLine{00031\ \ \ \ \ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a960b44c579bc2f6818d2daaf9e4c16f0}{Normal}}\ \ \ \ \ \ =\ 0b00,\ }
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a3db5be2c0f1a2c52d4efc1d475551ba9}{ListenOnly}}\ \ =\ 0b01,\ }
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a2bedeeb051e4212e3c53f13f85845fde}{LoopBack}}\ \ \ \ =\ 0b10,\ }
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95a45987c21827015f2000fff5769b231a2}{ListenOnlyLoopBack}}\ \ =\ 0b11,\ }
+\DoxyCodeLine{00036\ \ \ \ \ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00039\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{BusState}}\ :\ uint8\_t}
+\DoxyCodeLine{00040\ \ \ \ \ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1ea2ec0d16e4ca169baedb9b2d50ec5c6d7}{Connected}}\ =\ 0,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf6838fe3c9b719640b817473e714ac47}{ErrorWarning}}\ =\ 1,}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1eaf2dddaa52fc350a733bae4d166aed1fe}{ErrorPassive}}\ =\ 2,}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ Off\ =\ 3,}
+\DoxyCodeLine{00051\ \ \ \ \ \};}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00053\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ RxBufferSize\ =\ 16;}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ TxBufferSize\ =\ 16;}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}...\ Signals\ >}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00069\ \ \ \ \ connect();}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{class}\ SystemClock,\ bitrate\_t\ bitrate\ =\ 125\_kbps,\ percent\_t\ tolerance\ =\ 1\_pct\ >}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00083\ \ \ \ \ initialize(\doxymbox{\hyperlink{classmodm_1_1_can_a68a5fc0538d4b0e4b3ffcffa7d776e95}{Mode}}\ startupMode);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00087\ \ \ \ \ isMessageAvailable();}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00091\ \ \ \ \ getMessage(\doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{can::Message}}\&\ message);}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00098\ \ \ \ \ isReadyToSend();}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00105\ \ \ \ \ sendMessage(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1can_1_1_message}{can::Message}}\&\ message);}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//\ Optional}}
+\DoxyCodeLine{00109\ \ \ \ \ \textcolor{keyword}{static}\ uint8\_t}
+\DoxyCodeLine{00110\ \ \ \ \ getReceiveErrorCounter();}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keyword}{static}\ uint8\_t}
+\DoxyCodeLine{00114\ \ \ \ \ getTransmitErrorCounter();}
+\DoxyCodeLine{00115\ }
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{BusState}}}
+\DoxyCodeLine{00117\ \ \ \ \ getBusState();}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00119\ \};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::IOStream}}\&}
+\DoxyCodeLine{00122\ operator\ <<\ (\doxymbox{\hyperlink{classmodm_1_1_i_o_stream}{modm::IOStream}}\&\ stream,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{classmodm_1_1_can_a0914c89eaf4b5f5f8a302c7fc18b2a1e}{Can::BusState}}\ state);}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_INTERFACE\_CAN\_HPP}}
+
+\end{DoxyCode}

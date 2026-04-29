@@ -1,0 +1,302 @@
+\doxysection{can\+\_\+filter.\+hpp}
+\hypertarget{platform_2can_2can__filter_8hpp_source}{}\label{platform_2can_2can__filter_8hpp_source}\index{src/modm/platform/can/can\_filter.hpp@{src/modm/platform/can/can\_filter.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_CAN\_FILTER\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_CAN\_FILTER\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/can.hpp>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00031\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter}{CanFilter}}}
+\DoxyCodeLine{00032\ \{}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ internal\ constants}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ MASK\_MODE\ =\ 0x00;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ LIST\_MODE\ =\ 0x02;}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ DUAL\_MODE\ =\ 0x00;}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ uint32\_t\ SINGLE\_MODE\ =\ 0x04;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ FIFO\ assignment}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359a03798e094f406bcf3cbe5c4d54e60075}{FIFO0}}\ =\ 0x0,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359a828e44060f25232255e8bf3a657a30a3}{FIFO1}}\ =\ 0x1,\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00046\ \ \ \ \ \};}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40d}{RemoteRequestFilter}}}
+\DoxyCodeLine{00049\ \ \ \ \ \{}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40da9fa9a284c4d8dd167c174db555b7d0b0}{RTR\_DONT\_CARE}}\ =\ 0,\ \ }
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40dae019f268388faa827832350811f525f7}{RTR\_MATCH}}\ =\ 1,\ \ \ \ \ \ }
+\DoxyCodeLine{00052\ \ \ \ \ \};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88de}{RemoteRequestStatus}}}
+\DoxyCodeLine{00055\ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea6e448f6a4c79c6cc1b8f2e8331c11c90}{NO\_RTR}}\ =\ 0,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea45c588d8b085e1a861f13336896b3271}{RTR}}\ =\ 1,\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00058\ \ \ \ \ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00061\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{keyword}{struct\ }Identifier}
+\DoxyCodeLine{00063\ \ \ \ \ \{}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ Identifier(uint32\_t\ identifier)\ :}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \ \ \ \ value(identifier)}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ uint32\_t\ value;}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint32\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00076\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00079\ \ \ \ \ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{struct\ }ExtendedIdentifier\ :\ \textcolor{keyword}{public}\ Identifier}
+\DoxyCodeLine{00086\ \ \ \ \ \{}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ ExtendedIdentifier(uint32\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88de}{RemoteRequestStatus}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea6e448f6a4c79c6cc1b8f2e8331c11c90}{NO\_RTR}})\ :}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ Identifier((identifier\ <<\ 3)\ |\ 0x4\ |\ ((rtr)\ ?\ 0x2\ :\ 0))}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00092\ \ \ \ \ \};}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keyword}{struct\ }ExtendedFilterMask}
+\DoxyCodeLine{00098\ \ \ \ \ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ ExtendedFilterMask(uint32\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40d}{RemoteRequestFilter}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40dae019f268388faa827832350811f525f7}{RTR\_MATCH}})\ :}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ value((identifier\ <<\ 3)\ |\ 0x4\ |\ ((rtr)\ ?\ 0x2\ :\ 0))}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint32\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00107\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ uint32\_t\ value;}
+\DoxyCodeLine{00113\ \ \ \ \ \};}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00118\ \ \ \ \ \textcolor{keyword}{struct\ }StandardIdentifier\ :\ \textcolor{keyword}{public}\ Identifier}
+\DoxyCodeLine{00119\ \ \ \ \ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ StandardIdentifier(uint16\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88de}{RemoteRequestStatus}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea6e448f6a4c79c6cc1b8f2e8331c11c90}{NO\_RTR}})\ :}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ Identifier((identifier\ <<\ 21)\ |\ ((rtr)\ ?\ 0x2\ :\ 0))}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00125\ \ \ \ \ \};}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keyword}{struct\ }StandardFilterMask}
+\DoxyCodeLine{00131\ \ \ \ \ \{}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ StandardFilterMask(uint16\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40d}{RemoteRequestFilter}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40dae019f268388faa827832350811f525f7}{RTR\_MATCH}})\ :}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ value((identifier\ <<\ 21)\ |\ ((rtr)\ ?\ 0x2\ :\ 0))}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint32\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00140\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ uint32\_t\ value;}
+\DoxyCodeLine{00146\ \ \ \ \ \};}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00149\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keyword}{struct\ }IdentifierShort}
+\DoxyCodeLine{00151\ \ \ \ \ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ IdentifierShort(uint16\_t\ identifier)\ :}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ \ \ \ \ value(identifier)}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ uint16\_t\ value;}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint16\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00164\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00167\ \ \ \ \ \};}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{struct\ }ExtendedIdentifierShort\ :\ \textcolor{keyword}{public}\ IdentifierShort}
+\DoxyCodeLine{00178\ \ \ \ \ \{}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ ExtendedIdentifierShort(uint32\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88de}{RemoteRequestStatus}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea6e448f6a4c79c6cc1b8f2e8331c11c90}{NO\_RTR}})\ :}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ IdentifierShort(((identifier\ >>\ 13)\ \&\ 0xffe0)\ |}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((identifier\ >>\ 15)\ \&\ 0x007f)\ |}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0x08\ |}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((rtr)\ ?\ 0x10\ :\ 0))}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00187\ \ \ \ \ \};}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{struct\ }ExtendedFilterMaskShort}
+\DoxyCodeLine{00196\ \ \ \ \ \{}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ ExtendedFilterMaskShort(uint32\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40d}{RemoteRequestFilter}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40dae019f268388faa827832350811f525f7}{RTR\_MATCH}})\ :}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ value(((identifier\ >>\ 13)\ \&\ 0xffe0)\ |}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((identifier\ >>\ 15)\ \&\ 0x007f)\ |}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 0x08\ |}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ((rtr)\ ?\ 0x10\ :\ 0))}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint16\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00208\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00211\ }
+\DoxyCodeLine{00212\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ uint16\_t\ value;}
+\DoxyCodeLine{00214\ \ \ \ \ \};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{struct\ }StandardIdentifierShort\ :\ \textcolor{keyword}{public}\ IdentifierShort}
+\DoxyCodeLine{00221\ \ \ \ \ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ StandardIdentifierShort(uint16\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88de}{RemoteRequestStatus}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a21cbe9c6fdcb15a598e610fa3a0b88dea6e448f6a4c79c6cc1b8f2e8331c11c90}{NO\_RTR}})\ :}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ IdentifierShort(((identifier\ <<\ 5)\ \&\ 0xffe0)\ |\ ((rtr)\ ?\ 0x10\ :\ 0))}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00227\ \ \ \ \ \};}
+\DoxyCodeLine{00228\ }
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keyword}{struct\ }StandardFilterMaskShort}
+\DoxyCodeLine{00230\ \ \ \ \ \{}
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ StandardFilterMaskShort(uint16\_t\ identifier,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40d}{RemoteRequestFilter}}\ rtr\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a5fbdf38250cab479ed4a64b6ed02d40dae019f268388faa827832350811f525f7}{RTR\_MATCH}})\ :}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ value(((identifier\ <<\ 5)\ \&\ 0xffe0)\ |\ ((rtr)\ ?\ 0x10\ :\ 0))}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ modm\_always\_inline}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \textcolor{keyword}{operator}\ uint16\_t\ ()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00239\ \textcolor{keyword}{\ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ value;}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ uint16\_t\ value;}
+\DoxyCodeLine{00245\ \ \ \ \ \};}
+\DoxyCodeLine{00246\ }
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00257\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00258\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_afb8747f1ff14f6a9cdc807b6ba8acd7e}{setFilter}}(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_identifier}{ExtendedIdentifier}}\ \textcolor{keywordtype}{id},\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_filter_mask}{ExtendedFilterMask}}\ mask)}
+\DoxyCodeLine{00259\ \ \ \ \ \{}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ SINGLE\_MODE,\ \textcolor{keywordtype}{id},\ mask);}
+\DoxyCodeLine{00261\ \ \ \ \ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00272\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00273\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_ab1dd7c4be19f2a667a6f8d3c7c092c94}{setFilter}}(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_standard_identifier}{StandardIdentifier}}\ \textcolor{keywordtype}{id},\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_standard_filter_mask}{StandardFilterMask}}\ mask)}
+\DoxyCodeLine{00274\ \ \ \ \ \{}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ SINGLE\_MODE,\ \textcolor{keywordtype}{id},\ mask);}
+\DoxyCodeLine{00276\ \ \ \ \ \}}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00289\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00290\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a578b5aeebd1423336a2fb14eb2706906}{setIdentifierFilter}}(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,\ Identifier\ \textcolor{keywordtype}{id},\ Identifier\ id2)}
+\DoxyCodeLine{00291\ \ \ \ \ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ LIST\_MODE\ |\ SINGLE\_MODE,\ \textcolor{keywordtype}{id},\ id2);}
+\DoxyCodeLine{00293\ \ \ \ \ \}}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ \ \ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00296\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00297\ \ \ \ \ setFilterShort(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ \ \ \ \ \ \ StandardIdentifierShort\ id1,\ StandardFilterMaskShort\ mask1,}
+\DoxyCodeLine{00299\ \ \ \ \ \ \ \ \ \ \ \ \ StandardIdentifierShort\ id2,\ StandardFilterMaskShort\ mask2)}
+\DoxyCodeLine{00300\ \ \ \ \ \{}
+\DoxyCodeLine{00301\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ DUAL\_MODE,}
+\DoxyCodeLine{00302\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id1\ |\ ((uint32\_t)\ mask1\ <<\ 16),}
+\DoxyCodeLine{00303\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id2\ |\ ((uint32\_t)\ mask2\ <<\ 16));}
+\DoxyCodeLine{00304\ \ \ \ \ \}}
+\DoxyCodeLine{00305\ }
+\DoxyCodeLine{00306\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00307\ \ \ \ \ setFilterShort(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ \ \ \ \ StandardIdentifierShort\ id1,\ StandardFilterMaskShort\ mask1,}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \ \ \ \ ExtendedIdentifierShort\ id2,\ ExtendedFilterMaskShort\ mask2)}
+\DoxyCodeLine{00310\ \ \ \ \ \{}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ DUAL\_MODE,}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id1\ |\ ((uint32\_t)\ mask1\ <<\ 16),}
+\DoxyCodeLine{00313\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id2\ |\ ((uint32\_t)\ mask2\ <<\ 16));}
+\DoxyCodeLine{00314\ \ \ \ \ \}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00317\ \ \ \ \ setFilterShort(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,}
+\DoxyCodeLine{00318\ \ \ \ \ \ \ \ \ \ \ \ \ ExtendedIdentifierShort\ id1,\ ExtendedFilterMaskShort\ mask1,}
+\DoxyCodeLine{00319\ \ \ \ \ \ \ \ \ \ \ \ \ StandardIdentifierShort\ id2,\ StandardFilterMaskShort\ mask2)}
+\DoxyCodeLine{00320\ \ \ \ \ \{}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ DUAL\_MODE,}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id1\ |\ ((uint32\_t)\ mask1\ <<\ 16),}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id2\ |\ ((uint32\_t)\ mask2\ <<\ 16));}
+\DoxyCodeLine{00324\ \ \ \ \ \}}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00327\ \ \ \ \ setFilterShort(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_identifier_short}{ExtendedIdentifierShort}}\ id1,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_filter_mask_short}{ExtendedFilterMaskShort}}\ mask1,}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_identifier_short}{ExtendedIdentifierShort}}\ id2,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_can_filter_1_1_extended_filter_mask_short}{ExtendedFilterMaskShort}}\ mask2)}
+\DoxyCodeLine{00330\ \ \ \ \ \{}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ MASK\_MODE\ |\ DUAL\_MODE,}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id1\ |\ ((uint32\_t)\ mask1\ <<\ 16),}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id2\ |\ ((uint32\_t)\ mask2\ <<\ 16));}
+\DoxyCodeLine{00334\ \ \ \ \ \}}
+\DoxyCodeLine{00335\ }
+\DoxyCodeLine{00351\ \ \ \ \ \textcolor{keyword}{static}\ modm\_always\_inline\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00352\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a29f544ac2e0fc37d5ce3aca6c9f4ec17}{setIdentifierFilterShort}}(uint8\_t\ bank,\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a82f3ccc9d2ebe9e88cce2d7e0596b359}{Fifo}}\ fifo,}
+\DoxyCodeLine{00353\ \ \ \ \ \ \ \ \ \ \ \ \ IdentifierShort\ id1,\ IdentifierShort\ id2,}
+\DoxyCodeLine{00354\ \ \ \ \ \ \ \ \ \ \ \ \ IdentifierShort\ id3,\ IdentifierShort\ id4)}
+\DoxyCodeLine{00355\ \ \ \ \ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \ \ \ \ setFilterBase(bank,\ fifo\ |\ LIST\_MODE\ |\ DUAL\_MODE,}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id1\ |\ ((uint32\_t)\ id2\ <<\ 16),}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ id3\ |\ ((uint32\_t)\ id4\ <<\ 16));}
+\DoxyCodeLine{00359\ \ \ \ \ \}}
+\DoxyCodeLine{00360\ }
+\DoxyCodeLine{00364\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00365\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_a53a457f7dadc52ac59141a243a669d49}{disableFilter}}(uint8\_t\ bank);}
+\DoxyCodeLine{00366\ }
+\DoxyCodeLine{00376\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00377\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_can_filter_aaf90369676dd286f83c600418587a4ac}{setStartFilterBankForCan2}}(uint8\_t\ startBank);}
+\DoxyCodeLine{00378\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00379\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00380\ \ \ \ \ setFilterBase(uint8\_t\ bank,\ uint32\_t\ flags,\ uint32\_t\ fr1,\ uint32\_t\ fr2);}
+\DoxyCodeLine{00381\ \};}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ \}}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ MODM\_STM32\_CAN\_FILTER\_HPP}}
+
+\end{DoxyCode}

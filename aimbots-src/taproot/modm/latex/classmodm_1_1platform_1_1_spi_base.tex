@@ -1,0 +1,157 @@
+\doxysection{modm::\+platform::\+Spi\+Base Class Reference}
+\hypertarget{classmodm_1_1platform_1_1_spi_base}{}\label{classmodm_1_1platform_1_1_spi_base}\index{modm::platform::SpiBase@{modm::platform::SpiBase}}
+
+
+{\ttfamily \+\#include $<$spi\+\_\+base.\+hpp$>$}
+
+Inheritance diagram for modm::\+platform::\+Spi\+Base:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmodm_1_1platform_1_1_spi_base}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a745714247fefafd092aa814b9b28b89c}\label{classmodm_1_1platform_1_1_spi_base_a745714247fefafd092aa814b9b28b89c} 
+enum class {\bfseries Interrupt} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Rx\+Buffer\+Not\+Empty} = SPI\+\_\+\+CR2\+\_\+\+RXNEIE
+, {\bfseries Tx\+Buffer\+Empty} = SPI\+\_\+\+CR2\+\_\+\+TXEIE
+, {\bfseries Error} = SPI\+\_\+\+CR2\+\_\+\+ERRIE
+, {\bfseries Rx\+Dma\+Enable} = SPI\+\_\+\+CR2\+\_\+\+RXDMAEN
+, \newline
+{\bfseries Tx\+Dma\+Enable} = SPI\+\_\+\+CR2\+\_\+\+TXDMAEN
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a1d62b5dfd3ac6e6b9d4612650fa4075b}\label{classmodm_1_1platform_1_1_spi_base_a1d62b5dfd3ac6e6b9d4612650fa4075b} 
+enum class {\bfseries Interrupt\+Flag} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Tx\+Buffer\+Empty} = SPI\+\_\+\+SR\+\_\+\+TXE
+, {\bfseries Rx\+Buffer\+Not\+Empty} = SPI\+\_\+\+SR\+\_\+\+RXNE
+, {\bfseries Crc\+Error} = SPI\+\_\+\+SR\+\_\+\+CRCERR
+, {\bfseries Mode\+Fault\+Error} = SPI\+\_\+\+SR\+\_\+\+MODF
+, \newline
+{\bfseries Overrun\+Error} = SPI\+\_\+\+SR\+\_\+\+OVR
+, {\bfseries Busy} = SPI\+\_\+\+SR\+\_\+\+BSY
+, {\bfseries Frame\+Format\+Error} = SPI\+\_\+\+SR\+\_\+\+FRE
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{Master\+Selection}} :\+ uint32\+\_\+t \{ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621afe25c0ad752c03ce2361025c235b63e1}{Slave}} = 0
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c}{Master}} = SPI\+\_\+\+CR1\+\_\+\+MSTR
+, {\bfseries All} = Master
+ \}
+\item 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{Data\+Mode}} :\+ uint32\+\_\+t \{ \newline
+\doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5}{Mode0}} = 0b00
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a7a2ea225a084605104f8c39b3ae9657c}{Mode1}} = SPI\+\_\+\+CR1\+\_\+\+CPHA
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a04c542f260d16590ec60c594f67a30e7}{Mode2}} = SPI\+\_\+\+CR1\+\_\+\+CPOL
+, \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5ab68fa4884da8d22e83f37b4f209295f1}{Mode3}} = SPI\+\_\+\+CR1\+\_\+\+CPOL \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+CPHA
+, \newline
+{\bfseries All} = Mode3
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_ac950829992e41aa965a3ee4b31f0bebe}\label{classmodm_1_1platform_1_1_spi_base_ac950829992e41aa965a3ee4b31f0bebe} 
+enum class {\bfseries Data\+Order} :\+ uint32\+\_\+t \{ {\bfseries Msb\+First} = 0b0
+, {\bfseries Lsb\+First} = SPI\+\_\+\+CR1\+\_\+\+LSBFIRST
+, {\bfseries All} = Lsb\+First
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a7248733c75aa675204924170c888308b}\label{classmodm_1_1platform_1_1_spi_base_a7248733c75aa675204924170c888308b} 
+enum class {\bfseries Data\+Size} :\+ uint32\+\_\+t \{ {\bfseries Bit8} = 0
+, {\bfseries Bit16} = SPI\+\_\+\+CR1\+\_\+\+DFF
+, {\bfseries All} = Bit16
+ \}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a6fbd2186a894217e3e6bea2afba3a2e5}\label{classmodm_1_1platform_1_1_spi_base_a6fbd2186a894217e3e6bea2afba3a2e5} 
+enum class {\bfseries Prescaler} :\+ uint32\+\_\+t \{ \newline
+{\bfseries Div2} = 0
+, {\bfseries Div4} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, {\bfseries Div8} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1
+, {\bfseries Div16} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, \newline
+{\bfseries Div32} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2
+, {\bfseries Div64} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+, {\bfseries Div128} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1
+, {\bfseries Div256} = SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+2 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+1 \texorpdfstring{$\vert$}{|} SPI\+\_\+\+CR1\+\_\+\+BR\+\_\+0
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a43aa72c52d69ea81cab1717dc4657824}\label{classmodm_1_1platform_1_1_spi_base_a43aa72c52d69ea81cab1717dc4657824} 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt)
+\item 
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a5d6a7f478c98714e6d8b40749f0c9cb7}\label{classmodm_1_1platform_1_1_spi_base_a5d6a7f478c98714e6d8b40749f0c9cb7} 
+{\bfseries MODM\+\_\+\+FLAGS32} (Interrupt\+Flag)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for the SPI classes
+
+Provides some common enum that do not depend on the specific SPI.
+
+\begin{DoxyAuthor}{Author}
+Kevin Laeufer 
+\end{DoxyAuthor}
+
+
+\label{doc-enum-members}
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}\index{modm::platform::SpiBase@{modm::platform::SpiBase}!DataMode@{DataMode}}
+\index{DataMode@{DataMode}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\doxysubsubsection{\texorpdfstring{DataMode}{DataMode}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5} 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5}{modm::\+platform::\+\+Spi\+Base::\+\+Data\+Mode}} :\+ uint32\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode0@{Mode0}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Mode0@{Mode0}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5}\label{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a315436bae0e85636381fc939db06aee5} 
+Mode0&clock normal, sample on rising edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode1@{Mode1}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Mode1@{Mode1}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a7a2ea225a084605104f8c39b3ae9657c}\label{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a7a2ea225a084605104f8c39b3ae9657c} 
+Mode1&clock normal, sample on falling edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode2@{Mode2}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Mode2@{Mode2}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a04c542f260d16590ec60c594f67a30e7}\label{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5a04c542f260d16590ec60c594f67a30e7} 
+Mode2&clock inverted, sample on falling edge \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Mode3@{Mode3}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Mode3@{Mode3}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5ab68fa4884da8d22e83f37b4f209295f1}\label{classmodm_1_1platform_1_1_spi_base_a3f5ae7a8cadae3146e9d1be46cc927b5ab68fa4884da8d22e83f37b4f209295f1} 
+Mode3&clock inverted, sample on rising edge \\
+\hline
+
+\end{DoxyEnumFields}
+\Hypertarget{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}\index{modm::platform::SpiBase@{modm::platform::SpiBase}!MasterSelection@{MasterSelection}}
+\index{MasterSelection@{MasterSelection}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\doxysubsubsection{\texorpdfstring{MasterSelection}{MasterSelection}}
+{\footnotesize\ttfamily \label{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621} 
+enum class \doxymbox{\hyperlink{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621}{modm::\+platform::\+\+Spi\+Base::\+\+Master\+Selection}} :\+ uint32\+\_\+t\hspace{0.3cm}{\ttfamily [strong]}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Slave@{Slave}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Slave@{Slave}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621afe25c0ad752c03ce2361025c235b63e1}\label{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621afe25c0ad752c03ce2361025c235b63e1} 
+Slave&Configure SPI as Slave. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Master@{Master}!modm::platform::SpiBase@{modm::platform::SpiBase}}
+\index{modm::platform::SpiBase@{modm::platform::SpiBase}!Master@{Master}}
+}\Hypertarget{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c}\label{classmodm_1_1platform_1_1_spi_base_a6fb6949d12a2e2d7e7edde26946b3621af03bde11d261f185cbacfa32c1c6538c} 
+Master&Configure SPI as Master. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+platform/\+spi/\+spi\+\_\+base.\+hpp\end{DoxyCompactItemize}

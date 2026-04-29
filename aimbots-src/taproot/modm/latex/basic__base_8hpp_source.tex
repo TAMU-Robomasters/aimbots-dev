@@ -1,0 +1,107 @@
+\doxysection{basic\+\_\+base.\+hpp}
+\hypertarget{basic__base_8hpp_source}{}\label{basic__base_8hpp_source}\index{src/modm/platform/timer/basic\_base.hpp@{src/modm/platform/timer/basic\_base.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2014,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_TIMER\_BASIC\_BASE\_HPP}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_TIMER\_BASIC\_BASE\_HPP}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/register.hpp>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00021\ \{}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00024\ \{}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer}{BasicTimer}}}
+\DoxyCodeLine{00028\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{enum\ class}\ Mode\ :\ uint32\_t}
+\DoxyCodeLine{00031\ \ \ \ \ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ UpCounter\ =\ 0,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ OneShotUpCounter\ =\ TIM\_CR1\_OPM,}
+\DoxyCodeLine{00034\ \ \ \ \ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{enum\ class}\ Interrupt\ :\ uint32\_t}
+\DoxyCodeLine{00037\ \ \ \ \ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ Update\ =\ TIM\_DIER\_UIE,}
+\DoxyCodeLine{00039\ \ \ \ \ \};}
+\DoxyCodeLine{00040\ \ \ \ \ MODM\_FLAGS32(Interrupt);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{enum\ class}\ InterruptFlag\ :\ uint32\_t}
+\DoxyCodeLine{00043\ \ \ \ \ \{}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ Update\ =\ TIM\_SR\_UIF,}
+\DoxyCodeLine{00045\ \ \ \ \ \};}
+\DoxyCodeLine{00046\ \ \ \ \ MODM\_FLAGS32(InterruptFlag);}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00056\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}}();}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00066\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2e7447e2137162c81b3a0ce765ca6b6b}{disable}}();}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00075\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a319d9a325629767d36b38180c761b89d}{pause}}();}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00084\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adf8f3d42818242d3b42ad8955e06edce}{start}}();}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00090\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a428bd4fbf1acbae6cd25ab2d3f2182fc}{setMode}}(Mode\ mode);}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00102\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a3fbf2e910c75f7f5b8dd75f787503c1d}{setPrescaler}}(uint16\_t\ prescaler);}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00115\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_abaa3878582d2142d83c0437ec3b2c8cf}{setOverflow}}(uint16\_t\ overflow);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00131\ \ \ \ \ \textcolor{keyword}{static}\ uint16\_t}
+\DoxyCodeLine{00132\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7d927b36368726f0b6ee7d2f683b1106}{setPeriod}}(uint32\_t\ microseconds,\ \textcolor{keywordtype}{bool}\ autoApply\ =\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00153\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0b5960f797e53edc6d6787e4edc81298}{applyAndReset}}();}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ uint16\_t}
+\DoxyCodeLine{00159\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_adb3f235b777fd4f10b92698389a00ab7}{getValue}}();}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00165\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a2a1caea6b9c0cce8ee8a83d91eaf83bd}{setValue}}(uint16\_t\ value);}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00177\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a7137a7e00d411c85285db50c5cd7b9b4}{enableInterruptVector}}(\textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ab157aaf04b838264a33c7bf0cd0bb194}{enable}},\ uint8\_t\ priority);}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00188\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a0125bc3626a0051dbdc53a5483b985c8}{enableInterrupt}}(Interrupt\_t\ interrupt);}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00197\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_add0832893feb247cee7b7cbf9fba06d5}{disableInterrupt}}(Interrupt\_t\ interrupt);}
+\DoxyCodeLine{00198\ }
+\DoxyCodeLine{00220\ \ \ \ \ \textcolor{keyword}{static}\ InterruptFlag\_t}
+\DoxyCodeLine{00221\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_ae11330dcb450c89da44342855d1c0714}{getInterruptFlags}}();}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00228\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00229\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_basic_timer_a5b2488893edd8afd43e8b4750256c391}{acknowledgeInterruptFlags}}(InterruptFlag\_t\ flags);}
+\DoxyCodeLine{00230\ \};}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \}\ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \}\ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_TIMER\_BASIC\_BASE\_HPP}}
+
+\end{DoxyCode}

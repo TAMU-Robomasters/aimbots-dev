@@ -1,0 +1,52 @@
+\doxysection{modm::\+chrono::\+milli\+\_\+clock Struct Reference}
+\hypertarget{structmodm_1_1chrono_1_1milli__clock}{}\label{structmodm_1_1chrono_1_1milli__clock}\index{modm::chrono::milli\_clock@{modm::chrono::milli\_clock}}
+
+
+{\ttfamily \+\#include $<$clock.\+hpp$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_ac978e9538887329bf473c5e1cad6575a}\label{structmodm_1_1chrono_1_1milli__clock_ac978e9538887329bf473c5e1cad6575a} 
+using {\bfseries duration} = std::\+chrono::\+duration$<$uint32\+\_\+t, std::\+milli$>$
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_ae62ff69bf3d820c12ed97db72f8f82c0}\label{structmodm_1_1chrono_1_1milli__clock_ae62ff69bf3d820c12ed97db72f8f82c0} 
+using {\bfseries rep} = duration::\+rep
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_a038d727378c057ed53052de1088fa014}\label{structmodm_1_1chrono_1_1milli__clock_a038d727378c057ed53052de1088fa014} 
+using {\bfseries period} = duration::\+period
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_a5ccc44ef00767ee1044e0eed34ec4a2b}\label{structmodm_1_1chrono_1_1milli__clock_a5ccc44ef00767ee1044e0eed34ec4a2b} 
+using {\bfseries time\+\_\+point} = std::\+chrono::\+time\+\_\+point$<$\doxymbox{\hyperlink{structmodm_1_1chrono_1_1milli__clock}{milli\+\_\+clock}}, duration$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_ac13963f0891c2aa7451c53709ee1eb40}\label{structmodm_1_1chrono_1_1milli__clock_ac13963f0891c2aa7451c53709ee1eb40} 
+static time\+\_\+point {\bfseries now} () noexcept
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structmodm_1_1chrono_1_1milli__clock_a3c11692eff6b909b3b8be166fcb533a1}\label{structmodm_1_1chrono_1_1milli__clock_a3c11692eff6b909b3b8be166fcb533a1} 
+static constexpr bool {\bfseries is\+\_\+steady} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Returns a time\+\_\+point in milliseconds.
+
+This clock is meant for measuring durations (time differences), not time since reboot. You must not depend on this clock for timekeeping, especially not over long periods of time, since:\+
+
+
+\begin{DoxyEnumerate}
+\item the clock is NOT STEADY! The 32-\/bit millisecond counter will wrap around after \texorpdfstring{$\sim$}{\string~}49 days!
+\item the clock may have quite some drift and is not synchable to an external reference. You must therefore not rely on this clock for very long durations that need to be {\itshape accurate}.
+\end{DoxyEnumerate}
+
+You must use an actual calendar implementation for proper time keeping! 
+
+The documentation for this struct was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+src/\+modm/\+architecture/\+interface/\+clock.\+hpp\item 
+src/\+modm/\+platform/\+clock/\+systick\+\_\+timer.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,264 @@
+\doxysection{rcc.\+hpp}
+\hypertarget{rcc_8hpp_source}{}\label{rcc_8hpp_source}\index{src/modm/platform/clock/rcc.hpp@{src/modm/platform/clock/rcc.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2016,\ Sascha\ Schade}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2017,\ Fabian\ Greif}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2012,\ 2014-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013-\/2014,\ Kevin\ Läufer}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2018,\ 2021,\ Christopher\ Durand}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_RCC\_HPP}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_RCC\_HPP}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ <modm/platform/core/peripherals.hpp>}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#include\ <modm/architecture/interface/delay.hpp>}}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \textcolor{keyword}{namespace\ }modm::platform}
+\DoxyCodeLine{00025\ \{}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc}{Rcc}}}
+\DoxyCodeLine{00039\ \{}
+\DoxyCodeLine{00040\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t\ BootFrequency\ =\ 16'000'000;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00044\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407b}{PllSource}}\ :\ uint32\_t}
+\DoxyCodeLine{00045\ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407baf64f870a6c6382171f97e8d8b691ff9d}{Hsi}}\ =\ RCC\_PLLCFGR\_PLLSRC\_HSI,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ InternalClock\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407baf64f870a6c6382171f97e8d8b691ff9d}{Hsi}},}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}}\ =\ RCC\_PLLCFGR\_PLLSRC\_HSE,}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ ExternalClock\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ ExternalCrystal\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00053\ \ \ \ \ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00056\ \ \ \ \ SystemClockSource\ :\ uint32\_t}
+\DoxyCodeLine{00057\ \ \ \ \ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407baf64f870a6c6382171f97e8d8b691ff9d}{Hsi}}\ =\ RCC\_CFGR\_SW\_HSI,}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}}\ =\ RCC\_CFGR\_SW\_HSE,}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ InternalClock\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407baf64f870a6c6382171f97e8d8b691ff9d}{Hsi}},}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ ExternalClock\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ ExternalCrystal\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ Pll\ =\ RCC\_CFGR\_SW\_PLL,}
+\DoxyCodeLine{00064\ \ \ \ \ \};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00067\ \ \ \ \ RealTimeClockSource\ :\ uint32\_t}
+\DoxyCodeLine{00068\ \ \ \ \ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ Lsi\ =\ RCC\_BDCR\_RTCSEL\_1,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ Lse\ =\ RCC\_BDCR\_RTCSEL\_0,}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}}\ =\ RCC\_BDCR\_RTCSEL\_0\ |\ RCC\_BDCR\_RTCSEL\_1,}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ ExternalClock\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ ExternalCrystal\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407ba0d4974e80aab38d8022f8ede1bc341d9}{Hse}},}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ LowSpeedInternalClock\ =\ Lsi,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ LowSpeedExternalClock\ =\ Lse,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ LowSpeedExternalCrystal\ =\ Lse}
+\DoxyCodeLine{00078\ \ \ \ \ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00081\ \ \ \ \ WatchdogClockSource\ :\ uint32\_t}
+\DoxyCodeLine{00082\ \ \ \ \ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ LowSpeedInternalClock\ =\ 0}
+\DoxyCodeLine{00084\ \ \ \ \ \};}
+\DoxyCodeLine{00085\ }
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00087\ \ \ \ \ AhbPrescaler\ :\ uint32\_t}
+\DoxyCodeLine{00088\ \ \ \ \ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ Div1\ \ \ =\ RCC\_CFGR\_HPRE\_DIV1,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ Div2\ \ \ =\ RCC\_CFGR\_HPRE\_DIV2,}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ Div4\ \ \ =\ RCC\_CFGR\_HPRE\_DIV4,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ Div8\ \ \ =\ RCC\_CFGR\_HPRE\_DIV8,}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ Div16\ \ =\ RCC\_CFGR\_HPRE\_DIV16,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ Div64\ \ =\ RCC\_CFGR\_HPRE\_DIV64,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ Div128\ =\ RCC\_CFGR\_HPRE\_DIV128,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ Div256\ =\ RCC\_CFGR\_HPRE\_DIV256,}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ Div512\ =\ RCC\_CFGR\_HPRE\_DIV512}
+\DoxyCodeLine{00098\ \ \ \ \ \};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00101\ \ \ \ \ Apb1Prescaler\ :\ uint32\_t}
+\DoxyCodeLine{00102\ \ \ \ \ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ Div1\ \ \ =\ RCC\_CFGR\_PPRE1\_DIV1,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ Div2\ \ \ =\ RCC\_CFGR\_PPRE1\_DIV2,}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ Div4\ \ \ =\ RCC\_CFGR\_PPRE1\_DIV4,}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ Div8\ \ \ =\ RCC\_CFGR\_PPRE1\_DIV8,}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ Div16\ \ =\ RCC\_CFGR\_PPRE1\_DIV16}
+\DoxyCodeLine{00108\ \ \ \ \ \};}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00111\ \ \ \ \ Apb2Prescaler\ :\ uint32\_t}
+\DoxyCodeLine{00112\ \ \ \ \ \{}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ Div1\ \ \ =\ RCC\_CFGR\_PPRE2\_DIV1,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ Div2\ \ \ =\ RCC\_CFGR\_PPRE2\_DIV2,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ Div4\ \ \ =\ RCC\_CFGR\_PPRE2\_DIV4,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ Div8\ \ \ =\ RCC\_CFGR\_PPRE2\_DIV8,}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ Div16\ \ =\ RCC\_CFGR\_PPRE2\_DIV16}
+\DoxyCodeLine{00118\ \ \ \ \ \};}
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00120\ \ \ \ \ ClockOutput1Source\ :\ uint32\_t}
+\DoxyCodeLine{00121\ \ \ \ \ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ InternalClock\ =\ 0,}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ ExternalClock\ =\ RCC\_CFGR\_MCO1\_1,}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ ExternalCrystal\ =\ RCC\_CFGR\_MCO1\_1,}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ Pll\ =\ RCC\_CFGR\_MCO1\_1\ |\ RCC\_CFGR\_MCO1\_0,}
+\DoxyCodeLine{00126\ \ \ \ \ \};}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keyword}{enum\ class}}
+\DoxyCodeLine{00129\ \ \ \ \ ClockOutput2Source\ :\ uint32\_t}
+\DoxyCodeLine{00130\ \ \ \ \ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ SystemClock\ =\ 0,}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ ExternalClock\ =\ RCC\_CFGR\_MCO2\_1,}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ ExternalCrystal\ =\ RCC\_CFGR\_MCO2\_1,}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ Pll\ =\ RCC\_CFGR\_MCO2\_1\ |\ RCC\_CFGR\_MCO2\_0,}
+\DoxyCodeLine{00135\ \ \ \ \ \};}
+\DoxyCodeLine{00136\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{comment}{//\ sources}}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00139\ \ \ \ \ enableInternalClock(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00142\ \ \ \ \ enableExternalClock(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00145\ \ \ \ \ enableExternalCrystal(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00148\ \ \ \ \ enableLowSpeedInternalClock(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00151\ \ \ \ \ enableLowSpeedExternalClock(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00154\ \ \ \ \ enableLowSpeedExternalCrystal(uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structmodm_1_1platform_1_1_rcc_1_1_pll_factors}{PllFactors}}}
+\DoxyCodeLine{00157\ \ \ \ \ \{}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ uint8\_t\ pllM;}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ uint16\_t\ pllN;}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ uint8\_t\ pllP;}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ uint8\_t\ pllQ\ =\ 0xff;}
+\DoxyCodeLine{00162\ \ \ \ \ \};}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00178\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_a46e32e44572b4db9ac1175b8c4c0f351}{enablePll}}(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407b}{PllSource}}\ source,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_rcc_1_1_pll_factors}{PllFactors}}\&\ pllFactors,\ uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00209\ \ \ \ \ [[deprecated(\textcolor{stringliteral}{"{}Use\ PllFactors\ as\ argument\ instead"{}})]]\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00210\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_a3e57cabc2a33838629be0c0f763c1676}{enablePll}}(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_ac74f8c9671fb47f85fdfef5a3074407b}{PllSource}}\ source,\ uint8\_t\ pllM,\ uint16\_t\ pllN,}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint8\_t\ pllP,}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ waitCycles\ =\ 2048)}
+\DoxyCodeLine{00213\ \ \ \ \ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_rcc_1_1_pll_factors}{PllFactors}}\ pllFactors\{}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ .pllM\ =\ pllM,}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \ \ \ \ .pllN\ =\ pllN,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ .pllP\ =\ pllP,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_a46e32e44572b4db9ac1175b8c4c0f351}{enablePll}}(source,\ pllFactors,\ waitCycles);}
+\DoxyCodeLine{00220\ \ \ \ \ \}}
+\DoxyCodeLine{00221\ \ \ \ \ \textcolor{comment}{//\ sinks}}
+\DoxyCodeLine{00222\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00223\ \ \ \ \ enableSystemClock(SystemClockSource\ src,\ uint32\_t\ waitCycles\ =\ 2048);}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00226\ \ \ \ \ enableRealTimeClock(RealTimeClockSource\ src)}
+\DoxyCodeLine{00227\ \ \ \ \ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ RCC-\/>BDCR\ =\ (RCC-\/>BDCR\ \&\ \string~RCC\_BDCR\_RTCSEL)\ |\ RCC\_BDCR\_RTCEN\ |\ uint32\_t(src);}
+\DoxyCodeLine{00229\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00230\ \ \ \ \ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00233\ \ \ \ \ enableWatchdogClock(WatchdogClockSource\ \textcolor{comment}{/*src*/})}
+\DoxyCodeLine{00234\ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00237\ \ \ \ \ enableClockOutput1(ClockOutput1Source\ src,\ uint8\_t\ div)}
+\DoxyCodeLine{00238\ \ \ \ \ \{}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ uint32\_t\ tmp\ =\ RCC-\/>CFGR\ \&\ \string~(RCC\_CFGR\_MCO1\ |\ RCC\_CFGR\_MCO1PRE);}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (div\ >\ 1)\ tmp\ |=\ (div\ +\ 2)\ <<\ 24;}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ RCC-\/>CFGR\ =\ tmp\ |\ uint32\_t(src);}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00243\ \ \ \ \ \}}
+\DoxyCodeLine{00244\ }
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00246\ \ \ \ \ enableClockOutput2(ClockOutput2Source\ src,\ uint8\_t\ div)}
+\DoxyCodeLine{00247\ \ \ \ \ \{}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ uint32\_t\ tmp\ =\ RCC-\/>CFGR\ \&\ \string~(RCC\_CFGR\_MCO2\ |\ RCC\_CFGR\_MCO2PRE);}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (div\ >\ 1)\ tmp\ |=\ (div\ +\ 2)\ <<\ 27;}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ RCC-\/>CFGR\ =\ tmp\ |\ uint32\_t(src);}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00252\ \ \ \ \ \}}
+\DoxyCodeLine{00253\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00255\ \ \ \ \ setAhbPrescaler(AhbPrescaler\ prescaler)}
+\DoxyCodeLine{00256\ \ \ \ \ \{}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ RCC-\/>CFGR\ =\ (RCC-\/>CFGR\ \&\ \string~RCC\_CFGR\_HPRE)\ |\ uint32\_t(prescaler);}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00259\ \ \ \ \ \}}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00262\ \ \ \ \ setApb1Prescaler(Apb1Prescaler\ prescaler)}
+\DoxyCodeLine{00263\ \ \ \ \ \{}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ RCC-\/>CFGR\ =\ (RCC-\/>CFGR\ \&\ \string~RCC\_CFGR\_PPRE1)\ |\ uint32\_t(prescaler);}
+\DoxyCodeLine{00265\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00266\ \ \ \ \ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00269\ \ \ \ \ setApb2Prescaler(Apb2Prescaler\ prescaler)}
+\DoxyCodeLine{00270\ \ \ \ \ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ RCC-\/>CFGR\ =\ (RCC-\/>CFGR\ \&\ \string~RCC\_CFGR\_PPRE2)\ |\ uint32\_t(prescaler);}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00273\ \ \ \ \ \}}
+\DoxyCodeLine{00274\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00283\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}32\_t\ Core\_Hz,\ u\textcolor{keywordtype}{int}16\_t\ Core\_mV\ =\ 3300>}
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{keyword}{static}\ uint32\_t}
+\DoxyCodeLine{00285\ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc_a11d50e717b5ff4971211f3066a374b6d}{setFlashLatency}}();}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{keyword}{template}<\ u\textcolor{keywordtype}{int}32\_t\ Core\_Hz\ >}
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00289\ \ \ \ \ updateCoreFrequency();}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00292\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00293\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00294\ \ \ \ \ enable();}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}}
+\DoxyCodeLine{00298\ \ \ \ \ isEnabled();}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00302\ \ \ \ \ disable();}
+\DoxyCodeLine{00303\ }
+\DoxyCodeLine{00304\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00305\ \ \ \ \ \textcolor{keyword}{struct\ }flash\_latency}
+\DoxyCodeLine{00306\ \ \ \ \ \{}
+\DoxyCodeLine{00307\ \ \ \ \ \ \ \ \ uint32\_t\ latency;}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \ \ uint32\_t\ max\_frequency;}
+\DoxyCodeLine{00309\ \ \ \ \ \};}
+\DoxyCodeLine{00310\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ flash\_latency}
+\DoxyCodeLine{00311\ \ \ \ \ computeFlashLatency(uint32\_t\ Core\_Hz,\ uint16\_t\ Core\_mV);}
+\DoxyCodeLine{00312\ \};}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \textcolor{keyword}{using\ }ClockControl\ [[deprecated(\textcolor{stringliteral}{"{}Please\ use\ \`{}modm::platform:Rcc`\ instead"{}})]]\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_rcc}{Rcc}};}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm::platform}}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \textcolor{preprocessor}{\#include\ "{}rcc\_impl.hpp"{}}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \ MODM\_STM32\_RCC\_HPP}}
+
+\end{DoxyCode}

@@ -1,0 +1,116 @@
+\doxysection{advanced\+\_\+base.\+hpp}
+\hypertarget{advanced__base_8hpp_source}{}\label{advanced__base_8hpp_source}\index{src/modm/platform/timer/advanced\_base.hpp@{src/modm/platform/timer/advanced\_base.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2013,\ Kevin\ Läufer}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2014-\/2017,\ Niklas\ Hauser}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2016,\ Fabian\ Greif}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_TIMER\_ADVANCED\_BASE\_HPP}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_TIMER\_ADVANCED\_BASE\_HPP}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}general\_purpose\_base.hpp"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{namespace\ }modm}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{namespace\ }platform}
+\DoxyCodeLine{00023\ \{}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer}{AdvancedControlTimer}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_general_purpose_timer}{GeneralPurposeTimer}}}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ \ \ \ \ *\ Configure\ output\ channel\ 1..4.}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ \ \ \ \ *}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ \ \ \ \ *\ @param\ \ \ channel\ \ \ \ \ \ \ \ \ [1..4]}}
+\DoxyCodeLine{00033\ \textcolor{comment}{\ \ \ \ \ *\ @param\ \ \ mode\ \ \ \ \ \ \ \ \ \ \ \ Output\ compare\ mode}}
+\DoxyCodeLine{00034\ \textcolor{comment}{\ \ \ \ \ *\ @param\ \ \ compareValue\ \ \ \ Preloaded\ output\ compare\ value\ (can\ be}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ \ \ \ \ *\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ changed\ later\ via\ setCompareValue())}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ \ \ \ \ */}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//\ TODO\ complementary\ outputs}}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{comment}{//static\ void}}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{comment}{//configureOutputChannel(uint32\_t\ channel,\ OutputCompareMode\ mode,}}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ uint16\_t\ compareValue);}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{comment}{//\ TODO\ Repetition\ Counter\ (TIM1\_RCR)}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{enum\ class}\ MasterMode\ :\ uint32\_t}
+\DoxyCodeLine{00046\ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ Reset\ \ \ \ \ \ \ \ \ \ \ =\ 0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 0b000}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ Enable\ \ \ \ \ \ \ \ \ \ =\ TIM\_CR2\_MMS\_0,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 0b001}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ Update\ \ \ \ \ \ \ \ \ \ =\ TIM\_CR2\_MMS\_1,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 0b010}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ ComparePulse\ \ \ \ =\ TIM\_CR2\_MMS\_1\ |\ TIM\_CR2\_MMS\_0,\textcolor{comment}{//\ 0b011}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ CompareOc1Ref\ \ \ =\ TIM\_CR2\_MMS\_2,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ 0b100}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ CompareOc2Ref\ \ \ =\ TIM\_CR2\_MMS\_2\ |\ TIM\_CR2\_MMS\_0,\textcolor{comment}{//\ 0b101}}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ CompareOc3Ref\ \ \ =\ TIM\_CR2\_MMS\_2\ |\ TIM\_CR2\_MMS\_1,\textcolor{comment}{//\ 0b110}}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ CompareOc4Ref\ \ \ =\ TIM\_CR2\_MMS\_2\ |\ TIM\_CR2\_MMS\_1\ \textcolor{comment}{//\ 0b111}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ |\ TIM\_CR2\_MMS\_0,}
+\DoxyCodeLine{00056\ \ \ \ \ \};}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34d}{CaptureCompareControlUpdate}}\ :\ uint32\_t}
+\DoxyCodeLine{00061\ \ \ \ \ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34dae7aaf4df15e6febd2d197fdc41b4275f}{SetComg}}\ =\ 0,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34da784580c24a657025129fb11a49391d1c}{SetComgOrRisingTrigEdge}}\ =\ TIM\_CR2\_CCUS}
+\DoxyCodeLine{00067\ \ \ \ \ \};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{enum\ class}\ SlaveModeTrigger\ :\ uint32\_t}
+\DoxyCodeLine{00070\ \ \ \ \ \{}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ Internal0\ =\ 0,}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ Internal1\ =\ TIM\_SMCR\_TS\_0,}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ Internal2\ =\ TIM\_SMCR\_TS\_1,}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ Internal3\ =\ TIM\_SMCR\_TS\_1\ |\ TIM\_SMCR\_TS\_0,}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ TimerInput1EdgeDetector\ =\ TIM\_SMCR\_TS\_2,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ TimerInput1Filtered\ =\ TIM\_SMCR\_TS\_2\ |\ TIM\_SMCR\_TS\_0,}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ TimerInput2Filtered\ =\ TIM\_SMCR\_TS\_2\ |\ TIM\_SMCR\_TS\_1,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ External\ =\ TIM\_SMCR\_TS\_2\ |\ TIM\_SMCR\_TS\_1\ |\ TIM\_SMCR\_TS\_0,}
+\DoxyCodeLine{00079\ \ \ \ \ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{enum\ class}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510f}{SlaveMode}}\ :\ uint32\_t}
+\DoxyCodeLine{00082\ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510fab9f5c797ebbf55adccdd8539a65a0241}{Disabled}}\ \ \ \ =\ 0,}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510faeab78540afa91903d1f96817465ec459}{Encoder1}}\ \ \ \ =\ TIM\_SMCR\_SMS\_0,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510faca9b200633c80dd4289f3dfce0d4f6eb}{Encoder2}}\ \ \ \ =\ TIM\_SMCR\_SMS\_1,}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510faed1cc454f94843f62cd27d42237b4e05}{Encoder3}}\ \ \ \ =\ TIM\_SMCR\_SMS\_1\ |\ TIM\_SMCR\_SMS\_0,}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ Reset\ \ \ \ \ \ \ =\ TIM\_SMCR\_SMS\_2,}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510fae33f92b6ec382adfd412624ff0c83644}{Gated}}\ \ \ \ \ \ \ =\ TIM\_SMCR\_SMS\_2\ |\ TIM\_SMCR\_SMS\_0,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510faf698f67f5666aff10729d8a1cb1c14d2}{Trigger}}\ \ \ \ \ =\ TIM\_SMCR\_SMS\_2\ |\ TIM\_SMCR\_SMS\_1,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510fa14ee9760e49bcbcdf1fd53dacf282df8}{ExternalClock}}\ =\ TIM\_SMCR\_SMS\_2\ |\ TIM\_SMCR\_SMS\_1\ |\ TIM\_SMCR\_SMS\_0,}
+\DoxyCodeLine{00099\ \ \ \ \ \};}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{enum\ class}\ OutputIdleState\ :\ uint32\_t}
+\DoxyCodeLine{00102\ \ \ \ \ \{}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ Reset\ =\ 0,}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ Set\ \ \ =\ TIM\_CR2\_OIS1,}
+\DoxyCodeLine{00105\ \ \ \ \ \};}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keyword}{enum\ class}\ Event\ :\ uint32\_t}
+\DoxyCodeLine{00108\ \ \ \ \ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ Break\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_BG,}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a5b77052b43427b6e5e276d0880d2510faf698f67f5666aff10729d8a1cb1c14d2}{Trigger}}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_TG,}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_advanced_control_timer_a19cf29156e7acec926085f63dcecb34d}{CaptureCompareControlUpdate}}\ =\ TIM\_EGR\_COMG,}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ CaptureCompare4\ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_CC4G,}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ CaptureCompare3\ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_CC3G,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ CaptureCompare2\ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_CC2G,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ CaptureCompare1\ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_CC1G,}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ Update\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ TIM\_EGR\_UG,}
+\DoxyCodeLine{00117\ \ \ \ \ \};}
+\DoxyCodeLine{00118\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \}\ \ \ \textcolor{comment}{//\ namespace\ platform}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \}\ \ \ \textcolor{comment}{//\ namespace\ modm}}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_TIMER\_ADVANCED\_BASE\_HPP}}
+
+\end{DoxyCode}

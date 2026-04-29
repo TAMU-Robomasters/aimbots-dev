@@ -1,0 +1,201 @@
+\doxysection{gpio\+\_\+\+I8.\+hpp}
+\hypertarget{gpio___i8_8hpp_source}{}\label{gpio___i8_8hpp_source}\index{src/modm/platform/gpio/gpio\_I8.hpp@{src/modm/platform/gpio/gpio\_I8.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ Copyright\ (c)\ 2017-\/2018,\ Niklas\ Hauser}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ This\ file\ is\ part\ of\ the\ modm\ project.}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ This\ Source\ Code\ Form\ is\ subject\ to\ the\ terms\ of\ the\ Mozilla\ Public}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ License,\ v.\ 2.0.\ If\ a\ copy\ of\ the\ MPL\ was\ not\ distributed\ with\ this}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ file,\ You\ can\ obtain\ one\ at\ http://mozilla.org/MPL/2.0/.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#ifndef\ MODM\_STM32\_GPIO\_PIN\_I8\_HPP}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#define\ MODM\_STM32\_GPIO\_PIN\_I8\_HPP}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}../device.hpp"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}base.hpp"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}set.hpp"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{namespace\ }modm::platform}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00024\ \textcolor{keyword}{using\ }GpioOutputI8\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00025\ \textcolor{keyword}{using\ }GpioInputI8\ \ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}}\ :\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio}{Gpio}},\ \textcolor{keyword}{public}\ \doxymbox{\hyperlink{classmodm_1_1_gpio_i_o}{::modm::GpioIO}}}
+\DoxyCodeLine{00031\ \{}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{class}...\ Gpios>}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }GpioSet;}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keyword}{using\ }PinSet\ =\ GpioSet<GpioI8>;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Adc;}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Adc1;\ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Adc2;}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Adc3;\ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Adc4;}
+\DoxyCodeLine{00038\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{using\ }Output\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{using\ }Input\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{using\ }IO\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keyword}{using\ }Type\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8}{GpioI8}};}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{bool}\ isInverted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_a9a07d4a7c6f41489fa3bf81b98e8a19b}{Port}}\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ae334e2b5a4cacd3d2bf23a6a1d4577c4}{port}}\ =\ Port::I;\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ =\ 8;\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ IRQn\_Type\ ExternalInterruptIRQ\ =\ EXTI9\_5\_IRQn;}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint16\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}}\ \ =\ 0x1\ <<\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}};}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab57606d6f79e91bddd245c71353a9e23}{mask2}}\ =\ 0x3\ <<\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ *\ 2);}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a6440dd501f97458c52c23a445caa604a}{port\_nr}}\ =\ uint8\_t(\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ae334e2b5a4cacd3d2bf23a6a1d4577c4}{port}});}
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aad2252dd09d60597a8f41dd3632cf70e}{af\_id}}\ \ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ /\ 8;}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint8\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a19c0bdb2e27ecadc4ac3cf82bdf81f53}{af\_offset}}\ =\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ *\ 4)\ \%\ 32;}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ uint32\_t\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab73e85cc8bfe67b85710799e8ca5e092}{af\_mask}}\ \ =\ 0xf\ <<\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a19c0bdb2e27ecadc4ac3cf82bdf81f53}{af\_offset}};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setAlternateFunction(uint8\_t\ af)\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ GPIOI-\/>AFR[\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aad2252dd09d60597a8f41dd3632cf70e}{af\_id}}]\ =\ (GPIOI-\/>AFR[\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aad2252dd09d60597a8f41dd3632cf70e}{af\_id}}]\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab73e85cc8bfe67b85710799e8ca5e092}{\string~af\_mask}})\ |\ ((af\ \&\ 0xf)\ <<\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a19c0bdb2e27ecadc4ac3cf82bdf81f53}{af\_offset}});}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ GPIOI-\/>MODER\ =\ (GPIOI-\/>MODER\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab57606d6f79e91bddd245c71353a9e23}{\string~mask2}})\ |\ (i(Mode::AlternateFunction)\ <<\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ *\ 2));}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setAnalogInput()\ \{\ PinSet::setAnalogInput();\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{comment}{//\ GpioOutput}}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput()\ \{\ PinSet::setOutput();\ \}}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\textcolor{keywordtype}{bool}\ status)\ \{\ PinSet::setOutput(status);\ \}}
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set()\ \{\ PinSet::set();\ \}}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ set(\textcolor{keywordtype}{bool}\ status)\ \{\ PinSet::set(status);\ \}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ reset()\ \{\ PinSet::reset();\ \}}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ toggle()\ \{}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (isSet())\ \{\ reset();\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \ \ \ \ \ \ \ \ \{\ set();\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \}}
+\DoxyCodeLine{00084\ \ \ \ \ \}}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ isSet()\ \{\ \textcolor{keywordflow}{return}\ (GPIOI-\/>ODR\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}});\ \}}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{comment}{//\ stop\ documentation\ inherited}}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}\ type,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ speed\ =\ OutputSpeed::MHz50)\ \{\ PinSet::configure(type,\ speed);\ \}}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setOutput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ad68170d2e3d45721421375623c8f5a61}{OutputType}}\ type,\ \doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_ab7da9c5cdb55f0fad1955686331a5a09}{OutputSpeed}}\ speed\ =\ OutputSpeed::MHz50)\ \{\ PinSet::setOutput(type,\ speed);\ \}}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//\ GpioInput}}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput()\ \{\ PinSet::setInput();\ \}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ read()\ \{\ \textcolor{keywordflow}{return}\ (GPIOI-\/>IDR\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}});\ \}}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{comment}{//\ end\ documentation\ inherited}}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ configure(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}\ type)\ \{\ PinSet::configure(type);\ \}}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6d}{InputType}}\ type)\ \{\ PinSet::setInput(type);\ \}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{comment}{//\ External\ Interrupts}}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{comment}{//\ Warning:\ This\ will\ disable\ any\ previously\ enabled\ interrupt\ which\ is}}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{comment}{//\ routed\ to\ the\ same\ interupt\ line,\ e.g.\ PA3\ will\ disable\ PB3.}}
+\DoxyCodeLine{00099\ \ \ \ \ \textcolor{comment}{//\ This\ is\ a\ hardware\ limitation\ by\ the\ STM32\ EXTI.}}
+\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ enableExternalInterrupt()}
+\DoxyCodeLine{00101\ \ \ \ \ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PA[x],\ x\ =\ \ 0\ ..\ \ 3\ maps\ to\ EXTICR[0]}}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PA[x],\ x\ =\ \ 4\ ..\ \ 7\ maps\ to\ EXTICR[1]}}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PA[x],\ x\ =\ \ 8\ ..\ 11\ maps\ to\ EXTICR[2]}}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ PA[x],\ x\ =\ 12\ ..\ 15\ maps\ to\ EXTICR[3]}}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ =>\ bit3\ and\ bit2\ (mask\ 0x0c)\ specify\ the\ register}}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ =>\ bit1\ and\ bit0\ (mask\ 0x03)\ specify\ the\ bit\ position}}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ index\ \ \ =\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ \&\ 0b1100)\ >>\ 2;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint8\_t\ bit\_pos\ =\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ \&\ 0b0011)\ <<\ 2;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint16\_t\ syscfg\_mask\ =\ (0b1111)\ <<\ bit\_pos;}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \textcolor{keyword}{constexpr}\ uint16\_t\ syscfg\_value\ =\ (\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a6440dd501f97458c52c23a445caa604a}{port\_nr}}\ \&\ (0b1111))\ <<\ bit\_pos;}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ SYSCFG-\/>EXTICR[index]\ =\ (SYSCFG-\/>EXTICR[index]\ \&\ \string~syscfg\_mask)\ |\ syscfg\_value;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ EXTI-\/>IMR\ |=\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};}
+\DoxyCodeLine{00114\ \ \ \ \ \}}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disableExternalInterrupt()\ \{\ EXTI-\/>IMR\ \&=\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{\string~mask}};\ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ enableExternalInterruptVector(\textcolor{keyword}{const}\ uint32\_t\ priority)}
+\DoxyCodeLine{00117\ \ \ \ \ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ NVIC\_SetPriority(ExternalInterruptIRQ,\ priority);}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ NVIC\_EnableIRQ(ExternalInterruptIRQ);}
+\DoxyCodeLine{00120\ \ \ \ \ \}}
+\DoxyCodeLine{00121\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disableExternalInterruptVector()\ \{\ NVIC\_DisableIRQ(ExternalInterruptIRQ);\ \}}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ setInputTrigger(\textcolor{keyword}{const}\ InputTrigger\ trigger)}
+\DoxyCodeLine{00123\ \ \ \ \ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (trigger)}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ InputTrigger::RisingEdge:}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>RTSR\ |=\ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>FTSR\ \&=\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{\string~mask}};}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ InputTrigger::FallingEdge:}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>RTSR\ \&=\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{\string~mask}};}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>FTSR\ |=\ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ InputTrigger::BothEdges:}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>RTSR\ |=\ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ EXTI-\/>FTSR\ |=\ \ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00139\ \ \ \ \ \}}
+\DoxyCodeLine{00140\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ getExternalInterruptFlag()\ \{\ \textcolor{keywordflow}{return}\ (EXTI-\/>PR\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}});\ \}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ acknowledgeExternalInterruptFlag()\ \{\ EXTI-\/>PR\ =\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_a79aeeec43375bdfa922b92999753112d}{mask}};\ \}}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{comment}{//\ GpioIO}}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{comment}{//\ start\ documentation\ inherited}}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \doxymbox{\hyperlink{structmodm_1_1_gpio_a5c167852e8d86eded53f554eabace79b}{Direction}}\ getDirection()\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ uint32\_t\ mode\ =\ (GPIOI-\/>MODER\ \&\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab57606d6f79e91bddd245c71353a9e23}{mask2}});}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (mode\ ==\ (i(Mode::Input)\ <<\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ *\ 2))\ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Direction::In;}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (mode\ ==\ (i(Mode::Output)\ <<\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aa9b26435579d6e529af8ccfd2ca1fd40}{pin}}\ *\ 2))\ \{}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Direction::Out;}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ Direction::Special;}
+\DoxyCodeLine{00153\ \ \ \ \ \}}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{comment}{//\ end\ documentation\ inherited}}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ lock()\ \{\ PinSet::lock();\ \}}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ disconnect()\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ setInput(\doxymbox{\hyperlink{structmodm_1_1platform_1_1_gpio_aadfb2c40d2066e11c0e176332c5a9d6dac8df43648942ec3a9aec140f07f47b7c}{InputType::Floating}});}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ GPIOI-\/>AFR[\doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_aad2252dd09d60597a8f41dd3632cf70e}{af\_id}}]\ \&=\ \doxymbox{\hyperlink{classmodm_1_1platform_1_1_gpio_i8_ab73e85cc8bfe67b85710799e8ca5e092}{\string~af\_mask}};}
+\DoxyCodeLine{00159\ \ \ \ \ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00162\ \textcolor{preprocessor}{\#ifdef\ \_\_DOXYGEN\_\_}}
+\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keyword}{using\ }BitBang\ =\ GpioSignal;}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keyword}{using\ }Af2\ =\ GpioSignal;}
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keyword}{struct\ }BitBang\ \{\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect();}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ (peripheral\ ==\ Peripheral::BitBang),}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioI8::BitBang\ only\ connects\ to\ software\ drivers!"{}});}
+\DoxyCodeLine{00176\ \ \ \ \ \};}
+\DoxyCodeLine{00177\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keyword}{struct\ }Af2\ \{\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect();}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ (peripheral\ ==\ Peripheral::Rtc),}
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}GpioI8::Af2\ only\ connects\ to\ Rtc!"{}});}
+\DoxyCodeLine{00182\ \ \ \ \ \};}
+\DoxyCodeLine{00184\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ AdcChannel\ =\ -\/1;}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keyword}{template}<\ Peripheral\ peripheral\ >}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ int8\_t\ DacChannel\ =\ -\/1;}
+\DoxyCodeLine{00189\ \};}
+\DoxyCodeLine{00190\ }
+\DoxyCodeLine{00192\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00193\ \textcolor{keyword}{struct\ }GpioI8::BitBang<Peripheral::BitBang>}
+\DoxyCodeLine{00194\ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioI8;}
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::BitBang;}
+\DoxyCodeLine{00197\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{int}\ af\ =\ -\/1;}
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ connect()\ \{\}}
+\DoxyCodeLine{00199\ \};}
+\DoxyCodeLine{00200\ \textcolor{keyword}{template}<>}
+\DoxyCodeLine{00201\ \textcolor{keyword}{struct\ }GpioI8::Af2<Peripheral::Rtc>}
+\DoxyCodeLine{00202\ \{}
+\DoxyCodeLine{00203\ \ \ \ \ \textcolor{keyword}{using\ }Gpio\ =\ GpioI8;}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ Gpio::Signal\ Signal\ =\ Gpio::Signal::Af2;}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{int}\ af\ =\ 0;}
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00207\ \ \ \ \ connect()}
+\DoxyCodeLine{00208\ \ \ \ \ \{}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ setAlternateFunction(0);}
+\DoxyCodeLine{00210\ \ \ \ \ \}}
+\DoxyCodeLine{00211\ \};}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \}\ \textcolor{comment}{//\ namespace\ modm::platform}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ MODM\_STM32\_GPIO\_PIN\_I8\_HPP}}
+
+\end{DoxyCode}
