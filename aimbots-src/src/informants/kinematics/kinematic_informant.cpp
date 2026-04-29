@@ -122,13 +122,30 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
-
+int numValue = 0;
+uint32_t time1,time2;
+float angle1,angle2;
+float Zslope = 0.0f;
 
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
-    
 
+    //collects averavge slope on startup
+    if(numValue <= 3000){
+        if(numValue == 500){
+        time1 = tap::arch::clock::getTimeMilliseconds();
+        angle1 = IMUAngles.z;
+        }
+        if(numValue == 3000){
+            time2 = tap::arch::clock::getTimeMilliseconds();
+            angle2 = IMUAngles.z;
+            Zslope = (angle2 - angle1)/(time2-time1);
+        }
+        numValue++;
+    }
+    
+    IMUAngles.z = IMUAngles.z - (Zslope*tap::arch::clock::getTimeMilliseconds());
     IMUAnglesDisplay = IMUAngles;
 
     // Gets chassis angles
