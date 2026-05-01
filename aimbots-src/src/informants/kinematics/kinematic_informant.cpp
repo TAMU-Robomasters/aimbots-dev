@@ -147,7 +147,6 @@ void KinematicInformant::updateChassisIMUAngles() {
     
     IMUAngles.z = IMUAngles.z - (Zslope*tap::arch::clock::getTimeMilliseconds());
     IMUAnglesDisplay = IMUAngles;
-    IMUAngleZ = IMUAngles.z;
 
     // Gets chassis angles
     Vector3f chassisAngles =

@@ -74,10 +74,12 @@ static constexpr float MIN_ROTATION_THRESHOLD = 800.0f;
 
 static constexpr float FOLLOW_GIMBAL_ANGLE_THRESHOLD = modm::toRadian(20.0f);
 
+#if defined(TARGET_STANDARD_BLASTOISE)
+
 static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .kp = 2.0f,  // 1.25f
     .ki = 0.0f,
-    .kd = 0.005f,  // 0.03f
+    .kd = 0.005f,  // 0.03f:
     .maxICumulative = 0.1f,
     .maxOutput = 1.0f,
     .tQDerivativeKalman = 1.0f,
@@ -87,3 +89,21 @@ static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
 };
+
+#elif defined(TARGET_STANDARD_2025)
+
+static constexpr SmoothPIDConfig ROTATION_POSITION_PID_CONFIG = {
+    .kp = 1.0f,  // 1.25f
+    .ki = 0.0f,
+    .kd = 0.00f,  // 0.03f:
+    .maxICumulative = 0.1f,
+    .maxOutput = 1.0f,
+    .tQDerivativeKalman = 1.0f,
+    .tRDerivativeKalman = 1.0f,
+    .tQProportionalKalman = 1.0f,
+    .tRProportionalKalman = 1.0f,
+    .errDeadzone = 0.0f,
+    .errorDerivativeFloor = 0.0f,
+};
+
+#endif
