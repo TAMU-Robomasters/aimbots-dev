@@ -24,6 +24,7 @@
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_dui_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 //#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
 //
@@ -209,6 +210,14 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
+ChassisDUICommand chassisDUICommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -279,7 +288,8 @@ HoldCommandMapping leftSwitchMid(
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
     //{&chassisTokyoCommand, &gimbalChaseCommand2},
-   {&gimbalVelocityTunningCommand},
+  // {&gimbalVelocityTunningCommand},
+    {&chassisDUICommand,&gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(

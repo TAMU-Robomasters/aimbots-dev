@@ -39,7 +39,7 @@ void ChassisIgnoreGimbalCommand::execute() {
     // gets desired user input from operator interface
     Chassis::Helper::getUserDesiredInput(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
 
-    //gimbalOnlineDisplay = gimbal->isOnline();
+    //gimbalOnlineDisplay = gimbal->isOnline();getUserDesiredInput
 
     if (gimbal->isOnline()) {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);

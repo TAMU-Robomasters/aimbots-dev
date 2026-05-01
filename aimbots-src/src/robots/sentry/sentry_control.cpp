@@ -23,6 +23,7 @@
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_dui_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
@@ -199,6 +200,14 @@ ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+
+ChassisDUICommand chassisDUICommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 
@@ -320,7 +329,8 @@ HoldCommandMapping leftSwitchUp(
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+     //{&chassisTokyoCommand, &gimbalChaseCommand2},
+     {&chassisDUICommand,&gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
