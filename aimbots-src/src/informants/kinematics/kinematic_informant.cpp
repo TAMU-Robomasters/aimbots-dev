@@ -122,14 +122,30 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
-float IMUAngleZ;
-
+int numValue = 0;
+uint32_t time1,time2;
+float angle1,angle2;
+float Zslope = 0.0f;
 
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
-    
 
+    //collects averavge slope on startup
+    if(numValue <= 3000){
+        if(numValue == 500){
+        time1 = tap::arch::clock::getTimeMilliseconds();
+        angle1 = IMUAngles.z;
+        }
+        if(numValue == 3000){
+            time2 = tap::arch::clock::getTimeMilliseconds();
+            angle2 = IMUAngles.z;
+            Zslope = (angle2 - angle1)/(time2-time1);
+        }
+        numValue++;
+    }
+    
+    IMUAngles.z = IMUAngles.z - (Zslope*tap::arch::clock::getTimeMilliseconds());
     IMUAnglesDisplay = IMUAngles;
     IMUAngleZ = IMUAngles.z;
 
@@ -233,10 +249,12 @@ float linearIMUAccelerationZDisplay = 0.0f;
 float chassisAngleXDisplay = 0.0f;
 float chassisAngleYDisplay = 0.0f;
 float chassisAngleZDisplay = 0.0f;
+int numValues = 0;
 void KinematicInformant::updateChassisAcceleration() {
     chassisAngleXDisplay = chassisAngularState[X_AXIS].getPosition();
     chassisAngleYDisplay = chassisAngularState[Y_AXIS].getPosition();
     chassisAngleZDisplay = chassisAngularState[Z_AXIS].getPosition();
+    numValues++;
 
     Vector3f linearIMUAcceleration = removeFalseAcceleration(imuLinearState, imuAngularState, IMU_MOUNT_POSITION);
 
@@ -452,7 +470,11 @@ float rawYawVel;
 float yawMotorRPMDisplay;
 
 float IMUYawAngleDisplayGood;
-
+//variables to accouint for 
+int numValues = 0;
+uint32_t time1,time2;
+float angle1,angle2;
+float Zslope = 0.0f;
 void KinematicInformant::updateChassisIMUAngles() {
     YawAngularAccelDisplay = getIMUAngularAccelerations().z;
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
@@ -461,15 +483,29 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawPosEncoder = drivers->revEncoder.getAngleRadians();
 
     Vector3f IMUAngles = getLocalIMUAngles();
+    //collects averavge slope on startup
+    if(numValues <= 3000){
+        if(numValues == 500){
+        time1 = tap::arch::clock::getTimeMilliseconds();
+        angle1 = IMUAngles.z;
+        }
+        if(numValues == 3000){
+            time2 = tap::arch::clock::getTimeMilliseconds();
+            angle2 = IMUAngles.z;
+            Zslope = (angle2 - angle1)/(time2-time1);
+        }
+        numValues++;
+    }
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     YawAngularVelocityEncoder = RPM_TO_RADPS(gimbalSubsystem->getYawMotorRPM(0) * GIMBAL_YAW_MOTOR_GEAR_RATIO);
-    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder);
+    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,IMUAngles.z - YawPosEncoder - (Zslope*tap::arch::clock::getTimeMilliseconds()));
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 
     IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
+    numValues++;
     
     IMUYawAngleDisplayGood = getLocalIMUAngles().z;
 

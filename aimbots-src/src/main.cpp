@@ -149,6 +149,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->revEncoder.initialize();
 #endif
 
+//drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
