@@ -269,13 +269,14 @@ void GimbalFieldRelativeController::runYawVelocityController(
 
         chassisVelocityDisplay = chassisRelativeVelocityTarget;
 
-                
-        float velocityFeedforward = tap::algorithms::limitVal(
-            0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
-            -GM6020_MAX_OUTPUT,
-            GM6020_MAX_OUTPUT);
+        #if (!defined(TARGET_HERO))
+         float velocityFeedforward = tap::algorithms::limitVal(
+             0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
+             -GM6020_MAX_OUTPUT,
+             GM6020_MAX_OUTPUT);
 
-        // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
+         float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
+        #endif
 
         chassisYawRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         chassisYawRelativeVelocityCurrentDisplay = yawVelocityFilter->getValue();
