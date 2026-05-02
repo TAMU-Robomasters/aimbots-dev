@@ -6,7 +6,7 @@
 #define GIMBAL_COMPATIBLE
 
 /**
- * @brief GIMBAL SETUP
+ * @brief GIMBAL SETUP 
  */
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
@@ -29,7 +29,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0f;  // for 2025 Hero
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR2};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0.0f)+((5*M_PI)/18))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
@@ -40,6 +40,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
+
+static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(80.0f);
