@@ -23,11 +23,13 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
     wrapTo0To2PIRange(modm::toRadian(63.37f)+M_PI)};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
- //static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0754716981f;  // for 2025 Hero
-static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0f;  // for 2025 Hero
-/* Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
+static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentry
+/*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the robot will be started within the same GIMBAL_YAW_GEAR_RATIO range
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
+
+//For velocity control on 3508 yaw
+static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
@@ -42,7 +44,6 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (-0.51f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (0.30f);
@@ -110,11 +111,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1300.0f,  // 1800
-    .ki = 20.0f,    // 20
+    .kp = 00.0f,  // 1800
+    .ki = 0.0f,    // 20
     .kd = 0.0f,
-    .maxICumulative = 2000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxICumulative = 5000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

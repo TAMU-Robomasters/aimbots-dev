@@ -12,6 +12,7 @@ namespace src::Informants
 
     float positionDisplay = 0.0f;
     float velocityDisplay = 0.0f;
+    int testDis = 0;
 
     RevEncoder::RevEncoder(src::Drivers* drivers) : drivers(drivers) {}
 
@@ -40,6 +41,7 @@ namespace src::Informants
 
     void RevEncoder::readData()
     {
+        testDis = 6942067;
         uint8_t rx[2];
 
         Spi2Nss::reset();
