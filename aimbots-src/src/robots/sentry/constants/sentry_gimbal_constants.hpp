@@ -4,7 +4,6 @@
 
 #define GIMBAL_COMPATIBLE
 #define YAW_3508
-
 #define GIMBAL_UNTETHERED
 
 /**

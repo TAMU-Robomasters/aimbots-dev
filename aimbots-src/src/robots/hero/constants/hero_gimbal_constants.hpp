@@ -4,6 +4,7 @@
 
 #define GIMBAL_UNTETHERED
 #define GIMBAL_COMPATIBLE
+//#define YAW_3508
 
 /**
  * @brief GIMBAL SETUP 
@@ -29,9 +30,9 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0f;  // for 2025 Hero
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR2};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0.0f)+((5*M_PI)/18))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(155.0f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -43,8 +44,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 
 
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(80.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (-0.51f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (0.30f);
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**

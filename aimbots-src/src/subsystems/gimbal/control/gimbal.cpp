@@ -152,7 +152,7 @@ void GimbalSubsystem::refresh() {
          // currentPitchAxisAnglesByMotor[pitchDisplayMotorIdx]->getWrappedValue();
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
         pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx,AngleUnit::Radians);
-        targePitchAngleDisplay = targetPitchAxisAngle.getWrappedValue();
+        targePitchAngleDisplay = modm::toDegree(targetPitchAxisAngle.getWrappedValue());
         pitchRPMDisplay = pitchMotors[pitchDisplayMotorIdx]->getShaftRPM();
         // flush the desired output to the motor
         setDesiredOutputToPitchMotor(i);
