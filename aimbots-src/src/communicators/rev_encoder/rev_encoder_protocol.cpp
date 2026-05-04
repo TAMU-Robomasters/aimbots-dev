@@ -79,7 +79,7 @@ namespace src::Informants
             lastRawCount = raw;
         }
 
-        float rawAngle = M_TWOPI * (static_cast<float>(raw) / 65535.0f);
+        float rawAngle = 0.0f;//M_TWOPI * (static_cast<float>(raw) / 65535.0f);
 
         if (!angleFilterInitialized)
         {

@@ -183,7 +183,7 @@ void GimbalFieldRelativeController::runYawController(
         gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward + */velocityControllerOutput);
     #else
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
-            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
+            (chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)))*20.0f);
         gimbal->setDesiredYawMotorOutput(i,velocityControllerOutput);
     #endif
 
@@ -226,6 +226,8 @@ float kinematicPitchAngleDisplay = 0.0f;
 float velocityErrorDisplay = 69.0f;
 float chassisVelocityDisplay = 0.0f;
 
+float averageDisplay = 0.0f;
+
 // for PID testing
 void GimbalFieldRelativeController::runYawVelocityController(
     std::optional<float> velocityLimit) {
@@ -240,6 +242,8 @@ void GimbalFieldRelativeController::runYawVelocityController(
         averageRPM += gimbal->getYawMotorRPM(i);
     }
     averageRPM = averageRPM / YAW_MOTOR_COUNT;
+
+    averageDisplay = averageRPM;
 
     yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM/GIMBAL_YAW_MOTOR_GEAR_RATIO)));
 

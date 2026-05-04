@@ -127,7 +127,7 @@ SpinRandomizerConfig randomizerConfig = {
 // };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 60.0f,
+    .velocityAmplitudeDegreesPerSec = 6.0f,
     .frequencyHz = .2f,
 };
 
@@ -318,9 +318,9 @@ HoldCommandMapping leftSwitchUp(
    // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
     // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
-    // {&gimbalVelocityTunningCommand},
+     {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+    // {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));

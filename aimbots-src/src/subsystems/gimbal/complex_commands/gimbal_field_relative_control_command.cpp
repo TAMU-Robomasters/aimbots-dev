@@ -64,7 +64,7 @@ void GimbalFieldRelativeControlCommand::execute() {
     controller->setTargetYaw(
         AngleUnit::Radians,
         controller->getTargetYaw(AngleUnit::Radians) + quickTurnOffset -
-            drivers->controlOperatorInterface.getGimbalYawInput());
+            (drivers->controlOperatorInterface.getGimbalYawInput() * 2.0f));
 
     controller->setTargetPitch(
         AngleUnit::Radians,
