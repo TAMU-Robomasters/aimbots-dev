@@ -9,18 +9,17 @@
 /**
  * @brief GIMBAL SETUP 
  */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
-static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS2;
 
-static constexpr uint8_t YAW_MOTOR_COUNT = 1;
+static constexpr uint8_t YAW_MOTOR_COUNT = 2;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
-static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
-static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
+static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false,false};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5,MotorID::MOTOR6};
+static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1","Yaw Motor 2"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    /*wrapTo0To2PIRange(modm::toRadian(63.37f)+M_PI)*/};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {0.0f,0.0f};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentry
@@ -32,7 +31,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentr
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR7};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
 static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(155.0f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
