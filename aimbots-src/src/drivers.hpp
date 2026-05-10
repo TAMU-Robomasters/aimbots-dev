@@ -27,6 +27,7 @@
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "communicators/devboard/turret_can_communicator.hpp"
 #include "communicators/jetson/jetson_communicator.hpp"
+#include "communicators/custom_controller/custom_controller.hpp"
 #include "communicators/rev_encoder/rev_encoder_protocol.hpp"
 //#include "communicators/INA260/INA260_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
@@ -45,6 +46,7 @@ public:
         : tap::Drivers(),
           controlOperatorInterface(this),
           magnetometer(),
+          customController(this),
           cvCommunicator(this),
       //  powerCommunicator(this),
       #ifdef YAW_3508
@@ -57,6 +59,7 @@ public:
 
 public:
     Control::OperatorInterface controlOperatorInterface;
+    src::communicators::custom_controller::CustomController customController;
     utils::Ist8310 magnetometer;
     Informants::Vision::JetsonCommunicator cvCommunicator;
   //  Informants::INA260::INA260Communicator powerCommunicator;

@@ -152,6 +152,7 @@ static void initializeIo(src::Drivers *drivers) {
 //drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
+    drivers->customController.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
@@ -190,6 +191,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
     drivers->refSerial.updateSerial();
     drivers->remote.read();
+    drivers->customController.read();
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
     drivers->revEncoder.execute();
