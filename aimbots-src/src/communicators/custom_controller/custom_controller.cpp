@@ -3,11 +3,11 @@
 #include <algorithm>
 
 #include "drivers.hpp"
+#include "communicators/vtm_can/vtm_can.hpp"
 
 namespace src::communicators::custom_controller
 {
-
-// Read an unsigned bitfield from a little-endian bitstream (LSB-first in each byte).
+// read an unsigned bitfield from a little-endian bitstream
 static uint32_t readBitsLE(const std::array<uint8_t, 30>& bytes, uint16_t bitOffset, uint8_t bitLen)
 {
     uint32_t out = 0;
@@ -25,7 +25,6 @@ static uint32_t readBitsLE(const std::array<uint8_t, 30>& bytes, uint16_t bitOff
 static int16_t signExtend12(uint16_t raw12)
 {
     raw12 &= 0x0FFF;
-    // If sign bit (bit 11) set, extend with ones.
     if (raw12 & 0x0800)
     {
         return static_cast<int16_t>(raw12 | 0xF000);
@@ -46,7 +45,7 @@ static uint16_t clampAnalog(uint16_t v)
 void CustomController::initialize()
 {
     updateCounter = 0;
-    lastSeenRefCounter = 0;
+    lastSeenVtmCounter = 0;
     data.fill(0);
     state = CustomControllerState{};
     disconnectTimeout.stop();
@@ -54,19 +53,21 @@ void CustomController::initialize()
 
 void CustomController::read()
 {
-    if (!drivers->refSerial.getRefSerialReceivingData())
+    if (vtmCan == nullptr)
     {
         return;
     }
 
-    const uint32_t refCounter = drivers->refSerial.getCustomControllerUpdateCounter();
-    if (refCounter == 0 || refCounter == lastSeenRefCounter)
+    vtmCan->read();
+
+    const uint32_t vtmCounter = vtmCan->getUpdateCounter();
+    if (vtmCounter == 0 || vtmCounter == lastSeenVtmCounter)
     {
         return;
     }
 
-    lastSeenRefCounter = refCounter;
-    data = drivers->refSerial.getCustomControllerData();
+    lastSeenVtmCounter = vtmCounter;
+    data = vtmCan->getPayload();
     updateCounter++;
 
     decodeStateFromData();
@@ -76,18 +77,17 @@ void CustomController::read()
 
 void CustomController::decodeStateFromData()
 {
-    // Bit offsets per the user-defined layout
-    // 12-bit signed
+    // 12-bit signed joystick data
     state.joystick1X = clampSigned12(signExtend12(static_cast<uint16_t>(readBitsLE(data, 0, 12))));
     state.joystick1Y = clampSigned12(signExtend12(static_cast<uint16_t>(readBitsLE(data, 12, 12))));
     state.joystick2X = clampSigned12(signExtend12(static_cast<uint16_t>(readBitsLE(data, 24, 12))));
     state.joystick2Y = clampSigned12(signExtend12(static_cast<uint16_t>(readBitsLE(data, 36, 12))));
 
-    // 12-bit unsigned analog
+    // 12-bit unsigned analog input data
     state.analog1 = clampAnalog(static_cast<uint16_t>(readBitsLE(data, 48, 12)));
     state.analog2 = clampAnalog(static_cast<uint16_t>(readBitsLE(data, 60, 12)));
 
-    // Buttons/switches (1 bit each)
+    // buttons/switches
     state.button1 = readBitsLE(data, 72, 1) != 0;
     state.button2 = readBitsLE(data, 73, 1) != 0;
     state.button3 = readBitsLE(data, 74, 1) != 0;
@@ -95,7 +95,7 @@ void CustomController::decodeStateFromData()
     state.switch1 = readBitsLE(data, 76, 1) != 0;
     state.switch2 = readBitsLE(data, 77, 1) != 0;
 
-    // Arm joints (6 x 12-bit signed)
+    // engineer arm joints (6 x 12-bit signed)
     const uint16_t armBase = 78;
     for (int i = 0; i < 6; i++)
     {
@@ -110,4 +110,4 @@ bool CustomController::isConnected() const
     return !(disconnectTimeout.isStopped() || disconnectTimeout.isExpired());
 }
 
-}  // namespace communicators::custom_controller
+}  // namespace src::communicators::custom_controller

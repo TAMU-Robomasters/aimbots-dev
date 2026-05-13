@@ -13,12 +13,15 @@ namespace src
 class Drivers;
 }
 
+namespace src::communicators::vtm_can
+{
+class VtmCan;
+}
+
 namespace src::communicators::custom_controller
 {
-//wrapper for RefSerial's 0x0302 (custom controller) payload.
-
 /**
- * Decoded custom controller state carried inside the 30-byte 0x0302 payload.
+ * Decoded custom controller state carried inside the 30-byte payload sent by CCadapter
  *
  * Bit layout (little-endian bitstream, LSB-first within each byte):
  *   [joystick1 x:12][joystick1 y:12][joystick2 x:12][joystick2 y:12]
@@ -27,7 +30,7 @@ namespace src::communicators::custom_controller
  *   [arm1:12][arm2:12][arm3:12][arm4:12][arm5:12][arm6:12]
  *
  * Signed 12-bit fields are interpreted as two's complement and then clamped
- * to [-1024, +1024]. Analog inputs are unsigned and clamped to [0, 2048].
+ * to [-1024, +1024] (Dr. Porter my GOAT). General analog inputs are unsigned and clamped to [0, 2048]
  */
 struct CustomControllerState
 {
@@ -43,6 +46,7 @@ struct CustomControllerState
     bool button2 = false;
     bool button3 = false;
     bool button4 = false;
+    
     bool switch1 = false;
     bool switch2 = false;
 
@@ -56,6 +60,8 @@ public:
     DISALLOW_COPY_AND_ASSIGN(CustomController)
     ~CustomController() = default;
 
+    void setVtmCan(src::communicators::vtm_can::VtmCan* vtmCan) { this->vtmCan = vtmCan; }
+
     void initialize();
     void read();
 
@@ -65,7 +71,6 @@ public:
     uint8_t getByte(uint8_t index) const { return data[index]; }
     uint32_t getUpdateCounter() const { return updateCounter; }
 
-    // Decoded getters (preferred API)
     int16_t joystick1X() const { return state.joystick1X; }
     int16_t joystick1Y() const { return state.joystick1Y; }
     int16_t joystick2X() const { return state.joystick2X; }
@@ -95,20 +100,18 @@ public:
 private:
     static constexpr uint32_t CUSTOM_CONTROLLER_DISCONNECT_TIMEOUT_MS = 1000;
 
-    static constexpr int16_t SIGNED12_MIN = -1024;
-    static constexpr int16_t SIGNED12_MAX = 1024;
-    static constexpr uint16_t ANALOG_MAX = 2048;
-
     void decodeStateFromData();
 
     src::Drivers* drivers;
+    src::communicators::vtm_can::VtmCan* vtmCan = nullptr;
+
     std::array<uint8_t, 30> data{{0}};
     CustomControllerState state{};
     uint32_t updateCounter = 0;
-    uint32_t lastSeenRefCounter = 0;
+    uint32_t lastSeenVtmCounter = 0;
     tap::arch::MilliTimeout disconnectTimeout;
 };
 
 }  // namespace src::communicators::custom_controller
 
-#endif  // CUSTOM_CONTROLLER_HPP_
+#endif

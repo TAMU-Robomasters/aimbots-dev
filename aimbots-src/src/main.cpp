@@ -49,6 +49,7 @@
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
+// not where this should go lol
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
@@ -68,6 +69,19 @@ uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 float powerDis = 69.0f;
+
+// uint32_t dbg_any_rxCount = 0;
+// uint32_t dbg_any_rawIdentifier = 0;
+// uint32_t dbg_any_getIdentifier = 0;   
+// uint8_t  dbg_any_len = 0;
+
+// uint32_t dbg_can351_rxCount = 0;
+// uint8_t  dbg_can351_b0 = 0;
+// uint8_t  dbg_can351_b1 = 0;
+
+bool button1Display = false;
+
+bool actualattachDisplay = false;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -101,6 +115,8 @@ int main() {
         PROFILE(drivers->profiler, updateIo, (drivers));
 
         if (mainLoopTimeout.execute()) {
+
+
             drivers->bmi088.periodicIMUUpdate();
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
@@ -145,6 +161,11 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
+
+
+    drivers->vtmCan.initialize();
+    //drivers->can351Listener.initialize(); can debug class
+    drivers->customController.initialize();
 #ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
@@ -152,7 +173,6 @@ static void initializeIo(src::Drivers *drivers) {
 //drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
-    drivers->customController.initialize();
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
@@ -189,9 +209,9 @@ static void updateIo(src::Drivers *drivers) {
 
 #ifndef TARGET_TURRET
     drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
+    //drivers->vtmCan.read();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
-    drivers->customController.read();
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
     drivers->revEncoder.execute();
@@ -211,6 +231,26 @@ static void updateIo(src::Drivers *drivers) {
     // imuStatus = drivers->kinematicInformant.getIMUState();
     // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS,
     // AngleUnit::Degrees);
+     //drivers->vtmCan.read();
+     
+    
+    // modm::can::Message m;
+    // if (drivers->can.getMessage(tap::can::CanBus::CAN_BUS1, &m))
+    // {
+    //     dbg_any_rxCount++;
+    //     dbg_any_rawIdentifier = m.identifier;        // raw field
+    //     dbg_any_getIdentifier = m.getIdentifier();   // accessor
+    //     dbg_any_len = m.getLength();
+    // }
+
+    // actualattachDisplay = drivers->can351Listener.attachedDisplay;
+    // dbg_can351_rxCount = drivers->can351Listener.rxCount;
+    // dbg_can351_b0 = drivers->can351Listener.lastByte0; // should toggle 0/1 every 2s
+    // dbg_can351_b1 = drivers->can351Listener.lastByte1;
+
+    drivers->customController.read();
+
+    button1Display = drivers->customController.button1Pressed();
 
      yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
      pitchDisplay =

@@ -25,7 +25,6 @@
 #define TAPROOT_REF_SERIAL_HPP_
 
 #include <cmath>
-#include <array>
 #include <cstdint>
 #include <unordered_map>
 
@@ -110,7 +109,7 @@ public:
         REF_MESSAGE_TYPE_RADAR_INFO = 0x20E,
 
         REF_MESSAGE_TYPE_CUSTOM_DATA = 0x301,
-        REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE = 0x302,
+        // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE = 0x302,
         // REF_MESSAGE_TYPE_SMALL_MAP_INTERACTION = 0x303,
         // REF_MESSAGE_TYPE_VTM_INPUT_DATA = 0x304,
         // REF_MESSAGE_TYPE_RADAR_MINIMAP = 0x305,
@@ -136,23 +135,6 @@ public:
     void messageReceiveCallback(const ReceivedSerialMessage& completeMessage) override;
 
     mockable bool getRefSerialReceivingData() const;
-
-    /**
-     * @return true if at least one 0x0302 custom controller packet has been received.
-     */
-    bool hasReceivedCustomControllerData() const;
-
-    /**
-     * @return Latest 30-byte payload received for command ID 0x0302.
-     * @note Payload format is user-defined; this class just exposes raw bytes.
-     */
-    const std::array<uint8_t, 30>& getCustomControllerData() const;
-
-    /**
-     * @return Number of valid 0x0302 payload updates received.
-     */
-    uint32_t getCustomControllerUpdateCounter() const;
-
 
     /**
      * Returns a reference to the most up to date robot data struct.
@@ -218,12 +200,6 @@ private:
     modm::BoundedDeque<Rx::DamageEvent, DPS_TRACKER_DEQUE_SIZE> receivedDpsTracker;
     arch::MilliTimeout refSerialOfflineTimeout;
     std::unordered_map<uint16_t, RobotToRobotMessageHandler*> msgIdToRobotToRobotHandlerMap;
-
-    // Latest received 0x0302 (custom controller) payload
-    std::array<uint8_t, 30> customControllerData{{0}};
-    uint32_t customControllerUpdateCounter = 0;
-    bool customControllerDataValid = false;
-
     modm::pt::Semaphore transmissionSemaphore;
     tap::arch::MilliTimeout transmissionDelayTimer;
 
@@ -320,12 +296,6 @@ private:
      * Decodes ref serial message containing information about the radar station's actions.
      */
     bool decodeToRadarInfo(const ReceivedSerialMessage& message);
-
-    /**
-     * Decodes custom controller payload (cmd_id 0x0302), stores the raw 30-byte data.
-     */
-    bool decodeToCustomControllerData(const ReceivedSerialMessage& message);
-
 
     bool handleRobotToRobotCommunication(const ReceivedSerialMessage& message);
 

@@ -159,13 +159,7 @@ void RefSerial::messageReceiveCallback(const ReceivedSerialMessage& completeMess
             handleRobotToRobotCommunication(completeMessage);
             break;
         }
-        
-        case REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE:
-        {
-            decodeToCustomControllerData(completeMessage);
-            break;
-        }
-// TODO: Other Custom Data stuff
+        // TODO: Other Custom Data stuff
         default:
             break;
     }
@@ -175,22 +169,6 @@ const RefSerialData::Rx::RobotData& RefSerial::getRobotData() const { return rob
 
 const RefSerialData::Rx::GameData& RefSerial::getGameData() const { return gameData; }
 
-
-
-bool RefSerial::hasReceivedCustomControllerData() const
-{
-    return customControllerDataValid;
-}
-
-const std::array<uint8_t, 30>& RefSerial::getCustomControllerData() const
-{
-    return customControllerData;
-}
-
-uint32_t RefSerial::getCustomControllerUpdateCounter() const
-{
-    return customControllerUpdateCounter;
-}
 bool RefSerial::decodeToGameStatus(const ReceivedSerialMessage& message)
 {
     if (message.header.dataLength != 11)
@@ -599,22 +577,4 @@ bool RefSerial::operatorBlinded() const
            (arch::clock::getTimeMilliseconds() - lastReceivedWarningRobotTime <= blindTime);
 }
 
-
-
-bool RefSerial::decodeToCustomControllerData(const ReceivedSerialMessage& message)
-{
-    if (message.header.dataLength != 30)
-    {
-        return false;
-    }
-
-    for (size_t i = 0; i < customControllerData.size(); i++)
-    {
-        customControllerData[i] = message.data[i];
-    }
-
-    customControllerUpdateCounter++;
-    customControllerDataValid = true;
-    return true;
-}
 }  // namespace tap::communication::serial
