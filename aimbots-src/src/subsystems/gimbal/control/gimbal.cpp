@@ -82,7 +82,7 @@ void GimbalSubsystem::refresh() {
     #ifndef YAW_3508
         int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
     #else
-        int64_t currentYawEncoderPosition = drivers->revEncoder.getUnwrappedPosition();
+        int64_t currentYawEncoderPosition = drivers->revEncoder.getUnwrappedAngle(0);
         currentYawEncoderPositionDisplay = currentYawEncoderPosition;
     #endif
         // https://www.desmos.com/calculator/bducsk7y6v
@@ -103,7 +103,7 @@ void GimbalSubsystem::refresh() {
     #ifndef YAW_3508
         yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
     #else
-        yawEncoderDisplay = drivers->revEncoder.getData();
+        yawEncoderDisplay = drivers->revEncoder.getWrappedAngle(0);
     #endif
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =

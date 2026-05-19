@@ -1,190 +1,192 @@
 #include "rev_encoder_protocol.hpp"
 #include "drivers.hpp"
 
-namespace src::Informants
+using Spi2Master = modm::platform::SpiMaster2; // Master
+using Spi2Hal = modm::platform::SpiHal2; // Hardware Abstraction Layer
+using Spi2Nss = modm::platform::GpioB12; // Negative SPI Select
+using Spi2Sck = modm::platform::GpioB13; // Clock
+using Spi2Miso = modm::platform::GpioB14; // Master In Slave Out
+using Spi2Mosi = modm::platform::GpioB15; // Master Out Slave In
+
+using MuxS0 = modm::platform::GpioE11; // Mux LSB
+using MuxS1 = modm::platform::GpioE13;
+using MuxS2 = modm::platform::GpioE14; // Mux MSB
+
+namespace src::Informants 
 {
-    using Spi2Master = modm::platform::SpiMaster2;
-    using Spi2Hal = modm::platform::SpiHal2;
-    using Spi2Nss = modm::platform::GpioB12;
-    using Spi2Sck = modm::platform::GpioB13;
-    using Spi2Miso = modm::platform::GpioB14;
-    using Spi2Mosi = modm::platform::GpioB15;
 
-    using MuxS0 = modm::platform::GpioE11;
-    using MuxS1 = modm::platform::GpioE13;
-    using MuxS2 = modm::platform::GpioE14;
-
-
-    float positionDisplay = 0.0f;
-    float velocityDisplay = 0.0f;
-
+    // Constructor
     RevEncoder::RevEncoder(src::Drivers* drivers) : drivers(drivers) {}
 
-    void RevEncoder::initialize()
+    // Initialize and Connect all GPIO Pins
+    void RevEncoder::initialize() 
     {
+        // Connects Clock, MISO, and MOSI to Master
         Spi2Master::connect<
             Spi2Sck::Sck,
             Spi2Miso::Miso,
             Spi2Mosi::Mosi
         >();
 
+        // Initalize Negative SPI Select and set it High
         Spi2Nss::setOutput(modm::platform::Gpio::OutputType::PushPull);
         Spi2Nss::set();
 
+        // Overhead for SPI Protocol
+        Spi2Hal::initialize(
+            Spi2Hal::Prescaler::Div64, // SPI Clock Speed
+            Spi2Hal::MasterSelection::Master, // Set SPI as Master
+            Spi2Hal::DataMode::Mode0, // Clock Idle Low (Mode3 for High)
+            Spi2Hal::DataOrder::MsbFirst, // Most Significant Bit First
+            Spi2Hal::DataSize::Bit8 // 16-Bit Read/Write
+        );
+
+        // Disconnect from TIM_1, Initialize Mux Select and Set Low
         MuxS0::disconnect();
         MuxS1::disconnect();
         MuxS2::disconnect();
-
         MuxS0::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS1::setOutput(modm::platform::Gpio::OutputType::PushPull);
         MuxS2::setOutput(modm::platform::Gpio::OutputType::PushPull);
-
         MuxS0::reset();
         MuxS1::reset();
         MuxS2::reset();
 
-        Spi2Hal::initialize(
-            Spi2Hal::Prescaler::Div64,
-            Spi2Hal::MasterSelection::Master,
-            Spi2Hal::DataMode::Mode0,
-            Spi2Hal::DataOrder::MsbFirst,
-            Spi2Hal::DataSize::Bit8
-        );
+        // 500ms Startup Timer
         startupThreshold.restart(500);
-    }
+    } // void RevEncoder::initialize
 
-    void RevEncoder::selectEncoder(EncoderID encoder) 
-    {
-        uint8_t encoderValue = static_cast<uint8_t>(encoder);
-        (encoderValue & 0b001) ? MuxS0::set() : MuxS0::reset();
-        (encoderValue & 0b010) ? MuxS1::set() : MuxS1::reset();
-        (encoderValue & 0b100) ? MuxS2::set() : MuxS2::reset();
-    }
-
-    uint8_t debug_byte[2];
-    uint16_t debug_allData[5];
-    uint16_t debug_data = 0;
-
-    void RevEncoder::readData()
-    {
-        static uint32_t last = 0;
-        static EncoderID selected = EncoderID::REV_ENCODER_1;
-        static bool prepared = false;
-
-        if (!prepared)
-        {
-            Spi2Nss::set();          // disable 138
-            selectEncoder(selected); // set A/B/C
-            prepared = true;
-            last = tap::arch::clock::getTimeMilliseconds();
-            return;
-        }
-
-        if (tap::arch::clock::getTimeMilliseconds() - last >= 2)
-        {
-            uint8_t rx[2] = {0, 0};
-
-            Spi2Nss::reset(); // enable 138
-            Spi2Master::transferBlocking(nullptr, rx, 2);
-            Spi2Nss::set();   // disable 138
-
-            uint16_t raw =
-                (static_cast<uint16_t>(rx[0]) << 8) |
-                static_cast<uint16_t>(rx[1]);
-
-            uint8_t i = static_cast<uint8_t>(selected);
-
-            if (i < NUM_ENCODERS)
-            {
-                if (raw != 0 && raw != 0xFFFF)
-                {
-                    allData[i] = raw;
-                    data = raw;
-                }
-            }
-
-            debug_byte[0] = rx[0];
-            debug_byte[1] = rx[1];
-
-            uint8_t next = static_cast<uint8_t>(selected) + 1;
-            if (next >= NUM_ENCODERS)
-            {
-                next = 0;
-            }
-
-            selected = static_cast<EncoderID>(next);
-            prepared = false;
-        }
-
-        for (uint8_t i = 0; i < NUM_ENCODERS; i++)
-        {
-            debug_allData[i] = allData[i];
-        }
-
-        debug_data = data;
-    }
-
+    // Main Loop
     void RevEncoder::execute()
     {
+        // Runs when Startup Timer is Expired and has been Executed
         if (!startupThreshold.execute()) {
-            readData();
-            revEncoderVelocity();
+            readEncoders(); // Read All Encoders' Raw Data
+            readVelocity(); // Calculate All Encoders' Velocity
+            // Wrap on NUM_ENCODER, else Increment
+            int nextEncoder = selectedEncoder + 1;
+            selectedEncoder = (nextEncoder > NUM_ENCODERS) ? 0 : selectedEncoder++;
         }
-    }
+    } // void RevEncoder::execute
 
-
-    float debug_vel = 0.0f;
-
-    void RevEncoder::revEncoderVelocity()
+    // Read Angle and Revolution of Encoder
+    void RevEncoder::readEncoders() 
     {
-        currentTimeMs = tap::arch::clock::getTimeMilliseconds();
-        dtMs = currentTimeMs - lastTimeMs;
+        //if (!readReady) {
+            Spi2Nss::set(); // Not Ready To Read
+            selectEncoder(selectedEncoder); // Set MUX
+            //readReady = true;
+            //lastTimeMsAngle = tap::arch::clock::getTimeMilliseconds(); chance its not needed
+            //return;
+        //}
 
+        //currentTimeMsAngle = tap::arch::clock::getTimeMilliseconds();
+        //if (currentTimeMsAngle - lastTimeMsAngle >= 2) {
+            uint8_t tx[4] = {0x00, 0x00, 0x00, 0x00}; // Write for 16-Bit Angle and Multi-Turn
+            uint8_t rx[4] = {0x00, 0x00, 0x00, 0x00}; // Read 16-Bit Angle then Multi-Turn
+
+            Spi2Nss::reset(); // Read Ready
+            Spi2Master::transferBlocking(tx, rx, 4); // Read
+            Spi2Nss::set(); // Not Ready To Read
+
+            // [0, 65535]
+            uint16_t rawAngle = 
+            (static_cast<uint16_t>(rx[0]) << 8) | 
+            static_cast<uint16_t>(rx[1]);
+
+            // [-32768, 32767]
+            int16_t revolution =
+            (static_cast<int16_t>(rx[2]) << 8) | 
+            static_cast<int16_t>(rx[3]);
+
+            // Raw Angle Filter
+            if (rawAngle != 0x0000 && rawAngle != 0xFFFF) {
+                rawAngles[selectedEncoder] = rawAngle;
+            }
+            revolutions[selectedEncoder] = revolution;
+
+            //readReady = false;
+        //}
+    } // void RevEncoder::getData
+
+    // Selects Encoder Through Mux Based on Encoder
+    void RevEncoder::selectEncoder(int encoder) {
+        (encoder & 0b001) ? MuxS0::set() : MuxS0::reset();
+        (encoder & 0b010) ? MuxS1::set() : MuxS1::reset();
+        (encoder & 0b100) ? MuxS2::set() : MuxS2::reset();
+    } // void RevEncoder::selectEncoder
+
+    // Calculate Velocity of Encoder
+    void RevEncoder::readVelocity() 
+    {
+        // Calculate Change in Time in Milliseconds
+        currentTimeMs = tap::arch::clock::getTimeMilliseconds();
+        uint32_t dtMs = currentTimeMs - lastTimeMs;
+
+        // Wraps Angle from [0, M_TWOPI] -> [-M_PI, M_PI]
         tap::algorithms::WrappedFloat currentAngle(
-            M_TWOPI * (static_cast<float>(data) / 65535.0f),
+            getWrappedAngle(selectedEncoder),
             -M_PI,
             M_PI
         );
-
-        if (lastTimeMs != 0 && dtMs > 0)
-        {
+        
+        // If Not on Startup or No Change in Time
+        if (lastTimeMs != 0 && dtMs > 0) {
+            // Calculate Velocity (Radians / Seconds)
             float dt = static_cast<float>(dtMs) / 1000.0f;
-
             float dAngle = currentAngle.minDifference(lastAngle);
             float rawVelocity = dAngle / dt;
 
-            if (!velocityFilterInitialized)
-            {
+            // Raw Velocity Filter
+            if (!velocityFilterInitialized) {
                 filteredVelocity = rawVelocity;
                 velocityFilterInitialized = true;
-            }
-            else
-            {
+            } else {
                 filteredVelocity += kVelocityAlpha * (rawVelocity - filteredVelocity);
             }
 
-            velocity = filteredVelocity * (30.0f / M_PI);
-            debug_vel = velocity;
+            velocity[selectedEncoder] = filteredVelocity * (30.0f / M_PI);
         }
 
-        velocityDisplay = velocity;
         lastAngle = currentAngle;
         lastTimeMs = currentTimeMs;
-    }
+    } // void RevEncoder::readVelocity
 
-    uint16_t RevEncoder::getData() const
+    // Get Raw Encoder Data [0, 65535]
+    uint16_t RevEncoder::getRawData(int encoder) const 
     {
-        return data;
-    }
+        return rawAngles[encoder];
+    } // void RevEncoder::getRawData
 
-    float RevEncoder::getVelocity() const
+    // Get Wrapped Angle (M_TWOPI(default) or 360) * [0,1]
+    float RevEncoder::getWrappedAngle(int encoder, AngleUnit angleType) const 
     {
-        return velocity;
-    }
+        float unitAngle = static_cast<float>(getRawData(encoder)) / 65535.0f;
+        if (angleType == AngleUnit::Radians) {
+            return (unitAngle * M_TWOPI);
+        }
+        if (angleType == AngleUnit::Degrees) {
+            return (unitAngle * 360.0f);
+        }
+    } // void RevEncoder::getWrappedAngle
 
-    int64_t RevEncoder::getUnwrappedPosition() const
+    // Get Unwrapped Angle (M_TWOPI(default) or 360) * [-32768, 32767]
+    float RevEncoder::getUnwrappedAngle(int encoder, AngleUnit angleType) const 
     {
-        return unwrappedPosition;
-    }
+        float currentAngle = getWrappedAngle(encoder, angleType);
+        float revolution = static_cast<float>(revolutions[encoder]);
+        if (angleType == AngleUnit::Radians) {
+            return ((revolution * M_TWOPI) + currentAngle);
+        }
+        if (angleType == AngleUnit::Degrees) {
+            return ((revolution * 360.0f) + currentAngle);
+        }
+    } // void RevEncoder::getUnwrappedAngle
 
-}  // namespace src::Informants
+    // Get Velocity (Radian/Second)
+    float RevEncoder::getVelocity(int encoder) const 
+    {
+        return velocity[encoder];
+    } // void RevEncoder::getVelocity
+
+} // namespace src::Informants
