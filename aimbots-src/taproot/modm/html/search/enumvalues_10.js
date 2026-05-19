@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['temp_5funit_0',['TEMP_Unit',['../structmodm_1_1bno055.html#a048ce653c297bef33c7c4a98422999b0a0d8494b57a55aed8c5044f45cdbc6d5a',1,'modm::bno055']]],
-  ['temperaturesensor_1',['TemperatureSensor',['../classmodm_1_1platform_1_1_adc1.html#ac089556840101f3c8cd6a4dbeaa27d1da345b3ea3fe508e0716705a05b619c5b3',1,'modm::platform::Adc1::TemperatureSensor'],['../classmodm_1_1platform_1_1_adc3.html#a57edd2660e953862d57639cd0d2a078ba345b3ea3fe508e0716705a05b619c5b3',1,'modm::platform::Adc3::TemperatureSensor']]],
-  ['toggle_2',['Toggle',['../classmodm_1_1platform_1_1_general_purpose_timer.html#a5352910894a1b58d7e166a293b51a162aa8875bbe4272c0bdd786cfaaedf77921',1,'modm::platform::GeneralPurposeTimer']]],
-  ['trigger_3',['Trigger',['../classmodm_1_1platform_1_1_advanced_control_timer.html#a5b77052b43427b6e5e276d0880d2510faf698f67f5666aff10729d8a1cb1c14d2',1,'modm::platform::AdvancedControlTimer::Trigger'],['../classmodm_1_1platform_1_1_timer10.html#a3e86f77f0513e80a85e8e6524ac6de7caf698f67f5666aff10729d8a1cb1c14d2',1,'modm::platform::Timer10::Trigger'],['../classmodm_1_1platform_1_1_timer4.html#a97c8e3b55d936d70c4cf1a25d33f31bcaf698f67f5666aff10729d8a1cb1c14d2',1,'modm::platform::Timer4::Trigger']]],
-  ['txcomplete_4',['TxComplete',['../classmodm_1_1platform_1_1_uart_base.html#ac9c1bc3b77588a11d520416c22a25832a017989d109c6f8c81153605ec5479c85',1,'modm::platform::UartBase::TxComplete'],['../classmodm_1_1platform_1_1_uart_base.html#a231dd8ca89bde31fb9bec6a65c1dae8fa017989d109c6f8c81153605ec5479c85',1,'modm::platform::UartBase::TxComplete']]],
-  ['txempty_5',['TxEmpty',['../classmodm_1_1platform_1_1_uart_base.html#ac9c1bc3b77588a11d520416c22a25832a09fedbb429a73d9217bbd05d17bf9619',1,'modm::platform::UartBase::TxEmpty'],['../classmodm_1_1platform_1_1_uart_base.html#a231dd8ca89bde31fb9bec6a65c1dae8fa09fedbb429a73d9217bbd05d17bf9619',1,'modm::platform::UartBase::TxEmpty']]]
-];
