@@ -1,4 +1,4 @@
-#include "utils/tools/robot_specific_defines.hpp"
+ #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
 
@@ -147,7 +147,7 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
 };
 
 FeederVelocityTunningConfig feederVelocityTunningConfig = {
-    .VelocityAmplitudeRPM = 60.0f,
+    .VelocityAmplitudeRPM = 100.0f,
     .frequencyHz = 1.0f,
 };
 
@@ -315,12 +315,12 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-   // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
-    // {&feederVelocityTunningCommand},
+    // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+    {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+    // {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -328,8 +328,8 @@ HoldCommandMapping leftSwitchUp(
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    //{&feederShotTimingCommand, &runShooterCommand}, // shot timing
-     {&runShooterCommand},
+    // {&feederShotTimingCommand, &runShooterCommand}, // shot timing
+    {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder

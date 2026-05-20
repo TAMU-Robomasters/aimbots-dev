@@ -6,21 +6,27 @@
 #include "subsystems/feeder/feeder_constants.hpp"
 #include "utils/tools/common_types.hpp"
 #include "utils/filters/ema.hpp"
+#include "tap/algorithms/butterworth.hpp"
+#include "tap/algorithms/discrete_filter.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 
 #include "drivers.hpp"
 
 #ifdef FEEDER_COMPATIBLE
 
 namespace src::Feeder {
+static constexpr uint8_t ORDER = 3;
+static constexpr auto TYPE = tap::algorithms::filter::LOWPASS;
+static constexpr uint16_t N = tap::algorithms::filter::getNumCoefficients(ORDER, TYPE);
 class FeederSubsystem : public tap::control::Subsystem {
 public:
     FeederSubsystem(src::Drivers* drivers);
     // tagging on building the target RPM array here
     void BuildFeederMotors() {
-        feederRPMFilter = new src::Utils::Filters::EMAFilter(0.1);
+        feederRPMDisplayFilter = new src::Utils::Filters::EMAFilter(0.1);
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
-                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
+                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M2006);
             feederTargetRPMs[i] = 0.0f;
             feederCustomSpeedActive[i] = false;
         }
@@ -157,7 +163,10 @@ private:
 
     src::Informants::LimitSwitch limitSwitch;
 
-    src::Utils::Filters::EMAFilter* feederRPMFilter;
+    src::Utils::Filters::EMAFilter* feederRPMDisplayFilter;
+
+    tap::algorithms::filter::DiscreteFilter<N, float> feederRPMFilter;
+
     //#endif
 
     // commands

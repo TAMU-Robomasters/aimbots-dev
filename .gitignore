@@ -503,6 +503,9 @@ build-iPhoneSimulator/
 .mongorc.js, you might want to ignore these files since the code is
 .rvmrc
 
+# for clangd
+.clangd
+
 # 
 # Elixr
 # 

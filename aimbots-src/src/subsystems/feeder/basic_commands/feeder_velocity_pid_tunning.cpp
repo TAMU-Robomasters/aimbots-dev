@@ -1,6 +1,7 @@
 #include <cmath>
 #include "feeder_velocity_pid_tunning.hpp"
 #include "utils/tools/common_types.hpp"
+#include "tap/motor/dji_motor.hpp"
 
 #ifdef FEEDER_COMPATIBLE
 namespace src::Feeder {
@@ -25,8 +26,7 @@ FeederVelocityTunningCommand::FeederVelocityTunningCommand(
 
 void FeederVelocityTunningCommand::execute() {
     currFeederTargetVelocityDisplay = getFeederTargetVelocity();
-
-    feeder->setAllTargetRPMs(currFeederTargetVelocityDisplay);
+    feeder->ForAllFeederMotors(&FeederSubsystem::setTargetRPM, currFeederTargetVelocityDisplay);
 }
 
 float FeederVelocityTunningCommand::getFeederTargetVelocity() { // in degrees
@@ -55,6 +55,7 @@ bool FeederVelocityTunningCommand::isReady() { return true; }
 bool FeederVelocityTunningCommand::isFinished() const { return false; }
 
 void FeederVelocityTunningCommand::end(bool) {
+    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     feeder->setAllDesiredFeederMotorOutputs(0);
 }
 
