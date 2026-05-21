@@ -224,13 +224,13 @@ ClientDisplayCommand clientDisplayCommand(
 // Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalToggleAimCommand2},
+    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

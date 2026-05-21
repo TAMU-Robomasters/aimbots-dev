@@ -5,10 +5,12 @@
 #define GIMBAL_UNTETHERED
 #define GIMBAL_COMPATIBLE
 
+#define YAW_3508
+
 /**
  * @brief GIMBAL SETUP 
  */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
@@ -55,7 +57,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 5000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -80,11 +82,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.0f,  // 25
+    .kp = 90.0f,  // 25
     .ki = 0.0f,
-    .kd = 0.05f,  // 0.15
-    .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020,
+    .kd = 0.0f,  // 0.15
+    .maxICumulative = 1000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -109,11 +111,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1300.0f,  // 1800
-    .ki = 20.0f,    // 20
-    .kd = 0.0f,
+    .kp = 200.0f,  // 1800
+    .ki = 0.3f,    // 20
+    .kd = 50.0f,
     .maxICumulative = 2000.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

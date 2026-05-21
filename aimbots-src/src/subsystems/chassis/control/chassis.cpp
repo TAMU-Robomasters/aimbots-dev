@@ -142,12 +142,12 @@ void ChassisSubsystem::refresh() {
     limitChassisPower();
 
 //     motorOutputDisplay = motors[RF][0]->getOutputDesired();
-//     #ifdef SWERVE
-//         yawMotorOutputDisplayRF = motors[RF][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayRB = motors[RB][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayLF = motors[LF][1]->getEncoderWrapped();
-//         yawMotorOutputDisplayLB = motors[LB][1]->getEncoderWrapped();
-//     #endif
+      #ifdef SWERVE
+          yawMotorOutputDisplayRF = motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue();
+          yawMotorOutputDisplayRB = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
+          yawMotorOutputDisplayLF = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
+          yawMotorOutputDisplayLB = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
+      #endif
  }
 
 void ChassisSubsystem::limitChassisPower() {
