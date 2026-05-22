@@ -1,4 +1,5 @@
 #pragma once
+#include "tap/motor/dji_motor.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -48,6 +49,10 @@ static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(80.0f);
+
+/* Values obtain by setting the motor to different digital voltage values and
+taking the average of the actually chassis relative velocities and finding best fit line*/ 
+static float chassisRelativeYawFeedforward(float velocity) {return (velocity + 40.0367) / 0.0203;}
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -83,11 +88,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 180.0f,  // 25
+    .kp = 20.5, 
     .ki = 0.0f,
     .kd = 0.0f,  // 0.15
     .maxICumulative = 1000.0f,
-    .maxOutput = M3508_MAX_OUTPUT,
+    .maxOutput = tap::motor::DjiMotor::MAX_OUTPUT_C620, // for 3508
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -112,9 +117,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 200.0f,  // 1800
-    .ki = 0.3f,    // 20
-    .kd = 50.0f,
+    .kp = 4000.0f,  
+    .ki = 0.0f,    
+    .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,

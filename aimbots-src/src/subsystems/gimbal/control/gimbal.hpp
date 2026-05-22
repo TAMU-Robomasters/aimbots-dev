@@ -4,6 +4,7 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
+#include "tap/motor/dji_motor.hpp"
 
 #include "subsystems/gimbal/gimbal_constants.hpp"
 
@@ -25,7 +26,12 @@ public:
     void BuildYawMotors() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawMotors[i] =
-                new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
+                // TODO: retune sentry so with the right gear ratio then change the macro to if yaw_3508
+                #ifdef ALL_HEROES
+                    new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508);
+                #else 
+                    new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
+                #endif
             currentYawAxisAnglesByMotor[i] = new tap::algorithms::WrappedFloat(0.0f, -M_PI, M_PI);
         }
     }
