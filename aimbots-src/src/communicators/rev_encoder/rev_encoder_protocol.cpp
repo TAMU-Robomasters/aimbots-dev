@@ -69,6 +69,12 @@ namespace src::Informants
         }
     } // void RevEncoder::execute
 
+    // Debug Variables (Angle)
+    uint16_t rawAngle_debug[5];
+    int16_t revolution_debug[5];
+    float wrappedAngle_debug[5];
+    float unwrappedAngle_debug[5];
+
     // Read Angle and Revolution of Encoder
     void RevEncoder::readEncoders() 
     {
@@ -102,8 +108,15 @@ namespace src::Informants
             // Raw Angle Filter
             if (rawAngle != 0x0000 && rawAngle != 0xFFFF) {
                 rawAngles[selectedEncoder] = rawAngle;
+                rawAngle_debug[selectedEncoder] = rawAngle; //debug
             }
             revolutions[selectedEncoder] = revolution;
+            revolution_debug[selectedEncoder] = revolution; //debug
+
+            wrappedAngles[selectedEncoder] = getWrappedAngle(selectedEncoder);
+            unwrappedAngles[selectedEncoder] = getUnwrappedAngle(selectedEncoder);
+            wrappedAngle_debug[selectedEncoder] = wrappedAngles[selectedEncoder]; //debug
+            unwrappedAngle_debug[selectedEncoder] = unwrappedAngles[selectedEncoder]; //debug
 
             //readReady = false;
         //}
@@ -115,6 +128,9 @@ namespace src::Informants
         (encoder & 0b010) ? MuxS1::set() : MuxS1::reset();
         (encoder & 0b100) ? MuxS2::set() : MuxS2::reset();
     } // void RevEncoder::selectEncoder
+
+    // Debug Variables (Velocity)
+    float velocity_debug[5];
 
     // Calculate Velocity of Encoder
     void RevEncoder::readVelocity() 
@@ -146,6 +162,7 @@ namespace src::Informants
             }
 
             velocity[selectedEncoder] = filteredVelocity * (30.0f / M_PI);
+            velocity_debug[selectedEncoder] = velocity[selectedEncoder]; //debug
         }
 
         lastAngle = currentAngle;

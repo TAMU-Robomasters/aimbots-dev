@@ -38,6 +38,8 @@ private:
     uint16_t rawAngles[NUM_ENCODERS];
     int16_t revolutions[NUM_ENCODERS];
     float velocity[NUM_ENCODERS];
+    float wrappedAngles[NUM_ENCODERS];
+    float unwrappedAngles[NUM_ENCODERS];
 
     // RevEncoder::getData variables (not needed)
     //int selectedEncoder = 0;
