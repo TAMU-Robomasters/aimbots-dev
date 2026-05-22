@@ -6,6 +6,7 @@
 #define GIMBAL_COMPATIBLE
 
 #define YAW_3508
+#define INVERTED_YAW_ENCODER
 
 /**
  * @brief GIMBAL SETUP 
@@ -31,9 +32,9 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0f;  // for 2025 Hero
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR2};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor 1"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(0.0f)+((5*M_PI)/18))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(155.0f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
@@ -53,8 +54,8 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(80.0f);
  * @brief Position PID constants
  */
 static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
-    .kp = 5.0f,
-    .ki = 0.0f,
+    .kp = 900.0f,
+    .ki = 30.0f,
     .kd = 0.0f,
     .maxICumulative = 5000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
@@ -67,7 +68,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 0.0f,
+    .kp = 30.0f,
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 10.0f,
@@ -82,7 +83,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 90.0f,  // 25
+    .kp = 180.0f,  // 25
     .ki = 0.0f,
     .kd = 0.0f,  // 0.15
     .maxICumulative = 1000.0f,
@@ -100,7 +101,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,  // 0
     .maxICumulative = 1000.0f,
-    .maxOutput = 35,
+    .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

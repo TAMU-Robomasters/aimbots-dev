@@ -73,7 +73,11 @@ namespace src::Informants
                 delta += 65536;
             }
 
-            unwrappedPosition += static_cast<int64_t>(delta);
+            #ifndef INVERTED_YAW_ENCODER
+                unwrappedPosition += static_cast<int64_t>(delta);
+            #else
+                unwrappedPosition -= static_cast<int64_t>(delta);
+            #endif
             lastRawCount = raw;
         }
 
