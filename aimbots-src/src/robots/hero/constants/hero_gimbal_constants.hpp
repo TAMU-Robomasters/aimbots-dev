@@ -40,15 +40,15 @@ static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wra
 
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float GIMBAL_PITCH_GEAR_RATIO = (30.0f / 102.0f);  // for 2023 Hero
+static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-100.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(80.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (-0.51f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (0.30f);
 
 /* Values obtain by setting the motor to different digital voltage values and
 taking the average of the actually chassis relative velocities and finding best fit line*/ 
