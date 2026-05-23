@@ -1,3 +1,4 @@
+#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_HEROES)
@@ -22,7 +23,9 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_sinusodal_spin_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -176,6 +179,15 @@ ChassisToggleDriveCommand chassisToggleDriveCommand(
     false,
     randomizerConfig);
 
+
+ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
 ChassisTokyoCommand chassisTokyoCommand(
     drivers(),
     &chassis,
@@ -263,7 +275,7 @@ ClientDisplayCommand clientDisplayCommand(
 // Enables normal drive and gimbal field relative control. Enables CV toggle
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
@@ -271,7 +283,7 @@ HoldCommandMapping leftSwitchUp(
     drivers(),
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
-    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

@@ -1,5 +1,6 @@
 #pragma once
 #include "tap/motor/dji_motor.hpp"
+#include "modm/math/geometry/angle.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -22,8 +23,7 @@ static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(63.37f)+M_PI)};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(132.5)};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
  //static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0754716981f;  // for 2025 Hero
@@ -126,7 +126,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 0.1,
     .errorDerivativeFloor = 0.0f,
 };
 
