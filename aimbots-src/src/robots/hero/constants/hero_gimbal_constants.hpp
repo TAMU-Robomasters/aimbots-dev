@@ -47,8 +47,11 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);
 
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (-0.51f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (0.30f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (modm::toRadian(-135.0f));
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (modm::toRadian(65.0f));
+
+//20 220
+
 
 /* Values obtain by setting the motor to different digital voltage values and
 taking the average of the actually chassis relative velocities and finding best fit line*/ 
@@ -131,8 +134,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 500.0f,  // 500
-    .ki = 17.0f,   // 17
+    .kp = 900.0f, 
+    .ki = 300.0f,  
     .kd = 0.0f,
     .maxICumulative = 1500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,

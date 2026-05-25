@@ -44,9 +44,9 @@ void GimbalVelocityTunningCommand::execute() {
     currGimbalTestTargetPitchVelocityDisplay = pitchTargetVelocity;
 
     controller->setTargetVelocityYaw(AngleUnit::Degrees, yawTargetVelocity);
-  //  controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
+    controller->setTargetVelocityPitch(AngleUnit::Degrees, pitchTargetVelocity);
     controller->runYawVelocityController();
-    //controller->runPitchVelocityController();
+    controller->runPitchVelocityController();
 
    // runYawVelocityStepOscillation(500.0f);
 

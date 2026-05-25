@@ -34,13 +34,11 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
@@ -117,7 +115,6 @@ ClientDisplaySubsystem clientDisplay(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver ---------------------------------------------------------
@@ -205,7 +202,6 @@ ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
     0,
     randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
 
@@ -281,9 +277,9 @@ HoldCommandMapping leftSwitchMid(
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    // {&gimbalPositionTunningCommand},
+    {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
