@@ -298,11 +298,13 @@ void KinematicInformant::updateGimbalAcceleration() {
     gimbalLinearState[Z_AXIS].updateFromAcceleration(linearGimbalAcceleration.getZ());
 }
 
+float currGimbalAngleDisplay = 0.0f;
 float chassisYawAngleDisplay = 0.0f;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currGimbalAngle = gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians);
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
+    currGimbalAngleDisplay = currGimbalAngle;
     return WrappedFloat(currGimbalAngle + currChassisAngle - YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 

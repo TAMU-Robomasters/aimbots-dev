@@ -1,4 +1,8 @@
 #include "gimbal_field_relative_controller.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
+#include "modm/math/geometry/angle.hpp"
+#include "robots/hero/constants/hero_gimbal_constants.hpp"
+#include "utils/tools/common_types.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 #ifdef GIMBAL_UNTETHERED
@@ -77,6 +81,8 @@ float gimbalYawPositionCascadeIDebug = 0.0f;
 float gimbalYawPositionCascadeDDebug = 0.0f;
 bool updateGimbalYawPositionCascadeDebug = false;
 
+float yawVelocityErrorDisplay = 0.0f;
+
 void GimbalFieldRelativeController::runYawController(
     std::optional<float> velocityLimit) {  // using cascade controller for yaw
 
@@ -129,7 +135,15 @@ void GimbalFieldRelativeController::runYawController(
                                                           src::Informants::AngularAxis::YAW_AXIS,
                                                           AngleUnit::Radians) /
                                                           GIMBAL_YAW_GEAR_RATIO);
-    #else
+
+    #elif defined (TARGET_HERO) 
+        float fieldRelativeVelocityTarget = yawPositionCascadePID->runController(
+            gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
+            RPM_TO_RADPS(gimbal->getYawMotorRPM(i)) + drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                                                          src::Informants::AngularAxis::YAW_AXIS,
+                                                          AngleUnit::Radians) /
+                                                          GIMBAL_YAW_GEAR_RATIO);
+    #else //WARN: this is for sentry but for some reason it doesn't convert RPM to radians per sec
         float fieldRelativeVelocityTarget = yawPositionCascadePID->runController(
             gimbal->getYawMotorSetpointError(i, AngleUnit::Radians),
             gimbal->getYawMotorRPM(i)+ drivers->kinematicInformant.getChassisIMUAngularVelocity(
@@ -140,11 +154,11 @@ void GimbalFieldRelativeController::runYawController(
 
         // float chassisRelativeVelocityTarget = sinf(speedTarget) * 2.0f;
 
-        if (velocityLimit.has_value()) {
-            fieldRelativeVelocityTarget =
-                tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
-        }
-
+    if (velocityLimit.has_value()) {
+        fieldRelativeVelocityTarget =
+            tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
+    }
+    #ifdef ALL_SENTRIES
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget /*- (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
@@ -153,6 +167,14 @@ void GimbalFieldRelativeController::runYawController(
                 speedDiffDisplay = (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
                 AngleUnit::Radians)/GIMBAL_YAW_MOTOR_GEAR_RATIO);
+    #else
+        float chassisRelativeVelocityTarget =
+                fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                                                   src::Informants::AngularAxis::YAW_AXIS,
+                                                   AngleUnit::Radians) /
+                                               GIMBAL_YAW_GEAR_RATIO);
+    #endif
+
 
     #ifndef YAW_3508
         float velocityFeedforward = tap::algorithms::limitVal(
@@ -160,12 +182,19 @@ void GimbalFieldRelativeController::runYawController(
                 YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
+    #elif defined (ALL_HEROES)
+        float chassisRelativeVelocityThreshold = 0.1;
+        float velocityFeedforward = tap::algorithms::limitVal(
+            (chassisRelativeVelocityTarget > chassisRelativeVelocityThreshold) * sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(fabs(chassisRelativeVelocityTarget)),
+            -M3508_MAX_OUTPUT,
+            M3508_MAX_OUTPUT);    
     #else
         // float velocityFeedforward = tap::algorithms::limitVal(
         //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
         //         YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
         //     -M3508_MAX_OUTPUT,
         //     M3508_MAX_OUTPUT);
+        float velocityFeedforward = 0.0f
     #endif
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
@@ -181,10 +210,16 @@ void GimbalFieldRelativeController::runYawController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
         gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward + */velocityControllerOutput);
-    #else
+    #elif defined (ALL_HEROES)
+        yawVelocityErrorDisplay = chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
+        float velocityControllerOutput = yawVelocityPID->runController(
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
+            gimbal->getYawMotorTorque(i));
+        gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+    #else //WARN: for some reason sentry not using motor torque for derivative? torque proportionally to accel
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
-        gimbal->setDesiredYawMotorOutput(i,velocityControllerOutput);
+        gimbal->setDesiredYawMotorOutput(i,velocityControllerOutput + velocityFeedforward);
     #endif
 
         fieldRelativeVelocityTargetDisplay = fieldRelativeVelocityTarget;
@@ -233,7 +268,6 @@ void GimbalFieldRelativeController::runYawVelocityController(
     kinematicYawAngleDisplay =
         modm::toDegree(drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue());
 
-    fieldRelativeYawVelocityTargetDisplay = this->getTargetVelocityYaw(AngleUnit::Degrees);
 
     averageRPM = 0.0f;
     for(int i=0;i<YAW_MOTOR_COUNT;i++){
@@ -241,7 +275,12 @@ void GimbalFieldRelativeController::runYawVelocityController(
     }
     averageRPM = averageRPM / YAW_MOTOR_COUNT;
 
-    yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM/GIMBAL_YAW_MOTOR_GEAR_RATIO)));
+    //TODO: get rid of me when you retunned sentry
+    #ifdef ALL_SENTRIES
+        yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM/GIMBAL_YAW_MOTOR_GEAR_RATIO)));
+    #else
+        yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
+    #endif
 
         // for PID tunning through Ozone
     if (updateYawVelocityPIDsDebug) {
@@ -260,12 +299,22 @@ void GimbalFieldRelativeController::runYawVelocityController(
             fieldRelativeVelocityTarget =
                 tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
         }
+        fieldRelativeYawVelocityTargetDisplay = modm::toDegree(fieldRelativeVelocityTarget);
 
-        float chassisRelativeVelocityTarget =
-            fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
-                                               src::Informants::AngularAxis::YAW_AXIS,
-                                               AngleUnit::Radians) /
-                                           GIMBAL_YAW_MOTOR_GEAR_RATIO);
+        #ifdef ALL_SENTRIES //TODO: fix this after tunning sentry
+            float chassisRelativeVelocityTarget =
+                fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                                                   src::Informants::AngularAxis::YAW_AXIS,
+                                                   AngleUnit::Radians) /
+                                               GIMBAL_YAW_MOTOR_GEAR_RATIO);
+        #else 
+            float chassisRelativeVelocityTarget =
+                fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
+                                                   src::Informants::AngularAxis::YAW_AXIS,
+                                                   AngleUnit::Radians) /
+                                               GIMBAL_YAW_GEAR_RATIO);
+        #endif
+
 
         chassisVelocityDisplay = chassisRelativeVelocityTarget;
 
@@ -274,9 +323,12 @@ void GimbalFieldRelativeController::runYawVelocityController(
              0.5f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
              -GM6020_MAX_OUTPUT,
              GM6020_MAX_OUTPUT);
-
+        #elif  defined (ALL_HEROES)
+            float velocityFeedforward = tap::algorithms::limitVal(
+                sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(chassisRelativeVelocityTarget),
+                -GM6020_MAX_OUTPUT,
+                GM6020_MAX_OUTPUT);
         #endif
-         //float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward
 
         chassisYawRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
         chassisYawRelativeVelocityCurrentDisplay = yawVelocityFilter->getValue();
@@ -287,16 +339,20 @@ void GimbalFieldRelativeController::runYawVelocityController(
     #ifndef YAW_3508
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
+            gimbal->getYawMotorTorque;
+    #elif defined (ALL_HEROES)
+         float velocityControllerOutput = yawVelocityPID->runController(
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
-    #else
+        gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+    #else //WARN: for some reason sentry not using motor torque for derivative? torque proportionally to accel
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #endif
         velocityErrorDisplay = chassisRelativeVelocityTarget;
-        fieldRelativeYawVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
-        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput);
+        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput + velocityFeedforward);
     }
 }
 

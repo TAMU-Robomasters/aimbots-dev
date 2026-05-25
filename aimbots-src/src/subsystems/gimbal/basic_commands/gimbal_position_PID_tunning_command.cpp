@@ -40,10 +40,10 @@ void GimbalPositionTunningCommand::execute() {
     currGimbalTargetPitchPositionDisplay = pitchTargetPosition;
 
     controller->setTargetYaw(AngleUnit::Degrees, yawTargetPosition);
-  //  controller->setTargetPitch(AngleUnit::Degrees, pitchTargetPosition);
+    controller->setTargetPitch(AngleUnit::Degrees, pitchTargetPosition);
 
     controller->runYawController(); 
-   // controller->runPitchController();
+    controller->runPitchController();
 }
 
 float GimbalPositionTunningCommand::getYawTargetPosition() { // in degrees

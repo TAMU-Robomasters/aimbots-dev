@@ -3,6 +3,8 @@
 #include <utils/tools/common_types.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
+#include "modm/math/geometry/angle.hpp"
+#include "robots/hero/constants/hero_gimbal_constants.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 
@@ -89,7 +91,10 @@ void GimbalSubsystem::refresh() {
     #ifndef YAW_3508
         float wrappedYawAxisAngle = 
             GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
-    #else
+    #elif defined (ALL_HEROES)
+        float wrappedYawAxisAngle =
+            GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
+    #else //TODO: fix this when we retune sentry
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition - 13815.0f)); // Yaw offset, move later
             
@@ -107,8 +112,8 @@ void GimbalSubsystem::refresh() {
     #endif
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
         currentYawMotorAngleDisplay =
-            modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
-           // RevEncoderValueToRadians(currentYawEncoderPosition);
+            // modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
+           modm::toDegree(RevEncoderValueToRadians(currentYawEncoderPosition));
         otherYawMotorAngleDisplay =
             modm::toDegree(DJIEncoderValueToRadians(yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getWrappedValue()));
         yawOutputDisplay = yawMotors[1]->getOutputDesired();
