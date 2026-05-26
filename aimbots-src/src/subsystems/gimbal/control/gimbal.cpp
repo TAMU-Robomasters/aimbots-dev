@@ -80,6 +80,9 @@ void GimbalSubsystem::refresh() {
 
         // tap::buzzer::playNote(&drivers->pwm, 0);
         yawOnlineCount++;
+    #ifdef CURRENT_6020
+        filteredYawMotorRPMs[i] = yawRPMFilters[i]->filterData(yawMotors[i]->getShaftRPM());
+    #endif
     #ifndef YAW_3508
         int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
     #else

@@ -46,6 +46,7 @@ float velocityPIDOutputDisplay = 0.0f;
 
 float chassisYawRelativeVelocityTargetDisplay = 0.0f;
 float chassisYawRelativeVelocityCurrentDisplay = 0.0f;
+float chassisYawRelativeVelocityRawCurrentDisplay = 0.0f;
 float chassisYawRelativeDerivedVelocityDisplay = 0.0f;
 
 float chassisPitchRelativeVelocityTargetDisplay = 0.0f;
@@ -273,6 +274,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
         averageRPM += gimbal->getYawMotorRPM(i);
     }
     averageRPM = averageRPM / YAW_MOTOR_COUNT;
+    chassisYawRelativeVelocityRawCurrentDisplay = RPM_TO_RADPS(averageRPM);
 
     //TODO: get rid of me when you retunned sentry
     #ifdef ALL_SENTRIES

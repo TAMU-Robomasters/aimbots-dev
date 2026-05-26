@@ -1,4 +1,5 @@
 #pragma once
+#include "tap/motor/dji_motor.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -167,6 +168,10 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 #elif defined(TARGET_STANDARD_2025)
 #define CURRENT_6020
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
+
+// 3rd-order Butterworth LPF coefficients for yaw motor RPM feedback (Fc=10 Hz, Fs=500 Hz)
+static constexpr std::array<float, 4> YAW_RPM_FILTER_A = {1.0000f, -2.3741f, 1.9294f, -0.5321f};
+static constexpr std::array<float, 4> YAW_RPM_FILTER_B = {0.0029f,  0.0087f,  0.0087f,  0.0029f};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(-19.6f) + M_PI};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-145)+((5*M_PI)/18)};
@@ -229,7 +234,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1.0f,
-    .maxOutput = GM6020_MAX_OUTPUT,
+    .maxOutput = tap::motor::DjiMotor::MAX_OUTPUT_GM6020_mA,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -240,11 +245,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1000.0f,//1850.0f,  // 3000
+    .kp = 4000.0f,//1850.0f,  // 3000
     .ki = 15.0f,    // 25
-    .kd = 0.0f,
+    .kd = 10.0f,
     .maxICumulative = 2500.0f,
-    .maxOutput = 16384.0f,
+    .maxOutput = tap::motor::DjiMotor::MAX_OUTPUT_GM6020_mA,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,

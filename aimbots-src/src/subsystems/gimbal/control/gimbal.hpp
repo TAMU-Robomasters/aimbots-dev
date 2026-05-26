@@ -7,6 +7,7 @@
 #include "tap/motor/dji_motor.hpp"
 
 #include "subsystems/gimbal/gimbal_constants.hpp"
+#include "tap/algorithms/discrete_filter.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 
@@ -31,10 +32,15 @@ public:
                     new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508);
                 #elif defined (CURRENT_6020)
                         new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], true, tap::motor::DjiMotorEncoder::GEAR_RATIO_GM6020);
-                #else 
+                #else
                     new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
                 #endif
             currentYawAxisAnglesByMotor[i] = new tap::algorithms::WrappedFloat(0.0f, -M_PI, M_PI);
+            #ifdef CURRENT_6020
+            yawRPMFilters[i] = new tap::algorithms::filter::DiscreteFilter<4, float>(
+                YAW_RPM_FILTER_A, YAW_RPM_FILTER_B);
+            filteredYawMotorRPMs[i] = 0.0f;
+            #endif
         }
     }
 
@@ -129,15 +135,28 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
-    #ifndef YAW_3508
-        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
-    #else
+    #ifdef CURRENT_6020
+        // return averaged filtered RPM across all online motors
+        float filteredAvg = 0.0f;
+        uint8_t onlineCount = 0;
+        for (uint8_t i = 0; i < YAW_MOTOR_COUNT; i++) {
+            if (yawMotors[i]->isMotorOnline()) {
+                filteredAvg += filteredYawMotorRPMs[i];
+                onlineCount++;
+            }
+        }
+        return (yawMotors[YawIdx]->isMotorOnline() && onlineCount > 0)
+                   ? static_cast<int16_t>(filteredAvg / onlineCount)
+                   : 0;
+    #elif defined(YAW_3508)
         float averageRPM = 0.0f;
         for(int i=0;i<YAW_MOTOR_COUNT;i++){
             averageRPM += yawMotors[i]->getShaftRPM();
         }
         averageRPM = averageRPM / YAW_MOTOR_COUNT;
         return (yawMotors[YawIdx]->isMotorOnline()) ? static_cast<int16_t>(averageRPM) : 0;
+    #else
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
     #endif
     }
 
@@ -263,6 +282,11 @@ private:
 
     std::array<float, YAW_MOTOR_COUNT> desiredYawMotorOutputs;
     std::array<float, PITCH_MOTOR_COUNT> desiredPitchMotorOutputs;
+
+    #ifdef CURRENT_6020
+    std::array<tap::algorithms::filter::DiscreteFilter<4, float>*, YAW_MOTOR_COUNT> yawRPMFilters;
+    std::array<float, YAW_MOTOR_COUNT> filteredYawMotorRPMs;
+    #endif
 
     tap::algorithms::WrappedFloat currentYawAxisAngle;    // average of currentYawAxisAnglesByMotor
     tap::algorithms::WrappedFloat currentPitchAxisAngle;  // chassis relative, in radians

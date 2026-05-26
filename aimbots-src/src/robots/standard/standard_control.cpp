@@ -161,7 +161,7 @@ SpinRandomizerConfig randomizerConfig = {
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 60.0f,
+    .velocityAmplitudeDegreesPerSec = 120.0f,
     .frequencyHz = .2f,
 };
 
