@@ -35,6 +35,7 @@
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_current_tunning_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
@@ -160,6 +161,16 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+GimbalCurrentTunningConfig gimbalYawCurrentTunningConfig = {
+    .currentAmplitude = 3000.0f,  // raw output counts (0–16384)
+    .frequencyHz = 0.2f,
+};
+
+GimbalCurrentTunningConfig gimbalPitchCurrentTunningConfig = {
+    .currentAmplitude = 1000.0f,
+    .frequencyHz = 0.2f,
+};
+
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
     .velocityAmplitudeDegreesPerSec = 120.0f,
     .frequencyHz = .2f,
@@ -235,6 +246,12 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     SHOOTER_SPEED_MATRIX[0][0],
     modm::toRadian(30.0f));
 
+GimbalCurrentTunningCommand gimbalCurrentTunningCommand(
+    drivers(),
+    &gimbal,
+    gimbalYawCurrentTunningConfig,
+    gimbalPitchCurrentTunningConfig);
+
 GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
     drivers(), 
     &gimbal,     
@@ -277,10 +294,11 @@ HoldCommandMapping leftSwitchMid(
 
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    //{&chassisTokyoCommand, &gimbalChaseCommand2},
-    {&gimbalVelocityTunningCommand},
-    //{&gimbalPositionTunningCommand},
+    drivers(),
+    {&chassisTokyoCommand, &gimbalChaseCommand2},
+    // {&gimbalVelocityTunningCommand},
+    // {&gimbalCurrentTunningCommand},
+    // {&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(

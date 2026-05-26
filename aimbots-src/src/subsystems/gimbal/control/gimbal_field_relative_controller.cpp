@@ -206,9 +206,8 @@ void GimbalFieldRelativeController::runYawController(
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
     #ifndef YAW_3508
-        float velocityControllerOutput = yawVelocityPID->runController(
-            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
-            gimbal->getYawMotorTorque(i));
+        float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
         gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward + */velocityControllerOutput);
     #elif defined (ALL_HEROES)
         yawVelocityErrorDisplay = chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i));

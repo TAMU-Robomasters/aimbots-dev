@@ -168,6 +168,11 @@ public:
         return yawMotors[yawIdx]->isMotorOnline() ? yawMotors[yawIdx]->getTorque() : 0;
     }
 
+    // Returns current feedback in mA — same register as torque, valid when in current control mode
+    inline int16_t getYawMotorCurrent(uint8_t yawIdx) const {
+        return yawMotors[yawIdx]->isMotorOnline() ? yawMotors[yawIdx]->getTorque() : 0;
+    }
+
     inline int16_t getPitchMotorTorque(uint8_t pitchIdx) const {
         return pitchMotors[pitchIdx]->isMotorOnline() ? pitchMotors[pitchIdx]->getTorque() : 0;
     }
