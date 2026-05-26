@@ -1,7 +1,6 @@
 #include "gimbal_field_relative_controller.hpp"
 #include "tap/motor/dji_motor_encoder.hpp"
 #include "modm/math/geometry/angle.hpp"
-#include "robots/hero/constants/hero_gimbal_constants.hpp"
 #include "utils/tools/common_types.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
@@ -194,7 +193,7 @@ void GimbalFieldRelativeController::runYawController(
         //         YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
         //     -M3508_MAX_OUTPUT,
         //     M3508_MAX_OUTPUT);
-        float velocityFeedforward = 0.0f
+        float velocityFeedforward = 0.0f;
     #endif
 
         // float velocityFeedforward = speedTarget * GM6020_MAX_OUTPUT;  // for tuning feedforward

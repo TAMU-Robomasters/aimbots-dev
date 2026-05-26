@@ -4,7 +4,6 @@
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 #include "modm/math/geometry/angle.hpp"
-#include "robots/hero/constants/hero_gimbal_constants.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
 
