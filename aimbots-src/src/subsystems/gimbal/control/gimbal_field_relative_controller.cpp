@@ -336,19 +336,18 @@ void GimbalFieldRelativeController::runYawVelocityController(
         yawGimbalMotorPositionTargetDisplay = gimbal->getTargetYawAxisAngle(AngleUnit::Radians);
 
     #ifndef YAW_3508
-        float velocityControllerOutput = yawVelocityPID->runController(
-            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
-            gimbal->getYawMotorTorque(i));
+        float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
+            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
+            velocityErrorDisplay = chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
     #elif defined (ALL_HEROES)
          float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
-        gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     #else //WARN: for some reason sentry not using motor torque for derivative? torque proportionally to accel
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #endif
-        velocityErrorDisplay = chassisRelativeVelocityTarget;
+        //velocityErrorDisplay = chassisRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
 
         gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput + velocityFeedforward);
