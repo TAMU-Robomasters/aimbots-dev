@@ -277,9 +277,9 @@ HoldCommandMapping leftSwitchMid(
 // Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&gimbalPositionTunningCommand},
+    // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
-    // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

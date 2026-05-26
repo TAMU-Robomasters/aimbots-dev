@@ -47,8 +47,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);
 
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (modm::toRadian(-135.0f));
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (modm::toRadian(65.0f));
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (modm::toRadian(-67.5f));
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (modm::toRadian(32.5f));
 
 //20 220
 
