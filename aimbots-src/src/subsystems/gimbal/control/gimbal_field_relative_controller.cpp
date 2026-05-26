@@ -210,7 +210,6 @@ void GimbalFieldRelativeController::runYawController(
             gimbal->getYawMotorTorque(i));
         gimbal->setDesiredYawMotorOutput(i, /*velocityFeedforward + */velocityControllerOutput);
     #elif defined (ALL_HEROES)
-        yawVelocityErrorDisplay = chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque(i));
@@ -220,6 +219,7 @@ void GimbalFieldRelativeController::runYawController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
         gimbal->setDesiredYawMotorOutput(i,velocityControllerOutput + velocityFeedforward);
     #endif
+        yawVelocityErrorDisplay = chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i));
 
         fieldRelativeVelocityTargetDisplay = fieldRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
