@@ -29,6 +29,8 @@ public:
                 // TODO: retune sentry so with the right gear ratio then change the macro to if yaw_3508
                 #ifdef ALL_HEROES
                     new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508);
+                #elif defined (CURRENT_6020)
+                        new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], true, tap::motor::DjiMotorEncoder::GEAR_RATIO_GM6020);
                 #else 
                     new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
                 #endif

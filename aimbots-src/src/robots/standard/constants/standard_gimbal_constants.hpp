@@ -23,6 +23,7 @@ static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 #if defined(TARGET_STANDARD_BLASTOISE)
+#define CURRENT_6020
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(-0.44)-M_PI};

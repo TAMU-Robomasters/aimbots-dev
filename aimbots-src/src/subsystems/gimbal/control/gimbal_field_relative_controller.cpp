@@ -1,7 +1,6 @@
 #include "gimbal_field_relative_controller.hpp"
 #include "tap/motor/dji_motor_encoder.hpp"
 #include "modm/math/geometry/angle.hpp"
-#include "robots/hero/constants/hero_gimbal_constants.hpp"
 #include "utils/tools/common_types.hpp"
 
 #ifdef GIMBAL_COMPATIBLE
@@ -339,7 +338,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
     #ifndef YAW_3508
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
-            gimbal->getYawMotorTorque;
+            gimbal->getYawMotorTorque(i));
     #elif defined (ALL_HEROES)
          float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
