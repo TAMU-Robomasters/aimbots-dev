@@ -77,11 +77,11 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR2;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.0524f;
 
-static constexpr float WHEELBASE_WIDTH = 0.393f;
-
-static constexpr float WHEELBASE_LENGTH = 0.393f;
+ // from CAD
+static constexpr float WHEEL_RADIUS = 0.052068555f;
+static constexpr float WHEELBASE_WIDTH = 0.40656590f;
+static constexpr float WHEELBASE_LENGTH = 0.40656590f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (17.0f / 268.0f);
 
