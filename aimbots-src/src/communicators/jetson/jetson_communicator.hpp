@@ -76,7 +76,7 @@ private:
         .pitch = 0.0f,
         .yaw = 0.0f,
         .timeUntilNextFire = 0,
-        .cvState = CVState::NOT_FOUND
+        .cvState = CVState::NO_TARGET
     };
     JetsonLocalizationMessage lastLocalizationMessage {
         .magic = 0,

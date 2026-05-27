@@ -1,3 +1,5 @@
+#include "robots/sentry/constants/sentry_feeder_constants.hpp"
+#include "robots/sentry/constants/sentry_shooter_constants.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
@@ -31,6 +33,7 @@
 #include "subsystems/feeder/basic_commands/feeder_velocity_pid_tunning.hpp"
 #include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
 #include "subsystems/feeder/complex_commands/feeder_shot_timing_command.hpp"
+#include "subsystems/feeder/complex_commands/autoaim_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
@@ -199,6 +202,14 @@ ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand2(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 
@@ -249,6 +260,7 @@ FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 1, UNJAM_
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 FeederShotTimingCommand feederShotTimingCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
+AutoAimFeederCommand autoAimFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
@@ -315,12 +327,12 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-   // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+   {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
     // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+     // {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -328,8 +340,8 @@ HoldCommandMapping leftSwitchUp(
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    //{&feederShotTimingCommand, &runShooterCommand}, // shot timing
-     {&runShooterCommand},
+    {&autoAimFeederCommand, &runShooterCommand}, // shot timing
+     // {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder

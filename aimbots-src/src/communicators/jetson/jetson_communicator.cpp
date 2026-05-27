@@ -1,8 +1,10 @@
 #include "jetson_communicator.hpp"
+#include <cstdint>
 
 #include <drivers.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
+#include "communicators/jetson/jetson_protocol.hpp"
 
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
@@ -34,8 +36,8 @@ uint32_t timeDisplay = 0;
 
 float targetYawDisplay = 0;
 float targetPitchDisplay = 0;
-uint8_t timeUntilNextFireDisplay = 0;
-CVState cvStateDisplay = CVState::NOT_FOUND;
+uint16_t timeUntilNextFireDisplay = 0;
+CVState cvStateDisplay = CVState::NO_TARGET;
 
 float fieldRelativeYawAngleDisplay = 0;
 float chassisRelativePitchAngleDisplay = 0;
@@ -191,7 +193,7 @@ void JetsonCommunicator::updateSerial() {
                 targetPitchDisplay = modm::toDegree(lastAimMessage.pitch);
                 timeUntilNextFireDisplay = lastAimMessage.timeUntilNextFire;
                 cvStateDisplay = lastAimMessage.cvState;
-                if (lastAimMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
+                if (lastAimMessage.cvState > CVState::NO_TARGET) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
                     fireTimeout.restart(lastAimMessage.timeUntilNextFire);
@@ -200,9 +202,9 @@ void JetsonCommunicator::updateSerial() {
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
-                if (lastAimMessage.cvState == CVState::FOUND) {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
-                } else if (lastAimMessage.cvState == CVState::FIRE) {
+                if (lastAimMessage.cvState == CVState::CONTINUOUS_FIRE) {
+                    tap::buzzer::playNote(&drivers->pwm, 400);
+                } else if (lastAimMessage.cvState == CVState::SHOT_TIMING) {
                     tap::buzzer::playNote(&drivers->pwm, 932);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);

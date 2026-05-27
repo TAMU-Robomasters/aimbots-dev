@@ -1,12 +1,13 @@
 #pragma once
 #include <algorithm>
+#include <cstdint>
 
 namespace src::Informants::Vision {
 
 enum CVState : uint8_t {
-    NOT_FOUND = 0,
-    FOUND = 1,
-    FIRE = 2,
+    NO_TARGET = 0,
+    SHOT_TIMING = 1,
+    CONTINUOUS_FIRE = 2,
 };
 
 static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
@@ -25,7 +26,7 @@ struct JetsonAimMessage {
     uint8_t messageType;
     float pitch;
     float yaw;
-    uint8_t timeUntilNextFire;
+    uint16_t timeUntilNextFire;
     CVState cvState;
 } __attribute__((packed));
 
@@ -51,7 +52,7 @@ struct EmbeddedOdometryMessage {
     float theta; // orientation in radians
 } __attribute__((packed));
 
-static_assert(sizeof(JetsonAimMessage) == 12, "JetsonAimMessage is not the correct size");
+static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
 static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
 

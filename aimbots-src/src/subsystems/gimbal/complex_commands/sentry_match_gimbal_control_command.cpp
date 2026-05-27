@@ -1,4 +1,5 @@
 #include "sentry_match_gimbal_control_command.hpp"
+#include "communicators/jetson/jetson_protocol.hpp"
 
 #ifdef ALL_SENTRIES
 
@@ -42,8 +43,7 @@ void SentryMatchGimbalControlCommand::execute() {
         return;
     }
 
-    if (drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FOUND ||
-        drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FIRE) {
+    if (drivers->cvCommunicator.getLastValidAimMessage().cvState > src::Informants::Vision::NO_TARGET) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
      //   descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
         chaseTimeout.restart(chaseTimeoutMillis);
