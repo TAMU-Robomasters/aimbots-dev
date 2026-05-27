@@ -22,7 +22,8 @@ public:
     uint16_t getData() const;
     float getVelocity() const;
     int64_t getUnwrappedPosition() const;
-    uint16_t getAngleRadians() const;
+    float getAngleRadians() const;
+    float getUnwrappedPositionRadians() const;
 
 private:
     static inline float RevEncoderValueToRadians(int64_t encoderValue) {

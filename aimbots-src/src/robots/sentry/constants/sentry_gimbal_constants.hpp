@@ -56,7 +56,7 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 3.0f);  // for 2024 Sentr
  * every time. We also assume that 1 / GIMBAL_YAW_GEAR_RATIO is an integer multiple of 360deg. */
 
 //For velocity control on 3508 yaw
-static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
+static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (2.0f / 1.0f);
 
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
@@ -107,7 +107,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 90.0f,  // 35
+    .kp = 9.0f,  // 35
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -136,9 +136,9 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 200.0f,
-    .ki = 0.3f,
-    .kd = 50.0f,
+    .kp = 1000.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
     .maxICumulative = 2000.0f,
     .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
