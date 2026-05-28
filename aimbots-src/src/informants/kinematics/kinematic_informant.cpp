@@ -117,34 +117,35 @@ float KinematicInformant::getIMULinearAcceleration(LinearAxis axis) {  // Gets I
     }
     return 0;
 }
+float disSlope = 0.0f;
+uint32_t time0Dis = 0,time1Dis=0,time2Dis = 0;
+float angle1Dis=0.0f,angle2Dis = 0.0f;
 
 #ifdef CHASSIS_IMU
 
 Vector3f chassisAnglesConvertedDisplay;
 Vector3f IMUAnglesDisplay;
-int numValue = 0;
-uint32_t time1,time2;
-float angle1,angle2;
-float Zslope = 0.0f;
-
 void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngles = getLocalIMUAngles();
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
+        float imuTemp = drivers->bmi088.getTemp();
+    if(imuTemp > 50.0 && !atTemp){
+        atTemp = true;
+        time0 = tap::arch::clock::getTimeMilliseconds();
+    }
+
     //collects averavge slope on startup
-    if(numValue <= 3000){
-        if(numValue == 500){
+    if(atTemp){
+        if(tap::arch::clock::getTimeMilliseconds() >= time0+500 && time1 == 0){
         time1 = tap::arch::clock::getTimeMilliseconds();
         angle1 = IMUAngles.z;
-        }
-        if(numValue == 3000){
+        }else if(time2==0&&time1!=0&&tap::arch::clock::getTimeMilliseconds() >= time1+5000){
             time2 = tap::arch::clock::getTimeMilliseconds();
             angle2 = IMUAngles.z;
             Zslope = (angle2 - angle1)/(time2-time1);
         }
-        numValue++;
     }
-    
     IMUAngles.z = IMUAngles.z - (Zslope*tap::arch::clock::getTimeMilliseconds());
     IMUAnglesDisplay = IMUAngles;
 
@@ -475,10 +476,6 @@ float IMUYawAngleCorrected;
 
 float IMUYawAngleDisplayGood;
 //variables to accouint for 
-int numValues = 0;
-uint32_t time1,time2;
-float angle1,angle2;
-float Zslope = 0.0f;
 
 float unwrapAngleZ(float wrappedZ) {
     static float prevWrappedZ = 0.0f;
@@ -521,18 +518,22 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawPosEncoder = drivers->revEncoder.getUnwrappedPositionRadians();
 
     Vector3f IMUAngles = getLocalIMUAngles();
+    float imuTemp = drivers->bmi088.getTemp();
+    if(imuTemp > 50.0 && !atTemp){
+        atTemp = true;
+        time0 = tap::arch::clock::getTimeMilliseconds();
+    }
+
     //collects averavge slope on startup
-    if(numValues <= 4000){
-        if(numValues == 500){
+    if(atTemp){
+        if(tap::arch::clock::getTimeMilliseconds() >= time0+500 && time1 == 0){
         time1 = tap::arch::clock::getTimeMilliseconds();
         angle1 = IMUAngles.z;
-        }
-        if(numValues == 4000){
+        }else if(time2==0&&time1!=0&&tap::arch::clock::getTimeMilliseconds() >= time1+5000){
             time2 = tap::arch::clock::getTimeMilliseconds();
             angle2 = IMUAngles.z;
             Zslope = (angle2 - angle1)/(time2-time1);
         }
-        numValues++;
     }
     IMUAngles.z = IMUAngles.z - Zslope*tap::arch::clock::getTimeMilliseconds();
     IMUYawAngleCorrected = IMUAngles.z;
@@ -548,7 +549,6 @@ void KinematicInformant::updateChassisIMUAngles() {
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
-    numValues++;
     
     IMUYawAngleDisplayGood = IMUAngles.z;
 
