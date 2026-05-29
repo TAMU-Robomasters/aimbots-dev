@@ -216,11 +216,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,  // 30 //12
+    .kp = 25.0f,  // 30 //12
     .ki = 0.0f,
-    .kd = 0.8,
+    .kd = 0.0f,
     .maxICumulative = 2'000.0f,
-    .maxOutput = tap::motor::DjiMotor::MAX_OUTPUT_GM6020_mA,  // 40 rad/s is maximum speed of 6020
+    .maxOutput = 40,  // 40 rad/s is maximum speed of 6020
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -257,6 +257,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .tRProportionalKalman = 1.0f,
     .errDeadzone = 0.0f,
     .errorDerivativeFloor = 0.0f,
+    .antiSaturation = true
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {

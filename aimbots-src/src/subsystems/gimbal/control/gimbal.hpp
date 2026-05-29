@@ -135,20 +135,20 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
-    #ifdef CURRENT_6020
-        // return averaged filtered RPM across all online motors
-        float filteredAvg = 0.0f;
-        uint8_t onlineCount = 0;
-        for (uint8_t i = 0; i < YAW_MOTOR_COUNT; i++) {
-            if (yawMotors[i]->isMotorOnline()) {
-                filteredAvg += filteredYawMotorRPMs[i];
-                onlineCount++;
-            }
-        }
-        return (yawMotors[YawIdx]->isMotorOnline() && onlineCount > 0)
-                   ? static_cast<int16_t>(filteredAvg / onlineCount)
-                   : 0;
-    #elif defined(YAW_3508)
+    // #ifdef CURRENT_6020
+    //     // return averaged filtered RPM across all online motors
+    //     float filteredAvg = 0.0f;
+    //     uint8_t onlineCount = 0;
+    //     for (uint8_t i = 0; i < YAW_MOTOR_COUNT; i++) {
+    //         if (yawMotors[i]->isMotorOnline()) {
+    //             filteredAvg += filteredYawMotorRPMs[i];
+    //             onlineCount++;
+    //         }
+    //     }
+    //     return (yawMotors[YawIdx]->isMotorOnline() && onlineCount > 0)
+    //                ? static_cast<int16_t>(filteredAvg / onlineCount)
+    //                : 0;
+    #if defined(YAW_3508)
         float averageRPM = 0.0f;
         for(int i=0;i<YAW_MOTOR_COUNT;i++){
             averageRPM += yawMotors[i]->getShaftRPM();
