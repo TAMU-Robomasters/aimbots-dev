@@ -1,4 +1,5 @@
 #include "subsystems/feeder/control/feeder.hpp"
+#include <cstdlib>
 
 #include <utils/tools/common_types.hpp>
 
@@ -85,6 +86,11 @@ void FeederSubsystem::refresh() {
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
+    if (abs(feederTargetRPMs[FeederIdx]) <= 10.0f) { // turn off feeder so it doesn't overheat
+        setDesiredFeederMotorOutput(FeederIdx, 0.0f);
+        return;
+    }
+
     if (updateFeederVelocityPIDsDebug) { // for PID tunning through Ozone
         feederVelocityPIDs[FeederIdx]->pid.setP(feederVelocityP);
         feederVelocityPIDs[FeederIdx]->pid.setI(feederVelocityI);
