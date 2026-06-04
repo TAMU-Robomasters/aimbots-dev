@@ -8,6 +8,7 @@
 
 #include "projectile_launch_speed_predictor.hpp"
 #include "ref_helper_interface.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 
 using RefSerialRxData = tap::communication::serial::RefSerialData::Rx;
 

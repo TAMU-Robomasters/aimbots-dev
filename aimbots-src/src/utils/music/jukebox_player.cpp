@@ -19,6 +19,13 @@ static constexpr Song* songsList[] = {
     &BadPiggies, 
     &boonie,
     &WeenWao,
+    &giornoTheme,
+    &granny,
+    &terraria,
+    &canYouHearTheDub,
+    &fallenDown,
+    &redBaron,
+    &crazyTrain
 };
 
 JukeboxPlayer::JukeboxPlayer(src::Drivers* drivers) : drivers(drivers), currentSongTitle(NONE) {}

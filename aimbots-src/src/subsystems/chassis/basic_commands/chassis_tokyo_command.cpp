@@ -3,6 +3,8 @@
 #ifdef GIMBAL_UNTETHERED
 #ifdef CHASSIS_COMPATIBLE
 
+#include <chrono>
+
 #include <subsystems/chassis/control/chassis_helper.hpp>
 
 #include "subsystems/chassis/control/chassis_helper.hpp"
@@ -25,7 +27,7 @@ ChassisTokyoCommand::ChassisTokyoCommand(
       tokyoConfig(tokyoConfig),
       spinDirectionOverride(spinDirectionOverride),
       randomizeSpinRate(randomizeSpinRate),
-      randomizerConfig(randomizerConfig)  //
+      randomizerConfig(randomizerConfig)  // 
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
@@ -44,6 +46,12 @@ void ChassisTokyoCommand::initialize() {
         spinRateModifierTimer.restart(0);
     }
 }
+
+float xTargetDisplay = 0.0f;
+float rampTargetDisplay = 0.0f;
+float spinRateModDisplay = 0.0f;
+bool boolDisplay = false;
+uint16_t timerLeftDisplay = 0;
 
 void ChassisTokyoCommand::execute() {
     chassis->setTokyoDrift(true);
@@ -64,7 +72,7 @@ void ChassisTokyoCommand::execute() {
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-        #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+        #if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)||defined(SENTRY_SWERVE) || defined (ALL_HEROES)
             maxWheelSpeed = 4000;
         #endif
 
@@ -75,33 +83,53 @@ void ChassisTokyoCommand::execute() {
                                                   tokyoConfig.translationThresholdToDecreaseRotationSpeed;
 
         float rampTarget = maxWheelSpeed * rotationDirection * tokyoConfig.rotationalSpeedFractionOfMax;
-
+        // boolDisplay = randomizeSpinRate;
         if (randomizeSpinRate) {
+            // timerLeftDisplay = spinRateModifierTimer.timeRemaining();
+            // boolDisplay = spinRateModifierTimer.isExpired() || spinRateModifierTimer.isStopped();
             if (spinRateModifierTimer.isExpired() || spinRateModifierTimer.isStopped()) {
+                // vvvv Previous randomizer
                 Helper::randomizeSpinCharacteristics(
                     &this->spinRateModifier,
                     &this->spinRateModifierDuration,
                     randomizerConfig);
                 spinRateModifierTimer.restart(spinRateModifierDuration);
+
+                // Helper::sinusodalSpinCharacteristics(
+                //     &this->spinRateModifier,
+                //     &this->spinRateModifierDuration,
+                //     randomizerConfig);
+                // spinRateModifierTimer.restart(spinRateModifierDuration); // im assuming ts in sec
             }
-            rampTarget *= spinRateModifier;
+
+            // Helper::sinusodalSpinCharacteristics(
+            //     &this->spinRateModifier,
+            //     &this->spinRateModifierDuration,
+            //     randomizerConfig);
+            // spinRateModifierTimer.restart(spinRateModifierDuration); // im assuming ts in sec
+
+            rampTarget *= spinRateModifier; // This is what changes speed? ZHENGHAO-99
         }
+        
 
         // reduces rotation speed when translation speed is high
         if (fabsf(desiredX) > translationalSpeedThreshold || fabsf(desiredY) > translationalSpeedThreshold) {
             rampTarget *= tokyoConfig.rotationalSpeedMultiplierWhenTranslating;
         }
+        spinRateModDisplay = spinRateModifier;
+        rampTargetDisplay = rampTarget;
 
         rotationSpeedRamp.setTarget(rampTarget);
         rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
         desiredRotation = rotationSpeedRamp.getValue();
-
+        
         rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
 
     } else {
+        xTargetDisplay = 69420.67;
         Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
-
+    xTargetDisplay = desiredX;
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 

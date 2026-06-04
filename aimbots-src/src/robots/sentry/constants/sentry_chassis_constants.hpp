@@ -3,10 +3,10 @@
 #include "utils/tools/common_types.hpp"
 
 #define CHASSIS_COMPATIBLE
-#define TURRET_IMU // IMU migration and whatnot
 
 #if defined(TARGET_SENTRY_SWERVE)
 #define SWERVE
+#define TURRET_IMU
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 
 static constexpr MotorID LEFT_BACK_YAW_ID = MotorID::MOTOR5;
@@ -15,9 +15,9 @@ static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 23.0f, //30.0f
     .ki = 0.0f,
-    .kd = 0.0f,
+    .kd = 0.01f,
     .maxICumulative = 0.9f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
@@ -28,10 +28,10 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int LEFT_FRONT_YAW_OFFSET = 2090;
-static constexpr int RIGHT_FRONT_YAW_OFFSET = 7460;
-static constexpr int LEFT_BACK_YAW_OFFSET = 6117;
-static constexpr int RIGHT_BACK_YAW_OFFSET = 7500;
+static constexpr int LEFT_FRONT_YAW_OFFSET = 7457;
+static constexpr int RIGHT_FRONT_YAW_OFFSET = 7573;
+static constexpr int LEFT_BACK_YAW_OFFSET = 645;
+static constexpr int RIGHT_BACK_YAW_OFFSET = 4779;
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -77,11 +77,11 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR2;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.0635f;
 
-static constexpr float WHEELBASE_WIDTH = 0.393f;
-
-static constexpr float WHEELBASE_LENGTH = 0.393f;
+ // from CAD
+static constexpr float WHEEL_RADIUS = 0.052068555f;
+static constexpr float WHEELBASE_WIDTH = 0.40656590f;
+static constexpr float WHEELBASE_LENGTH = 0.40656590f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (17.0f / 268.0f);
 

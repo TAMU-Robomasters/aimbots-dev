@@ -11,11 +11,11 @@ static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
  */
 // clang-format off
 
-// Updated for 2024 Sentry
+// Updated for 2025 Sentry
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.001498f, // x //-0.017473 //-0.013f  //-0.001498,
-    0.171927f, // y  //0.171927 //0.1755f  //0.171927f,
-    -0.046239f,  // z  //0.046239 //-0.044f  //-0.046239f
+    -0.022025f, 
+    0.139188f,
+    0.0047f, 
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used

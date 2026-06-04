@@ -153,5 +153,5 @@
   ]
   },
   "C_Cpp.intelliSenseEngineFallback": "enabled",
-  "python-envs.defaultEnvManager": "ms-python.python:venv",
+  "C_Cpp.default.compilerPath": "/opt/homebrew/bin/arm-none-eabi-g++",
 }

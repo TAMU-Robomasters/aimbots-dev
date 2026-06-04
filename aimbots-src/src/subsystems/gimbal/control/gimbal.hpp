@@ -4,6 +4,7 @@
 #include <tap/algorithms/wrapped_float.hpp>
 #include <tap/control/subsystem.hpp>
 #include <utils/tools/common_types.hpp>
+#include "tap/motor/dji_motor.hpp"
 
 #include "subsystems/gimbal/gimbal_constants.hpp"
 
@@ -25,7 +26,12 @@ public:
     void BuildYawMotors() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawMotors[i] =
-                new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
+                // TODO: retune sentry so with the right gear ratio then change the macro to if yaw_3508
+                #ifdef YAW_3508
+                    new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508);
+                #else 
+                    new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i]);
+                #endif
             currentYawAxisAnglesByMotor[i] = new tap::algorithms::WrappedFloat(0.0f, -M_PI, M_PI);
         }
     }
@@ -121,7 +127,16 @@ public:
     void setAllDesiredPitchMotorOutputs(uint16_t output) { desiredPitchMotorOutputs.fill(output); }
 
     inline int16_t getYawMotorRPM(uint8_t YawIdx) const {
+    #ifndef YAW_3508
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getShaftRPM() : 0;
+    #else
+        float averageRPM = 0.0f;
+        for(int i=0;i<YAW_MOTOR_COUNT;i++){
+            averageRPM += yawMotors[i]->getShaftRPM();
+        }
+        averageRPM = averageRPM / YAW_MOTOR_COUNT;
+        return (yawMotors[YawIdx]->isMotorOnline()) ? static_cast<int16_t>(averageRPM) : 0;
+    #endif
     }
 
     inline int16_t getPitchMotorRPM(uint8_t PitchIdx) const {
@@ -177,17 +192,17 @@ public:
     }
 
     inline float getYawMotorAngleUnwrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderUnwrapped())
+        return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoder()->getPosition().getUnwrappedValue() /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
 
     inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
-        return (yawMotors[YawIdx]->isMotorOnline()) ? DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoderWrapped())
+        return (yawMotors[YawIdx]->isMotorOnline()) ? getEncoderWrapped(yawMotors[YawIdx]) //CHANGED HERE /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
     inline float getPitchMotorAngleWrapped(uint8_t PitchIdx) const {
         return (pitchMotors[PitchIdx]->isMotorOnline())
-                   ? DJIEncoderValueToRadians(pitchMotors[PitchIdx]->getEncoderWrapped())
+                   ? DJIEncoderValueToRadians(getEncoderWrapped(pitchMotors[PitchIdx]))
                    : 0.0f;
     }
 

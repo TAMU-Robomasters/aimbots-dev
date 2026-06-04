@@ -24,7 +24,8 @@
 
 inline float pow2(float x) { return x * x; }
 
-static inline float wrapTo0To2PIRange(float angle) {
+// prbabl deprecae his
+static inline float wrapTo0To2PIRange(float angle) { // suppsed  be [-pi pi] ZHENG-HA
     if (angle < 0.0f) {
         return angle + M_TWOPI;
     } else if (angle > M_TWOPI) {
@@ -32,6 +33,16 @@ static inline float wrapTo0To2PIRange(float angle) {
     } else {
         return angle;
     }
+}
+
+static inline float wrapNegPIPI(float angle) { // suppsed  be [-pi pi] ZHENG-HA
+    if(angle < -M_PI) {
+        return angle + M_TWOPI;
+    }
+    else if(angle > M_PI) {
+        return angle - M_TWOPI;
+    }
+    return angle;
 }
 
 template <typename T>
@@ -49,11 +60,21 @@ int sgn(T val) {
 using DJIMotor = tap::mock::DjiMotorMock;
 #else
 #include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 using DJIMotor = tap::motor::DjiMotor;
+using DJIMotorEncoder = tap::motor::DjiMotorEncoder;
 #endif
 
 static inline float DJIEncoderValueToRadians(int64_t encoderValue) {
-    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotor::ENC_RESOLUTION;
+    return (M_TWOPI * static_cast<float>(encoderValue)) / DJIMotorEncoder::ENC_RESOLUTION;
+}
+
+static inline float RevEncoderValueToRadians(int64_t encoderValue) {
+    return (M_TWOPI * (static_cast<float>(encoderValue) / 65535.0f));
+}
+
+static inline float getEncoderWrapped(const DJIMotor* motor){
+    return motor->getEncoder()->getPosition().getWrappedValue() - M_PI;
 }
 
 enum class AngleUnit : uint8_t {
@@ -70,7 +91,7 @@ enum Dimensions { X = 0, Y = 1, Z = 2, TIME = 2 };
 // :)
 enum LinearAxis : uint8_t { X_AXIS = 0, Y_AXIS = 1, Z_AXIS = 2 };
 
-enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH, DUNE, FREEBIRD, BADPIGGIES, BOONIE, WEENWAO};
+enum SongTitle : uint8_t { NONE = 0, PACMAN, WE_ARE_NUMBER_ONE, CHAINSAW_MAN, MYSTERY, CRAB_RAVE, ZELDA, LG_WASH, DUNE, FREEBIRD, BADPIGGIES, BOONIE, WEENWAO, GIORNOTHEME, GRANNY, TERRARIA, CAN_YOU_HEAR_THE_DUB, FALLEN_DOWN, RED_BARON, CRAZY_TRAIN};
 
 enum FeederGroup : uint8_t {
     ALL = 0,    // Command goes to all feeder motors
@@ -84,7 +105,7 @@ static constexpr float DS3218_MAX_PWM = 0.85f;
 
 static constexpr float M3508_MAX_OUTPUT = 16'384.0f;
 static constexpr float M2006_MAX_OUTPUT = 10'000.0f;
-static constexpr float GM6020_MAX_OUTPUT = 30'000.0f;
+static constexpr float GM6020_MAX_OUTPUT = 25'000.0f;
 
 static constexpr float GM6020_VELOCITY_FILTER_ALPHA = 1.0f;
 

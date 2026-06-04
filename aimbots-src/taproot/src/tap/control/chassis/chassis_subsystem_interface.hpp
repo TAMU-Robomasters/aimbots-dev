@@ -25,7 +25,6 @@
 #define TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
-#include "tap/motor/dji_motor.hpp"
 
 #include "../subsystem.hpp"
 #include "modm/math/matrix.hpp"
@@ -55,7 +54,7 @@ public:
      *      where vz is rotational velocity. This is the velocity calculated from the chassis's
      *      encoders. Units: m/s
      */
-    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() const = 0;
+    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() = 0;
 
     /**
      * Transforms the chassis relative velocity of the form <vx, vy, vz> (where z is an

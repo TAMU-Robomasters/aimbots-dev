@@ -22,11 +22,9 @@
 #elif defined(TARGET_SENTRY_BRAVO) || defined(TARGET_SENTRY_SWERVE)
 #include "robots/sentry/constants/sentry_general_constant.hpp"
 #include "robots/sentry/sentry_control_interface.hpp"
-#define TURRET_IMU
 #define ALL_SENTRIES
 
-#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || \
-    defined(TARGET_STANDARD_2025)
+#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || defined(TARGET_STANDARD_2025)
 #include "robots/standard/constants/standard_general_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS

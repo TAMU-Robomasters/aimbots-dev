@@ -2,6 +2,8 @@
 
 #include "utils/math/random.hpp"
 
+#include "tap/architecture/clock.hpp"
+
 
 #ifdef CHASSIS_COMPATIBLE
 
@@ -42,7 +44,7 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
     
-    #if defined(STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+    #if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
     maxWheelSpeed = 4000;
     #endif
 
@@ -66,6 +68,47 @@ void randomizeSpinCharacteristics(
     *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
         randomizerConfig.minSpinRateModifierDuration,
         randomizerConfig.maxSpinRateModifierDuration);
+}
+
+// TODO: make new helper similar to randomizeSpinCharacteristics
+// Takes in a time arg so it allows sin function
+
+float timeDisplay = 0.0f;
+float ampDisplay = 0.0f;
+float sinDisplay = 0.0f;
+
+
+void sinusodalSpinCharacteristics( // ZHENGHAO-99
+    float* spinRateModifier,
+    uint32_t* spinRateModifierDuration,
+    SpinRandomizerConfig randomizerConfig,
+    bool complex) {
+    
+    // auto timeNow = std::chrono::system_clock::now();
+    auto timeEpoch = tap::arch::clock::getTimeMilliseconds();
+    float ms = static_cast<float>(timeEpoch % 1000000000);
+    
+    timeDisplay = ms;
+    
+    float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.minSpinRateModifier;
+    ampDisplay = amp;
+    
+    // sinDisplay = std::sin(0.0023*ms);
+    
+    if(!complex) {
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms)); // idk man
+    }
+    else {
+        // idk js multiply random sins together
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+    }
+
+    *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration; // ts probably not needed lmao ZHENG-HAO
+    // *spinRateModifierDuration = src::Utils::Random::getRandomIntegerInBounds(
+    //     randomizerConfig.minSpinRateModifierDuration,
+    //     randomizerConfig.maxSpinRateModifierDuration);
+
+    
 }
 
 // Pass a ChassisRelative Error to this function, and it will return the error for the nearest chassis corner

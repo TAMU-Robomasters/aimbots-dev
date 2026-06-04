@@ -111,21 +111,24 @@ public:
      */
     virtual void refreshSafeDisconnect() {}
 
-    mockable inline bool isHardwareTestComplete() const { return hardwareTestsComplete; }
+    /**
+     * Sets the test command of the `Subsystem`. The test command can be run
+     * by calling `CommandScheduler::runHardwareTests`.
+     *
+     * Test commands must keep track of their state so that `Command::isFinished`
+     * continues to return true after the command has ended.
+     *
+     * @param testCommand the test Command to associate with this subsystem
+     */
+    mockable void setTestCommand(Command* testCommand);
 
-    mockable inline void setHardwareTestsIncomplete()
-    {
-        hardwareTestsComplete = false;
-        onHardwareTestStart();
-    }
-
-    mockable inline void setHardwareTestsComplete()
-    {
-        hardwareTestsComplete = true;
-        onHardwareTestComplete();
-    }
-
-    virtual void runHardwareTests() { setHardwareTestsComplete(); }
+    /**
+     * Gets the test command for this subsystem. Returns `nullptr` if no test
+     * command is currently associated with the subsystem.
+     *
+     * @return the test command associated with this subsystem
+     */
+    mockable inline Command* getTestCommand() const { return testCommand; }
 
     virtual const char* getName() const;
 
@@ -134,14 +137,10 @@ public:
 protected:
     Drivers* drivers;
 
-    bool hardwareTestsComplete = false;
-
-    virtual void onHardwareTestStart() {}
-
-    virtual void onHardwareTestComplete() {}
-
 private:
     Command* defaultCommand;
+
+    Command* testCommand;
 
     /**
      * An identifier unique to a subsystem that will be assigned to it automatically upon
