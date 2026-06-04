@@ -68,7 +68,7 @@ uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 float powerDis = 69.0f;
-float imuTempDis = 0.0f;
+float imuTemp = 0.0f;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -106,8 +106,8 @@ int main() {
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
-            imuTempDis = drivers->bmi088.getTemp();
-            if(imuTempDis > 50.0 && !atTemp){
+            imuTemp = drivers->bmi088.getTemp();
+            if(imuTemp > 50.0 && imuTemp < 51.0 && !atTemp){
                 atTemp = true;
             }
         }
