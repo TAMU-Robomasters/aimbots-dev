@@ -43,9 +43,8 @@ void VtmCan::initialize()
 
 void VtmCan::read()
 {
-    // only call this in one place
-    // in all fairness, this should be in main and not here
-    drivers->canRxHandler.pollCanData();
+    //already called in main but just here for debugging
+    //drivers->canRxHandler.pollCanData();
 
     sendPollRtrIfDue();
 }
@@ -93,7 +92,6 @@ void VtmCan::handleRespFrame(const modm::can::Message& rxMessage)
     memcpy(segPayload[seg], &rxMessage.data[2], BYTES_PER_SEG);
     segReceived[seg] = true;
 
-    // assemble 30B if all segments present
     bool all = true;
     for (int i = 0; i < NUM_SEGS; i++) all = all && segReceived[i];
     if (!all) return;

@@ -80,6 +80,7 @@ float powerDis = 69.0f;
 // uint8_t  dbg_can351_b1 = 0;
 
 bool button1Display = false;
+float chassisPowerDisplay = 0;
 
 bool actualattachDisplay = false;
 
@@ -166,6 +167,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->vtmCan.initialize();
     //drivers->can351Listener.initialize(); can debug class
     drivers->customController.initialize();
+    drivers->espPowerSensor.initialize();
 #ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
@@ -208,8 +210,7 @@ static void updateIo(src::Drivers *drivers) {
 #endif
 
 #ifndef TARGET_TURRET
-    drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
-    //drivers->vtmCan.read();
+    drivers->canRxHandler.pollCanData();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
@@ -249,8 +250,12 @@ static void updateIo(src::Drivers *drivers) {
     // dbg_can351_b1 = drivers->can351Listener.lastByte1;
 
     drivers->customController.read();
+    drivers->espPowerSensor.read();
 
     button1Display = drivers->customController.button1Pressed();
+
+    chassisPowerDisplay = drivers->espPowerSensor.getPower();
+
 
      yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
      pitchDisplay =
