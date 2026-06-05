@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/complex_commands/feeder_shot_timing_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
@@ -12,6 +13,8 @@
 namespace src::Feeder {
 
 static constexpr uint32_t NO_TARGET_IDLE_TIMEOUT_MS = 500;
+
+ enum AutoAimFeederState : uint8_t { IDLE, CONTINUOUS_FIRE, SHOT_TIMING };
 
 class AutoAimFeederCommand : public TapComprisedCommand {
 public:
@@ -34,12 +37,11 @@ public:
     char const* getName() const override { return "Auto-Aim Feeder Command"; }
 
 private:
-    enum class FeederState { IDLE, CONTINUOUS_FIRE, SHOT_TIMING };
 
     src::Drivers* drivers;
     DualBarrelFeederCommand dualBarrelFeederCommand;
     FeederShotTimingCommand feederShotTimingCommand;
-    FeederState currentState = FeederState::IDLE;
+    AutoAimFeederState currentState = AutoAimFeederState::IDLE;
     tap::arch::MilliTimeout noTargetTimer;
 };
 

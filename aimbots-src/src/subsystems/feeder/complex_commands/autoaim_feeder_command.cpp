@@ -13,6 +13,8 @@
 
 namespace src::Feeder {
 
+AutoAimFeederState autoAimFeederStateDisplay = AutoAimFeederState::IDLE;
+
 AutoAimFeederCommand::AutoAimFeederCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
@@ -32,7 +34,7 @@ AutoAimFeederCommand::AutoAimFeederCommand(
 void AutoAimFeederCommand::initialize() {
     descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
     descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
-    currentState = FeederState::IDLE;
+    currentState = AutoAimFeederState::IDLE;
     noTargetTimer.stop();
 }
 
@@ -43,33 +45,33 @@ void AutoAimFeederCommand::execute() {
     if (!jetsonOnline) {
         descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
         descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
-        currentState = FeederState::IDLE;
+        currentState = AutoAimFeederState::IDLE;
         noTargetTimer.stop();
         return;
     }
-
+    autoAimFeederStateDisplay = currentState;
     switch (currentState) {
-        case FeederState::IDLE:
+        case AutoAimFeederState::IDLE:
             if (autoAimState == Informants::Vision::CONTINUOUS_FIRE) {
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand);
-                currentState = FeederState::CONTINUOUS_FIRE;
+                currentState = AutoAimFeederState::CONTINUOUS_FIRE;
             } else if (autoAimState == Informants::Vision::SHOT_TIMING) {
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand);
-                currentState = FeederState::SHOT_TIMING;
+                currentState = AutoAimFeederState::SHOT_TIMING;
             }
             break;
 
-        case FeederState::CONTINUOUS_FIRE:
+        case AutoAimFeederState::CONTINUOUS_FIRE:
             if (autoAimState == Informants::Vision::SHOT_TIMING) {
                 noTargetTimer.stop();
                 descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand);
-                currentState = FeederState::SHOT_TIMING;
+                currentState = AutoAimFeederState::SHOT_TIMING;
             } else if (autoAimState == Informants::Vision::NO_TARGET) {
                 if (noTargetTimer.isStopped()) noTargetTimer.restart(NO_TARGET_IDLE_TIMEOUT_MS);
                 if (noTargetTimer.isExpired()) {
                     descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
-                    currentState = FeederState::IDLE;
+                    currentState = AutoAimFeederState::IDLE;
                     noTargetTimer.stop();
                 }
             } else {
@@ -77,17 +79,17 @@ void AutoAimFeederCommand::execute() {
             }
             break;
 
-        case FeederState::SHOT_TIMING:
+        case AutoAimFeederState::SHOT_TIMING:
             if (autoAimState == Informants::Vision::CONTINUOUS_FIRE) {
                 noTargetTimer.stop();
                 descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand);
-                currentState = FeederState::CONTINUOUS_FIRE;
+                currentState = AutoAimFeederState::CONTINUOUS_FIRE;
             } else if (autoAimState == Informants::Vision::NO_TARGET) {
                 if (noTargetTimer.isStopped()) noTargetTimer.restart(NO_TARGET_IDLE_TIMEOUT_MS);
                 if (noTargetTimer.isExpired()) {
                     descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
-                    currentState = FeederState::IDLE;
+                    currentState = AutoAimFeederState::IDLE;
                     noTargetTimer.stop();
                 }
             } else {
@@ -95,6 +97,7 @@ void AutoAimFeederCommand::execute() {
             }
             break;
     }
+    comprisedCommandScheduler.run();
 }
 
 void AutoAimFeederCommand::end(bool interrupted) {

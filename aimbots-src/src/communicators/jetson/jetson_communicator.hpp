@@ -21,6 +21,7 @@ enum class JetsonCommunicatorSerialState : uint8_t {
     HandleMessageType,
     AssemblingAimMessage,
     AssemblingLocalizationMessage,
+    AssemblingVelocityMessage,
 };
 
 struct AutoAimAngles {
@@ -41,11 +42,17 @@ public:
 
     inline JetsonAimMessage const& getLastValidAimMessage() const { return lastAimMessage; }
     inline JetsonLocalizationMessage const& getLastValidLocalizationMessage() const { return lastLocalizationMessage; }
+    inline JetsonVelocityMessage const& getLastValidVelocityMessage() const { return lastVelocityMessage; }
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
     AutoAimAngles getAutoAimAngles() const;
     modm::Location2D<float> getLocationEstimate() const;
+
+    // Field-relative chassis velocity command (m/s) from nav2 on the Jetson.
+    inline modm::Vector2f getDesiredFieldRelativeVelocity() const {
+        return modm::Vector2f(lastVelocityMessage.vx, lastVelocityMessage.vy);
+    }
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
@@ -84,6 +91,12 @@ private:
         .x = 0.0f,
         .y = 0.0f,
         .theta = 0.0f
+    };
+    JetsonVelocityMessage lastVelocityMessage {
+        .magic = 0,
+        .messageType = 0,
+        .vx = 0.0f,
+        .vy = 0.0f
     };
 
     EmbeddedTransformationMessage transformationMessageToJetson;

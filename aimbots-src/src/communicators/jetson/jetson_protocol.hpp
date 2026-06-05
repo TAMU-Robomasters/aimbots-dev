@@ -21,6 +21,8 @@ static constexpr uint8_t JETSON_LOCALIZATION_MESSAGE = 'l';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
 static constexpr uint8_t JETSON_ODOMETRY_QUERY = 'q';
 
+static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 field-relative chassis velocity command
+
 struct JetsonAimMessage {
     uint8_t magic;
     uint8_t messageType;
@@ -38,6 +40,13 @@ struct JetsonLocalizationMessage {
     float theta; // orientation in radians
 } __attribute__((packed));
 
+struct JetsonVelocityMessage {
+    uint8_t magic;
+    uint8_t messageType;
+    float vx; // field-relative chassis velocity, m/s
+    float vy; // field-relative chassis velocity, m/s
+} __attribute__((packed));
+
 struct EmbeddedTransformationMessage {
     uint8_t magic;
     float yaw;
@@ -53,11 +62,14 @@ struct EmbeddedOdometryMessage {
 } __attribute__((packed));
 
 static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the correct size");
+static_assert(sizeof(JetsonVelocityMessage) == 10, "JetsonVelocityMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
 static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
 
 static constexpr size_t JETSON_AIM_MESSAGE_SIZE = sizeof(JetsonAimMessage);
 static constexpr size_t JETSON_LOCALIZATION_MESSAGE_SIZE = sizeof(JetsonLocalizationMessage);
+static constexpr size_t JETSON_VELOCITY_MESSAGE_SIZE = sizeof(JetsonVelocityMessage);
 
-static constexpr size_t JETSON_MAX_MESSAGE_SIZE = std::max(JETSON_AIM_MESSAGE_SIZE, JETSON_LOCALIZATION_MESSAGE_SIZE);
+static constexpr size_t JETSON_MAX_MESSAGE_SIZE =
+    std::max({JETSON_AIM_MESSAGE_SIZE, JETSON_LOCALIZATION_MESSAGE_SIZE, JETSON_VELOCITY_MESSAGE_SIZE});
 }  // namespace src::Informants::Vision

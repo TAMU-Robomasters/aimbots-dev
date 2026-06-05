@@ -340,7 +340,7 @@ HoldCommandMapping leftSwitchUp(
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    {&autoAimFeederCommand, &runShooterCommand}, // shot timing
+    {&autoAimFeederCommand, &runShooterCommand}, 
      // {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
