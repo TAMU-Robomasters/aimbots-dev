@@ -14,7 +14,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
     .tRProportionalKalman = 1.0f,
-    .errDeadzone = 0.0f,
+    .errDeadzone = 0.5f,
     .errorDerivativeFloor = 0.0f,
 };
 

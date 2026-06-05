@@ -64,11 +64,12 @@ static void updateIo(src::Drivers *drivers);
 static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
-
+bool atTemp = false;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 float powerDis = 69.0f;
+float imuTemp = 0.0f;
 
 // uint32_t dbg_any_rxCount = 0;
 // uint32_t dbg_any_rawIdentifier = 0;
@@ -122,6 +123,10 @@ int main() {
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+            imuTemp = drivers->bmi088.getTemp();
+            if(imuTemp > 50.0 && imuTemp < 51.0 && !atTemp){
+                atTemp = true;
+            }
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -139,7 +144,9 @@ int main() {
             drivers->hitTracker.getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
-            drivers->musicPlayer.playMusic();
+            if(atTemp){
+                drivers->musicPlayer.playMusic();
+            }
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
 
