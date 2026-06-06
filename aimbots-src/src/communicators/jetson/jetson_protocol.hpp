@@ -21,7 +21,7 @@ static constexpr uint8_t JETSON_LOCALIZATION_MESSAGE = 'l';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
 static constexpr uint8_t JETSON_ODOMETRY_QUERY = 'q';
 
-static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 field-relative chassis velocity command
+static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 turret-relative chassis velocity command
 
 struct JetsonAimMessage {
     uint8_t magic;
@@ -43,8 +43,8 @@ struct JetsonLocalizationMessage {
 struct JetsonVelocityMessage {
     uint8_t magic;
     uint8_t messageType;
-    float vx; // field-relative chassis velocity, m/s
-    float vy; // field-relative chassis velocity, m/s
+    float vx; // turret-relative chassis velocity, m/s
+    float vy; // turret-relative chassis velocity, m/s
 } __attribute__((packed));
 
 struct EmbeddedTransformationMessage {

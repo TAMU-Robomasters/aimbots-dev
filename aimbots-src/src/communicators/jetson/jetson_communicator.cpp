@@ -255,7 +255,7 @@ void JetsonCommunicator::updateSerial() {
                 // Reinterpret the received bytes into a JetsonVelocityMessage
                 std::memcpy(&lastVelocityMessage, rawSerialBuffer, sizeof(JetsonVelocityMessage));
 
-                // Field-relative chassis velocity command from nav2 on the Jetson
+                // Turret-relative chassis velocity command from nav2 on the Jetson
                 velCmdXDisplay = lastVelocityMessage.vx;
                 velCmdYDisplay = lastVelocityMessage.vy;
 

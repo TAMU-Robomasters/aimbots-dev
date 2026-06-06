@@ -49,8 +49,8 @@ public:
     AutoAimAngles getAutoAimAngles() const;
     modm::Location2D<float> getLocationEstimate() const;
 
-    // Field-relative chassis velocity command (m/s) from nav2 on the Jetson.
-    inline modm::Vector2f getDesiredFieldRelativeVelocity() const {
+    // Turret-relative chassis velocity command (m/s) from nav2 on the Jetson.
+    inline modm::Vector2f getDesiredTurretRelativeVelocity() const {
         return modm::Vector2f(lastVelocityMessage.vx, lastVelocityMessage.vy);
     }
 

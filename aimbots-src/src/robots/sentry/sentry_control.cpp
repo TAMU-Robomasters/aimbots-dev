@@ -22,6 +22,8 @@
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_velocity_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
@@ -212,6 +214,19 @@ ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand2(
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
+// Drives the chassis from nav2's turret-relative velocity command over the Jetson link.
+// Not yet mapped to a switch — wire into a HoldCommandMapping when ready.
+ChassisAutoNavVelocityCommand chassisAutoNavVelocityCommand(drivers(), &chassis, &gimbal);
+// "Spin-to-win" version of the above: nav2 velocity translation + continuous tokyo spin.
+// Not yet mapped to a switch — wire into a HoldCommandMapping when ready.
+ChassisAutoNavTokyoVelocityCommand chassisAutoNavTokyoVelocityCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,
+    true,
+    randomizerConfig);
 
 // GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -327,7 +342,9 @@ HoldCommandMapping leftSwitchMid(
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-   {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
+   // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
+    // {&chassisAutoNavVelocityCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisAutoNavTokyoVelocityCommand, &gimbalFieldRelativeControlCommand2},
     // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     //{&gimbalVelocityTunningCommand},
