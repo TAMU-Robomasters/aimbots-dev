@@ -8,9 +8,9 @@ using Spi2Sck = modm::platform::GpioB13; // Clock
 using Spi2Miso = modm::platform::GpioB14; // Master In Slave Out
 using Spi2Mosi = modm::platform::GpioB15; // Master Out Slave In
 
-using MuxS0 = modm::platform::GpioE11; // Mux LSB
-using MuxS1 = modm::platform::GpioE13;
-using MuxS2 = modm::platform::GpioE14; // Mux MSB
+using MuxS0 = modm::platform::GpioE11; // Mux LSB C2
+using MuxS1 = modm::platform::GpioE13; //C3
+using MuxS2 = modm::platform::GpioE14; // Mux MSB  C4
 
 namespace src::Informants 
 {
