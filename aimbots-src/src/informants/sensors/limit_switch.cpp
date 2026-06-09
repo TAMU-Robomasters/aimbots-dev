@@ -5,8 +5,8 @@ namespace src::Informants {
 LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge) : rxPin(rxPin), counter(0), edge(edge){};
 
 void LimitSwitch::initialize() {  // awesome
-    C6::configure(modm::platform::Gpio::InputType::PullDown);
-    C7::configure(modm::platform::Gpio::InputType::PullDown);
+    C6::configure(modm::platform::Gpio::InputType::PullUp);
+    C7::configure(modm::platform::Gpio::InputType::PullUp);
 }
 
 int counter_debug = 0;
