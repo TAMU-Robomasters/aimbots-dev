@@ -73,7 +73,11 @@ namespace src::Informants
                 delta += 65536;
             }
 
-            unwrappedPosition += static_cast<int64_t>(delta);
+            #ifndef INVERTED_YAW_ENCODER
+                unwrappedPosition += static_cast<int64_t>(delta);
+            #else
+                unwrappedPosition -= static_cast<int64_t>(delta);
+            #endif
             lastRawCount = raw;
         }
 
@@ -167,7 +171,7 @@ namespace src::Informants
         return data;
     }
 
-    uint16_t RevEncoder::getAngleRadians() const
+    float RevEncoder::getAngleRadians() const
     {
         return RevEncoderValueToRadians(data);
     }
@@ -180,6 +184,11 @@ namespace src::Informants
     int64_t RevEncoder::getUnwrappedPosition() const
     {
         return unwrappedPosition;
+    }
+
+    float RevEncoder::getUnwrappedPositionRadians() const
+    {
+        return RevEncoderValueToRadians(unwrappedPosition);
     }
 
 }  // namespace src::Informants
