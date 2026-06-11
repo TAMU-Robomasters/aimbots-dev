@@ -159,7 +159,7 @@ void GimbalFieldRelativeController::runYawController(
         fieldRelativeVelocityTarget =
             tap::algorithms::limitVal<float>(fieldRelativeVelocityTarget, -velocityLimit.value(), velocityLimit.value());
     }
-    #ifdef ALL_SENTRIES
+    #if  defined(ALL_SENTRIES) || defined(ALL_HEROES) 
         float chassisRelativeVelocityTarget =
             fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                 src::Informants::AngularAxis::YAW_AXIS,
@@ -184,12 +184,12 @@ void GimbalFieldRelativeController::runYawController(
                 YAW_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)),
             -GM6020_MAX_OUTPUT,
             GM6020_MAX_OUTPUT);
-    #elif defined (ALL_HEROES)
-        float chassisRelativeVelocityThreshold = 0.1;
-        float velocityFeedforward = tap::algorithms::limitVal(
-            (chassisRelativeVelocityTarget > chassisRelativeVelocityThreshold) * sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(fabs(chassisRelativeVelocityTarget)),
-            -M3508_MAX_OUTPUT,
-            M3508_MAX_OUTPUT);   
+    // #elif defined (ALL_HEROES)
+    //     float chassisRelativeVelocityThreshold = 0.1;
+    //     float velocityFeedforward = tap::algorithms::limitVal(
+    //         (chassisRelativeVelocityTarget > chassisRelativeVelocityThreshold) * sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(fabs(chassisRelativeVelocityTarget)),
+    //         -M3508_MAX_OUTPUT,
+    //         M3508_MAX_OUTPUT);   
     #else
         // float velocityFeedforward = tap::algorithms::limitVal(
         //     CHASSIS_VELOCITY_YAW_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
@@ -278,7 +278,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
     averageRPM = averageRPM / YAW_MOTOR_COUNT;
 
     //TODO: get rid of me when you retunned sentry
-    #ifdef ALL_SENTRIES
+    #if  defined(ALL_SENTRIES) || defined(ALL_HEROES) 
         yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
     #else
         yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
@@ -303,7 +303,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
         }
         fieldRelativeYawVelocityTargetDisplay = modm::toDegree(fieldRelativeVelocityTarget);
 
-        #ifdef ALL_SENTRIES //TODO: fix this after tunning sentry
+        #if  defined(ALL_SENTRIES) || defined(ALL_HEROES)  //TODO: fix this after tunning sentry
             float chassisRelativeVelocityTarget =
                 fieldRelativeVelocityTarget - (drivers->kinematicInformant.getChassisIMUAngularVelocity(
                                                    src::Informants::AngularAxis::YAW_AXIS,
@@ -321,16 +321,16 @@ void GimbalFieldRelativeController::runYawVelocityController(
 
 
         
-        #if defined(ALL_SENTRIES)
+        #if  defined(ALL_SENTRIES) || defined(ALL_HEROES) 
           float velocityFeedforward = tap::algorithms::limitVal(
               0.135f * sgn(chassisRelativeVelocityTarget) * chassisRelativeVelocityYawFeedforward(fabs(chassisRelativeVelocityTarget)),
               -M3508_MAX_OUTPUT,
               M3508_MAX_OUTPUT);
-        #elif  defined (ALL_HEROES)
-            float velocityFeedforward = tap::algorithms::limitVal(
-                sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(chassisRelativeVelocityTarget),
-                -M3508_MAX_OUTPUT,
-                M3508_MAX_OUTPUT);
+        // #elif  defined (ALL_HEROES)
+        //     float velocityFeedforward = tap::algorithms::limitVal(
+        //         sgn(chassisRelativeVelocityTarget) * chassisRelativeYawFeedforward(chassisRelativeVelocityTarget),
+        //         -M3508_MAX_OUTPUT,
+        //         M3508_MAX_OUTPUT);
         #else
         float velocityFeedforward = 0;
         #endif
@@ -345,17 +345,18 @@ void GimbalFieldRelativeController::runYawVelocityController(
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
             gimbal->getYawMotorTorque;
-    #elif defined (ALL_HEROES)
-         float velocityControllerOutput = yawVelocityPID->runController(
-            chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
-            gimbal->getYawMotorTorque(i));
-        gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
+    // #elif defined (ALL_HEROES)
+    //      float velocityControllerOutput = yawVelocityPID->runController(
+    //         chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
+    //         gimbal->getYawMotorTorque(i));
+    //     gimbal->setDesiredYawMotorOutput(i, velocityFeedforward + velocityControllerOutput);
     #else //WARN: for some reason sentry not using motor torque for derivative? torque proportionally to accel
         float velocityControllerOutput = yawVelocityPID->runControllerDerivateError(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)));
     #endif
         velocityErrorDisplay = chassisRelativeVelocityTarget;
         velocityPIDOutputDisplay = velocityControllerOutput;
+        feedforwardDisplay = velocityFeedforward;
 
         gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput + velocityFeedforward);
     }
@@ -473,9 +474,9 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
             kGRAVITY *
             cosf(drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue());
 
-        float velocityFeedforward = gravityCompensationFeedforward +
+        float velocityFeedforward = gravityCompensationFeedforward /*+
                                     CHASSIS_VELOCITY_PITCH_LOAD_FEEDFORWARD * sgn(chassisRelativeVelocityTarget) *
-                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) /*+
+                                        PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) *//*+
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
                                 #ifdef TARGET_SENTRY
@@ -502,14 +503,21 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)),
             gimbal->getPitchMotorTorque(i));
 
-        pitchOutputVelocityDisplay = velocityFeedforward + velocityControllerOutput;
-        if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH &&
-            gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW ) {
-            gimbal->setDesiredPitchMotorOutput(i, velocityFeedforward + velocityControllerOutput);
-        } else {
-            gimbal->setDesiredPitchMotorOutput(i, -3000 * sgn(kGRAVITY));
+        float totalOutput =velocityFeedforward + velocityControllerOutput;
+        if(totalOutput > GM6020_MAX_OUTPUT){
+            totalOutput = GM6020_MAX_OUTPUT;
+        }else if(totalOutput < -GM6020_MAX_OUTPUT){
+            totalOutput = -GM6020_MAX_OUTPUT;
         }
-    }
+
+        pitchOutputVelocityDisplay = totalOutput;
+        // if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH &&
+        //     gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) > PITCH_AXIS_SOFTSTOP_LOW ) {
+            gimbal->setDesiredPitchMotorOutput(i, totalOutput);
+    //     } else {
+    //         gimbal->setDesiredPitchMotorOutput(i, -3000 * sgn(kGRAVITY));
+    //     }
+     }
 }
 
 bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline(); }
