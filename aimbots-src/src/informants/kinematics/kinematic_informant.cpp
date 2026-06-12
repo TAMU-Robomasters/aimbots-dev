@@ -130,7 +130,7 @@ void KinematicInformant::updateChassisIMUAngles() {
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
 
         float imuTemp = drivers->bmi088.getTemp();
-    if(imuTemp > 50.0 && !atTemp){
+    if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
         atTemp = true;
         time0 = tap::arch::clock::getTimeMilliseconds();
     }
@@ -519,7 +519,7 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     Vector3f IMUAngles = getLocalIMUAngles();
     float imuTemp = drivers->bmi088.getTemp();
-    if(imuTemp > 50.0 && imuTemp < 51.0 && !atTemp){
+    if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
         atTemp = true;
         time0 = tap::arch::clock::getTimeMilliseconds();
     }

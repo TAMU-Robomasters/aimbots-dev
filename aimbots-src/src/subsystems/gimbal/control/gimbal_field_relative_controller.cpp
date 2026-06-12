@@ -344,7 +344,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
     #ifndef YAW_3508
         float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
-            gimbal->getYawMotorTorque;
+            gimbal->getYawMotorTorque(i));
     #elif defined (ALL_HEROES)
          float velocityControllerOutput = yawVelocityPID->runController(
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getYawMotorRPM(i)),
