@@ -65,6 +65,8 @@ static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
 bool atTemp = false;
+bool imuHeatingSound = false;
+bool startupSound = false;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
@@ -145,8 +147,13 @@ int main() {
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             if(atTemp){
-                drivers->musicPlayer.playMusic();
-            }
+                //drivers->musicPlayer.playMusic();
+                if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND); startupSound = true;}
+
+                } else {
+                    if (!imuHeatingSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_IMU_HEATING); imuHeatingSound = true;}
+                }
+
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
 
@@ -175,6 +182,7 @@ static void initializeIo(src::Drivers *drivers) {
     //drivers->can351Listener.initialize(); can debug class
     drivers->customController.initialize();
     drivers->espPowerSensor.initialize();
+    drivers->canSoundSystem.initialize();
 #ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
