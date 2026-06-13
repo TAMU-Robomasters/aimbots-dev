@@ -184,6 +184,7 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
     } else if (MotorPerWheelIdx == YAW) {
         if(drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getSwitch(Remote::Switch::LEFT_SWITCH) == Remote::SwitchState::MID){
             err = targetRPMs[WheelIdx][MotorPerWheelIdx] - motors[WheelIdx][MotorPerWheelIdx]->getInternalEncoder().getEncoder().getWrappedValue();
+           if(err >4096){err = -(8192-err);}
         }else{
             err = 0.0f;
         }
