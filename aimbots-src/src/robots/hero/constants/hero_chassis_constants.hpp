@@ -6,7 +6,7 @@
 
 //SWERO ERA HAS BEGUN
 #define SWERVE
-#define CHASSIS_IMU
+#define TURRET_IMU
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 
 static constexpr MotorID LEFT_BACK_YAW_ID = MotorID::MOTOR5;

@@ -126,7 +126,7 @@ int main() {
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
             imuTemp = drivers->bmi088.getTemp();
-            if(imuTemp > 50.0 && imuTemp < 51.0 && !atTemp){
+            if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
                 atTemp = true;
             }
         }
