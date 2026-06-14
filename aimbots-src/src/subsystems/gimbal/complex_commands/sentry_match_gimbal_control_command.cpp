@@ -13,17 +13,18 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     GimbalPatrolConfig patrolConfig,
     src::Chassis::ChassisMatchStates& chassisState,
-    int chaseTimeoutMillis)
+    int chaseTimeoutMillis,
+    float defaultLaunchSpeed)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       controller(gimbalController),
       ballisticsSolver(ballisticsSolver),
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
-      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
+      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, defaultLaunchSpeed),
       chassisState(chassisState),
-      chaseTimeout(1000),
-      chaseTimeoutMillis(chaseTimeoutMillis)  //
+      chaseTimeout(chaseTimeoutMillis),
+      chaseTimeoutMillis(chaseTimeoutMillis)//
 {
     addSubsystemRequirement(gimbal);
     this->comprisedCommandScheduler.registerSubsystem(gimbal);

@@ -108,7 +108,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 9.0f,  // 35
+    .kp = 9.0f,  // 9.0f
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -122,7 +122,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 25.0f, 
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -137,7 +137,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 1000.0f, // 1000
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,

@@ -49,8 +49,11 @@ float tokyoNavVelocityToInputMultiplier = 1.0f;
 float tokyoNavVelCmdXDisplay = 0.0f;
 float tokyoNavVelCmdYDisplay = 0.0f;
 float tokyoNavDesiredXDisplay = 0.0f;
+float tokyoNavDesiredYDisplay = 0.0f;
 float tokyoNavRampTargetDisplay = 0.0f;
 float tokyoNavSpinRateModDisplay = 0.0f;
+float tokyoNavTurretFieldYawDisplay = 0.0f;
+float tokyoNavYawFromChassisCenterDisplay = 0.0f;
 bool tokyoNavJetsonOnlineDisplay = false;
 
 void ChassisAutoNavTokyoVelocityCommand::execute() {
@@ -62,17 +65,16 @@ void ChassisAutoNavTokyoVelocityCommand::execute() {
         return;
     }
 
-    modm::Vector2f turretRelativeVelocity = drivers->cvCommunicator.getDesiredTurretRelativeVelocity();
-    tokyoNavVelCmdXDisplay = turretRelativeVelocity.getX();
-    tokyoNavVelCmdYDisplay = turretRelativeVelocity.getY();
+    // Field-relative chassis velocity command (m/s) from nav2 on the Jetson.
+    modm::Vector2f fieldRelativeVelocity = drivers->cvCommunicator.getDesiredTurretRelativeVelocity();
+    tokyoNavVelCmdXDisplay = fieldRelativeVelocity.getX();
+    tokyoNavVelCmdYDisplay = fieldRelativeVelocity.getY();
 
-    float desiredX = turretRelativeVelocity.getX() * tokyoNavVelocityToInputMultiplier;
-    float desiredY = turretRelativeVelocity.getY() * tokyoNavVelocityToInputMultiplier;
+    float desiredX = fieldRelativeVelocity.getX() * tokyoNavVelocityToInputMultiplier;
+    float desiredY = fieldRelativeVelocity.getY() * tokyoNavVelocityToInputMultiplier;
     float desiredRotation = 0.0f;  // overwritten by the spin ramp below when the gimbal is online
 
     if (gimbal->isOnline()) {
-        float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
-
         // Maximum speed realistically achievable with the current power limit.
         float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
@@ -113,13 +115,21 @@ void ChassisAutoNavTokyoVelocityCommand::execute() {
         rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
         desiredRotation = rotationSpeedRamp.getValue();
 
-        // turret-relative translation -> chassis-relative
+        // field-relative -> turret-relative, using the turret's field-relative yaw (from its IMU)
+        float turretFieldYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+        tokyoNavTurretFieldYawDisplay = turretFieldYaw;
+        rotateVector(&desiredX, &desiredY, -turretFieldYaw);
+
+        // turret-relative -> chassis-relative
+        float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
+        tokyoNavYawFromChassisCenterDisplay = yawAngleFromChassisCenter;
         rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
     } else {
         Helper::rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, &desiredX, &desiredY, &desiredRotation);
     }
 
     tokyoNavDesiredXDisplay = desiredX;
+    tokyoNavDesiredYDisplay = desiredY;
     chassis->setTargetRPMs(desiredX, desiredY, desiredRotation);
 }
 

@@ -87,11 +87,11 @@ void FeederShotTimingCommand::execute() {
         break;
     case FeederState::firing: // move feeder until current projectile is shot
         if (currSwitchState && !prevSwitchState) { // current projectile left. New projectile primed
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotorForShotTiming);
             currentFeederState = FeederState::primed;
             break;
         }
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotorForShotTiming);
         break;
     default:
         break;

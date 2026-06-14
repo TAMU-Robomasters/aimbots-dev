@@ -12,16 +12,16 @@ static Vector3f IMU_MOUNT_POSITION{0.0f, 0.0f, 0.0f};
 // clang-format off
 
 // Updated for 2025 Sentry
-// static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-//     -0.022025f, 
-//     0.139188f,
-//     0.0047f, 
-// };
-static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // Realsense in meters
-    0.0325f, 
-    0.150f,
-    -0.0325f, 
+static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
+    -0.022025f, 
+    0.139188f,
+    0.0047f, 
 };
+// static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // Realsense in meters
+//     0.0325f, 
+//     0.150f,
+//     -0.0325f, 
+// };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
     0.0f, // x

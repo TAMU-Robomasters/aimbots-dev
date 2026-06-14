@@ -211,9 +211,9 @@ void JetsonCommunicator::updateSerial() {
 
                 // Auditory indicator that helps debug our vision pipeline.
                 if (lastAimMessage.cvState == CVState::CONTINUOUS_FIRE) {
-                    tap::buzzer::playNote(&drivers->pwm, 400);
+                    tap::buzzer::playNote(&drivers->pwm, 0);
                 } else if (lastAimMessage.cvState == CVState::SHOT_TIMING) {
-                    tap::buzzer::playNote(&drivers->pwm, 932);
+                    tap::buzzer::playNote(&drivers->pwm, 0);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
                 }

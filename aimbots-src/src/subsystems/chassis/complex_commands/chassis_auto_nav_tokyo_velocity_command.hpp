@@ -15,10 +15,12 @@ namespace src::Chassis {
 
 /**
  * "Spin-to-win" driven by nav2. Same continuous-rotation tokyo drift as ChassisTokyoCommand, but the
- * translation input comes from the Jetson's turret-relative velocity command (m/s) instead of the
+ * translation input comes from the Jetson's field-relative velocity command (m/s) instead of the
  * operator. The velocity is scaled into the chassis input range by a tunable global multiplier, then
  * fed through the identical tokyo translation/rotation pipeline (spin ramp, randomizer, rotation
- * slowdown while translating) and rotated into the chassis frame by the gimbal's yaw-from-center.
+ * slowdown while translating) and rotated into the chassis frame in two steps: field-relative ->
+ * turret-relative using the turret's field-relative yaw (from its IMU), then turret-relative ->
+ * chassis-relative using the gimbal's yaw-from-center.
  */
 class ChassisAutoNavTokyoVelocityCommand : public TapCommand {
 public:
