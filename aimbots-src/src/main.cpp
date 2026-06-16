@@ -147,7 +147,7 @@ int main() {
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
             if(atTemp){
-                //drivers->musicPlayer.playMusic();
+                drivers->musicPlayer.playMusic();
                 if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND); startupSound = true;}
 
                 } else {

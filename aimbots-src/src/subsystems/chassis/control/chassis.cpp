@@ -475,7 +475,9 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
             outDriveRPM  = 0.0f;
         } else {
             const float mag = std::hypot(vx, vy);
-            outDriveRPM = limitVal<float>(mag, -maxWheelSpeed, maxWheelSpeed);
+            //removed limiting wheel speed here, should mormalize all wheels later to max speed
+            //outDriveRPM = limitVal<float>(mag, -maxWheelSpeed, maxWheelSpeed);
+            outDriveRPM = mag;
 
             if (mag < kModuleVecEps) {
                 // Rare single-module degeneracy: hold its last angle
@@ -508,6 +510,20 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     // RB
     computeModule(a, c, RIGHT_BACK_YAW_OFFSET,  right_back_yaw_actual,
                   RB, targetRPMs[RB][0], targetRPMs[RB][1], right_back_yaw_db);
+
+    //Normalize drive motor rpm to the max wheel speed
+    float largestRPM = 0.0f;
+    for(int i = 0; i < 4; i++){
+        if(abs(targetRPMs[i][0]) > largestRPM){
+            largestRPM = abs(targetRPMs[i][0]);
+        }
+    }
+    if(largestRPM > maxWheelSpeed){
+        for(int i = 0; i < 4; i++){
+            targetRPMs[i][0] /= largestRPM;
+            targetRPMs[i][0] *= maxWheelSpeed;
+        }
+    }
 
     watchRBYawTarget = lastCmdYawRad[RB];
     watchLFYawTarget = lastCmdYawRad[LF];
