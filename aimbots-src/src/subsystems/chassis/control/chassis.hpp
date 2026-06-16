@@ -92,6 +92,12 @@ public:
      */
     void setTargetRPMs(float x, float y, float r);
 
+    /**
+     * @brief Same as setTargetRPMs(x, y, r), but lets a command supply a temporary
+     * wheel speed limit. This is used by the custom controller button 4 override.
+     */
+    void setTargetRPMs(float x, float y, float r, float maxWheelSpeed);
+
     // Uses the desiredOutputs matrix to set the desired power of the motors
     void setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorOnWheelIdx);
 

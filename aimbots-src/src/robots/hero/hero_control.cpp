@@ -26,6 +26,7 @@
 #include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -143,6 +144,7 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
+
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
     .velocityAmplitudeDegreesPerSec = 60.0f,
     .frequencyHz = .2f,
@@ -202,8 +204,19 @@ ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
     0,
     randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
 
+ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig,
+    4000.0f,
+    6500.0f);
+
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand3(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 GimbalChaseCommand gimbalChaseCommand(
     drivers(),
@@ -268,13 +281,16 @@ ClientDisplayCommand clientDisplayCommand(
 );
 
 // Define command mappings here -------------------------------------------
-// Enables normal drive and gimbal field relative control. Enables CV toggle
+// HoldCommandMapping leftSwitchDown(
+//     drivers(),
+//     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
     // {&gimbalPositionTunningCommand},
@@ -351,6 +367,7 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
+    //drivers->commandMapper.addMap(&leftSwitchDown);
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);

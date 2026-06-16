@@ -34,23 +34,39 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     float* desiredX,
     float* desiredY,
     float* desiredRotation) {
-    if (desiredX == nullptr || desiredY == nullptr || desiredRotation == nullptr) {
+    if (drivers == nullptr || chassis == nullptr || desiredX == nullptr || desiredY == nullptr ||
+        desiredRotation == nullptr) {
         return;
     }
 
-    // Gets the maximum speed that we're realistically able to achieve with the current power limit
-    float maxWheelSpeed;
-    maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
-    
-    #if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
-    maxWheelSpeed = 4000;
-    #endif
+    // Gets the maximum speed that we're realistically able to achieve with the current power limit.
+    float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
+        drivers->refSerial.getRefSerialReceivingData(),
+        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+#if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+    maxWheelSpeed = 4000.0f;
+#endif
+
+    rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, desiredX, desiredY, desiredRotation, maxWheelSpeed);
+}
+
+void rescaleDesiredInputToPowerLimitedSpeeds(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredX,
+    float* desiredY,
+    float* desiredRotation,
+    float maxWheelSpeed) {
+    (void)drivers;
+
+    if (chassis == nullptr || desiredX == nullptr || desiredY == nullptr || desiredRotation == nullptr) {
+        return;
+    }
 
     *desiredRotation *= maxWheelSpeed;
 
-    // the maximum translational speed that we can achieve while maintaining the desired rotation speed
+    // The maximum translational speed that we can achieve while maintaining the desired rotation speed.
     float rTranslationalGain = chassis->calculateRotationLimitedTranslationalWheelspeed(*desiredRotation, maxWheelSpeed);
 
     *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);

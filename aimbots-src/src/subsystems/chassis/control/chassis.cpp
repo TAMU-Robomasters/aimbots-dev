@@ -204,24 +204,21 @@ void ChassisSubsystem::updateMotorVelocityPID(WheelIndex WheelIdx, MotorOnWheelI
     desiredOutputs[WheelIdx][MotorPerWheelIdx] = velocityPIDs[WheelIdx][MotorPerWheelIdx]->getOutput();
 }
 
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
+    setTargetRPMs(
+        x,
+        y,
+        r,
+        ChassisSubsystem::getMaxRefWheelSpeed(
+            drivers->refSerial.getRefSerialReceivingData(),
+            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+}
+
+void ChassisSubsystem::setTargetRPMs(float x, float y, float r, float maxWheelSpeed) {
 #if defined(SWERVE)
-void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateSwerve(
-        x,
-        y,
-        r,
-        ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+    calculateSwerve(x, y, r, maxWheelSpeed);
 #else
-void ChassisSubsystem::setTargetRPMs(float x, float y, float r) {
-    calculateHolonomic(
-        x,
-        y,
-        r,
-        ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit));
+    calculateHolonomic(x, y, r, maxWheelSpeed);
 #endif
 }
 

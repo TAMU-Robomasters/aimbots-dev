@@ -26,7 +26,7 @@ namespace src::communicators::can_sound_system
 class CanSoundSystem
 {
 public:
-    static constexpr tap::can::CanBus BUS = tap::can::CanBus::CAN_BUS2;
+    static constexpr tap::can::CanBus BUS = tap::can::CanBus::CAN_BUS1; //gimbal bus because chassis bus freaks out
 
     static constexpr uint16_t CAN_ID_AUDIO_CMD = 0x352;
     static constexpr uint16_t CAN_ID_AUDIO_STATUS_RESERVED = 0x353;
