@@ -25,7 +25,7 @@ namespace src::communicators::esp_power_sensor
 class EspPowerSensor
 {
 public:
-    static constexpr tap::can::CanBus BUS = tap::can::CanBus::CAN_BUS2; //chassis bus
+    static constexpr tap::can::CanBus BUS = tap::can::CanBus::CAN_BUS1; //chassis bus
 
     static constexpr uint16_t CAN_ID_POWER_POLL_RTR = 0x354;  //dev board -> ESP32 (RTR)
     static constexpr uint16_t CAN_ID_POWER_RESP     = 0x355;  //ESP32 -> dev board (data)
