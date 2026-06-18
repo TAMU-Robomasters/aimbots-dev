@@ -538,8 +538,11 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     YawAngularVelocityEncoder = RPM_TO_RADPS(((gimbalSubsystem->getYawMotorRPM(0)+gimbalSubsystem->getYawMotorRPM(1))/2) / GIMBAL_YAW_MOTOR_GEAR_RATIO);
-    //FIXME: uh offset should be gimbal constants
-    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,wrap0N((unwrapAngleZ(IMUAngles.z) - ((YawPosEncoder - RevEncoderValueToRadians(13815.0f)) * GIMBAL_YAW_GEAR_RATIO)), 2.0f * static_cast<float>(M_PI)));
+    float chassisYaw = WrappedFloat(
+        IMUAngles.z - gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
+        -M_PI,
+        M_PI).getWrappedValue();
+    Vector3f IMUAnglesYawSubtraction(IMUAngles.x, IMUAngles.y, chassisYaw);
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 
     IMUAngularVelocitiesYawSubtractionZDisplay = IMUAngularVelocitiesYawSubtraction.z;

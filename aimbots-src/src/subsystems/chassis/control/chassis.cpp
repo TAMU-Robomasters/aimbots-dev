@@ -168,13 +168,21 @@ Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() {
 // NOTE: im pretty sure this funciton is only used for odom so it's only needed for hero
 #ifdef TARGET_SENTRY_SWERVE
     Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
-
     // Motors are mounted upside down so CW positive. negate angle so CCW is positive
     float left_front_yaw_actual  = -(motors[LF][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_FRONT_ANGEL_OFFSET);
     float right_front_yaw_actual = -(motors[RF][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_FRONT_ANGEL_OFFSET);
     float left_back_yaw_actual   = -(motors[LB][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_BACK_ANGEL_OFFSET);
     float right_back_yaw_actual  = -(motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_BACK_ANGEL_OFFSET);
-
+#endif 
+#ifdef TARGET_HERO
+    Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
+    // Motors are mounted upside down so CW positive. negate angle so CCW is positive
+    float left_front_yaw_actual  = -(motors[LF][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_FRONT_YAW_OFFSET);
+    float right_front_yaw_actual = -(motors[RF][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_FRONT_YAW_OFFSET);
+    float left_back_yaw_actual   = -(motors[LB][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_BACK_YAW_OFFSET);
+    float right_back_yaw_actual  = -(motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_BACK_YAW_OFFSET);
+#endif
+#ifdef SWERVE
     // All of these velocities are the rotor RPM not shaftRPM
     wheelVelocities[2*LF+X][0] = leftFrontWheel.getInternalEncoder().getShaftRPM()  * -std::sin(left_front_yaw_actual);
     wheelVelocities[2*LF+Y][0] = leftFrontWheel.getInternalEncoder().getShaftRPM()  *  std::cos(left_front_yaw_actual);
