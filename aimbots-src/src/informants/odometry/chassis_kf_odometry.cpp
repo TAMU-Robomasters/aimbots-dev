@@ -27,6 +27,8 @@ uint32_t last_time = 0.0f;
 double xPosDis3=0.0f;
 double yPosDis3=0.0f;
 
+float odomMultiplierDisplay = 1.5f;
+
 void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yChassisAccel) {
     if (chassis == nullptr) return;
 
@@ -58,7 +60,9 @@ void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yCha
     xPosDis3 += chassisVelocity[0][0]*dt/1000000.0f;
     yPosDis3 += chassisVelocity[0][1]*dt/1000000.0f;
 
-    updateMeasurementCovariance(chassisVelocity);
+    // VELOCITY-ONLY EXPERIMENT: disabled so the velocity measurement covariance R stays at its
+    // static KF_R values instead of being re-weighted by acceleration magnitude.
+    // updateMeasurementCovariance(chassisVelocity);
 
     // rotate chassis-relative linear accelerations to world-relative
     tap::algorithms::rotateVector(&xChassisAccel, &yChassisAccel, chassisYaw);
@@ -66,8 +70,8 @@ void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yCha
     // Assume 0 velocity/acceleration in z direction
     float y[static_cast<int>(OdomInput::NUM_INPUTS)] = {};
 
-    y[static_cast<int>(OdomInput::VEL_X)] = chassisVelocity[0][0];
-    y[static_cast<int>(OdomInput::VEL_Y)] = chassisVelocity[1][0];
+    y[static_cast<int>(OdomInput::VEL_X)] = odomMultiplierDisplay * chassisVelocity[0][0];
+    y[static_cast<int>(OdomInput::VEL_Y)] = odomMultiplierDisplay * chassisVelocity[1][0];
     y[static_cast<int>(OdomInput::ACC_X)] = xChassisAccel;
     y[static_cast<int>(OdomInput::ACC_Y)] = yChassisAccel;
 

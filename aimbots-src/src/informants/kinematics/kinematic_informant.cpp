@@ -1,4 +1,5 @@
 #include "kinematic_informant.hpp"
+#include <cstddef>
 
 #include "tap/algorithms/math_user_utils.hpp"
 
@@ -15,9 +16,7 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers)
     : drivers(drivers)
 #ifndef TARGET_TURRET
       ,
-      // chassisKFOdometry(-2.830f, -0.730f)
-      chassisKFOdometry(3.1f, 3.5f)
-#warning "don't hardcode these values"
+      chassisKFOdometry()
 #endif
 {
 }
@@ -464,7 +463,6 @@ float YawPosEncoder;
 float YawAngularAccelDisplay;
 int YawTorqueDisplay;
 
-Vector3f IMUAnglesDisplay;
 // individual components for debug purposes
 float IMUAnglesDisplayX;
 float IMUAnglesDisplayY;
@@ -540,12 +538,12 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
     YawAngularVelocityEncoder = RPM_TO_RADPS(((gimbalSubsystem->getYawMotorRPM(0)+gimbalSubsystem->getYawMotorRPM(1))/2) / GIMBAL_YAW_MOTOR_GEAR_RATIO);
-    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,wrap0N((unwrapAngleZ(IMUAngles.z) - (YawPosEncoder * GIMBAL_YAW_GEAR_RATIO) /*- (Zslope*tap::arch::clock::getTimeMilliseconds())*/), 2.0f * static_cast<float>(M_PI)));
+    //FIXME: uh offset should be gimbal constants
+    Vector3f IMUAnglesYawSubtraction(IMUAngles.x,IMUAngles.y,wrap0N((unwrapAngleZ(IMUAngles.z) - ((YawPosEncoder - RevEncoderValueToRadians(13815.0f)) * GIMBAL_YAW_GEAR_RATIO)), 2.0f * static_cast<float>(M_PI)));
     Vector3f IMUAngularVelocitiesYawSubtraction(IMUAngularVelocities.x,IMUAngularVelocities.y,(IMUAngularVelocities.z - YawAngularVelocityEncoder));
 
     IMUAngularVelocitiesYawSubtractionZDisplay = IMUAngularVelocitiesYawSubtraction.z;
 
-    IMUAnglesDisplay = IMUAnglesYawSubtraction;
     IMUAnglesDisplayX = IMUAnglesYawSubtraction.x;
     IMUAnglesDisplayY = IMUAnglesYawSubtraction.y;
     IMUAnglesDisplayZ = IMUAnglesYawSubtraction.z;
@@ -590,7 +588,7 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     gimbalAngularState[X_AXIS].updateFromPosition(IMUAngles[X_AXIS]);
     gimbalAngularState[Y_AXIS].updateFromPosition(IMUAngles[Y_AXIS]);
-    gimbalAngularState[Z_AXIS].updateFromPosition(IMUAngles[Z_AXIS]);
+    gimbalAngularState[Z_AXIS].updateFromPosition(IMUAngles.z);
 }
 
 float KinematicInformant::getChassisIMUAngle(AngularAxis axis, AngleUnit unit) {

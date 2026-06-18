@@ -1,7 +1,9 @@
 #include "subsystems/chassis/control/chassis.hpp"
+#include <cmath>
 
 #include "tap/communication/gpio/leds.hpp"
 
+#include "robots/sentry/constants/sentry_chassis_constants.hpp"
 #include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
@@ -77,9 +79,14 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     wheelVelToChassisVelMat *= (WHEEL_RADIUS / 4);
     
     #ifdef SWERVE
+    // WARNING: these kinematics are for equidistant swerve modules and assume a unit radius. 
 
     //magic matrix. Found by doing psuedo-inverse(inverse_swerve_kinematics) in a python file somewhere.
-    // forward_swerve_kinematics * [BL x, BL y, TL x, TL y, TR x, TR y, BR x, BR y]^T = least squares chassis velocity
+    // forward_swerve_kinematics * [BL x, BL y, FL x, FL y, FR x, FR y, BR x, BR y]^T = least squares chassis velocity
+    // Frame: x-right positive, y-forward positive, omega CCW positive.
+    static_assert(WHEELBASE_WIDTH == WHEELBASE_LENGTH, "These forward swerve kinematics are made only for equidistant modules");
+    const float RADIUS = WHEELBASE_WIDTH * M_SQRT2 / 2.0f;
+
     forward_swerve_kinematics[0][0] = 0.25;
     forward_swerve_kinematics[0][1] = 0.0;
     forward_swerve_kinematics[0][2] = 0.25;
@@ -96,14 +103,15 @@ ChassisSubsystem::ChassisSubsystem(src::Drivers* drivers)
     forward_swerve_kinematics[1][5] = 0.25;
     forward_swerve_kinematics[1][6] = 0.0;
     forward_swerve_kinematics[1][7] = 0.25;
-    forward_swerve_kinematics[2][0] = 0.6410256410256407;
-    forward_swerve_kinematics[2][1] = 0.6410256410256407;
-    forward_swerve_kinematics[2][2] = -0.6410256410256407;
-    forward_swerve_kinematics[2][3] = -0.6410256410256409;
-    forward_swerve_kinematics[2][4] = -0.6410256410256409;
-    forward_swerve_kinematics[2][5] = 0.6410256410256409;
-    forward_swerve_kinematics[2][6] = 0.6410256410256409;
-    forward_swerve_kinematics[2][7] = -0.6410256410256409;
+    forward_swerve_kinematics[2][0] =  0.3535533905932738 / RADIUS; // BL x
+    forward_swerve_kinematics[2][1] = -0.3535533905932738 / RADIUS; // BL y
+    forward_swerve_kinematics[2][2] = -0.3535533905932738 / RADIUS; // FL x
+    forward_swerve_kinematics[2][3] = -0.3535533905932738 / RADIUS; // FL y
+    forward_swerve_kinematics[2][4] = -0.3535533905932738 / RADIUS; // FR x
+    forward_swerve_kinematics[2][5] =  0.3535533905932738 / RADIUS; // FR y
+    forward_swerve_kinematics[2][6] =  0.3535533905932738 / RADIUS; // BR x
+    forward_swerve_kinematics[2][7] =  0.3535533905932738 / RADIUS; // BR y
+    
 
     // SWERVE ROBOTS
     motors[LB][1] = &leftBackYaw;
@@ -134,6 +142,59 @@ float yawMotorOutputDisplayRB = 0.0f;
 float yawMotorOutputDisplayLF = 0.0f;
 float yawMotorOutputDisplayLB = 0.0f;
 
+float yawMotorAngleDisplayRF = 0.0f;
+float yawMotorAngleDisplayRB = 0.0f;
+float yawMotorAngleDisplayLF = 0.0f;
+float yawMotorAngleDisplayLB = 0.0f;
+
+float velocityMotorAngleDisplayRF = 0.0f;
+
+#ifdef SWERVE
+// [0] = x component (RPM * -sin(yaw)), [1] = y component (RPM * cos(yaw))
+float lfWheelVelDisplay[2] = {0.0f, 0.0f};
+float rfWheelVelDisplay[2] = {0.0f, 0.0f};
+float lbWheelVelDisplay[2] = {0.0f, 0.0f};
+float rbWheelVelDisplay[2] = {0.0f, 0.0f};
+#endif
+
+Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() {
+#ifndef SWERVE
+    Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
+    wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();
+    wheelVelocities[RF][0] = rightFrontWheel.getShaftRPM();
+    wheelVelocities[LB][0] = leftBackWheel.getShaftRPM();
+    wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
+    return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
+#endif
+#ifdef SWERVE
+    Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
+
+    // Motors are mounted upside down so CW positive. negate angle so CCW is positive
+    float left_front_yaw_actual  = -(motors[LF][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_FRONT_ANGEL_OFFSET);
+    float right_front_yaw_actual = -(motors[RF][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_FRONT_ANGEL_OFFSET);
+    float left_back_yaw_actual   = -(motors[LB][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_BACK_ANGEL_OFFSET);
+    float right_back_yaw_actual  = -(motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_BACK_ANGEL_OFFSET);
+
+    // All of these velocities are the rotor RPM not shaftRPM
+    wheelVelocities[2*LF+X][0] = leftFrontWheel.getInternalEncoder().getShaftRPM()  * -std::sin(left_front_yaw_actual);
+    wheelVelocities[2*LF+Y][0] = leftFrontWheel.getInternalEncoder().getShaftRPM()  *  std::cos(left_front_yaw_actual);
+    wheelVelocities[2*RF+X][0] = rightFrontWheel.getInternalEncoder().getShaftRPM() * -std::sin(right_front_yaw_actual);
+    wheelVelocities[2*RF+Y][0] = rightFrontWheel.getInternalEncoder().getShaftRPM() *  std::cos(right_front_yaw_actual);
+    wheelVelocities[2*LB+X][0] = leftBackWheel.getInternalEncoder().getShaftRPM()   * -std::sin(left_back_yaw_actual);
+    wheelVelocities[2*LB+Y][0] = leftBackWheel.getInternalEncoder().getShaftRPM()   *  std::cos(left_back_yaw_actual);
+    wheelVelocities[2*RB+X][0] = rightBackWheel.getInternalEncoder().getShaftRPM()  * -std::sin(right_back_yaw_actual);
+    wheelVelocities[2*RB+Y][0] = rightBackWheel.getInternalEncoder().getShaftRPM()  *  std::cos(right_back_yaw_actual);
+
+    lfWheelVelDisplay[0] = wheelVelocities[2*LF+X][0]; lfWheelVelDisplay[1] = wheelVelocities[2*LF+Y][0];
+    rfWheelVelDisplay[0] = wheelVelocities[2*RF+X][0]; rfWheelVelDisplay[1] = wheelVelocities[2*RF+Y][0];
+    lbWheelVelDisplay[0] = wheelVelocities[2*LB+X][0]; lbWheelVelDisplay[1] = wheelVelocities[2*LB+Y][0];
+    rbWheelVelDisplay[0] = wheelVelocities[2*RB+X][0]; rbWheelVelDisplay[1] = wheelVelocities[2*RB+Y][0];
+
+    static constexpr float ratio = (CHASSIS_GEARBOX_RATIO * 2.0f * WHEEL_RADIUS * M_PI / 60.0f);
+    return forward_swerve_kinematics * (ratio * wheelVelocities);
+#endif
+}
+
 void ChassisSubsystem::refresh() {
     ForAllChassisMotors(&ChassisSubsystem::updateMotorVelocityPID);
 
@@ -147,6 +208,14 @@ void ChassisSubsystem::refresh() {
           yawMotorOutputDisplayRB = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
           yawMotorOutputDisplayLF = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
           yawMotorOutputDisplayLB = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
+
+          yawMotorAngleDisplayRF = motors[RF][1]->getInternalEncoder().getPosition().getWrappedValue();
+          yawMotorAngleDisplayRB = motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue();
+          yawMotorAngleDisplayLF = motors[LF][1]->getInternalEncoder().getPosition().getWrappedValue();
+          yawMotorAngleDisplayLB = motors[LB][1]->getInternalEncoder().getPosition().getWrappedValue();
+
+          velocityMotorAngleDisplayRF = motors[RF][0]->getInternalEncoder().getPosition().getWrappedValue();
+
       #endif
  }
 

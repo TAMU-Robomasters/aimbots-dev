@@ -31,7 +31,7 @@ static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(30.0f);
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(0.416577296)+M_PI, wrapTo0To2PIRange(0.416577296)+M_PI};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(277.25f)};
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(289.65)}; // 286.65
 
 static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-40.0f);
 static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(10.0f);
@@ -108,7 +108,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 9.0f,  // 35
+    .kp = 9.0f,  // 9.0f
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -122,7 +122,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,
+    .kp = 25.0f, 
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 1000.0f,
@@ -137,7 +137,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1000.0f,
+    .kp = 1000.0f, // 1000
     .ki = 0.0f,
     .kd = 0.0f,
     .maxICumulative = 2000.0f,

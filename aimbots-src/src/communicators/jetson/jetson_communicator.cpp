@@ -1,8 +1,10 @@
 #include "jetson_communicator.hpp"
+#include <cstdint>
 
 #include <drivers.hpp>
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
+#include "communicators/jetson/jetson_protocol.hpp"
 
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
@@ -34,8 +36,8 @@ uint32_t timeDisplay = 0;
 
 float targetYawDisplay = 0;
 float targetPitchDisplay = 0;
-uint8_t timeUntilNextFireDisplay = 0;
-CVState cvStateDisplay = CVState::NOT_FOUND;
+uint16_t timeUntilNextFireDisplay = 0;
+CVState cvStateDisplay = CVState::NO_TARGET;
 
 float fieldRelativeYawAngleDisplay = 0;
 float chassisRelativePitchAngleDisplay = 0;
@@ -55,6 +57,9 @@ float odoThetaDisplay = 0;
 float lidarXDisplay = 0.0f;
 float lidarYDisplay = 0.0f;
 float lidarThetaDisplay = 0.0f;
+
+float velCmdXDisplay = 0.0f;
+float velCmdYDisplay = 0.0f;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
@@ -117,7 +122,12 @@ void JetsonCommunicator::updateSerial() {
                 nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingLocalizationMessage;
             }
-            
+
+            else if (messageType == JETSON_VELOCITY_MESSAGE) {
+                nextByteIndex++;
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingVelocityMessage;
+            }
+
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
                 uint8_t frameDelay_ms = 0.0f; 
                 //!!! potential issue where not enough time has passed and we don't read anything
@@ -191,7 +201,7 @@ void JetsonCommunicator::updateSerial() {
                 targetPitchDisplay = modm::toDegree(lastAimMessage.pitch);
                 timeUntilNextFireDisplay = lastAimMessage.timeUntilNextFire;
                 cvStateDisplay = lastAimMessage.cvState;
-                if (lastAimMessage.cvState >= CVState::FOUND) {  // If the CV state is FOUND or better
+                if (lastAimMessage.cvState > CVState::NO_TARGET) {  // If the CV state is FOUND or better
                     // TODO: Explore using predictors to smoothen effect of large time gap between vision updates.
 
                     fireTimeout.restart(lastAimMessage.timeUntilNextFire);
@@ -200,10 +210,10 @@ void JetsonCommunicator::updateSerial() {
                 }
 
                 // Auditory indicator that helps debug our vision pipeline.
-                if (lastAimMessage.cvState == CVState::FOUND) {
+                if (lastAimMessage.cvState == CVState::CONTINUOUS_FIRE) {
                     tap::buzzer::playNote(&drivers->pwm, 0);
-                } else if (lastAimMessage.cvState == CVState::FIRE) {
-                    tap::buzzer::playNote(&drivers->pwm, 932);
+                } else if (lastAimMessage.cvState == CVState::SHOT_TIMING) {
+                    tap::buzzer::playNote(&drivers->pwm, 0);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
                 }
@@ -228,6 +238,26 @@ void JetsonCommunicator::updateSerial() {
                 lidarXDisplay = lastLocalizationMessage.x;
                 lidarYDisplay = lastLocalizationMessage.y;
                 lidarThetaDisplay = modm::toDegree(lastLocalizationMessage.theta);
+
+                // As we've received a full message, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            }
+
+            break;
+        }
+
+        case JetsonCommunicatorSerialState::AssemblingVelocityMessage: {
+            nextByteIndex++;
+
+            // Increment the byte index until we reach the expected end of a message, then parse the message.
+            if (nextByteIndex == JETSON_VELOCITY_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonVelocityMessage
+                std::memcpy(&lastVelocityMessage, rawSerialBuffer, sizeof(JetsonVelocityMessage));
+
+                // Turret-relative chassis velocity command from nav2 on the Jetson
+                velCmdXDisplay = lastVelocityMessage.vx;
+                velCmdYDisplay = lastVelocityMessage.vy;
 
                 // As we've received a full message, reset the byte index and go back to searching for the magic number.
                 nextByteIndex = 0;

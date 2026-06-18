@@ -1,3 +1,5 @@
+#include "robots/sentry/constants/sentry_feeder_constants.hpp"
+#include "robots/sentry/constants/sentry_shooter_constants.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
@@ -20,6 +22,8 @@
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_velocity_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
@@ -31,6 +35,7 @@
 #include "subsystems/feeder/basic_commands/feeder_velocity_pid_tunning.hpp"
 #include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
 #include "subsystems/feeder/complex_commands/feeder_shot_timing_command.hpp"
+#include "subsystems/feeder/complex_commands/autoaim_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
@@ -38,6 +43,7 @@
 #include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
+#include "subsystems/gimbal/complex_commands/sentry_match_gimbal_control_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
@@ -79,7 +85,7 @@ BarrelID currentBarrel = BARREL_IDS[0];
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 
-// ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::START;
+ChassisMatchStates chassisMatchState = src::Chassis::ChassisMatchStates::START;
 // src::Control::FeederMatchStates feederMatchState = src::Control::FeederMatchStates::ANNOYED;
 
 // Define subsystems here ------------------------------------------------
@@ -120,11 +126,12 @@ SpinRandomizerConfig randomizerConfig = {
     .maxSpinRateModifierDuration = 3000,
 };
 
-// GimbalPatrolConfig patrolConfig = {
-//     .pitchPatrolAmplitude = modm::toRadian(4.0f),
-//     .pitchPatrolFrequency = 1.0f * M_PI,
-//     .pitchPatrolOffset = -modm::toRadian(2.0f),
-// };
+GimbalPatrolConfig patrolConfig = {
+    .pitchPatrolAmplitude = modm::toRadian(15.0f),
+    .pitchPatrolFrequency = 6.0f,
+    .pitchPatrolOffset = -modm::toRadian(20.0f),
+    .yawPatrolAngularVelocityDegreesPerSec = 30.0f,
+};
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
     .velocityAmplitudeDegreesPerSec = 60.0f,
@@ -165,15 +172,16 @@ FeederVelocityTunningConfig feederVelocityTunningConfig = {
 //     false,
 //     randomizerConfig);
 
-// SentryMatchGimbalControlCommand matchGimbalControlCommand(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     patrolConfig,
-//     chassisMatchState,
-//     500);
+SentryMatchGimbalControlCommand matchGimbalControlCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    &refHelper,
+    &ballisticsSolver,
+    patrolConfig,
+    chassisMatchState,
+    500,
+    SHOOTER_SPEED_MATRIX[0][0]);
 
 // SentryMatchChassisControlCommand sentryMatchChassisControlCommand(drivers(),
 //     &chassis, ChassisMatchStates::PATROL,&refHelper, defaultSnapConfig, defaultTokyoConfig, false, randomizerConfig);
@@ -199,8 +207,29 @@ ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
     defaultTokyoConfig,
     false,
     randomizerConfig);
+ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand2(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
+// Drives the chassis from nav2's turret-relative velocity command over the Jetson link.
+// Not yet mapped to a switch — wire into a HoldCommandMapping when ready.
+ChassisAutoNavVelocityCommand chassisAutoNavVelocityCommand(drivers(), &chassis, &gimbal);
+// "Spin-to-win" version of the above: nav2 velocity translation + continuous tokyo spin.
+// Not yet mapped to a switch — wire into a HoldCommandMapping when ready.
+ChassisAutoNavTokyoVelocityCommand chassisAutoNavTokyoVelocityCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,
+    true,
+    randomizerConfig);
 
 // GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -249,6 +278,7 @@ FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 1, UNJAM_
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 1, UNJAM_TIMER_MS);
 FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 FeederShotTimingCommand feederShotTimingCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
+AutoAimFeederCommand autoAimFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
@@ -309,18 +339,25 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
+    // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
     // {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
+    // {&chassisTokyoCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
-   // {&chassisToggleDriveIgnoreGimbalCommand,&gimbalChaseCommand},
+   // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
+   // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
+   {&chassisAutoNavVelocityCommand, &gimbalChaseCommand2},
+    // {&chassisAutoNavVelocityCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisAutoNavTokyoVelocityCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisAutoNavTokyoVelocityCommand, &gimbalChaseCommand2},
     // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
-    //{&gimbalVelocityTunningCommand},
+    // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+     // {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -328,8 +365,9 @@ HoldCommandMapping leftSwitchUp(
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
-    //{&feederShotTimingCommand, &runShooterCommand}, // shot timing
-     {&runShooterCommand},
+    // {&feederShotTimingCommand, &runShooterCommand},
+    {&autoAimFeederCommand, &runShooterCommand}, 
+     // {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder

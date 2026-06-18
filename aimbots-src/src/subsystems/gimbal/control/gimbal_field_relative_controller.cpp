@@ -479,7 +479,7 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
                                         PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) *//*+
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
-                                #ifdef TARGET_SENTRY
+                                #ifdef TARGET_SENTRY_SWERVE
                                     + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
                                 #endif
             ;
