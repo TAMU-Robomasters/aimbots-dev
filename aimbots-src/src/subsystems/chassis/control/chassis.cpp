@@ -3,7 +3,6 @@
 
 #include "tap/communication/gpio/leds.hpp"
 
-#include "robots/sentry/constants/sentry_chassis_constants.hpp"
 #include "utils/tools/common_types.hpp"
 
 #include "drivers.hpp"
