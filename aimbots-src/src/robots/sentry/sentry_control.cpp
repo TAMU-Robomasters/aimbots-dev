@@ -339,17 +339,20 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
+    // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
     // {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
+    // {&chassisTokyoCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
     drivers(),
    // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
    // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
-   // {&chassisAutoNavVelocityCommand, &gimbalChaseCommand2},
+   {&chassisAutoNavVelocityCommand, &gimbalChaseCommand2},
     // {&chassisAutoNavVelocityCommand, &gimbalFieldRelativeControlCommand2},
-    {&chassisAutoNavTokyoVelocityCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisAutoNavTokyoVelocityCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisAutoNavTokyoVelocityCommand, &gimbalChaseCommand2},
     // {&feederVelocityTunningCommand},
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
