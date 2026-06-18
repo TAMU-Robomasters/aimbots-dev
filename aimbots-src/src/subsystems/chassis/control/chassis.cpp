@@ -165,7 +165,8 @@ Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() {
     wheelVelocities[RB][0] = rightBackWheel.getShaftRPM();
     return wheelVelToChassisVelMat * convertRawRPM(wheelVelocities);
 #endif
-#ifdef SWERVE
+// NOTE: im pretty sure this funciton is only used for odom so it's only needed for hero
+#ifdef TARGET_SENTRY_SWERVE
     Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
 
     // Motors are mounted upside down so CW positive. negate angle so CCW is positive
