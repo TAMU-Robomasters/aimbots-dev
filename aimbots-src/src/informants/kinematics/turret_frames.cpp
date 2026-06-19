@@ -49,8 +49,10 @@ void TurretFrames::updateFrames(float fieldYaw, float fieldPitch, float fieldRol
 #endif
 }
 
-float camera_yaw_offset_angle_degrees = 0.0f;
-float camera_pitch_offset_angle_degrees = 6.13399982;
+// Initialized from the compiled robot's per-robot general constants. Kept as
+// mutable globals (not constexpr) so they remain watchable/editable in Ozone.
+float camera_yaw_offset_angle_degrees = CAMERA_YAW_OFFSET_ANGLE_DEGREES;
+float camera_pitch_offset_angle_degrees = CAMERA_PITCH_OFFSET_ANGLE_DEGREES;
 
 float gimbalYawDisplay = 0.0f;
 float gimbalPitchDisplay = 0.0f;

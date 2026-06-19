@@ -61,6 +61,8 @@ float lidarThetaDisplay = 0.0f;
 float velCmdXDisplay = 0.0f;
 float velCmdYDisplay = 0.0f;
 
+float cameraToTurretMatrixDisplay[16] = {0.0f};
+
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
  * The Jetson sends information in the form of a JetsonMessage.
@@ -147,6 +149,11 @@ void JetsonCommunicator::updateSerial() {
                 transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
                 
                 std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
+                // Copy the camera->turret transform into a display array so Ozone can watch it.
+                for (int i = 0; i < 16; i++) {
+                    cameraToTurretMatrixDisplay[i] = cameraToTurret.element[i];
+                }
 
                 // Send data to Jetson
                 WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
