@@ -28,6 +28,9 @@ public:
 
     bool isFinished() const override;
 
+    bool getCanShoot(){return canShoot;};
+
+
     const char* getName() const override { return "limit feeder"; }
 
 private:
@@ -35,11 +38,16 @@ private:
     FeederSubsystem* feeder;
     src::Utils::RefereeHelperTurreted* refHelper;
     int UNJAM_TIMER_MS;
+    bool canShoot = false;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
-    // MilliTimeout semiautoDelay;
-    MilliTimeout limitswitchInactive;
+    enum states{
+        loading,
+        loaded,
+        firing
+    };
+    states currState = loading;
 };
 }  // namespace src::Feeder
 
