@@ -67,6 +67,10 @@ void AutoAimFeederCommand::execute() {
                 descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand);
                 currentState = AutoAimFeederState::SHOT_TIMING;
+            } else if (autoAimState == Informants::Vision::AIMING) {
+                noTargetTimer.stop();
+                descheduleIfScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand, true);
+                currentState = AutoAimFeederState::IDLE;
             } else if (autoAimState == Informants::Vision::NO_TARGET) {
                 if (noTargetTimer.isStopped()) noTargetTimer.restart(NO_TARGET_IDLE_TIMEOUT_MS);
                 if (noTargetTimer.isExpired()) {
@@ -85,6 +89,10 @@ void AutoAimFeederCommand::execute() {
                 descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
                 scheduleIfNotScheduled(this->comprisedCommandScheduler, &dualBarrelFeederCommand);
                 currentState = AutoAimFeederState::CONTINUOUS_FIRE;
+            } else if (autoAimState == Informants::Vision::AIMING) {
+                noTargetTimer.stop();
+                descheduleIfScheduled(this->comprisedCommandScheduler, &feederShotTimingCommand, true);
+                currentState = AutoAimFeederState::IDLE;
             } else if (autoAimState == Informants::Vision::NO_TARGET) {
                 if (noTargetTimer.isStopped()) noTargetTimer.restart(NO_TARGET_IDLE_TIMEOUT_MS);
                 if (noTargetTimer.isExpired()) {

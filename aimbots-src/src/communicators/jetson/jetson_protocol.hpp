@@ -5,9 +5,10 @@
 namespace src::Informants::Vision {
 
 enum CVState : uint8_t {
-    NO_TARGET = 0,
-    SHOT_TIMING = 1,
+    NO_TARGET = 0, // Don't aim gimbal
+    SHOT_TIMING = 1, 
     CONTINUOUS_FIRE = 2,
+    AIMING = 3, // Aim gimbal but don't fire
 };
 
 static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
