@@ -84,6 +84,7 @@ float imuTemp = 0.0f;
 
 bool button1Display = false;
 float chassisPowerDisplay = 0;
+uint16_t chassisVoltageDisplay = 0;
 
 bool actualattachDisplay = false;
 
@@ -270,6 +271,7 @@ static void updateIo(src::Drivers *drivers) {
     button1Display = drivers->customController.button1Pressed();
 
     chassisPowerDisplay = drivers->espPowerSensor.getPower();
+    chassisVoltageDisplay = drivers->espPowerSensor.getVoltageMilliVolts();
 
 
      yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
