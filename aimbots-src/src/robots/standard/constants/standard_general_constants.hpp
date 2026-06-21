@@ -39,6 +39,10 @@ static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
     0.0f  // z
 };
 
+// Camera mounting offset relative to the gimbal/turret orientation (degrees)
+static constexpr float CAMERA_YAW_OFFSET_ANGLE_DEGREES = 0.0f;//Fixme, just coppied from hero
+static constexpr float CAMERA_PITCH_OFFSET_ANGLE_DEGREES = 11.5f;
+
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{
     0.0f, // x
     0.0f, // y
