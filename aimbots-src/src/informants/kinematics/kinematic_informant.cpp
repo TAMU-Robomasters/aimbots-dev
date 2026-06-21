@@ -71,9 +71,20 @@ float KinematicInformant::getIMUAngularVelocity(AngularAxis axis) {  // Gets IMU
     return 0;
 }
 
+// Raw BMI088 accelerometer (m/s^2), straight from the sensor before any gravity
+// removal — at rest, gravity (~9.8) sits on whichever axis is physically "up".
+// Use these to find the up-axis/sign for the IMU mounting transform.
+float rawAccelXDisplay = 0.0f;
+float rawAccelYDisplay = 0.0f;
+float rawAccelZDisplay = 0.0f;
+
 // Update IMU Kinematic State Vectors
 // All relative to IMU Frame
 void KinematicInformant::updateIMUKinematicStateVector() {
+    rawAccelXDisplay = drivers->bmi088.getAx();
+    rawAccelYDisplay = drivers->bmi088.getAy();
+    rawAccelZDisplay = drivers->bmi088.getAz();
+
     imuLinearState[X_AXIS].updateFromAcceleration(-drivers->bmi088.getAy());
     imuLinearState[Y_AXIS].updateFromAcceleration(drivers->bmi088.getAx());
     imuLinearState[Z_AXIS].updateFromAcceleration(drivers->bmi088.getAz());
@@ -513,7 +524,12 @@ void KinematicInformant::updateChassisIMUAngles() {
     YawTorqueDisplay = gimbalSubsystem->getYawMotorTorque(0);
 
     yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
+#ifdef YAW_3508
+    // Only robots with a 3508 yaw + rev encoder (sentry/hero) have drivers->revEncoder.
+    // YawPosEncoder is display-only and unused elsewhere, so turret-IMU robots without a
+    // rev encoder (e.g. aerial) simply leave it at 0.
     YawPosEncoder = drivers->revEncoder.getUnwrappedPositionRadians();
+#endif
 
     Vector3f IMUAngles = getLocalIMUAngles();
     float imuTemp = drivers->bmi088.getTemp();

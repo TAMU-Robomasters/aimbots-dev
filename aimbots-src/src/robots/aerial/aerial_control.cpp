@@ -29,13 +29,9 @@
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
@@ -121,7 +117,7 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 // CommunicationResponseSubsytem response(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
+// Aerial aims field-relative only (matches the CV testbench behavior).
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
@@ -130,27 +126,13 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 // Define behavior configs here --------------------------------------------
 
 // Define commands here ---------------------------------------------------
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
+// Manual field-relative gimbal control (Left-Switch MID).
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(
-    drivers(),
-    &gimbal,
-    &gimbalChassisRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalChassisRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+// CV auto-aim toggle (Left-Switch UP). Field-relative, matching the CV testbench.
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
-    &gimbalChassisRelativeController,
+    &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
@@ -165,15 +147,16 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
+// Manual field-relative gimbal control.
 HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {&gimbalToggleAimCommand},
+    drivers(),
+    {&gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables both chassis and gimbal control and closes hopper
+// Toggle CV auto-aim.
 HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    {&gimbalChaseCommand2},
+    drivers(),
+    {&gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
