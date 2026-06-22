@@ -52,6 +52,7 @@ float chassisPitchRelativeVelocityTargetDisplay = 0.0f;
 float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
 float chassisPitchRelativeDerivedVelocityDisplay = 0.0f;
 
+float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
 float chassisRelativeVelocityTargetDisplay = 0.0f;
 float chassisRelativeVelocityCurrentDisplay = 0.0f;
 float chassisRelativeAccelerationTargetDisplay = 0.0f;

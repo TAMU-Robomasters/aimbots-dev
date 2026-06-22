@@ -107,21 +107,31 @@ void GimbalSubsystem::refresh() {
         ////////////////
 #ifndef YAW_3508
         yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
+        currentYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(currentYawEncoderPosition));
 #else
         yawEncoderDisplay = drivers->revEncoder.getData();
 #endif
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
+#ifdef YAW_3508 
         currentYawMotorAngleDisplay =
             // modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
             modm::toDegree(RevEncoderValueToRadians(currentYawEncoderPosition));
-        otherYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(
-            yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getWrappedValue()));
-        yawOutputDisplay = yawMotors[1]->getOutputDesired();
+        // Guard index-1 accesses: single-yaw-motor robots (e.g. aerial) only have yawMotors[0].
+#endif
+        if (YAW_MOTOR_COUNT > 1) {
+            otherYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(
+                yawMotors[abs(yawDisplayMotorIdx - 1)]->getInternalEncoder().getEncoder().getWrappedValue()));
+            yawOutputDisplay = yawMotors[1]->getOutputDesired();
+        } else {
+            yawOutputDisplay = yawMotors[0]->getOutputDesired();
+        }
 
         tartgetYawDisplay = targetYawAxisAngle.getWrappedValue();
 
         yawAxisMotorSpeedDisplay = yawMotors[yawDisplayMotorIdx]->getShaftRPM();
-        yawAxisMotorSpeedDisplay = yawMotors[1]->getShaftRPM();
+        if (YAW_MOTOR_COUNT > 1) {
+            yawAxisMotorSpeedDisplay = yawMotors[1]->getShaftRPM();
+        }
 
         yawDesiredOutputDisplay = desiredYawMotorOutputs[yawDisplayMotorIdx];
         yawErrDisplay = this->getYawMotorSetpointError(yawDisplayMotorIdx, AngleUnit::Radians);

@@ -3,6 +3,7 @@
 
 #include "tap/algorithms/math_user_utils.hpp"
 
+#include "modm/math/geometry/angle.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
 #include "utils/tools/common_types.hpp"
@@ -22,6 +23,12 @@ KinematicInformant::KinematicInformant(src::Drivers* drivers)
 }
 
 void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI) {
+#ifdef TARGET_AERIAL
+    // Aerial's board IMU is mounted rotated 90° about its X axis: raw yaw lands on sensor Y
+    // and pitch on sensor Z, but the stack expects yaw=Z, pitch=Y (roll stays on X).
+    drivers->bmi088.setMountingTransform(
+        tap::algorithms::transforms::Transform(0.0f, 0.0f, 0.0f, modm::toRadian(-90.0f), 0.0f, 0.0f));
+#endif
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
 }
 
@@ -553,7 +560,13 @@ void KinematicInformant::updateChassisIMUAngles() {
     IMUYawAngleCorrected = IMUAngles.z;
 
     Vector3f IMUAngularVelocities = getIMUAngularVelocities();
-    YawAngularVelocityEncoder = RPM_TO_RADPS(((gimbalSubsystem->getYawMotorRPM(0)+gimbalSubsystem->getYawMotorRPM(1))/2) / GIMBAL_YAW_MOTOR_GEAR_RATIO);
+    // Average over the actual number of yaw motors. Hardcoding index 1 reads
+    // out of bounds on single-yaw-motor robots (e.g. aerial, YAW_MOTOR_COUNT == 1).
+    float yawRPMSum = 0.0f;
+    for (uint8_t i = 0; i < YAW_MOTOR_COUNT; i++) {
+        yawRPMSum += gimbalSubsystem->getYawMotorRPM(i);
+    }
+    YawAngularVelocityEncoder = RPM_TO_RADPS((yawRPMSum / YAW_MOTOR_COUNT) / GIMBAL_YAW_MOTOR_GEAR_RATIO);
     float chassisYaw = WrappedFloat(
         IMUAngles.z - gimbalSubsystem->getCurrentYawAxisAngle(AngleUnit::Radians),
         -M_PI,
@@ -733,7 +746,7 @@ float fieldRelativeYawDisplay = 0.0f;
 tap::algorithms::WrappedFloat KinematicInformant::getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat() {
     float currChassisAngle = getChassisIMUAngle(YAW_AXIS, AngleUnit::Radians);
     chassisYawAngleDisplay = currChassisAngle;
-    fieldRelativeYawDisplay = WrappedFloat(IMUYawAngleCorrected + YAW_AXIS_START_ANGLE, -M_PI, M_PI).getWrappedValue();
+    fieldRelativeYawDisplay = modm::toDegree(WrappedFloat(IMUYawAngleCorrected + YAW_AXIS_START_ANGLE, -M_PI, M_PI).getWrappedValue());
     return WrappedFloat(IMUYawAngleCorrected + YAW_AXIS_START_ANGLE, -M_PI, M_PI);
 }
 
