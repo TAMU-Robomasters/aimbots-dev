@@ -210,10 +210,17 @@ public:
         return (unit == AngleUnit::Radians) ? targetYawAxisAngle.getWrappedValue()
                                             : modm::toDegree(targetYawAxisAngle.getWrappedValue());
     }
+    #ifdef ALL_STANDARDS
+    inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
+        angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
+        targetYawAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, YAW_AXIS_SOFTSTOP_LOW, YAW_AXIS_SOFTSTOP_HIGH));
+    }
+    #else
     inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
         targetYawAxisAngle.setWrappedValue(angle);
     }
+    #endif
 
     inline float getTargetPitchAxisAngle(AngleUnit unit) const {
         return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.getWrappedValue()

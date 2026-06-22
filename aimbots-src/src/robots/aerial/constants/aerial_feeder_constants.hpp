@@ -24,7 +24,7 @@ static constexpr int UNJAM_TIMER_MS = 300;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
-static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
+static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR1};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;

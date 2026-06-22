@@ -3,7 +3,7 @@
 #include "utils/tools/common_types.hpp"
 
 #define GIMBAL_COMPATIBLE
-#define GIMBAL_UNTETHERED  // I don't think this refers to the gimbal subsystem itself but rather a behavior of the gimbal
+#define GIMBAL_UNTETHERED  
 
 /**
  * @brief GIMBAL SETUP
@@ -15,13 +15,16 @@ static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
-static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR2};
+static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR6};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
-    wrapTo0To2PIRange(modm::toRadian(186.15f)),
+    wrapTo0To2PIRange(0.845f),
 };
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
+
+static constexpr float YAW_AXIS_SOFTSTOP_LOW = -0.4f;
+static constexpr float YAW_AXIS_SOFTSTOP_HIGH = 0.6f;
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 1.0f);  // aerial yaw is 1:1 direct drive
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
@@ -31,10 +34,10 @@ static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 1.0f);  // aerial yaw is 
 // For velocity control; aerial yaw is 1:1 direct drive (motor : output)
 static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (1.0f / 1.0f);
 
-static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
-static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR6};
+static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {false};
+static const std::array<MotorID, PITCH_MOTOR_COUNT> PITCH_MOTOR_IDS = {MotorID::MOTOR5};
 static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pitch Motor"};
-static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(146.82f))};
+static const std::array<float, YAW_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(267.1f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
@@ -43,8 +46,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // same as mai
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = modm::toRadian(-11.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = modm::toRadian(3.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.67;
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.1;
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
