@@ -53,6 +53,7 @@ void GimbalVelocityTunningCommand::execute() {
   // runPitchVelocityStepUp(1000.0f);
 }
 
+bool goingRight = false;
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second
     // For PID tunning through Ozone
     if (updateYawVelocityConfigDebug) {
@@ -61,6 +62,7 @@ float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per s
         updateYawVelocityConfigDebug = false;
     }
 
+    #ifndef ALL__AERIALS
     float periodMilliseconds = 1000.0f / yawConfig.frequencyHz;
     
     float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
@@ -70,6 +72,20 @@ float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per s
     } else {
         return -yawConfig.velocityAmplitudeDegreesPerSec;
     }
+    #else
+
+    if(gimbal->getCurrentYawAxisAngle(AngleUnit::Radians) >= YAW_AXIS_SOFTSTOP_HIGH && goingRight){
+        goingRight = false;
+    }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) <= YAW_AXIS_SOFTSTOP_LOW && !goingRight){
+        goingRight = true;
+    }
+
+    if (goingRight) {
+        return yawConfig.velocityAmplitudeDegreesPerSec;
+    } else {
+        return -yawConfig.velocityAmplitudeDegreesPerSec;
+    }
+    #endif
 }
 
 bool goingUp = true;

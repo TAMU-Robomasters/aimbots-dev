@@ -210,7 +210,7 @@ public:
         return (unit == AngleUnit::Radians) ? targetYawAxisAngle.getWrappedValue()
                                             : modm::toDegree(targetYawAxisAngle.getWrappedValue());
     }
-    #ifdef ALL_STANDARDS
+    #ifdef ALL_AERIALS
     inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
         targetYawAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, YAW_AXIS_SOFTSTOP_LOW, YAW_AXIS_SOFTSTOP_HIGH));

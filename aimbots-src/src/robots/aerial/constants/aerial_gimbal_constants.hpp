@@ -23,7 +23,7 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
 };
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float YAW_AXIS_SOFTSTOP_LOW = -0.4f;
+static constexpr float YAW_AXIS_SOFTSTOP_LOW = -1.0f;
 static constexpr float YAW_AXIS_SOFTSTOP_HIGH = 0.6f;
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 1.0f);  // aerial yaw is 1:1 direct drive

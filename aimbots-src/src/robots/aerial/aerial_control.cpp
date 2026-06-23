@@ -183,15 +183,16 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Manual field-relative gimbal control. Swap in a tuning command here to tune the gimbal PIDs.
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    // {&gimbalFieldRelativeControlCommand},
-    {&gimbalVelocityTunningCommand},
+    {&gimbalFieldRelativeControlCommand},
+    //{&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Toggle CV auto-aim.
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {&gimbalToggleAimCommand},
+    //{&gimbalToggleAimCommand},
+    {&gimbalVelocityTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
