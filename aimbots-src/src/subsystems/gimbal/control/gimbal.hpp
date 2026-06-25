@@ -186,17 +186,21 @@ public:
                                             : modm::toDegree(currentPitchAxisAngle.getWrappedValue());
     }
 
+    inline int getYawEncoderTick(uint8_t YawIdx = 0) const {
+        return yawMotors[YawIdx]->getInternalEncoder().getEncoder().getWrappedValue();
+    }
+
     inline tap::algorithms::WrappedFloat const& getCurrentYawAxisAngleAsWrappedFloat() const { return currentYawAxisAngle; }
     inline tap::algorithms::WrappedFloat const& getCurrentPitchAxisAngleAsWrappedFloat() const {
         return currentPitchAxisAngle;
     }
 
-    inline float getYawMotorAngleUnwrapped(uint8_t YawIdx) const {
+    inline float getYawMotorAngleUnwrapped(uint8_t YawIdx = 0) const {
         return (yawMotors[YawIdx]->isMotorOnline()) ? yawMotors[YawIdx]->getEncoder()->getPosition().getUnwrappedValue() /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
 
-    inline float getYawMotorAngleWrapped(uint8_t YawIdx) const {
+    inline float getYawMotorAngleWrapped(uint8_t YawIdx = 0) const {
         return (yawMotors[YawIdx]->isMotorOnline()) ? getEncoderWrapped(yawMotors[YawIdx]) //CHANGED HERE /*DJIEncoderValueToRadians(yawMotors[YawIdx]->getEncoder()->getEncoder())*/
                                                     : 0.0f;
     }
@@ -210,17 +214,11 @@ public:
         return (unit == AngleUnit::Radians) ? targetYawAxisAngle.getWrappedValue()
                                             : modm::toDegree(targetYawAxisAngle.getWrappedValue());
     }
-    #ifdef ALL_AERIALS
-    inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
-        angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
-        targetYawAxisAngle.setWrappedValue(tap::algorithms::limitVal(angle, YAW_AXIS_SOFTSTOP_LOW, YAW_AXIS_SOFTSTOP_HIGH));
-    }
-    #else
+
     inline void setTargetYawAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
         targetYawAxisAngle.setWrappedValue(angle);
     }
-    #endif
 
     inline float getTargetPitchAxisAngle(AngleUnit unit) const {
         return (unit == AngleUnit::Radians) ? targetPitchAxisAngle.getWrappedValue()

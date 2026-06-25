@@ -11,6 +11,8 @@
 #include "utils/filters/ema.hpp"
 #ifdef GIMBAL_COMPATIBLE
 
+
+    
 namespace src::Gimbal {
 class GimbalFieldRelativeController : public GimbalControllerInterface {
 public:
@@ -43,10 +45,8 @@ public:
 
     bool isOnline() const;
 
-    void setTargetYaw(AngleUnit unit, float targetYaw) override {
-        targetYaw = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
-        fieldRelativeYawTarget.setWrappedValue(targetYaw);
-    }
+
+    void setTargetYaw(AngleUnit unit, float targetYaw) override ;
 
     void setTargetPitch(AngleUnit unit, float targetPitch) override {
         targetPitch = (unit == AngleUnit::Radians) ? targetPitch : modm::toRadian(targetPitch);

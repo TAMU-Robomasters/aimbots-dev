@@ -83,6 +83,8 @@ float gimbalYawPositionCascadeDDebug = 0.0f;
 bool updateGimbalYawPositionCascadeDebug = false;
 
 float yawVelocityErrorDisplay = 0.0f;
+bool limitedDisplay = false;
+float rawTargetDis = 0.0f;
 
 void GimbalFieldRelativeController::runYawController(
     std::optional<float> velocityLimit) {  // using cascade controller for yaw
@@ -358,7 +360,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
         velocityPIDOutputDisplay = velocityControllerOutput;
         feedforwardDisplay = velocityFeedforward;
 
-        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput + velocityFeedforward);
+        gimbal->setDesiredYawMotorOutput(i, velocityControllerOutput/* + velocityFeedforward*/);
     }
 }
 
@@ -519,6 +521,32 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
     //     }
      }
 }
+float targetDiffDis = 0.0f;
+float lowDiffDis = 0.0f;
+float highDiffDis = 0.0f;
+    void GimbalFieldRelativeController::setTargetYaw(AngleUnit unit, float targetYaw){
+        targetYaw = (unit == AngleUnit::Radians) ? targetYaw : modm::toRadian(targetYaw);
+        rawTargetDis = targetYaw;
+        #ifdef ALL_AERIALS
+        // convert chassis-relative pitch soft stops to field-relative angles
+        float targetAngleDiff = targetYaw - drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue();
+        float maxAngleDiffHigh = DJIEncoderValueToRadians(YAW_AXIS_SOFTSTOP_HIGH - gimbal->getYawMotorAngleUnwrapped()); 
+        float maxAngleDiffLow = DJIEncoderValueToRadians(YAW_AXIS_SOFTSTOP_LOW - gimbal->getYawMotorAngleUnwrapped()); 
+
+        targetDiffDis = targetYaw;
+        highDiffDis = maxAngleDiffHigh;
+        lowDiffDis = maxAngleDiffLow;
+
+        if(targetAngleDiff > maxAngleDiffHigh){
+            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue() + maxAngleDiffHigh;
+            limitedDisplay = true;
+        }else if(targetAngleDiff < maxAngleDiffLow){
+            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue() + maxAngleDiffLow;
+            limitedDisplay = true;
+        }else {limitedDisplay = false;}
+        #endif
+        fieldRelativeYawTarget.setWrappedValue(targetYaw);
+    }
 
 bool GimbalFieldRelativeController::isOnline() const { return gimbal->isOnline(); }
 

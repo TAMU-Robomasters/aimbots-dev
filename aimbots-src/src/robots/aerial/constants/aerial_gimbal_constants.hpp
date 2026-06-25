@@ -23,8 +23,9 @@ static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {
 };
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
-static constexpr float YAW_AXIS_SOFTSTOP_LOW = -1.0f;
-static constexpr float YAW_AXIS_SOFTSTOP_HIGH = 0.6f;
+//should be in encoder ticks
+static constexpr int YAW_AXIS_SOFTSTOP_LOW = 1600;
+static constexpr int YAW_AXIS_SOFTSTOP_HIGH = 4000;
 
 static constexpr float GIMBAL_YAW_GEAR_RATIO = (1.0f / 1.0f);  // aerial yaw is 1:1 direct drive
 /*Changing this means the encoder-readable range of the YAW axis is reduced to 360deg * GIMBAL_YAW_GEAR_RATIO before the
@@ -46,8 +47,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (5.0f / 17.0f);  // same as mai
  * encoder readings will repeat. We will assume that the range of the pitch axis is hardware-limited to not exceed this
  * range, but the motor angle may cross 0 in this range. Example Range: 278deg to 28deg */
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.67;
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.1;
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.3;
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.12;
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 
 /**
@@ -120,7 +121,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .kp = 100.0f,
     .ki = 27.0f,
     .kd = -0.85f,
-    .maxICumulative = 2000.0f,
+    .maxICumulative = 6000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -134,7 +135,7 @@ static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
     .kp = 6.0f,
     .ki = 10.0f,
     .kd = -1.2f,
-    .maxICumulative = 2000.0f,
+    .maxICumulative = 5000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
