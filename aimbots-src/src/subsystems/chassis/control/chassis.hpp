@@ -104,6 +104,9 @@ public:
     void optimizeSwerve(float& targetRPMDrive, float& targetYaw, float currYaw); 
     //calculates targets for swerves yaw and pitch given the desired direction and speed
     void calculateSwerve(float x, float y, float r, float maxWheelSpeed);
+
+    //for fancy power limiting, calculates and sets the position of the swerve motors and returns the ratio of speed for each wheel
+    Vector4f calculatePowerSwerve(float x, float y, float r);
 #endif
     void calculateRail(float x, float maxWheelSpeed);  // sentry rail robots
 

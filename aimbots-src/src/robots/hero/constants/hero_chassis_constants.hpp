@@ -14,6 +14,11 @@ static constexpr MotorID LEFT_FRONT_YAW_ID = MotorID::MOTOR6;
 static constexpr MotorID RIGHT_FRONT_YAW_ID = MotorID::MOTOR7;
 static constexpr MotorID RIGHT_BACK_YAW_ID = MotorID::MOTOR8;
 
+static constexpr float backEMFConst = 42;//42 may be the answer to everything but you should propbably update this still
+static constexpr float torqueConst = 42;
+static constexpr float inertiaConst = 42;
+static constexpr float momentConst = 42;
+
 static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
     .kp = 23.0f, //30.0f
     .ki = 0.0f,

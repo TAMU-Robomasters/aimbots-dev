@@ -608,6 +608,116 @@ void ChassisSubsystem::calculateSwerve(float x, float y, float r, float maxWheel
     watchLBYawTarget = lastCmdYawRad[LB];
 }
 
+Vector4f ChassisSubsystem::calculatePowerSwerve(float x, float y, float r){
+
+
+    // deadband system to prevent chassis from updating when x,y and r are less than a specified value
+    // tune these to prevent yaw motors from always being in "rotation mode" due to chassis follow gimbal pid
+    auto deadband = [](float v, float eps) { return (std::fabs(v) < eps) ? 0.0f : v; };
+    static constexpr float kXYDeadband = 10.0f;
+    static constexpr float kRDeadband  = 100.0f;
+    x = deadband(x, kXYDeadband);
+    y = deadband(y, kXYDeadband);
+    r = deadband(r, kRDeadband);
+
+    // chassis geometry
+    const float halfW = WHEELBASE_WIDTH  * 0.5f;
+    const float halfL = WHEELBASE_LENGTH * 0.5f;
+    const float wheelbaseCenterDist = std::sqrt(halfW * halfW + halfL * halfL);
+
+    // rotational contribution about center
+    const float rx =  r * (WHEELBASE_LENGTH / wheelbaseCenterDist);
+    const float ry =  r * (WHEELBASE_WIDTH  / wheelbaseCenterDist);
+    const float a = -x + rx;
+    const float b = -x - rx;
+    const float c =  y - ry;
+    const float d =  y + ry;
+
+    // yaw values in radians
+    left_front_yaw_actual  = yawToRad(motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_FRONT_YAW_OFFSET);
+    right_front_yaw_actual = yawToRad(motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_FRONT_YAW_OFFSET);
+    left_back_yaw_actual   = yawToRad(motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue(),  LEFT_BACK_YAW_OFFSET);
+    right_back_yaw_actual  = yawToRad(motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue(), RIGHT_BACK_YAW_OFFSET);
+
+    watchLFYaw = motors[LF][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchRFYaw = motors[RF][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchLBYaw = motors[LB][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+    watchRBYaw = motors[RB][1]->getInternalEncoder().getEncoder().getUnwrappedValue();
+
+    // last angle input is stored here and only gets updated when a new value is greater than the deadband
+    static bool  lastYawInit[4]   = {false, false, false, false};
+    static float lastCmdYawRad[4] = {0, 0, 0, 0};
+
+    auto ensureInit = [&](int idx, float actual) {
+        if (!lastYawInit[idx]) {
+            lastCmdYawRad[idx] = wrap0To2Pi(actual);
+            lastYawInit[idx]   = true;
+        }
+    };
+    ensureInit(LF, left_front_yaw_actual);
+    ensureInit(RF, right_front_yaw_actual);
+    ensureInit(LB, left_back_yaw_actual);
+    ensureInit(RB, right_back_yaw_actual);
+
+    // FRC implementation of swerve module computation
+    auto computeModule = [&](float vx, float vy,
+                             int offsetTicks,
+                             float currYawRad,
+                             int moduleIdx,
+                             float& outDriveRPM,
+                             float& outSteerTicksFloat,
+                             int&   outSteerDbgInt) {
+        float targetYawRad;
+
+ 
+            const float mag = std::hypot(vx, vy);
+            outDriveRPM = mag;
+
+            targetYawRad = std::atan2(vy, vx) + 1.5f * static_cast<float>(M_PI);
+            lastCmdYawRad[moduleIdx] = targetYawRad; // update latch
+        outDriveRPMDisplay = outDriveRPM;
+
+        outSteerTicksFloat = radToTicksFloat(targetYawRad, offsetTicks);
+        outSteerDbgInt     = static_cast<int>(std::lround(outSteerTicksFloat));
+    };
+
+    // LF
+    computeModule(b, d, LEFT_FRONT_YAW_OFFSET,  left_front_yaw_actual,
+                  LF, targetRPMs[LF][0], targetRPMs[LF][1], left_front_yaw_db);
+
+    // RF
+    computeModule(b, c, RIGHT_FRONT_YAW_OFFSET, right_front_yaw_actual,
+                  RF, targetRPMs[RF][0], targetRPMs[RF][1], right_front_yaw_db);
+
+    // LB
+    computeModule(a, d, LEFT_BACK_YAW_OFFSET,   left_back_yaw_actual,
+                  LB, targetRPMs[LB][0], targetRPMs[LB][1], left_back_yaw_db);
+
+    // RB
+    computeModule(a, c, RIGHT_BACK_YAW_OFFSET,  right_back_yaw_actual,
+                  RB, targetRPMs[RB][0], targetRPMs[RB][1], right_back_yaw_db);
+
+    // //Normalize drive motor rpm to the max wheel speed
+    // float largestRPM = 0.0f;
+    // for(int i = 0; i < 4; i++){
+    //     if(abs(targetRPMs[i][0]) > largestRPM){
+    //         largestRPM = abs(targetRPMs[i][0]);
+    //     }
+    // }
+    // if(largestRPM > maxWheelSpeed){
+    //     for(int i = 0; i < 4; i++){
+    //         targetRPMs[i][0] /= largestRPM;
+    //         targetRPMs[i][0] *= maxWheelSpeed;
+    //     }
+    // }
+
+    watchRBYawTarget = lastCmdYawRad[RB];
+    watchLFYawTarget = lastCmdYawRad[LF];
+    watchRFYawTarget = lastCmdYawRad[RF];
+    watchLBYawTarget = lastCmdYawRad[LB];
+    return Vector4f{targetRPMs[0][0],targetRPMs[1][0],targetRPMs[2][0],targetRPMs[3][0]};
+};
+
 
 #endif
 
