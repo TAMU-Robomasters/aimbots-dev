@@ -1,4 +1,5 @@
 #include "subsystems/feeder/control/feeder.hpp"
+#include <cstdlib>
 
 #include <utils/tools/common_types.hpp>
 
@@ -85,6 +86,18 @@ void FeederSubsystem::refresh() {
 }
 
 void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
+    if (feederShotTimingActive[FeederIdx]) {
+        // PID reset so it doesn't wind up while bypassed.
+        feederVelocityPIDs[FeederIdx]->pid.reset();
+        feederShotTimingActive[FeederIdx] = false;  // return to normal velocity-PID control
+        return;
+    }
+
+    if (abs(feederTargetRPMs[FeederIdx]) <= 10.0f) { // turn off feeder so it doesn't overheat
+        setDesiredFeederMotorOutput(FeederIdx, 0.0f);
+        return;
+    }
+
     if (updateFeederVelocityPIDsDebug) { // for PID tunning through Ozone
         feederVelocityPIDs[FeederIdx]->pid.setP(feederVelocityP);
         feederVelocityPIDs[FeederIdx]->pid.setI(feederVelocityI);
@@ -99,7 +112,9 @@ void FeederSubsystem::updateMotorVelocityPID(uint8_t FeederIdx) {
     setDesiredFeederMotorOutput(FeederIdx, desiredOutput);
 }
 
-void FeederSubsystem::setTargetRPM(uint8_t FeederIdx, float rpm) { feederTargetRPMs[FeederIdx] = rpm; }
+void FeederSubsystem::setTargetRPM(uint8_t FeederIdx, float rpm) {
+    feederTargetRPMs[FeederIdx] = rpm;
+}
 void FeederSubsystem::setAllTargetRPMs(float rpm) {
     for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
         setTargetRPM(i, rpm);
@@ -111,7 +126,7 @@ void FeederSubsystem::setDesiredOutputToFeederMotor(uint8_t FeederIdx) {
     feederMotors[FeederIdx]->setDesiredOutput(desiredFeederMotorOutputs[FeederIdx]);
 }
 
-bool FeederSubsystem::getPressed() { return limitSwitch.readSwitch(); }
+bool FeederSubsystem::getPressed() { return !limitSwitch.readSwitch(); }
 
 }  // namespace src::Feeder
 

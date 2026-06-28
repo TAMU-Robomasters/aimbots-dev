@@ -1,4 +1,7 @@
 #pragma once
+#include <sys/_intsup.h>
+#include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -32,6 +35,11 @@ static constexpr int LEFT_FRONT_YAW_OFFSET = 7457;
 static constexpr int RIGHT_FRONT_YAW_OFFSET = 7573;
 static constexpr int LEFT_BACK_YAW_OFFSET = 645;
 static constexpr int RIGHT_BACK_YAW_OFFSET = 4779;
+
+static constexpr float LEFT_FRONT_ANGEL_OFFSET = modm::toRadian(330.0f);
+static constexpr float RIGHT_FRONT_ANGEL_OFFSET = modm::toRadian(330.0f);
+static constexpr float LEFT_BACK_ANGEL_OFFSET = modm::toRadian(30.0f);
+static constexpr float RIGHT_BACK_ANGEL_OFFSET = modm::toRadian(210.0f);
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -83,7 +91,8 @@ static constexpr float WHEEL_RADIUS = 0.052068555f;
 static constexpr float WHEELBASE_WIDTH = 0.40656590f;
 static constexpr float WHEELBASE_LENGTH = 0.40656590f;
 
-static constexpr float CHASSIS_GEARBOX_RATIO = (17.0f / 268.0f);
+// pretty sure this just the ratio of the 3508 motor for 
+static constexpr float CHASSIS_GEARBOX_RATIO = tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;

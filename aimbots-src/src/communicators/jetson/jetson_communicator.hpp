@@ -21,6 +21,7 @@ enum class JetsonCommunicatorSerialState : uint8_t {
     HandleMessageType,
     AssemblingAimMessage,
     AssemblingLocalizationMessage,
+    AssemblingVelocityMessage,
 };
 
 struct AutoAimAngles {
@@ -41,11 +42,17 @@ public:
 
     inline JetsonAimMessage const& getLastValidAimMessage() const { return lastAimMessage; }
     inline JetsonLocalizationMessage const& getLastValidLocalizationMessage() const { return lastLocalizationMessage; }
+    inline JetsonVelocityMessage const& getLastValidVelocityMessage() const { return lastVelocityMessage; }
 
     PlateKinematicState getPlatePrediction(uint32_t dt) const;
 
     AutoAimAngles getAutoAimAngles() const;
     modm::Location2D<float> getLocationEstimate() const;
+
+    // Turret-relative chassis velocity command (m/s) from nav2 on the Jetson.
+    inline modm::Vector2f getDesiredTurretRelativeVelocity() const {
+        return modm::Vector2f(lastVelocityMessage.vx, lastVelocityMessage.vy);
+    }
 
     uint32_t getLastFoundTargetTime() const { return lastFoundTargetTime; }
 
@@ -66,7 +73,7 @@ private:
     tap::arch::MilliTimeout jetsonOfflineTimeout;
     tap::arch::MilliTimeout fireTimeout;
 
-    static constexpr uint32_t JETSON_BAUD_RATE = 115200;
+    static constexpr uint32_t JETSON_BAUD_RATE = 460800;
     static constexpr uint16_t JETSON_OFFLINE_TIMEOUT_MILLISECONDS = 2000;
     static constexpr UartPort JETSON_UART_PORT = UartPort::Uart1;
 
@@ -76,7 +83,7 @@ private:
         .pitch = 0.0f,
         .yaw = 0.0f,
         .timeUntilNextFire = 0,
-        .cvState = CVState::NOT_FOUND
+        .cvState = CVState::NO_TARGET
     };
     JetsonLocalizationMessage lastLocalizationMessage {
         .magic = 0,
@@ -84,6 +91,12 @@ private:
         .x = 0.0f,
         .y = 0.0f,
         .theta = 0.0f
+    };
+    JetsonVelocityMessage lastVelocityMessage {
+        .magic = 0,
+        .messageType = 0,
+        .vx = 0.0f,
+        .vy = 0.0f
     };
 
     EmbeddedTransformationMessage transformationMessageToJetson;

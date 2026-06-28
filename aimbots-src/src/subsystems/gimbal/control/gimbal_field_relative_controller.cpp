@@ -52,6 +52,7 @@ float chassisPitchRelativeVelocityTargetDisplay = 0.0f;
 float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
 float chassisPitchRelativeDerivedVelocityDisplay = 0.0f;
 
+float chassisPitchRelativeVelocityCurrentDisplay = 0.0f;
 float chassisRelativeVelocityTargetDisplay = 0.0f;
 float chassisRelativeVelocityCurrentDisplay = 0.0f;
 float chassisRelativeAccelerationTargetDisplay = 0.0f;
@@ -479,7 +480,7 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
                                         PITCH_VELOCITY_FEEDFORWARD.interpolate(fabs(chassisRelativeVelocityTarget)) *//*+
                                     CHASSIS_LINEAR_ACCELERATION_PITCH_COMPENSATION *
                                         drivers->kinematicInformant.getChassisLinearAccelerationInGimbalDirection()*/
-                                #ifdef TARGET_SENTRY
+                                #ifdef TARGET_SENTRY_SWERVE
                                     + fieldRelativePitchAngleFeedforward.interpolate(this->getTargetVelocityPitch(AngleUnit::Radians))
                                 #endif
             ;

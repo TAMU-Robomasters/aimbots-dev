@@ -17,12 +17,21 @@ static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
     0.139188f,
     0.0047f, 
 };
+// static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // Realsense in meters
+//     0.0325f, 
+//     0.150f,
+//     -0.0325f, 
+// };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{ // not used
     0.0f, // x
     0.0f, // y
     0.0f  // z
 };
+
+// Camera mounting offset relative to the gimbal/turret orientation (degrees)
+static constexpr float CAMERA_YAW_OFFSET_ANGLE_DEGREES = 0.0f;
+static constexpr float CAMERA_PITCH_OFFSET_ANGLE_DEGREES = 6.13399982f;
 
 static Vector3f CHASSIS_START_POSITION_RELATIVE_TO_WORLD{ // not used
     -2.830f, // x

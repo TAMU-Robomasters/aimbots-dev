@@ -295,7 +295,8 @@ HoldCommandMapping leftSwitchUp(
     drivers(),
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
-    {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
