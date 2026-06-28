@@ -132,14 +132,14 @@ TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 1.0f,
     .translationThresholdToDecreaseRotationSpeed = 0.25f,
     .rotationalSpeedFractionOfMax = 0.8f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.2f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.5f,
     .rotationalSpeedIncrement = 20.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
     // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
-    .minSpinRateModifier = 0.75, // 0.75f,
-    .maxSpinRateModifier = 1.0f, // 1.0f,
+    .minSpinRateModifier = 0.5f, 
+    .maxSpinRateModifier = 0.7f, 
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };
@@ -209,10 +209,10 @@ ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerComm
     &chassis,
     &gimbal,
     defaultTokyoConfig,
-    false,
+    true,
     randomizerConfig,
-    4000.0f,
-    6500.0f);
+    6500.0f,
+    10000.0f);
 
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);

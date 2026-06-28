@@ -108,6 +108,7 @@ void sinusodalSpinCharacteristics( // ZHENGHAO-99
     
     float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.minSpinRateModifier;
     ampDisplay = amp;
+    float funnyFactor = 7.0f;
     
     // sinDisplay = std::sin(0.0023*ms);
     
@@ -116,7 +117,8 @@ void sinusodalSpinCharacteristics( // ZHENGHAO-99
     }
     else {
         // idk js multiply random sins together
-        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+        //*spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + ((amp*0.5 * std::cos(0.0004*funnyFactor*ms))+(amp*std::sin(0.0005*funnyFactor*ms)*(std::sin(0.0004*ms*(funnyFactor/2)))));
     }
 
     *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration; // ts probably not needed lmao ZHENG-HAO

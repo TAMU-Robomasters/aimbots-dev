@@ -34,7 +34,7 @@ public:
         const SpinRandomizerConfig& randomizerConfig = SpinRandomizerConfig(),
         ChassisTokyoMasterMode mode = ChassisTokyoMasterMode::NORMAL,
         float joystick2OverrideVelocity = 0.0f,
-        float maxWheelSpeed = 4000.0f);
+        float maxWheelSpeed = 5000.0f);
 
     void initialize() override;
     void execute() override;
@@ -76,7 +76,7 @@ private:
 
     ChassisTokyoMasterMode mode = ChassisTokyoMasterMode::NORMAL;
     float joystick2OverrideVelocity = 0.0f;
-    float maxWheelSpeed = 4000.0f;
+    float maxWheelSpeed = 5000.0f;
 
     tap::algorithms::Ramp rotationSpeedRamp;
     tap::arch::MilliTimeout spinRateModifierTimer;
@@ -87,6 +87,11 @@ private:
 
     float spinRateModifier = 1.0f;
     uint32_t spinRateModifierDuration = 0;
+    float lastMaxWheelSpeed = 0.0f;
+
+    // When the parent command drops maxWheelSpeed due to a power spike, the rotation ramp
+    // needs to be allowed to fall much faster than the normal spin-up increment.
+    static constexpr float POWER_LIMITED_ROTATION_DECREASE_INCREMENT = 1200.0f;
 
     static constexpr float JOYSTICK_OVERRIDE_DEADBAND = 0.05f;
     static constexpr float TRANSLATION_DEADBAND = 0.03f;

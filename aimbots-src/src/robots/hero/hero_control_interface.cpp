@@ -18,15 +18,15 @@ using namespace tap::algorithms;
 float finalXWatch = 0;
 uint32_t timeCtr = 0;
 
-static constexpr float INPUT_X_INC = 0.003f;
-static constexpr float INPUT_Y_INC = 0.003f;
+static constexpr float INPUT_X_INC = 0.01f;
+static constexpr float INPUT_Y_INC = 0.01f;
 static constexpr float INPUT_XY_STOP_INC = 0.03f;
-static constexpr float INPUT_R_INC = 0.003f;
+static constexpr float INPUT_R_INC = 0.01f;
 
 // Custom controller is updated at about 30 Hz, so ramp it a little more slowly than keyboard release,
 // but still fast enough to feel responsive in the 2 ms command loop.
-static constexpr float CUSTOM_CONTROLLER_INPUT_X_INC = 0.004f;
-static constexpr float CUSTOM_CONTROLLER_INPUT_Y_INC = 0.004f;
+static constexpr float CUSTOM_CONTROLLER_INPUT_X_INC = 0.01f;
+static constexpr float CUSTOM_CONTROLLER_INPUT_Y_INC = 0.01f;
 static constexpr float CUSTOM_CONTROLLER_INPUT_STOP_INC = 0.035f;
 
 static constexpr float YAW_JOYSTICK_INPUT_SENSITIVITY = 0.015f;

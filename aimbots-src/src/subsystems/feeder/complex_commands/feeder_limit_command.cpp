@@ -105,6 +105,10 @@ void FeederLimitCommand::execute() {
     // to mid)
     if (currFireState && !prevFireState) {
         feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::setFeederCustomMulti, 3.0f);
+
+        //funny hero shoot noise
+        drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
+
         isFiring = true;
         loaderDormant = false;
         limitswitchInactive.restart(limitSwitchDownTime);

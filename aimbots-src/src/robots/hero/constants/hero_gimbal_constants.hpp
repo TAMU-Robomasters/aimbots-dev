@@ -23,7 +23,7 @@ static const std::array<bool, YAW_MOTOR_COUNT> YAW_MOTOR_DIRECTIONS = {false};
 static const std::array<MotorID, YAW_MOTOR_COUNT> YAW_MOTOR_IDS = {MotorID::MOTOR5};
 static const std::array<const char*, YAW_MOTOR_COUNT> YAW_MOTOR_NAMES = {"Yaw Motor 1"};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {RevEncoderValueToRadians(21925)};
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {RevEncoderValueToRadians(22333)};
 static constexpr float YAW_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
  //static constexpr float GIMBAL_YAW_GEAR_RATIO = 1.0f/2.0754716981f;  // for 2025 Hero
@@ -93,7 +93,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 20.5, 
+    .kp = 10.5, 
     .ki = 0.0f,
     .kd = 0.0f,  // 0.15
     .maxICumulative = 1000.0f,
@@ -107,7 +107,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,  // 30
+    .kp = 10.0f,  // 30
     .ki = 0.0f,
     .kd = 0.0f,  // 0
     .maxICumulative = 1000.0f,
@@ -136,8 +136,8 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_VELOCITY_PID_CONFIG = {
-    .kp = 400.0f, 
-    .ki = 10.0f,  
+    .kp = 900.0f, 
+    .ki = 90.0f,  
     .kd = 0.0f,
     .maxICumulative = 15000,
     .maxOutput = GM6020_MAX_OUTPUT,

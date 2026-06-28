@@ -266,7 +266,7 @@ static void updateIo(src::Drivers *drivers) {
     // dbg_can351_b0 = drivers->can351Listener.lastByte0; // should toggle 0/1 every 2s
     // dbg_can351_b1 = drivers->can351Listener.lastByte1;
 
-    button1Display = drivers->customController.isConnected();
+    button1Display = drivers->customController.button1Pressed();
 
     chassisPowerDisplay = drivers->espPowerSensor.getPower();
 

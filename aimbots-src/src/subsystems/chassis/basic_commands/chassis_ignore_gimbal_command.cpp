@@ -9,9 +9,7 @@
 
 namespace src::Chassis {
 
-static constexpr float CUSTOM_CONTROLLER_NORMAL_MAX_WHEEL_SPEED = 4000.0f;
-static constexpr float CUSTOM_CONTROLLER_HIGH_MAX_WHEEL_SPEED = 6500.0f;
-static constexpr float CUSTOM_CONTROLLER_TRANSLATION_DEADBAND = 0.03f;
+static constexpr float CUSTOM_CONTROLLER_TRANSLATION_DEADBAND = 0.05f;
 
 static inline float applyCustomControllerDeadband(float value) {
     return std::fabs(value) < CUSTOM_CONTROLLER_TRANSLATION_DEADBAND ? 0.0f : value;
@@ -31,7 +29,11 @@ ChassisIgnoreGimbalCommand::ChassisIgnoreGimbalCommand(
 
 void ChassisIgnoreGimbalCommand::initialize() {}
 
-// Debug/watch variables for Ozone.
+void ChassisIgnoreGimbalCommand::setMaxWheelSpeed(float maxWheelSpeed) {
+    this->maxWheelSpeed = maxWheelSpeed > 0.0f ? maxWheelSpeed : DEFAULT_CUSTOM_CONTROLLER_MAX_WHEEL_SPEED;
+}
+
+// Debug/watch variables for ozone
 float ignoreGimbalDesiredXDisplay = 0.0f;
 float ignoreGimbalDesiredYDisplay = 0.0f;
 float ignoreGimbalCustomXDisplay = 0.0f;
@@ -61,10 +63,9 @@ void ChassisIgnoreGimbalCommand::execute() {
     desiredX = limitVal<float>(desiredX + customX, -1.0f, 1.0f);
     desiredY = limitVal<float>(desiredY + customY, -1.0f, 1.0f);
 
+    // Button 4 is still displayed here for debugging, but the RPM ceiling itself is now fed by
+    // ChassisToggleDriveCustomControllerCommand after power limiting is applied.
     const bool button4Held = customControllerConnected && drivers->controlOperatorInterface.customControllerButton4Pressed();
-    const float maxWheelSpeed = button4Held
-                                    ? CUSTOM_CONTROLLER_HIGH_MAX_WHEEL_SPEED
-                                    : CUSTOM_CONTROLLER_NORMAL_MAX_WHEEL_SPEED;
 
     if (gimbal->isOnline()) {
         float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
@@ -122,4 +123,4 @@ bool ChassisIgnoreGimbalCommand::isFinished() const { return false; }
 }  // namespace src::Chassis
 #endif  // #ifdef CHASSIS_COMPATIBLE
 
-#endif  // #ifdef GIMBAL_UNTETHER
+#endif  // #ifdef GIMBAL_UNTETHERED

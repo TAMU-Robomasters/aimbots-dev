@@ -54,6 +54,7 @@ void ChassisTokyoMasterCommand::initialize() {
     spinRateModifierDuration = 0;
     spinRateModifierTimer.restart(0);
     rotationSpeedRamp.reset(chassis->getDesiredRotation());
+    lastMaxWheelSpeed = maxWheelSpeed;
     chassis->setTokyoDrift(true);
 }
 
@@ -73,7 +74,7 @@ void ChassisTokyoMasterCommand::setJoystick2OverrideVelocity(float joystick2Over
 }
 
 void ChassisTokyoMasterCommand::setMaxWheelSpeed(float maxWheelSpeed) {
-    this->maxWheelSpeed = maxWheelSpeed > 0.0f ? maxWheelSpeed : 4000.0f;
+    this->maxWheelSpeed = maxWheelSpeed > 0.0f ? maxWheelSpeed : 6500.0f;
 }
 
 void ChassisTokyoMasterCommand::setSpinDirectionOverride(int spinDirectionOverride) {
@@ -150,19 +151,34 @@ void ChassisTokyoMasterCommand::execute() {
     refreshActiveSpinDirectionIfNeeded();
     chassis->setTokyoDrift(true);
 
-    if (!drivers->controlOperatorInterface.isCustomControllerConnected()) {
-        rotationSpeedRamp.setTarget(0.0f);
-        rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
-        chassis->setTargetRPMs(0.0f, 0.0f, rotationSpeedRamp.getValue(), maxWheelSpeed);
-        return;
-    }
+    const bool customControllerConnected =
+    drivers->controlOperatorInterface.isCustomControllerConnected();
 
-    float desiredX = applyDeadband(
-        drivers->controlOperatorInterface.getCustomControllerChassisXInput(),
-        TRANSLATION_DEADBAND);
-    float desiredY = applyDeadband(
-        drivers->controlOperatorInterface.getCustomControllerChassisYInput(),
-        TRANSLATION_DEADBAND);
+    float desiredX = 0.0f;
+    float desiredY = 0.0f;
+    float unusedRotation = 0.0f;
+
+    Chassis::Helper::getUserDesiredInput(
+        drivers,
+        chassis,
+        &desiredX,
+        &desiredY,
+        &unusedRotation);
+
+    const float customX = customControllerConnected
+        ? applyDeadband(
+              drivers->controlOperatorInterface.getCustomControllerChassisXInput(),
+              TRANSLATION_DEADBAND)
+        : 0.0f;
+
+    const float customY = customControllerConnected
+        ? applyDeadband(
+              drivers->controlOperatorInterface.getCustomControllerChassisYInput(),
+              TRANSLATION_DEADBAND)
+        : 0.0f;
+
+    desiredX = limitVal<float>(desiredX + customX, -1.0f, 1.0f);
+    desiredY = limitVal<float>(desiredY + customY, -1.0f, 1.0f);
 
     desiredX *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
     desiredY *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
@@ -172,7 +188,7 @@ void ChassisTokyoMasterCommand::execute() {
 
     float rampTarget = 0.0f;
     if (manualOverrideActive) {
-        // Positive joystick 2 X is positive chassis angular command / CCW.
+        // Positive joystick 2 X is positive chassis angular command / CCW
         rampTarget = manualSpin * maxWheelSpeed * tokyoConfig.rotationalSpeedFractionOfMax;
         spinRateModifier = 1.0f;
         tokyoMasterSpinRateModifierDisplay = spinRateModifier;
@@ -191,8 +207,20 @@ void ChassisTokyoMasterCommand::execute() {
     }
 
     rotationSpeedRamp.setTarget(rampTarget);
-    rotationSpeedRamp.update(tokyoConfig.rotationalSpeedIncrement);
+
+    // Normal Tokyo behavior ramps rotational speed smoothly. If the parent scheduler has just reduced
+    // maxWheelSpeed because chassis power is too high, allow the rotational command to fall much faster
+    // so power limiting has an immediate effect instead of waiting on the normal spin ramp.
+    const bool maxWheelSpeedReduced = maxWheelSpeed + 1.0f < lastMaxWheelSpeed;
+    const bool targetMagnitudeReduced = std::fabs(rampTarget) < std::fabs(rotationSpeedRamp.getValue());
+    const float rotationRampIncrement =
+        (maxWheelSpeedReduced && targetMagnitudeReduced)
+            ? POWER_LIMITED_ROTATION_DECREASE_INCREMENT
+            : tokyoConfig.rotationalSpeedIncrement;
+
+    rotationSpeedRamp.update(rotationRampIncrement);
     const float desiredRotation = rotationSpeedRamp.getValue();
+    lastMaxWheelSpeed = maxWheelSpeed;
 
     if (gimbal != nullptr && gimbal->isOnline()) {
         const float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
