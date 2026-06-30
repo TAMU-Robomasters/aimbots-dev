@@ -30,7 +30,7 @@ static constexpr SmoothPIDConfig CHASSIS_YAW_PID_CONFIG = {
 
 static constexpr int LEFT_FRONT_YAW_OFFSET = 4450;
 static constexpr int RIGHT_FRONT_YAW_OFFSET = 3725;
-static constexpr int LEFT_BACK_YAW_OFFSET = 7875;
+static constexpr int LEFT_BACK_YAW_OFFSET = 5060;
 static constexpr int RIGHT_BACK_YAW_OFFSET = 7800;
 
 /**
