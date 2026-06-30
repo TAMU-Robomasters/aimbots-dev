@@ -34,23 +34,39 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     float* desiredX,
     float* desiredY,
     float* desiredRotation) {
-    if (desiredX == nullptr || desiredY == nullptr || desiredRotation == nullptr) {
+    if (drivers == nullptr || chassis == nullptr || desiredX == nullptr || desiredY == nullptr ||
+        desiredRotation == nullptr) {
         return;
     }
 
-    // Gets the maximum speed that we're realistically able to achieve with the current power limit
-    float maxWheelSpeed;
-    maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
-            drivers->refSerial.getRefSerialReceivingData(),
-            drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
-    
-    #if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
-    maxWheelSpeed = 4000;
-    #endif
+    // Gets the maximum speed that we're realistically able to achieve with the current power limit.
+    float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
+        drivers->refSerial.getRefSerialReceivingData(),
+        drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+#if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+    maxWheelSpeed = 4000.0f;
+#endif
+
+    rescaleDesiredInputToPowerLimitedSpeeds(drivers, chassis, desiredX, desiredY, desiredRotation, maxWheelSpeed);
+}
+
+void rescaleDesiredInputToPowerLimitedSpeeds(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredX,
+    float* desiredY,
+    float* desiredRotation,
+    float maxWheelSpeed) {
+    (void)drivers;
+
+    if (chassis == nullptr || desiredX == nullptr || desiredY == nullptr || desiredRotation == nullptr) {
+        return;
+    }
 
     *desiredRotation *= maxWheelSpeed;
 
-    // the maximum translational speed that we can achieve while maintaining the desired rotation speed
+    // The maximum translational speed that we can achieve while maintaining the desired rotation speed.
     float rTranslationalGain = chassis->calculateRotationLimitedTranslationalWheelspeed(*desiredRotation, maxWheelSpeed);
 
     *desiredX = limitVal<float>(*desiredX * maxWheelSpeed, -rTranslationalGain, rTranslationalGain);
@@ -92,6 +108,7 @@ void sinusodalSpinCharacteristics( // ZHENGHAO-99
     
     float amp = randomizerConfig.maxSpinRateModifier - randomizerConfig.minSpinRateModifier;
     ampDisplay = amp;
+    float funnyFactor = 7.0f;
     
     // sinDisplay = std::sin(0.0023*ms);
     
@@ -100,7 +117,8 @@ void sinusodalSpinCharacteristics( // ZHENGHAO-99
     }
     else {
         // idk js multiply random sins together
-        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+        //*spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + (amp * std::sin(0.001*ms) * std::sin(0.00067*ms+1.11));
+        *spinRateModifier = randomizerConfig.minSpinRateModifier+(amp/2.0) + ((amp*0.5 * std::cos(0.0004*funnyFactor*ms))+(amp*std::sin(0.0005*funnyFactor*ms)*(std::sin(0.0004*ms*(funnyFactor/2)))));
     }
 
     *spinRateModifierDuration = randomizerConfig.minSpinRateModifierDuration; // ts probably not needed lmao ZHENG-HAO

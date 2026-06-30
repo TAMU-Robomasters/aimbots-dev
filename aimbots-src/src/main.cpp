@@ -226,6 +226,8 @@ static void updateIo(src::Drivers *drivers) {
 
 #ifndef TARGET_TURRET
     drivers->canRxHandler.pollCanData();
+    drivers->customController.read();
+    drivers->espPowerSensor.read();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
@@ -263,9 +265,6 @@ static void updateIo(src::Drivers *drivers) {
     // dbg_can351_rxCount = drivers->can351Listener.rxCount;
     // dbg_can351_b0 = drivers->can351Listener.lastByte0; // should toggle 0/1 every 2s
     // dbg_can351_b1 = drivers->can351Listener.lastByte1;
-
-    drivers->customController.read();
-    drivers->espPowerSensor.read();
 
     button1Display = drivers->customController.button1Pressed();
 

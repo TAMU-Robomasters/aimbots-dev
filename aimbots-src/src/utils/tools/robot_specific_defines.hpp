@@ -1,7 +1,7 @@
 #pragma once
 #if defined(TARGET_AERIAL)
-#include "robots/aerial/aerial_control_interface.hpp"
 #include "robots/aerial/constants/aerial_general_constants.hpp"
+#include "robots/aerial/aerial_control_interface.hpp"
 #define ALL_AERIALS
 
 #elif defined(TARGET_DART)

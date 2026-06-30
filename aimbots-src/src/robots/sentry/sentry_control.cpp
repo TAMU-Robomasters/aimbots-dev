@@ -1,9 +1,12 @@
-#include "robots/sentry/constants/sentry_feeder_constants.hpp"
-#include "robots/sentry/constants/sentry_shooter_constants.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_SENTRIES)
 
+// Sentry-only constant headers (these define BARREL_IDS etc.) must stay inside the
+// ALL_SENTRIES guard — leaking them at file scope clashes with other robots' constants
+// when their targets are compiled.
+#include "robots/sentry/constants/sentry_feeder_constants.hpp"
+#include "robots/sentry/constants/sentry_shooter_constants.hpp"
 #include "informants/kinematics/robot_frames.hpp"
 #include "utils/ballistics/ballistics_solver.hpp"
 #include "utils/tools/common_types.hpp"
@@ -349,7 +352,7 @@ HoldCommandMapping leftSwitchUp(
     drivers(),
    // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
    // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
-   {&chassisAutoNavVelocityCommand, &gimbalChaseCommand2},
+   // {&chassisAutoNavVelocityCommand, &gimbalChaseCommand2},
     // {&chassisAutoNavVelocityCommand, &gimbalFieldRelativeControlCommand2},
     // {&chassisAutoNavTokyoVelocityCommand, &gimbalFieldRelativeControlCommand2},
     // {&chassisAutoNavTokyoVelocityCommand, &gimbalChaseCommand2},
@@ -357,7 +360,7 @@ HoldCommandMapping leftSwitchUp(
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     // {&chassisTokyoCommand, &gimbalChaseCommand2},
+     {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));

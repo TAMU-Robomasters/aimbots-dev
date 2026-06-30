@@ -26,6 +26,7 @@
 #include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -131,17 +132,18 @@ TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 1.0f,
     .translationThresholdToDecreaseRotationSpeed = 0.25f,
     .rotationalSpeedFractionOfMax = 0.8f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.2f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.5f,
     .rotationalSpeedIncrement = 20.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
     // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
-    .minSpinRateModifier = 0.75, // 0.75f,
-    .maxSpinRateModifier = 1.0f, // 1.0f,
+    .minSpinRateModifier = 0.5f, 
+    .maxSpinRateModifier = 0.7f, 
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };
+
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
     .velocityAmplitudeDegreesPerSec = 60.0f,
@@ -202,8 +204,19 @@ ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
     0,
     randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
 
+ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    true,
+    randomizerConfig,
+    6500.0f,
+    10000.0f);
+
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand3(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 GimbalChaseCommand gimbalChaseCommand(
     drivers(),
@@ -268,19 +281,22 @@ ClientDisplayCommand clientDisplayCommand(
 );
 
 // Define command mappings here -------------------------------------------
-// Enables normal drive and gimbal field relative control. Enables CV toggle
+// HoldCommandMapping leftSwitchDown(
+//     drivers(),
+//     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
     // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
@@ -352,6 +368,7 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
+    //drivers->commandMapper.addMap(&leftSwitchDown);
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);

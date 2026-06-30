@@ -5,6 +5,7 @@
 
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 #include "communicators/jetson/jetson_protocol.hpp"
+#include "modm/math/geometry/angle.hpp"
 
 #define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
 #define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
@@ -60,6 +61,11 @@ float lidarThetaDisplay = 0.0f;
 
 float velCmdXDisplay = 0.0f;
 float velCmdYDisplay = 0.0f;
+
+float fieldYawDisplay = 0.0f;
+float fieldPitchDisplay = 0.0f;
+float cameraToTurretMatrixDisplay[16] = {0.0f};
+bool ImHereDisplay = false;
 
 /**
  * @brief Need to use modm's uart functions to read from the Jetson.
@@ -132,6 +138,7 @@ void JetsonCommunicator::updateSerial() {
                 uint8_t frameDelay_ms = 0.0f; 
                 //!!! potential issue where not enough time has passed and we don't read anything
                 READ(&frameDelay_ms, 1);
+                ImHereDisplay = true;
                 
                 drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
 
@@ -145,8 +152,17 @@ void JetsonCommunicator::updateSerial() {
 
                 transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
                 transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+
+                fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
+                fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
+
                 
                 std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
+                // Copy the camera->turret transform into a display array so Ozone can watch it.
+                for (int i = 0; i < 16; i++) {
+                    cameraToTurretMatrixDisplay[i] = transformationMessageToJetson.matrix[i];
+                }
 
                 // Send data to Jetson
                 WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
@@ -211,9 +227,9 @@ void JetsonCommunicator::updateSerial() {
 
                 // Auditory indicator that helps debug our vision pipeline.
                 if (lastAimMessage.cvState == CVState::CONTINUOUS_FIRE) {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
+                    tap::buzzer::playNote(&drivers->pwm, 500);
                 } else if (lastAimMessage.cvState == CVState::SHOT_TIMING) {
-                    tap::buzzer::playNote(&drivers->pwm, 0);
+                    tap::buzzer::playNote(&drivers->pwm, 900);
                 } else {
                     tap::buzzer::playNote(&drivers->pwm, 0);
                 }
