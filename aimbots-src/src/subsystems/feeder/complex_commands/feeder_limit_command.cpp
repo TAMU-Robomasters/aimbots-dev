@@ -50,6 +50,9 @@ void FeederLimitCommand::execute() {
                 currState = loaded;
                 feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                 canShoot = true;
+            }else{
+                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
+                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
             }
             break;
         case loaded:
@@ -60,6 +63,8 @@ void FeederLimitCommand::execute() {
                 canShoot = false;
                 //funny hero shoot noise
                 drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
+            }else{
+                feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
             }
             break;
         case firing:
@@ -67,6 +72,8 @@ void FeederLimitCommand::execute() {
                 currState = loading;
                 feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
                 feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+            }else{
+                feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
             }
             break;
     }
