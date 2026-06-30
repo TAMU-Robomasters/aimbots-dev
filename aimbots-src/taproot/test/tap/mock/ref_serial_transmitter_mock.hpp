@@ -39,7 +39,7 @@ public:
     MOCK_METHOD(
         modm::ResumableResult<void>,
         deleteGraphicLayer,
-        (Tx::DeleteGraphicOperation, uint8_t),
+        (Tx::DeleteGraphicOperation, uint8_t, bool),
         (override));
     MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic1Message*, bool, bool));
     MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic2Message*, bool, bool));
@@ -51,37 +51,42 @@ public:
     virtual modm::ResumableResult<void> sendGraphic(
         Tx::Graphic1Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     virtual modm::ResumableResult<void> sendGraphic(
         Tx::Graphic2Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     virtual modm::ResumableResult<void> sendGraphic(
         Tx::Graphic5Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     virtual modm::ResumableResult<void> sendGraphic(
         Tx::Graphic7Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     virtual modm::ResumableResult<void> sendGraphic(
         Tx::GraphicCharacterMessage* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     MOCK_METHOD(
         modm::ResumableResult<void>,

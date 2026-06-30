@@ -28,7 +28,7 @@
 from SCons.Script import *
 
 def show_size(env, source, alias='__size'):
-    if 'CONFIG_DEVICE_MEMORY' in env:
+    if env.has_key('CONFIG_DEVICE_MEMORY'):
         def size_action(target, source, env):
             from modm_tools import size
             print(size.format(source[0].abspath, env['CONFIG_DEVICE_MEMORY']))

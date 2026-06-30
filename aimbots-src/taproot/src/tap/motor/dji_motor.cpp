@@ -29,9 +29,6 @@
 #ifdef PLATFORM_HOSTED
 #include <iostream>
 
-#include "tap/communication/tcp-server/json_messages.hpp"
-#include "tap/communication/tcp-server/tcp_server.hpp"
-
 #include "modm/architecture/interface/can_message.hpp"
 #endif
 
@@ -84,7 +81,8 @@ void DjiMotor::processMessage(const modm::can::Message& message)
     torque = static_cast<int16_t>(message.data[4] << 8 | message.data[5]);  // torque
     torque = motorInverted ? -torque : torque;
     temperature = static_cast<int8_t>(message.data[6]);  // temperature
-
+    
+    if (motorDisconnectTimeout.isExpired()) offlineFlag = true;
     // restart disconnect timer, since you just received a message from the motor
     motorDisconnectTimeout.restart(MOTOR_DISCONNECT_TIME);
 
@@ -107,6 +105,10 @@ bool DjiMotor::isMotorOnline() const
      */
     return !motorDisconnectTimeout.isExpired() && !motorDisconnectTimeout.isStopped();
 }
+
+bool DjiMotor::hasMotorBeenOffline() const { return !isMotorOnline() || offlineFlag; }
+
+void DjiMotor::resetHasBeenOffline() const { offlineFlag = false; }
 
 void DjiMotor::serializeCanSendData(modm::can::Message* txMessage) const
 {

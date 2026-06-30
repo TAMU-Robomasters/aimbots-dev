@@ -24,8 +24,6 @@
 #ifndef TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
 #define TAPROOT_CHASSIS_SUBSYSTEM_INTERFACE_HPP_
 
-#include "tap/algorithms/math_user_utils.hpp"
-
 #include "../subsystem.hpp"
 #include "modm/math/matrix.hpp"
 
@@ -54,34 +52,7 @@ public:
      *      where vz is rotational velocity. This is the velocity calculated from the chassis's
      *      encoders. Units: m/s
      */
-    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() = 0;
-
-    /**
-     * Transforms the chassis relative velocity of the form <vx, vy, vz> (where z is an
-     * orientation) into world relative frame, given some particular chassis heading (z direction,
-     * assumed to be in radians). Transforms the input matrix chassisRelativeVelocity. Units: m/s
-     */
-    static void getVelocityWorldRelative(
-        modm::Matrix<float, 3, 1>& chassisRelativeVelocity,
-        float chassisHeading)
-    {
-        modm::Matrix<float, 3, 3> transform;
-        float headingCos = cosf(chassisHeading);
-        float headingSin = sinf(chassisHeading);
-        headingCos = tap::algorithms::compareFloatClose(headingCos, 0.0f, 1e-6) ? 0.0f : headingCos;
-        headingSin = tap::algorithms::compareFloatClose(headingSin, 0.0f, 1e-6) ? 0.0f : headingSin;
-
-        transform[0][0] = headingCos;
-        transform[1][0] = headingSin;
-        transform[2][0] = 0;
-        transform[0][1] = -headingSin;
-        transform[1][1] = headingCos;
-        transform[2][1] = 0;
-        transform[0][2] = 0;
-        transform[1][2] = 0;
-        transform[2][2] = 1;
-        chassisRelativeVelocity = transform * chassisRelativeVelocity;
-    }
+    virtual modm::Matrix<float, 3, 1> getActualVelocityChassisRelative() const = 0;
 };
 }  // namespace tap::control::chassis
 

@@ -28,6 +28,7 @@
 #include <list>
 
 #include "tap/communication/serial/remote.hpp"
+#include "tap/control/generic_remote_map_state.hpp"
 
 namespace tap
 {
@@ -52,7 +53,7 @@ namespace control
  *      the state of the RemoteMapState is, the RemoteMapState is no longer
  *      satisfied.
  */
-class RemoteMapState
+class RemoteMapState : public GenericRemoteMapState
 {
 public:
     /**
@@ -149,6 +150,7 @@ public:
      */
     RemoteMapState(MouseButton button);
 
+    void updateState(tap::communication::serial::Remote &remote) override;
     /**
      * Initializes the left switch with the particular `Remote::SwitchState` provided.
      */
@@ -158,28 +160,6 @@ public:
      * Initializes the right switch with the particular `Remote::SwitchState` provided.
      */
     void initRSwitch(tap::communication::serial::Remote::SwitchState ss);
-
-    /**
-     * Initializes the keys to the bit mapped set of keys provided.
-     * @note `keys` must be mutally exclusive with any set of `negKeys` already provided.
-     */
-    void initKeys(uint16_t keys);
-
-    /**
-     * Initializes the neg keys to the bit mapped set of neg keys provided.
-     * @note `negKeys` must be mutally exclusive with any set of `keys` already provided.
-     */
-    void initNegKeys(uint16_t negKeys);
-
-    /**
-     * @see `initKeys`. Interprets the list and passes that on as a bit mapped set of keys.
-     */
-    void initKeys(const std::list<tap::communication::serial::Remote::Key> &keySet);
-
-    /**
-     * @see `initNegKeys`. Interprets the list and passes that on as a bit mapped set of keys.
-     */
-    void initNegKeys(const std::list<tap::communication::serial::Remote::Key> &negKeySet);
 
     /**
      * Initializes the left mouse button to be mapped when clicked.
@@ -212,7 +192,15 @@ public:
      * @return `true` if `this` RemoteMapState is a subset of the `other` RemoteMapState. See above
      * for description of what it means for a `RemoteMapState` to be a subset of another.
      */
-    bool stateSubsetOf(const RemoteMapState &other) const;
+    bool stateSubsetOf(const GenericRemoteMapState &other) const override;
+
+    tap::communication::serial::Remote::SwitchState getLSwitch() const { return lSwitch; }
+
+    tap::communication::serial::Remote::SwitchState getRSwitch() const { return rSwitch; }
+
+    bool getLMouseButton() const { return lMouseButton; }
+
+    bool getRMouseButton() const { return rMouseButton; }
 
     /**
      * Straight equality.
@@ -227,29 +215,6 @@ public:
      */
     bool friend operator!=(const RemoteMapState &rms1, const RemoteMapState &rms2);
 
-    /**
-     * @return The negKeys currently being used.
-     */
-    uint16_t getNegKeys() const { return negKeys; }
-
-    /**
-     * @return `true` if the neg key set has been initialized, `false` otherwise.
-     */
-    bool getNegKeysUsed() const { return negKeys != 0; }
-
-    /**
-     * @return the current keys initialized in the `RemoteMapState`.
-     */
-    uint16_t getKeys() const { return keys; }
-
-    bool getLMouseButton() const { return lMouseButton; }
-
-    bool getRMouseButton() const { return rMouseButton; }
-
-    tap::communication::serial::Remote::SwitchState getLSwitch() const { return lSwitch; }
-
-    tap::communication::serial::Remote::SwitchState getRSwitch() const { return rSwitch; }
-
 private:
     tap::communication::serial::Remote::SwitchState lSwitch =
         tap::communication::serial::Remote::SwitchState::UNKNOWN;
@@ -257,13 +222,10 @@ private:
     tap::communication::serial::Remote::SwitchState rSwitch =
         tap::communication::serial::Remote::SwitchState::UNKNOWN;
 
-    uint16_t keys = 0;
-
-    uint16_t negKeys = 0;  // if certain keys are pressed, the remote map will not do mapping
-
     bool lMouseButton = false;
 
     bool rMouseButton = false;
+
 };  // class RemoteState
 }  // namespace control
 }  // namespace tap

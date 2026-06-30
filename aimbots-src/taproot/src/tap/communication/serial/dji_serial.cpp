@@ -21,8 +21,8 @@
  * along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "tap/architecture/clock.hpp"
-#include "tap/architecture/endianness_wrappers.hpp"
+#include <cstring>
+
 #include "tap/communication/serial/uart.hpp"
 #include "tap/drivers.hpp"
 #include "tap/errors/create_errors.hpp"
