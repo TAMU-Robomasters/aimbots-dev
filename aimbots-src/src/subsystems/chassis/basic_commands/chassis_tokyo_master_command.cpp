@@ -22,6 +22,16 @@ int tokyoMasterModeDisplay = 0;
 int tokyoMasterDirectionDisplay = 0;
 bool tokyoMasterManualOverrideActiveDisplay = false;
 
+// Auto-mode debug/watch variables
+bool tokyoMasterAutoDisplay = false;
+bool tokyoMasterJetsonOnlineDisplay = false;
+float tokyoMasterNavVelCmdXDisplay = 0.0f;
+float tokyoMasterNavVelCmdYDisplay = 0.0f;
+
+// Tunable: scales the Jetson velocity command (m/s) into the chassis input range used below. Tune in
+// Ozone until the robot's real translation speed matches the commanded m/s.
+float tokyoMasterNavVelocityToInputMultiplier = 1.0f;
+
 ChassisTokyoMasterCommand::ChassisTokyoMasterCommand(
     src::Drivers* drivers,
     ChassisSubsystem* chassis,
@@ -32,7 +42,8 @@ ChassisTokyoMasterCommand::ChassisTokyoMasterCommand(
     const SpinRandomizerConfig& randomizerConfig,
     ChassisTokyoMasterMode mode,
     float joystick2OverrideVelocity,
-    float maxWheelSpeed)
+    float maxWheelSpeed,
+    bool isAuto)
     : drivers(drivers),
       chassis(chassis),
       gimbal(gimbal),
@@ -42,7 +53,8 @@ ChassisTokyoMasterCommand::ChassisTokyoMasterCommand(
       randomizerConfig(randomizerConfig),
       mode(mode),
       joystick2OverrideVelocity(joystick2OverrideVelocity),
-      maxWheelSpeed(maxWheelSpeed) {
+      maxWheelSpeed(maxWheelSpeed),
+      isAuto(isAuto) {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(chassis));
 }
 
@@ -150,40 +162,62 @@ float ChassisTokyoMasterCommand::getSinusodalSpinTarget(float maxWheelSpeed) {
 void ChassisTokyoMasterCommand::execute() {
     refreshActiveSpinDirectionIfNeeded();
     chassis->setTokyoDrift(true);
-
-    const bool customControllerConnected =
-    drivers->controlOperatorInterface.isCustomControllerConnected();
+    tokyoMasterAutoDisplay = isAuto;
 
     float desiredX = 0.0f;
     float desiredY = 0.0f;
-    float unusedRotation = 0.0f;
 
-    Chassis::Helper::getUserDesiredInput(
-        drivers,
-        chassis,
-        &desiredX,
-        &desiredY,
-        &unusedRotation);
+    if (isAuto) {
+        // Auto mode: translation is driven by nav2 on the Jetson, not the operator. With no command
+        // available the chassis must stop, so bail (still tokyo-drifting from above).
+        const bool jetsonOnline = drivers->cvCommunicator.isJetsonOnline();
+        tokyoMasterJetsonOnlineDisplay = jetsonOnline;
+        if (!jetsonOnline) {
+            chassis->setTargetRPMs(0.0f, 0.0f, 0.0f, maxWheelSpeed);
+            return;
+        }
 
-    const float customX = customControllerConnected
-        ? applyDeadband(
-              drivers->controlOperatorInterface.getCustomControllerChassisXInput(),
-              TRANSLATION_DEADBAND)
-        : 0.0f;
+        // Field-relative chassis velocity command (m/s) from nav2 on the Jetson.
+        const modm::Vector2f fieldRelativeVelocity = drivers->cvCommunicator.getDesiredTurretRelativeVelocity();
+        tokyoMasterNavVelCmdXDisplay = fieldRelativeVelocity.getX();
+        tokyoMasterNavVelCmdYDisplay = fieldRelativeVelocity.getY();
 
-    const float customY = customControllerConnected
-        ? applyDeadband(
-              drivers->controlOperatorInterface.getCustomControllerChassisYInput(),
-              TRANSLATION_DEADBAND)
-        : 0.0f;
+        desiredX = fieldRelativeVelocity.getX() * tokyoMasterNavVelocityToInputMultiplier;
+        desiredY = fieldRelativeVelocity.getY() * tokyoMasterNavVelocityToInputMultiplier;
+    } else {
+        const bool customControllerConnected =
+            drivers->controlOperatorInterface.isCustomControllerConnected();
 
-    desiredX = limitVal<float>(desiredX + customX, -1.0f, 1.0f);
-    desiredY = limitVal<float>(desiredY + customY, -1.0f, 1.0f);
+        float unusedRotation = 0.0f;
+        Chassis::Helper::getUserDesiredInput(
+            drivers,
+            chassis,
+            &desiredX,
+            &desiredY,
+            &unusedRotation);
+
+        const float customX = customControllerConnected
+            ? applyDeadband(
+                  drivers->controlOperatorInterface.getCustomControllerChassisXInput(),
+                  TRANSLATION_DEADBAND)
+            : 0.0f;
+
+        const float customY = customControllerConnected
+            ? applyDeadband(
+                  drivers->controlOperatorInterface.getCustomControllerChassisYInput(),
+                  TRANSLATION_DEADBAND)
+            : 0.0f;
+
+        desiredX = limitVal<float>(desiredX + customX, -1.0f, 1.0f);
+        desiredY = limitVal<float>(desiredY + customY, -1.0f, 1.0f);
+    }
 
     desiredX *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
     desiredY *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
 
-    const float manualSpin = applyDeadband(joystick2OverrideVelocity, JOYSTICK_OVERRIDE_DEADBAND);
+    // No operator joystick in auto mode, so the manual spin override is ignored; the spin ramp /
+    // randomizer / sinusoidal path drives rotation instead.
+    const float manualSpin = isAuto ? 0.0f : applyDeadband(joystick2OverrideVelocity, JOYSTICK_OVERRIDE_DEADBAND);
     const bool manualOverrideActive = manualSpin != 0.0f;
 
     float rampTarget = 0.0f;
@@ -223,6 +257,14 @@ void ChassisTokyoMasterCommand::execute() {
     lastMaxWheelSpeed = maxWheelSpeed;
 
     if (gimbal != nullptr && gimbal->isOnline()) {
+        if (isAuto) {
+            // The Jetson sends field-relative velocity, so first rotate field -> turret using the
+            // turret's field-relative yaw (from its IMU) before the turret -> chassis step below.
+            const float turretFieldYaw =
+                drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+            tap::algorithms::rotateVector(&desiredX, &desiredY, -turretFieldYaw);
+        }
+        // turret-relative -> chassis-relative
         const float yawAngleFromChassisCenter = gimbal->getCurrentYawAxisAngle(AngleUnit::Radians);
         tap::algorithms::rotateVector(&desiredX, &desiredY, yawAngleFromChassisCenter);
     }

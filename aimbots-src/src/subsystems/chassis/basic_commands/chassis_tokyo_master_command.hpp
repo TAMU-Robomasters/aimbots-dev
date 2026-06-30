@@ -34,7 +34,8 @@ public:
         const SpinRandomizerConfig& randomizerConfig = SpinRandomizerConfig(),
         ChassisTokyoMasterMode mode = ChassisTokyoMasterMode::NORMAL,
         float joystick2OverrideVelocity = 0.0f,
-        float maxWheelSpeed = 5000.0f);
+        float maxWheelSpeed = 5000.0f,
+        bool isAuto = false);
 
     void initialize() override;
     void execute() override;
@@ -54,6 +55,11 @@ public:
     void setJoystick2OverrideVelocity(float joystick2OverrideVelocity);
     void setMaxWheelSpeed(float maxWheelSpeed);
     void setSpinDirectionOverride(int spinDirectionOverride);
+
+    // When auto, translation comes from the Jetson's nav2 velocity command instead of the operator,
+    // and all operator/custom-controller input is ignored.
+    void setAuto(bool isAuto) { this->isAuto = isAuto; }
+    bool getAuto() const { return isAuto; }
 
 private:
     int pickRandomDirection() const;
@@ -77,6 +83,7 @@ private:
     ChassisTokyoMasterMode mode = ChassisTokyoMasterMode::NORMAL;
     float joystick2OverrideVelocity = 0.0f;
     float maxWheelSpeed = 5000.0f;
+    bool isAuto = false;
 
     tap::algorithms::Ramp rotationSpeedRamp;
     tap::arch::MilliTimeout spinRateModifierTimer;

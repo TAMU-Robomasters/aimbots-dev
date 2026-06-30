@@ -25,6 +25,7 @@
 //
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
@@ -235,6 +236,21 @@ ChassisAutoNavTokyoVelocityCommand chassisAutoNavTokyoVelocityCommand(
     true,
     randomizerConfig);
 
+// Auto (nav2-driven) tokyo via the master command: translation comes from the Jetson's
+// field-relative velocity, operator/custom-controller input is ignored (isAuto=true).
+ChassisTokyoMasterCommand nav2TokyoMasterCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,                                  // spinDirectionOverride (0 = random)
+    true,                               // randomizeSpinRate
+    randomizerConfig,
+    ChassisTokyoMasterMode::NORMAL,     // mode
+    0.0f,                               // joystick2OverrideVelocity (ignored in auto)
+    5000.0f,                            // maxWheelSpeed
+    true);                              // isAuto
+
 // GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -361,7 +377,8 @@ HoldCommandMapping leftSwitchUp(
     //{/*&imuCalibrateCommand,*/ &chassisTokyoCommand, &gimbalFieldRelativeControlCommand},
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
-     {&chassisTokyoCommand, &gimbalChaseCommand2},
+    // {&chassisTokyoCommand, &gimbalChaseCommand2},
+     {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
