@@ -17,7 +17,7 @@ bool limitPressed = false;
 bool wantToShoot = false;
 bool watchFire = false;
 bool underHeat = false;
-
+int displayState = -1;
 
 FeederLimitCommand::FeederLimitCommand(
     src::Drivers* drivers,
@@ -40,10 +40,11 @@ void FeederLimitCommand::initialize() {
 void FeederLimitCommand::execute() {
     underHeat = refHelper->canCurrBarrelShootSafely();
     // Updates the limit switch state (is pressed or not)
-    limitPressed = !feeder->getPressed();  
+    limitPressed = feeder->getPressed();  
     // Updates the current controller switch state
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
-
+    displayState = currState;
+    watchFire = false;
     switch(currState){
         case loading:
             if(limitPressed){
@@ -51,15 +52,15 @@ void FeederLimitCommand::execute() {
                 feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                 canShoot = true;
             }else{
-                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
-                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
             }
             break;
         case loaded:
             canShoot = underHeat;
-            if(wantToShoot && underHeat){
+            if(wantToShoot /*&& underHeat*/){
                 currState = firing;
-                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
                 canShoot = false;
                 //funny hero shoot noise
                 drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
@@ -70,9 +71,10 @@ void FeederLimitCommand::execute() {
         case firing:
             if(!limitPressed){
                 currState = loading;
-                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::deactivateFeederMotor);
-                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
             }else{
+                watchFire = true;
                 feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
             }
             break;
