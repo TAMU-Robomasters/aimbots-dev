@@ -10,7 +10,7 @@
 #if defined(TARGET_STANDARD_BLASTOISE)
     static constexpr SongTitle STARTUP_SONG = SongTitle::CHAINSAW_MAN;
 #else
-    static constexpr SongTitle STARTUP_SONG = SongTitle::CRAZY_TRAIN;
+    static constexpr SongTitle STARTUP_SONG = SongTitle::FALLEN_DOWN;
 #endif
 
 /**
