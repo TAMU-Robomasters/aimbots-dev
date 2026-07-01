@@ -136,10 +136,10 @@ int refSerialWorkingDisplay = 0;
 uint16_t chassisPowerLimitDisplay = 0;
 
 float motorOutputDisplay = 0.0f;
-float yawMotorOutputDisplayRF = 0.0f;
-float yawMotorOutputDisplayRB = 0.0f;
-float yawMotorOutputDisplayLF = 0.0f;
-float yawMotorOutputDisplayLB = 0.0f;
+float yawMotorOutputDisplayRF = -1.0f;
+float yawMotorOutputDisplayRB = -1.0f;
+float yawMotorOutputDisplayLF = -1.0f;
+float yawMotorOutputDisplayLB = -1.0f;
 
 float yawMotorAngleDisplayRF = 0.0f;
 float yawMotorAngleDisplayRB = 0.0f;
@@ -208,14 +208,13 @@ void ChassisSubsystem::refresh() {
 
     ForAllChassisMotors(&ChassisSubsystem::setDesiredOutput);
 
-    limitChassisPower();
 
-//     motorOutputDisplay = motors[RF][0]->getOutputDesired();
+     motorOutputDisplay = motors[LB][0]->getOutputDesired();
       #ifdef SWERVE
-          yawMotorOutputDisplayRF = motors[RF][1]->getInternalEncoder().getEncoder().getWrappedValue();
-          yawMotorOutputDisplayRB = motors[RB][1]->getInternalEncoder().getEncoder().getWrappedValue();
-          yawMotorOutputDisplayLF = motors[LF][1]->getInternalEncoder().getEncoder().getWrappedValue();
-          yawMotorOutputDisplayLB = motors[LB][1]->getInternalEncoder().getEncoder().getWrappedValue();
+          yawMotorOutputDisplayRF = motors[RF][0]->getOutputDesired();
+          yawMotorOutputDisplayRB = motors[RB][0]->getOutputDesired();
+          yawMotorOutputDisplayLF = motors[LF][0]->getOutputDesired();
+          yawMotorOutputDisplayLB = motors[LB][0]->getOutputDesired();
 
           yawMotorAngleDisplayRF = motors[RF][1]->getInternalEncoder().getPosition().getWrappedValue();
           yawMotorAngleDisplayRB = motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue();
