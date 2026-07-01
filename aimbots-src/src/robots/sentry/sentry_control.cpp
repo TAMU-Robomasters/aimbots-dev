@@ -29,6 +29,7 @@
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
@@ -220,6 +221,17 @@ ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand2(
     false,
     randomizerConfig);
 
+// chassis custom-controller toggle drive (ignore-gimbal + tokyo master, power limited)
+ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    true,
+    randomizerConfig,
+    6500.0f,
+    10000.0f);
+
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
 ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 // Drives the chassis from nav2's turret-relative velocity command over the Jetson link.
@@ -362,7 +374,8 @@ HoldCommandMapping leftSwitchMid(
     // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
     // {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
     // {&chassisTokyoCommand, &gimbalChaseCommand},
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
+    // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
+    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 HoldCommandMapping leftSwitchUp(
@@ -378,7 +391,9 @@ HoldCommandMapping leftSwitchUp(
     // {&gimbalVelocityTunningCommand},
     // {&gimbalPositionTunningCommand},
     // {&chassisTokyoCommand, &gimbalChaseCommand2},
-     {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
+     // {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
+     // {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
+     {&nav2TokyoMasterCommand},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
@@ -387,8 +402,8 @@ HoldCommandMapping leftSwitchUp(
 HoldCommandMapping rightSwitchMid(
     drivers(),
     // {&feederShotTimingCommand, &runShooterCommand},
-    {&autoAimFeederCommand, &runShooterCommand}, 
-     // {&runShooterCommand},
+    // {&autoAimFeederCommand, &runShooterCommand}, 
+     {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
 // Runs shooter with feeder

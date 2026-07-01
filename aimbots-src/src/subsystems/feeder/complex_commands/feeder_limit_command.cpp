@@ -44,6 +44,8 @@ void FeederLimitCommand::initialize() {
 void FeederLimitCommand::execute() {
     updateBarrelHeat();
     limitPressed = feeder->getPressed();  
+    // Updates the previous controller switch state (is up or not)
+    // Updates the current controller switch state
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
     bool underHeat = barrelHeat >= 100;
     displayState = currState;

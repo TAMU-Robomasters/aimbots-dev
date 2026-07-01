@@ -19,6 +19,7 @@ namespace src::Informants::Vision {
 enum class JetsonCommunicatorSerialState : uint8_t {
     SearchingForMagic = 0,
     HandleMessageType,
+    WaitingForFrameDelay,
     AssemblingAimMessage,
     AssemblingLocalizationMessage,
     AssemblingVelocityMessage,

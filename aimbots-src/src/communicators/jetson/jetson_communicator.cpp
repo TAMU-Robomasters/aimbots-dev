@@ -134,42 +134,10 @@ void JetsonCommunicator::updateSerial() {
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingVelocityMessage;
             }
 
-            else if (messageType == JETSON_TRANSFORMATION_QUERY) { // respond to query
-                uint8_t frameDelay_ms = 0.0f; 
-                //!!! potential issue where not enough time has passed and we don't read anything
-                READ(&frameDelay_ms, 1);
-                ImHereDisplay = true;
-                
-                drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
-
-                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
-
-                src::Informants::Transformers::CoordinateFrame cameraFrame =
-                    drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
-                
-                Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
-
-                transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-                transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
-
-                fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
-                fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
-
-                
-                std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
-
-                // Copy the camera->turret transform into a display array so Ozone can watch it.
-                for (int i = 0; i < 16; i++) {
-                    cameraToTurretMatrixDisplay[i] = transformationMessageToJetson.matrix[i];
-                }
-
-                // Send data to Jetson
-                WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
-
-                // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
-                nextByteIndex = 0;
-                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            else if (messageType == JETSON_TRANSFORMATION_QUERY) { // wait for the frame delay byte before responding
+                // The frame delay byte may not have arrived yet, so don't try to read it here. Instead
+                // move to a dedicated state that keeps polling until that byte actually shows up.
+                currentSerialState = JetsonCommunicatorSerialState::WaitingForFrameDelay;
             }
             else if (messageType == JETSON_ODOMETRY_QUERY) { // Respond to Query
                 odometryMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
@@ -193,6 +161,45 @@ void JetsonCommunicator::updateSerial() {
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             } 
+            break;
+        }
+        // ...transformation query received, waiting on the frame delay byte before responding...
+        case JetsonCommunicatorSerialState::WaitingForFrameDelay: {
+            // The top-of-function READ only returns here once a byte is available, so by the time we
+            // reach this point rawSerialBuffer[nextByteIndex] holds the frame delay byte. If no byte
+            // was available yet, updateSerial() already returned and we stay in this state.
+            uint8_t frameDelay_ms = rawSerialBuffer[nextByteIndex];
+            ImHereDisplay = true;
+
+            drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
+
+            src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+            src::Informants::Transformers::CoordinateFrame cameraFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+
+            Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
+
+            transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+            transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+
+            fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
+            fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
+
+            std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
+            // Copy the camera->turret transform into a display array so Ozone can watch it.
+            for (int i = 0; i < 16; i++) {
+                cameraToTurretMatrixDisplay[i] = transformationMessageToJetson.matrix[i];
+            }
+
+            // Send data to Jetson
+            WRITE((uint8_t*)&transformationMessageToJetson, sizeof(transformationMessageToJetson));
+
+            // We responded to query from jetson, reset the byte index and go back to searching for the magic number.
+            nextByteIndex = 0;
+            currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             break;
         }
         // ...found message start, assemble message...
