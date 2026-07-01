@@ -26,6 +26,7 @@ float gimbalTargetYaw = 0.0f;
 float gimbalYawInputDisplay = 0.0f;
 float targetPitchAngleDisplay = 0;
 float PitchAngleTest = 0;
+float pitchInvert = -1.0;
 
 void GimbalFieldRelativeControlCommand::execute() {
     PitchAngleTest = drivers->bmi088.getPitch();
@@ -48,6 +49,7 @@ void GimbalFieldRelativeControlCommand::execute() {
     if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
         wasQPressed = false;
         quickTurnOffset += this->quickTurnOffset.value_or(M_PI_2);
+        pitchInvert *= -1;
     }
 
     if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
@@ -68,7 +70,8 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     controller->setTargetPitch(
         AngleUnit::Radians,
-        controller->getTargetPitch(AngleUnit::Radians) + drivers->controlOperatorInterface.getGimbalPitchInput());
+        controller->getTargetPitch(AngleUnit::Radians) + (pitchInvert * drivers->controlOperatorInterface.getGimbalPitchInput()));
+
 
     controller->runYawController();
     controller->runPitchController();
