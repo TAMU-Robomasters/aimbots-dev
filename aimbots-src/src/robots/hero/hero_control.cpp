@@ -28,6 +28,7 @@
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
@@ -168,6 +169,16 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
+ChassisTokyoMasterCommand tokyoMasterCommand(
+          drivers,
+          chassis,
+          gimbal,
+          defaultTokyoConfig,
+          false,
+          randomizerConfig,
+          ChassisTokyoMasterMode::NORMAL,
+          0.0f,
+          6500.0f);
 
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
@@ -296,7 +307,7 @@ HoldCommandMapping leftSwitchUp(
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
     // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
-    {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand2},
+    {/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
