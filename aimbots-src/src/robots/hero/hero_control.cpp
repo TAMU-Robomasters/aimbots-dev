@@ -170,15 +170,9 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 ChassisTokyoMasterCommand tokyoMasterCommand(
-          drivers,
-          chassis,
-          gimbal,
-          defaultTokyoConfig,
-          false,
-          randomizerConfig,
-          ChassisTokyoMasterMode::NORMAL,
-          0.0f,
-          6500.0f);
+          drivers(),
+          &chassis,
+          &gimbal);
 
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
