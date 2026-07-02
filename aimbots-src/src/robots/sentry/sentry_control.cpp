@@ -120,7 +120,7 @@ TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 1.0f,
     .translationThresholdToDecreaseRotationSpeed = 0.25f,
     .rotationalSpeedFractionOfMax = 0.8f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.5f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.5,
     .rotationalSpeedIncrement = 20.0f,
 };
 
@@ -392,8 +392,8 @@ HoldCommandMapping leftSwitchUp(
     // {&gimbalPositionTunningCommand},
     // {&chassisTokyoCommand, &gimbalChaseCommand2},
      // {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
-     // {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
-     {&nav2TokyoMasterCommand},
+     {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
+     // {&nav2TokyoMasterCommand},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
