@@ -122,7 +122,7 @@ int main() {
 
 
             drivers->bmi088.periodicIMUUpdate();
-            currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
+            currHeat = drivers->refSerial.getRobotData().turret.heat17;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
             imuTemp = drivers->bmi088.getTemp();

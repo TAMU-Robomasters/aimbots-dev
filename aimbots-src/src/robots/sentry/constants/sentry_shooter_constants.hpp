@@ -42,4 +42,4 @@ static constexpr bool SHOOTER_3_DIRECTION = false;
 static constexpr bool SHOOTER_4_DIRECTION = true;
 
 // This array holds the IDs of all speed monitor barrels on the robot
-static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM_1, BarrelID::TURRET_17MM_2};
+static const std::array<BarrelID, 2> BARREL_IDS = {BarrelID::TURRET_17MM, BarrelID::TURRET_17MM_2};

@@ -24,10 +24,7 @@ float RefereeHelperTurreted::getCurrHealthPercentage() {
 
 std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit() {
     switch (currBarrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
-
-        case RefSerialRxData::MechanismID::TURRET_17MM_2:
+        case RefSerialRxData::MechanismID::TURRET_17MM:
             return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
@@ -40,10 +37,7 @@ std::optional<uint16_t> RefereeHelperTurreted::getCurrBarrelProjectileSpeedLimit
 
 std::optional<uint16_t> RefereeHelperTurreted::getProjectileSpeedLimit(BarrelID barrelID) {
     switch (barrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1:
-            return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
-
-        case RefSerialRxData::MechanismID::TURRET_17MM_2:
+        case RefSerialRxData::MechanismID::TURRET_17MM:
             return RefSerialRxData::MAX_LAUNCH_SPEED_17MM;
 
         case RefSerialRxData::MechanismID::TURRET_42MM:
@@ -80,12 +74,8 @@ bool RefereeHelperTurreted::isCurrBarrelHeatUnderLimit(float percentageOfLimit) 
     heatLimit = turretData.heatLimit;
 
     switch (currBarrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            lastHeat = turretData.heat17ID1;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID2;
+        case RefSerialRxData::MechanismID::TURRET_17MM: {
+            lastHeat = turretData.heat17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
@@ -108,12 +98,8 @@ bool RefereeHelperTurreted::isBarrelHeatUnderLimit(float percentageOfLimit, Barr
     heatLimit = turretData.heatLimit;
 
     switch (barrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            lastHeat = turretData.heat17ID1;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID2;
+        case RefSerialRxData::MechanismID::TURRET_17MM: {
+            lastHeat = turretData.heat17;
             break;
         }
         case RefSerialRxData::MechanismID::TURRET_42MM: {
@@ -137,16 +123,11 @@ bool RefereeHelperTurreted::canCurrBarrelShootSafely() {
     heatLimit = turretData.heatLimit;
 
     switch (currBarrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            lastHeat = turretData.heat17ID1;
+        case RefSerialRxData::MechanismID::TURRET_17MM: {
+            lastHeat = turretData.heat17;
             projectileType = RefSerialRxData::AMMO_17;
             break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID2;
-            projectileType = RefSerialRxData::AMMO_17;
-            break;
-        }
+        }\
         case RefSerialRxData::MechanismID::TURRET_42MM: {
             lastHeat = turretData.heat42;
             projectileType = RefSerialRxData::AMMO_42;
@@ -171,13 +152,8 @@ bool RefereeHelperTurreted::canSpecificBarrelShootSafely(BarrelID barrelID) {
     heatLimit = turretData.heatLimit;
 
     switch (barrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            lastHeat = turretData.heat17ID1;
-            projectileType = RefSerialRxData::AMMO_17;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-            lastHeat = turretData.heat17ID2;
+        case RefSerialRxData::MechanismID::TURRET_17MM: {
+            lastHeat = turretData.heat17;
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
@@ -199,11 +175,7 @@ uint8_t RefereeHelperTurreted::getRemainingProjectiles() {
     auto projectileType = RefSerialRxData::BulletType::AMMO_17;
 
     switch (currBarrelID) {
-        case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-            projectileType = RefSerialRxData::AMMO_17;
-            break;
-        }
-        case RefSerialRxData::MechanismID::TURRET_17MM_2: {
+        case RefSerialRxData::MechanismID::TURRET_17MM: {
             projectileType = RefSerialRxData::AMMO_17;
             break;
         }
