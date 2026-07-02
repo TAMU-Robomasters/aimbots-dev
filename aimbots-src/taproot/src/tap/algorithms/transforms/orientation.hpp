@@ -26,31 +26,102 @@
 
 #include "tap/algorithms/cmsis_mat.hpp"
 #include "tap/algorithms/math_user_utils.hpp"
+#include "tap/algorithms/wrapped_float.hpp"
+
+#include "axis.hpp"
+#include "intrinsic_euler_extractor.hpp"
+#include "vector.hpp"
 
 namespace tap::algorithms::transforms
 {
 class Orientation
 {
 public:
-    inline Orientation(const float roll, const float pitch, const float yaw)
-        : matrix_(tap::algorithms::fromEulerAngles(roll, pitch, yaw))
+    /**
+     * Constructs an identity rotation
+     */
+    inline Orientation()
+        : matrix_({1, 0, 0, 0, 1, 0, 0, 0, 1}),
+          matrixT_({1, 0, 0, 0, 1, 0, 0, 0, 1}),
+          rpy{0, 0, 0}
     {
     }
 
-    /* rvalue reference */
-    inline Orientation(Orientation&& other) : matrix_(std::move(other.matrix_)) {}
+    inline Orientation(const float roll, const float pitch, const float yaw)
+        : matrix_(fromRollPitchYaw(roll, pitch, yaw)),
+          matrixT_(matrix_.transpose())
+    {
+        calculateRPY();  // Don't use the input rpy since it may not be in the expected ranges
+    }
 
     /* Costly; use rvalue reference whenever possible */
-    inline Orientation(Orientation& other) : matrix_(CMSISMat(other.matrix_)) {}
+    inline Orientation(const CMSISMat<3, 3>& matrix)
+        : matrix_(matrix),
+          matrixT_(matrix_.transpose())
+    {
+        calculateRPY();
+    }
+    inline Orientation(const CMSISMat<3, 3>& matrix, const CMSISMat<3, 3>& matrixT)
+        : matrix_(matrix),
+          matrixT_(matrixT)
+    {
+        calculateRPY();
+    }
 
-    /* Costly; use rvalue reference whenever possible */
-    inline Orientation(const CMSISMat<3, 3>& matrix) : matrix_(matrix) {}
+    inline Orientation(CMSISMat<3, 3>&& matrix)
+        : matrix_(std::move(matrix)),
+          matrixT_(matrix_.transpose())
+    {
+        calculateRPY();
+    }
+    inline Orientation(CMSISMat<3, 3>&& matrix, CMSISMat<3, 3>&& matrixT)
+        : matrix_(std::move(matrix)),
+          matrixT_(std::move(matrixT))
+    {
+        calculateRPY();
+    }
 
-    inline Orientation(CMSISMat<3, 3>&& matrix) : matrix_(std::move(matrix)) {}
+    /**
+     * @brief A lightweight proxy to allow zero-overhead transposed multiplication.
+     */
+    struct TransposeProxy
+    {
+        const CMSISMat<3, 3>& matrixT;
+    };
 
-    inline Orientation compose(const Orientation& other) const
+    inline Orientation compose(const Orientation& other) const { return *this * other; }
+
+    inline Orientation operator*(const CMSISMat<3, 3>& other) const
+    {
+        return Orientation(this->matrix_ * other);
+    }
+
+    inline Orientation operator*(const Orientation& other) const
     {
         return Orientation(this->matrix_ * other.matrix_);
+    }
+
+    inline Orientation operator*(const Orientation::TransposeProxy& other) const
+    {
+        return Orientation(this->matrix_ * other.matrixT);
+    }
+
+    /**
+     * @brief Brings a vector from the base frame to the follower frame. Applies the inverse of this
+     * rotation to the vector.
+     */
+    inline Vector applyForward(const Vector& vec) const
+    {
+        return Vector(this->matrixT_ * vec.coordinates());
+    }
+
+    /**
+     * @brief Brings a vector from the follower frame to the base frame. Applies this rotation to
+     * the vector.
+     */
+    inline Vector applyReverse(const Vector& vec) const
+    {
+        return Vector(this->matrix_ * vec.coordinates());
     }
 
     /**
@@ -59,18 +130,80 @@ public:
      * If pitch is completely vertical (-pi / 2 or pi / 2) then roll and yaw are gimbal-locked. In
      * this case, roll is taken to be 0.
      */
-    inline float roll() const { return atan2(matrix_.data[7], matrix_.data[8]); }
+    inline float roll() const { return (*this)[Axis::ROLL]; }
 
-    inline float pitch() const { return asinf(-matrix_.data[6]); }
+    inline float pitch() const { return (*this)[Axis::PITCH]; }
 
-    inline float yaw() const { return atan2(matrix_.data[3], matrix_.data[0]); }
+    inline float yaw() const { return (*this)[Axis::YAW]; }
+
+    const float& operator[](Axis a) const { return rpy[static_cast<int>(a)]; }
 
     const inline CMSISMat<3, 3>& matrix() const { return matrix_; }
 
+    const inline CMSISMat<3, 3>& matrixT() const { return matrixT_; }
+
     /**
-     * Generates a 3x3 rotation matrix from euler angles (in radians)
+     * @brief Returns a proxy object to use the cached transpose in mathematical operations
+     * without constructing an intermediate Orientation object.
+     * Example: Vector v2 = ori.T() * v1;
+     * Example: Orientation o3 = ori1.T() * ori2;
      */
-    static CMSISMat<3, 3> fromEulerAngles(const float roll, const float pitch, const float yaw)
+    inline TransposeProxy T() const { return {matrixT_}; }
+
+    modm::Quaternion<float> toQuaternion() const
+    {
+        float t;
+        modm::Quaternion<float> q;
+        if (matrix_[2 * 3 + 2] < 0)
+        {
+            if (matrix_[0 * 3 + 0] > matrix_[1 * 3 + 1])
+            {
+                t = 1 + matrix_[0 * 3 + 0] - matrix_[1 * 3 + 1] - matrix_[2 * 3 + 2];
+                q = modm::Quaternion(
+                    matrix_[2 * 3 + 1] - matrix_[1 * 3 + 2],
+                    t,
+                    matrix_[0 * 3 + 1] + matrix_[1 * 3 + 0],
+                    matrix_[2 * 3 + 0] + matrix_[0 * 3 + 2]);
+            }
+            else
+            {
+                t = 1 - matrix_[0 * 3 + 0] + matrix_[1 * 3 + 1] - matrix_[2 * 3 + 2];
+                q = modm::Quaternion(
+                    matrix_[0 * 3 + 2] - matrix_[2 * 3 + 0],
+                    matrix_[0 * 3 + 1] + matrix_[1 * 3 + 0],
+                    t,
+                    matrix_[1 * 3 + 2] + matrix_[2 * 3 + 1]);
+            }
+        }
+        else
+        {
+            if (matrix_[0 * 3 + 0] < -matrix_[1 * 3 + 1])
+            {
+                t = 1 - matrix_[0 * 3 + 0] - matrix_[1 * 3 + 1] + matrix_[2 * 3 + 2];
+                q = modm::Quaternion(
+                    matrix_[1 * 3 + 0] - matrix_[0 * 3 + 1],
+                    matrix_[2 * 3 + 0] + matrix_[0 * 3 + 2],
+                    matrix_[1 * 3 + 2] + matrix_[2 * 3 + 1],
+                    t);
+            }
+            else
+            {
+                t = 1 + matrix_[0 * 3 + 0] + matrix_[1 * 3 + 1] + matrix_[2 * 3 + 2];
+                q = modm::Quaternion(
+                    t,
+                    matrix_[2 * 3 + 1] - matrix_[1 * 3 + 2],
+                    matrix_[0 * 3 + 2] - matrix_[2 * 3 + 0],
+                    matrix_[1 * 3 + 0] - matrix_[0 * 3 + 1]);
+            }
+        }
+        q *= 0.5 / sqrtf(t);
+        return q;
+    }
+
+    /**
+     * Generates a 3x3 rotation matrix from roll pitch yaw (in radians)
+     */
+    static CMSISMat<3, 3> fromRollPitchYaw(const float roll, const float pitch, const float yaw)
     {
         return tap::algorithms::CMSISMat<3, 3>(
             {cosf(yaw) * cosf(pitch),
@@ -84,12 +217,245 @@ public:
              cosf(pitch) * cosf(roll)});
     }
 
+    /**
+     * @brief Constructs an `Orientation` from a sequence of intrinsic rotations about the specified
+     * axes.
+     * @note "Intrinsic" means that successive rotations are performed in the newly rotated frame.
+     * @example typical roll pitch yaw would be `fromIntrinsicSequence<YAW, PITCH, ROLL>`
+     */
+    template <Axis A, Axis B, Axis C>
+    static Orientation fromIntrinsicSequence(const float a, const float b, const float c)
+    {
+        modm::Matrix3f matA = singleAxisRot<A>(a);
+        modm::Matrix3f matB = singleAxisRot<B>(b);
+        modm::Matrix3f matC = singleAxisRot<C>(c);
+
+        // compiler should unroll and optimize 1s and 0s here
+        modm::Matrix3f res = matA * matB * matC;
+
+        return Orientation(tap::algorithms::CMSISMat<3, 3>(res.element));
+    }
+
+    /**
+     * @brief Constructs an `Orientation` from a sequence of intrinsic rotations about the specified
+     * axes.
+     * @note "Intrinsic" means that successive rotations are performed in the newly rotated frame.
+     */
+    template <Axis A, Axis B>
+    static Orientation fromIntrinsicSequence(const float a, const float b)
+    {
+        modm::Matrix3f matA = singleAxisRot<A>(a);
+        modm::Matrix3f matB = singleAxisRot<B>(b);
+
+        // compiler should unroll and optimize 1s and 0s here
+        modm::Matrix3f res = matA * matB;
+
+        return Orientation(tap::algorithms::CMSISMat<3, 3>(res.element));
+    }
+
+    /**
+     * @brief Constructs an `Orientation` from a sequence of extrinsic rotations about the specified
+     * axes.
+     * @note "Extrinsic" means that all rotations are performed in the base frame.
+     * @example typical roll pitch yaw would be `fromExtrinsicSequence<ROLL, PITCH, YAW>`
+     */
+    template <Axis A, Axis B, Axis C>
+    static Orientation fromExtrinsicSequence(const float a, const float b, const float c)
+    {
+        modm::Matrix3f matA = singleAxisRot<A>(a);
+        modm::Matrix3f matB = singleAxisRot<B>(b);
+        modm::Matrix3f matC = singleAxisRot<C>(c);
+
+        // compiler should unroll and optimize 1s and 0s here
+        modm::Matrix3f res = matC * matB * matA;
+
+        return Orientation(tap::algorithms::CMSISMat<3, 3>(res.element));
+    }
+
+    /**
+     * @brief Constructs an `Orientation` from a sequence of extrinsic rotations about the specified
+     * axes.
+     * @note "Extrinsic" means that all rotations are performed in the base frame.
+     */
+    template <Axis A, Axis B>
+    static Orientation fromExtrinsicSequence(const float a, const float b)
+    {
+        modm::Matrix3f matA = singleAxisRot<A>(a);
+        modm::Matrix3f matB = singleAxisRot<B>(b);
+
+        // compiler should unroll and optimize 1s and 0s here
+        modm::Matrix3f res = matB * matA;
+
+        return Orientation(tap::algorithms::CMSISMat<3, 3>(res.element));
+    }
+
+    /**
+     * @brief Extracts intrinsic Euler angles from the rotation matrix for a given axis sequence.
+     * @note "Intrinsic" means that successive rotations are performed in the newly rotated frame
+     * @return std::array<float, 3> containing {angleA, angleB, angleC}
+     */
+    template <Axis A, Axis B, Axis C>
+    std::array<float, 3> toIntrinsicSequence() const
+    {
+        static_assert(A != B && B != C, "Consecutive axes cannot be the same.");
+
+        return IntrinsicEulerExtractor<A, B, C>::extract(matrix_.data.data());
+    }
+
+    /**
+     * @brief Extracts extrinsic Euler angles from the rotation matrix for a given axis sequence.
+     * @note "Extrinsic" means that all rotations are performed in the base frame.
+     * @return std::array<float, 3> containing {angleA, angleB, angleC}
+     */
+    template <Axis A, Axis B, Axis C>
+    std::array<float, 3> toExtrinsicSequence() const
+    {
+        static_assert(A != B && B != C, "Consecutive axes cannot be the same.");
+
+        auto extracted = IntrinsicEulerExtractor<C, B, A>::extract(matrix_.data.data());
+        return {extracted[2], extracted[1], extracted[0]};
+    }
+
+    /**
+     * Constructs an `Orientation` from a direction vector. Magnitude is ignored, and roll is always
+     * 0.
+     */
+    static Orientation fromDirectionVector(Vector dir)
+    {
+        float pitch, yaw;
+        vectorToSphericalCoords(dir, nullptr, &pitch, &yaw);
+        return Orientation(0, pitch, yaw);
+    }
+
+    /**
+     * Constructs an `Orientation` from a unit quaternion.
+     */
+    static Orientation fromQuaternion(modm::Quaternion<float> q)
+    {
+        return fromQuaternion(q.w, q.x, q.y, q.z);
+    }
+    /**
+     * Constructs an `Orientation` from a unit quaternion.
+     */
+    static Orientation fromQuaternion(float w, float x, float y, float z)
+    {
+        float xx = x * x;
+        float xy = x * y;
+        float xz = x * z;
+        float xw = x * w;
+
+        float yy = y * y;
+        float yz = y * z;
+        float yw = y * w;
+
+        float zz = z * z;
+        float zw = z * w;
+
+        return Orientation(tap::algorithms::CMSISMat<3, 3>(
+            {1 - 2 * (yy + zz),
+             2 * (xy - zw),
+             2 * (xz + yw),
+             2 * (xy + zw),
+             1 - 2 * (xx + zz),
+             2 * (yz - xw),
+             2 * (xz - yw),
+             2 * (yz + xw),
+             1 - 2 * (xx + yy)}));
+    }
+
     friend class Transform;
     friend class DynamicOrientation;
 
 private:
-    CMSISMat<3, 3> matrix_;
+    CMSISMat<3, 3> matrix_, matrixT_;
+    std::array<float, 3> rpy;
+
+    void calculateRPY()
+    {
+        float sin_p = -matrix_.data[6];
+
+        // Handle Gimbal Lock and float precision errors near 1.0 or -1.0
+        // A threshold of 0.999999f catches anything within ~0.1 degrees of vertical
+        if (sin_p >= 0.999999f)
+        {
+            // Pitch is +pi/2 (Straight down)
+            rpy[static_cast<int>(Axis::Y)] = M_PI_2;
+            rpy[static_cast<int>(Axis::X)] = 0.0f;
+
+            // When roll is 0, m01 = -sin(yaw) and m11 = cos(yaw)
+            rpy[static_cast<int>(Axis::Z)] = atan2(-matrix_.data[1], matrix_.data[4]);
+        }
+        else if (sin_p <= -0.999999f)
+        {
+            // Pitch is -pi/2
+            rpy[static_cast<int>(Axis::Y)] = -M_PI_2;
+            rpy[static_cast<int>(Axis::X)] = 0.0f;
+            rpy[static_cast<int>(Axis::Z)] = atan2(-matrix_.data[1], matrix_.data[4]);
+        }
+        else
+        {
+            // Normal case
+            rpy[static_cast<int>(Axis::Y)] = asinf(sin_p);
+            rpy[static_cast<int>(Axis::X)] = atan2(matrix_.data[7], matrix_.data[8]);
+            rpy[static_cast<int>(Axis::Z)] = atan2(matrix_.data[3], matrix_.data[0]);
+        }
+    }
+
+    /**
+     * @brief Generates a single-axis rotation matrix using modm::Matrix.
+     */
+    template <Axis ax>
+    static inline modm::Matrix<float, 3, 3> singleAxisRot(const float angle)
+    {
+        const float c = cosf(angle);
+        const float s = sinf(angle);
+
+        if constexpr (ax == Axis::X)
+        {
+            const float m[] = {1, 0, 0, 0, c, -s, 0, s, c};
+            return modm::Matrix<float, 3, 3>(m);
+        }
+        else if constexpr (ax == Axis::Y)
+        {
+            const float m[] = {c, 0, s, 0, 1, 0, -s, 0, c};
+            return modm::Matrix<float, 3, 3>(m);
+        }
+        else if constexpr (ax == Axis::Z)
+        {
+            const float m[] = {c, -s, 0, s, c, 0, 0, 0, 1};
+            return modm::Matrix<float, 3, 3>(m);
+        }
+    }
 };  // class Orientation
+
+inline Orientation operator*(const CMSISMat<3, 3>& a, const Orientation& b)
+{
+    return Orientation(a * b.matrix());
+}
+
+/**
+ * @brief Multiplies a 3x3 rotation matrix by a 3D vector.
+ */
+inline Vector operator*(const Orientation& a, const Vector& b)
+{
+    return Vector(a.matrix() * b.coordinates());
+}
+
+/**
+ * @brief Multiplies a transposed rotation matrix by a 3D vector.
+ */
+inline Vector operator*(const Orientation::TransposeProxy& a, const Vector& b)
+{
+    return Vector(a.matrixT * b.coordinates());
+}
+
+/**
+ * @brief Composes a transposed orientation with another orientation.
+ */
+inline Orientation operator*(const Orientation::TransposeProxy& a, const Orientation& b)
+{
+    return Orientation(a.matrixT * b.matrix());
+}
 }  // namespace tap::algorithms::transforms
 
 #endif  // TAPROOT_ORIENTATION_HPP_

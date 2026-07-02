@@ -229,4 +229,5 @@ DjiMotor const* DjiMotorTxHandler::getCan2Motor(MotorId motorId)
     uint32_t index = DJI_MOTOR_TO_NORMALIZED_ID(motorId);
     return index > DJI_MOTOR_TO_NORMALIZED_ID(tap::motor::MOTOR8) ? nullptr : can2MotorStore[index];
 }
+
 }  // namespace tap::motor

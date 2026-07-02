@@ -176,6 +176,12 @@ using ImuInt1Gyro = GpioC5;
 using ImuHeater = GpioF6;
 using ImuSpiMaster = SpiMaster1;
 
+using SpiSck = GpioB13;
+using SpiMiso = GpioB14;
+using SpiMosi = GpioB15;
+using SpiNss = GpioB12;  // chip select
+using GenSpiMaster = SpiMaster2;
+
 #endif
 
 inline void initialize()

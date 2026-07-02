@@ -23,10 +23,11 @@
 
 #include "command_mapper.hpp"
 
-#include "tap/drivers.hpp"
+#include "tap/control/trigger_binding.hpp"
 #include "tap/errors/create_errors.hpp"
 
 #include "command_mapping.hpp"
+#include "generic_remote_map_state.hpp"
 #include "remote_map_state.hpp"
 
 using namespace tap::errors;
@@ -36,43 +37,53 @@ namespace tap
 {
 namespace control
 {
-void CommandMapper::handleKeyStateChange(
-    uint16_t key,
-    Remote::SwitchState leftSwitch,
-    Remote::SwitchState rightSwitch,
-    bool mouseL,
-    bool mouseR)
-{
-    // Make a new map state that represents the current state of the remote,
-    // to be passed in to each of the CommandMappings.
-    RemoteMapState mapstate;
-    mapstate.initLSwitch(leftSwitch);
-    mapstate.initRSwitch(rightSwitch);
-    mapstate.initKeys(key);
-    if (mouseL)
-    {
-        mapstate.initLMouseButton();
-    }
-    if (mouseR)
-    {
-        mapstate.initRMouseButton();
-    }
+CommandMapper::CommandMapper(Drivers *) {}
 
-    for (CommandMapping *cmdMap : commandsToRun)
+CommandMapper::~CommandMapper() = default;
+
+void CommandMapper::pollTriggerBindings()
+{
+    for (const std::unique_ptr<TriggerBinding> &binding : triggerBindings)
     {
-        cmdMap->executeCommandMapping(mapstate);
+        binding->execute();
     }
 }
 
-void CommandMapper::addMap(CommandMapping *mapping) { commandsToRun.push_back(mapping); }
+void CommandMapper::addTriggerBinding(std::unique_ptr<TriggerBinding> binding)
+{
+    triggerBindings.push_back(std::move(binding));
+}
 
-const CommandMapping *CommandMapper::getAtIndex(std::size_t index) const
+const TriggerBinding *CommandMapper::getBindingAtIndex(std::size_t index) const
+{
+    if (index >= triggerBindings.size())
+    {
+        return nullptr;
+    }
+    return triggerBindings.at(index).get();
+}
+
+void CommandMapper::handleKeyStateChange(GenericRemoteMapState &mapState)
+{
+    for (std::unique_ptr<CommandMapping> &cmdMap : commandsToRun)
+    {
+        cmdMap->executeCommandMapping(mapState);
+    }
+}
+
+void CommandMapper::addMap(std::unique_ptr<CommandMapping> mapping)
+{
+    commandsToRun.push_back(std::move(mapping));
+}
+
+const CommandMapping *CommandMapper::getCommandMappingAtIndex(std::size_t index) const
 {
     if (index >= commandsToRun.size())
     {
         return nullptr;
     }
-    return commandsToRun[index];
+    return commandsToRun.at(index).get();
 }
+
 }  // namespace control
 }  // namespace tap

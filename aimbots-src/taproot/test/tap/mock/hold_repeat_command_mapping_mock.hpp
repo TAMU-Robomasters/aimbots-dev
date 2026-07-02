@@ -27,6 +27,7 @@
 #include <gmock/gmock.h>
 
 #include "tap/control/hold_repeat_command_mapping.hpp"
+#include "tap/control/remote_map_state.hpp"
 
 namespace tap::mock
 {
@@ -36,12 +37,16 @@ public:
     HoldRepeatCommandMappingMock(
         Drivers *drivers,
         const std::vector<control::Command *> cmds,
-        const control::RemoteMapState &rms,
+        const control::RemoteMapState *rms,
         bool endCommandsWhenNotHeld,
         int maxTimesToSchedule = -1);
     virtual ~HoldRepeatCommandMappingMock();
 
-    MOCK_METHOD(void, executeCommandMapping, (const tap::control::RemoteMapState &), (override));
+    MOCK_METHOD(
+        void,
+        executeCommandMapping,
+        (const tap::control::GenericRemoteMapState &),
+        (override));
     MOCK_METHOD(void, setMaxTimesToSchedule, (int), (override));
 };  // class HoldRepeatCommandMappingMock
 }  // namespace tap::mock

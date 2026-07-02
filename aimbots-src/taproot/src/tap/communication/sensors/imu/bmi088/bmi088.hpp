@@ -72,6 +72,8 @@ public:
     static constexpr float BMI088_TEMP_FACTOR = 0.125f;
     static constexpr float BMI088_TEMP_OFFSET = 23.0f;
 
+    static constexpr float BMI088_TARGET_TEMP = 35.0f;
+
     /**
      * Used to convert raw gyro values to units of radians / second. Ratio has units
      * (radians / second) / gyro counts.
@@ -121,7 +123,10 @@ public:
 private:
     Drivers *drivers;
 
-    inline float getAccelerationSensitivity() const override { return ACC_G_PER_ACC_COUNT; }
+    inline float getAccelerationSensitivity() const override
+    {
+        return tap::algorithms::ACCELERATION_GRAVITY / ACC_G_PER_ACC_COUNT;
+    }
 
     static constexpr uint16_t RAW_TEMPERATURE_TO_APPLY_OFFSET = 1023;
     /// Offset parsed temperature reading by this amount if > RAW_TEMPERATURE_TO_APPLY_OFFSET.

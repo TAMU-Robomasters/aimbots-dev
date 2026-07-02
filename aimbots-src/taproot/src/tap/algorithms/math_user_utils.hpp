@@ -40,6 +40,11 @@ namespace tap
 {
 namespace algorithms
 {
+namespace transforms
+{
+class Vector;
+}
+
 /// Acceleration due to gravity, in m/s^2.
 static constexpr float ACCELERATION_GRAVITY = 9.80665f;
 
@@ -142,11 +147,6 @@ float fastInvSqrt(float x);
 CMSISMat<3, 1> cross(const CMSISMat<3, 1>& a, const CMSISMat<3, 1>& b);
 
 /**
- * Generates a 3x3 rotation matrix from euler angles (in radians)
- */
-CMSISMat<3, 3> fromEulerAngles(const float roll, const float pitch, const float yaw);
-
-/**
  * Performs a rotation matrix on the given x and y components of a vector.
  *
  * @param x the x component of the vector to be rotated.
@@ -232,6 +232,25 @@ float interpolateLinear2D(
     return 1.0 / (dx * dy) *
            (q11 * x2x * y2y + q21 * xx1 * y2y + q12 * x2x * yy1 + q22 * xx1 * yy1);
 }
+
+/**
+ * @brief Spherical Linear Interpolation between two quaternions.
+ */
+template <class T>
+modm::Quaternion<T> slerp(modm::Quaternion<T> q0, modm::Quaternion<T> q1, float t)
+{
+    float theta = acosf(q0.w * q1.w + q0.x * q1.x + q0.y * q1.y + q0.z * q1.z);
+
+    return q0 * (sinf((1 - t) * theta) / sinf(theta)) + q1 * (sinf(t * theta) / sinf(theta));
+};
+
+void vectorToSphericalCoords(
+    tap::algorithms::transforms::Vector vec,
+    float* mag,
+    float* pitch,
+    float* yaw);
+
+modm::Quaternion<float> quaternionFromRPY(float r, float p, float y);
 
 }  // namespace algorithms
 
