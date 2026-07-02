@@ -118,13 +118,14 @@ TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 1.0f,
     .translationThresholdToDecreaseRotationSpeed = 0.25f,
     .rotationalSpeedFractionOfMax = 0.8f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.2f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.5f,
     .rotationalSpeedIncrement = 20.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
-    .minSpinRateModifier = 0.75f,
-    .maxSpinRateModifier = 1.0f,
+    // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
+    .minSpinRateModifier = 0.5f, 
+    .maxSpinRateModifier = 0.7f, 
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
 };

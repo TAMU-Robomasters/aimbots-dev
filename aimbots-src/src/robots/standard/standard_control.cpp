@@ -278,9 +278,9 @@ HoldCommandMapping leftSwitchMid(
 // Enables both chassis and gimbal control and closes hopper
 HoldCommandMapping leftSwitchUp(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    //{&chassisTokyoCommand, &gimbalChaseCommand2},
+    {&chassisTokyoCommand, &gimbalChaseCommand2},
     //{&gimbalVelocityTunningCommand},
-    {&gimbalPositionTunningCommand},
+    //{&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 HoldCommandMapping rightSwitchDown(
