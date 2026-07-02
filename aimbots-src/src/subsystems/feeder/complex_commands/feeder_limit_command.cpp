@@ -43,39 +43,41 @@ void FeederLimitCommand::execute() {
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
     displayState = currState;
     watchFire = false;
-    switch(currState){
-        case loading:
-            if(limitPressed){
-                currState = loaded;
-                feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-                canShoot = true;
-            }else{
-                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
-                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
-            }
-            break;
-        case loaded:
-            canShoot = underHeat;
-            if(wantToShoot /*&& underHeat*/){
-                currState = firing;
-                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
-                canShoot = false;
-                //funny hero shoot noise
-                drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
-            }else{
-                feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-            }
-            break;
-        case firing:
-            if(!limitPressed){
-                currState = loading;
-                feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
-                feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
-            }else{
-                watchFire = true;
-                feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
-            }
-            break;
+   // if(!startupThreshold.isExpired()){
+        switch(currState){
+            case loading:
+                if(limitPressed){
+                    currState = loaded;
+                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+                    canShoot = true;
+                }else{
+                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+                }
+                break;
+            case loaded:
+                canShoot = underHeat;
+                if(wantToShoot /*&& underHeat*/){
+                    currState = firing;
+                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+                    canShoot = false;
+                    //funny hero shoot noise
+                    drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
+                }else{
+                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+                }
+                break;
+            case firing:
+                if(!limitPressed){
+                    currState = loading;
+                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+                }else{
+                    watchFire = true;
+                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
+                }
+                break;
+     //   }
     }
 }
 

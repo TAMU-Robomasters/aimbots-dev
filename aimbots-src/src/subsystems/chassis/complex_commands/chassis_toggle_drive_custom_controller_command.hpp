@@ -72,7 +72,7 @@ private:
     // POWER_LIMIT_SCALAR < 1.0 cuts harder, > 1.0 cuts softer.
     static constexpr bool POWER_LIMITING_ENABLED = true;
     static constexpr uint32_t POWER_SENSOR_FRESH_TIMEOUT_MS = 50;
-    static constexpr float TARGET_CHASSIS_POWER_W = 150.0f;
+    static constexpr float TARGET_CHASSIS_POWER_W = 100.0f;
     static constexpr float POWER_LIMIT_SCALAR = 1.5f;
     static constexpr float POWER_LIMIT_MIN_SCALE = 0.20f;
 

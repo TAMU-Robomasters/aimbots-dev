@@ -24,7 +24,7 @@ static constexpr uint16_t shooter_speed_array[4] = {
     10,
     3900,  // {ball m/s, flywheel rpm} //3900
     16,
-    6100};  // 6100
+    5100};  // 6100
 
 static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
