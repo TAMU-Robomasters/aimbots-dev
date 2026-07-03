@@ -26,6 +26,8 @@
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 //#include "subsystems/chassis/basic_commands/chassis_shakira_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
@@ -209,6 +211,16 @@ ChassisAutoNavTokyoCommand chassisAutoNavTokyoCommand(
     false,
     randomizerConfig);
 
+ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    true,
+    randomizerConfig,
+    6500.0f,
+    10000.0f);
+
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -272,7 +284,7 @@ ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandSchedule
 // Define command mappings here -------------------------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),  // gimbalFieldRelativeControlCommand
-    {&chassisToggleDriveCommand, &gimbalFieldRelativeControlCommand},
+    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // Enables both chassis and gimbal control and closes hopper
