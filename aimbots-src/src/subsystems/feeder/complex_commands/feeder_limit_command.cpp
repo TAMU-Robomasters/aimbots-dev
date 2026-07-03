@@ -69,7 +69,7 @@ void FeederLimitCommand::execute() {
                     feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
                     canShoot = false;
                     //funny hero shoot noise
-                    drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
+                    //drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
                 }else{
                     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                 }

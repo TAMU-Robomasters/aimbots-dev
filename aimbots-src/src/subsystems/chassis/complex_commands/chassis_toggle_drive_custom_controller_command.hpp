@@ -72,13 +72,21 @@ private:
     // POWER_LIMIT_SCALAR < 1.0 cuts harder, > 1.0 cuts softer.
     static constexpr bool POWER_LIMITING_ENABLED = true;
     static constexpr uint32_t POWER_SENSOR_FRESH_TIMEOUT_MS = 50;
-    static constexpr float TARGET_CHASSIS_POWER_W = 100.0f;
+    #if defined(ALL_HEROES)
+        static constexpr float TARGET_CHASSIS_POWER_W = 100.0f;
+    #else
+        static constexpr float TARGET_CHASSIS_POWER_W = 75.0f;
+    #endif
     static constexpr float POWER_LIMIT_SCALAR = 1.5f;
     static constexpr float POWER_LIMIT_MIN_SCALE = 0.20f;
 
     // rpm buffer system. POWER_LIMIT_RPM_DECREASE_PER_ITER is the amount to decrease the target rpm by whenever
     // exceeding the power limit. POWER_LIMIT_RPM_RECOVERY_PER_ITER is rate at which the rpm recovers when back in power range to manage the acceleration
-    static constexpr float POWER_LIMIT_RPM_DECREASE_PER_ITER = 300.0f;
+    #if defined(ALL_HEROES)
+        static constexpr float POWER_LIMIT_RPM_DECREASE_PER_ITER = 200.0f;
+    #else
+        static constexpr float POWER_LIMIT_RPM_DECREASE_PER_ITER = 300.0f;
+    #endif
     static constexpr float POWER_LIMIT_RPM_RECOVERY_PER_ITER = 20.0f;
 };
 
