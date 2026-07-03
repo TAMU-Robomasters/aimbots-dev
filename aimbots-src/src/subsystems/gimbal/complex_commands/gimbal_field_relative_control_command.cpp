@@ -43,12 +43,12 @@ void GimbalFieldRelativeControlCommand::execute() {
 
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
+    // if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
 
-    if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
-        wasQPressed = false;
-        quickTurnOffset += this->quickTurnOffset.value_or(M_PI_2);
-    }
+    // if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
+    //     wasQPressed = false;
+    //     quickTurnOffset += this->quickTurnOffset.value_or(M_PI_2);
+    // }
 
     if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
 

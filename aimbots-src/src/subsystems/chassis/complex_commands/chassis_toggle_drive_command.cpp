@@ -45,9 +45,9 @@ void ChassisToggleDriveCommand::execute() {
     if (drivers->remote.keyPressed(Remote::Key::E)) {
         ePressed.restart(800);
     }
-    if (drivers->remote.keyPressed(Remote::Key::Q)) {
-        qPressed.restart(800);
-    }
+    // if (drivers->remote.keyPressed(Remote::Key::Q)) {
+    //     qPressed.restart(800);
+    // }
 
     isQDone = !qPressed.isExpired();
     isEDone = !ePressed.isExpired();

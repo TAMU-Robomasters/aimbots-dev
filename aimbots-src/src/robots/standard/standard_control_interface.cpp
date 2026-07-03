@@ -248,7 +248,7 @@ float OperatorInterface::getGimbalYawInput() {
 }
 
 float OperatorInterface::getGimbalPitchInput() {
-    mouseYFilter.update(-drivers->remote.getMouseY());
+    mouseYFilter.update(drivers->remote.getMouseY());
     mouseYDisplay = mouseYFilter.getValue();
 
     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +

@@ -93,7 +93,7 @@ void FeederLimitCommand::updateBarrelHeat(){
     timeDis = currTime;
     uint32_t timeDiff = currTime - prevTime;
     prevTime = currTime;
-    double heatLoss = (48.0/1000.0)*timeDiff;
+    double heatLoss = (24.0/1000.0)*timeDiff;
     heatRegenDis = heatLoss;
     barrelHeat += heatLoss;
     if(barrelHeat > 200){barrelHeat = 200;}

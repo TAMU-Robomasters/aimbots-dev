@@ -61,12 +61,12 @@ float yawVelocityChaseOffset = 0.0f;
 void GimbalChaseCommand::execute() {
     float quickTurnOffset = 0.0f;
 
-    if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
+    // if (drivers->remote.keyPressed(Remote::Key::Q) && !ignoreQuickTurns) wasQPressed = true;
 
-    if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
-        wasQPressed = false;
-        quickTurnOffset += M_PI_2;
-    }
+    // if (wasQPressed && !drivers->remote.keyPressed(Remote::Key::Q)) {
+    //     wasQPressed = false;
+    //     quickTurnOffset += M_PI_2;
+    // }
 
     if (drivers->remote.keyPressed(Remote::Key::E) && !ignoreQuickTurns) wasEPressed = true;
 
