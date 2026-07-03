@@ -148,7 +148,7 @@ int main() {
             drivers->kinematicInformant.updateRobotFrames();
             if(atTemp){
                 drivers->musicPlayer.playMusic();
-                if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND, 30); startupSound = true;}
+                if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND, 25); startupSound = true;}
 
                 } else {
                     if (!imuHeatingSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_IMU_HEATING); imuHeatingSound = true;}

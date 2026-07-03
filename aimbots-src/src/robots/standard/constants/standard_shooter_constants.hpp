@@ -23,7 +23,7 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 // clang-format off
 static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
     25,
-    6700,  // {ball m/s, flywheel rpm}
+    6200,  // {ball m/s, flywheel rpm}
     18,
     5100,
     25,
