@@ -167,10 +167,10 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 #elif defined(TARGET_STANDARD_2025)
 static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(164.3f) };
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-145)+((5*M_PI)/18)};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.3;//modm::toRadian(250.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.30;//modm::toRadian(355.0f);
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(142.5) };
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(303.4)};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.32;//modm::toRadian(250.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.16;//modm::toRadian(355.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
