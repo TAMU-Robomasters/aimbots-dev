@@ -18,8 +18,11 @@
 #include "tap/control/hold_command_mapping.hpp"
 #include "tap/control/hold_repeat_command_mapping.hpp"
 #include "tap/control/press_command_mapping.hpp"
+#include "tap/control/governor/governor_with_fallback_command.hpp"
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
+//
+#include "utils/ref_system/game_started_governor.hpp"
 //
 #include "informants/imu/calibrate_imu_command.hpp"
 //
@@ -28,6 +31,7 @@
 #include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_velocity_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_auto_nav_tokyo_velocity_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_auto_tokyo_power_limited_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
@@ -134,9 +138,12 @@ SpinRandomizerConfig randomizerConfig = {
 
 GimbalPatrolConfig patrolConfig = {
     .pitchPatrolAmplitude = modm::toRadian(15.0f),
-    .pitchPatrolFrequency = 6.0f,
-    .pitchPatrolOffset = -modm::toRadian(20.0f),
-    .yawPatrolAngularVelocityDegreesPerSec = 30.0f,
+    .pitchPatrolFrequency = 5.0f,
+    .pitchPatrolOffset = -modm::toRadian(10.0f),
+    .yawPatrolAngularVelocityDegreesPerSec = 80.0f,
+    .sectorScanSwitchTimeMillis = 210'000,  // 3.5 min after patrol first starts
+    .sectorScanStartAngle = modm::toRadian(-60.0f),  // field-relative, sweep span must be < 180 deg
+    .sectorScanEndAngle = modm::toRadian(60.0f),
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
@@ -263,6 +270,46 @@ ChassisTokyoMasterCommand nav2TokyoMasterCommand(
     5000.0f,                            // maxWheelSpeed
     true);                              // isAuto
 
+// Manual (operator-driven) tokyo via the master command: translation comes from the operator,
+// used before the match starts (isAuto=false).
+ChassisTokyoMasterCommand manualTokyoMasterCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    0,                                  // spinDirectionOverride (0 = random)
+    true,                               // randomizeSpinRate
+    randomizerConfig,
+    ChassisTokyoMasterMode::NORMAL,     // mode
+    0.0f,                               // joystick2OverrideVelocity
+    5000.0f,                            // maxWheelSpeed
+    false);                             // isAuto
+
+// Auto tokyo with ESP power limiting: wraps a Jetson-driven (isAuto=true) tokyo master and
+// dynamically reduces the wheel-speed ceiling from the ESP power sensor, same logic as
+// ChassisToggleDriveCustomControllerCommand but with all operator/custom-controller input removed.
+ChassisAutoTokyoPowerLimitedCommand autoTokyoPowerLimitedCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    true,                               // randomizeSpinRate
+    randomizerConfig,
+    5000.0f);                           // maxWheelSpeed (pre-power-limit ceiling)
+
+// Gate the chassis on the referee game stage: pre-game runs the fallback; once the ref system
+// reports IN_GAME it hands off to the power-limited Jetson-driven auto tokyo. Both must require
+// only the chassis subsystem (GovernorWithFallbackCommand asserts identical requirement sets).
+// The trailing `true` force-ends the fallback the instant the game starts so the handoff is
+// immediate (requires the HoldRepeatCommandMapping on leftSwitchUp to re-add this command).
+src::Utils::GameStartedGovernor gameStartedGovernor(&refHelper);
+governor::GovernorWithFallbackCommand<1> gameGatedTokyoCommand(
+    {&chassis},
+    autoTokyoPowerLimitedCommand,   // governors ready (game started) -> power-limited auto tokyo
+    chassisToggleDriveIgnoreGimbalCommand2, // fallback (pre-game) -> manual tokyo
+    {&gameStartedGovernor},
+    true);
+
 // GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -311,6 +358,9 @@ FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 
 FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 FeederShotTimingCommand feederShotTimingCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 AutoAimFeederCommand autoAimFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
+// Separate instance for the right-mouse mapping so it doesn't share the feeder subsystem
+// requirement with rightSwitchUp's autoAimFeederCommand (holding both would interrupt each other).
+AutoAimFeederCommand autoAimFeederCommandFromMouse(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
 DualBarrelFeederCommand dualBarrelsFeederCommand(drivers(), &feeder, &refHelper, BARREL_IDS, 1, UNJAM_TIMER_MS);
 
@@ -325,6 +375,8 @@ FeederVelocityTunningCommand feederVelocityTunningCommand(
 
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
+// Separate shooter instance for the right-mouse auto-feeder mapping (see autoAimFeederCommandFromMouse).
+RunShooterCommand runShooterFromMouseCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
@@ -371,14 +423,16 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 // Autonomous Match Control Switch Mapping -----------------------------
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalFieldRelativeControlCommand/*, &gimbalPositionPIDTunningCommand*/},
-    // {/*&imuCalibrateCommand,*/ &chassisToggleDriveIgnoreGimbalCommand, &gimbalToggleAimCommand/*, &gimbalPositionTunningCommand*/},
-    // {&chassisTokyoCommand, &gimbalChaseCommand},
-    // {&chassisToggleDriveIgnoreGimbalCommand, &gimbalChaseCommand},
+    // Manual driving: custom-controller toggle drive + manual gimbal aiming.
     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-HoldCommandMapping leftSwitchUp(
+// HoldRepeat (not Hold): gameGatedTokyoCommand self-finishes the instant the game starts (its
+// stopFallbackCommandIfGovernorsReady=true) so the GovernorWithFallbackCommand can be re-added and
+// re-run isReady(), handing off manual->auto tokyo. A plain HoldCommandMapping only adds once on
+// entering UP and would NOT re-add after the self-finish, leaving the chassis dead until you toggle
+// the switch off UP and back. -1 (default) = reschedule forever while held; true = end when released.
+HoldRepeatCommandMapping leftSwitchUp(
     drivers(),
    // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
    // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
@@ -392,21 +446,26 @@ HoldCommandMapping leftSwitchUp(
     // {&gimbalPositionTunningCommand},
     // {&chassisTokyoCommand, &gimbalChaseCommand2},
      // {&nav2TokyoMasterCommand, &gimbalChaseCommand2},
-     {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
+     // {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
+     // {&nav2TokyoMasterCommand, &matchGimbalControlCommand},
+     // Pre-game: manual tokyo. Once the ref system reports IN_GAME: nav2 auto tokyo.
+     {&autoTokyoPowerLimitedCommand, &matchGimbalControlCommand},
+     // {&gameGatedTokyoCommand, &matchGimbalControlCommand},
      // {&nav2TokyoMasterCommand},
     //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP),
+    true);  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP
 
 // Runs shooter only
 HoldCommandMapping rightSwitchMid(
     drivers(),
     // {&feederShotTimingCommand, &runShooterCommand},
-    // {&autoAimFeederCommand, &runShooterCommand}, 
-     {&runShooterCommand},
+    {&autoAimFeederCommand, &runShooterCommand}, 
+     // {&runShooterCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
 
-// Runs shooter with feeder
+// Auto feeder (CV/auto-aim gated) + flywheel
 HoldCommandMapping rightSwitchUp(
     drivers(),
     {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
@@ -416,6 +475,12 @@ HoldCommandMapping leftClickMouse(
     drivers(),
     {&runFeederCommandFromMouse},
     RemoteMapState(RemoteMapState::MouseButton::LEFT));
+
+// Right mouse: auto feeder (CV/auto-aim gated) + flywheel
+HoldCommandMapping rightClickMouse(
+    drivers(),
+    {&autoAimFeederCommandFromMouse, &runShooterFromMouseCommand},
+    RemoteMapState(RemoteMapState::MouseButton::RIGHT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -465,6 +530,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(&rightSwitchMid);
     drivers->commandMapper.addMap(&rightSwitchUp);
     drivers->commandMapper.addMap(&leftClickMouse);
+    drivers->commandMapper.addMap(&rightClickMouse);
 
 }
 

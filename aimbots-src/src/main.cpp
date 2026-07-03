@@ -72,6 +72,8 @@ uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 float powerDis = 69.0f;
 float imuTemp = 0.0f;
+// Ozone watch var: 1.0f once the ref system reports the match is live (IN_GAME), else 0.0f.
+float gameStartedDisplay = 0.0f;
 
 // uint32_t dbg_any_rxCount = 0;
 // uint32_t dbg_any_rawIdentifier = 0;
@@ -125,6 +127,11 @@ int main() {
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+            gameStartedDisplay =
+                (drivers->refSerial.getGameData().gameStage ==
+                 tap::communication::serial::RefSerialData::Rx::GameStage::IN_GAME)
+                    ? 1.0f
+                    : 0.0f;
             imuTemp = drivers->bmi088.getTemp();
             if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
                 atTemp = true;

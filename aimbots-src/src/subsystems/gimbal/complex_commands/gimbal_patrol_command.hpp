@@ -22,6 +22,15 @@ struct GimbalPatrolConfig {
     float pitchPatrolOffset;
 
     float yawPatrolAngularVelocityDegreesPerSec;
+
+    // sector scan: once sectorScanSwitchTimeMillis has elapsed since patrol first started, the
+    // yaw stops spinning 360 and instead sweeps back and forth between sectorScanStartAngle and
+    // sectorScanEndAngle (field-relative, radians) at yawPatrolAngularVelocityDegreesPerSec.
+    // The sweep always takes the short way between the two angles; the span is asserted to be
+    // nonzero and < 180 degrees.
+    uint32_t sectorScanSwitchTimeMillis;
+    float sectorScanStartAngle;
+    float sectorScanEndAngle;
 };
 
 class GimbalPatrolCommand : public tap::control::Command {
@@ -52,18 +61,32 @@ public:
     }
 
     // sidesteps patrolCoordinates/chassisState/timer entirely -- just spins continuously
-    // at a constant rate set by yawPatrolAngularVelocityDegreesPerSec
+    // at a constant rate set by yawPatrolAngularVelocityDegreesPerSec, starting from
+    // wherever the gimbal was pointing when this command initialized (yawPatrolStartAngle).
+    // That start offset is what keeps patrol from snapping the yaw back to field-relative
+    // zero every time it takes over from the chase command.
     float getConstantVelocityYawPatrolAngle(AngleUnit unit) {
-        float angleDegrees =
-            patrolConfig.yawPatrolAngularVelocityDegreesPerSec * getTimeSinceCommandInitialize() / 1000.0f;
+        float angleRadians = yawPatrolStartAngle +
+                             modm::toRadian(
+                                 patrolConfig.yawPatrolAngularVelocityDegreesPerSec * getTimeSinceCommandInitialize() /
+                                 1000.0f);
 
-        return unit == AngleUnit::Radians ? modm::toRadian(angleDegrees) : angleDegrees;
+        return unit == AngleUnit::Radians ? angleRadians : modm::toDegree(angleRadians);
     }
 
     void updateYawPatrolTarget();
 
     // function assumes gimbal yaw is at 0 degrees (positive x axis)
     float getFieldRelativeYawPatrolAngle(AngleUnit unit);
+
+    // switches from the 360 spin to the back-and-forth sector sweep once
+    // sectorScanSwitchTimeMillis has elapsed since patrol first started, keeping the yaw
+    // target continuous across the switch
+    void updateScanMode();
+
+    // triangle-wave sweep between sectorScanStartAngle and sectorScanEndAngle at the patrol
+    // angular velocity; only valid while inSectorScan
+    float getSectorScanYawPatrolAngle(AngleUnit unit, float dtSeconds);
 
     uint32_t getTimeSinceCommandInitialize() { return tap::arch::clock::getTimeMilliseconds() - commandStartTime; }
 
@@ -78,6 +101,21 @@ private:
     src::Chassis::ChassisMatchStates& chassisState;
 
     uint32_t commandStartTime = 0;
+
+    // field-relative gimbal yaw (radians) latched at initialize() so the constant-velocity
+    // patrol spin continues from the gimbal's current heading instead of resetting to zero
+    float yawPatrolStartAngle = 0.0f;
+
+    // sector scan state
+    bool inSectorScan = false;
+    float sectorScanSpan = 0.0f;       // signed wrapped span start->end (radians), |span| < pi
+    float sectorSweepOffset = 0.0f;    // current sweep position along the span, in [0, |span|]
+    float sectorSweepDirection = 1.0f;
+    uint32_t lastExecuteTime = 0;
+
+    // latched on the very first initialize() and never reset, so chase interruptions don't
+    // restart the sector-scan switch countdown
+    uint32_t patrolFirstStartTime = 0;
 
     static constexpr size_t NUM_PATROL_LOCATIONS = 4;
     std::array<modm::Location2D<float>, NUM_PATROL_LOCATIONS> safePatrolCoordinates;
