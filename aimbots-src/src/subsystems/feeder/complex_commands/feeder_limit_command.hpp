@@ -39,6 +39,9 @@ private:
     src::Utils::RefereeHelperTurreted* refHelper;
     int UNJAM_TIMER_MS;
     bool canShoot = false;
+    void updateBarrelHeat();
+    void registerShot();
+    double barrelHeat = 200.0;
 
     MilliTimeout startupThreshold;
     MilliTimeout unjamTimer;
@@ -47,6 +50,7 @@ private:
         loaded,
         firing
     };
+    uint32_t prevTime;
     states currState = loading;
 };
 }  // namespace src::Feeder
