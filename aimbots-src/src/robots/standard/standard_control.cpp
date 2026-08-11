@@ -33,6 +33,7 @@
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
+#include "subsystems/feeder/basic_commands/feeder_velocity_pid_tunning.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
 #include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
@@ -182,6 +183,11 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
     .frequencyHz = 0.5f,
 };
 
+FeederVelocityTunningConfig feederVelocityTunningConfig = {
+    .VelocityAmplitudeRPM = 60.0f,
+    .frequencyHz = 1.0f,
+};
+
 // Define commands here ---------------------------------------------------
 
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
@@ -220,6 +226,11 @@ ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerComm
     randomizerConfig,
     5000.0f,
     10000.0f);
+
+    FeederVelocityTunningCommand feederVelocityTunningCommand(
+    drivers(), 
+    &feeder,     
+    feederVelocityTunningConfig); 
 
 GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -297,7 +308,7 @@ HoldCommandMapping leftSwitchUp(
 
 HoldCommandMapping rightSwitchDown(
     drivers(),
-    {&openHopperCommand},
+    {&openHopperCommand, &feederVelocityTunningCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Runs shooter only and closes hopper
@@ -349,7 +360,7 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&stopFeederCommand);
+    feeder.setDefaultCommand(&feederVelocityTunningCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 

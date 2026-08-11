@@ -65,7 +65,7 @@ void FullAutoFeederCommand::execute() {
     overheat = feeder->getEncoderUnwrapped();
 
     if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
-        feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+        //feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     } else {
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
             feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);

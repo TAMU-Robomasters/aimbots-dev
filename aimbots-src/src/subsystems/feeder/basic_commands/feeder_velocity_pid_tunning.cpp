@@ -11,6 +11,7 @@ float feederVelocityTunningFrequencyDebug = 0.0f;
 float feederVelocityTunningAmplitudeDebug = 0.0f;
 
 float currFeederTargetVelocityDisplay = 0.0f;
+float currFeederVelDisply = 0.0f;
 
 FeederVelocityTunningCommand::FeederVelocityTunningCommand(
     src::Drivers* drivers, 
@@ -31,6 +32,7 @@ void FeederVelocityTunningCommand::execute() {
 
 float FeederVelocityTunningCommand::getFeederTargetVelocity() { // in degrees
     // For PID tunning through Ozone
+    currFeederVelDisply = feeder->getCurrentRPM(0);
     if (updateFeederVelocityConfigDebug) {
         feederVelocityConfig.frequencyHz = feederVelocityTunningFrequencyDebug;
         feederVelocityConfig.VelocityAmplitudeRPM = feederVelocityTunningAmplitudeDebug;
