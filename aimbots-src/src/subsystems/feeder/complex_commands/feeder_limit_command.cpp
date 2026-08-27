@@ -13,15 +13,15 @@
 
 namespace src::Feeder {
 
+/*
+Define any variables you need here, we have provided some here to give you sensor data and other useful things
+*/
 bool limitPressed = false;
 bool wantToShoot = false;
-bool watchFire = false;
-bool underHeat = false;
-int displayState = -1;
-double displayHeat = 420.0;
-double heatRegenDis = 69.0;
-uint32_t timeDis = 20;
+float currRPM = 0.0;
 
+
+//subsystem declaration stuff, do not touch
 FeederLimitCommand::FeederLimitCommand(
     src::Drivers* drivers,
     FeederSubsystem* feeder,
@@ -35,79 +35,55 @@ FeederLimitCommand::FeederLimitCommand(
 }
 
 void FeederLimitCommand::initialize() {
+    //makes sure robot doesnt shoot when turned on
     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-    startupThreshold.restart(500);  // delay to wait before attempting unjam
-    unjamTimer.restart(0);
-    prevTime = tap::arch::clock::getTimeMilliseconds();
+    //to activate motors call feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
+    //and deactivate at the end if your turning them off. to call a specific motor replace ALL with
+    //LOADER or KICKER, these are described in the video
+
+    //initialized 6 timers, you can use as many or as few as you like.
+    //units for the timer are in milliseconds, call .restart(milliseconds) to activate the timer for that long
+    //check if a timer has expired by calling timer.isExpired(), will return true if timer is not running/is done
+    timer1.restart(0);
+    timer2.restart(0);
+    timer3.restart(0);
+    timer4.restart(0);
+    timer5.restart(0);
+    timer6.restart(0);
+
+    //sys time on initialization, might be useful for heat managment
+    //can call getTimeMilliseconds() anywhere to get current system
+    initialTime = tap::arch::clock::getTimeMilliseconds();
 }
 
 void FeederLimitCommand::execute() {
-    updateBarrelHeat();
-    limitPressed = feeder->getPressed();  
+    /*
+    Update calls to get sensor data and input, dont touch but do use these variables
+    to check input states and sensor data
+    */
+    //updates if the limit switch detects a ball, true = ball detected, false means no ball detected
+    limitPressed = feeder->getPressed();
+    //gets if the driver wants to shoot a ball, will hold true for a little bit before dropping back down to false
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
-    bool underHeat = barrelHeat >= 100;
-    displayState = currState;
-    watchFire = false;
-    displayHeat = barrelHeat;
-   // if(!startupThreshold.isExpired()){
-        switch(currState){
-            case loading:
-                if(limitPressed){
-                    currState = loaded;
-                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-                    canShoot = true;
-                }else{
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
-                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
-                }
-                break;
-            case loaded:
-                canShoot = underHeat;
-                if(wantToShoot && underHeat){
-                    currState = firing;
-                    registerShot();
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateFeederMotor);
-                    canShoot = false;
-                    //funny hero shoot noise
-                    //drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
-                }else{
-                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-                }
-                break;
-            case firing:
-                if(!limitPressed){
-                    currState = loading;
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
-                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
-                }else{
-                    watchFire = true;
-                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
-                }
-                break;
-     //   }
-    }
+    //gets current rpm of the base feeder motor, might be useful for unjam
+    currRPM = feeder->getCurrentRPM(0);
+
+    //Do stuff
+  
 }
 
-void FeederLimitCommand::updateBarrelHeat(){
-    uint32_t currTime =  tap::arch::clock::getTimeMilliseconds();
-    timeDis = currTime;
-    uint32_t timeDiff = currTime - prevTime;
-    prevTime = currTime;
-    double heatLoss = (24.0/1000.0)*timeDiff;
-    heatRegenDis = heatLoss;
-    barrelHeat += heatLoss;
-    if(barrelHeat > 200){barrelHeat = 200;}
-};
+/*declare any functions down here(make sure to include in hpp)*/
 
-void FeederLimitCommand::registerShot(){
-    barrelHeat -= 100; 
-};
+//void exampleFunc(){
+//  do stuff
+//};
 
+
+
+//dont worry about this stuff
 void FeederLimitCommand::end(bool) { feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor); }
-
-bool FeederLimitCommand::isReady() { return true; }
 
 bool FeederLimitCommand::isFinished() const { return false; }
 
-}  // namespace src::Feeder
+}  
 #endif
