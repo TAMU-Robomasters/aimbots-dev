@@ -26,7 +26,7 @@ static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1"};
-static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {KICKER};
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {4150};

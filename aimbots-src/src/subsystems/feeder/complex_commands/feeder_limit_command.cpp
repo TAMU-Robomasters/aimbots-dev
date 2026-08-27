@@ -57,8 +57,8 @@ void FeederLimitCommand::execute() {
                     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                     canShoot = true;
                 }else{
-                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
-                    feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
                 }
                 break;
             case loaded:
@@ -66,7 +66,7 @@ void FeederLimitCommand::execute() {
                 if(wantToShoot && underHeat){
                     currState = firing;
                     registerShot();
-                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateFeederMotor);
                     canShoot = false;
                     //funny hero shoot noise
                     //drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
@@ -77,8 +77,8 @@ void FeederLimitCommand::execute() {
             case firing:
                 if(!limitPressed){
                     currState = loading;
-                    feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
-                    feeder->ForFeederMotorGroup(SECONDARY, &FeederSubsystem::activateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
                 }else{
                     watchFire = true;
                     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);

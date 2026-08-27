@@ -29,7 +29,7 @@ static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 11;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {3000.0f};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
-static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
+static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {KICKER};
 static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;

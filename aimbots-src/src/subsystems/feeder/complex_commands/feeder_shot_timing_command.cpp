@@ -67,11 +67,11 @@ void FeederShotTimingCommand::execute() {
     
     case FeederState::priming: // spin feeder until we hit the limit switch
         if (feeder->getPressed()) { // projectiles reached limit switch
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotor);
+            feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
             currentFeederState = FeederState::primed;
             break;
         }
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotor);
+        feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateFeederMotor);
         break;
     case FeederState::primed:
         currFireState = (
@@ -87,11 +87,11 @@ void FeederShotTimingCommand::execute() {
         break;
     case FeederState::firing: // move feeder until current projectile is shot
         if (currSwitchState && !prevSwitchState) { // current projectile left. New projectile primed
-            feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::deactivateFeederMotorForShotTiming);
+            feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotorForShotTiming);
             currentFeederState = FeederState::primed;
             break;
         }
-        feeder->ForFeederMotorGroup(PRIMARY, &FeederSubsystem::activateFeederMotorForShotTiming);
+        feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateFeederMotorForShotTiming);
         break;
     default:
         break;
