@@ -131,9 +131,9 @@ SnapSymmetryConfig defaultSnapConfig = {
 
 TokyoConfig defaultTokyoConfig = {
     .translationalSpeedMultiplier = 1.0f,
-    .translationThresholdToDecreaseRotationSpeed = 0.25f,
-    .rotationalSpeedFractionOfMax = 0.8f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.5f,
+    .translationThresholdToDecreaseRotationSpeed = 0.3f,
+    .rotationalSpeedFractionOfMax = 0.9f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.9f,
     .rotationalSpeedIncrement = 20.0f,
 };
 
@@ -172,7 +172,12 @@ ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
 ChassisTokyoMasterCommand tokyoMasterCommand(
           drivers(),
           &chassis,
-          &gimbal);
+          &gimbal,
+        defaultTokyoConfig,
+        0,
+        true,
+        randomizerConfig,
+        ChassisTokyoMasterMode::NORMAL);
 
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
