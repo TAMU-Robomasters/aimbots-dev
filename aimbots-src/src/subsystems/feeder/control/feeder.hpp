@@ -122,6 +122,12 @@ public:
         }
     }
 
+    void activateKickerSlowFeed(uint8_t feederIdx = 0) {
+        if (!feederCustomSpeedActive[feederIdx]) {
+            setTargetRPM(feederIdx, 500); //TODO: add this magic number to a feeder constants class
+        }
+    }
+
     // Bypasses the velocity PID and slams the motor straight to full C610 output. Used by
     // FeederShotTimingCommand to punch the current projectile out as fast as possible.
     void activateFeederMotorForShotTiming(uint8_t feederIdx = 0) {

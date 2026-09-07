@@ -55,7 +55,7 @@ void RunShooterCommand::execute() {
     }
 
     flywheelRPMDisplay = flywheelRPM;
-    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::LEFT);
+    flywheelCurrentRPMDisplay = shooter->getMotorSpeed(src::Shooter::MotorIndex::RIGHT);
 
     shooter->ForAllShooterMotors(&ShooterSubsystem::setTargetRPM, static_cast<float>(flywheelRPM));
     shooter->ForAllShooterMotors(&ShooterSubsystem::updateMotorVelocityPID);

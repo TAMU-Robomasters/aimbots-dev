@@ -42,10 +42,10 @@ static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
 static const std::array<MotorID, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_IDS = {MotorID::MOTOR7, MotorID::MOTOR8};
 static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"Feeder Motor 1", "Feeder Motor 2"};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500, 4000};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {500, 10000};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {1000, 3000};  // Absolute values
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {LOADER, KICKER};
 static constexpr float PROJECTILES_PER_FEEDER_ROTATION = 0.5;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36, 36};
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, true};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true, false}; // IMPORTANT: hero uses (true, true), goose uses (true, false)
 //

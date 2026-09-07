@@ -14,6 +14,7 @@
 namespace src::Feeder {
 
 bool limitPressed = false;
+float kickerRPM = 0;
 bool wantToShoot = false;
 bool watchFire = false;
 bool underHeat = false;
@@ -42,8 +43,9 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
+    kickerRPM = feeder->getCurrentRPM(1);
     updateBarrelHeat();
-    limitPressed = feeder->getPressed();  
+    limitPressed = (feeder->getPressed()) || (std::abs(feeder->getCurrentRPM(1)) < 50 ? true : false);  
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
     bool underHeat = barrelHeat >= 100;
     displayState = currState;
@@ -57,7 +59,7 @@ void FeederLimitCommand::execute() {
                     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                     canShoot = true;
                 }else{
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
                     feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
                 }
                 break;
@@ -71,13 +73,14 @@ void FeederLimitCommand::execute() {
                     //funny hero shoot noise
                     //drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
                 }else{
-                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
+                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::deactivateFeederMotor);
                 }
                 break;
             case firing:
-                if(!limitPressed){
+                if((!limitPressed) && (std::abs(feeder->getCurrentRPM(1)) > 1000)){
                     currState = loading;
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
                     feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
                 }else{
                     watchFire = true;
