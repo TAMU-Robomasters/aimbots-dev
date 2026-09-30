@@ -31,7 +31,8 @@ VALID_ROBOT_TYPES   = [ "STANDARD_2023",
                         "CVTEST_HAN",
                         "CVTEST_LUKE",
                         "CVTEST_CHEWIE",
-                        "TURRET" ]
+                        "TURRET",
+                        "TRAINING" ]
 
 def get_robot_type():
     robot_type = ARGUMENTS.get("robot")

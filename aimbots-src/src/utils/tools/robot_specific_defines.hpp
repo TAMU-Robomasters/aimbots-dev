@@ -34,6 +34,16 @@
 #include "robots/testbench/testbench_control_interface.hpp"
 #define ALL_TESTBENCHES
 
+#elif defined(TARGET_TRAINING)
+// Training robot: a bare Type C dev board + remote (see training/README.md).
+// It borrows the STANDARD_2025 constants so the shared drivers/informants still compile;
+// the robot itself (subsystems, commands, mappings) is defined in robots/training/.
+#define TARGET_STANDARD_2025
+#include "robots/standard/constants/standard_general_constants.hpp"
+#include "robots/standard/standard_control_interface.hpp"
+#define ALL_STANDARDS
+#define ALL_TRAINING
+
 #elif defined(TARGET_TURRET)
 #include "robots/turret/constants/turret_general_constants.hpp"
 #include "robots/turret/turret_control_interface.hpp"

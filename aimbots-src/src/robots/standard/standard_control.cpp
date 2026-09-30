@@ -1,6 +1,6 @@
 #include "utils/tools/robot_specific_defines.hpp"
 
-#if defined(ALL_STANDARDS)
+#if defined(ALL_STANDARDS) && !defined(TARGET_TRAINING)
 
 #include "utils/tools/common_types.hpp"
 
