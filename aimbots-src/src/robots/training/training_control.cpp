@@ -38,7 +38,7 @@ TrainingBoardSubsystem board(drivers());
 // A mapping ties a remote state to a list of commands. The three kinds you'll see most:
 //
 //   HoldCommandMapping    -- command runs while the state is held, ends when it isn't
-//   ToggleCommandMapping  -- first match starts the command, next match stops it
+//   ToggleCommandMapping  -- each time the state starts matching it flips: start, stop, start...
 //   PressCommandMapping   -- command starts on match and runs until it finishes itself
 //
 // Example (from testbench_control.cpp):
