@@ -20,7 +20,7 @@ cd aimbots-src
 pipenv run scons build robot=TRAINING
 ```
 
-It should finish with `scons: done building targets.` Flash it with `scons run robot=TRAINING`. Nothing happens on the board yet, and that's expected.
+It should finish with `scons: done building targets.` Flash it to the board (see the Google Doc for how). Nothing happens on the board yet, and that's expected.
 
 ---
 
