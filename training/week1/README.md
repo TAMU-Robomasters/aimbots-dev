@@ -76,7 +76,7 @@ In the constructor, a command calls `addSubsystemRequirement(subsystem)`. That's
 
 Taproot enforces this strictly. **A command with zero requirements is refused.** The scheduler raises `"Attempting to add a command without subsystem in the scheduler"` and never runs it ([`taproot/src/tap/control/command_scheduler.cpp:269-278`](../../aimbots-src/taproot/src/tap/control/command_scheduler.cpp), inside `addCommand`).
 
-**Why?** It's a design choice Taproot made, not a law of nature. WPILib, for example, lets commands have no requirements. Taproot's scheduler is built around one question: *"who owns which hardware right now?"* It tracks running commands by the subsystems they use (a bitmap with one bit per subsystem), and that's what powers its main features:
+**Why?** It's a design choice Taproot made. Taproot's scheduler is built around one question: *"who owns which hardware right now?"* It tracks running commands by the subsystems they use which allows these two features:
 - **Interrupting:** starting a command that needs the chassis ends whichever command had the chassis before (`command_scheduler.cpp:281-290`). A command that owns nothing could never be interrupted this way.
 - **Default commands:** a subsystem that no command is using automatically gets its default command (like "stop the shooter", `standard_control.cpp:351-353`). That only works if the scheduler knows which subsystems are in use.
 
@@ -105,7 +105,7 @@ HoldCommandMapping someName(
 | `PressCommandMapping` | Starts the commands when the state starts matching; they keep running until `isFinished()` returns true, even after you let go. |
 | `ToggleCommandMapping` | Each time the state **starts** matching, it flips: the 1st time starts the commands, the 2nd time ends them, the 3rd starts them again... |
 
-**More on Toggle**, because it's the confusing one. It only remembers "am I on or off?" in a normal variable in RAM, so a reboot resets it to off. Nothing gets saved. And it only reacts to the moment the state *becomes* true, not to how long you hold it. With a switch that means:
+**More on Toggle** it only reacts to the moment the state *becomes* true, not to how long you hold it. With a switch that means:
 
 ```
 flip right switch to UP   → command starts
@@ -188,7 +188,7 @@ How to look:
 
 Pick any color you like.
 
-> 📎 **Where do taproot's pin names come from?** [`aimbots-src/project.xml`](../../aimbots-src/project.xml) is the config file for taproot's code generator (`lbuild`). It picks the board (`rm-dev-board-c`) and lists which header pins we use as digital in/out and PWM (lines 25-31). From that, taproot *generates* `board.hpp`, which gives each pin a name and maps it to the real MCU pin. Notice the names in `project.xml` (`C2`, `B13`, ...) are the labels printed on the board's headers, not the MCU pin names. `board.hpp` translates, e.g. `DigitalOutPinC2 = GpioE11`. The LEDs aren't in `project.xml` because they're built into every Type C board, so taproot's board template always defines them. You'll use this file in week 2.
+> 📎 **Where do taproot's pin names come from?** [`aimbots-src/project.xml`](../../aimbots-src/project.xml) is the config file for taproot's code generator (`lbuild`). It picks the board (`rm-dev-board-c`) and lists which header pins we use as digital in/out and PWM (lines 25-31). From that, taproot *generates* `board.hpp`, which gives each pin a name and maps it to the real MCU pin. Notice the names in `project.xml` (`C2`, `B13`, ...) are the labels printed on the board's headers, not the MCU pin names. `board.hpp` translates, e.g. `DigitalOutPinC2 = GpioE11`. The LEDs aren't in `project.xml` because they're built into every Type C board, so taproot's board template always defines them.
 
 ---
 
