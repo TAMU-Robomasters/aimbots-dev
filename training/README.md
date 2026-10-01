@@ -30,7 +30,8 @@ Everything else (`main.cpp`, the remote driver, the scheduler, the command mappe
 1. Make your own branch off the **`training-2026`** branch (not `main`, so the robots' code stays safe):
    ```bash
    git fetch
-   git switch training-2026 && git pull
+   git switch training-2026
+   git pull
    git switch -c training/<your-name>
    ```
 2. Build (from `aimbots-src/`):
