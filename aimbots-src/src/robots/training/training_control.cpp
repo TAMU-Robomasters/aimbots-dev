@@ -60,7 +60,7 @@ void setDefaultCommands(src::Drivers *) {}
 void startupCommands(src::Drivers *) {}
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *) {
+void registerIOMappings(src::Drivers */*TODO add parameter name here*/) {
     // TODO(week1): add your mapping, e.g. drivers->commandMapper.addMap(&yourMapping);
 }
 
