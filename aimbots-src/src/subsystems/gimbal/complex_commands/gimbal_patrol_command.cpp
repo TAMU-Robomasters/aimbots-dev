@@ -40,36 +40,13 @@ GimbalPatrolCommand::GimbalPatrolCommand(
 //
 {
     addSubsystemRequirement(dynamic_cast<tap::control::Subsystem*>(gimbal));
-
-    // signed short-way span between the two sector angles; wrapping keeps it in [-pi, pi)
-    sectorScanSpan = tap::algorithms::WrappedFloat(patrolConfig.sectorScanStartAngle, -M_PI, M_PI)
-                         .minDifference(patrolConfig.sectorScanEndAngle);
-    modm_assert(
-        sectorScanSpan != 0.0f && fabsf(sectorScanSpan) < M_PI,
-        "GimbalPatrolCommand",
-        "sector scan span must be nonzero and less than 180 degrees");
 }
 
 float currPatrolCoordinateXDisplay = 0.0f;
 float currPatrolCoordinateYDisplay = 0.0f;
 float currPatrolCoordinateTimeDisplay = 0.0f;
 
-void GimbalPatrolCommand::initialize() {
-    commandStartTime = tap::arch::clock::getTimeMilliseconds();
-    lastExecuteTime = commandStartTime;
-    // start the patrol spin from the gimbal's current field-relative heading. When patrol takes
-    // over from the chase command, this is the last position chase left the gimbal at -- so the
-    // yaw continues spinning from there instead of snapping back to field-relative zero.
-    yawPatrolStartAngle = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-
-    inSectorScan = false;
-    sectorSweepOffset = 0.0f;
-    sectorSweepDirection = 1.0f;
-
-    if (patrolFirstStartTime == 0) {
-        patrolFirstStartTime = commandStartTime;
-    }
-}
+void GimbalPatrolCommand::initialize() { commandStartTime = tap::arch::clock::getTimeMilliseconds(); }
 
 float targetPatrolYawAxisAngleDisplay = 0.0f;
 float targetPatrolPitchAxisAngleDisplay = 0.0f;
@@ -90,18 +67,8 @@ void GimbalPatrolCommand::execute() {
     patrolTimerDisplay = patrolTimer.isExpired();
     patrolRunningDisplay = patrolTimer.isStopped();
 
-    uint32_t currentTime = tap::arch::clock::getTimeMilliseconds();
-    float dtSeconds = (currentTime - lastExecuteTime) / 1000.0f;
-    lastExecuteTime = currentTime;
-
-    updateScanMode();
-
     // targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Radians);
-    if (inSectorScan) {
-        targetYawAxisAngle = getSectorScanYawPatrolAngle(AngleUnit::Radians, dtSeconds);
-    } else {
-        targetYawAxisAngle = getConstantVelocityYawPatrolAngle(AngleUnit::Radians);
-    }
+    targetYawAxisAngle = getConstantVelocityYawPatrolAngle(AngleUnit::Radians);
     targetPatrolYawAxisAngleDisplay = targetYawAxisAngle;
     targetPitchAxisAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Radians);
     targetPatrolPitchAxisAngleDisplay = targetPitchAxisAngle;
@@ -120,59 +87,6 @@ bool GimbalPatrolCommand::isFinished() const { return false; }
 void GimbalPatrolCommand::end(bool) {
     gimbal->setAllDesiredYawMotorOutputs(0);
     gimbal->setAllDesiredPitchMotorOutputs(0);
-}
-
-bool inSectorScanDisplay = false;
-float sectorScanElapsedMinutesDisplay = 0.0f;
-float sectorSweepTargetDisplay = 0.0f;
-
-void GimbalPatrolCommand::updateScanMode() {
-    uint32_t elapsedSincePatrolFirstStart = tap::arch::clock::getTimeMilliseconds() - patrolFirstStartTime;
-    sectorScanElapsedMinutesDisplay = elapsedSincePatrolFirstStart / 60000.0f;
-
-    bool shouldSectorScan = elapsedSincePatrolFirstStart >= patrolConfig.sectorScanSwitchTimeMillis;
-    if (shouldSectorScan == inSectorScan) {
-        return;
-    }
-
-    if (shouldSectorScan) {
-        // entering the sector sweep: project the current heading onto the sector so the sweep
-        // continues from wherever the gimbal is pointing instead of snapping to the start angle
-        float currentYaw =
-            drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-        float offsetFromStart = tap::algorithms::WrappedFloat(patrolConfig.sectorScanStartAngle, -M_PI, M_PI)
-                                    .minDifference(currentYaw) *
-                                sgn(sectorScanSpan);
-        sectorSweepOffset = tap::algorithms::limitVal(offsetFromStart, 0.0f, fabsf(sectorScanSpan));
-        sectorSweepDirection = 1.0f;
-    } else {
-        // back to the 360 spin: re-latch the spin origin at the current heading
-        commandStartTime = tap::arch::clock::getTimeMilliseconds();
-        yawPatrolStartAngle =
-            drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-    }
-
-    inSectorScan = shouldSectorScan;
-    inSectorScanDisplay = inSectorScan;
-}
-
-float GimbalPatrolCommand::getSectorScanYawPatrolAngle(AngleUnit unit, float dtSeconds) {
-    float sweepSpeed = modm::toRadian(patrolConfig.yawPatrolAngularVelocityDegreesPerSec);
-    float spanMagnitude = fabsf(sectorScanSpan);
-
-    sectorSweepOffset += sectorSweepDirection * sweepSpeed * dtSeconds;
-    if (sectorSweepOffset >= spanMagnitude) {
-        sectorSweepOffset = spanMagnitude;
-        sectorSweepDirection = -1.0f;
-    } else if (sectorSweepOffset <= 0.0f) {
-        sectorSweepOffset = 0.0f;
-        sectorSweepDirection = 1.0f;
-    }
-
-    float angleRadians = patrolConfig.sectorScanStartAngle + sgn(sectorScanSpan) * sectorSweepOffset;
-    sectorSweepTargetDisplay = angleRadians;
-
-    return unit == AngleUnit::Radians ? angleRadians : modm::toDegree(angleRadians);
 }
 
 bool yawPositionPIDErrorDisplay = false;

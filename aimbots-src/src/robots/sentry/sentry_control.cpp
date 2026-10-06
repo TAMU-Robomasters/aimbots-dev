@@ -141,9 +141,6 @@ GimbalPatrolConfig patrolConfig = {
     .pitchPatrolFrequency = 5.0f,
     .pitchPatrolOffset = -modm::toRadian(10.0f),
     .yawPatrolAngularVelocityDegreesPerSec = 80.0f,
-    .sectorScanSwitchTimeMillis = 210'000,  // 3.5 min after patrol first starts
-    .sectorScanStartAngle = modm::toRadian(-60.0f),  // field-relative, sweep span must be < 180 deg
-    .sectorScanEndAngle = modm::toRadian(60.0f),
 };
 
 GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
@@ -240,7 +237,9 @@ ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerComm
     10000.0f);
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
-ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
+// Disabled: its constructor builds the A* visibility graph (soft-float doubles + heap) during static init,
+// which hangs boot before main(). Sentry navigates with Nav2 on the Jetson instead.
+// ChassisAutoNavCommand chassisAutoNavCommand(drivers(), &chassis, defaultLinearConfig, defaultRotationConfig);
 // Drives the chassis from nav2's turret-relative velocity command over the Jetson link.
 // Not yet mapped to a switch — wire into a HoldCommandMapping when ready.
 ChassisAutoNavVelocityCommand chassisAutoNavVelocityCommand(drivers(), &chassis, &gimbal);
@@ -295,20 +294,20 @@ ChassisAutoTokyoPowerLimitedCommand autoTokyoPowerLimitedCommand(
     defaultTokyoConfig,
     true,                               // randomizeSpinRate
     randomizerConfig,
-    5000.0f);                           // maxWheelSpeed (pre-power-limit ceiling)
+    15000000.0f);                           // maxWheelSpeed (pre-power-limit ceiling)
 
 // Gate the chassis on the referee game stage: pre-game runs the fallback; once the ref system
 // reports IN_GAME it hands off to the power-limited Jetson-driven auto tokyo. Both must require
 // only the chassis subsystem (GovernorWithFallbackCommand asserts identical requirement sets).
 // The trailing `true` force-ends the fallback the instant the game starts so the handoff is
 // immediate (requires the HoldRepeatCommandMapping on leftSwitchUp to re-add this command).
-src::Utils::GameStartedGovernor gameStartedGovernor(&refHelper);
-governor::GovernorWithFallbackCommand<1> gameGatedTokyoCommand(
-    {&chassis},
-    autoTokyoPowerLimitedCommand,   // governors ready (game started) -> power-limited auto tokyo
-    chassisToggleDriveIgnoreGimbalCommand2, // fallback (pre-game) -> manual tokyo
-    {&gameStartedGovernor},
-    true);
+// src::Utils::GameStartedGovernor gameStartedGovernor(&refHelper);
+// governor::GovernorWithFallbackCommand<1> gameGatedTokyoCommand(
+//     {&chassis},
+//     autoTokyoPowerLimitedCommand,   // governors ready (game started) -> power-limited auto tokyo
+//     chassisToggleDriveIgnoreGimbalCommand2, // fallback (pre-game) -> manual tokyo
+//     {&gameStartedGovernor},
+//     true);
 
 // GimbalPatrolCommand gimbalPatrolCommand(drivers(), &gimbal, &gimbalFieldRelativeController, patrolConfig, chassisMatchState);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -424,7 +423,8 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 HoldCommandMapping leftSwitchMid(
     drivers(),
     // Manual driving: custom-controller toggle drive + manual gimbal aiming.
-    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
+    // {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
+   {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // HoldRepeat (not Hold): gameGatedTokyoCommand self-finishes the instant the game starts (its
@@ -449,10 +449,10 @@ HoldRepeatCommandMapping leftSwitchUp(
      // {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
      // {&nav2TokyoMasterCommand, &matchGimbalControlCommand},
      // Pre-game: manual tokyo. Once the ref system reports IN_GAME: nav2 auto tokyo.
-     {&autoTokyoPowerLimitedCommand, &matchGimbalControlCommand},
+     {&autoTokyoPowerLimitedCommand, &gimbalFieldRelativeControlCommand},
      // {&gameGatedTokyoCommand, &matchGimbalControlCommand},
      // {&nav2TokyoMasterCommand},
-    //{/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
+    // {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP),
     true);  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP

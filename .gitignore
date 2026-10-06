@@ -642,3 +642,6 @@ settings/home/.mongorc.js
 settings/home/.ungitrc
 settings/home/.vuerc
 aimbots-src/taproot/modm/scons/site_tools/size.py
+
+# machine-specific clangd config (hardcoded local ARM toolchain include paths)
+.clangd
