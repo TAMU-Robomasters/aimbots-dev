@@ -196,7 +196,11 @@ static void initializeIo(src::Drivers *drivers) {
 
 //drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
+#if TRAINING_USE_MY_REMOTE
+    // TODO(week2): initialize YOUR remote here instead of taproot's (drivers->dt7Remote).
+#else
     drivers->remote.initialize();
+#endif
     drivers->refSerial.initialize();
     // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
@@ -236,7 +240,11 @@ static void updateIo(src::Drivers *drivers) {
     drivers->customController.read();
     drivers->espPowerSensor.read();
     drivers->refSerial.updateSerial();
+#if TRAINING_USE_MY_REMOTE
+    // TODO(week2): read YOUR remote here instead of taproot's (drivers->dt7Remote).
+#else
     drivers->remote.read();
+#endif
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
     drivers->revEncoder.execute();
