@@ -7,7 +7,7 @@
 #include "drivers.hpp"
 
 // MCUViewer watch variables. Add these to the watch window to see your parser working.
-uint32_t framesParsedDisplay = 0;  // should climb by ~70 every second with the remote on
+uint32_t framesParsedDisplay = 0;  // should climb by ~140 every second with the remote on
 uint32_t badFramesDisplay = 0;     // should stay at (or very near) 0
 float rightVerticalDisplay = 0.0f;
 
@@ -43,8 +43,8 @@ void Dt7Remote::read() {
 }
 
 bool Dt7Remote::parseFrame() {
-    // TODO(week2): decode ch0 (right horizontal), ch1 (right vertical) and s1 (right switch)
-    // from rxBuffer. Use the bit-layout table in dbus_protocol_en.md.
+    // TODO(week2): decode ch0 (right horizontal), ch1 (right vertical) and the right switch
+    // (S2, bits 44-45) from rxBuffer. Use the bit-layout table in README section 2.
     //
     // Then validate BEFORE you store anything:
     //   - each channel must be within CHANNEL_CENTER +- CHANNEL_MAX_OFFSET
