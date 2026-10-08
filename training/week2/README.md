@@ -111,11 +111,48 @@ You only need these:
 >
 > The protocol has a few more mistakes in parts you don't need this week. If you try the "parse the rest" goal, note that the mouse buttons and keyboard are really at bit offsets 96, 104 and 112 (bytes 12, 13 and 14–15, as the struct's byte comments say), not 86, 94 and 102.
 
+### Hex: how we write bits
+
+Bytes are usually written in **hexadecimal** (base 16), not decimal. The digits go `0`–`9`, then `A`–`F` for 10–15.
+
+Hex is used because **one hex digit is exactly 4 bits**, so you can convert to and from binary one digit at a time. Decimal doesn't line up with bits like that.
+
+| Hex | Binary | Decimal | | Hex | Binary | Decimal |
+|---|---|---|---|---|---|---|
+| `0` | `0000` | 0 | | `8` | `1000` | 8 |
+| `1` | `0001` | 1 | | `9` | `1001` | 9 |
+| `2` | `0010` | 2 | | `A` | `1010` | 10 |
+| `3` | `0011` | 3 | | `B` | `1011` | 11 |
+| `4` | `0100` | 4 | | `C` | `1100` | 12 |
+| `5` | `0101` | 5 | | `D` | `1101` | 13 |
+| `6` | `0110` | 6 | | `E` | `1110` | 14 |
+| `7` | `0111` | 7 | | `F` | `1111` | 15 |
+
+So a byte (8 bits) is always **exactly two hex digits**. Convert each digit on its own and stick them together:
+
+```
+0x4A  →  4 = 0100,  A = 1010  →  0100 1010  (= 74 in decimal)
+0xE8  →  E = 1110,  8 = 1000  →  1110 1000  (= 232)
+```
+
+**In C++,** the same number can be written three ways. All three mean exactly the same value; the compiler doesn't care which you use:
+
+```cpp
+uint8_t a = 74;            // decimal
+uint8_t b = 0x4A;          // hex: prefix 0x
+uint8_t c = 0b0100'1010;   // binary: prefix 0b; the ' is just a separator for readability
+// a == b == c
+```
+
+- Use **hex** for masks and raw bytes: `0x7FF`, `0xFF`. It's short, and you can see the bits once you know the table.
+- Use **binary** when you want to see every bit: `0b11` for a 2-bit mask.
+- Use **decimal** for real quantities: `1024`, `660`, `100000`.
+
 ### The tools: shift and mask
 
 - `x >> n` slides the bits of `x` right by `n`, throwing away the bottom `n` bits.
 - `x << n` slides them left, making room at the bottom.
-- `x & 0x7FF` keeps only the bottom 11 bits (`0x7FF` = `0b111_1111_1111`). That's called a **mask**.
+- `x & 0x7FF` keeps only the bottom 11 bits. That's called a **mask**: `0x7FF` = `0b111'1111'1111`, eleven 1s. Using the table: `7` = `0111`, `F` = `1111`, `F` = `1111`.
 - `a | b` glues two pieces together when they don't overlap.
 
 ---
