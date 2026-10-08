@@ -1,4 +1,4 @@
-# Week 2: Parse the remote yourself, then make some noise
+# Week 2: Parse the remote yourself, then make some noise with the buzzer
 
 **Goal:** throw away taproot's remote code and read the DT7 remote **yourself**, straight from the UART bytes. Then use your parser to drive the dev board's buzzer:
 
@@ -9,7 +9,7 @@
 
 You only parse the **right stick** and the **right switch**.
 
-Almost every spot you need to change is marked `TODO(week2)`. **The one exception is `training_control.cpp`:** there are no week 2 TODOs in it (you already edited it in week 1, and new TODOs would cause merge conflicts). You add your buzzer command, its mapping, and its `addMap` call there yourself, **the same way you added your `BlinkLedCommand` in week 1**. See section 8.
+Almost every spot you need to change is marked `TODO(week2)`. **The one exception is `training_control.cpp`:** there are no week 2 TODOs in it (you already edited it in week 1, and new TODOs would cause merge conflicts). You add your buzzer command, its mapping, and its `addMap` call there yourself, **the same way you added your `BlinkLedCommand` in week 1** (section 8). 
 
 ---
 
@@ -46,7 +46,7 @@ pipenv run scons build robot=TRAINING
 
 `drivers.hpp` changed, so this is a full rebuild (~5 minutes). After that, builds are incremental again.
 
-**Read first:** [`dt7_dr16_protocol_v1.4_en.pdf`](dt7_dr16_protocol_v1.4_en.pdf), an English translation of DJI's *RoboMasters Remote Controller Control Protocol V1.4*. The Chinese original is next to it: [`dt7_dr16_protocol_v1.4_cn.pdf`](dt7_dr16_protocol_v1.4_cn.pdf). Keep them open while you work.
+**Read first:** [`dt7_dr16_protocol_v1.4_en.pdf`](dt7_dr16_protocol_v1.4_en.pdf), an English translation of DJI's *RoboMasters Remote Controller Control Protocol V1.4*. The Chinese original is next to it: [`dt7_dr16_protocol_v1.4_cn.pdf`](dt7_dr16_protocol_v1.4_cn.pdf).
 
 >  Taproot has its own parser in `taproot/src/tap/communication/serial/remote.cpp`. **Don't open it until you're checked off.** The point is to go from *document → bytes → code* yourself, like the LED pin in week 1.
 
@@ -74,8 +74,6 @@ idle ─┐   ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬───
 
 People write this as `8E1` (8 data, Even parity, 1 stop) or `8N1` (No parity). With start + 8 + parity + stop, **one byte takes 11 bits on the wire**. Remember that for section 4.
 
-**Why DBUS needs an inverter:** DJI's receiver sends the signal upside-down (idle LOW instead of HIGH). The Type C board has a hardware inverter in front of the DBUS port, so by the time bytes reach `Uart3` they're normal UART and you don't have to do anything about it.
-
 **How does that compare to the rest of the robot?**
 
 | Bus | Wires | Used for on our robot |
@@ -83,9 +81,7 @@ People write this as `8E1` (8 data, Even parity, 1 stop) or `8N1` (No parity). W
 | UART | TX, RX (point to point) | Remote (DBUS), referee system, Jetson |
 | CAN | CAN-H, CAN-L (many devices share it) | Every DJI motor, board-to-board |
 | SPI | clock, MOSI, MISO, chip select | The IMU on the dev board |
-| I²C | clock, data (addressed devices) | Small sensors, e.g. the magnetometer |
-
-I2C actually doesn't work on devboard type c due to hardware bug 😭
+| I²C | clock, data (addressed devices) | Actually doesn't work on devboard type c due to hardware bug 😭 |
 
 ---
 
@@ -109,7 +105,7 @@ You only need these:
 | ch1 | 11–21 | right stick, vertical | 364 … **1024 (center)** … 1684 |
 | S2 | 44–45 | right switch | 1 = UP, 3 = MID, 2 = DOWN |
 
-(Double-check every number here against the protocol PDFs. Never trust a README over the source document!)
+(Double-check the numbers in the protocol PDF.)
 
 > 🕵️ **But sometimes the source document is wrong too.** DJI's own protocol contradicts itself about the switches. Its table puts **S1** at bits 44–45 and **S2** at 46–47. But its picture of the remote (page 3 of the Chinese original) puts S1 on the **left** and S2 on the **right**, and its own reference code reads bits 44–45 as the **right** switch. We checked on a real board: **bits 44–45 are the right switch (S2)**, so the table has S1 and S2 swapped. This happens all the time with datasheets. When two parts of a document disagree, test it on hardware: flip one switch at a time and watch byte 5 in MCUViewer.
 >
@@ -178,7 +174,7 @@ Before you flash anything, check your code by hand against this example frame.
 
 ## 4. From a stream of bytes to frames
 
-The UART hands you bytes, not frames. If you start reading halfway through a frame and just count to 18, **every frame after that is shifted**, and your "ch0" is really the end of ch2. You need to know where a frame **starts**.
+The UART hands you bytes, not frames (frames mean messages). If you start reading halfway through a frame and just count to 18, **every frame after that is shifted**, and your "ch0" is really the end of ch2. You need to know where a frame **starts**.
 
 **How other protocols do it:** most protocols start each message with a **magic/header byte** and end with a **checksum**. For example, the referee system's frames start with `0xA5` and carry a CRC. You search for the header, read the length, and verify the checksum.
 
@@ -236,8 +232,6 @@ And `main.cpp` uses `#if` to compile in **exactly one** of them:
     drivers->remote.read();
 #endif
 ```
-
-> 📎 **Why `#if` here and not `#ifdef`?** `#ifdef` only asks "is it defined?" and `0` still counts as defined. `#if` looks at the value. Other robots never include `training_config.hpp`, so `robot_specific_defines.hpp` gives them `#define TRAINING_USE_MY_REMOTE 0` as a fallback. Without that, `#if` would be testing an undefined name, which the compiler warns about (`-Wundef`).
 
 ### What is `Drivers`?
 
@@ -340,7 +334,6 @@ Taproot's buzzer function has two quirks that bite exactly this assignment:
 
 Also expect this:
 - **The robot plays a startup song.** Once the IMU warms up to 50 °C (a little after boot), `main.cpp` plays the robot's startup song on the same buzzer. Wait for it to finish before testing, because it will fight your command while it plays.
-- **High notes go up in little steps.** The timer period is set in whole microseconds (`1'000'000 / frequency`). At 15 kHz, one microsecond is a big fraction of the period, so the pitch steps instead of sliding. Can you work out the step size at 15 kHz?
 
 > 🎵 **Curious how we play actual songs?** That's the jukebox: [`utils/music/jukebox_player.cpp`](../../aimbots-src/src/utils/music/jukebox_player.cpp) plays a song note by note **without blocking**, using the same "check the clock, act when time is up" idea as your command. The note frequencies and durations are in [`jukebox_player.hpp`](../../aimbots-src/src/utils/music/jukebox_player.hpp), the songs themselves in [`sheetmusic_constants.hpp`](../../aimbots-src/src/utils/music/sheetmusic_constants.hpp), and an older version is in [`player.cpp`](../../aimbots-src/src/utils/music/player.cpp). You don't need any of it this week, but adding a song is a fun play-around goal.
 
