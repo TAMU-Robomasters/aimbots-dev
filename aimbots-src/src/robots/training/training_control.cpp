@@ -32,8 +32,10 @@ TrainingBoardSubsystem board(drivers());
 
 // Define commands here ---------------------------------------------------
 // TODO(week1): create your BlinkLedCommand here.
+BlinkLedCommand blinkLedCommand(drivers(), &board);
 
 // Define command mappings here -------------------------------------------
+HoldCommandMapping rightSwitchUp(drivers(),{&blinkLedCommand},RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 // TODO(week1): map your command to the RIGHT switch in the UP position.
 // A mapping ties a remote state to a list of commands. The three kinds you'll see most:
 //
@@ -60,8 +62,10 @@ void setDefaultCommands(src::Drivers *) {}
 void startupCommands(src::Drivers *) {}
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *) {
+void registerIOMappings(src::Drivers * drivers) {
     // TODO(week1): add your mapping, e.g. drivers->commandMapper.addMap(&yourMapping);
+    drivers->commandMapper.addMap(&rightSwitchUp);
+
 }
 
 }  // namespace TrainingControl

@@ -34,6 +34,8 @@ class BlinkLedCommand : public tap::control::Command {
     TrainingBoardSubsystem* board;
 
     // TODO(week1): you will need something to keep time without blocking.
+    tap::arch::MilliTimeout timer;
+
     // Look at tap::arch::MilliTimeout in taproot/src/tap/architecture/timeout.hpp.
 };
 
