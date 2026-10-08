@@ -179,7 +179,7 @@ MyPin::set(true);     // set(bool) works too
 
 Being able to go from "I want to use *that* thing on the board" to "it's pin P?? on the MCU" is a core embedded skill. Every new sensor, laser or UART you wire up starts this way.
 
-Document: **[RoboMaster Development Board Type C User Manual (PDF)](https://rm-static.djicdn.com/tem/35228/RoboMaster%20Development%20Board%20Type%20C%20User%20Manual.pdf)**, which has the board layout, interface descriptions and pin tables.
+Document: **[RoboMaster Development Board Type C User Manual (PDF)](https://rm-static.djicdn.com/tem/35228/RoboMaster%20Development%20Board%20Type%20C%20User%20Manual.pdf)**, which has the board layout, interface descriptions and pin tables. If you are on TAMU Wifi you will have to use a VPN or hotspot too access the document (politics 🙄). 
 
 How to look:
 1. Find the **board layout / interface diagram** in the user manual and locate the status LED on the board.
