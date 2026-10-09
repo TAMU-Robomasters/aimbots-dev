@@ -43,10 +43,17 @@
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS
 #define ALL_TRAINING
+#include "robots/training/training_config.hpp"
 
 #elif defined(TARGET_TURRET)
 #include "robots/turret/constants/turret_general_constants.hpp"
 #include "robots/turret/turret_control_interface.hpp"
 #define ALL_TURRETS
 
+#endif
+
+// Week 2 training flag (see robots/training/training_config.hpp). Every other robot gets 0, so
+// `#if TRAINING_USE_MY_REMOTE` in main.cpp is always defined and never trips -Wundef.
+#ifndef TRAINING_USE_MY_REMOTE
+#define TRAINING_USE_MY_REMOTE 0
 #endif
