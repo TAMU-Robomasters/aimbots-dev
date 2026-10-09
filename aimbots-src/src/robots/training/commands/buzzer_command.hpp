@@ -46,6 +46,10 @@ class BuzzerCommand : public tap::control::Command {
     TrainingBoardSubsystem* board;
 
     // TODO(week2): what do you need to remember between execute() calls?
+    tap::arch::MilliTimeout soundTimer;
+    bool soundOn = false;
+    uint32_t lastFrequency = 0;
+
     // (a timer, whether the buzzer is currently on, the frequency you last sent, ...)
 };
 

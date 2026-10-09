@@ -42,6 +42,7 @@
 // preprocessor deletes these lines before the compiler ever sees them.
 #ifdef TARGET_TRAINING
 // TODO(week2): include your remote's header here:
+#include "robots/training/remote/dt7_remote.hpp"
 //     #include "robots/training/remote/dt7_remote.hpp"
 #endif
 // graphing elsewhere lol
@@ -69,6 +70,7 @@ public:
       #endif
       #ifdef TARGET_TRAINING
           // TODO(week2): construct your remote here:   dt7Remote(this),
+          dt7Remote(this),
       #endif
           kinematicInformant(this),
           hitTracker(this),
@@ -90,6 +92,7 @@ public:
   #endif
   #ifdef TARGET_TRAINING
     // TODO(week2): declare your remote here:   src::Training::Dt7Remote dt7Remote;
+    src::Training::Dt7Remote dt7Remote;
     // (Keep it right here, above kinematicInformant: members must be constructed in the same
     //  order they're declared, and the constructor list above has it in the same spot.)
   #endif

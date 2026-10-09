@@ -56,6 +56,8 @@ class Dt7Remote {
     static constexpr uint16_t CHANNEL_MAX_OFFSET = 660;   // raw values go from 1024 - 660 to 1024 + 660
     static constexpr uint32_t FRAME_GAP_MS = 3;           // silence longer than this = next byte starts a new frame
     static constexpr uint32_t DISCONNECT_TIMEOUT_MS = 100;  // no good frame for this long = disconnected
+    uint16_t CHANNEL_MIN = CHANNEL_CENTER - CHANNEL_MAX_OFFSET ;
+    uint16_t CHANNEL_MAX = CHANNEL_CENTER + CHANNEL_MAX_OFFSET ;
 
     /**
      * Decodes rxBuffer (one complete frame) into the fields below.
