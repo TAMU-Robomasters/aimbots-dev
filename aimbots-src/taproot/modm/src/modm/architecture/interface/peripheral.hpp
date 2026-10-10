@@ -46,6 +46,7 @@ namespace modm
 class PeripheralDriver
 {
 #ifdef __DOXYGEN__
+public:
 	/// initializes the peripheral, must be called before use.
 	static void
 	initialize();
@@ -83,12 +84,20 @@ public:
 	 * This method checks if the user requested baudrate is within error
 	 * tolerance of the system achievable baudrate.
 	 */
-	template< baudrate_t available, baudrate_t requested, percent_t tolerance >
+	template< uint64_t available, uint64_t requested, percent_t tolerance >
 	static void
 	assertBaudrateInTolerance()
 	{
-		static_assert(modm::Tolerance::isValueInTolerance(requested, available, tolerance),
+		static_assert(modm::isValueInTolerance(requested, available, tolerance),
 				"The closest available baudrate exceeds the tolerance of the requested baudrate!");
+	}
+
+	template< double available, double requested, percent_t tolerance >
+	static void
+	assertDurationInTolerance()
+	{
+		static_assert(modm::isValueInTolerance(requested, available, tolerance),
+				"The closest available duration exceeds the tolerance of the requested duration!");
 	}
 };
 

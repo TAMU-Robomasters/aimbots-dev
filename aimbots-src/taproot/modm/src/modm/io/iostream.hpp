@@ -24,10 +24,25 @@
 #include <stdarg.h>	// va_list
 #include <inttypes.h>
 #include <type_traits>
+#include <climits>
+#include <chrono>
+#include <string_view>
 
 #include "iodevice.hpp"
-#include "iodevice_wrapper.hpp" // convenience
 
+/// @cond
+extern "C"
+{
+struct printf_output_gadget_t
+{
+	void (*function)(char, void*);
+	void* extra_function_arg;
+	char* buffer;
+	unsigned int pos;
+	unsigned int max_chars;
+};
+}
+/// @endcond
 namespace modm
 {
 
@@ -179,6 +194,13 @@ public:
 	operator << (const char* s)
 	{ device->write(s); return *this; }
 
+	inline IOStream&
+	operator << (const std::string_view sv)
+	{
+		for (const auto c : sv) device->write(c);
+		return *this;
+	}
+
 	/// write the hex value of a pointer
 	inline IOStream&
 	operator << (const void* p)
@@ -200,6 +222,26 @@ public:
 
 	IOStream&
 	vprintf(const char *fmt, va_list vlist) __attribute__((format(printf, 2, 0)));
+	inline int width() const { return printf_width; }
+	inline int width(int w) {
+		const size_t old = printf_width;
+		if (w < 0) w = 0;
+		printf_width = w;
+		return old;
+	}
+	inline int precision() const { return printf_precision; }
+	inline int precision(int p) {
+		const size_t old = printf_precision;
+		if (p < 0) p = 6;
+		printf_precision = p;
+		return old;
+	}
+	inline char fill() const { return ' '; }
+	inline char fill(char) {
+		return ' ';
+	}
+
+
 protected:
 	template< typename T >
 	void
@@ -242,9 +284,14 @@ private:
 	IOStream(const IOStream&) = delete;
 	IOStream& operator =(const IOStream&) = delete;
 
-private:
 	IODevice* const	device;
 	Mode mode = Mode::Ascii;
+	static void out_char(char c, void* arg)
+	{ if (c) reinterpret_cast<modm::IOStream*>(arg)->write(c); }
+	printf_output_gadget_t output_gadget{out_char, this, NULL, 0, INT_MAX};
+	size_t printf_precision{6};
+	size_t printf_width{};
+	friend class OSizeStream;
 };
 
 /// @ingroup modm_io
@@ -256,11 +303,10 @@ inline IOStream&
 flush(IOStream& ios)
 { return ios.flush(); }
 
-//// Write a newline. **DOES NOT FLUSH THE STREAM!**
+/// Write a newline. **DOES NOT FLUSH THE STREAM!**
 inline IOStream&
 endl(IOStream& ios)
 { return ios.endl(); }
-
 /// set the output mode to binary style
 inline IOStream&
 bin(IOStream& ios)
@@ -300,8 +346,57 @@ cyan(IOStream& ios);
 
 IOStream&
 white(IOStream& ios);
+
+
+class OSizeStream : public IOStream
+{
+public:
+	class Buffer : public IODevice
+	{
+		size_t buffer_size{};
+	public:
+		inline constexpr Buffer() = default;
+		using IODevice::write;
+		inline void write(char) override { buffer_size++; }
+		inline void flush() override { buffer_size = 0; }
+		inline bool read(char&) override { return false; }
+
+		inline size_t
+		size() const
+		{
+			return buffer_size;
+		}
+
+		inline size_t
+		length() const
+		{
+			return buffer_size;
+		}
+	};
+
+	inline OSizeStream() : IOStream(buffer) {}
+
+	inline const Buffer&
+	str() const
+	{
+		return buffer;
+	}
+
+	inline void
+	copyfmt(const IOStream& other)
+	{
+		this->mode = other.mode;
+		this->printf_precision = other.printf_precision;
+		this->printf_width = other.printf_width;
+	}
+
+private:
+	Buffer buffer;
+};
 /// @}
 
 }	// namespace modm
+
+#include "iostream_chrono.hpp"
 
 #endif // MODM_IOSTREAM_HPP

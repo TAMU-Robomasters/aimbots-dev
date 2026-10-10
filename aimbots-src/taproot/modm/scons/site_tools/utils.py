@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2013-2014, 2016-2017, German Aerospace Center (DLR)
-# Copyright (c) 2018, Niklas Hauser
+# Copyright (c) 2018, 2023, Niklas Hauser
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,8 +13,10 @@
 # - 2018, Niklas Hauser
 
 import os
+import sys
 import os.path
 
+from modm_tools import utils
 from SCons.Script import *
 
 def _listify(obj):
@@ -32,6 +34,11 @@ def _listify(obj):
 def listify(env, *objs):
     return [entry for obj in objs for entry in _listify(obj)]
 
+def subst_list(env, *keys):
+    values = []
+    for key in keys:
+        values += env.Listify(env.get(key, []))
+    return [env.subst(v) for v in values]
 
 def remove_from_list(env, identifier, to_remove):
     """
@@ -64,7 +71,7 @@ def filtered_glob(env, pattern, omit=None, ondisk=True, source=False, strings=Fa
 
 
 def run_program(env, program):
-    return env.Command('thisfileshouldnotexist',
+    return env.Command('phony_target',
                        program,
                        '@"%s"' % program[0].abspath)
 
@@ -72,6 +79,10 @@ def run_program(env, program):
 def phony_target(env, **kw):
     for target, action in kw.items():
         env.AlwaysBuild(env.Alias(target, [], action))
+
+
+def compiler_version(env):
+    return utils.compiler_version(env.subst(env["CC"]))
 
 
 def artifact_firmware(env, source):
@@ -84,6 +95,11 @@ def artifact_firmware(env, source):
             source = firmware
     return source
 
+def always_build_action(env, action, cmdstr, source=None):
+    action = Action(action, cmdstr)
+    caller_name = sys._getframe(2).f_code.co_name
+    return env.AlwaysBuild(env.Alias(caller_name, source, action))
+
 # -----------------------------------------------------------------------------
 def generate(env, **kw):
     env.Append(ENV={'PATH': os.environ['PATH']})
@@ -95,6 +111,11 @@ def generate(env, **kw):
     env.AddMethod(phony_target, 'Phony')
 
     env.AddMethod(listify, 'Listify')
+    env.AddMethod(subst_list, 'SubstList')
+
+    env.AddMethod(always_build_action, 'AlwaysBuildAction')
+
+    env.AddMethod(compiler_version, 'CompilerVersion')
 
     env.AddMethod(artifact_firmware, 'ChooseFirmware')
 

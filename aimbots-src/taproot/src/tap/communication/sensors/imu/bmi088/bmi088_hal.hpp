@@ -75,7 +75,7 @@ private:
     {
 #if !defined(PLATFORM_HOSTED)
         uint8_t rx = 0;
-        Board::ImuSpiMaster::transferBlocking(&tx, &rx, 1);
+        Board::ImuSpiMaster::transfer(&tx, &rx, 1);
         return rx;
 #elif defined(ENV_UNIT_TESTS)
         UNUSED(tx);

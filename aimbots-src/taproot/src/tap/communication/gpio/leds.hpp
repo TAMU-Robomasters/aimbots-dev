@@ -44,13 +44,11 @@ public:
     mockable ~Leds() = default;
 
     /**
-     * The LEDs correspond to the color on the RoboMaster type C board.
+     * The DM-MC02 has no GPIO LEDs. Its only LED is a WS2812 RGB LED driven over SPI6,
+     * which this class doesn't support yet, so there are no pins to set.
      */
     enum LedPin
     {
-        Green,
-        Red,
-        Blue
     };
 
     /**

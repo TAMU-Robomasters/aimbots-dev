@@ -76,7 +76,7 @@ public:
     void updateIMU(float gx, float gy, float gz, float ax, float ay, float az);
     float getRoll() const { return roll; }
     float getPitch() const { return pitch; }
-    float getYaw() const { return fmod(yaw + M_TWOPI, M_TWOPI); }
+    float getYaw() const { return fmodf(yaw + static_cast<float>(M_TWOPI), static_cast<float>(M_TWOPI)); }
 };
 
 #endif  // MAHONY_AHRS_H_

@@ -30,6 +30,7 @@ enum class CanBus
 {
     CAN_BUS1,
     CAN_BUS2,
+    CAN_BUS3,
 };
 }
 

@@ -9,16 +9,12 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_GPIO_SOFTWARE_PORT_HPP
-#define MODM_STM32_GPIO_SOFTWARE_PORT_HPP
+#pragma once
 
 #include "set.hpp"
 #include <type_traits>
 
-namespace modm
-{
-
-namespace platform
+namespace modm::platform
 {
 
 /**
@@ -53,16 +49,13 @@ public:
 	{ return ::modm::GpioPort::DataOrder::Normal; }
 
 protected:
-	static constexpr int8_t shift_masks[9][width] = {
+	static constexpr int8_t shift_masks[6][width] = {
 		{(Gpios::port == Set::Port::A ? Gpios::pin : -1)...},
 		{(Gpios::port == Set::Port::B ? Gpios::pin : -1)...},
 		{(Gpios::port == Set::Port::C ? Gpios::pin : -1)...},
 		{(Gpios::port == Set::Port::D ? Gpios::pin : -1)...},
 		{(Gpios::port == Set::Port::E ? Gpios::pin : -1)...},
-		{(Gpios::port == Set::Port::F ? Gpios::pin : -1)...},
-		{(Gpios::port == Set::Port::G ? Gpios::pin : -1)...},
 		{(Gpios::port == Set::Port::H ? Gpios::pin : -1)...},
-		{(Gpios::port == Set::Port::I ? Gpios::pin : -1)...},
 	};
 	static constexpr int8_t shift_mask(uint8_t id, uint8_t pos) { return shift_masks[id][width - 1 - pos]; }
 	using Set::mask;
@@ -248,7 +241,7 @@ public:
 			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(4, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
 		}
 		if constexpr (mask(5)) {
-			const uint16_t p = (GPIOF->ODR & mask(5)) ^ inverted(5);
+			const uint16_t p = (GPIOH->ODR & mask(5)) ^ inverted(5);
 			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(5, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
 			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(5, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
 			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(5, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
@@ -281,111 +274,6 @@ public:
 			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(5, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
 			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(5, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
 			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(5, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
-		if constexpr (mask(6)) {
-			const uint16_t p = (GPIOG->ODR & mask(6)) ^ inverted(6);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(6, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(6, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(6, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(6, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(6, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(6, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(6, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(6, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(6, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(6, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(6, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(6, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(6, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(6, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(6, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(6, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(6, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(6, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(6, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(6, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(6, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(6, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(6, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(6, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(6, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(6, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(6, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(6, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(6, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(6, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(6, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(6, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
-		if constexpr (mask(7)) {
-			const uint16_t p = (GPIOH->ODR & mask(7)) ^ inverted(7);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(7, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(7, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(7, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(7, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(7, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(7, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(7, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(7, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(7, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(7, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(7, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(7, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(7, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(7, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(7, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(7, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(7, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(7, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(7, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(7, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(7, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(7, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(7, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(7, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(7, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(7, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(7, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(7, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(7, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(7, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(7, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(7, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
-		if constexpr (mask(8)) {
-			const uint16_t p = (GPIOI->ODR & mask(8)) ^ inverted(8);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(8, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(8, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(8, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(8, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(8, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(8, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(8, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(8, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(8, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(8, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(8, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(8, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(8, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(8, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(8, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(8, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(8, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(8, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(8, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(8, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(8, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(8, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(8, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(8, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(8, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(8, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(8, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(8, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(8, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(8, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(8, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(8, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
 		}
 		return r;
 	}
@@ -606,115 +494,7 @@ public:
 			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(5, 30); pos >= 0) p |= (data & (1ul << 30)) ? (1ul << pos) : (1ul << (pos + 16));
 			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(5, 31); pos >= 0) p |= (data & (1ul << 31)) ? (1ul << pos) : (1ul << (pos + 16));
 			p ^= inverted(5);
-			GPIOF->BSRR = ((~p & mask(5)) << 16) | p;
-		}
-		if constexpr (mask(6)) { uint32_t p{0};
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(6, 0); pos >= 0) p |= (data & (1ul << 0)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(6, 1); pos >= 0) p |= (data & (1ul << 1)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(6, 2); pos >= 0) p |= (data & (1ul << 2)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(6, 3); pos >= 0) p |= (data & (1ul << 3)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(6, 4); pos >= 0) p |= (data & (1ul << 4)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(6, 5); pos >= 0) p |= (data & (1ul << 5)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(6, 6); pos >= 0) p |= (data & (1ul << 6)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(6, 7); pos >= 0) p |= (data & (1ul << 7)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(6, 8); pos >= 0) p |= (data & (1ul << 8)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(6, 9); pos >= 0) p |= (data & (1ul << 9)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(6, 10); pos >= 0) p |= (data & (1ul << 10)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(6, 11); pos >= 0) p |= (data & (1ul << 11)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(6, 12); pos >= 0) p |= (data & (1ul << 12)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(6, 13); pos >= 0) p |= (data & (1ul << 13)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(6, 14); pos >= 0) p |= (data & (1ul << 14)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(6, 15); pos >= 0) p |= (data & (1ul << 15)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(6, 16); pos >= 0) p |= (data & (1ul << 16)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(6, 17); pos >= 0) p |= (data & (1ul << 17)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(6, 18); pos >= 0) p |= (data & (1ul << 18)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(6, 19); pos >= 0) p |= (data & (1ul << 19)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(6, 20); pos >= 0) p |= (data & (1ul << 20)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(6, 21); pos >= 0) p |= (data & (1ul << 21)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(6, 22); pos >= 0) p |= (data & (1ul << 22)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(6, 23); pos >= 0) p |= (data & (1ul << 23)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(6, 24); pos >= 0) p |= (data & (1ul << 24)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(6, 25); pos >= 0) p |= (data & (1ul << 25)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(6, 26); pos >= 0) p |= (data & (1ul << 26)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(6, 27); pos >= 0) p |= (data & (1ul << 27)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(6, 28); pos >= 0) p |= (data & (1ul << 28)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(6, 29); pos >= 0) p |= (data & (1ul << 29)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(6, 30); pos >= 0) p |= (data & (1ul << 30)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(6, 31); pos >= 0) p |= (data & (1ul << 31)) ? (1ul << pos) : (1ul << (pos + 16));
-			p ^= inverted(6);
-			GPIOG->BSRR = ((~p & mask(6)) << 16) | p;
-		}
-		if constexpr (mask(7)) { uint32_t p{0};
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(7, 0); pos >= 0) p |= (data & (1ul << 0)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(7, 1); pos >= 0) p |= (data & (1ul << 1)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(7, 2); pos >= 0) p |= (data & (1ul << 2)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(7, 3); pos >= 0) p |= (data & (1ul << 3)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(7, 4); pos >= 0) p |= (data & (1ul << 4)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(7, 5); pos >= 0) p |= (data & (1ul << 5)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(7, 6); pos >= 0) p |= (data & (1ul << 6)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(7, 7); pos >= 0) p |= (data & (1ul << 7)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(7, 8); pos >= 0) p |= (data & (1ul << 8)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(7, 9); pos >= 0) p |= (data & (1ul << 9)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(7, 10); pos >= 0) p |= (data & (1ul << 10)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(7, 11); pos >= 0) p |= (data & (1ul << 11)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(7, 12); pos >= 0) p |= (data & (1ul << 12)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(7, 13); pos >= 0) p |= (data & (1ul << 13)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(7, 14); pos >= 0) p |= (data & (1ul << 14)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(7, 15); pos >= 0) p |= (data & (1ul << 15)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(7, 16); pos >= 0) p |= (data & (1ul << 16)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(7, 17); pos >= 0) p |= (data & (1ul << 17)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(7, 18); pos >= 0) p |= (data & (1ul << 18)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(7, 19); pos >= 0) p |= (data & (1ul << 19)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(7, 20); pos >= 0) p |= (data & (1ul << 20)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(7, 21); pos >= 0) p |= (data & (1ul << 21)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(7, 22); pos >= 0) p |= (data & (1ul << 22)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(7, 23); pos >= 0) p |= (data & (1ul << 23)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(7, 24); pos >= 0) p |= (data & (1ul << 24)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(7, 25); pos >= 0) p |= (data & (1ul << 25)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(7, 26); pos >= 0) p |= (data & (1ul << 26)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(7, 27); pos >= 0) p |= (data & (1ul << 27)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(7, 28); pos >= 0) p |= (data & (1ul << 28)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(7, 29); pos >= 0) p |= (data & (1ul << 29)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(7, 30); pos >= 0) p |= (data & (1ul << 30)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(7, 31); pos >= 0) p |= (data & (1ul << 31)) ? (1ul << pos) : (1ul << (pos + 16));
-			p ^= inverted(7);
-			GPIOH->BSRR = ((~p & mask(7)) << 16) | p;
-		}
-		if constexpr (mask(8)) { uint32_t p{0};
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(8, 0); pos >= 0) p |= (data & (1ul << 0)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(8, 1); pos >= 0) p |= (data & (1ul << 1)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(8, 2); pos >= 0) p |= (data & (1ul << 2)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(8, 3); pos >= 0) p |= (data & (1ul << 3)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(8, 4); pos >= 0) p |= (data & (1ul << 4)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(8, 5); pos >= 0) p |= (data & (1ul << 5)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(8, 6); pos >= 0) p |= (data & (1ul << 6)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(8, 7); pos >= 0) p |= (data & (1ul << 7)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(8, 8); pos >= 0) p |= (data & (1ul << 8)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(8, 9); pos >= 0) p |= (data & (1ul << 9)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(8, 10); pos >= 0) p |= (data & (1ul << 10)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(8, 11); pos >= 0) p |= (data & (1ul << 11)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(8, 12); pos >= 0) p |= (data & (1ul << 12)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(8, 13); pos >= 0) p |= (data & (1ul << 13)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(8, 14); pos >= 0) p |= (data & (1ul << 14)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(8, 15); pos >= 0) p |= (data & (1ul << 15)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(8, 16); pos >= 0) p |= (data & (1ul << 16)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(8, 17); pos >= 0) p |= (data & (1ul << 17)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(8, 18); pos >= 0) p |= (data & (1ul << 18)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(8, 19); pos >= 0) p |= (data & (1ul << 19)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(8, 20); pos >= 0) p |= (data & (1ul << 20)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(8, 21); pos >= 0) p |= (data & (1ul << 21)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(8, 22); pos >= 0) p |= (data & (1ul << 22)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(8, 23); pos >= 0) p |= (data & (1ul << 23)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(8, 24); pos >= 0) p |= (data & (1ul << 24)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(8, 25); pos >= 0) p |= (data & (1ul << 25)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(8, 26); pos >= 0) p |= (data & (1ul << 26)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(8, 27); pos >= 0) p |= (data & (1ul << 27)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(8, 28); pos >= 0) p |= (data & (1ul << 28)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(8, 29); pos >= 0) p |= (data & (1ul << 29)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(8, 30); pos >= 0) p |= (data & (1ul << 30)) ? (1ul << pos) : (1ul << (pos + 16));
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(8, 31); pos >= 0) p |= (data & (1ul << 31)) ? (1ul << pos) : (1ul << (pos + 16));
-			p ^= inverted(8);
-			GPIOI->BSRR = ((~p & mask(8)) << 16) | p;
+			GPIOH->BSRR = ((~p & mask(5)) << 16) | p;
 		}
 	}
 
@@ -897,7 +677,7 @@ public:
 			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(4, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
 		}
 		if constexpr (mask(5)) {
-			const uint16_t p = (GPIOF->IDR & mask(5)) ^ inverted(5);
+			const uint16_t p = (GPIOH->IDR & mask(5)) ^ inverted(5);
 			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(5, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
 			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(5, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
 			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(5, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
@@ -931,117 +711,8 @@ public:
 			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(5, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
 			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(5, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
 		}
-		if constexpr (mask(6)) {
-			const uint16_t p = (GPIOG->IDR & mask(6)) ^ inverted(6);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(6, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(6, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(6, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(6, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(6, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(6, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(6, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(6, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(6, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(6, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(6, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(6, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(6, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(6, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(6, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(6, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(6, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(6, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(6, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(6, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(6, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(6, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(6, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(6, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(6, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(6, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(6, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(6, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(6, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(6, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(6, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(6, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
-		if constexpr (mask(7)) {
-			const uint16_t p = (GPIOH->IDR & mask(7)) ^ inverted(7);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(7, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(7, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(7, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(7, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(7, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(7, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(7, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(7, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(7, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(7, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(7, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(7, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(7, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(7, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(7, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(7, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(7, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(7, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(7, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(7, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(7, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(7, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(7, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(7, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(7, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(7, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(7, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(7, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(7, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(7, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(7, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(7, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
-		if constexpr (mask(8)) {
-			const uint16_t p = (GPIOI->IDR & mask(8)) ^ inverted(8);
-			if constexpr (0 < width) if constexpr (constexpr auto pos = shift_mask(8, 0); pos >= 0) r |= ((p >> pos) & 1) << 0;
-			if constexpr (1 < width) if constexpr (constexpr auto pos = shift_mask(8, 1); pos >= 0) r |= ((p >> pos) & 1) << 1;
-			if constexpr (2 < width) if constexpr (constexpr auto pos = shift_mask(8, 2); pos >= 0) r |= ((p >> pos) & 1) << 2;
-			if constexpr (3 < width) if constexpr (constexpr auto pos = shift_mask(8, 3); pos >= 0) r |= ((p >> pos) & 1) << 3;
-			if constexpr (4 < width) if constexpr (constexpr auto pos = shift_mask(8, 4); pos >= 0) r |= ((p >> pos) & 1) << 4;
-			if constexpr (5 < width) if constexpr (constexpr auto pos = shift_mask(8, 5); pos >= 0) r |= ((p >> pos) & 1) << 5;
-			if constexpr (6 < width) if constexpr (constexpr auto pos = shift_mask(8, 6); pos >= 0) r |= ((p >> pos) & 1) << 6;
-			if constexpr (7 < width) if constexpr (constexpr auto pos = shift_mask(8, 7); pos >= 0) r |= ((p >> pos) & 1) << 7;
-			if constexpr (8 < width) if constexpr (constexpr auto pos = shift_mask(8, 8); pos >= 0) r |= ((p >> pos) & 1) << 8;
-			if constexpr (9 < width) if constexpr (constexpr auto pos = shift_mask(8, 9); pos >= 0) r |= ((p >> pos) & 1) << 9;
-			if constexpr (10 < width) if constexpr (constexpr auto pos = shift_mask(8, 10); pos >= 0) r |= ((p >> pos) & 1) << 10;
-			if constexpr (11 < width) if constexpr (constexpr auto pos = shift_mask(8, 11); pos >= 0) r |= ((p >> pos) & 1) << 11;
-			if constexpr (12 < width) if constexpr (constexpr auto pos = shift_mask(8, 12); pos >= 0) r |= ((p >> pos) & 1) << 12;
-			if constexpr (13 < width) if constexpr (constexpr auto pos = shift_mask(8, 13); pos >= 0) r |= ((p >> pos) & 1) << 13;
-			if constexpr (14 < width) if constexpr (constexpr auto pos = shift_mask(8, 14); pos >= 0) r |= ((p >> pos) & 1) << 14;
-			if constexpr (15 < width) if constexpr (constexpr auto pos = shift_mask(8, 15); pos >= 0) r |= ((p >> pos) & 1) << 15;
-			if constexpr (16 < width) if constexpr (constexpr auto pos = shift_mask(8, 16); pos >= 0) r |= ((p >> pos) & 1) << 16;
-			if constexpr (17 < width) if constexpr (constexpr auto pos = shift_mask(8, 17); pos >= 0) r |= ((p >> pos) & 1) << 17;
-			if constexpr (18 < width) if constexpr (constexpr auto pos = shift_mask(8, 18); pos >= 0) r |= ((p >> pos) & 1) << 18;
-			if constexpr (19 < width) if constexpr (constexpr auto pos = shift_mask(8, 19); pos >= 0) r |= ((p >> pos) & 1) << 19;
-			if constexpr (20 < width) if constexpr (constexpr auto pos = shift_mask(8, 20); pos >= 0) r |= ((p >> pos) & 1) << 20;
-			if constexpr (21 < width) if constexpr (constexpr auto pos = shift_mask(8, 21); pos >= 0) r |= ((p >> pos) & 1) << 21;
-			if constexpr (22 < width) if constexpr (constexpr auto pos = shift_mask(8, 22); pos >= 0) r |= ((p >> pos) & 1) << 22;
-			if constexpr (23 < width) if constexpr (constexpr auto pos = shift_mask(8, 23); pos >= 0) r |= ((p >> pos) & 1) << 23;
-			if constexpr (24 < width) if constexpr (constexpr auto pos = shift_mask(8, 24); pos >= 0) r |= ((p >> pos) & 1) << 24;
-			if constexpr (25 < width) if constexpr (constexpr auto pos = shift_mask(8, 25); pos >= 0) r |= ((p >> pos) & 1) << 25;
-			if constexpr (26 < width) if constexpr (constexpr auto pos = shift_mask(8, 26); pos >= 0) r |= ((p >> pos) & 1) << 26;
-			if constexpr (27 < width) if constexpr (constexpr auto pos = shift_mask(8, 27); pos >= 0) r |= ((p >> pos) & 1) << 27;
-			if constexpr (28 < width) if constexpr (constexpr auto pos = shift_mask(8, 28); pos >= 0) r |= ((p >> pos) & 1) << 28;
-			if constexpr (29 < width) if constexpr (constexpr auto pos = shift_mask(8, 29); pos >= 0) r |= ((p >> pos) & 1) << 29;
-			if constexpr (30 < width) if constexpr (constexpr auto pos = shift_mask(8, 30); pos >= 0) r |= ((p >> pos) & 1) << 30;
-			if constexpr (31 < width) if constexpr (constexpr auto pos = shift_mask(8, 31); pos >= 0) r |= ((p >> pos) & 1) << 31;
-		}
 		return r;
 	}
 };
 
-} // namespace platform
-
-} // namespace modm
-
-#endif // MODM_STM32_GPIO_SOFTWARE_PORT_HPP
+} // namespace modm::platform

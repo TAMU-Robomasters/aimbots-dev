@@ -26,6 +26,7 @@
 
 #include <cstdint>
 
+#include "tap/architecture/driver_fiber.hpp"
 #include "tap/util_macros.hpp"
 
 #include "can_bus.hpp"
@@ -91,6 +92,13 @@ public:
     DISALLOW_COPY_AND_ASSIGN(CanRxHandler)
 
     /**
+     * Starts a fiber that calls `pollCanData()` and yields, in a loop. Call once after the hardware
+     * is initialized and before `modm::fiber::Scheduler::run()`; then don't call `pollCanData()`
+     * yourself.
+     */
+    void startFiber() { fiber.start(); }
+
+    /**
      * Given a CAN identifier, returns the bin index between [0, NUM_CAN_IDS) for the identifier.
      */
     static inline uint16_t binIndexForCanId(uint16_t canId) { return canId % CAN_BINS; }
@@ -147,6 +155,12 @@ protected:
      */
     CanRxListener* messageHandlerStoreCan2[CAN_BINS];
 
+    /**
+     * Stores pointers to the `CanRxListeners` for CAN 3, referenced when
+     * a new message is received.
+     */
+    CanRxListener* messageHandlerStoreCan3[CAN_BINS];
+
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
 public:
 #endif
@@ -165,8 +179,17 @@ public:
 
     inline CanRxListener** getHandlerStore(CanBus bus)
     {
+        if (bus == CanBus::CAN_BUS3)
+        {
+            return messageHandlerStoreCan3;
+        }
         return bus == CanBus::CAN_BUS1 ? messageHandlerStoreCan1 : messageHandlerStoreCan2;
     }
+
+private:
+    /// Calls `pollCanData()` and yields, in a loop, once started. Declared last so it is destroyed
+    /// first.
+    tap::arch::DriverFiber<> fiber{[this] { pollCanData(); }};
 };  // class CanRxHandler
 
 }  // namespace tap::can

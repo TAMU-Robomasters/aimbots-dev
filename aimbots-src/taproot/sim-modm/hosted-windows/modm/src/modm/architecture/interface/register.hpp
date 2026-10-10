@@ -17,6 +17,7 @@
 #include <stdint.h>
 #include <modm/math/utils/bit_constants.hpp>
 #include <modm/architecture/detect.hpp>
+#include <modm/architecture/utils.hpp>
 #if MODM_HAS_IOSTREAM
 #include <modm/io/iostream.hpp>
 #endif
@@ -66,7 +67,6 @@ struct Register
 	constexpr Register()
 	:	value(0) {}
 
-	/// @{
 	/**
 	 * Returns `true` if `value` is non-zero
 	 *
@@ -82,7 +82,6 @@ struct Register
 	/// Returns `true` if `value` is zero
 	constexpr bool operator!() const
 	{ return not bool(value); }
-	/// @}
 
 #if MODM_HAS_IOSTREAM
 	/// Printing a register will output its numeric value.
@@ -493,7 +492,7 @@ struct FlagsGroup<T> : public Register<typename T::UnderlyingType>
  * the meanings [Div1, Div2, Div4, Div8].
  *
  * The Configuration class belongs to a specific Flags class and connects a
- * corresponding Sascha Schade enum with a specific mask and bit position.
+ * corresponding strongly typed enum with a specific mask and bit position.
  * This means that the Configuration class will mask and shift the values whenever
  * needed.
  * However, shifting is only done when the Position template parameter is non-zero.

@@ -13,6 +13,8 @@
 #ifndef MODM_STM32_TIMER_BASIC_BASE_HPP
 #define MODM_STM32_TIMER_BASIC_BASE_HPP
 
+#include <chrono>
+#include <limits>
 #include <stdint.h>
 #include "../device.hpp"
 #include <modm/architecture/interface/register.hpp>
@@ -45,7 +47,23 @@ public:
 	};
 	MODM_FLAGS32(InterruptFlag);
 
+	enum class Event : uint32_t
+	{
+		Break2 						= TIM_EGR_B2G,
+		Break 						= TIM_EGR_BG,
+		CaptureCompareControlUpdate = TIM_EGR_COMG,
+		Trigger 					= TIM_EGR_TG,
+		CaptureCompare4 			= TIM_EGR_CC4G,
+		CaptureCompare3 			= TIM_EGR_CC3G,
+		CaptureCompare2 			= TIM_EGR_CC2G,
+		CaptureCompare1 			= TIM_EGR_CC1G,
+		Update 						= TIM_EGR_UG,
+	};
+
 public:
+	// This type is the internal size of the counter.
+	using Value = uint16_t;
+
 	/**
 	 * Enables the clock for the timer and resets all settings
 	 *
@@ -64,6 +82,12 @@ public:
 	 */
 	static void
 	disable();
+
+	/**
+	 * Check, whether clock has been enabled.
+	 */
+	static bool
+	isEnabled();
 
 	/**
 	 * Pause timer operation
@@ -102,6 +126,12 @@ public:
 	setPrescaler(uint16_t prescaler);
 
 	/**
+	 * Get current prescaler
+	 */
+	static inline uint16_t
+	getPrescaler();
+
+	/**
 	 * Set overflow.
 	 *
 	 * This sets the maximum counter value of the timer.
@@ -112,15 +142,21 @@ public:
 	 * @see		applyAndReset()
 	 */
 	static inline void
-	setOverflow(uint16_t overflow);
+	setOverflow(Value overflow);
 
 	/**
-	 * Set period in microseconds
+	 * Get current overflow
+	 */
+	static inline Value
+	getOverflow();
+
+	/**
+	 * Set Timer period
 	 *
 	 * Changes prescaler and overflow values.
 	 * Takes effect at next update event.
 	 *
-	 * @param	microseconds	Requested period in microseconds
+	 * @param	duration		Requested duration of period
 	 * @param	autoApply		Update the new value immediately and
 	 * 							reset the counter value.
 	 *
@@ -128,8 +164,9 @@ public:
 	 *
 	 * @see		applyAndReset()
 	 */
-	static uint16_t
-	setPeriod(uint32_t microseconds, bool autoApply = true);
+	template<class Rep, class Period>
+	static Value
+	setPeriod(std::chrono::duration<Rep, Period> duration, bool autoApply = true);
 
 	/**
 	 * @brief	Reset the counter, and update the prescaler and
@@ -155,14 +192,29 @@ public:
 	/**
 	 * Get the counter value
 	 */
-	static inline uint16_t
+	static inline Value
 	getValue();
 
 	/**
 	 * Set a new counter value
 	 */
 	static inline void
-	setValue(uint16_t value);
+	setValue(Value value);
+
+	/**
+	 * Allows to check, whether the timer has BDTR and DTR2 registers
+	 * for PWM deadtime, break and output enable control.
+	 */
+	static constexpr bool
+	hasAdvancedPwmControl();
+
+	/**
+	 * Check current count direction
+	 */
+	static inline bool
+	isCountingUp();
+	static inline bool
+	isCountingDown();
 
 	/**
 	 * Enables or disables the Interrupt Vector.

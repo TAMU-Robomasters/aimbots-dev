@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017, Niklas Hauser
+ * Copyright (c) 2017-2026, Niklas Hauser
+ * Copyright (c) 2022, Andrey Kunitsyn
  *
  * This file is part of the modm project.
  *
@@ -9,44 +10,77 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_PLATFORM_GPIO_CONNECTOR_HPP
-#define MODM_PLATFORM_GPIO_CONNECTOR_HPP
+#pragma once
 
-#include "base.hpp"
-#include "connector_detail.hpp"
-
-namespace modm
-{
-
-namespace platform
-{
+#include "unused.hpp"
+#include "static.hpp"
+#include <type_traits>
 
 /// @cond
-template< Peripheral peripheral, template<Peripheral _> class... Signals >
+namespace modm::platform::detail
+{
+
+template< Gpio::Signal signal, class... Signals >
+struct GpioGetSignal;
+template< Gpio::Signal signal, class SignalT, class... Signals >
+struct GpioGetSignal<signal, SignalT, Signals...>
+{
+	using Gpio = std::conditional_t<
+				(SignalT::Signal == signal),
+				typename modm::platform::GpioStatic<typename SignalT::Data>,
+				typename GpioGetSignal<signal, Signals...>::Gpio
+			>;
+};
+template< Gpio::Signal signal >
+struct GpioGetSignal<signal>
+{
+	using Gpio = GpioUnused;
+};
+
+} // namespace modm::platform::detail
+/// @endcond
+
+namespace modm::platform
+{
+
+/// @ingroup modm_platform_gpio
+template< Peripheral peripheral, class... Signals >
 struct GpioConnector
 {
 	template< class GpioQuery >
-	static constexpr bool Contains = detail::GpioContains<peripheral, GpioQuery, Signals...>::value;
-	template< class GpioQuery >
-	static constexpr bool IsValid = not std::is_same_v<typename GpioQuery::Type, GpioUnused>;
-	template< Gpio::Signal signal >
-	using GetSignal = typename detail::GpioGetSignal<peripheral, signal, Signals...>::Gpio;
+	static constexpr bool Contains = (
+		std::is_same_v<typename Signals::Data, typename GpioQuery::Data> or ...);
 
-	inline static void
-	connect()
+	template< class GpioQuery >
+	static constexpr bool IsValid = not std::is_same_v<typename GpioQuery::Data, detail::DataUnused>;
+
+	template< Gpio::Signal signal >
+	using GetSignal = typename detail::GpioGetSignal<signal, Signals...>::Gpio;
+
+	template< class Signal >
+	static void connectSignal()
 	{
-		detail::GpioSignalConnect<peripheral, Signals...>::connect();
+		using Connection = detail::SignalConnection<Signal, peripheral>;
+		using Pin = GpioStatic<typename Signal::Data>;
+		if constexpr(Connection::af == -2) {
+			Pin::disconnect();
+			Pin::setAnalogInput();
+		}
+		if constexpr (Connection::af >= 0) {
+			Pin::setAlternateFunction(Connection::af);
+		}
 	}
-	inline static void
-	disconnect()
+
+	static inline void connect()
 	{
-		detail::GpioSignalConnect<peripheral, Signals...>::disconnect();
+		(connectSignal<Signals>(), ...);
+	}
+
+	static inline void disconnect()
+	{
+		(GpioStatic<typename Signals::Data>::disconnect(), ...);
 	}
 };
-/// @endcond
 
-} // namespace platform
+} // namespace modm::platform
 
-} // namespace modm
-
-#endif // MODM_PLATFORM_GPIO_CONNECTOR_HPP

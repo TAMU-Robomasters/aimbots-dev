@@ -22,22 +22,24 @@
 // ----------------------------------------------------------------------------
 // Default implementation of platform initialization
 modm_weak void modm_initialize_platform(void) {}
+extern void __modm_initialize_memory(void);
+extern int main(void);
 
 // ----------------------------------------------------------------------------
 // Linker section start and end pointers
-extern const uint32_t __table_copy_intern_start[];
-extern const uint32_t __table_copy_intern_end[];
+extern const uint64_t __table_copy_intern_start[];
+extern const uint64_t __table_copy_intern_end[];
 
-extern const uint32_t __table_zero_intern_start[];
-extern const uint32_t __table_zero_intern_end[];
+extern const uint64_t __table_zero_intern_start[];
+extern const uint64_t __table_zero_intern_end[];
 
-extern const uint32_t __table_copy_extern_start[];
-extern const uint32_t __table_copy_extern_end[];
+extern const uint64_t __table_copy_extern_start[];
+extern const uint64_t __table_copy_extern_end[];
 
-extern const uint32_t __table_zero_extern_start[];
-extern const uint32_t __table_zero_extern_end[];
+extern const uint64_t __table_zero_extern_start[];
+extern const uint64_t __table_zero_extern_end[];
 
-extern const uint32_t __vector_table_rom_start[];
+extern const uint32_t __vector_table_ram_start[];
 
 // ----------------------------------------------------------------------------
 // Linker section start and end pointers for function hooks
@@ -60,13 +62,13 @@ table_call(const FunctionPointer *const start, const FunctionPointer *const end)
 
 // Copies the section defined by a table of {loadaddr, dest start, dest end}
 static inline void
-table_copy(const uint32_t *const start, const uint32_t *const end)
+table_copy(const uint64_t *const start, const uint64_t *const end)
 {
-	uint32_t **table = (uint32_t **)start;
-	while(table < (uint32_t **)end)
+	uint64_t **table = (uint64_t **)start;
+	while(table < (uint64_t **)end)
 	{
-		const uint32_t *src  = table[0]; // load address
-		      uint32_t *dest = table[1]; // destination start
+		const uint64_t *src  = table[0]; // load address
+		      uint64_t *dest = table[1]; // destination start
 		while (dest < table[2])          // destination end
 			*(dest++) = *(src++);
 		table += 3;
@@ -75,12 +77,12 @@ table_copy(const uint32_t *const start, const uint32_t *const end)
 
 // Zeros the section defined by a table of {start, end}
 static inline void
-table_zero(const uint32_t *const start, const uint32_t *const end)
+table_zero(const uint64_t *const start, const uint64_t *const end)
 {
-	uint32_t **table = (uint32_t **)start;
-	while(table < (uint32_t **)end)
+	uint64_t **table = (uint64_t **)start;
+	while(table < (uint64_t **)end)
 	{
-		uint32_t *dest = table[0]; // destination start
+		uint64_t *dest = table[0]; // destination start
 		while (dest < table[1])    // destination end
 			*(dest++) = 0;
 		table += 2;
@@ -91,17 +93,19 @@ table_zero(const uint32_t *const start, const uint32_t *const end)
 // Called by Reset_Handler in reset_handler.s
 void __modm_startup(void)
 {
+	SCB_EnableICache();
+	if (SCB->CCR & SCB_CCR_DC_Msk) SCB_DisableDCache();
+
 	// Copy and zero all internal memory
 	table_copy(__table_copy_intern_start, __table_copy_intern_end);
 	table_zero(__table_zero_intern_start, __table_zero_intern_end);
 
-	// Enable FPU in privileged and user mode
-	SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));
 	// Set the vector table location
-	SCB->VTOR = (uint32_t)__vector_table_rom_start;
+	SCB->VTOR = (uint32_t)__vector_table_ram_start;
 
 	// Enable trapping of divide by zero for UDIV/SDIV instructions.
 	SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;
+
 	// Call all hardware initialize hooks
 	table_call(__hardware_init_start, __hardware_init_end);
 
@@ -110,14 +114,15 @@ void __modm_startup(void)
 	table_zero(__table_zero_extern_start, __table_zero_extern_end);
 
 	// Initialize heap as implemented by the heap option
-	extern void __modm_initialize_memory(void);
 	__modm_initialize_memory();
+
+	// Enable D-Cache with default WBWA policy *after* all memory operations
+	SCB_EnableDCache();
 
 	// Call all constructors of static objects
 	table_call(__init_array_start, __init_array_end);
 
 	// Call the application's entry point
-	extern int main(void);
 	main();
 
 	// If main exits, assert here in debug mode

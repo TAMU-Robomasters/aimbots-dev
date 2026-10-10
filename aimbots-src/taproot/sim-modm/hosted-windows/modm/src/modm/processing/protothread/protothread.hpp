@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2011-2012, Fabian Greif
- * Copyright (c) 2012, 2014-2015, Niklas Hauser
+ * Copyright (c) 2023, Niklas Hauser
  *
  * This file is part of the modm project.
  *
@@ -10,122 +9,41 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_PT_THREAD_HPP
-#define MODM_PT_THREAD_HPP
+#pragma once
 
-#include <stdint.h>
 #include "macros.hpp"
+#include <modm/processing/fiber.hpp>
 
-namespace modm
-{
-	namespace pt
-	{
-		/**
-		 * \brief	A very lightweight, stackless thread
-		 *
-		 * Because protothreads do not save the stack context across a blocking
-		 * call, local variables are not preserved when the protothread blocks.
-		 * This means that local variables should be used with utmost care - if in
-		 * doubt, do not use local variables inside a protothread! Use
-		 * private/protected member variables to save state between a context switch.
-		 *
-		 * A protothread is driven by repeated calls to the run()-function in which
-		 * the protothread is running. Each time the function is called, the
-		 * protothread will run until it blocks or exits. Thus the scheduling of
-		 * protothreads is done by the application that uses protothreads.
-		 *
-		 * For other examples take a look in the \c examples folder in the MODM
-		 * root folder.
-		 *
-		 * \warning	The names \c ptState and \c ptYield are reserved and may not
-		 * 			be used as variables or function names!
-		 *
-		 * \ingroup	modm_processing_protothread
-		 */
-		class Protothread
-		{
-		public:
-			/**
-			 * \brief	Construct a new protothread that will start from the
-			 * 			beginning of its run() function.
-			 */
-			Protothread() :
-				ptState(0)
-			{
-			}
+/// @ingroup modm_processing_protothread
+#define MODM_PROTOTHREAD_IS_FIBER
 
-			/// Restart protothread.
-			inline void
-			restart()
-			{
-				this->ptState = 0;
-			}
-
-			/**
-			 * \brief	Stop the protothread from running.
-			 *
-			 * Happens automatically at PT_END.
-			 *
-			 * \note	This differs from the Dunkels' original protothread
-			 * 			behavior (his restart automatically, which is usually not
-			 * 			what you want).
-			 */
-			inline void
-			stop()
-			{
-				this->ptState = Invalid;
-			}
-
-			/**
-			 * \brief	Check if the protothread is still running
-			 *
-			 * \return	\c true if the protothread is running or waiting,
-			 * 			\c false if it has ended or exited.
-			 */
-			inline bool
-			isRunning() const
-			{
-				return (this->ptState != Invalid);
-			}
-
-			/// @cond
-#ifdef __DOXYGEN__
-			/**
-			 * \brief	Run the protothread
-			 *
-			 * Run next part of protothread or return immediately if it's still
-			 * waiting. Returns \c true if protothread is still running, \c false
-			 * if it has finished.
-			 *
-			 * Implement this method in your Protothread subclass.
-			 *
-			 * \warning	This is method is not virtual, therefore you cannot access
-			 * 			it through a Pointer to this class, but only directly from
-			 * 			the subclass! This was done on purpose to keep the memory
-			 * 			footprint low.
-			 */
-			bool
-			run();
+#ifndef MODM_PROTOTHREAD_STACK_SIZE
+/// @ingroup modm_processing_protothread
+#define MODM_PROTOTHREAD_STACK_SIZE ::modm::fiber::StackSizeDefault
 #endif
 
-		protected:
-			/**
-			 * Used to store a protothread's position (what Dunkels calls a
-			 * "local continuation").
-			 */
-			typedef uint16_t PtState;
+namespace modm::pt
+{
 
-			/// An invalid line number, used to mark the protothread has ended.
-			static const PtState Invalid = static_cast<PtState>(-1);
+/// @ingroup modm_processing_protothread
+class Protothread : public modm::Fiber< MODM_PROTOTHREAD_STACK_SIZE >
+{
+public:
+	Protothread(modm::fiber::Start start=modm::fiber::Start::Now)
+	:	Fiber([this](modm::fiber::stop_token stoken)
+			  { while(not stoken.stop_requested() and update()) modm::this_fiber::yield(); }, start)
+	{}
 
-			/**
-			 * Stores the protothread's position (by storing the line number of
-			 * the last PT_WAIT, which is then switched on at the next Run).
-			 */
-			PtState ptState;
-			/// @endcond
-		};
-	}
+	void restart() { this->start(); }
+	void stop() { this->request_stop(); }
+	// isRunning() is implemented in fiber::Task
+
+	// The run() function name was never enforced by the Protothread interface
+	virtual bool run() { return false; };
+	// Instead update() was often chosen to align it more with other parts of
+	// modm that use an update() function to update their state periodically.
+	// Therefore we cover both here to not have to change too much code.
+	virtual bool update() { return run(); };
+};
+
 }
-
-#endif // MODM_PT_THREAD_HPP

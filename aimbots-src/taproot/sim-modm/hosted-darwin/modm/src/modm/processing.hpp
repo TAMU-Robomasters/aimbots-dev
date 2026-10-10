@@ -14,19 +14,9 @@
 #ifndef MODM_PROCESSING_HPP
 #define	MODM_PROCESSING_HPP
 
+#include "processing/fiber.hpp"
 #include "processing/protothread.hpp"
-#include "processing/protothread/macros.hpp"
-#include "processing/protothread/protothread.hpp"
-#include "processing/protothread/semaphore.hpp"
 #include "processing/resumable.hpp"
-#include "processing/resumable/macros.hpp"
-#include "processing/resumable/nested_resumable.hpp"
-#include "processing/resumable/resumable.hpp"
 #include "processing/task.hpp"
 #include "processing/timer.hpp"
-#include "processing/timer/periodic_timer.hpp"
-#include "processing/timer/timeout.hpp"
-#include "processing/timer/timestamp.hpp"
-#include "processing/task.hpp"
-
 #endif	// MODM_PROCESSING_HPP

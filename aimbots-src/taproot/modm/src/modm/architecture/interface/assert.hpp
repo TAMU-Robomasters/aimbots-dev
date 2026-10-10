@@ -12,57 +12,50 @@
 #pragma once
 
 #include "assert.h"
-#include <modm/architecture/interface/register.hpp>
-/// @endcond
-
 namespace modm
 {
 
-/// Describes abandonment type of assertions.
 /// @ingroup modm_architecture_assert
+/// @{
+
+/// Describes abandonment type of assertions.
 enum class
 Abandonment : uint8_t
 {
-	DontCare = Bit0,	///< Do not care about failure.
-	Ignore = Bit1,		///< Ignore this failure.
-	Fail = Bit2,		///< This failure is reason for abandonment.
-	Debug = Bit7		///< Only set for a debug-only failure.
+	DontCare = 0b001,	///< Do not care about failure.
+	Ignore = 0b010,		///< Ignore this failure.
+	Fail = 0b100,		///< This failure is reason for abandonment.
+	Debug = 0x80,		///< Only set for a debug-only failure.
 };
-/// @ingroup modm_architecture_assert
-using AbandonmentBehavior = Flags8<Abandonment>;
-/// @cond
-MODM_TYPE_FLAGS(AbandonmentBehavior);
-/// @endcond
+/// Contains the superset of Abandonment behavior
+using AbandonmentBehavior = Abandonment;
 
-/**
- * Contains information about the failed assertion.
- *
- * @ingroup modm_architecture_assert
- */
+/// Contains information about the failed assertion.
 struct modm_packed
 AssertionInfo
 {
-	const char *name;			///< Can be used to recognise the assertion in code
+	const char *name;				///< Can be used to recognize the assertion in code
 #if MODM_ASSERTION_INFO_HAS_DESCRIPTION
-	const char *description;	///< Detailed failure description
+	const char *description;		///< Detailed failure description
 #endif
-	uintptr_t context;			///< Optional context depends on assertion
+	uintptr_t context;				///< Optional context depends on assertion
 	AbandonmentBehavior behavior;	///< Can this assertion be ignored?
 };
 
 /// Signature of the assertion handlers
-/// @ingroup modm_architecture_assert
 using AssertionHandler = Abandonment (*)(const AssertionInfo &info);
+
+/// @}
 
 } // namespace modm
 
+
 #ifdef __DOXYGEN__
 
-/**
- * Declares whether or not AssertionInfo has a `description` field.
- *
- * @ingroup modm_architecture_assert
- */
+/// @ingroup modm_architecture_assert
+/// @{
+
+/// Declares whether or not AssertionInfo has a `description` field.
 #define MODM_ASSERTION_INFO_HAS_DESCRIPTION 0/1
 
 /**
@@ -72,8 +65,6 @@ using AssertionHandler = Abandonment (*)(const AssertionInfo &info);
  * Do not write assertion handlers that depend on any ordered execution!
  *
  * @param handler A function of signature `AssertionHandler`.
- *
- * @ingroup modm_architecture_assert
  */
 #define MODM_ASSERTION_HANDLER(handler)
 
@@ -81,8 +72,6 @@ using AssertionHandler = Abandonment (*)(const AssertionInfo &info);
  * This adds an assertion handler only for debug mode.
  *
  * @param handler A function of signature `AssertionHandler`.
- *
- * @ingroup modm_architecture_assert
  */
 #define MODM_ASSERTION_HANDLER_DEBUG(handler)
 
@@ -90,19 +79,17 @@ using AssertionHandler = Abandonment (*)(const AssertionInfo &info);
  * Always abandons execution
  *
  * @note This assert is included in all builds!
- * @ingroup modm_architecture_assert
  */
-modm_noreturn void
+[[noreturn]] void
 modm_assert(bool condition,
-            const char *name, const char *description,
-            uintptr_t context=uintptr_t(-1));
+			const char *name, const char *description,
+			uintptr_t context=uintptr_t(-1));
 
 /**
  * Abandons execution, unless overwritten by assertion handlers to resume.
  *
  * @returns result of condition evaluation
  * @note This assert is included in all builds!
- * @ingroup modm_architecture_assert
  */
 bool
 modm_assert_continue_fail(bool condition,
@@ -114,7 +101,6 @@ modm_assert_continue_fail(bool condition,
  *
  * @returns result of condition evaluation
  * @note This assert is included in all builds!
- * @ingroup modm_architecture_assert
  */
 bool
 modm_assert_continue_ignore(bool condition,
@@ -124,9 +110,9 @@ modm_assert_continue_ignore(bool condition,
 /**
  * Abandons execution, unless overwritten by assertion handlers to resume.
  *
- * @note This assert is only included debug builds!
+ * @note This assert is only included debug builds, however the condition is
+ *       still executed and the result is returned!
  * @returns result of condition evaluation
- * @ingroup modm_architecture_assert
  */
 bool
 modm_assert_continue_fail_debug(bool condition,
@@ -136,14 +122,16 @@ modm_assert_continue_fail_debug(bool condition,
 /**
  * Resumes execution, unless overwritten by assertion handlers to abandon.
  *
- * @note This assert is only included debug builds!
+ * @note This assert is only included debug builds, however the condition is
+ *       still executed and the result is returned!
  * @returns result of condition evaluation
- * @ingroup modm_architecture_assert
  */
 bool
 modm_assert_continue_ignore_debug(bool condition,
 								  const char *name, const char *description,
 								  uintptr_t context=uintptr_t(-1));
+
+/// @}
 
 #else
 
@@ -152,7 +140,7 @@ modm_assert_continue_ignore_debug(bool condition,
 		MODM_ASSERTION_HANDLER(handler)
 #else
 #define MODM_ASSERTION_HANDLER_DEBUG(handler) \
-		static const modm::AssertionHandler modm_unused \
+		static const modm::AssertionHandler [[maybe_unused]] \
 		handler ## _assertion_handler_ptr = handler
 #endif
 

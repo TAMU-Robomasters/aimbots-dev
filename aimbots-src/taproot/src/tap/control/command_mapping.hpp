@@ -26,7 +26,7 @@
 
 #include <vector>
 
-#include "remote_map_state.hpp"
+#include "generic_remote_map_state.hpp"
 
 namespace tap
 {
@@ -49,14 +49,17 @@ class CommandMapping
 public:
     /**
      * Initializes the CommandMapping with the set of passed in `Command`s mapped to
-     * a particular RemoteMapState.
+     * a particular GenericRemoteMapState.
      *
      * @note All nullptr `Command`s in cmds will be removed.
      * @param[in] cmds A list of `Command`s that are associated with the mapping.
      * @param[in] rms The map state that will be compared to the actual remote state
      *      to determine whether or not to add `cmds`.
      */
-    CommandMapping(Drivers *drivers, const std::vector<Command *> cmds, const RemoteMapState &rms);
+    CommandMapping(
+        Drivers *drivers,
+        const std::vector<Command *> cmds,
+        const GenericRemoteMapState *grms);
 
     DISALLOW_COPY_AND_ASSIGN(CommandMapping)
 
@@ -82,24 +85,26 @@ public:
      *
      * @param[in] currState The current state of the remote.
      */
-    virtual void executeCommandMapping(const RemoteMapState &currState) = 0;
+    virtual void executeCommandMapping(const GenericRemoteMapState &currState) = 0;
 
     /**
      * @return `true` if `this`'s `mapState` is a subset of the passed in
      *      `mapState`. Returns `false` otherwise.
      */
-    virtual bool mappingSubset(const RemoteMapState &mapState);
+    virtual bool mappingSubset(const GenericRemoteMapState &mapState);
 
     /**
      * @return `true` if `state1`'s neg keys are a subset of `state2`'s keys pressed, `false`
      *      otherwise.
      */
-    static inline bool negKeysSubset(const RemoteMapState &state1, const RemoteMapState &state2)
+    static inline bool negKeysSubset(
+        const GenericRemoteMapState &state1,
+        const GenericRemoteMapState &state2)
     {
         return state1.getNegKeys() == (state1.getNegKeys() & state2.getKeys());
     }
 
-    const RemoteMapState &getAssociatedRemoteMapState() const { return mapState; }
+    const GenericRemoteMapState &getAssociatedRemoteMapState() const { return *mapState; }
 
     const std::vector<Command *> &getAssociatedCommands() const { return mappedCommands; }
 
@@ -107,7 +112,7 @@ protected:
     /**
      * The RemoteMapState specified when constructing the CommandMapping.
      */
-    const RemoteMapState mapState;
+    const GenericRemoteMapState *mapState;
 
     /**
      * A map of commands to add to and remove from the scheduler.

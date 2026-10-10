@@ -110,12 +110,6 @@ public:
 		return state;
 	}
 
-	void
-	resetState()
-	{
-		state = TransactionState::Idle;
-	}
-
 	/// @return `true` while adapter is busy
 	bool
 	isBusy() const
@@ -182,7 +176,7 @@ public:
 	virtual bool
 	attaching()
 	{
-		if (state == TransactionState::Busy || state == TransactionState::Error)
+		if (state == TransactionState::Busy)
 			return false;
 		state = TransactionState::Busy;
 		return true;
@@ -253,7 +247,7 @@ public:
 	{
 	}
 
-	bool modm_always_inline
+	bool
 	configurePing()
 	{
 		return configureWriteRead(nullptr, 0, nullptr, 0);
@@ -310,7 +304,7 @@ public:
 	 * @return  `true` if adapter was not in use,
 	 *          `false` otherwise
 	 */
-	bool modm_always_inline
+	bool
 	configureWrite(const uint8_t *buffer, std::size_t size)
 	{
 		return configureWriteRead(buffer, size, nullptr, 0);
@@ -325,7 +319,7 @@ public:
 	 * @return  `true` if adapter was not in use,
 	 *          `false` otherwise
 	 */
-	bool modm_always_inline
+	bool
 	configureRead(uint8_t *buffer, std::size_t size)
 	{
 		return configureWriteRead(nullptr, 0, buffer, size);
@@ -420,13 +414,13 @@ public:
 	{
 	}
 
-	bool modm_always_inline
+	bool
 	configurePing()
 	{
 		return configureWrite(nullptr, 0);
 	}
 
-	bool modm_always_inline
+	bool
 	configureWriteRead(const uint8_t *, std::size_t, uint8_t *, std::size_t)
 	{
 		return false;
@@ -444,7 +438,7 @@ public:
 		return false;
 	}
 
-	bool modm_always_inline
+	bool
 	configureRead(uint8_t *, std::size_t)
 	{
 		return false;
@@ -495,19 +489,19 @@ public:
 	{
 	}
 
-	bool modm_always_inline
+	bool
 	configurePing()
 	{
 		return configureRead(nullptr, 0);
 	}
 
-	bool modm_always_inline
+	bool
 	configureWriteRead(const uint8_t *, std::size_t, uint8_t *, std::size_t)
 	{
 		return false;
 	}
 
-	bool modm_always_inline
+	bool
 	configureWrite(uint8_t *, std::size_t)
 	{
 		return false;

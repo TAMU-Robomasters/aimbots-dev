@@ -36,7 +36,8 @@ namespace tap::can
 CanRxHandler::CanRxHandler(Drivers* drivers)
     : drivers(drivers),
       messageHandlerStoreCan1(),
-      messageHandlerStoreCan2()
+      messageHandlerStoreCan2(),
+      messageHandlerStoreCan3()
 {
 }
 
@@ -45,6 +46,10 @@ void CanRxHandler::attachReceiveHandler(CanRxListener* const listener)
     if (listener->canBus == can::CanBus::CAN_BUS1)
     {
         attachReceiveHandler(listener, messageHandlerStoreCan1);
+    }
+    else if (listener->canBus == can::CanBus::CAN_BUS3)
+    {
+        attachReceiveHandler(listener, messageHandlerStoreCan3);
     }
     else
     {
@@ -97,6 +102,11 @@ void CanRxHandler::pollCanData()
     {
         processReceivedCanData(rxMessage, messageHandlerStoreCan2);
     }
+    // handle incoming CAN 3 messages
+    if (drivers->can.getMessage(CanBus::CAN_BUS3, &rxMessage))
+    {
+        processReceivedCanData(rxMessage, messageHandlerStoreCan3);
+    }
 }
 
 void CanRxHandler::processReceivedCanData(
@@ -122,6 +132,10 @@ void CanRxHandler::removeReceiveHandler(const CanRxListener& canRxListener)
     if (canRxListener.canBus == CanBus::CAN_BUS1)
     {
         removeReceiveHandler(canRxListener, messageHandlerStoreCan1);
+    }
+    else if (canRxListener.canBus == CanBus::CAN_BUS3)
+    {
+        removeReceiveHandler(canRxListener, messageHandlerStoreCan3);
     }
     else
     {

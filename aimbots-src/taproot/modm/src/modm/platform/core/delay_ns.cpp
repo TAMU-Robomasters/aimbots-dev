@@ -17,7 +17,7 @@ namespace modm
 {
 
 // Only call via modm::delay_ns wrapper, since this function clobbers r0, r1, r2!!!
-void __attribute__((naked, aligned(4))) modm_fastcode
+void modm_naked modm_aligned(4) modm_fastcode
 platform::delay_ns(uint32_t)
 {
 	// ns_per_loop = nanoseconds per cycle times cycles per loop
@@ -28,6 +28,12 @@ platform::delay_ns(uint32_t)
 		"lsls.n	r1, r2, #2"	"\n\t"	// multiply the overhead cycles with the ns per cycle:  1 cycle
 		"subs.n	r0, r0, r1"		"\n\t"	// subtract the overhead in ns from the input:          1 cycle
 	"1:  subs.n	r0, r0, r2"		"\n\t"	// subtract the ns per loop from the input:             1 cycle
+		"nop.n"					"\n\t"	// folded into previous sub
+		"nop.n"					"\n\t"	// +1 cycle
+		"nop.n"					"\n\t"	// folded into previous nop
+		"nop.n"					"\n\t"	// +1 cycle
+		"nop.n"					"\n\t"	// folded into previous nop
+		"nop.n"					"\n\t"	// folded into next bpl
 		"bpl.n	1b"				"\n\t"	// keep doing that while result is still positive:      2 cycles (when taken)
 		"bx lr"
 	);

@@ -25,16 +25,15 @@
 
 // In simulation, we'll let modm's default implementation handle this.
 #ifndef PLATFORM_HOSTED
-modm_extern_c void modm_abandon(const modm::AssertionInfo &)
+/**
+ * The H7 power supply configuration must be written once after reset, before the voltage
+ * scaling can be changed (RM0468 6.4.1). modm calls this right after reset, as in its
+ * nucleo_h723zg board. The STM32H723 has no SMPS; the board supplies the core from the LDO.
+ *
+ * The board has no plain GPIO LEDs, so modm's default modm_abandon is used.
+ */
+modm_extern_c void modm_initialize_platform()
 {
-    Board::LedsPort::setOutput();
-    for (int times = 10; times >= 0; times--)
-    {
-        Board::LedsPort::toggle();
-        modm::delay_ms(100);
-        Board::LedsPort::toggle();
-        modm::delay_ms(100);
-    }
+    Rcc::configurePowerSource(Rcc::PowerSource::Ldo);
 }
-
 #endif

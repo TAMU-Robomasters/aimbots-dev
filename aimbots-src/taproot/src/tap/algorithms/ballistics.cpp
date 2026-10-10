@@ -74,7 +74,7 @@ bool computeTravelTime(
 }
 
 bool findTargetProjectileIntersection(
-    MeasuredKinematicState targetInitialState,
+    const AbstractKinematicState &targetInitialState,
     float bulletVelocity,
     uint8_t numIterations,
     float *turretPitch,
@@ -82,7 +82,7 @@ bool findTargetProjectileIntersection(
     float *projectedTravelTime,
     const float pitchAxisOffset)
 {
-    modm::Vector3f projectedTargetPosition = targetInitialState.position;
+    modm::Vector3f projectedTargetPosition = targetInitialState.projectForward(0);
 
     if (projectedTargetPosition.x == 0 && projectedTargetPosition.y == 0 &&
         projectedTargetPosition.z == 0)

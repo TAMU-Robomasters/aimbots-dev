@@ -31,7 +31,7 @@ namespace tap
 namespace control
 {
 class Command;
-class RemoteMapState;
+class GenericRemoteMapState;
 
 /**
  * A CommandMapping that adds `Command`s when the contained mapping
@@ -44,12 +44,12 @@ class ToggleCommandMapping : public CommandMapping
 {
 public:
     /**
-     * Constructor must take the set of `Command`s and the RemoteMapState.
+     * Constructor must take the set of `Command`s and the GenericRemoteMapState.
      */
     ToggleCommandMapping(
         Drivers *drivers,
         const std::vector<Command *> cmds,
-        const RemoteMapState &rms)
+        const GenericRemoteMapState *rms)
         : CommandMapping(drivers, cmds, rms),
           pressed(false),
           toggled(false)
@@ -62,9 +62,9 @@ public:
      * See the class description details about how the commands are added and
      * removed.
      *
-     * @param[in] currState The current RemoteMapState of the remote.
+     * @param[in] currState The current GenericRemoteMapState of the remote.
      */
-    void executeCommandMapping(const RemoteMapState &currState) override;
+    void executeCommandMapping(const GenericRemoteMapState &currState) override;
 
 private:
     bool pressed;

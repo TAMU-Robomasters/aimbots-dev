@@ -27,7 +27,7 @@ namespace tap
 {
 namespace control
 {
-void ToggleCommandMapping::executeCommandMapping(const RemoteMapState &currState)
+void ToggleCommandMapping::executeCommandMapping(const GenericRemoteMapState &currState)
 {
     // Neg keys are weird in this mapping and must be handled as such. If neg keys of the
     // map state are a subset of the currState's neg keys, the mapping must be reset
@@ -40,7 +40,7 @@ void ToggleCommandMapping::executeCommandMapping(const RemoteMapState &currState
         pressed = false;
     }
 
-    if (mapState.getNegKeysUsed() && negKeysSubset(mapState, currState))
+    if (mapState->getNegKeysUsed() && negKeysSubset(*mapState, currState))
     {
         if (toggled)
         {

@@ -19,9 +19,13 @@
 #include <stdint.h>
 
 #include <modm/io/iostream.hpp>
+#include <modm/math/matrix.hpp>
 
 namespace modm
 {
+	/// @ingroup	modm_math_matrix
+	/// @{
+
 	/**
 	 * \brief	Class for handling common matrix operations
 	 *
@@ -44,7 +48,6 @@ namespace modm
 	 * \tparam	ROWS		Number of rows
 	 * \tparam	COLUMNS		Number of columns
 	 *
-	 * \ingroup	modm_math_matrix
 	 * \author	Niklas Hauser
 	 * \author	Fabian Greif
 	 */
@@ -58,7 +61,7 @@ namespace modm
 		 * Creates a Matrix with uninitialized elements. Use zeroMatrix() to
 		 * create a matrix with all elements set to zero.
 		 */
-		Matrix();
+		Matrix() = default;
 
 		/**
 		 * \brief	Create a matrix from an array
@@ -75,6 +78,17 @@ namespace modm
 		 * \endcode
 		 */
 		Matrix(const T *data);
+
+		/**
+		 * \brief	Create a matrix from an initializer list
+		 *
+		 * Example:
+		 * \code
+		 * modm::Matrix<int16_t, 3, 2> a{1,2,3,4,5,6};
+		 * \endcode
+		 */
+		template<typename... U>
+		explicit constexpr Matrix(U... data) requires (std::is_convertible_v<U, T> && ...);
 
 		/**
 		 * \brief	Get a zero matrix
@@ -228,15 +242,15 @@ namespace modm
 	typedef Matrix<float, 4, 4> Matrix4f;
 
 	// ------------------------------------------------------------------------
-	/// \internal
+	/// @cond
 	template<typename T>
 	T
 	determinant(const modm::Matrix<T, 1, 1> &m);
 
-	/// \internal
 	template<typename T>
 	T
 	determinant(const modm::Matrix<T, 2, 2> &m);
+	/// @endcond
 
 	/**
 	 * \brief	Calculate the determinant
@@ -247,6 +261,7 @@ namespace modm
 	template<typename T, uint8_t N>
 	T
 	determinant(const modm::Matrix<T, N, N> &m);
+	/// @}
 }
 
 #include "matrix_impl.hpp"

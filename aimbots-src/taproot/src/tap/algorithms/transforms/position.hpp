@@ -26,6 +26,8 @@
 
 #include "tap/algorithms/cmsis_mat.hpp"
 
+#include "axis.hpp"
+
 namespace tap::algorithms::transforms
 {
 // Forward declaration to avoid circular dependency
@@ -35,50 +37,55 @@ class Position
 {
 public:
     /* Constructors */
+    Position() : coordinates_({0, 0, 0}) {}
+
+    Position(float x, float y) : coordinates_({x, y, 0}) {}
+
     Position(float x, float y, float z) : coordinates_({x, y, z}) {}
-
-    /* Use rvalue reference */
-    Position(const Position&& other) : coordinates_(std::move(other.coordinates_)) {}
-
-    Position(const Position& other) : coordinates_(CMSISMat(other.coordinates_)) {}
 
     Position(const CMSISMat<3, 1>& coordinates) : coordinates_(coordinates) {}
 
     Position(CMSISMat<3, 1>&& coordinates) : coordinates_(std::move(coordinates)) {}
 
+    /**
+     * @brief Convert to `Vector` representation. Analagous to subtracting the global origin
+     * position.
+     */
+    Vector toVector() const;
+
     /* Getters */
 
-    inline float x() const { return coordinates_.data[0]; }
+    inline float x() const { return (*this)[Axis::X]; }
 
-    inline float y() const { return coordinates_.data[1]; }
+    inline float y() const { return (*this)[Axis::Y]; }
 
-    inline float z() const { return coordinates_.data[2]; }
+    inline float z() const { return (*this)[Axis::Z]; }
+
+    const float& operator[](Axis a) const { return coordinates_[static_cast<int>(a)]; }
 
     /* Operators */
     Position operator-(const Vector& other) const;
 
     Vector operator-(const Position& other) const;
 
-    Position operator+(const Vector& vector) const;
+    inline Position operator-() const { return Position(-this->coordinates_); }
 
-    Position operator+(const Position& vector) const;
+    Position operator+(const Vector& vector) const;
 
     Position operator*(const float scalar) const;
 
-    Position& operator=(const Position& other);
+    Position operator/(const float scalar) const;
 
     bool operator==(const Position& other) const;
 
     inline CMSISMat<3, 1> coordinates() const { return this->coordinates_; }
 
-    static inline Position interpolate(const Position& a, const Position& b, const float t)
-    {
-        return a * (1 - t) + b * t;
-    }
+    static Position interpolate(const Position& a, const Position& b, const float t);
 
     static float distance(const Position& a, const Position& b);
 
     friend class Transform;
+    friend class Vector;
     friend class DynamicPosition;
 
 private:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2020, Niklas Hauser
+# Copyright (c) 2020, 2023, Niklas Hauser
 #
 # This file is part of the modm project.
 #
@@ -12,80 +12,77 @@
 
 import os
 import subprocess
-if __name__ == "__main__":
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from modm_tools import utils, backend as bem
-from modm_tools import openocd, crashdebug, bmp
+from . import utils
+from .backend import DebugBackend
+
+
 # -----------------------------------------------------------------------------
-def call(source=None, config=None, commands=None, backend=None, ui=None):
-    if backend is None:
-        backend = bem.Empty()
-    source = utils.listify(source)
-    if len(source): source = source[0]
-    else: source = None
-
+def _gdb_command(backend, source=None, config=None, commands=None, ui=None):
     # Build GBD config and command
-    args  = list(map('-ex "{}"'.format, utils.listify(backend.init(source))))
+    args = ['-ex "set pagination off"']
+    args += list(map('-ex "{}"'.format, utils.listify(backend.init(source))))
     args += list(map('-x "{}"'.format, utils.listify(config)))
     args += list(map('-ex "{}"'.format, utils.listify(commands)))
+    args = " ".join(args)
+    gdb = "arm-none-eabi-gdb"
 
-    # Build complete command string
     if ui is None:
-        gdb_command = 'arm-none-eabi-gdb -nx --batch {args} {source}'
-    elif 'tui' in ui:
-        gdb_command = 'arm-none-eabi-gdb -tui ' \
-                '-ex "layout split" ' \
-                '-ex "focus cmd" ' \
-                '{args} ' \
-                '-ex "refresh" ' \
-                '{source}'
-    elif 'web' in ui:
-        gdb_command = 'gdbgui {source} ' \
-                "--gdb-cmd='arm-none-eabi-gdb {args} {source}'"
-    else:
-        raise ValueError("Unknown UI mode! '{}'".format(ui))
+        return f"{gdb} -nx -nh -batch {args} {source}"
 
-    gdb_command = gdb_command.format(source="" if source is None else source,
-                                     args=" ".join(args))
+    elif "cmd" in ui:
+        return f"{gdb} {args} {source}"
 
-    # Start Backend in the background
-    with bem.Scope(backend) as b:
+    elif "tui" in ui:
+        return f'{gdb} -tui -ex "layout split" -ex "focus cmd" {args} -ex "refresh" {source}'
+
+    elif "gdbgui" in ui or "web" in ui:
+        return f"gdbgui {source} --gdb-cmd='{gdb} {args} {source}'"
+
+    raise ValueError("Unknown UI mode! '{}'".format(ui))
+
+
+def call(backend, source=None, config=None, commands=None, ui=None):
+    gdb_command = _gdb_command(backend, source, config, commands, ui)
+
+    with backend.scope():
         try:
-            # This call is now blocking
-            subprocess.call(gdb_command, cwd=os.getcwd(), shell=True)
+            return subprocess.call(gdb_command, cwd=os.getcwd(), shell=True)
         except KeyboardInterrupt:
             pass
 
-    return True
 
-
+# -----------------------------------------------------------------------------
 def add_subparser(subparser):
     # Generic backend
     parser = subparser.add_parser("remote", help="Use a generic extended remote as Backend.")
     parser.add_argument(
-            "--host",
-            dest="host",
-            default="localhost",
+            "--port",
+            dest="port",
+            default="localhost:3333",
             help="Connect to this host.")
-    def build_backend(args):
-        return bem.ExtendedRemote(args.host)
-    parser.set_defaults(backend=build_backend)
+    parser.set_defaults(backend=lambda args: DebugBackend(args.port))
+
 
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
-    import argparse
+    import argparse, signal
+    from . import openocd, crashdebug, bmp, jlink
+
+    # Catch Ctrl-C before it terminates the GDB subprocess call
+    def empty_signal_handler(sig, frame):
+        pass
+    signal.signal(signal.SIGINT, empty_signal_handler)
 
     parser = argparse.ArgumentParser(description='Run GDB in TUI or GUI mode')
     parser.add_argument(
+            "--elf",
             dest="source",
-            metavar="ELF",
             help="The ELF files to use for debugging.")
     parser.add_argument(
             "--ui",
             dest="ui",
-            choices=["tui", "web"],
+            choices=["tui", "gdbgui", "web"],
             help="Use GDB via TUI or GDBGUI.")
     parser.add_argument(
             "-x",
@@ -106,7 +103,7 @@ if __name__ == "__main__":
     openocd.add_subparser(subparsers)
     crashdebug.add_subparser(subparsers)
     bmp.add_subparser(subparsers)
+    jlink.add_subparser(subparsers)
 
     args = parser.parse_args()
-    call(source=args.source, backend=args.backend(args), ui=args.ui,
-         config=args.config, commands=args.commands)
+    call(args.backend(args), args.source, args.config, args.commands, args.ui)

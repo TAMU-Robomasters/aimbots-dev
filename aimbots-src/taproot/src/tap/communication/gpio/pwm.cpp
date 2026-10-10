@@ -37,28 +37,27 @@ namespace gpio
 void Pwm::init()
 {
 #ifndef PLATFORM_HOSTED
-
-    Timer1::connect<PWMOutPinC1::Ch1>();
-    Timer1::enable();
-    Timer1::setMode(Timer1::Mode::UpCounter);
-    timer1CalculatedOverflow = Timer1::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER1_FREQUENCY);
-    Timer1::start();
-    Timer1::enableOutput();
-
-    Timer4::connect<PWMOutPinBuzzer::Ch3>();
-    Timer4::enable();
-    Timer4::setMode(Timer4::Mode::UpCounter);
-    timer4CalculatedOverflow = Timer4::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER4_FREQUENCY);
-    Timer4::start();
-    Timer4::enableOutput();
-
-    Timer10::connect<PWMOutPinImuHeater::Ch1>();
-    Timer10::enable();
-    Timer10::setMode(Timer10::Mode::UpCounter);
-    timer10CalculatedOverflow = Timer10::setPeriod<Board::SystemClock>(1'000'000 / DEFAULT_TIMER10_FREQUENCY);
-    Timer10::start();
-    Timer10::enableOutput();
-
+    Timer2::connect<PWMOutPinPWM1::Ch1>();
+    Timer2::enable();
+    Timer2::setMode(Timer2::Mode::UpCounter);
+    std::chrono::microseconds timer2Period{1'000'000 / DEFAULT_TIMER2_FREQUENCY};
+    timer2CalculatedOverflow = Timer2::setPeriod<Board::SystemClock>(timer2Period);
+    Timer2::start();
+    
+    Timer12::connect<PWMOutPinBuzzer::Ch2>();
+    Timer12::enable();
+    Timer12::setMode(Timer12::Mode::UpCounter);
+    std::chrono::microseconds timer12Period{1'000'000 / DEFAULT_TIMER12_FREQUENCY};
+    timer12CalculatedOverflow = Timer12::setPeriod<Board::SystemClock>(timer12Period);
+    Timer12::start();
+    
+    Timer3::connect<PWMOutPinImuHeater::Ch4>();
+    Timer3::enable();
+    Timer3::setMode(Timer3::Mode::UpCounter);
+    std::chrono::microseconds timer3Period{1'000'000 / DEFAULT_TIMER3_FREQUENCY};
+    timer3CalculatedOverflow = Timer3::setPeriod<Board::SystemClock>(timer3Period);
+    Timer3::start();
+    
 #endif
     // Set all out pins to 0 duty
     writeAllZeros();
@@ -67,7 +66,7 @@ void Pwm::init()
 void Pwm::writeAllZeros()
 {
 #ifndef PLATFORM_HOSTED
-    write(0.0f, Pin::C1);
+    write(0.0f, Pin::PWM1);
     write(0.0f, Pin::Buzzer);
     write(0.0f, Pin::ImuHeater);
 #endif
@@ -82,23 +81,23 @@ void Pwm::write(float duty, Pin pin)
     duty = limitVal<float>(duty, 0.0f, 1.0f);
     switch (pin)
     {
-        case Pin::C1:
-            Timer1::configureOutputChannel(
+        case Pin::PWM1:
+            Timer2::configureOutputChannel(
                 Ch1,
-                Timer1::OutputCompareMode::Pwm,
-                duty * timer1CalculatedOverflow);
+                Timer2::OutputCompareMode::Pwm,
+                duty * timer2CalculatedOverflow);
             break;
         case Pin::Buzzer:
-            Timer4::configureOutputChannel(
-                Ch3,
-                Timer4::OutputCompareMode::Pwm,
-                duty * timer4CalculatedOverflow);
+            Timer12::configureOutputChannel(
+                Ch2,
+                Timer12::OutputCompareMode::Pwm,
+                duty * timer12CalculatedOverflow);
             break;
         case Pin::ImuHeater:
-            Timer10::configureOutputChannel(
-                Ch1,
-                Timer10::OutputCompareMode::Pwm,
-                duty * timer10CalculatedOverflow);
+            Timer3::configureOutputChannel(
+                Ch4,
+                Timer3::OutputCompareMode::Pwm,
+                duty * timer3CalculatedOverflow);
             break;
         default:
             break;
@@ -112,16 +111,17 @@ void Pwm::setTimerFrequency(Timer timer, uint32_t frequency)
     UNUSED(timer);
     UNUSED(frequency);
 #else
+    std::chrono::microseconds period{1'000'000 / frequency};
     switch (timer)
     {
-        case TIMER1:
-            timer1CalculatedOverflow = Timer1::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+        case TIMER2:
+            timer2CalculatedOverflow = Timer2::setPeriod<Board::SystemClock>(period);
             break;
-        case TIMER4:
-            timer4CalculatedOverflow = Timer4::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+        case TIMER12:
+            timer12CalculatedOverflow = Timer12::setPeriod<Board::SystemClock>(period);
             break;
-        case TIMER10:
-            timer10CalculatedOverflow = Timer10::setPeriod<Board::SystemClock>(1'000'000 / frequency);
+        case TIMER3:
+            timer3CalculatedOverflow = Timer3::setPeriod<Board::SystemClock>(period);
             break;
     }
 #endif
@@ -134,14 +134,14 @@ void Pwm::pause(Timer timer)
 #else
     switch (timer)
     {
-        case TIMER1:
-            Timer1::pause();
+        case TIMER2:
+            Timer2::pause();
             break;
-        case TIMER4:
-            Timer4::pause();
+        case TIMER12:
+            Timer12::pause();
             break;
-        case TIMER10:
-            Timer10::pause();
+        case TIMER3:
+            Timer3::pause();
             break;
     }
 #endif
@@ -154,14 +154,14 @@ void Pwm::start(Timer timer)
 #else
     switch (timer)
     {
-        case TIMER1:
-            Timer1::start();
+        case TIMER2:
+            Timer2::start();
             break;
-        case TIMER4:
-            Timer4::start();
+        case TIMER12:
+            Timer12::start();
             break;
-        case TIMER10:
-            Timer10::start();
+        case TIMER3:
+            Timer3::start();
             break;
     }
 #endif

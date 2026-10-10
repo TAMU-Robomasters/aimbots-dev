@@ -4,6 +4,7 @@
  * Copyright (c) 2013, Martin Rosekeit
  * Copyright (c) 2014, Daniel Krebs
  * Copyright (c) 2015, Kevin Läufer
+ * Copyright (c) 2023, Christopher Durand
  *
  * This file is part of the modm project.
  *
@@ -16,10 +17,11 @@
 #ifndef MODM_DYNAMIC_ARRAY_HPP
 #define MODM_DYNAMIC_ARRAY_HPP
 
+#include <algorithm>
 #include <cstddef>
-#include <modm/utils/allocator.hpp>
 #include <initializer_list>
 #include <iterator>
+#include <vector>
 
 namespace modm
 {
@@ -44,11 +46,14 @@ namespace modm
 	 * \author	Fabian Greif <fabian.greif@rwth-aachen.de>
 	 * \ingroup	modm_container
 	 */
-	template <typename T, typename Allocator = allocator::Dynamic<T> >
+	template <typename T, typename Allocator = std::allocator<T>>
 	class DynamicArray
 	{
 	public:
-		typedef std::size_t SizeType;
+		using SizeType = std::size_t;
+		using const_iterator = std::vector<T, Allocator>::const_iterator;
+		using iterator = std::vector<T, Allocator>::iterator;
+
 	public:
 		/**
 		 * \brief	Default constructor
@@ -56,7 +61,9 @@ namespace modm
 		 * Constructs an empty dynamic array, with no content and a
 		 * size of zero.
 		 */
-		DynamicArray(const Allocator& allocator = Allocator());
+		DynamicArray(const Allocator& allocator = Allocator())
+			: data_(allocator)
+		{}
 
 		/**
 		 * \brief	Allocation constructor
@@ -64,7 +71,11 @@ namespace modm
 		 * Construct a dynamic array of given capacity. The array will still
 		 * be empty.
 		 */
-		DynamicArray(SizeType n, const Allocator& allocator = Allocator());
+		DynamicArray(SizeType n, const Allocator& allocator = Allocator())
+			: data_(allocator)
+		{
+			data_.reserve(n);
+		}
 
 		/**
 		 * \brief	Repetitive sequence constructor
@@ -74,7 +85,9 @@ namespace modm
 		 * Initializes the dynamic array with its content set to a
 		 * repetition, n times, of copies of value.
 		 */
-		DynamicArray(SizeType n, const T& value, const Allocator& allocator = Allocator());
+		DynamicArray(SizeType n, const T& value, const Allocator& allocator = Allocator())
+			: data_(n, value, allocator)
+		{}
 
 		/**
 		 * \brief	Initializer List constructor
@@ -82,15 +95,9 @@ namespace modm
 		 * Construct a dynamic array that holds the values specified in the
 		 * initialize list
 		 */
-		DynamicArray(std::initializer_list<T> init,
-			const Allocator& allocator = Allocator());
-
-		DynamicArray(const DynamicArray& other);
-
-		~DynamicArray();
-
-		DynamicArray&
-		operator = (const DynamicArray& other);
+		DynamicArray(std::initializer_list<T> init, const Allocator& allocator = Allocator())
+			: data_(init, allocator)
+		{}
 
 		/**
 		 * \brief	Test whether dynamic array is empty
@@ -98,10 +105,10 @@ namespace modm
 		 * Returns whether the dynamic array container is empty, i.e. whether
 		 * its size is 0.
 		 */
-		inline bool
+		bool
 		isEmpty() const
 		{
-			return (this->size == 0);
+			return data_.empty();
 		}
 
 		/**
@@ -109,10 +116,10 @@ namespace modm
 		 *
 		 * Returns the number of elements in the container.
 		 */
-		inline SizeType
+		SizeType
 		getSize() const
 		{
-			return this->size;
+			return data_.size();
 		}
 
 		/**
@@ -129,10 +136,10 @@ namespace modm
 		 *
 		 * \see	getSize()
 		 */
-		inline SizeType
+		SizeType
 		getCapacity() const
 		{
-			return this->capacity;
+			return data_.capacity();
 		}
 
 		/**
@@ -149,7 +156,10 @@ namespace modm
 		 * \see	getCapacity()
 		 */
 		void
-		reserve(SizeType n);
+		reserve(SizeType n)
+		{
+			data_.reserve(n);
+		}
 
 		/**
 		 * \brief	Remove all elements and set capacity to zero
@@ -160,7 +170,13 @@ namespace modm
 		 * \warning	This will discard all the items in the container
 		 */
 		void
-		clear();
+		clear()
+		{
+			data_.clear();
+			// shrink vector to zero capacity
+			// shrink_to_fit() is a no-op with exceptions disabled
+			std::vector(data_).swap(data_);
+		}
 
 		/**
 		 * \brief	Remove all elements
@@ -168,7 +184,10 @@ namespace modm
 		 * Keeps the capacity at its current level.
 		 */
 		void
-		removeAll();
+		removeAll()
+		{
+			data_.clear();
+		}
 
 		/**
 		 * \brief	Access element
@@ -184,7 +203,7 @@ namespace modm
 		inline T&
 		operator [](SizeType index)
 		{
-			return this->values[index];
+			return data_[index];
 		}
 
 		/**
@@ -196,7 +215,7 @@ namespace modm
 		inline const T&
 		operator [](SizeType index) const
 		{
-			return this->values[index];
+			return data_[index];
 		}
 
 		/**
@@ -213,7 +232,10 @@ namespace modm
 		 * iterators, references and pointers.
 		 */
 		void
-		append(const T& value);
+		append(const T& value)
+		{
+			data_.push_back(value);
+		}
 
 		/**
 		 * \brief	Delete last element
@@ -225,7 +247,10 @@ namespace modm
 		 * This calls the removed element's destructor.
 		 */
 		void
-		removeBack();
+		removeBack()
+		{
+			data_.pop_back();
+		}
 
 		// TODO insert implementation
 		//void
@@ -234,103 +259,36 @@ namespace modm
 		inline const T&
 		getFront() const
 		{
-			return this->values[0];
+			return data_.front();
 		}
 
 		inline T&
 		getFront()
 		{
-			return this->values[0];
+			return data_.front();
 		}
 
 		inline const T&
 		getBack() const
 		{
-			return this->values[this->size - 1];
+			return data_.back();
 		}
 
 		inline T&
 		getBack()
 		{
-			return this->values[this->size - 1];
+			return data_.back();
 		}
-
-	public:
-		/**
-		 * \brief	Forward iterator
-		 */
-		class iterator : public std::iterator<std::forward_iterator_tag, T>
-		{
-			friend class DynamicArray;
-			friend class const_iterator;
-
-		public:
-			/// Default constructor
-			iterator();
-			iterator(const iterator& other);
-
-			iterator& operator = (const iterator& other);
-			iterator& operator ++ ();
-			iterator& operator -- ();
-			bool operator == (const iterator& other) const;
-			bool operator != (const iterator& other) const;
-			bool operator <  (const iterator& other) const;
-			bool operator >  (const iterator& other) const;
-			T& operator * ();
-			T* operator -> ();
-
-		private:
-			iterator(DynamicArray* parent, SizeType index);
-
-			DynamicArray *parent;
-			SizeType index;
-		};
-
-		/**
-		 * \brief	forward const iterator
-		 */
-		class const_iterator : public std::iterator<std::forward_iterator_tag, T>
-		{
-			friend class DynamicArray;
-
-		public:
-			/// Default constructor
-			const_iterator();
-
-			/**
-			 * \brief	Copy constructor
-			 *
-			 * Used to convert a normal iterator to a const iterator.
-			 * The other way is not possible.
-			 */
-			const_iterator(const iterator& other);
-
-			/**
-			 * \brief	Copy constructor
-			 */
-			const_iterator(const const_iterator& other);
-
-			const_iterator& operator = (const const_iterator& other);
-			const_iterator& operator ++ ();
-			const_iterator& operator -- ();
-			bool operator == (const const_iterator& other) const;
-			bool operator != (const const_iterator& other) const;
-			const T& operator * () const;
-			const T* operator -> () const;
-
-		private:
-			const_iterator(const DynamicArray* parent, SizeType index);
-
-			const DynamicArray *parent;
-			SizeType index;
-		};
 
 		/**
 		 * Returns a read/write iterator that points to the first element in the
 		 * list.  Iteration is done in ordinary element order.
 		 */
 		iterator
-		begin();
+		begin()
+		{
+			return data_.begin();
+		}
 
 		/**
 		 * Returns a read-only (constant) iterator that points to the
@@ -338,7 +296,10 @@ namespace modm
 		 * element order.
 		 */
 		const_iterator
-		begin() const;
+		begin() const
+		{
+			return data_.begin();
+		}
 
 		/**
 		 * Returns a read/write iterator that points one past the last
@@ -346,7 +307,10 @@ namespace modm
 		 * order.
 		 */
 		iterator
-		end();
+		end()
+		{
+			return data_.end();
+		}
 
 		/**
 		 * Returns a read-only (constant) iterator that points one past
@@ -354,7 +318,10 @@ namespace modm
 		 * element order.
 		 */
 		const_iterator
-		end() const;
+		end() const
+		{
+			return data_.end();
+		}
 
 		/**
 		 * Returns a read/write iterator that points to the first element
@@ -362,7 +329,10 @@ namespace modm
 		 * last element.
 		 */
 		iterator
-		find(const T& value);
+		find(const T& value)
+		{
+			return std::find(data_.begin(), data_.end(), value);
+		}
 
 		/**
 		 * Returns a read-only (constant) iterator that points to the first
@@ -370,29 +340,14 @@ namespace modm
 		 * the last element.
 		 */
 		const_iterator
-		find(const T& value) const;
+		find(const T& value) const
+		{
+			return std::find(data_.begin(), data_.end(), value);
+		}
 
 	private:
-		friend class const_iterator;
-		friend class iterator;
-
-	private:
-		/*
-		 * Allocate a new buffer of size n and copy the elements from the
-		 * old buffer to the new buffer.
-		 */
-		void
-		relocate(SizeType n);
-
-		Allocator allocator;
-
-		SizeType size;
-		SizeType capacity;
-		T* values;
+		std::vector<T, Allocator> data_;
 	};
 }
-
-#include "dynamic_array_impl.hpp"
-#include "dynamic_array_iterator_impl.hpp"
 
 #endif // MODM_DYNAMIC_ARRAY_HPP

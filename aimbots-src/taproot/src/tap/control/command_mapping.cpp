@@ -24,6 +24,7 @@
 #include "command_mapping.hpp"
 
 #include <algorithm>
+#include <vector>
 
 #include "tap/drivers.hpp"
 
@@ -34,14 +35,12 @@ namespace control
 CommandMapping::CommandMapping(
     Drivers *drivers,
     const std::vector<Command *> cmds,
-    const RemoteMapState &rms)
+    const GenericRemoteMapState *rms)
     : mapState(rms),
       mappedCommands(cmds),
       drivers(drivers)
 {
-    std::remove_if(mappedCommands.begin(), mappedCommands.end(), [](Command *c) {
-        return c == nullptr;
-    });
+    std::erase(mappedCommands, nullptr);
 }
 
 bool operator==(const CommandMapping &cm1, const CommandMapping &cm2)
@@ -54,9 +53,9 @@ bool mapStateEqual(const CommandMapping &cm1, const CommandMapping &cm2)
     return cm1.mapState == cm2.mapState;
 }
 
-bool CommandMapping::mappingSubset(const RemoteMapState &mapState)
+bool CommandMapping::mappingSubset(const GenericRemoteMapState &mapState)
 {
-    return this->mapState.stateSubsetOf(mapState);
+    return this->mapState->stateSubsetOf(mapState);
 }
 
 void CommandMapping::addCommands()

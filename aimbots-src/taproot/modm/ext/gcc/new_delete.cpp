@@ -23,7 +23,7 @@ void* malloc_traits(std::size_t size, uint32_t)
 { return malloc(size); }
 template<bool with_traits>
 static inline void*
-new_assert(size_t size, modm_unused modm::MemoryTraits traits = modm::MemoryDefault)
+new_assert(size_t size, [[maybe_unused]] modm::MemoryTraits traits = modm::MemoryDefault)
 {
 	void *ptr;
 	while(1)
@@ -52,23 +52,53 @@ new_assert(size_t size, modm_unused modm::MemoryTraits traits = modm::MemoryDefa
 }
 
 // ----------------------------------------------------------------------------
+modm_weak
 void* operator new  (std::size_t size) { return new_assert<false>(size); }
+modm_weak
 void* operator new[](std::size_t size) { return new_assert<false>(size); }
 
+modm_weak
 void* operator new  (std::size_t size, const std::nothrow_t&) noexcept { return malloc(size); }
+modm_weak
 void* operator new[](std::size_t size, const std::nothrow_t&) noexcept { return malloc(size); }
 
+modm_weak
+void* operator new  (std::size_t size, std::align_val_t) { return new_assert<false>(size); }
+modm_weak
+void* operator new[](std::size_t size, std::align_val_t) { return new_assert<false>(size); }
+
+modm_weak
 void* operator new  (std::size_t size, modm::MemoryTraits traits) { return new_assert<true>(size, traits); }
+modm_weak
 void* operator new[](std::size_t size, modm::MemoryTraits traits) { return new_assert<true>(size, traits); }
 
+modm_weak
 void* operator new  (std::size_t size, modm::MemoryTraits traits, const std::nothrow_t&) noexcept { return malloc_traits(size, traits.value); }
+modm_weak
 void* operator new[](std::size_t size, modm::MemoryTraits traits, const std::nothrow_t&) noexcept { return malloc_traits(size, traits.value); }
 // ----------------------------------------------------------------------------
-void operator delete  (void *ptr) noexcept { free(ptr); }
-void operator delete[](void* ptr) noexcept { free(ptr); }
+extern "C" modm_weak
+void operator_delete([[maybe_unused]] void* ptr)
+{
+	free(ptr);
+}
 
-void operator delete  (void* ptr, std::size_t) noexcept { free(ptr); }
-void operator delete[](void* ptr, std::size_t) noexcept { free(ptr); }
+modm_weak
+void operator delete  (void* ptr) noexcept { operator_delete(ptr); }
+modm_weak
+void operator delete[](void* ptr) noexcept { operator_delete(ptr); }
 
-void operator delete  (void* ptr, const std::nothrow_t&) noexcept { free(ptr); }
-void operator delete[](void* ptr, const std::nothrow_t&) noexcept { free(ptr); }
+modm_weak
+void operator delete  (void* ptr, std::size_t) noexcept { operator_delete(ptr); }
+modm_weak
+void operator delete[](void* ptr, std::size_t) noexcept { operator_delete(ptr); }
+
+modm_weak
+void operator delete  (void* ptr, const std::nothrow_t&) noexcept { operator_delete(ptr); }
+modm_weak
+void operator delete[](void* ptr, const std::nothrow_t&) noexcept { operator_delete(ptr); }
+
+modm_weak
+void operator delete  (void* ptr, std::size_t, std::align_val_t) noexcept { operator_delete(ptr); }
+modm_weak
+void operator delete[](void* ptr, std::size_t, std::align_val_t) noexcept { operator_delete(ptr); }

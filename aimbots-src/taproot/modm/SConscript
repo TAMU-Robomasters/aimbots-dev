@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2019, Niklas Hauser
+# Copyright (c) 2017-2023, Niklas Hauser
 #
 # This file is part of the modm project.
 #
@@ -8,8 +8,7 @@
 
 #!/usr/bin/env python3
 
-from os.path import join, abspath, realpath, dirname
-import shutil
+from os.path import join, abspath
 Import("env")
 
 profile = ARGUMENTS.get("profile", "release")
@@ -19,7 +18,7 @@ env["BASEPATH"] = abspath("..")
 env["COMPILERPREFIX"] = "arm-none-eabi-"
 # SCons tools
 env.Append(toolpath=[
-    abspath(r"scons/site_tools"),
+    abspath("scons/site_tools"),
 ])
 env.Tool("artifact")
 env.Tool("bmp")
@@ -27,29 +26,20 @@ env.Tool("build_target")
 env.Tool("comstr")
 env.Tool("crashdebug")
 env.Tool("dfu")
+env.Tool("elf2uf2")
 env.Tool("find_files")
 env.Tool("gcc_retarget")
-env.Tool("log_cortex")
+env.Tool("gdb")
+env.Tool("jlink")
 env.Tool("openocd")
-env.Tool("openocd_remote")
 env.Tool("qtcreator")
 env.Tool("size")
 env.Tool("template")
 env.Tool("utils")
 env.Tool("utils_buildpath")
-c_compiler_name = env["CC"]
-c_compiler_path = shutil.which(c_compiler_name)
-
-if c_compiler_path is None:
-    print(f'Selected compiler "{c_compiler_name}" not found on PATH. Please add its installation directory to the PATH environment variable.')
-    exit(1)
-
-env["GCC_PATH"] = dirname(dirname(realpath(c_compiler_path)))
-
 # Toolchain configuration
 env.Append(CPPDEFINES = [
-    "ARM_MATH_CM4",
-    "STM32F4",
+    "STM32H7",
 ])
 if profile == "debug":
     env.Append(CPPDEFINES = [
@@ -62,20 +52,19 @@ env["CCFLAGS"] = [
     "-ffile-prefix-map={project_source_dir}=.".format(project_source_dir=env["BASEPATH"]),
     "-ffunction-sections",
     "-finline-limit=10000",
+    "-fno-builtin-printf",
     "-fshort-wchar",
-    "-fsingle-precision-constant",
     "-funsigned-bitfields",
     "-funsigned-char",
     "-fwrapv",
-    "-g3",
     "-gdwarf-3",
     "-W",
     "-Wall",
-    "-Wdouble-promotion",
     "-Wduplicated-cond",
     "-Werror=format",
     "-Werror=maybe-uninitialized",
     "-Werror=overflow",
+    "-Werror=return-type",
     "-Werror=sign-compare",
     "-Wextra",
     "-Wlogical-op",
@@ -96,7 +85,8 @@ if profile == "debug":
     ])
 
 env["CFLAGS"] = [
-    "-std=gnu11",
+    "-g3",
+    "-std=gnu2x",
     "-Wbad-function-cast",
     "-Wimplicit",
     "-Wredundant-decls",
@@ -107,15 +97,16 @@ env["CXXFLAGS"] = [
     "-fno-exceptions",
     "-fno-rtti",
     "-fno-unwind-tables",
+    "-fno-use-cxa-atexit",
     "-fstrict-enums",
-    "-fuse-cxa-atexit",
-    "-std=c++20",
+    "-g3",
+    "-std=c++23",
+    "-Wno-psabi",
     "-Wno-volatile",
     "-Woverloaded-virtual",
 ]
 
 env["ASFLAGS"] = [
-    "-g3",
     "-gdwarf-3",
 ]
 
@@ -128,6 +119,7 @@ env["LINKFLAGS"] = [
     "-Wl,--build-id=sha1",
     "-Wl,--fatal-warnings",
     "-Wl,--gc-sections",
+    "-Wl,--no-warn-rwx-segment",
     "-Wl,--no-wchar-size-warning",
     "-Wl,--relax",
     "-Wl,-Map,{target_base}.map,--cref".format(target_base="${TARGET.base}"),
@@ -135,12 +127,13 @@ env["LINKFLAGS"] = [
     "-Wl,-wrap,_free_r",
     "-Wl,-wrap,_malloc_r",
     "-Wl,-wrap,_realloc_r",
+    "-Wl,-z,execstack",
 ]
 
 env["ARCHFLAGS"] = [
-    "-mcpu=cortex-m4",
+    "-mcpu=cortex-m7",
     "-mfloat-abi=hard",
-    "-mfpu=fpv4-sp-d16",
+    "-mfpu=fpv5-d16",
     "-mthumb",
 ]
 
@@ -166,148 +159,665 @@ env["_LIBFLAGS"] = "-Wl,--whole-archive " + env["_LIBFLAGS"] + " -Wl,--no-whole-
 
 
 # Device configuration
-env["CONFIG_DEVICE_NAME"] = "stm32f407igh6"
+env["CONFIG_DEVICE_NAME"] = "stm32h723vgt6"
 env["CONFIG_DEVICE_MEMORY"] = [
-    {'name': 'flash', 'access': 'rx', 'start': 134217728, 'size': 1048576},
-    {'name': 'ccm', 'access': 'rw', 'start': 268435456, 'size': 65536},
-    {'name': 'sram1', 'access': 'rwx', 'start': 536870912, 'size': 114688},
-    {'name': 'sram2', 'access': 'rwx', 'start': 536985600, 'size': 16384},
-    {'name': 'backup', 'access': 'rwx', 'start': 1073889280, 'size': 4096},
+    {'name': 'itcm', 'access': 'rwx', 'start': 0, 'size': 65536},
+    {'name': 'flash1', 'access': 'rx', 'start': 134217728, 'size': 1048576},
+    {'name': 'dtcm', 'access': 'rwx', 'start': 536870912, 'size': 131072},
+    {'name': 'd1_sram', 'access': 'rwx', 'start': 603979776, 'size': 327680},
+    {'name': 'd2_sram1', 'access': 'rwx', 'start': 805306368, 'size': 16384},
+    {'name': 'd2_sram2', 'access': 'rwx', 'start': 805322752, 'size': 16384},
+    {'name': 'd3_sram', 'access': 'rwx', 'start': 939524096, 'size': 16384},
+    {'name': 'backup', 'access': 'rwx', 'start': 947912704, 'size': 4096},
 ]
 # Programming configuration
 env.Append(MODM_OPENOCD_CONFIGFILES = "$BASEPATH/modm/openocd.cfg")
-env.Append(MODM_OPENOCD_GDBINIT = "$BASEPATH/modm/openocd_gdbinit")
+env.Append(MODM_JLINK_DEVICE = "stm32h723vg")
 env.Append(MODM_GDBINIT = "$BASEPATH/modm/gdbinit")
-env.Append(MODM_GDB_COMMANDS = "dir $GCC_PATH")
+env.Append(MODM_GDBINIT_OPENOCD = "$BASEPATH/modm/gdbinit_openocd")
+env.Append(MODM_GDBINIT_JLINK = "$BASEPATH/modm/gdbinit_jlink")
+env.Append(MODM_GDBINIT_BMP = "$BASEPATH/modm/gdbinit_bmp")
+env.Append(MODM_GDB_COMMANDS = ["dir $GCC_PATH", "modm_setup_tui"])
+
+env["CONFIG_FLASH_OFFSET"] = 0
+env["CONFIG_FLASH_ADDRESS"] = 0x8000000
 # XPCC generator tool path
 env["XPCC_SYSTEM_DESIGN"] = "$BASEPATH/modm/tools/xpcc_generator"
 env.AppendUnique(CPPPATH=[
-    abspath(r"ext"),
-    abspath(r"ext/cmsis/core"),
-    abspath(r"ext/cmsis/device"),
-    abspath(r"ext/cmsis/dsp"),
-    abspath(r"src"),
+    abspath("ext"),
+    abspath("ext/cmsis/core"),
+    abspath("ext/cmsis/device"),
+    abspath("ext/cmsis/dsp"),
+    abspath("ext/gcc"),
+    abspath("src"),
 ])
 
 files = [
-    env.File(r"ext/gcc/cabi.c"),
-    env.File(r"ext/gcc/cxxabi.cpp"),
-    env.File(r"ext/gcc/new_delete.cpp"),
-    env.File(r"ext/tlsf/tlsf.c"),
-    env.File(r"src/modm/architecture/driver/atomic/flag.cpp"),
-    env.File(r"src/modm/architecture/interface/can.cpp"),
-    env.File(r"src/modm/container/smart_pointer.cpp"),
-    env.File(r"src/modm/io/iostream.cpp"),
-    env.File(r"src/modm/io/iostream_printf.cpp"),
-    env.File(r"src/modm/math/geometry/angle.cpp"),
-    env.File(r"src/modm/math/geometry/vector2.cpp"),
-    env.File(r"src/modm/math/utils/bit_operation.cpp"),
-    env.File(r"src/modm/math/utils/pc/operator.cpp"),
-    env.File(r"src/modm/platform/adc/adc_interrupt_1.cpp"),
-    env.File(r"src/modm/platform/adc/adc_interrupt_3.cpp"),
-    env.File(r"src/modm/platform/can/can_1.cpp"),
-    env.File(r"src/modm/platform/can/can_2.cpp"),
-    env.File(r"src/modm/platform/can/can_filter.cpp"),
-    env.File(r"src/modm/platform/clock/rcc.cpp"),
-    env.File(r"src/modm/platform/clock/systick_timer.cpp"),
-    env.File(r"src/modm/platform/core/assert.cpp"),
-    env.File(r"src/modm/platform/core/delay.cpp"),
-    env.File(r"src/modm/platform/core/delay_ns.cpp"),
-    env.File(r"src/modm/platform/core/heap_table.cpp"),
-    env.File(r"src/modm/platform/core/reset_handler.sx"),
-    env.File(r"src/modm/platform/core/startup.c"),
-    env.File(r"src/modm/platform/core/startup_platform.c"),
-    env.File(r"src/modm/platform/core/vectors.c"),
-    env.File(r"src/modm/platform/flash/flash.cpp"),
-    env.File(r"src/modm/platform/gpio/enable.cpp"),
-    env.File(r"src/modm/platform/heap/heap_tlsf.cpp"),
-    env.File(r"src/modm/platform/i2c/i2c_master_3.cpp"),
-    env.File(r"src/modm/platform/spi/spi_master_1.cpp"),
-    env.File(r"src/modm/platform/spi/spi_master_2.cpp"),
-    env.File(r"src/modm/platform/timer/timer_1.cpp"),
-    env.File(r"src/modm/platform/timer/timer_10.cpp"),
-    env.File(r"src/modm/platform/timer/timer_4.cpp"),
-    env.File(r"src/modm/platform/timer/timer_8.cpp"),
-    env.File(r"src/modm/platform/uart/uart_1.cpp"),
-    env.File(r"src/modm/platform/uart/uart_3.cpp"),
-    env.File(r"src/modm/platform/uart/uart_6.cpp"),
-    env.File(r"src/modm/utils/dummy.cpp"),
+    env.File("ext/gcc/atomic.cpp"),
+    env.File("ext/gcc/cabi.c"),
+    env.File("ext/gcc/cxxabi.cpp"),
+    env.File("ext/gcc/new_delete.cpp"),
+    env.File("ext/tlsf/tlsf.c"),
+    env.File("src/modm/architecture/driver/atomic/flag.cpp"),
+    env.File("src/modm/communication/xpcc/backend/can/connector.cpp"),
+    env.File("src/modm/communication/xpcc/backend/header.cpp"),
+    env.File("src/modm/communication/xpcc/communicator.cpp"),
+    env.File("src/modm/communication/xpcc/dispatcher.cpp"),
+    env.File("src/modm/communication/xpcc/postman/dynamic_postman/dynamic_postman.cpp"),
+    env.File("src/modm/communication/xpcc/postman/postman.cpp"),
+    env.File("src/modm/container/smart_pointer.cpp"),
+    env.File("src/modm/io/iostream.cpp"),
+    env.File("src/modm/io/iostream_printf.cpp"),
+    env.File("src/modm/math/geometry/angle.cpp"),
+    env.File("src/modm/math/geometry/vector2.cpp"),
+    env.File("src/modm/math/utils/bit_operation.cpp"),
+    env.File("src/modm/math/utils/pc/operator.cpp"),
+    env.File("src/modm/platform/adc/adc_interrupt_1.cpp"),
+    env.File("src/modm/platform/adc/adc_shared_interrupts.cpp"),
+    env.File("src/modm/platform/can/can_1.cpp"),
+    env.File("src/modm/platform/can/can_2.cpp"),
+    env.File("src/modm/platform/can/can_3.cpp"),
+    env.File("src/modm/platform/clock/rcc.cpp"),
+    env.File("src/modm/platform/clock/rcc_defs.cpp"),
+    env.File("src/modm/platform/clock/systick_timer.cpp"),
+    env.File("src/modm/platform/core/assert.cpp"),
+    env.File("src/modm/platform/core/delay.cpp"),
+    env.File("src/modm/platform/core/delay_ns.cpp"),
+    env.File("src/modm/platform/core/heap_table.cpp"),
+    env.File("src/modm/platform/core/reset_handler.sx"),
+    env.File("src/modm/platform/core/startup_platform.c"),
+    env.File("src/modm/platform/core/vectors.c"),
+    env.File("src/modm/platform/flash/flash.cpp"),
+    env.File("src/modm/platform/gpio/enable.cpp"),
+    env.File("src/modm/platform/heap/heap_tlsf.cpp"),
+    env.File("src/modm/platform/spi/spi_master_1.cpp"),
+    env.File("src/modm/platform/spi/spi_master_2.cpp"),
+    env.File("src/modm/platform/spi/spi_master_3.cpp"),
+    env.File("src/modm/platform/timer/timer_1.cpp"),
+    env.File("src/modm/platform/timer/timer_12.cpp"),
+    env.File("src/modm/platform/timer/timer_2.cpp"),
+    env.File("src/modm/platform/timer/timer_3.cpp"),
+    env.File("src/modm/platform/timer/timer_8.cpp"),
+    env.File("src/modm/platform/uart/uart_1.cpp"),
+    env.File("src/modm/platform/uart/uart_10.cpp"),
+    env.File("src/modm/platform/uart/uart_3.cpp"),
+    env.File("src/modm/platform/uart/uart_5.cpp"),
+    env.File("src/modm/platform/uart/uart_6.cpp"),
+    env.File("src/modm/platform/uart/uart_7.cpp"),
+    env.File("src/modm/processing/fiber/context_arm_m.cpp"),
+    env.File("src/modm/processing/fiber/scheduler.cpp"),
+    env.File("src/modm/ui/display/character_display.cpp"),
+    env.File("src/modm/ui/display/font/all_caps_3x5.cpp"),
+    env.File("src/modm/ui/display/font/arcade_classic.cpp"),
+    env.File("src/modm/ui/display/font/assertion.cpp"),
+    env.File("src/modm/ui/display/font/fixed_width_5x8.cpp"),
+    env.File("src/modm/ui/display/font/matrix_8x8.cpp"),
+    env.File("src/modm/ui/display/font/numbers_14x32.cpp"),
+    env.File("src/modm/ui/display/font/numbers_40x56.cpp"),
+    env.File("src/modm/ui/display/font/numbers_46x64.cpp"),
+    env.File("src/modm/ui/display/font/scripto_narrow.cpp"),
+    env.File("src/modm/ui/display/font/ubuntu_36.cpp"),
+    env.File("src/modm/ui/display/graphic_display.cpp"),
+    env.File("src/modm/ui/display/graphic_display_fill.cpp"),
+    env.File("src/modm/ui/display/graphic_display_text.cpp"),
+    env.File("src/modm/ui/display/image/home_16x16.cpp"),
+    env.File("src/modm/ui/display/image/logo_eurobot_90x64.cpp"),
+    env.File("src/modm/ui/display/image/logo_rca_90x64.cpp"),
+    env.File("src/modm/ui/display/image/skull_64x64.cpp"),
+    env.File("src/modm/ui/display/virtual_graphic_display.cpp"),
+    env.File("src/modm/ui/menu/choice_menu_entry.cpp"),
+    env.File("src/modm/ui/menu/scrollable_text.cpp"),
 ]
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_add_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_add_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_add_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_init_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_init_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_init_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_inverse_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_inverse_f64.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_fast_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_fast_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_q31.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_f32.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_q15.c", **flags))
-flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], "CPPDEFINES": ['$CPPDEFINES', '__FPU_PRESENT=1', 'ARM_MATH_ROUNDING', 'UNALIGNED_SUPPORT_DISABLE', 'ARM_MATH_LOOPUNROLL'], }
-if profile == "debug": flags["CPPDEFINES"].extend(['ARM_MATH_MATRIX_CHECK']);
-files.append(env.Object(r"ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_abs_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_abs_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_abs_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_abs_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_abs_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_add_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_add_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_add_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_add_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_add_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_and_u16.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_and_u32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_and_u8.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_clip_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_clip_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_clip_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_clip_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_dot_prod_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_dot_prod_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_dot_prod_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_dot_prod_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_dot_prod_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_mult_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_mult_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_mult_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_mult_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_mult_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_negate_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_negate_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_negate_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_negate_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_negate_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_not_u16.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_not_u32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_not_u8.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_offset_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_offset_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_offset_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_offset_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_offset_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_or_u16.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_or_u32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_or_u8.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_scale_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_scale_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_scale_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_scale_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_scale_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_shift_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_shift_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_shift_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_sub_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_sub_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_sub_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_sub_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_sub_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_xor_u16.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_xor_u32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/BasicMathFunctions/arm_xor_u8.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/CommonTables/arm_common_tables.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/CommonTables/arm_const_structs.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/CommonTables/arm_mve_tables.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_conj_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_conj_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_conj_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_dot_prod_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_dot_prod_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_dot_prod_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_fast_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_squared_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_squared_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_squared_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mag_squared_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_cmplx_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_cmplx_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_cmplx_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_cmplx_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_real_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_real_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/ComplexMathFunctions/arm_cmplx_mult_real_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_atan2_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_atan2_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_atan2_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_cos_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_cos_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_cos_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_divide_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_divide_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_sin_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_sin_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_sin_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_sqrt_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_sqrt_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vexp_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vexp_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vlog_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vlog_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vlog_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/FastMathFunctions/arm_vlog_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_householder_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_householder_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_add_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_add_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_add_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cholesky_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cholesky_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_mult_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_trans_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_trans_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_cmplx_trans_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_init_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_inverse_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_inverse_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_ldlt_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_ldlt_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_fast_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_fast_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_opt_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_mult_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_qr_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_qr_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_scale_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_solve_lower_triangular_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_solve_lower_triangular_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_solve_upper_triangular_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_solve_upper_triangular_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_sub_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_trans_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_vec_mult_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_vec_mult_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_vec_mult_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/MatrixFunctions/arm_mat_vec_mult_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_no_idx_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_no_idx_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_no_idx_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_no_idx_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_no_idx_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmax_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_no_idx_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_no_idx_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_no_idx_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_no_idx_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_no_idx_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_absmin_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_accumulate_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_accumulate_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_entropy_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_entropy_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_kullback_leibler_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_kullback_leibler_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_logsumexp_dot_prod_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_logsumexp_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_no_idx_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_no_idx_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_no_idx_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_no_idx_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_no_idx_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_max_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mean_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mean_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mean_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mean_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mean_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_no_idx_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_no_idx_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_no_idx_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_no_idx_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_no_idx_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_min_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mse_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mse_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mse_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mse_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_mse_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_power_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_power_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_power_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_power_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_power_q7.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_rms_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_rms_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_rms_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_std_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_std_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_std_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_std_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_var_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_var_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_var_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/StatisticsFunctions/arm_var_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_bitreversal.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_bitreversal2.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_init_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix2_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix4_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_cfft_radix8_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_dct4_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_mfcc_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_fast_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_fast_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_fast_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_fast_init_f64.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_init_f32.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_init_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_init_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_q15.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-sign-compare', '-Wno-double-promotion'], "CFLAGS": ['$CFLAGS', '-fno-strict-aliasing'], }
+files.append(env.Object("ext/cmsis/dsp/TransformFunctions/arm_rfft_q31.c", **flags))
+flags = {"CCFLAGS": ['$CCFLAGS', '-Wno-overflow'], }
+files.append(env.Object("ext/printf/printf.c", **flags))
+flags = {"CFLAGS": ['$CFLAGS', '-fno-builtin'], }
+files.append(env.Object("src/modm/platform/core/startup.c", **flags))
 library = env.StaticLibrary(target="modm", source=files)
 
 env.AppendUnique(LIBS=[
@@ -331,5 +841,4 @@ for flags in ["CCFLAGS", "CFLAGS", "CXXFLAGS", "ASFLAGS", "ARCHFLAGS", "LINKFLAG
 					exit(1)
 			else:
 				env[flags].append(flag)
-
 Return("library")

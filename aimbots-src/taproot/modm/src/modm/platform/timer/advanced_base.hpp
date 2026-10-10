@@ -39,9 +39,6 @@ public:
 	//configureOutputChannel(uint32_t channel, OutputCompareMode mode,
 	//		uint16_t compareValue);
 
-	// TODO Repetition Counter (TIM1_RCR)
-
-
 	enum class MasterMode : uint32_t
 	{
 		Reset 			= 0,							// 0b000
@@ -66,6 +63,25 @@ public:
 		SetComgOrRisingTrigEdge = TIM_CR2_CCUS
 	};
 
+	enum class MasterMode2 : uint32_t
+	{
+		Reset			= 0,							//0b0000
+		Enable			= TIM_CR2_MMS2_0,				//0b0001
+		Update			= TIM_CR2_MMS2_1,				//0b0010
+		ComparePulse	= TIM_CR2_MMS2_1				//0b0010
+								| TIM_CR2_MMS2_0,
+		CompareOc1Ref	= TIM_CR2_MMS2_2,				//0b0100
+		CompareOc2Ref	= TIM_CR2_MMS2_2				//0b0101
+								| TIM_CR2_MMS2_0,
+		CompareOc3Ref	= TIM_CR2_MMS2_2				//0b0110
+								| TIM_CR2_MMS2_1,
+		CompareOc4Ref	= TIM_CR2_MMS2_2				//0b0111
+								| TIM_CR2_MMS2_1 | TIM_CR2_MMS2_0,
+		CompareOc5RefF	= TIM_CR2_MMS2_3,				//0b1000
+		CompareOc6Ref	= TIM_CR2_MMS2_3				//0b1001
+								| TIM_CR2_MMS2_0,
+		// TODO: Add other Master Modes
+	};
 	enum class SlaveModeTrigger : uint32_t
 	{
 		Internal0 = 0,
@@ -102,18 +118,6 @@ public:
 	{
 		Reset = 0,
 		Set   = TIM_CR2_OIS1,
-	};
-
-	enum class Event : uint32_t
-	{
-		Break 						= TIM_EGR_BG,
-		Trigger 					= TIM_EGR_TG,
-		CaptureCompareControlUpdate = TIM_EGR_COMG,
-		CaptureCompare4 			= TIM_EGR_CC4G,
-		CaptureCompare3 			= TIM_EGR_CC3G,
-		CaptureCompare2 			= TIM_EGR_CC2G,
-		CaptureCompare1 			= TIM_EGR_CC1G,
-		Update 						= TIM_EGR_UG,
 	};
 };
 

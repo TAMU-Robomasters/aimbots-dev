@@ -18,7 +18,7 @@
 #ifndef MODM_ABSTRACT_VIEW_HPP
 #define MODM_ABSTRACT_VIEW_HPP
 
-#include <modm/utils/allocator/static.hpp>
+#include <memory>
 
 #include "iabstract_view.hpp"
 
@@ -36,7 +36,7 @@ namespace modm
 	 *\ingroup modm_ui_menu
 	 */
 
-	template<typename Allocator = allocator::Dynamic<IAbstractView> >
+	template<typename Allocator = std::allocator<IAbstractView> >
 	class AbstractView : public IAbstractView
 	{
 		template<typename T>

@@ -39,6 +39,10 @@ modm_dwt_enable(void)
 {
 	// Enable Tracing Debug Unit
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	__DSB();
+	// Unlock key in LAR register
+	*(uint32_t*)(DWT_BASE+0xFB0) = 0xC5ACCE55;
+	__DSB();
 	// Reset counter to 0
 	DWT->CYCCNT = 0;
 	// Enable CPU cycle counter

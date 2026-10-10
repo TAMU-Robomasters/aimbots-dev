@@ -35,8 +35,6 @@ namespace gpio
 void Leds::init()
 {
 #ifndef PLATFORM_HOSTED
-    // init Leds
-    LedsPort::setOutput(modm::Gpio::Low);
 #endif
 }
 
@@ -46,19 +44,8 @@ void Leds::set(Leds::LedPin pin, bool isSet)
     UNUSED(pin);
     UNUSED(isSet);
 #else
-    switch (pin)
-    {
-        case Leds::LedPin::Green:
-            LedGreen::set(isSet);
-            break;
-
-        case Leds::LedPin::Red:
-            LedRed::set(isSet);
-            break;
-        
-        case Leds::LedPin::Blue:
-            LedBlue::set(isSet);
-    } 
+    UNUSED(pin);
+    UNUSED(isSet);
 #endif
 }
 }  // namespace gpio

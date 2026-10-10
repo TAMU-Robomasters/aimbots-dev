@@ -52,8 +52,8 @@ void Bmi088::initialize(float sampleFrequency, float mahonyKp, float mahonyKi)
 {
     AbstractIMU::initialize(sampleFrequency, mahonyKp, mahonyKi);
 #if !defined(PLATFORM_HOSTED)
-    ImuCS1Accel::GpioOutput();
-    ImuCS1Gyro::GpioOutput();
+    ImuCS1Accel::configure(Gpio::OutputType::PushPull);
+    ImuCS1Gyro::configure(Gpio::OutputType::PushPull);
 
     DELAY_MS(100);
 
@@ -69,6 +69,7 @@ void Bmi088::initialize(float sampleFrequency, float mahonyKp, float mahonyKi)
     initializeGyro();
 
     imuHeater.initialize();
+    setTargetTemperature(BMI088_TARGET_TEMP);
 }
 
 void Bmi088::initializeAcc()

@@ -11,8 +11,7 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_INTERFACE_CAN_HPP
-#define MODM_INTERFACE_CAN_HPP
+#pragma once
 
 #include <modm/architecture/interface/peripheral.hpp>
 #include "can_message.hpp"
@@ -118,9 +117,63 @@ public:
 #endif
 };
 
-modm::IOStream&
-operator << (modm::IOStream& stream, const Can::BusState state);
+/// Wraps an object CAN driver into the static CAN interface
+/// @ingroup modm_architecture_can
+template <class CanType, CanType &can>
+struct StaticCanWrapper : public modm::Can
+{
+	static bool
+	isMessageAvailable()
+	{ return can.isMessageAvailable(); }
+
+	static bool
+	getMessage(can::Message& message, uint8_t *filter_id=nullptr)
+	{
+		return can.getMessage(message, filter_id);
+	}
+
+	static bool
+	isReadyToSend()
+	{ return can.isReadyToSend(); }
+
+	static bool
+	sendMessage(const can::Message& message)
+	{ return can.sendMessage(message); }
+
+	static BusState
+	getBusState() { return can.getBusState(); }
+};
 
 } // namespace modm
 
-#endif // MODM_INTERFACE_CAN_HPP
+#if MODM_HAS_IOSTREAM
+#include <modm/io/iostream.hpp>
+
+namespace modm
+{
+
+/// @ingroup modm_architecture_can
+inline modm::IOStream&
+operator << (modm::IOStream& stream, const Can::BusState state)
+{
+	switch (state)
+	{
+		case Can::BusState::Connected:
+			stream << "connected";
+			break;
+		case Can::BusState::ErrorWarning:
+			stream << "error warning";
+			break;
+		case Can::BusState::ErrorPassive:
+			stream << "error passive";
+			break;
+		case Can::BusState::Off:
+			stream << "off";
+			break;
+	}
+	return stream;
+}
+
+} // namespace modm
+
+#endif

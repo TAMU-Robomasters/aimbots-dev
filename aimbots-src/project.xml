@@ -21,16 +21,30 @@
     <option name="taproot:board:pwm_pins">W,X,Y,Z,Buzzer,ImuHeater</option> -->
 
     <!-- For RoboMaster Development Board Type C -->
-    <!--  -->
-    <option name="taproot:dev_board">rm-dev-board-c</option>
+    <!-- <option name="taproot:dev_board">rm-dev-board-c</option>
     <option name="taproot:communication:serial:terminal_serial:uart_port">Uart1</option>
     <option name="taproot:communication:serial:ref_serial:uart_port">Uart6</option>
     <option name="taproot:board:digital_in_pins">PF1,PF0,B12,C6,C7</option>
     <option name="taproot:board:digital_out_pins">C2,C4,B13,B14,B15,Laser</option>
     <option name="taproot:board:analog_in_pins"></option>
-    <option name="taproot:board:pwm_pins">C1,Buzzer,ImuHeater</option>  <!-- Removed C5 and C3, those are the ECHO pins of the ultrasonics -->
-    <!--  -->
-  
+    <option name="taproot:board:pwm_pins">C1,Buzzer,ImuHeater</option> -->  <!-- Removed C5 and C3, those are the ECHO pins of the ultrasonics -->
+
+    <!-- For Damiao DM-MC02 -->
+    <!-- Jetson is on Uart7. Terminal serial is unused; Uart10 only because Taproot needs a port. -->
+    <!-- PWM2 (PA2) is left out: the feeder limit switch uses it as a GPIO input. -->
+    <!-- PE14 is left out: it is the rev encoder's SPI3 chip select. -->
+    <option name="taproot:dev_board">dm-mc02</option>
+    <option name="taproot:communication:serial:terminal_serial:uart_port">Uart10</option>
+    <option name="taproot:communication:serial:ref_serial:uart_port">Uart1</option>
+    <option name="taproot:board:digital_in_pins">Button</option>
+    <option name="taproot:board:digital_out_pins">PD10</option>
+    <option name="taproot:board:analog_in_pins"></option>
+    <option name="taproot:board:pwm_pins">PWM1,Buzzer,ImuHeater</option>
+    <!-- Rev encoder (YAW_3508 robots) on the expansion header's SPI3 -->
+    <option name="taproot:modm-project.xml:modm_hal_modules">
+      modm:platform:spi:3
+    </option>
+
   </options>
   <modules>
     <module>taproot:core</module>

@@ -24,15 +24,18 @@ public:
 	static constexpr uintptr_t OriginAddr{ 0x8000000 };
 	static constexpr size_t Size{ 0x100000 };
 	static inline uint8_t *const Origin{(uint8_t*)OriginAddr};
-	using MaxWordType = uint32_t;
-
-	enum class
-	WordSize : uint32_t
+	static constexpr uintptr_t Bank1Addr{ 0x8000000 };
+	static constexpr uintptr_t Bank2Addr{ 0x8000000 };
+	static constexpr size_t SectorSize{ 1ul << 17 };
+	static constexpr uint8_t SectorsPerBank{ 8 };
+	static constexpr size_t FlashWordWords{ FLASH_NB_32BITWORD_IN_FLASHWORD };
+	static constexpr size_t FlashWordSize{ FlashWordWords * sizeof(uint32_t) };
+	struct alignas(4) MaxWordType
 	{
-		B8 = 0,
-		B16 = FLASH_CR_PSIZE_0,
-		B32 = FLASH_CR_PSIZE_1,
+		uint32_t data[FlashWordWords];
 	};
+	static_assert(sizeof(MaxWordType) == FlashWordSize);
+	static_assert(alignof(MaxWordType) == alignof(uint32_t));
 public:
 	inline static void
 	enable()
@@ -46,11 +49,16 @@ public:
 
 	static bool
 	isLocked()
-	{ return FLASH->CR & FLASH_CR_LOCK; }
+	{
+		return FLASH->CR1 & FLASH_CR_LOCK;
+	}
 
 	static inline bool
 	isBusy()
-	{ return FLASH->SR & FLASH_SR_BSY; }
+	{
+		return FLASH->SR1 & (FLASH_SR_BSY | FLASH_SR_QW);
+	}
+
 	static bool
 	unlock();
 
@@ -71,7 +79,9 @@ public:
 
 	static inline uint8_t*
 	getAddr(uint8_t sector)
-	{ return Origin + getOffset(sector); }
+	{
+		return Origin + getOffset(sector);
+	}
 
 	static uint32_t
 	getOffset(uint8_t sector);
@@ -80,17 +90,9 @@ public:
 	getSize(uint8_t sector);
 
 	static uint32_t
-	erase(uint8_t sector, WordSize size = WordSize::B32);
-	static inline uint32_t
-	program(uintptr_t addr, uint8_t data)
-	{ return program(addr, data, WordSize::B8); }
-
-	static inline uint32_t
-	program(uintptr_t addr, uint16_t data)
-	{ return program(addr, data, WordSize::B16); }
-
+	erase(uint8_t sector);
 	static uint32_t
-	program(uintptr_t addr, MaxWordType data, WordSize size = WordSize::B32);
+	program(uintptr_t addr, const MaxWordType &data);
 };
 
 } // namespace modm::platform

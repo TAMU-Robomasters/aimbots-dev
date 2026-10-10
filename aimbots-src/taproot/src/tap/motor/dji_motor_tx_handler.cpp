@@ -55,6 +55,10 @@ void DjiMotorTxHandler::addMotorToManager(DjiMotor* motor)
     {
         addMotorToManager(can1MotorStore, motor);
     }
+    else if (motor->getCanBus() == tap::can::CanBus::CAN_BUS3)
+    {
+        addMotorToManager(can3MotorStore, motor);
+    }
     else
     {
         addMotorToManager(can2MotorStore, motor);
@@ -67,32 +71,48 @@ void DjiMotorTxHandler::encodeAndSendCanData()
     modm::can::Message can1MessageLow(
         CAN_DJI_LOW_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
         false);
     modm::can::Message can1MessageHigh(
         CAN_DJI_HIGH_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
         false);
     modm::can::Message can1Message6020Current(
         CAN_DJI_6020_CURRENT_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
         false);
     modm::can::Message can2MessageLow(
         CAN_DJI_LOW_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
         false);
     modm::can::Message can2MessageHigh(
         CAN_DJI_HIGH_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
         false);
     modm::can::Message can2Message6020Current(
         CAN_DJI_6020_CURRENT_IDENTIFIER,
         CAN_DJI_MESSAGE_SEND_LENGTH,
-        0,
+        uint64_t{0},
+        false);
+
+    modm::can::Message can3MessageLow(
+        CAN_DJI_LOW_IDENTIFIER,
+        CAN_DJI_MESSAGE_SEND_LENGTH,
+        uint64_t{0},
+        false);
+    modm::can::Message can3MessageHigh(
+        CAN_DJI_HIGH_IDENTIFIER,
+        CAN_DJI_MESSAGE_SEND_LENGTH,
+        uint64_t{0},
+        false);
+    modm::can::Message can3Message6020Current(
+        CAN_DJI_6020_CURRENT_IDENTIFIER,
+        CAN_DJI_MESSAGE_SEND_LENGTH,
+        uint64_t{0},
         false);
 
     bool can1ValidMotorMessageLow = false;
@@ -101,6 +121,10 @@ void DjiMotorTxHandler::encodeAndSendCanData()
     bool can2ValidMotorMessageLow = false;
     bool can2ValidMotorMessageHigh = false;
     bool can2ValidMotorMessage6020Current = false;
+
+    bool can3ValidMotorMessageLow = false;
+    bool can3ValidMotorMessageHigh = false;
+    bool can3ValidMotorMessage6020Current = false;
 
     serializeMotorStoreSendData(
         can1MotorStore,
@@ -119,6 +143,15 @@ void DjiMotorTxHandler::encodeAndSendCanData()
         &can2ValidMotorMessageLow,
         &can2ValidMotorMessageHigh,
         &can2ValidMotorMessage6020Current);
+
+    serializeMotorStoreSendData(
+        can3MotorStore,
+        &can3MessageLow,
+        &can3MessageHigh,
+        &can3Message6020Current,
+        &can3ValidMotorMessageLow,
+        &can3ValidMotorMessageHigh,
+        &can3ValidMotorMessage6020Current);
 
     bool messageSuccess = true;
 
@@ -152,6 +185,23 @@ void DjiMotorTxHandler::encodeAndSendCanData()
         {
             messageSuccess &=
                 drivers->can.sendMessage(can::CanBus::CAN_BUS2, can2Message6020Current);
+        }
+    }
+
+    if (drivers->can.isReadyToSend(can::CanBus::CAN_BUS3))
+    {
+        if (can3ValidMotorMessageLow)
+        {
+            messageSuccess &= drivers->can.sendMessage(can::CanBus::CAN_BUS3, can3MessageLow);
+        }
+        if (can3ValidMotorMessageHigh)
+        {
+            messageSuccess &= drivers->can.sendMessage(can::CanBus::CAN_BUS3, can3MessageHigh);
+        }
+        if (can3ValidMotorMessage6020Current)
+        {
+            messageSuccess &=
+                drivers->can.sendMessage(can::CanBus::CAN_BUS3, can3Message6020Current);
         }
     }
 
@@ -201,6 +251,10 @@ void DjiMotorTxHandler::removeFromMotorManager(const DjiMotor& motor)
     {
         removeFromMotorManager(motor, can1MotorStore);
     }
+    else if (motor.getCanBus() == tap::can::CanBus::CAN_BUS3)
+    {
+        removeFromMotorManager(motor, can3MotorStore);
+    }
     else
     {
         removeFromMotorManager(motor, can2MotorStore);
@@ -229,4 +283,11 @@ DjiMotor const* DjiMotorTxHandler::getCan2Motor(MotorId motorId)
     uint32_t index = DJI_MOTOR_TO_NORMALIZED_ID(motorId);
     return index > DJI_MOTOR_TO_NORMALIZED_ID(tap::motor::MOTOR8) ? nullptr : can2MotorStore[index];
 }
+
+DjiMotor const* DjiMotorTxHandler::getCan3Motor(MotorId motorId)
+{
+    uint32_t index = DJI_MOTOR_TO_NORMALIZED_ID(motorId);
+    return index > DJI_MOTOR_TO_NORMALIZED_ID(tap::motor::MOTOR8) ? nullptr : can3MotorStore[index];
+}
+
 }  // namespace tap::motor

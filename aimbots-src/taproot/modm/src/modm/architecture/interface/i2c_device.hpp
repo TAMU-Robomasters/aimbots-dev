@@ -15,7 +15,7 @@
 #include "i2c.hpp"
 #include "i2c_master.hpp"
 #include "i2c_transaction.hpp"
-#include <modm/processing/resumable.hpp>
+#include <modm/processing/fiber.hpp>
 
 namespace modm
 {
@@ -41,7 +41,7 @@ namespace modm
  * @ingroup modm_architecture_i2c_device
  */
 template < class I2cMaster, uint8_t NestingLevels = 10, class Transaction = I2cWriteReadTransaction >
-class I2cDevice : protected modm::NestedResumable< NestingLevels + 1 >
+class I2cDevice
 {
 public:
 	///	@param	address	the slave address not yet shifted left (address < 128).
@@ -68,42 +68,36 @@ public:
 
 	/// @retval true	device responds to address
 	/// @retval false	no device with address found
-	modm::ResumableResult<bool>
+	bool
 	ping()
 	{
-		RF_BEGIN();
-
-		RF_WAIT_UNTIL( transaction.configurePing() and startTransaction() );
-
-		RF_WAIT_WHILE( isTransactionRunning() );
-
-		RF_END_RETURN( wasTransactionSuccessful() );
+		modm::this_fiber::poll([&]{ return transaction.configurePing(); });
+		return runTransaction();
 	}
 
-protected:
-	/// Configures the transaction with a write/read operation and starts it.
-	bool inline
-	startWriteRead(const uint8_t *writeBuffer, std::size_t writeSize,
-			uint8_t *readBuffer, std::size_t readSize)
+	/// Starts a write-read transaction and waits until finished.
+	bool
+	writeRead(const uint8_t *writeBuffer, std::size_t writeSize,
+			  uint8_t *readBuffer, std::size_t readSize)
 	{
-		return ( transaction.configureWriteRead(writeBuffer, writeSize, readBuffer, readSize) and
-				startTransaction() );
+		modm::this_fiber::poll([&]{ return transaction.configureWriteRead(writeBuffer, writeSize, readBuffer, readSize); });
+		return runTransaction();
 	}
 
-	/// Configures the transaction with a write operation and starts it.
-	bool inline
-	startWrite(const uint8_t *buffer, std::size_t size)
+	/// Starts a write transaction and waits until finished.
+	bool
+	write(const uint8_t *buffer, std::size_t size)
 	{
-		return ( transaction.configureWrite(buffer, size) and
-				startTransaction() );
+		modm::this_fiber::poll([&]{ return transaction.configureWrite(buffer, size); });
+		return runTransaction();
 	}
 
-	/// Configures the transaction with a read operation and starts it.
-	bool inline
-	startRead(uint8_t *buffer, std::size_t size)
+	/// Starts a write transaction and waits until finished.
+	bool
+	read(uint8_t *buffer, std::size_t size)
 	{
-		return ( transaction.configureRead(buffer, size) and
-				startTransaction() );
+		modm::this_fiber::poll([&]{ return transaction.configureRead(buffer, size); });
+		return runTransaction();
 	}
 
 protected:
@@ -114,7 +108,7 @@ protected:
 		return startTransaction(&this->transaction);
 	}
 
-	/// Starts the transaction with a seperate transaction object.
+	/// Starts the transaction with a separate transaction object.
 	bool inline
 	startTransaction(modm::I2cTransaction *transaction)
 	{
@@ -136,16 +130,12 @@ protected:
 	}
 
 	/// Starts our own transaction and waits until finished.
-	modm::ResumableResult<bool>
+	bool
 	runTransaction()
 	{
-		RF_BEGIN();
-
-		RF_WAIT_UNTIL( startTransaction() );
-
-		RF_WAIT_WHILE( isTransactionRunning() );
-
-		RF_END_RETURN( wasTransactionSuccessful() );
+		modm::this_fiber::poll([&]{ return startTransaction(); });
+		modm::this_fiber::poll([&]{ return not isTransactionRunning(); });
+		return wasTransactionSuccessful();
 	}
 
 protected:

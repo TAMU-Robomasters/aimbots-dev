@@ -2,6 +2,8 @@
  * Copyright (c) 2013, Kevin Läufer
  * Copyright (c) 2014, Fabian Greif
  * Copyright (c) 2014-2017, Niklas Hauser
+ * Copyright (c) 2022-2023, Christopher Durand
+ * Copyright (c) 2023, Sergey Pluzhnikov
  *
  * This file is part of the modm project.
  *
@@ -15,6 +17,8 @@
 #define MODM_STM32_TIMER_GP_BASE_HPP
 
 #include "basic_base.hpp"
+#include <modm/platform/core/peripherals.hpp>
+#include <modm/platform/gpio/data.hpp>
 
 namespace modm
 {
@@ -43,7 +47,7 @@ public:
 		CaptureCompare1 = TIM_DIER_CC1IE,
 		CaptureCompare2 = TIM_DIER_CC2IE,
 		CaptureCompare3 = TIM_DIER_CC3IE,
-		CaptureCompare4= TIM_DIER_CC4IE,
+		CaptureCompare4 = TIM_DIER_CC4IE,
 		Trigger = TIM_DIER_TIE,
 		COM = TIM_DIER_COMIE,
 		Break = TIM_DIER_BIE,
@@ -108,8 +112,6 @@ public:
 		ForceInactive = TIM_CCMR1_OC1M_2,
 		/// Output is forced high
 		ForceActive = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0,
-		ForceLow  [[deprecated("Use ForceInactive instead.")]] = ForceInactive,
-		ForceHigh [[deprecated("Use ForceActive instead.")]]   = ForceActive,
 
 		/**
 		 * PWM Mode 1.
@@ -131,6 +133,42 @@ public:
 		 * capture/compare	register, else inactive.
 		 */
 		Pwm2 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0,
+
+#ifdef TIM_CCMR1_OC1M_3
+		/**
+		 * Combined PWM mode 1.
+		 *
+		 *  OC1REF has the same behavior as in PWM mode 1.
+		 *  OC1REFC is the logical OR between OC1REF and OC2REF.
+		 */
+		Combined1 = TIM_CCMR1_OC1M_3 | TIM_CCMR1_OC1M_2,
+
+		/**
+		 * Combined PWM mode 2.
+		 *
+		 *  OC1REF has the same behavior as in PWM mode 2.
+		 * 	OC1REFC is the logical AND between OC1REF and OC2REF.
+		 */
+		Combined2 = TIM_CCMR1_OC1M_3 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0,
+
+		/**
+		 *  Asymmetric PWM mode 1.
+		 *
+		 *  OC1REF has the same behavior as in PWM mode 1.
+		 *	OC1REFC outputs OC1REF when the counter is counting up,
+		 *	OC2REF when it is counting down.
+		 */
+		Asymmetric1 = TIM_CCMR1_OC1M_3 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1,
+
+		/**
+		 * Asymmetric PWM mode 2.
+		 *
+		 * OC1REF has the same behavior as in PWM mode 2.
+		 * OC1REFC outputs OC1REF when the counter is counting up,
+		 * OC2REF when it is counting down.
+		 */
+		Asymmetric2 = TIM_CCMR1_OC1M_3 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0,
+#endif
 	};
 	MODM_FLAGS32(OutputCompareMode);
 
@@ -183,7 +221,7 @@ public:
 		Enable = 1,
 	};
 
-	/* Different Resolution Depending on DeadTime[7:5]: */
+	/* Different Resolution depending on DeadTime[7:5]: */
 	enum class DeadTimeResolution : uint32_t
 	{
 		From0With125nsStep = 0,									//0xx
@@ -220,7 +258,7 @@ public:
 	/**
 	 * TODO Description
 	 */
-	void
+	static void
 	configureInputChannel(uint32_t channel, InputCaptureMapping input,
 			InputCapturePrescaler prescaler, InputCapturePolarity polarity, uint8_t filter);
 
@@ -242,7 +280,7 @@ public:
 	 * @param	channel	[1..4]
 	 * @param	value	Compare value
 	 */
-	static inline void
+	static void
 	setCompareValue(uint32_t channel, uint16_t value);
 
 	/**
@@ -251,8 +289,49 @@ public:
 	 * @param	channel	[1..4]
 	 * @return	Current compare value
 	 */
-	static inline uint16_t
+	static uint16_t
 	getCompareValue(uint32_t channel);
+
+public:
+	template< typename Signal>
+	static consteval bool
+	isComplementaryChannel()
+	{
+		if constexpr (Signal::Signal == Gpio::Signal::Ch1n) {
+			return true;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch2n) {
+			return true;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch3n) {
+			return true;
+		}
+		return false;
+	}
+
+protected:
+	template<Peripheral p, typename Signal>
+	static consteval int
+	signalToChannel()
+	{
+		modm::platform::detail::SignalConnection<Signal, p>{};
+		if constexpr (Signal::Signal == Gpio::Signal::Ch1) {
+			return 1;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch1n) {
+			return 1;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch2) {
+			return 2;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch2n) {
+			return 2;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch3) {
+			return 3;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch3n) {
+			return 3;
+		} else if constexpr (Signal::Signal == Gpio::Signal::Ch4) {
+			return 4;
+		} else {
+			// assert is always false, static_assert(false) would not compile
+			static_assert(!sizeof(Signal), "Invalid timer channel");
+		}
+	}
 };
 
 } // namespace platform

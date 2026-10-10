@@ -20,6 +20,7 @@ def build_target(env, sources):
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".bin"))
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".hex"))
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".lss"))
+	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".uf2"))
 
 	env.Alias("qtcreator", env.QtCreatorProject(sources))
 	env.Alias("symbols", env.Symbols(chosen_program))
