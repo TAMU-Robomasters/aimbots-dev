@@ -32,7 +32,7 @@ modm::ResumableResult<bool> ChassisOrientationIndicator::sendInitialGraphics() {
     chassisOrientationGraphics.graphicData[0].operation = Tx::GRAPHIC_MODIFY;
     chassisOrientationGraphics.graphicData[1].operation = Tx::GRAPHIC_MODIFY;
 
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 modm::ResumableResult<bool> ChassisOrientationIndicator::update() {
@@ -62,7 +62,7 @@ modm::ResumableResult<bool> ChassisOrientationIndicator::update() {
     // is rotated by `getYawAngleFromCenter` the rotation is relative to the forward.
     chassisOrientation.set(0, CHASSIS_LENGTH / 2);
 
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 void ChassisOrientationIndicator::initialize() {

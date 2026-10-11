@@ -28,6 +28,7 @@
 #include "tap/board/board.hpp"
 
 #include "modm/architecture/interface/delay.hpp"
+#include "modm/processing/fiber.hpp"
 
 /* arch includes ------------------------------------------------------------*/
 #include "tap/architecture/periodic_timer.hpp"
@@ -45,7 +46,6 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
-#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
@@ -91,6 +91,15 @@ bool actualattachDisplay = false;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
+// The old superloop, run as a fiber (see main()).
+static void mainLoop(src::Drivers *drivers);
+
+// Not measured yet. The old superloop shared the 3072-byte main stack with the ISRs.
+static constexpr size_t MAIN_LOOP_STACK_SIZE = 8192;
+modm::Fiber<MAIN_LOOP_STACK_SIZE> mainLoopFiber(
+    [] { mainLoop(src::DoNotUse_getDrivers()); },
+    modm::fiber::Start::Later);
+
 int main() {
 #ifdef PLATFORM_HOSTED
     std::cout << "Simulation starting..." << std::endl;
@@ -105,8 +114,6 @@ int main() {
 
     Board::initialize();
 
-    tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
-
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);
 
@@ -116,6 +123,16 @@ int main() {
     tap::communication::TCPServer::MainServer()->getConnection();
 #endif
 
+    // DM-MC02 Taproot runs on modm fibers (D1b): the old superloop is the main-loop fiber,
+    // and protothreads (HUD, ref custom serial) are fibers of their own that run while it yields.
+    mainLoopFiber.start();
+    modm::fiber::Scheduler::run();
+    return 0;
+}
+
+static void mainLoop(src::Drivers *drivers) {
+    tap::arch::PeriodicMilliTimer mainLoopTimeout(1000.0f / SAMPLE_FREQUENCY);
+
     while (1) {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
@@ -124,7 +141,7 @@ int main() {
 
 
             drivers->bmi088.periodicIMUUpdate();
-            currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
+            currHeat = drivers->refSerial.getRobotData().turret.heat17;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
             gameStartedDisplay =
@@ -167,9 +184,9 @@ int main() {
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
-        modm::delay_us(10);
+        // Was modm::delay_us(10): yield so the other fibers run.
+        modm::this_fiber::yield();
     }
-    return 0;
 }
 
 static void initializeIo(src::Drivers *drivers) {
@@ -198,7 +215,6 @@ static void initializeIo(src::Drivers *drivers) {
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
     drivers->remote.initialize();
     drivers->refSerial.initialize();
-    // drivers->magnetometer.init();
     drivers->cvCommunicator.initialize();
    // drivers->powerCommunicator.initialize();
   //  drivers->kinematicInformant.recalibrateIMU(
@@ -210,9 +226,6 @@ static void initializeIo(src::Drivers *drivers) {
     // drivers->terminalSerial.initialize();
     drivers->schedulerTerminalHandler.init();
     drivers->djiMotorTerminalSerialHandler.init();
-#ifdef ULTRASONIC
-    drivers->railDistanceSensor.initialize();
-#endif
 
 #ifdef TURRET_HAS_IMU  // should probably be initialized for both TARGET_TURRET and chassis boards
     drivers->turretCommunicator.init();
