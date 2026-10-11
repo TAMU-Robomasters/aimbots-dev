@@ -74,8 +74,9 @@ void NXPBMI088::requestRecalibration()
 void NXPBMI088::initialize(float sampleFrequency)
 {
 #if !defined(PLATFORM_HOSTED)
-    ImuCS1Accel::GpioOutput();
-    ImuCS1Gyro::GpioOutput();
+    // Same fix as Taproot 97ba2f1d "Fix BMI088 GPIO initialization"
+    ImuCS1Accel::configure(modm::platform::Gpio::OutputType::PushPull);
+    ImuCS1Gyro::configure(modm::platform::Gpio::OutputType::PushPull);
 
     DELAY_MS(100);
 
@@ -227,9 +228,11 @@ void NXPBMI088::periodicIMUUpdate()
             data.accG[ImuData::X],
             data.accG[ImuData::Y],
             data.accG[ImuData::Z],
-            drivers->magnetometer.getX(),
-            drivers->magnetometer.getY(),
-            drivers->magnetometer.getZ());
+            // The DM-MC02 has no magnetometer. 0 is what the IST8310 always returned
+            // here before, since its init() was never called.
+            0.0f,
+            0.0f,
+            0.0f);
     }
 
     imuHeater.runTemperatureController(data.temperature);
