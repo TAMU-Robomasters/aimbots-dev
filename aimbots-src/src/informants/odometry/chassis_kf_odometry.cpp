@@ -1,5 +1,7 @@
 #include "chassis_kf_odometry.hpp"
 
+#include "tap/algorithms/odometry/odometry_2d_tracker.hpp"
+
 namespace src::Informants::Odometry {
 
 ChassisKFOdometry::ChassisKFOdometry(float initialXPos, float initialYPos)
@@ -53,7 +55,7 @@ void ChassisKFOdometry::update(float chassisYaw, float xChassisAccel, float yCha
     
 
 
-    tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
+    tap::algorithms::odometry::getVelocityWorldRelative(
         chassisVelocity,
         chassisYaw);  // convert to world-relative velocity using chassis orientation
 

@@ -165,7 +165,7 @@ public:
         return mat * ratio;
     }
 
-    Matrix<float, 3, 1> getActualVelocityChassisRelative() override;
+    Matrix<float, 3, 1> getActualVelocityChassisRelative() const override;
 
     bool getTokyoDrift() const;
     void setTokyoDrift(bool drift) { tokyoDrift = drift; }

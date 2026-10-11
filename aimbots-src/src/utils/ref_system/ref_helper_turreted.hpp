@@ -54,12 +54,8 @@ public:
         uint16_t lastHeat = 0;
 
         switch (currBarrelID) {
-            case RefSerialRxData::MechanismID::TURRET_17MM_1: {
-                lastHeat = turretData.heat17ID1;
-                break;
-            }
-            case RefSerialRxData::MechanismID::TURRET_17MM_2: {
-                lastHeat = turretData.heat17ID2;
+            case RefSerialRxData::MechanismID::TURRET_17MM: {
+                lastHeat = turretData.heat17;
                 break;
             }
             case RefSerialRxData::MechanismID::TURRET_42MM: {
