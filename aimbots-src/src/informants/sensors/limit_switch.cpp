@@ -5,8 +5,7 @@ namespace src::Informants {
 LimitSwitch::LimitSwitch(std::string rxPin, EdgeType edge) : rxPin(rxPin), counter(0), edge(edge){};
 
 void LimitSwitch::initialize() {  // awesome
-    C6::configure(modm::platform::Gpio::InputType::PullUp);
-    C7::configure(modm::platform::Gpio::InputType::PullUp);
+    A2::configure(modm::platform::Gpio::InputType::PullUp);
 }
 
 int counter_debug = 0;
@@ -30,11 +29,8 @@ void LimitSwitch::refresh() {
 
 bool LimitSwitch::readSwitch() {
     // return drivers->digital.read(rxPin);
-    debug_C6_direct = static_cast<LimitSwitchState>(Board::DigitalInPinC6::read());
-    if (rxPin == "C6")
-        return C6::read();
-    else if (rxPin == "C7")
-        return C7::read();
+    if (rxPin == "A2")
+        return A2::read();
     return true;
 }
 

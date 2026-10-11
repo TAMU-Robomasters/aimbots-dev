@@ -87,7 +87,7 @@ void IMUCalibrateCommand::execute() {
         }
 
         case CalibrationState::DONE:
-            drivers->leds.set(tap::gpio::Leds::Green, true);
+            // DM-MC02 has no GPIO LEDs (Type C: drivers->leds.set(tap::gpio::Leds::Green, true))
             break;
     }
 }

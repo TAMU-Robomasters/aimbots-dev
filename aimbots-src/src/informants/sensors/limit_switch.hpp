@@ -14,8 +14,9 @@ enum LimitSwitchState {
     RELEASED = 0,
 };
 
-using C6 = Board::DigitalInPinC6;
-using C7 = Board::DigitalInPinC7;
+// DM-MC02: the PWM2 header pin (PA2) is used as a GPIO input. It is left out of
+// taproot:board:pwm_pins in project.xml. The Type C used C6/C7.
+using A2 = modm::platform::GpioA2;
 
 enum EdgeType {
     FALLING = 0,
