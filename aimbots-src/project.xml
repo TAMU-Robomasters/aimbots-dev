@@ -54,6 +54,14 @@
     <module>taproot:communication:gpio:leds</module>
     <module>taproot:communication:gpio:digital</module>
     <module>taproot:communication:tcp-server</module>
+    <!-- Split out of taproot:core on develop -->
+    <module>taproot:motor:pwm</module>
+    <module>taproot:architecture:profiler</module>
+    <module>taproot:algorithms:odometry</module>
+    <module>taproot:communication:gpio:analog</module>
+    <module>taproot:control:terminal_serial</module>
+    <module>taproot:errors</module>
+    <module>taproot:motor:terminal_serial</module>
 
     <!-- Only supported on RoboMaster Development Board Type A -->
     <!-- <module>taproot:communication:sensors:imu:mpu6500</module>
