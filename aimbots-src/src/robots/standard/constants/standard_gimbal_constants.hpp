@@ -165,7 +165,7 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 // clang-format on
 
 #elif defined(TARGET_STANDARD_2025)
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;  // DM-MC02: was CAN_BUS1
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(142.5) };
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(303.4)};
