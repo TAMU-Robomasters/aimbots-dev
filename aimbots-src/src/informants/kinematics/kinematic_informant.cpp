@@ -30,6 +30,8 @@ void KinematicInformant::initialize(float imuFrequency, float imukP, float imukI
         tap::algorithms::transforms::Transform(0.0f, 0.0f, 0.0f, modm::toRadian(-90.0f), 0.0f, 0.0f));
 #endif
     drivers->bmi088.initialize(imuFrequency, imukP, imukI);
+    // Taproot develop defaults to 35 C; main.cpp's atTemp waits for 50 C.
+    drivers->bmi088.setTargetTemperature(50.0f);
 }
 
 void KinematicInformant::recalibrateIMU(Vector3f imuCalibrationEuler) {
