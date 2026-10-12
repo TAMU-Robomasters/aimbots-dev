@@ -67,7 +67,7 @@
     <!-- <module>taproot:communication:sensors:imu:mpu6500</module>
     <module>taproot:display</module> -->
 
-    <!-- Only supported on RoboMaster Development Board Type C -->
+    <!-- RoboMaster Development Board Type C and Damiao DM-MC02 -->
     <module>taproot:communication:sensors:imu:bmi088</module>
   </modules>
 </library>

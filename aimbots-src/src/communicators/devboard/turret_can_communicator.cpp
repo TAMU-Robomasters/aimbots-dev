@@ -150,7 +150,7 @@ void TurretCommunicator::handleChassisRequestRX(modm::can::Message const& msg) {
     uint8_t data = msg.data[0];
 
     if (data & CHASSIS_TO_TURRET_MSG_REQUEST_IMU_CALIBRATION) {
-        // DM-MC02 has no GPIO LEDs (Type C: drivers->leds.set(tap::gpio::Leds::Green, true))
+        // TODO: restore drivers->leds.set(tap::gpio::Leds::Green, true) once Taproot drives the MC02 WS2812 LED (MC02 has no GPIO LEDs)
 
         drivers->kinematicInformant.recalibrateIMU();
     }
