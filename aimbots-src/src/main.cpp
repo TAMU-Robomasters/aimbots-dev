@@ -64,6 +64,11 @@ static void updateIo(src::Drivers *drivers);
 static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
+// Ozone watch vars for the 2 ms motor block (scheduler + PID + CAN TX): how many times it ran,
+// and the longest gap between two runs. Should be 500 per second and about 2000 us.
+uint32_t motorLoopCount = 0;
+uint32_t motorLoopMaxPeriodUs = 0;
+static uint32_t motorLoopLastStartUs = 0;
 bool atTemp = false;
 bool imuHeatingSound = false;
 bool startupSound = false;
@@ -157,6 +162,11 @@ static void mainLoop(src::Drivers *drivers) {
         // every 2ms...
         if (sendMotorTimeout.execute()) {
             uint32_t loopStartTime = tap::arch::clock::getTimeMicroseconds();
+            if (motorLoopCount > 0 && loopStartTime - motorLoopLastStartUs > motorLoopMaxPeriodUs) {
+                motorLoopMaxPeriodUs = loopStartTime - motorLoopLastStartUs;
+            }
+            motorLoopLastStartUs = loopStartTime;
+            motorLoopCount++;
 
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
