@@ -228,7 +228,7 @@ static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
 // balls
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS3;  // DM-MC02: was CAN_BUS2
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
