@@ -74,3 +74,6 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
 
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
+
+static constexpr float CAMERA_YAW_OFFSET_ANGLE_DEGREES = 0.0f;
+static constexpr float CAMERA_PITCH_OFFSET_ANGLE_DEGREES = 0.0f;
