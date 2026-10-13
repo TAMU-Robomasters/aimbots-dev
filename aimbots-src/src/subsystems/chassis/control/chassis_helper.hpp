@@ -54,6 +54,14 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
     float* desiredY,
     float* desiredRotation);
 
+void rescaleDesiredInputToPowerLimitedSpeeds(
+    src::Drivers* drivers,
+    ChassisSubsystem* chassis,
+    float* desiredX,
+    float* desiredY,
+    float* desiredRotation,
+    float maxWheelSpeed);
+
 void randomizeSpinCharacteristics(
     float* spinRateModifier,
     uint32_t* spinRateModifierDuration,

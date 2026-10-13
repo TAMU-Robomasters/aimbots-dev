@@ -153,4 +153,5 @@
   ]
   },
   "C_Cpp.intelliSenseEngineFallback": "enabled",
+  "C_Cpp.default.compilerPath": "/opt/homebrew/bin/arm-none-eabi-g++",
 }

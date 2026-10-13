@@ -17,13 +17,13 @@
  * @brief GIMBAL SETUP
  */
 
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS1;
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
 
 #if defined(TARGET_STANDARD_BLASTOISE)
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(-0.44)-M_PI};
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(11.11f)+((5*M_PI)/18)};
@@ -68,11 +68,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,  // 30
+    .kp = 17.0f,  // 30
     .ki = 0.0f,
-    .kd = 0.5f,
+    .kd = 0.0f,
     .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .maxOutput = GM6020_MAX_OUTPUT,  // 40 rad/s is maximum speed of 6020
     //.maxOutput = 0.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -101,7 +101,7 @@ static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
     .kp = 1850.0f,  // 3000
     .ki = 25.0f,    // 25
     .kd = 0.0f,
-    .maxICumulative = 2000.0f,
+    .maxICumulative = 3000.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -165,11 +165,12 @@ const modm::Pair<float, float> PITCH_FEEDFORWARD_VELOCITIES[11] = {
 // clang-format on
 
 #elif defined(TARGET_STANDARD_2025)
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS1;
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot cassis? */
-static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(-19.6f) + M_PI};
-static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(-50)+((5*M_PI)/18)};
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.48;//modm::toRadian(250.0f);
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.20;//modm::toRadian(355.0f);
+static const std::array<float, YAW_MOTOR_COUNT> YAW_MOTOR_OFFSET_ANGLES = {modm::toRadian(142.5) };
+static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {modm::toRadian(303.4)};
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.32;//modm::toRadian(250.0f);
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.16;//modm::toRadian(355.0f);
 static const std::array<bool, PITCH_MOTOR_COUNT> PITCH_MOTOR_DIRECTIONS = {true};
 // LOW should be lesser than HIGH, otherwise switch the motor direction
 static inline float chassisRelativeVelocityYawFeedforward(float desiredYawVelocity) {
@@ -209,11 +210,11 @@ static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
 
 // VISION PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 30.0f,  // 30
+    .kp = 17.0f,  // 30
     .ki = 0.0f,
-    .kd = 0.5f,
-    .maxICumulative = 1.0f,
-    .maxOutput = 40.0f,  // 40 rad/s is maximum speed of 6020
+    .kd = 0.0f,
+    .maxICumulative = 0.1f,
+    .maxOutput = GM6020_MAX_OUTPUT,  // 40 rad/s is maximum speed of 6020
     //.maxOutput = 0.0f,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
@@ -239,10 +240,10 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 0.0f,//1850.0f,  // 3000
-    .ki = 25.0f,    // 25
+    .kp = 1000.0f,//1850.0f,  // 3000
+    .ki = 15.0f,    // 25
     .kd = 0.0f,
-    .maxICumulative = 2000.0f,
+    .maxICumulative = 2500.0f,
     .maxOutput = GM6020_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,

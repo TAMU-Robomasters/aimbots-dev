@@ -2,7 +2,7 @@
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
-static constexpr SongTitle STARTUP_SONG = SongTitle::FREEBIRD;
+static constexpr SongTitle STARTUP_SONG = SongTitle::PACMAN;
 
 // #define TURRET_HAS_IMU
 
@@ -21,6 +21,11 @@ static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
     0.1348f, // y
     -0.0498f,  // z
 };
+
+// Camera mounting offset relative to the gimbal/turret orientation (degrees).
+// Defaults to 0; tune for the aerial's actual camera mount.
+static constexpr float CAMERA_YAW_OFFSET_ANGLE_DEGREES = 0.0f;
+static constexpr float CAMERA_PITCH_OFFSET_ANGLE_DEGREES = 0.0f;
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{
     0.0f, // x

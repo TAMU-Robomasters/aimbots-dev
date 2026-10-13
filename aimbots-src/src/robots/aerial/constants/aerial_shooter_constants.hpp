@@ -21,10 +21,17 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
 };
 
 // clang-format off
-static constexpr uint16_t shooter_speed_array[2] = {30, 7450};  // {m/s, rpm}
+// {ball m/s (ref speed limit), flywheel rpm} — one row per ref-system speed level so
+// RunShooterCommand can pick the right flywheel RPM for the active barrel limit (like standard).
+// 30 m/s -> 7450 is aerial's measured value; 15/18 m/s RPMs are seeded from standard and
+// TODO: re-tune for aerial's flywheels.
+static constexpr uint16_t shooter_speed_array[6] = {
+    15, 4600,
+    18, 5100,
+    30, 7450};
 // clang-format on
 
-static const Matrix<uint16_t, 1, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
 // CAN Bus 1
 static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;

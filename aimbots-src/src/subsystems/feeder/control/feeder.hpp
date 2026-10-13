@@ -1,5 +1,6 @@
 #pragma once
 #include "tap/control/subsystem.hpp"
+#include "tap/motor/dji_motor.hpp"
 #include "tap/motor/m3508_constants.hpp"
 
 #include "informants/sensors/limit_switch.hpp"
@@ -23,6 +24,7 @@ public:
                 new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
             feederTargetRPMs[i] = 0.0f;
             feederCustomSpeedActive[i] = false;
+            feederShotTimingActive[i] = false;
         }
     }
 
@@ -120,6 +122,20 @@ public:
         }
     }
 
+    // Bypasses the velocity PID and slams the motor straight to full C610 output. Used by
+    // FeederShotTimingCommand to punch the current projectile out as fast as possible.
+    void activateFeederMotorForShotTiming(uint8_t feederIdx = 0) {
+        feederShotTimingActive[feederIdx] = true;
+        setDesiredFeederMotorOutput(feederIdx, tap::motor::DjiMotor::MAX_OUTPUT_C610 - 5'000.0f);
+    }
+
+    // Bypasses the velocity PID and applies a small reverse output to actively brake the
+    // motor instead of letting it coast. Used by FeederShotTimingCommand.
+    void deactivateFeederMotorForShotTiming(uint8_t feederIdx = 0) {
+        feederShotTimingActive[feederIdx] = true;
+        setDesiredFeederMotorOutput(feederIdx, -FEEDER_SHOT_TIMING_BRAKE_OUTPUT);
+    }
+
     inline void setFeederCustomStatus(uint8_t feederIdx, bool customStatus) {
         feederCustomSpeedActive[feederIdx] = customStatus;
     }
@@ -153,6 +169,12 @@ private:
     std::array<SmoothPID*, FEEDER_MOTOR_COUNT> feederVelocityPIDs;
 
     std::array<bool, FEEDER_MOTOR_COUNT> feederCustomSpeedActive;
+
+    // True while a feeder motor is under direct-output control from
+    // activateFeederMotorForShotTiming/deactivateFeederMotorForShotTiming. While true,
+    // updateMotorVelocityPID() skips the velocity PID and leaves desiredFeederMotorOutputs
+    // alone. Cleared automatically by setTargetRPM() when any normal RPM-based command runs.
+    std::array<bool, FEEDER_MOTOR_COUNT> feederShotTimingActive;
     // DJIMotor feederMotor;
 
     src::Informants::LimitSwitch limitSwitch;

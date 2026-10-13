@@ -27,6 +27,11 @@
 // #include "informants/ultrasonic_distance_sensor.hpp"
 #include "communicators/devboard/turret_can_communicator.hpp"
 #include "communicators/jetson/jetson_communicator.hpp"
+#include "communicators/custom_controller/custom_controller.hpp"
+#include "communicators/esp_power_sensor/esp_power_sensor.hpp"
+#include "communicators/vtm_can/vtm_can.hpp"
+#include "communicators/vtm_can/can_test_listener.hpp"
+#include "communicators/can_sound_system/can_sound_system.hpp"
 #include "communicators/rev_encoder/rev_encoder_protocol.hpp"
 //#include "communicators/INA260/INA260_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
@@ -45,6 +50,11 @@ public:
         : tap::Drivers(),
           controlOperatorInterface(this),
           magnetometer(),
+          customController(this),
+          vtmCan(this),
+          espPowerSensor(this),
+          canSoundSystem(this),
+          can351Listener(this),
           cvCommunicator(this),
       //  powerCommunicator(this),
       #ifdef YAW_3508
@@ -53,11 +63,16 @@ public:
           kinematicInformant(this),
           hitTracker(this),
           turretCommunicator(this, CANBus::CAN_BUS1),
-          musicPlayer(this, STARTUP_SONG) {}
+          musicPlayer(this, STARTUP_SONG) {customController.setVtmCan(&vtmCan);}
 
 public:
     Control::OperatorInterface controlOperatorInterface;
     utils::Ist8310 magnetometer;
+    src::communicators::custom_controller::CustomController customController;
+    src::communicators::vtm_can::VtmCan vtmCan;
+    src::communicators::esp_power_sensor::EspPowerSensor espPowerSensor;
+    src::communicators::can_sound_system::CanSoundSystem canSoundSystem;
+    src::communicators::vtm_can::Can351Listener can351Listener;
     Informants::Vision::JetsonCommunicator cvCommunicator;
   //  Informants::INA260::INA260Communicator powerCommunicator;
   #ifdef YAW_3508

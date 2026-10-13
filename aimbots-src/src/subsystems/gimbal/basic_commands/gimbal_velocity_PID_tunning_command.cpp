@@ -48,9 +48,9 @@ void GimbalVelocityTunningCommand::execute() {
     controller->runYawVelocityController();
     controller->runPitchVelocityController();
 
-  //  runYawVelocityStepOscillation(500.0f);
+   // runYawVelocityStepOscillation(500.0f);
 
-//   runPitchVelocityStepUp(1000.0f);
+  // runPitchVelocityStepUp(1000.0f);
 }
 
 float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per second
@@ -81,27 +81,27 @@ float GimbalVelocityTunningCommand::getPitchTargetVelocity() { // in degrees per
         updatePitchVelocityConfigDebug = false;
     }
 
-    // if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) >= PITCH_AXIS_SOFTSTOP_HIGH && goingUp){
-    //     goingUp = false;
-    // }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) <= PITCH_AXIS_SOFTSTOP_LOW && !goingUp){
-    //     goingUp = true;
-    // }
+    if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) >= PITCH_AXIS_SOFTSTOP_HIGH && goingUp){
+        goingUp = false;
+    }else if(gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) <= PITCH_AXIS_SOFTSTOP_LOW && !goingUp){
+        goingUp = true;
+    }
 
-    // if (goingUp) {
-    //     return pitchConfig.velocityAmplitudeDegreesPerSec;
-    // } else {
-    //     return -pitchConfig.velocityAmplitudeDegreesPerSec;
-    // }
+    if (goingUp) {
+        return pitchConfig.velocityAmplitudeDegreesPerSec;
+    } else {
+        return -pitchConfig.velocityAmplitudeDegreesPerSec;
+    }
 
     float periodMilliseconds = 1000.0f / pitchConfig.frequencyHz;
     
     float timeInPeriod = fmod(getRelativeTime(), periodMilliseconds);
     
-    if (timeInPeriod < periodMilliseconds / 2.0f) {
-        return pitchConfig.velocityAmplitudeDegreesPerSec;
-    } else {
-        return -pitchConfig.velocityAmplitudeDegreesPerSec;
-    }
+    // if (timeInPeriod < periodMilliseconds / 2.0f) {
+    //     return pitchConfig.velocityAmplitudeDegreesPerSec;
+    // } else {
+    //     return -pitchConfig.velocityAmplitudeDegreesPerSec;
+    // }
 }
 
 float currRPMDisplay = 0.0f;
@@ -123,20 +123,21 @@ void GimbalVelocityTunningCommand::runYawVelocityStepOscillation(float periodSec
     yawVelocityFilter->update(modm::toDegree(RPM_TO_RADPS(averageRPM)));
     currRPMDisplay = yawVelocityFilter->getValue();
     uint32_t periodForSingleStep_ms = periodSeconds * 1E3 / 50.0f;
-    float stepSize = 1000.0f;
+    float stepSize = 300.0f;
+    float stepStart = 2600.0f;
 
     for (size_t i = 0; i < 32; i++) {
         uint32_t stepNumber = fmod(getRelativeTime() / periodForSingleStep_ms, 51);
         if ((i == stepNumber / 2) && (stepNumber % 2 == 0)) {
-            yawVelocityFeedforwardDisplay = stepSize*i;
+            yawVelocityFeedforwardDisplay = stepSize*i + stepStart;
             for(int j = 0; j< YAW_MOTOR_COUNT;j++){
-                gimbal->setDesiredYawMotorOutput(j, stepSize*i);
+                gimbal->setDesiredYawMotorOutput(j, stepSize*i + stepStart);
             }
         }
         else if ((i == stepNumber / 2) && (stepNumber % 2 == 1)) {
-            yawVelocityFeedforwardDisplay = -stepSize*i;
+            yawVelocityFeedforwardDisplay = -stepSize*i -stepStart;
             for(int j= 0; j< YAW_MOTOR_COUNT;j++){
-                gimbal->setDesiredYawMotorOutput(j, -stepSize*i);
+                gimbal->setDesiredYawMotorOutput(j, -stepSize*i - stepStart);
             }
         }
     }

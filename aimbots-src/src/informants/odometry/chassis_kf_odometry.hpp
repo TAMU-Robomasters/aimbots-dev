@@ -63,13 +63,17 @@ private:
     static constexpr float dt = 0.002f;
 
     // clang-format off
+    // VELOCITY-ONLY EXPERIMENT: the accel->vel (dt) and accel->pos (0.5*dt*dt) coupling
+    // terms are zeroed so the acceleration state can never affect velocity or position.
+    // Position is then a pure integral of the (measured) velocity state.
+    // Original values: row0 col2 = 0.5*dt*dt, row1 col2 = dt, row3 col5 = 0.5*dt*dt, row4 col5 = dt.
     static constexpr float KF_A[STATES_SQUARED] = {
-        1, dt, 0.5 * dt * dt, 0, 0 , 0            ,
-        0, 1 , dt           , 0, 0 , 0            ,
-        0, 0 , 1            , 0, 0 , 0            ,
-        0, 0 , 0            , 1, dt, 0.5 * dt * dt,
-        0, 0 , 0            , 0, 1 , dt           ,
-        0, 0 , 0            , 0, 0 , 1            ,
+        1, dt, 0, 0, 0 , 0,
+        0, 1 , 0, 0, 0 , 0,
+        0, 0 , 1, 0, 0 , 0,
+        0, 0 , 0, 1, dt, 0,
+        0, 0 , 0, 0, 1 , 0,
+        0, 0 , 0, 0, 0 , 1,
     };
     static constexpr float KF_C[INPUTS_MULT_STATES] = {
         0, 1, 0, 0, 0, 0,
@@ -77,19 +81,25 @@ private:
         0, 0, 0, 0, 1, 0,
         0, 0, 0, 0, 0, 1,
     };
+    // Velocity process-noise std = 2 m/s -> variance Q_VEL = 2^2 = 4.
+    // Position process noise is derived from it: a velocity disturbance of std sqrt(Q_VEL)
+    // displaces position by (that velocity * dt) over one tick, so Var(pos) = Q_VEL * dt^2.
+    static constexpr float Q_VEL = 4.0f;
     static constexpr float KF_Q[STATES_SQUARED] = {
-        1E1, 0  , 0   , 0  , 0  , 0   ,
-        0  , 1E0, 0   , 0  , 0  , 0   ,
-        0  , 0  , 1E-1, 0  , 0  , 0   ,
-        0  , 0  , 0   , 1E1, 0  , 0   ,
-        0  , 0  , 0   , 0  , 1E0, 0   ,
-        0  , 0  , 0   , 0  , 0  , 1E-1,
+        Q_VEL * dt * dt, 0    , 0   , 0              , 0    , 0   ,
+        0              , Q_VEL, 0   , 0              , 0    , 0   ,
+        0              , 0    , 1E-1, 0              , 0    , 0   ,
+        0              , 0    , 0   , Q_VEL * dt * dt, 0    , 0   ,
+        0              , 0    , 0   , 0              , Q_VEL, 0   ,
+        0              , 0    , 0   , 0              , 0    , 1E-1,
     };
+    // Velocity measurement std = 0.5 m/s -> variance R_VEL = 0.5^2 = 0.25.
+    static constexpr float R_VEL = 0.25f;
     static constexpr float KF_R[INPUTS_SQUARED] = {
-        1.0, 0  , 0  , 0  ,
-        0  , 1.2, 0  , 0  ,
-        0  , 0  , 1.0, 0  ,
-        0  , 0  , 0  , 1.2,
+        R_VEL, 0  , 0    , 0  ,
+        0    , 1.2, 0    , 0  ,
+        0    , 0  , R_VEL, 0  ,
+        0    , 0  , 0    , 1.2,
     };
     static constexpr float KF_P0[STATES_SQUARED] = {
         1E3, 0  , 0  , 0  , 0  , 0  ,

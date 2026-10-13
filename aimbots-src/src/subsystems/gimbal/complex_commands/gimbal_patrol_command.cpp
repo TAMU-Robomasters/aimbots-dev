@@ -1,4 +1,5 @@
 #include "gimbal_patrol_command.hpp"
+#include "utils/tools/common_types.hpp"
 
 
 
@@ -66,7 +67,8 @@ void GimbalPatrolCommand::execute() {
     patrolTimerDisplay = patrolTimer.isExpired();
     patrolRunningDisplay = patrolTimer.isStopped();
 
-    targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Radians);
+    // targetYawAxisAngle = getFieldRelativeYawPatrolAngle(AngleUnit::Radians);
+    targetYawAxisAngle = getConstantVelocityYawPatrolAngle(AngleUnit::Radians);
     targetPatrolYawAxisAngleDisplay = targetYawAxisAngle;
     targetPitchAxisAngle = getSinusoidalPitchPatrolAngle(AngleUnit::Radians);
     targetPatrolPitchAxisAngleDisplay = targetPitchAxisAngle;
@@ -74,7 +76,7 @@ void GimbalPatrolCommand::execute() {
     controller->setTargetYaw(AngleUnit::Radians, targetYawAxisAngle);
     controller->setTargetPitch(AngleUnit::Radians, targetPitchAxisAngle);
 
-    controller->runYawController(6.0f);
+    controller->runYawController();
     controller->runPitchController();  // That parameter is unused and should be unecessary, but complier is strange
 }
 

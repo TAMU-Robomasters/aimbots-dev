@@ -32,4 +32,8 @@
 
 //Insert any constants common among all robot feeders
 
+// Reverse output applied by deactivateFeederMotorForShotTiming() to actively brake the
+// feeder instead of letting it coast.
+static constexpr float FEEDER_SHOT_TIMING_BRAKE_OUTPUT = 3000.0f;
+
 #endif

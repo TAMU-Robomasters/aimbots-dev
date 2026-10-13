@@ -29,13 +29,11 @@
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
-#include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
-#include "subsystems/gimbal/complex_commands/gimbal_patrol_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
@@ -121,39 +119,56 @@ ShooterSubsystem shooter(drivers(), &refHelper);
 // CommunicationResponseSubsytem response(*drivers());
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
+// Aerial aims field-relative only (matches the CV testbench behavior).
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
 // Define behavior configs here --------------------------------------------
+// Gimbal PID tuning oscillation configs (amplitude/frequency of the test sweep).
+GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 60.0f,
+    .frequencyHz = 0.2f,
+};
+GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = 0.2f,
+};
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
+};
 
 // Define commands here ---------------------------------------------------
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
+// Manual field-relative gimbal control (Left-Switch MID).
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-GimbalChaseCommand gimbalChaseCommand(
-    drivers(),
-    &gimbal,
-    &gimbalChassisRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
-GimbalChaseCommand gimbalChaseCommand2(
-    drivers(),
-    &gimbal,
-    &gimbalChassisRelativeController,
-    &refHelper,
-    &ballisticsSolver,
-    SHOOTER_SPEED_MATRIX[0][0]);
+// CV auto-aim toggle (Left-Switch UP). Field-relative, matching the CV testbench.
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
-    &gimbalChassisRelativeController,
+    &gimbalFieldRelativeController,
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+
+// Gimbal PID tuning commands (oscillate the gimbal so the velocity/position PIDs can be tuned in Ozone).
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    gimbalYawVelocityTunningConfig,
+    gimbalPitchVelocityTunningConfig);
+GimbalPositionTunningCommand gimbalPositionTunningCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
@@ -165,15 +180,18 @@ RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 
 // Define command mappings here -------------------------------------------
+// Manual field-relative gimbal control. Swap in a tuning command here to tune the gimbal PIDs.
 HoldCommandMapping leftSwitchMid(
-    drivers(),  // gimbalFieldRelativeControlCommand
-    {&gimbalToggleAimCommand},
+    drivers(),
+    // {&gimbalFieldRelativeControlCommand},
+    {&gimbalVelocityTunningCommand},
+    // {&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables both chassis and gimbal control and closes hopper
+// Toggle CV auto-aim.
 HoldCommandMapping leftSwitchUp(
-    drivers(),  // gimbalFieldRelativeControlCommand2
-    {&gimbalChaseCommand2},
+    drivers(),
+    {&gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

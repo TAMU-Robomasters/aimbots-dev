@@ -24,10 +24,10 @@ int jetsonOnlineDisplay = 0;
 int failedToFindIntersectionDisplay = 0;
 
 std::optional<BallisticsSolver::BallisticsSolution> BallisticsSolver::solve(std::optional<float> projectileSpeed) {
-    nothingSeenDisplay = drivers->cvCommunicator.getLastValidAimMessage().cvState < src::Informants::Vision::CVState::FOUND;
+    nothingSeenDisplay = drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::CVState::NO_TARGET;
     jetsonOnlineDisplay = !drivers->cvCommunicator.isJetsonOnline();
     if (!drivers->cvCommunicator.isJetsonOnline() ||
-        drivers->cvCommunicator.getLastValidAimMessage().cvState < src::Informants::Vision::CVState::FOUND) {
+        drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::CVState::NO_TARGET) {
         // nothingSeenDisplay = 1;
         return std::nullopt;
     }

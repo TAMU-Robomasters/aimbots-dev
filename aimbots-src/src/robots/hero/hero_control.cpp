@@ -1,3 +1,4 @@
+#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_HEROES)
@@ -22,8 +23,12 @@
 #include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
 #include "subsystems/chassis/basic_commands/chassis_sinusodal_spin_command.hpp"
+#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
+#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
 #include "subsystems/chassis/control/chassis.hpp"
+#include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
 //
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
@@ -31,11 +36,11 @@
 #include "subsystems/feeder/control/feeder.hpp"
 //
 #include "subsystems/gimbal/basic_commands/gimbal_chase_command.hpp"
-#include "subsystems/gimbal/basic_commands/gimbal_control_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_position_PID_tunning_command.hpp"
+#include "subsystems/gimbal/basic_commands/gimbal_velocity_PID_tunning_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_field_relative_control_command.hpp"
 #include "subsystems/gimbal/complex_commands/gimbal_toggle_aiming_command.hpp"
 #include "subsystems/gimbal/control/gimbal.hpp"
-#include "subsystems/gimbal/control/gimbal_chassis_relative_controller.hpp"
 #include "subsystems/gimbal/control/gimbal_field_relative_controller.hpp"
 //
 #include "subsystems/shooter/basic_commands/brake_shooter_command.hpp"
@@ -112,7 +117,6 @@ ClientDisplaySubsystem clientDisplay(drivers());
 ShooterSubsystem shooter(drivers(), &refHelper);
 
 // Robot Specific Controllers ------------------------------------------------
-GimbalChassisRelativeController gimbalChassisRelativeController(&gimbal);
 GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 
 // Ballistics Solver ---------------------------------------------------------
@@ -126,30 +130,69 @@ SnapSymmetryConfig defaultSnapConfig = {
 };
 
 TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 0.6f,
-    .translationThresholdToDecreaseRotationSpeed = 0.5f,
-    .rotationalSpeedFractionOfMax = 0.75f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.7f,
-    .rotationalSpeedIncrement = 50.0f,
+    .translationalSpeedMultiplier = 1.0f,
+    .translationThresholdToDecreaseRotationSpeed = 0.3f,
+    .rotationalSpeedFractionOfMax = 0.9f,
+    .rotationalSpeedMultiplierWhenTranslating = 0.9f,
+    .rotationalSpeedIncrement = 20.0f,
 };
 
 SpinRandomizerConfig randomizerConfig = {
     // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
-    .minSpinRateModifier = 0.75, // 0.75f,
-    .maxSpinRateModifier = 1.0f, // 1.0f,
+    .minSpinRateModifier = 0.5f, 
+    .maxSpinRateModifier = 0.7f, 
     .minSpinRateModifierDuration = 500,
     .maxSpinRateModifierDuration = 3000,
+};
+
+
+GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 60.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
+    .velocityAmplitudeDegreesPerSec = 30.0f,
+    .frequencyHz = .2f,
+};
+
+GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
+    .positionAmplitudeDegrees = 30.0f,
+    .frequencyHz = 0.5f,
+};
+
+GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
+    .positionAmplitudeDegrees = 20.0f,
+    .frequencyHz = 0.5f,
 };
 
 // Define commands here ---------------------------------------------------
 ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
 ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
+ChassisTokyoMasterCommand tokyoMasterCommand(
+          drivers(),
+          &chassis,
+          &gimbal,
+        defaultTokyoConfig,
+        0,
+        true,
+        randomizerConfig,
+        ChassisTokyoMasterMode::NORMAL);
 
 ChassisToggleDriveCommand chassisToggleDriveCommand(
     drivers(),
     &chassis,
     &gimbal,
     defaultSnapConfig,
+    defaultTokyoConfig,
+    false,
+    randomizerConfig);
+
+
+ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
     defaultTokyoConfig,
     false,
     randomizerConfig);
@@ -171,9 +214,19 @@ ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
     0,
     randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
 
-GimbalControlCommand gimbalControlCommand(drivers(), &gimbal, &gimbalChassisRelativeController);
+ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
+    drivers(),
+    &chassis,
+    &gimbal,
+    defaultTokyoConfig,
+    true,
+    randomizerConfig,
+    6500.0f,
+    10000.0f);
+
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand3(drivers(), &gimbal, &gimbalFieldRelativeController);
 
 GimbalChaseCommand gimbalChaseCommand(
     drivers(),
@@ -182,6 +235,7 @@ GimbalChaseCommand gimbalChaseCommand(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+
 GimbalChaseCommand gimbalChaseCommand2(
     drivers(),
     &gimbal,
@@ -189,6 +243,21 @@ GimbalChaseCommand gimbalChaseCommand2(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawVelocityTunningConfig,
+    gimbalPitchVelocityTunningConfig);
+
+GimbalPositionTunningCommand gimbalPositionTunningCommand(
+    drivers(), 
+    &gimbal,     
+    &gimbalFieldRelativeController, 
+    gimbalYawPositionTunningConfig,
+    gimbalPitchPositionTunningConfig);
+
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
     &gimbal,
@@ -196,6 +265,7 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
+
 GimbalToggleAimCommand gimbalToggleAimCommand2(
     drivers(),
     &gimbal,
@@ -221,16 +291,22 @@ ClientDisplayCommand clientDisplayCommand(
 );
 
 // Define command mappings here -------------------------------------------
-// Enables normal drive and gimbal field relative control. Enables CV toggle
+// HoldCommandMapping leftSwitchDown(
+//     drivers(),
+//     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
+//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
+
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&chassisToggleDriveCommand, &gimbalToggleAimCommand},
+    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Enables Tokyo and Gimbal Field Relative Control. Also enables CV toggle
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    {/*&chassisTokyoCommand*/&chassisSinusodalSpinCommand, &gimbalToggleAimCommand2},
+    // {&gimbalPositionTunningCommand},
+    // {&gimbalVelocityTunningCommand},
+    // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
+    {/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand, &gimbalChaseCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(
@@ -302,6 +378,7 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
+    //drivers->commandMapper.addMap(&leftSwitchDown);
     drivers->commandMapper.addMap(&leftSwitchMid);
     drivers->commandMapper.addMap(&leftSwitchUp);
     drivers->commandMapper.addMap(&rightSwitchUp);

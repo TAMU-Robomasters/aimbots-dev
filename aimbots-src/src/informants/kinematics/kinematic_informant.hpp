@@ -153,6 +153,11 @@ private:
 
     static const uint32_t CHASSIS_IMU_BUFFER_SIZE = 50;
     static const uint8_t KINEMATIC_REFRESH_RATE = 1;  // ms
+    bool atTemp = false;
+    float Zslope = 0.0f;
+    uint32_t time0 = 0,time1=0,time2 = 0;
+    float angle1=0.0f, angle2 = 0.0f;
+    
 
     Deque<Vector3f, CHASSIS_IMU_BUFFER_SIZE> chassisIMUHistoryBuffer;
 

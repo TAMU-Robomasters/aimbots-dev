@@ -67,9 +67,13 @@ void ChassisSinusodalSpinCommand::execute() {
         // this is wrapped between -PI and PI
 
         // The maximum speed that we're realistically able to achieve with the current power limit
-        const float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
+        float maxWheelSpeed = ChassisSubsystem::getMaxRefWheelSpeed(
             drivers->refSerial.getRefSerialReceivingData(),
             drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
+
+        #ifdef ALL_HEROES
+            maxWheelSpeed = 4000;
+        #endif
 
         desiredX *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;
         desiredY *= tokyoConfig.translationalSpeedMultiplier * maxWheelSpeed;

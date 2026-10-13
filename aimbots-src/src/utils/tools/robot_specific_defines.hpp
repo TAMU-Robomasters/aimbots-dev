@@ -1,7 +1,7 @@
 #pragma once
 #if defined(TARGET_AERIAL)
-#include "robots/aerial/aerial_control_interface.hpp"
 #include "robots/aerial/constants/aerial_general_constants.hpp"
+#include "robots/aerial/aerial_control_interface.hpp"
 #define ALL_AERIALS
 
 #elif defined(TARGET_DART)
@@ -24,8 +24,7 @@
 #include "robots/sentry/sentry_control_interface.hpp"
 #define ALL_SENTRIES
 
-#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || \
-    defined(TARGET_STANDARD_2025)
+#elif defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_SQUIRTLE) || defined(TARGET_STANDARD_2023) || defined(TARGET_STANDARD_2025)
 #include "robots/standard/constants/standard_general_constants.hpp"
 #include "robots/standard/standard_control_interface.hpp"
 #define ALL_STANDARDS

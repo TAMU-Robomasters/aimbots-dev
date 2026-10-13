@@ -24,7 +24,8 @@ public:
         src::Utils::Ballistics::BallisticsSolver*,
         GimbalPatrolConfig patrolConfig,
         src::Chassis::ChassisMatchStates& chassisState,
-        int chaseTimeoutMillis);
+        int chaseTimeoutMillis,
+        float defaultLaunchSpeed);
 
     void initialize() override;
     void execute() override;

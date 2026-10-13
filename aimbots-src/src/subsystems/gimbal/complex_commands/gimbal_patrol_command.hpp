@@ -1,3 +1,4 @@
+#include <cmath>
 #include "utils/tools/robot_specific_defines.hpp"
 
 
@@ -19,6 +20,8 @@ struct GimbalPatrolConfig {
     float pitchPatrolAmplitude;
     float pitchPatrolFrequency;
     float pitchPatrolOffset;
+
+    float yawPatrolAngularVelocityDegreesPerSec;
 };
 
 class GimbalPatrolCommand : public tap::control::Command {
@@ -42,10 +45,19 @@ public:
     // implements sin function with current time (millis) as function input
     float getSinusoidalPitchPatrolAngle(AngleUnit unit) {
         float angle = patrolConfig.pitchPatrolAmplitude *
-                          sin(patrolConfig.pitchPatrolFrequency * getTimeSinceCommandInitialize() / 1000.0f) +
+                          sin(M_2_PI * patrolConfig.pitchPatrolFrequency * getTimeSinceCommandInitialize() / 1000.0f) +
                       patrolConfig.pitchPatrolOffset;
 
         return unit == AngleUnit::Radians ? angle : modm::toDegree(angle);
+    }
+
+    // sidesteps patrolCoordinates/chassisState/timer entirely -- just spins continuously
+    // at a constant rate set by yawPatrolAngularVelocityDegreesPerSec
+    float getConstantVelocityYawPatrolAngle(AngleUnit unit) {
+        float angleDegrees =
+            patrolConfig.yawPatrolAngularVelocityDegreesPerSec * getTimeSinceCommandInitialize() / 1000.0f;
+
+        return unit == AngleUnit::Radians ? modm::toRadian(angleDegrees) : angleDegrees;
     }
 
     void updateYawPatrolTarget();

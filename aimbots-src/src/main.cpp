@@ -49,6 +49,7 @@
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
+// not where this should go lol
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
@@ -63,11 +64,30 @@ static void updateIo(src::Drivers *drivers);
 static constexpr float SAMPLE_FREQUENCY = 1000.0f;
 
 uint32_t loopTimeDisplay = 0;
-
+bool atTemp = false;
+bool imuHeatingSound = false;
+bool startupSound = false;
 uint16_t currHeat = 69;
 uint16_t currHeatLimit = 420;
 uint16_t chassisPowerLimit = 77;
 float powerDis = 69.0f;
+float imuTemp = 0.0f;
+// Ozone watch var: 1.0f once the ref system reports the match is live (IN_GAME), else 0.0f.
+float gameStartedDisplay = 0.0f;
+
+// uint32_t dbg_any_rxCount = 0;
+// uint32_t dbg_any_rawIdentifier = 0;
+// uint32_t dbg_any_getIdentifier = 0;   
+// uint8_t  dbg_any_len = 0;
+
+// uint32_t dbg_can351_rxCount = 0;
+// uint8_t  dbg_can351_b0 = 0;
+// uint8_t  dbg_can351_b1 = 0;
+
+bool button1Display = false;
+float chassisPowerDisplay = 0;
+
+bool actualattachDisplay = false;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -101,10 +121,21 @@ int main() {
         PROFILE(drivers->profiler, updateIo, (drivers));
 
         if (mainLoopTimeout.execute()) {
+
+
             drivers->bmi088.periodicIMUUpdate();
             currHeat = drivers->refSerial.getRobotData().turret.heat17ID1;
             currHeatLimit = drivers->refSerial.getRobotData().turret.heatLimit;
             chassisPowerLimit = drivers->refSerial.getRobotData().chassis.powerConsumptionLimit;
+            gameStartedDisplay =
+                (drivers->refSerial.getGameData().gameStage ==
+                 tap::communication::serial::RefSerialData::Rx::GameStage::IN_GAME)
+                    ? 1.0f
+                    : 0.0f;
+            imuTemp = drivers->bmi088.getTemp();
+            if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
+                atTemp = true;
+            }
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -122,7 +153,14 @@ int main() {
             drivers->hitTracker.getHitAngle_chassisRelative();
 #ifndef TARGET_TURRET
             drivers->kinematicInformant.updateRobotFrames();
-            drivers->musicPlayer.playMusic();
+            if(atTemp){
+                drivers->musicPlayer.playMusic();
+                if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND, 25); startupSound = true;}
+
+                } else {
+                    if (!imuHeatingSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_IMU_HEATING); imuHeatingSound = true;}
+                }
+
             drivers->hitTracker.getHitAngle_gimbalRelative();
 
 
@@ -145,6 +183,13 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->errorController.init();
     drivers->kinematicInformant.initialize(SAMPLE_FREQUENCY, 0.1f, 0.0f);
     drivers->hitTracker.initalize();
+
+
+    drivers->vtmCan.initialize();
+    //drivers->can351Listener.initialize(); can debug class
+    drivers->customController.initialize();
+    drivers->espPowerSensor.initialize();
+    drivers->canSoundSystem.initialize();
 #ifdef YAW_3508
     drivers->revEncoder.initialize();
 #endif
@@ -187,7 +232,9 @@ static void updateIo(src::Drivers *drivers) {
 #endif
 
 #ifndef TARGET_TURRET
-    drivers->canRxHandler.pollCanData();  // should probably also be updating for turret imu??
+    drivers->canRxHandler.pollCanData();
+    drivers->customController.read();
+    drivers->espPowerSensor.read();
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
@@ -209,6 +256,27 @@ static void updateIo(src::Drivers *drivers) {
     // imuStatus = drivers->kinematicInformant.getIMUState();
     // pitchDisplay = drivers->turretCommunicator.getLastReportedAngle(src::Informants::AngularAxis::PITCH_AXIS,
     // AngleUnit::Degrees);
+     //drivers->vtmCan.read();
+     
+    
+    // modm::can::Message m;
+    // if (drivers->can.getMessage(tap::can::CanBus::CAN_BUS1, &m))
+    // {
+    //     dbg_any_rxCount++;
+    //     dbg_any_rawIdentifier = m.identifier;        // raw field
+    //     dbg_any_getIdentifier = m.getIdentifier();   // accessor
+    //     dbg_any_len = m.getLength();
+    // }
+
+    // actualattachDisplay = drivers->can351Listener.attachedDisplay;
+    // dbg_can351_rxCount = drivers->can351Listener.rxCount;
+    // dbg_can351_b0 = drivers->can351Listener.lastByte0; // should toggle 0/1 every 2s
+    // dbg_can351_b1 = drivers->can351Listener.lastByte1;
+
+    button1Display = drivers->customController.button1Pressed();
+
+    chassisPowerDisplay = drivers->espPowerSensor.getPower();
+
 
      yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
      pitchDisplay =

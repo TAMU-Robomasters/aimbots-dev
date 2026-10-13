@@ -1,4 +1,7 @@
 #pragma once
+#include <sys/_intsup.h>
+#include "tap/motor/dji_motor.hpp"
+#include "tap/motor/dji_motor_encoder.hpp"
 #include "utils/math/matrix_helpers.hpp"
 #include "utils/tools/common_types.hpp"
 
@@ -32,6 +35,11 @@ static constexpr int LEFT_FRONT_YAW_OFFSET = 7457;
 static constexpr int RIGHT_FRONT_YAW_OFFSET = 7573;
 static constexpr int LEFT_BACK_YAW_OFFSET = 645;
 static constexpr int RIGHT_BACK_YAW_OFFSET = 4779;
+
+static constexpr float LEFT_FRONT_ANGEL_OFFSET = modm::toRadian(330.0f);
+static constexpr float RIGHT_FRONT_ANGEL_OFFSET = modm::toRadian(330.0f);
+static constexpr float LEFT_BACK_ANGEL_OFFSET = modm::toRadian(30.0f);
+static constexpr float RIGHT_BACK_ANGEL_OFFSET = modm::toRadian(210.0f);
 
 #elif defined(TARGET_SENTRY_BRAVO)
 static constexpr uint8_t MOTORS_PER_WHEEL = 1;
@@ -77,13 +85,14 @@ static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR2;
 /**
  * Radius of the wheels (m).
  */
-static constexpr float WHEEL_RADIUS = 0.0524f;
 
-static constexpr float WHEELBASE_WIDTH = 0.393f;
+ // from CAD
+static constexpr float WHEEL_RADIUS = 0.052068555f;
+static constexpr float WHEELBASE_WIDTH = 0.40656590f;
+static constexpr float WHEELBASE_LENGTH = 0.40656590f;
 
-static constexpr float WHEELBASE_LENGTH = 0.393f;
-
-static constexpr float CHASSIS_GEARBOX_RATIO = (17.0f / 268.0f);
+// pretty sure this just the ratio of the 3508 motor for 
+static constexpr float CHASSIS_GEARBOX_RATIO = tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508;
 
 // Power limiting constants, will explain later
 static constexpr float POWER_LIMIT_SAFETY_FACTOR = 0.85f;
@@ -132,3 +141,17 @@ static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // the
 
 // Sentry Chassis Travel Waypoints
 static constexpr int NUMBER_OF_WAYPOINTS = 5;
+
+/**
+ * @brief TOKYO CONSTANTS
+ */
+// Fraction that user input is multiplied by when "drifting"
+static constexpr float TOKYO_TRANSLATIONAL_SPEED_MULTIPLIER = 0.6f;
+// Fraction of the maximum translation speed for when rotation speed should be reduced
+static constexpr float TOKYO_TRANSLATION_THRESHOLD_TO_DECREASE_ROTATION_SPEED = 0.5f;
+// Fraction of max chassis speed applied to rotation speed
+static constexpr float TOKYO_ROTATIONAL_SPEED_FRACTION_OF_MAX = 0.75f;
+// Fraction to cut rotation speed by when the robot is "drifting"
+static constexpr float TOKYO_ROTATIONAL_SPEED_MULTIPLIER_WHEN_TRANSLATING = 0.7f;
+// Rotational speed increment per iteration to apply until rotation setpoint is reached
+static constexpr float TOKYO_ROTATIONAL_SPEED_INCREMENT = 50.0f;  // rpm

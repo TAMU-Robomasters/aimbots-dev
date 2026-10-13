@@ -1,4 +1,5 @@
 #include "sentry_match_gimbal_control_command.hpp"
+#include "communicators/jetson/jetson_protocol.hpp"
 
 #ifdef ALL_SENTRIES
 
@@ -12,17 +13,18 @@ SentryMatchGimbalControlCommand::SentryMatchGimbalControlCommand(
     src::Utils::Ballistics::BallisticsSolver* ballisticsSolver,
     GimbalPatrolConfig patrolConfig,
     src::Chassis::ChassisMatchStates& chassisState,
-    int chaseTimeoutMillis)
+    int chaseTimeoutMillis,
+    float defaultLaunchSpeed)
     : TapComprisedCommand(drivers),
       drivers(drivers),
       gimbal(gimbal),
       controller(gimbalController),
       ballisticsSolver(ballisticsSolver),
       patrolCommand(drivers, gimbal, controller, patrolConfig, chassisState),
-      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, 30.0f),
+      chaseCommand(drivers, gimbal, controller, refHelper, ballisticsSolver, defaultLaunchSpeed),
       chassisState(chassisState),
-      chaseTimeout(1000),
-      chaseTimeoutMillis(chaseTimeoutMillis)  //
+      chaseTimeout(chaseTimeoutMillis),
+      chaseTimeoutMillis(chaseTimeoutMillis)//
 {
     addSubsystemRequirement(gimbal);
     this->comprisedCommandScheduler.registerSubsystem(gimbal);
@@ -42,8 +44,7 @@ void SentryMatchGimbalControlCommand::execute() {
         return;
     }
 
-    if (drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FOUND ||
-        drivers->cvCommunicator.getLastValidAimMessage().cvState == src::Informants::Vision::FIRE) {
+    if (drivers->cvCommunicator.getLastValidAimMessage().cvState > src::Informants::Vision::NO_TARGET) {
         scheduleIfNotScheduled(this->comprisedCommandScheduler, &chaseCommand);
      //   descheduleIfScheduled(this->comprisedCommandScheduler, &patrolCommand, interrupted);
         chaseTimeout.restart(chaseTimeoutMillis);
