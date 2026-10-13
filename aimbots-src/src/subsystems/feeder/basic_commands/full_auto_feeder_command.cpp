@@ -20,6 +20,7 @@ FullAutoFeederCommand::FullAutoFeederCommand(
 }
 
 bool isCommandRunningDisplay = false;
+float rpmdisplay = 0.0f;
 
 int64_t overheatThresholdDisplay = 15;
 int64_t currentRotationDisplay = 12;
@@ -61,20 +62,21 @@ void FullAutoFeederCommand::execute() {
     // If the absolute encoder position is past the threshold to not
     // overheat, set the RPM to 0, otherwise run as normal
     currentRotationDisplay = feeder->getEncoderUnwrapped(0);
+    rpmdisplay = fabs(feeder->getCurrentRPM(0));
 
     overheat = feeder->getEncoderUnwrapped();
 
     if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
         //feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
     } else {
-        if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
+        if (feeder->getCurrentRPM(0) >= 300.0f) {
             feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
         }
 
         if (unjamTimer.execute()) {
             feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
-            startupThreshold.restart(500);
+            startupThreshold.restart(600);
         }
 
         // lastHeatDisplay = refHelper->getCurrBarrelHeat();

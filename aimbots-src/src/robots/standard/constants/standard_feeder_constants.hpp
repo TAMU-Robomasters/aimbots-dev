@@ -20,7 +20,7 @@ static constexpr SmoothPIDConfig FEEDER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-static constexpr int UNJAM_TIMER_MS = 300;
+static constexpr int UNJAM_TIMER_MS = 400;
 
 static constexpr CANBus FEEDER_BUS = CANBus::CAN_BUS1;
 
@@ -29,7 +29,7 @@ static const std::array<const char*, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_NAMES = {"
 static const std::array<FeederGroup, FEEDER_MOTOR_COUNT> FEEDER_MOTOR_GROUPS = {PRIMARY};
 static constexpr uint8_t PROJECTILES_PER_FEEDER_ROTATION = 10;
 static constexpr std::array<uint8_t, FEEDER_MOTOR_COUNT> FEEDER_GEAR_RATIOS = {36};
-static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {200};
+static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_NORMAL_RPMS = {5000};
 static const std::array<float, FEEDER_MOTOR_COUNT> FEEDER_UNJAM_RPMS = {3000};  // Absolute values
 
-static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {true};
+static const std::array<bool, FEEDER_MOTOR_COUNT> FEEDER_DIRECTION = {false};

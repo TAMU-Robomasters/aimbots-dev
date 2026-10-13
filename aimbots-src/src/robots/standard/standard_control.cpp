@@ -184,8 +184,8 @@ GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
 };
 
 FeederVelocityTunningConfig feederVelocityTunningConfig = {
-    .VelocityAmplitudeRPM = 60.0f,
-    .frequencyHz = 1.0f,
+    .VelocityAmplitudeRPM = 1000.0f,
+    .frequencyHz = 0.0f,
 };
 
 // Define commands here ---------------------------------------------------
@@ -360,7 +360,7 @@ void initializeSubsystems() {
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    feeder.setDefaultCommand(&feederVelocityTunningCommand);
+    feeder.setDefaultCommand(&runFeederCommand);
     shooter.setDefaultCommand(&stopShooterComprisedCommand);
 }
 

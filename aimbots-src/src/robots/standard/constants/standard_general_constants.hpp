@@ -8,7 +8,7 @@
 #define GIMBAL_UNTETHERED
 
 #if defined(TARGET_STANDARD_BLASTOISE)
-    static constexpr SongTitle STARTUP_SONG = SongTitle::CHAINSAW_MAN;
+    static constexpr SongTitle STARTUP_SONG = SongTitle::NONE;
 #else
     static constexpr SongTitle STARTUP_SONG = SongTitle::NONE;
 #endif
