@@ -174,7 +174,7 @@ Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() {
     float left_back_yaw_actual   = -(motors[LB][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_BACK_ANGEL_OFFSET);
     float right_back_yaw_actual  = -(motors[RB][1]->getInternalEncoder().getPosition().getWrappedValue() - RIGHT_BACK_ANGEL_OFFSET);
 #endif 
-#ifdef TARGET_HERO
+#ifdef TARGET_DART
     Matrix<float, DRIVEN_WHEEL_COUNT * 2, 1> wheelVelocities;
     // Motors are mounted upside down so CW positive. negate angle so CCW is positive
     float left_front_yaw_actual  = -(motors[LF][1]->getInternalEncoder().getPosition().getWrappedValue() - LEFT_FRONT_YAW_OFFSET);
