@@ -237,24 +237,24 @@ float OperatorInterface::getChassisRotationInput() {
 
 int16_t mouseXDisplay = 0;
 int16_t mouseYDisplay = 0;
-float OperatorInterface::getGimbalYawInput() {
-    mouseXFilter.update(drivers->remote.getMouseX());
-    // mouseXDisplay = drivers->remote.getMouseX();
-    mouseXDisplay = mouseXFilter.getValue();
+// float OperatorInterface::getGimbalYawInput() {
+//     mouseXFilter.update(drivers->remote.getMouseX());
+//     // mouseXDisplay = drivers->remote.getMouseX();
+//     mouseXDisplay = mouseXFilter.getValue();
 
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
-               YAW_MOUSE_INPUT_SENSITIVITY;
-}
+//     return drivers->remote.getChannel(Remote::Channel::RIGHT_HORIZONTAL) * YAW_JOYSTICK_INPUT_SENSITIVITY +
+//            static_cast<float>(limitVal<int16_t>(mouseXFilter.getValue(), -MOUSE_YAW_MAX, MOUSE_YAW_MAX)) *
+//                YAW_MOUSE_INPUT_SENSITIVITY;
+// }
 
-float OperatorInterface::getGimbalPitchInput() {
-    mouseYFilter.update(drivers->remote.getMouseY());
-    mouseYDisplay = mouseYFilter.getValue();
+// float OperatorInterface::getGimbalPitchInput() {
+//     mouseYFilter.update(drivers->remote.getMouseY());
+//     mouseYDisplay = mouseYFilter.getValue();
 
-    return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
-           static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
-               PITCH_MOUSE_INPUT_SENSITIVITY;
-}
+//     return drivers->remote.getChannel(Remote::Channel::RIGHT_VERTICAL) * PITCH_JOYSTICK_INPUT_SENSITIVITY +
+//            static_cast<float>(limitVal<int16_t>(mouseYFilter.getValue(), -MOUSE_PITCH_MAX, MOUSE_PITCH_MAX)) *
+//                PITCH_MOUSE_INPUT_SENSITIVITY;
+// }
 
 bool OperatorInterface::isCustomControllerConnected() {
     updateCustomControllerInputs();

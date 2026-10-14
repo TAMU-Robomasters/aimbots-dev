@@ -19,16 +19,9 @@
 #include "tap/control/press_command_mapping.hpp"
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
+
 //
-#include "subsystems/chassis/basic_commands/chassis_manual_drive_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_tokyo_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_sinusodal_spin_command.hpp"
-#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_ignore_gimbal_command.hpp"
-#include "subsystems/chassis/complex_commands/chassis_toggle_drive_custom_controller_command.hpp"
-#include "subsystems/chassis/control/chassis.hpp"
-#include "subsystems/chassis/basic_commands/chassis_tokyo_master_command.hpp"
+
 //
 
 //
@@ -36,53 +29,8 @@
 //
 
 //
-#include "subsystems/display/basic_commands/client_display_command.hpp"
-#include "subsystems/display/control/client_display_subsystem.hpp"
-//
 
-using namespace src::Chassis;
-// using namespace src::Feeder;
-// using namespace src::Gimbal;
-// using namespace src::Shooter;
-// using namespace src::Communication;
-// using namespace src::RobotStates;
-using namespace src::Utils::ClientDisplay;
 
-// For reference, all possible keyboard inputs:
-// W,S,A,D,SHIFT,CTRL,Q,E,R,F,G,Z,X,C,V,B
-/*  Standard Control Scheme:
-
-    Chassis -----------------------------------------------------------
-    Toggle Chassis Drive Mode (Field Relative <-> Toyko Drift): F
-    Quick 90-deg Turn Gimbal Yaw (Left): Q
-    Quick 90-deg Turn Gimbal Yaw (Right): E
-
-    Manually Choose Tokyo Direction (Left): F+Q
-    Manually Choose Tokyo Direction (Right): F+E
-
-    Decrease Chassis Ground Speed (60%): Shift
-    Decrease Chassis Ground Speed (25%): Ctrl
-
-    Gimbal ------------------------------------------------------------
-    Aim Using CV: Right Mouse Button
-
-    Shooter -----------------------------------------------------------
-
-    Feeder ------------------------------------------------------------
-    Full Auto Shooting: Left Mouse Button
-    Force Reload: B
-
-    UI ----------------------------------------------------------------
-    Force Update: Ctrl + B
-
-*/
-
-/*
- * NOTE: We are using the DoNotUse_getDrivers() function here
- *      because this file defines all subsystems and command
- *      and thus we must pass in the single statically allocated
- *      Drivers class to all of these objects.
- */
 src::driversFunc drivers = src::DoNotUse_getDrivers;
 
 using namespace tap;
@@ -92,283 +40,34 @@ using namespace tap::communication::serial;
 namespace DartControl {
 
 // This is technically a command flag, but it needs to be defined before the refHelper
-BarrelID currentBarrel = BarrelID::TURRET_42MM;
 
-src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 0);
-
-// Define subsystems here ------------------------------------------------
-ChassisSubsystem chassis(drivers());
-// FeederSubsystem feeder(drivers());
-// GimbalSubsystem gimbal(drivers());
-ClientDisplaySubsystem clientDisplay(drivers());
-// ShooterSubsystem shooter(drivers(), &refHelper);
-
-// Robot Specific Controllers ------------------------------------------------
-// GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
-
-// Ballistics Solver ---------------------------------------------------------
-// src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
-
-// Define behavior configs here -----------------------------------------------
-
-SnapSymmetryConfig defaultSnapConfig = {
-    .numSnapPositions = CHASSIS_SNAP_POSITIONS,
-    .snapAngle = modm::toRadian(0.0f),
-};
-
-TokyoConfig defaultTokyoConfig = {
-    .translationalSpeedMultiplier = 1.0f,
-    .translationThresholdToDecreaseRotationSpeed = 0.3f,
-    .rotationalSpeedFractionOfMax = 0.9f,
-    .rotationalSpeedMultiplierWhenTranslating = 0.9f,
-    .rotationalSpeedIncrement = 20.0f,
-};
-
-SpinRandomizerConfig randomizerConfig = {
-    // fr sin spin settings change min/max SpinRateModifier changes sin wave amp range
-    .minSpinRateModifier = 0.5f, 
-    .maxSpinRateModifier = 0.7f, 
-    .minSpinRateModifierDuration = 500,
-    .maxSpinRateModifierDuration = 3000,
-};
-
-
-// GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-//     .velocityAmplitudeDegreesPerSec = 60.0f,
-//     .frequencyHz = .2f,
-// };
-
-// GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
-//     .velocityAmplitudeDegreesPerSec = 30.0f,
-//     .frequencyHz = .2f,
-// };
-
-// GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
-//     .positionAmplitudeDegrees = 30.0f,
-//     .frequencyHz = 0.5f,
-// };
-
-// GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
-//     .positionAmplitudeDegrees = 20.0f,
-//     .frequencyHz = 0.5f,
-// };
-
-// Define commands here ---------------------------------------------------
-ChassisManualDriveCommand chassisManualDriveCommand(drivers(), &chassis);
-// ChassisFollowGimbalCommand chassisFollowGimbal(drivers(), &chassis, &gimbal);
-// ChassisTokyoMasterCommand tokyoMasterCommand(
-//           drivers(),
-//           &chassis,
-//           &gimbal,
-//         defaultTokyoConfig,
-//         0,
-//         true,
-//         randomizerConfig,
-//         ChassisTokyoMasterMode::NORMAL);
-
-// ChassisToggleDriveCommand chassisToggleDriveCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     defaultSnapConfig,
-//     defaultTokyoConfig,
-//     false,
-//     randomizerConfig);
-
-
-// ChassisToggleDriveIgnoreGimbalCommand chassisToggleDriveIgnoreGimbalCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     defaultTokyoConfig,
-//     false,
-//     randomizerConfig);
-
-// ChassisTokyoCommand chassisTokyoCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     defaultTokyoConfig,
-//     0,
-//     true,
-//     randomizerConfig); // added   0, true, randomizerConfig ZHENG-HAO
-
-// ChassisSinusodalSpinCommand chassisSinusodalSpinCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     defaultTokyoConfig,
-//     0,
-//     randomizerConfig); // sin spin in 1 direcin ZHENG-HAO
-
-// ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerCommand(
-//     drivers(),
-//     &chassis,
-//     &gimbal,
-//     defaultTokyoConfig,
-//     true,
-//     randomizerConfig,
-//     6500.0f,
-//     10000.0f);
-
-// GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
-// GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand2(drivers(), &gimbal, &gimbalFieldRelativeController);
-// GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand3(drivers(), &gimbal, &gimbalFieldRelativeController);
-
-// GimbalChaseCommand gimbalChaseCommand(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     10);
-
-// GimbalChaseCommand gimbalChaseCommand2(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     10);
-
-// GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
-//     drivers(), 
-//     &gimbal,     
-//     &gimbalFieldRelativeController, 
-//     gimbalYawVelocityTunningConfig,
-//     gimbalPitchVelocityTunningConfig);
-
-// GimbalPositionTunningCommand gimbalPositionTunningCommand(
-//     drivers(), 
-//     &gimbal,     
-//     &gimbalFieldRelativeController, 
-//     gimbalYawPositionTunningConfig,
-//     gimbalPitchPositionTunningConfig);
-
-// GimbalToggleAimCommand gimbalToggleAimCommand(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     10);
-
-// GimbalToggleAimCommand gimbalToggleAimCommand2(
-//     drivers(),
-//     &gimbal,
-//     &gimbalFieldRelativeController,
-//     &refHelper,
-//     &ballisticsSolver,
-//     10);
-
-// FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-// FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
-// StopFeederCommand stopFeederCommand(drivers(), &feeder);
-// FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
-
-// RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
-// // RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
-// StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
-
-ClientDisplayCommand clientDisplayCommand(
-    *drivers(),
-    drivers()->commandScheduler,
-    clientDisplay
-    // chassis
-);
-
-// Define command mappings here -------------------------------------------
-// HoldCommandMapping leftSwitchDown(
-//     drivers(),
-//     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
-//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
-
-// HoldCommandMapping leftSwitchMid(
-//     drivers(),
-//     {&chassisToggleDriveCustomControllerCommand},
-//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
-
-// HoldCommandMapping leftSwitchUp(
-//     drivers(),
-//     // {&gimbalPositionTunningCommand},
-//     // {&gimbalVelocityTunningCommand},
-//     // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
-//     {/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand},
-//     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-
-// HoldCommandMapping rightSwitchDown(
-//     drivers(),
-//     {&feederlimitcommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
-
-// HoldCommandMapping rightSwitchMid(
-//     drivers(),
-//     { &runShooterCommand},
-//     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
-
-// Runs shooter with feeder and closes hopper
-
-
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
-
-// HoldCommandMapping leftClickMouse(
-//     drivers(),
-//     {&feederLimitCommand},
-//     RemoteMapState(RemoteMapState::MouseButton::LEFT));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
-    drivers->commandScheduler.registerSubsystem(&chassis);
-    // drivers->commandScheduler.registerSubsystem(&feeder);
-    // drivers->commandScheduler.registerSubsystem(&gimbal);
-    // drivers->commandScheduler.registerSubsystem(&shooter);
-    // drivers->commandScheduler.registerSubsystem(&response);
-    drivers->commandScheduler.registerSubsystem(&clientDisplay);
 
-    // drivers->kinematicInformant.registerSubsystems(&gimbal, &chassis);
 }
 
 // Initialize subsystems here ---------------------------------------------
 void initializeSubsystems() {
-    chassis.initialize();
-    // feeder.initialize();
-    // gimbal.initialize();
-    // shooter.initialize();
-    // response.initialize();
-    clientDisplay.initialize();
+
 }
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {
-    // feeder.setDefaultCommand(&stopFeederCommand);
-    // feeder.setDefaultCommand(&feederLimitCommand);
-    // shooter.setDefaultCommand(&stopShooterComprisedCommand);
+
 }
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
     UNUSED(drivers);
-    // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
-    drivers->commandScheduler.addCommand(&clientDisplayCommand);
 
-    // test
-    //  no startup commands should be set
-    //  yet...
-    //  TODO: Possibly add some sort of hardware test command
-    //        that will move all the parts so we
-    //        can make sure they're fully operational.
 }
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    //drivers->commandMapper.addMap(&leftSwitchDown);
-    // drivers->commandMapper.addMap(&leftSwitchMid);
-    // drivers->commandMapper.addMap(&leftSwitchUp);
-    // drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&bCtrlPressed);
-  //  drivers->commandMapper.addMap(&leftClickMouse);
+
 }
-}  // namespace HeroControl
+}  // namespace DartControl
 
 namespace src::Control {
 // Initialize subsystems ---------------------------------------------------

@@ -1,4 +1,3 @@
-#pragma once
 #include "tap/motor/dji_motor.hpp"
 #include "modm/math/geometry/angle.hpp"
 #include "utils/math/matrix_helpers.hpp"
