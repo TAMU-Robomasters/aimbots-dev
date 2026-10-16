@@ -10,6 +10,8 @@
 uint32_t framesParsedDisplay = 0;  // should climb by ~140 every second with the remote on
 uint32_t badFramesDisplay = 0;     // should stay at (or very near) 0
 float rightVerticalDisplay = 0.0f;
+float rightHorizontalDisplay = 0.0f;
+uint32_t nowDisplay = 0;  // tap::arch::clock::getTimeMilliseconds() (for debugging FRAME_GAP_MS)
 
 namespace src::Training {
 
@@ -19,6 +21,7 @@ void Dt7Remote::initialize() {
     // TODO(week2): start the UART the DR16 receiver is plugged into (the board's DBUS port is Uart3).
     // Find the baud rate and parity in the protocol document, then fill in the ??? below:
     //     drivers->uart.init<Uart::UartPort::Uart3, ???, Uart::Parity::???>();
+    drivers->uart.init<Uart::UartPort::Uart3, 100000, Uart::Parity::Even>();
 }
 
 void Dt7Remote::read() {
@@ -40,6 +43,28 @@ void Dt7Remote::read() {
     //
     // 4. Disconnect: if connected and no good frame for DISCONNECT_TIMEOUT_MS, set connected = false,
     //    call resetValues(), and tell the command mapper everything is UNKNOWN so commands stop.
+    uint8_t byte;
+    while (drivers->uart.read(Uart::UartPort::Uart3, &byte)) {
+        uint32_t now = tap::arch::clock::getTimeMilliseconds();
+        nowDisplay = now;  // for debugging FRAME_GAP_MS
+        if (now - lastByteTimeMs > FRAME_GAP_MS) {
+            bytesReceived = 0;
+        }
+
+        rxBuffer[bytesReceived++] = byte;
+        if (bytesReceived == FRAME_LENGTH) {
+            if (parseFrame()) {
+                drivers->commandMapper.handleKeyStateChange(0, SwitchState::UNKNOWN, rightSwitch, false, false);
+            }
+            bytesReceived = 0;
+        }
+    }
+
+    if (connected && (tap::arch::clock::getTimeMilliseconds() - lastGoodFrameMs > DISCONNECT_TIMEOUT_MS)) {
+        connected = false;
+        resetValues();
+        drivers->commandMapper.handleKeyStateChange(0, SwitchState::UNKNOWN, SwitchState::UNKNOWN, false, false);
+    }
 }
 
 bool Dt7Remote::parseFrame() {
@@ -53,7 +78,29 @@ bool Dt7Remote::parseFrame() {
     // Good frame -> store (channel - CHANNEL_CENTER) in rightHorizontal / rightVertical,
     //               static_cast the switch into SwitchState, framesParsedDisplay++,
     //               update lastGoodFrameMs and connected, return true.
-    return false;
+    uint16_t ch0 = static_cast<uint16_t>(rxBuffer[0] | (static_cast<uint16_t>(rxBuffer[1] & 0x07) << 8));
+    uint16_t ch1 = static_cast<uint16_t>(rxBuffer[1] >> 3) | (static_cast<uint16_t>(rxBuffer[2] & 0x3F) << 5);
+    uint8_t rightSwitchBits = (rxBuffer[5] >> 4) & 0x03;
+
+    if (ch0 < (CHANNEL_CENTER - CHANNEL_MAX_OFFSET) || ch0 > (CHANNEL_CENTER + CHANNEL_MAX_OFFSET) ||
+        ch1 < (CHANNEL_CENTER - CHANNEL_MAX_OFFSET) || ch1 > (CHANNEL_CENTER + CHANNEL_MAX_OFFSET) || rightSwitchBits < 1 ||
+        rightSwitchBits > 3) {
+        badFramesDisplay++;
+        return false;
+    }
+
+    rightHorizontal = ch0 - CHANNEL_CENTER;
+    rightVertical = ch1 - CHANNEL_CENTER;
+    rightSwitch = static_cast<SwitchState>(rightSwitchBits);
+
+    framesParsedDisplay++;
+    rightVerticalDisplay = static_cast<float>(rightVertical) / static_cast<float>(CHANNEL_MAX_OFFSET);
+    rightHorizontalDisplay = static_cast<float>(rightHorizontal) / static_cast<float>(CHANNEL_MAX_OFFSET);
+
+    lastGoodFrameMs = tap::arch::clock::getTimeMilliseconds();
+    connected = true;
+
+    return true;
 }
 
 void Dt7Remote::resetValues() {

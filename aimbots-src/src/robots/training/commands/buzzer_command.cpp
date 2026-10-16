@@ -15,6 +15,10 @@ BuzzerCommand::BuzzerCommand(src::Drivers* drivers, TrainingBoardSubsystem* boar
 
 void BuzzerCommand::initialize() {
     // TODO(week2): start in a known state (buzzer off, timer started, ...).
+    tap::buzzer::silenceBuzzer(&drivers->pwm);
+    buzzerOn = false;
+    lastFrequency = 0.0f;
+    buzzerTimer.restart(MIN_NOTE_MS);
 }
 
 void BuzzerCommand::execute() {
@@ -30,10 +34,35 @@ void BuzzerCommand::execute() {
     // WARNING: do NOT call playNote every execute(). Only call it when a note starts or the
     // frequency changed by more than FREQUENCY_DEADBAND_HZ, and call it TWICE in a row when you do.
     // The README ("buzzer gotchas") explains why.
+    float vertical = drivers->dt7Remote.getRightVertical();
+    float horizontal = drivers->dt7Remote.getRightHorizontal();
+
+    uint32_t frequency = MIN_FREQUENCY_HZ + static_cast<uint32_t>(((vertical + 1.0f) / 2.0f) * (MAX_FREQUENCY_HZ - MIN_FREQUENCY_HZ));
+    uint32_t noteMs = MIN_NOTE_MS + static_cast<uint32_t>(((horizontal + 1.0f) / 2.0f) * (MAX_NOTE_MS - MIN_NOTE_MS));
+
+    if (buzzerTimer.isExpired()) {
+        buzzerOn = !buzzerOn;
+        buzzerTimer.restart(noteMs);
+
+        if (buzzerOn) {
+            tap::buzzer::playNote(&drivers->pwm, frequency);
+            tap::buzzer::playNote(&drivers->pwm, frequency);
+            lastFrequency = frequency;
+        } else {
+            tap::buzzer::silenceBuzzer(&drivers->pwm);
+        }
+    } else if (buzzerOn) {
+        if (frequency > (lastFrequency + FREQUENCY_DEADBAND_HZ) || frequency < (lastFrequency - FREQUENCY_DEADBAND_HZ)) {
+            tap::buzzer::playNote(&drivers->pwm, frequency);
+            tap::buzzer::playNote(&drivers->pwm, frequency);
+            lastFrequency = frequency;
+        }
+    }
 }
 
 void BuzzerCommand::end(bool) {
     // TODO(week2): leave the buzzer silent.
+    tap::buzzer::silenceBuzzer(&drivers->pwm);
 }
 
 bool BuzzerCommand::isFinished() const { return false; }

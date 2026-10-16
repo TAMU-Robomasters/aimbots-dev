@@ -11,6 +11,7 @@
 //
 #include "robots/training/commands/blink_led_command.hpp"
 #include "robots/training/training_board_subsystem.hpp"
+#include "robots/training/commands/buzzer_command.hpp"
 
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
@@ -33,6 +34,7 @@ TrainingBoardSubsystem board(drivers());
 // Define commands here ---------------------------------------------------
 // TODO(week1): create your BlinkLedCommand here.
 BlinkLedCommand blinkLedCommand(drivers(), &board);
+BuzzerCommand buzzerCommand(drivers(), &board);
 
 // Define command mappings here -------------------------------------------
 // TODO(week1): map your command to the RIGHT switch in the UP position.
@@ -47,10 +49,15 @@ BlinkLedCommand blinkLedCommand(drivers(), &board);
 //       drivers(),
 //       {&gimbalChaseCommand},
 //       RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
-HoldCommandMapping rightSwitchUp(
+HoldCommandMapping blindLED(
     drivers(),
     {&blinkLedCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+HoldCommandMapping buzzerMapping(
+    drivers(),
+    {&buzzerCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&board); }
@@ -67,7 +74,8 @@ void startupCommands(src::Drivers *) {}
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     // TODO(week1): add your mapping, e.g. drivers->commandMapper.addMap(&yourMapping);
-    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&blindLED);
+    drivers->commandMapper.addMap(&buzzerMapping);
 }
 
 }  // namespace TrainingControl

@@ -47,6 +47,9 @@ class BuzzerCommand : public tap::control::Command {
 
     // TODO(week2): what do you need to remember between execute() calls?
     // (a timer, whether the buzzer is currently on, the frequency you last sent, ...)
+    tap::arch::MilliTimeout buzzerTimer;
+    bool buzzerOn = false;
+    float lastFrequency = 0.0f;
 };
 
 }  // namespace src::Training
