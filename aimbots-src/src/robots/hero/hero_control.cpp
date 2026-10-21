@@ -17,6 +17,7 @@
 #include "tap/control/hold_command_mapping.hpp"
 #include "tap/control/hold_repeat_command_mapping.hpp"
 #include "tap/control/press_command_mapping.hpp"
+#include "tap/control/remote_map_state.hpp"
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
 //
@@ -291,42 +292,50 @@ ClientDisplayCommand clientDisplayCommand(
 );
 
 // Define command mappings here -------------------------------------------
+// Each mapping keeps a pointer to its RemoteMapState, so the states must outlive the mappings.
+RemoteMapState leftSwitchMidState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState leftSwitchUpState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState rightSwitchMidState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState rightSwitchUpState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState bCtrlPressedState({Remote::Key::CTRL, Remote::Key::B});
+
+// CommandMapper::addMap() takes ownership, so the mappings are moved into it in registerIOMappings().
 // HoldCommandMapping leftSwitchDown(
 //     drivers(),
 //     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
 
-HoldCommandMapping leftSwitchMid(
+auto leftSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+    &leftSwitchMidState));
 
-HoldCommandMapping leftSwitchUp(
+auto leftSwitchUp = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
     // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
     {/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand, &gimbalChaseCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+    &leftSwitchUpState));
 
 // HoldCommandMapping rightSwitchDown(
 //     drivers(),
 //     {&feederlimitcommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
-HoldCommandMapping rightSwitchMid(
+auto rightSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     {&feederLimitCommand, &runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+    &rightSwitchMidState));
 
 // Runs shooter with feeder and closes hopper
-HoldRepeatCommandMapping rightSwitchUp(
+auto rightSwitchUp = std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatCommandMapping(
     drivers(),
     {/*&runFeederCommand,*/&feederLimitCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP),
-    true);
+    &rightSwitchUpState,
+    true));
 
-PressCommandMapping bCtrlPressed(drivers(), {&clientDisplayCommand}, RemoteMapState({Remote::Key::CTRL, Remote::Key::B}));
+auto bCtrlPressed = std::unique_ptr<PressCommandMapping>(new PressCommandMapping(drivers(), {&clientDisplayCommand}, &bCtrlPressedState));
 
 // HoldCommandMapping leftClickMouse(
 //     drivers(),
@@ -379,11 +388,11 @@ void startupCommands(src::Drivers *drivers) {
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
     //drivers->commandMapper.addMap(&leftSwitchDown);
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&bCtrlPressed);
+    drivers->commandMapper.addMap(std::move(leftSwitchMid));
+    drivers->commandMapper.addMap(std::move(leftSwitchUp));
+    drivers->commandMapper.addMap(std::move(rightSwitchUp));
+    drivers->commandMapper.addMap(std::move(rightSwitchMid));
+    drivers->commandMapper.addMap(std::move(bCtrlPressed));
   //  drivers->commandMapper.addMap(&leftClickMouse);
 }
 }  // namespace HeroControl

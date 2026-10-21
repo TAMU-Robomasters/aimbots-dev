@@ -18,6 +18,7 @@
 #include "tap/control/hold_command_mapping.hpp"
 #include "tap/control/hold_repeat_command_mapping.hpp"
 #include "tap/control/press_command_mapping.hpp"
+#include "tap/control/remote_map_state.hpp"
 #include "tap/control/governor/governor_with_fallback_command.hpp"
 #include "tap/control/setpoint/commands/calibrate_command.hpp"
 #include "tap/control/toggle_command_mapping.hpp"
@@ -420,19 +421,28 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 //     true);
 
 // Autonomous Match Control Switch Mapping -----------------------------
-HoldCommandMapping leftSwitchMid(
+// Each mapping keeps a pointer to its RemoteMapState, so the states must outlive the mappings.
+RemoteMapState leftSwitchMidState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState leftSwitchUpState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState rightSwitchMidState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState rightSwitchUpState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState leftClickMouseState(RemoteMapState::MouseButton::LEFT);
+RemoteMapState rightClickMouseState(RemoteMapState::MouseButton::RIGHT);
+
+// CommandMapper::addMap() takes ownership, so the mappings are moved into it in registerIOMappings().
+auto leftSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     // Manual driving: custom-controller toggle drive + manual gimbal aiming.
     // {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
    {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
+    &leftSwitchMidState));
 
 // HoldRepeat (not Hold): gameGatedTokyoCommand self-finishes the instant the game starts (its
 // stopFallbackCommandIfGovernorsReady=true) so the GovernorWithFallbackCommand can be re-added and
 // re-run isReady(), handing off manual->auto tokyo. A plain HoldCommandMapping only adds once on
 // entering UP and would NOT re-add after the self-finish, leaving the chassis dead until you toggle
 // the switch off UP and back. -1 (default) = reschedule forever while held; true = end when released.
-HoldRepeatCommandMapping leftSwitchUp(
+auto leftSwitchUp = std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatCommandMapping(
     drivers(),
    // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
    // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
@@ -454,33 +464,33 @@ HoldRepeatCommandMapping leftSwitchUp(
      // {&nav2TokyoMasterCommand},
     // {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP),
-    true);  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP
+    &leftSwitchUpState,
+    true));  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP
 
 // Runs shooter only
-HoldCommandMapping rightSwitchMid(
+auto rightSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     // {&feederShotTimingCommand, &runShooterCommand},
     {&autoAimFeederCommand, &runShooterCommand}, 
      // {&runShooterCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID));
+    &rightSwitchMidState));
 
 // Auto feeder (CV/auto-aim gated) + flywheel
-HoldCommandMapping rightSwitchUp(
+auto rightSwitchUp = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
-    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+    &rightSwitchUpState));
 
-HoldCommandMapping leftClickMouse(
+auto leftClickMouse = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     {&runFeederCommandFromMouse},
-    RemoteMapState(RemoteMapState::MouseButton::LEFT));
+    &leftClickMouseState));
 
 // Right mouse: auto feeder (CV/auto-aim gated) + flywheel
-HoldCommandMapping rightClickMouse(
+auto rightClickMouse = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
     drivers(),
     {&autoAimFeederCommandFromMouse, &runShooterFromMouseCommand},
-    RemoteMapState(RemoteMapState::MouseButton::RIGHT));
+    &rightClickMouseState));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -524,13 +534,13 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    drivers->commandMapper.addMap(&leftSwitchMid);
-    drivers->commandMapper.addMap(&leftSwitchUp);
+    drivers->commandMapper.addMap(std::move(leftSwitchMid));
+    drivers->commandMapper.addMap(std::move(leftSwitchUp));
 
-    drivers->commandMapper.addMap(&rightSwitchMid);
-    drivers->commandMapper.addMap(&rightSwitchUp);
-    drivers->commandMapper.addMap(&leftClickMouse);
-    drivers->commandMapper.addMap(&rightClickMouse);
+    drivers->commandMapper.addMap(std::move(rightSwitchMid));
+    drivers->commandMapper.addMap(std::move(rightSwitchUp));
+    drivers->commandMapper.addMap(std::move(leftClickMouse));
+    drivers->commandMapper.addMap(std::move(rightClickMouse));
 
 }
 
