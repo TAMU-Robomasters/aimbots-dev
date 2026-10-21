@@ -12,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  * You should have received a copy of the GNU General Public License
  * along with aimbots-src.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -41,8 +40,7 @@
 // Training robot only (week 2). For every other robot TARGET_TRAINING isn't defined, so the
 // preprocessor deletes these lines before the compiler ever sees them.
 #ifdef TARGET_TRAINING
-// TODO(week2): include your remote's header here:
-//     #include "robots/training/remote/dt7_remote.hpp"
+#include "robots/training/remote/dt7_remote.hpp"
 #endif
 // graphing elsewhere lol
 
@@ -68,7 +66,7 @@ public:
           revEncoder(this),
       #endif
       #ifdef TARGET_TRAINING
-          // TODO(week2): construct your remote here:   dt7Remote(this),
+          dt7Remote(this),
       #endif
           kinematicInformant(this),
           hitTracker(this),
@@ -89,7 +87,7 @@ public:
     Informants::RevEncoder revEncoder;
   #endif
   #ifdef TARGET_TRAINING
-    // TODO(week2): declare your remote here:   src::Training::Dt7Remote dt7Remote;
+    src::Training::Dt7Remote dt7Remote;
     // (Keep it right here, above kinematicInformant: members must be constructed in the same
     //  order they're declared, and the constructor list above has it in the same spot.)
   #endif

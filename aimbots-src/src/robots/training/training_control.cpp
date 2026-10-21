@@ -31,21 +31,14 @@ namespace TrainingControl {
 TrainingBoardSubsystem board(drivers());
 
 // Define commands here ---------------------------------------------------
-// TODO(week1): create your BlinkLedCommand here.
+BlinkLedCommand blinkLedCommand(drivers(), &board);
 
 // Define command mappings here -------------------------------------------
-// TODO(week1): map your command to the RIGHT switch in the UP position.
-// A mapping ties a remote state to a list of commands. The three kinds you'll see most:
-//
-//   HoldCommandMapping    -- command runs while the state is held, ends when it isn't
-//   ToggleCommandMapping  -- each time the state starts matching it flips: start, stop, start...
-//   PressCommandMapping   -- command starts on match and runs until it finishes itself
-//
-// Example (from testbench_control.cpp):
-//   HoldCommandMapping leftSwitchUp(
-//       drivers(),
-//       {&gimbalChaseCommand},
-//       RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
+// Blinks the LED while the right switch is UP; the command ends (LED off) as soon as it leaves UP.
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&blinkLedCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&board); }
@@ -60,9 +53,7 @@ void setDefaultCommands(src::Drivers *) {}
 void startupCommands(src::Drivers *) {}
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers * /*TODO add parameter name here*/) {
-    // TODO(week1): add your mapping, e.g. drivers->commandMapper.addMap(&yourMapping);
-}
+void registerIOMappings(src::Drivers *drivers) { drivers->commandMapper.addMap(&rightSwitchUp); }
 
 }  // namespace TrainingControl
 

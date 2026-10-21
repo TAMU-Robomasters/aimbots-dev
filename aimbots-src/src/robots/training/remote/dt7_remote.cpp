@@ -18,15 +18,35 @@ using tap::communication::serial::Uart;
 void Dt7Remote::initialize() {
     // TODO(week2): start the UART the DR16 receiver is plugged into (the board's DBUS port is Uart3).
     // Find the baud rate and parity in the protocol document, then fill in the ??? below:
-    //     drivers->uart.init<Uart::UartPort::Uart3, ???, Uart::Parity::???>();
+    drivers->uart.init<Uart::UartPort::Uart3, 100000, Uart::Parity::EVEN>();
 }
 
 void Dt7Remote::read() {
     // TODO(week2): turn the stream of bytes into frames.
     //
     // 1. Read bytes one at a time until the UART is empty:
-    //        uint8_t byte;
-    //        while (drivers->uart.read(Uart::UartPort::Uart3, &byte)) { ... }
+    uint8_t byte;
+    while (drivers->uart.read(Uart::UartPort::Uart3, &byte)) {
+        uint32_t now = tap::arch::clock::getTimeMilliseconds();
+        if(now - lastByteTimeMs > FRAME_GAP_MS){
+            bytesReceived = 0;
+        }
+        lastByteTimeMs = now;
+        rxBuffer[bytesReceived] = byte;
+        bytesReceived++;
+        if(bytesReceived == FRAME_LENGTH){
+            if(parseFrame()){
+                drivers->commandMapper.handleKeyStateChange(0, SwitchState::UNKNOWN, rightSwitch, false, false);
+            }
+            bytesReceived = 0;
+        }
+    }
+    uint32_t now = tap::arch::clock::getTimeMilliseconds();
+    if(connected && (now - lastByteTimeMs > DISCONNECT_TIMEOUT_MS)){
+        connected = false;
+        resetValues();
+        drivers->commandMapper.handleKeyStateChange(0, SwitchState::UNKNOWN, rightSwitch, false, false);
+    }
     //
     // 2. Frame sync: if more than FRAME_GAP_MS passed since the previous byte, this byte is the
     //    START of a new frame, so throw away any partial frame (bytesReceived = 0).

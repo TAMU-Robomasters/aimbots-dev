@@ -198,6 +198,7 @@ static void initializeIo(src::Drivers *drivers) {
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
 #if TRAINING_USE_MY_REMOTE
     // TODO(week2): initialize YOUR remote here instead of taproot's (drivers->dt7Remote).
+    drivers->dt7Remote.initialize();
 #else
     drivers->remote.initialize();
 #endif
@@ -242,6 +243,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
 #if TRAINING_USE_MY_REMOTE
     // TODO(week2): read YOUR remote here instead of taproot's (drivers->dt7Remote).
+    drivers->dt7Remote.read();
 #else
     drivers->remote.read();
 #endif

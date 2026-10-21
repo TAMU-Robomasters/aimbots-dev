@@ -33,8 +33,8 @@ class BlinkLedCommand : public tap::control::Command {
     src::Drivers* drivers;
     TrainingBoardSubsystem* board;
 
-    // TODO(week1): you will need something to keep time without blocking.
-    // Look at tap::arch::MilliTimeout in taproot/src/tap/architecture/timeout.hpp.
+//new stuff
+    tap::arch::MilliTimeout blinkTimer;
 };
 
 }  // namespace src::Training
