@@ -10,6 +10,7 @@
 #include "tap/control/toggle_command_mapping.hpp"
 //
 #include "robots/training/commands/blink_led_command.hpp"
+#include "robots/training/commands/buzzer_command.hpp"
 #include "robots/training/training_board_subsystem.hpp"
 
 /*
@@ -32,6 +33,7 @@ TrainingBoardSubsystem board(drivers());
 
 // Define commands here ---------------------------------------------------
 BlinkLedCommand blinkLedCommand(drivers(), &board);
+BuzzerCommand buzzerCommand(drivers(), &board);
 
 // Define command mappings here -------------------------------------------
 // Blinks the LED while the right switch is UP; the command ends (LED off) as soon as it leaves UP.
@@ -39,6 +41,12 @@ HoldCommandMapping rightSwitchUp(
     drivers(),
     {&blinkLedCommand},
     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
+
+// Beeps the buzzer while the right switch is DOWN (pitch and note length from the right stick).
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&buzzerCommand},
+    RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&board); }
@@ -53,7 +61,10 @@ void setDefaultCommands(src::Drivers *) {}
 void startupCommands(src::Drivers *) {}
 
 // Register IO mappings here -----------------------------------------------
-void registerIOMappings(src::Drivers *drivers) { drivers->commandMapper.addMap(&rightSwitchUp); }
+void registerIOMappings(src::Drivers *drivers) {
+    drivers->commandMapper.addMap(&rightSwitchUp);
+    drivers->commandMapper.addMap(&rightSwitchDown);
+}
 
 }  // namespace TrainingControl
 

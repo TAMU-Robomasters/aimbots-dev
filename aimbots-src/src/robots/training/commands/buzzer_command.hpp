@@ -45,8 +45,12 @@ class BuzzerCommand : public tap::control::Command {
     src::Drivers* drivers;
     TrainingBoardSubsystem* board;
 
-    // TODO(week2): what do you need to remember between execute() calls?
-    // (a timer, whether the buzzer is currently on, the frequency you last sent, ...)
+    /** Sends a note to the buzzer (twice, see the README's buzzer gotchas) and remembers it. */
+    void playFrequency(uint32_t frequencyHz);
+
+    tap::arch::MilliTimeout noteTimer;  // expires when the current "on" or "off" half is over
+    bool noteOn = false;                // is the buzzer currently playing?
+    uint32_t lastFrequencyHz = 0;       // the frequency last sent to playNote
 };
 
 }  // namespace src::Training

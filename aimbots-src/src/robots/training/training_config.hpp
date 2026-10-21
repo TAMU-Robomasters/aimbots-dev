@@ -12,6 +12,6 @@
  * exactly one of them. Flip it to 1 once you have filled in the TODO(week2) blocks in drivers.hpp
  * and main.cpp. See training/week2/README.md, section 5.
  */
-#define TRAINING_USE_MY_REMOTE 0
+#define TRAINING_USE_MY_REMOTE 1
 
 #endif  // TARGET_TRAINING
