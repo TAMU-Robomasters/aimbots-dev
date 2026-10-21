@@ -1,20 +1,16 @@
-[tool.poetry]
-name = "_"
-version = "0.0.1"
-description = ""
-authors = [""]
+[project]
+name = "aimbots-dev"
+version = "0.0.0"
+# lbuild 1.22.0 needs >= 3.11
+requires-python = ">=3.11"
+# SCons and setuptools match taproot/test-project/Pipfile
+dependencies = [
+    "scons==4.7.0",
+    "lbuild==1.22.0",
+    "pyelftools",
+    "setuptools",
+    "pywin32; sys_platform == 'win32'",
+]
 
-[tool.poetry.dependencies]
-python = "3.9"
-pip = "20.1.1"
-lbuild = "1.20.0"
-pyelftools = "0.27"
-SCons = "3.1.2"
-pipenv = "2022.1.8"
-ez-yaml = "^1.1.0"
-
-[tool.poetry.dev-dependencies]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+package = false

@@ -56,6 +56,14 @@ def _get_sim_modm_instance_path():
     return f"taproot/sim-modm/{_get_hosted_target_name_for_current_platform()}/modm"
 
 
+# Put the toolchains from scripts/setup_tools.py ahead of any system-wide install
+TOOLS_PATH_FILE = abspath("../.tools/path.txt")
+if os.path.isfile(TOOLS_PATH_FILE):
+    with open(TOOLS_PATH_FILE) as f:
+        tool_bins = [line.strip() for line in f if line.strip()]
+    os.environ["PATH"] = os.pathsep.join(tool_bins + [os.environ["PATH"]])
+
+
 # Define a new SCons environment and set up basic build variables
 env = DefaultEnvironment(ENV=os.environ)
 env["CONFIG_BUILD_BASE"] = abspath(join(BUILD_PATH, args["TARGET_ENV"]))

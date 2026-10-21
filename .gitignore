@@ -4,7 +4,7 @@
 *.pyc
 
 aimbots-src/build
-aimbots-src/Pipfile.lock
+.tools/
 project.xml.log
 
 .vscode/.cortex-debug.peripherals.state.json
@@ -641,7 +641,6 @@ settings/home/.gitconfig
 settings/home/.mongorc.js
 settings/home/.ungitrc
 settings/home/.vuerc
-aimbots-src/taproot/modm/scons/site_tools/size.py
 
 # machine-specific clangd config (hardcoded local ARM toolchain include paths)
 .clangd
