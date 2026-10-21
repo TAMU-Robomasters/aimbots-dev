@@ -19,8 +19,8 @@ namespace src::Training {
 /**
  * @brief WEEK 2: your own parser for the DT7 remote / DR16 receiver (DBUS protocol).
  *
- * You only need the RIGHT stick (ch0, ch1) and the RIGHT switch (s1).
- * Fill in the TODOs in dt7_remote.cpp. See training/week2/README.md and dbus_protocol_en.md.
+ * You only need the RIGHT stick (ch0, ch1) and the RIGHT switch (S2, bits 44-45).
+ * Fill in the TODOs in dt7_remote.cpp. See training/week2/README.md and dt7_dr16_protocol_v1.4_en.pdf.
  *
  * Named Dt7Remote (not Remote) so it can't clash with taproot's tap::communication::serial::Remote.
  */

@@ -1,0 +1,3 @@
+# Keep git from rewriting line endings inside PDFs (some have no NUL byte early
+# enough for git to detect them as binary, so autocrlf would corrupt them).
+*.pdf binary
