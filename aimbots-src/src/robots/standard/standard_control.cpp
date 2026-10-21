@@ -283,16 +283,60 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 ClientDisplayCommand clientDisplayCommand(*drivers(), drivers()->commandScheduler, clientDisplay);
 
 // Define command mappings here -------------------------------------------
+// Each mapping keeps a pointer to its RemoteMapState, so the states must outlive the mappings.
+RemoteMapState leftSwitchUpState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState leftSwitchMidState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState rightSwitchUpState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP);
+RemoteMapState rightSwitchMidState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID);
+RemoteMapState rightSwitchDownState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN);
+RemoteMapState leftClickMouseState(RemoteMapState::MouseButton::LEFT);
+RemoteMapState bCtrlPressedState({Remote::Key::CTRL, Remote::Key::B});
+
 // develop's CommandMapper owns its mappings (addMap takes a std::unique_ptr), so they are
-// created in registerIOMappings() instead of as globals. Each mapping keeps a pointer to its
-// RemoteMapState, so the map states stay global.
-RemoteMapState leftSwitchUp(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP);
-RemoteMapState leftSwitchMid(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID);
-RemoteMapState rightSwitchUp(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP);
-RemoteMapState rightSwitchMid(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID);
-RemoteMapState rightSwitchDown(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN);
-RemoteMapState leftClickMouse(RemoteMapState::MouseButton::LEFT);
-RemoteMapState bCtrlPressed({Remote::Key::CTRL, Remote::Key::B});
+// moved into it in registerIOMappings().
+auto leftSwitchMid = std::make_unique<HoldCommandMapping>(
+    drivers(),  // gimbalFieldRelativeControlCommand
+    std::vector<Command *>{&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
+    &leftSwitchMidState);
+
+// Enables both chassis and gimbal control and closes hopper
+auto leftSwitchUp = std::make_unique<HoldCommandMapping>(
+    drivers(),  // gimbalFieldRelativeControlCommand2
+    std::vector<Command *>{&chassisTokyoCommand, &gimbalChaseCommand2},
+    //{&gimbalVelocityTunningCommand},
+    //{&gimbalPositionTunningCommand},
+    &leftSwitchUpState);
+
+auto rightSwitchDown = std::make_unique<HoldCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&openHopperCommand},
+    &rightSwitchDownState);
+
+// Runs shooter only and closes hopper
+auto rightSwitchMid = std::make_unique<HoldCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&runShooterCommand, &toggleHopperCommand},
+    &rightSwitchMidState);
+
+// Runs shooter with feeder and closes hopper
+auto rightSwitchUp = std::make_unique<HoldRepeatCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    &rightSwitchUpState,
+    true);
+
+auto leftClickMouse = std::make_unique<HoldCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&runFeederCommandFromMouse},
+    &leftClickMouseState);
+
+// The user can press b+ctrl when the remote right switch is in the down position to restart the
+// client display command. This is necessary since we don't know when the robot is connected to the
+// server and thus don't know when to start sending the initial HUD graphics.
+auto bCtrlPressed = std::make_unique<PressCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&clientDisplayCommand},
+    &bCtrlPressedState);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {
@@ -338,50 +382,14 @@ void startupCommands(src::Drivers *drivers) {
 
 // Register IO mappings here -----------------------------------------------
 void registerIOMappings(src::Drivers *drivers) {
-    // Enables both chassis and gimbal control and closes hopper
-    drivers->commandMapper.addMap(std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
-        drivers,  // gimbalFieldRelativeControlCommand2
-        {&chassisTokyoCommand, &gimbalChaseCommand2},
-        //{&gimbalVelocityTunningCommand},
-        //{&gimbalPositionTunningCommand},
-        &leftSwitchUp)));
-
-    drivers->commandMapper.addMap(std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
-        drivers,  // gimbalFieldRelativeControlCommand
-        {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
-        &leftSwitchMid)));
-
-    // Runs shooter with feeder and closes hopper
-    drivers->commandMapper.addMap(std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatCommandMapping(
-        drivers,
-        {&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
-        &rightSwitchUp,
-        true)));
-
-    // Runs shooter only and closes hopper
-    drivers->commandMapper.addMap(std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
-        drivers,
-        {&runShooterCommand, &toggleHopperCommand},
-        &rightSwitchMid)));
-
-    drivers->commandMapper.addMap(std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
-        drivers,
-        {&openHopperCommand},
-        &rightSwitchDown)));
-
-    drivers->commandMapper.addMap(std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
-        drivers,
-        {&runFeederCommandFromMouse},
-        &leftClickMouse)));
-
-    // The user can press b+ctrl when the remote right switch is in the down position to restart the
-    // client display command. This is necessary since we don't know when the robot is connected to the
-    // server and thus don't know when to start sending the initial HUD graphics.
-    // (main added this mapping twice; a mapping can only be owned once now.)
-    drivers->commandMapper.addMap(std::unique_ptr<PressCommandMapping>(new PressCommandMapping(
-        drivers,
-        {&clientDisplayCommand},
-        &bCtrlPressed)));
+    // Same order as before. (main added bCtrlPressed twice; a mapping can only be owned once now.)
+    drivers->commandMapper.addMap(std::move(leftSwitchUp));
+    drivers->commandMapper.addMap(std::move(leftSwitchMid));
+    drivers->commandMapper.addMap(std::move(rightSwitchUp));
+    drivers->commandMapper.addMap(std::move(rightSwitchMid));
+    drivers->commandMapper.addMap(std::move(rightSwitchDown));
+    drivers->commandMapper.addMap(std::move(leftClickMouse));
+    drivers->commandMapper.addMap(std::move(bCtrlPressed));
 }
 
 }  // namespace StandardControl

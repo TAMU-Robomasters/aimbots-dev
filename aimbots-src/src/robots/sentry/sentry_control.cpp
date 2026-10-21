@@ -430,19 +430,19 @@ RemoteMapState leftClickMouseState(RemoteMapState::MouseButton::LEFT);
 RemoteMapState rightClickMouseState(RemoteMapState::MouseButton::RIGHT);
 
 // CommandMapper::addMap() takes ownership, so the mappings are moved into it in registerIOMappings().
-auto leftSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto leftSwitchMid = std::make_unique<HoldCommandMapping>(
     drivers(),
     // Manual driving: custom-controller toggle drive + manual gimbal aiming.
     // {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
-   {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
-    &leftSwitchMidState));
+   std::vector<Command *>{&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
+    &leftSwitchMidState);
 
 // HoldRepeat (not Hold): gameGatedTokyoCommand self-finishes the instant the game starts (its
 // stopFallbackCommandIfGovernorsReady=true) so the GovernorWithFallbackCommand can be re-added and
 // re-run isReady(), handing off manual->auto tokyo. A plain HoldCommandMapping only adds once on
 // entering UP and would NOT re-add after the self-finish, leaving the chassis dead until you toggle
 // the switch off UP and back. -1 (default) = reschedule forever while held; true = end when released.
-auto leftSwitchUp = std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatCommandMapping(
+auto leftSwitchUp = std::make_unique<HoldRepeatCommandMapping>(
     drivers(),
    // {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalChaseCommand2},
    // {&chassisToggleDriveIgnoreGimbalCommand2, &matchGimbalControlCommand},
@@ -459,38 +459,38 @@ auto leftSwitchUp = std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatComm
      // {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
      // {&nav2TokyoMasterCommand, &matchGimbalControlCommand},
      // Pre-game: manual tokyo. Once the ref system reports IN_GAME: nav2 auto tokyo.
-     {&autoTokyoPowerLimitedCommand, &gimbalFieldRelativeControlCommand},
+     std::vector<Command *>{&autoTokyoPowerLimitedCommand, &gimbalFieldRelativeControlCommand},
      // {&gameGatedTokyoCommand, &matchGimbalControlCommand},
      // {&nav2TokyoMasterCommand},
     // {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
     // {&chassisAutoNavCommand, &gimbalToggleAimCommand /*&gimbalChaseCommand*/},
     &leftSwitchUpState,
-    true));  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP
+    true);  // endCommandsWhenNotHeld: stop both commands when the switch leaves UP
 
 // Runs shooter only
-auto rightSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto rightSwitchMid = std::make_unique<HoldCommandMapping>(
     drivers(),
     // {&feederShotTimingCommand, &runShooterCommand},
-    {&autoAimFeederCommand, &runShooterCommand}, 
+    std::vector<Command *>{&autoAimFeederCommand, &runShooterCommand}, 
      // {&runShooterCommand},
-    &rightSwitchMidState));
+    &rightSwitchMidState);
 
 // Auto feeder (CV/auto-aim gated) + flywheel
-auto rightSwitchUp = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto rightSwitchUp = std::make_unique<HoldCommandMapping>(
     drivers(),
-    {&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
-    &rightSwitchUpState));
+    std::vector<Command *>{&dualBarrelsFeederCommand, &runShooterWithFeederCommand},
+    &rightSwitchUpState);
 
-auto leftClickMouse = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto leftClickMouse = std::make_unique<HoldCommandMapping>(
     drivers(),
-    {&runFeederCommandFromMouse},
-    &leftClickMouseState));
+    std::vector<Command *>{&runFeederCommandFromMouse},
+    &leftClickMouseState);
 
 // Right mouse: auto feeder (CV/auto-aim gated) + flywheel
-auto rightClickMouse = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto rightClickMouse = std::make_unique<HoldCommandMapping>(
     drivers(),
-    {&autoAimFeederCommandFromMouse, &runShooterFromMouseCommand},
-    &rightClickMouseState));
+    std::vector<Command *>{&autoAimFeederCommandFromMouse, &runShooterFromMouseCommand},
+    &rightClickMouseState);
 
 // Register subsystems here -----------------------------------------------
 void registerSubsystems(src::Drivers *drivers) {

@@ -305,37 +305,40 @@ RemoteMapState bCtrlPressedState({Remote::Key::CTRL, Remote::Key::B});
 //     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand3},
 //     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
 
-auto leftSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto leftSwitchMid = std::make_unique<HoldCommandMapping>(
     drivers(),
-    {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
-    &leftSwitchMidState));
+    std::vector<Command *>{&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
+    &leftSwitchMidState);
 
-auto leftSwitchUp = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto leftSwitchUp = std::make_unique<HoldCommandMapping>(
     drivers(),
     // {&gimbalPositionTunningCommand},
     // {&gimbalVelocityTunningCommand},
     // {&chassisTokyoCommand, &gimbalFieldRelativeControlCommand2},
-    {/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand, &gimbalChaseCommand2},
-    &leftSwitchUpState));
+    std::vector<Command *>{/*&chassisToggleDriveIgnoreGimbalCommand*/&tokyoMasterCommand, &gimbalChaseCommand2},
+    &leftSwitchUpState);
 
 // HoldCommandMapping rightSwitchDown(
 //     drivers(),
 //     {&feederlimitcommand},
 //     RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
 
-auto rightSwitchMid = std::unique_ptr<HoldCommandMapping>(new HoldCommandMapping(
+auto rightSwitchMid = std::make_unique<HoldCommandMapping>(
     drivers(),
-    {&feederLimitCommand, &runShooterCommand},
-    &rightSwitchMidState));
+    std::vector<Command *>{&feederLimitCommand, &runShooterCommand},
+    &rightSwitchMidState);
 
 // Runs shooter with feeder and closes hopper
-auto rightSwitchUp = std::unique_ptr<HoldRepeatCommandMapping>(new HoldRepeatCommandMapping(
+auto rightSwitchUp = std::make_unique<HoldRepeatCommandMapping>(
     drivers(),
-    {/*&runFeederCommand,*/&feederLimitCommand, &runShooterWithFeederCommand},
+    std::vector<Command *>{/*&runFeederCommand,*/&feederLimitCommand, &runShooterWithFeederCommand},
     &rightSwitchUpState,
-    true));
+    true);
 
-auto bCtrlPressed = std::unique_ptr<PressCommandMapping>(new PressCommandMapping(drivers(), {&clientDisplayCommand}, &bCtrlPressedState));
+auto bCtrlPressed = std::make_unique<PressCommandMapping>(
+    drivers(),
+    std::vector<Command *>{&clientDisplayCommand},
+    &bCtrlPressedState);
 
 // HoldCommandMapping leftClickMouse(
 //     drivers(),
