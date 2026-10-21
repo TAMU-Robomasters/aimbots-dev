@@ -5,7 +5,7 @@
 #define CHASSIS_COMPATIBLE
 
 //SWERO ERA HAS BEGUN
-#define SWERVE
+
 #define TURRET_IMU
 static constexpr uint8_t MOTORS_PER_WHEEL = 2;
 

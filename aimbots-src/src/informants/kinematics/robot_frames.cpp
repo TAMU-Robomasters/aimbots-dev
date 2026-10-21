@@ -16,7 +16,7 @@ namespace src::Informants::Transformers {
 // Look sid Idk how to do this exactly
 
 RobotFrames::RobotFrames() {
-#ifndef TARGET_TURRET
+#if !defined(TARGET_TURRET) && !defined(TARGET_DART)
     // Init Ballistics Frame for Ballistics Math (Offset Vertically, Same Directions)
     ballisticsFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
     gimbalFrame.setOrigin(TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN);
@@ -47,7 +47,7 @@ void RobotFrames::updateFrames(
     float chassisWorldRelativeAngle,
     Vector3f robotPositionRelativeToStartPosition,
     AngleUnit angleUnit) {
-#ifndef TARGET_TURRET
+#if !defined(TARGET_TURRET) && !defined(TARGET_DART)
     chassis_orientation_relative_to_world_orientation = rotationMatrix(chassisWorldRelativeAngle, Z_AXIS, angleUnit);
 
     this->gimbal_orientation_relative_to_chassis_orientation =
@@ -79,7 +79,7 @@ void RobotFrames::updateFrames(
 float camera_mounting_offset_angle = -0.0f;
 
 void RobotFrames::mirrorPastCameraFrame(float gimbalYawAngle, float gimbalPitchAngle, AngleUnit angleUnit) {
-#ifndef TARGET_TURRET
+#if !defined(TARGET_TURRET) && !defined(TARGET_DART)
     Matrix3f at_cv_update_gimbal_orientation_relative_to_chassis_orientation =
         rotationMatrix(gimbalYawAngle, Z_AXIS, angleUnit) * rotationMatrix(gimbalPitchAngle, X_AXIS, angleUnit) *
         rotationMatrix(camera_mounting_offset_angle, Z_AXIS, AngleUnit::Degrees);

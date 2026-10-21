@@ -1,4 +1,3 @@
-#include "subsystems/chassis/basic_commands/chassis_ignore_gimbal_command.hpp"
 #include "utils/tools/robot_specific_defines.hpp"
 
 #if defined(ALL_DARTS)
@@ -9,9 +8,7 @@
 #include "drivers_singleton.hpp"
 
 //
-#include "informants/kinematics/robot_frames.hpp"
-#include "utils/ballistics/ballistics_solver.hpp"
-#include "utils/ref_system/ref_helper_turreted.hpp"
+
 //
 #include "tap/control/command_mapper.hpp"
 #include "tap/control/hold_command_mapping.hpp"
