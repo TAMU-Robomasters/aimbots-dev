@@ -40,12 +40,13 @@ void BuzzerCommand::execute() {
     }
 
     if (soundOn) {
-        if (frequency - lastFrequency > FREQUENCY_DEADBAND_HZ) {
-            tap::buzzer::playNote(&drivers->pwm, frequency);
-            tap::buzzer::playNote(&drivers->pwm, frequency);   // duty-cycle fix
+        if (static_cast<uint32_t>(abs(static_cast<int>(frequency) - static_cast<int>(lastFrequency))) > FREQUENCY_DEADBAND_HZ) {
             lastFrequency = frequency;
         }
-    } else {
+        tap::buzzer::playNote(&drivers->pwm, frequency);
+        tap::buzzer::playNote(&drivers->pwm, frequency);
+    } 
+    else {
         tap::buzzer::silenceBuzzer(&drivers->pwm);
     }
 

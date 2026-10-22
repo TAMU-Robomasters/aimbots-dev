@@ -72,9 +72,10 @@ class Dt7Remote {
 
     uint8_t rxBuffer[FRAME_LENGTH]{};
     size_t bytesReceived = 0;       // how many bytes of the current frame we have so far
-    uint32_t lastByteTimeMs = 0;    // when the last byte arrived (for frame sync)
+    uint32_t lastByteMs = 0;    // when the last byte arrived (for frame sync)
     uint32_t lastGoodFrameMs = 0;   // when the last VALID frame was parsed (for disconnect)
     bool connected = false;
+    uint32_t now = 0;
 
     // Decoded values, as offsets from center: -660..660.
     int16_t rightHorizontal = 0;

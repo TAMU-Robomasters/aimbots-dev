@@ -10,7 +10,8 @@
 uint32_t framesParsedDisplay = 0;  // should climb by ~70 every second with the remote on
 uint32_t badFramesDisplay = 0;     // should stay at (or very near) 0
 float rightVerticalDisplay = 0.0f;
-
+size_t bytesrecievedDisplay = 0;
+uint32_t nowDisplay = 0;
 namespace src::Training {
 
 using tap::communication::serial::Uart;
@@ -28,18 +29,20 @@ void Dt7Remote::read() {
     // 1. Read bytes one at a time until the UART is empty:
     //        uint8_t byte;
     //        while (drivers->uart.read(Uart::UartPort::Uart3, &byte)) { ... }
-    uint32_t now = tap::arch::clock::getTimeMilliseconds();
+    now = tap::arch::clock::getTimeMilliseconds();
+    nowDisplay = now;
     uint8_t byte;
-    uint32_t lastByteMs = 0;
     while (drivers->uart.read(Uart::UartPort::Uart3, &byte)) {
          if (now - lastByteMs > FRAME_GAP_MS) {
             bytesReceived = 0;   // new frame starts now
         }
+        bytesrecievedDisplay = bytesReceived;
         lastByteMs = now;
 
         // store byte
         if (bytesReceived < FRAME_LENGTH) {
-            rxBuffer[bytesReceived++] = byte;
+            rxBuffer[bytesReceived] = byte;
+            bytesReceived++;
         }
 
         // 3. Full frame received
