@@ -30,6 +30,7 @@
 #include "communicators/custom_controller/custom_controller.hpp"
 #include "communicators/esp_power_sensor/esp_power_sensor.hpp"
 #include "communicators/vtm_can/vtm_can.hpp"
+#include "communicators/cancoder/cancoder.hpp"
 #include "communicators/vtm_can/can_test_listener.hpp"
 #include "communicators/can_sound_system/can_sound_system.hpp"
 #include "communicators/rev_encoder/rev_encoder_protocol.hpp"
@@ -54,6 +55,7 @@ public:
           canSoundSystem(this),
           can351Listener(this),
           cvCommunicator(this),
+          cancoder(this),
       //  powerCommunicator(this),
       #ifdef YAW_3508
           revEncoder(this),
@@ -71,6 +73,7 @@ public:
     src::communicators::can_sound_system::CanSoundSystem canSoundSystem;
     src::communicators::vtm_can::Can351Listener can351Listener;
     Informants::Vision::JetsonCommunicator cvCommunicator;
+    src::communicators::cancoder::CANcoder cancoder;
   //  Informants::INA260::INA260Communicator powerCommunicator;
   #ifdef YAW_3508
     Informants::RevEncoder revEncoder;

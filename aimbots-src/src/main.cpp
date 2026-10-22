@@ -91,6 +91,8 @@ float gameStartedDisplay = 0.0f;
 
 bool button1Display = false;
 float chassisPowerDisplay = 0;
+float cancoderAbsolutePositionDisplay = 0;
+float cancoderVelocityDisplay = 0;
 
 bool actualattachDisplay = false;
 
@@ -213,6 +215,7 @@ static void initializeIo(src::Drivers *drivers) {
 
 
     drivers->vtmCan.initialize();
+    drivers->cancoder.initialize();
     //drivers->can351Listener.initialize(); can debug class
     drivers->customController.initialize();
     drivers->espPowerSensor.initialize();
@@ -299,6 +302,9 @@ static void updateIo(src::Drivers *drivers) {
     button1Display = drivers->customController.button1Pressed();
 
     chassisPowerDisplay = drivers->espPowerSensor.getPower();
+
+    cancoderAbsolutePositionDisplay = drivers->cancoder.getAbsolutePositionRadians();
+    cancoderVelocityDisplay = drivers->cancoder.getFilteredVelocityRadiansPerSecond();
 
 
      yawDisplay = drivers->kinematicInformant.getChassisIMUAngle(src::Informants::AngularAxis::YAW_AXIS, AngleUnit::Degrees);
