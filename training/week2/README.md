@@ -1,4 +1,4 @@
-# Week 2: Parse the remote yourself, then make some noise
+# Week 2: Parse the remote yourself, then make some noise with the buzzer
 
 **Goal:** throw away taproot's remote code and read the DT7 remote **yourself**, straight from the UART bytes. Then use your parser to drive the dev board's buzzer:
 
@@ -9,7 +9,7 @@
 
 You only parse the **right stick** and the **right switch**.
 
-Every spot you need to change is marked `TODO(week2)`.
+Almost every spot you need to change is marked `TODO(week2)`. **The one exception is `training_control.cpp`:** there are no week 2 TODOs in it (you already edited it in week 1, and new TODOs would cause merge conflicts). You add your buzzer command, its mapping, and its `addMap` call there yourself, **the same way you added your `BlinkLedCommand` in week 1** (section 8). 
 
 ---
 
@@ -46,7 +46,7 @@ pipenv run scons build robot=TRAINING
 
 `drivers.hpp` changed, so this is a full rebuild (~5 minutes). After that, builds are incremental again.
 
-**Read first:** [`dbus_protocol_en.md`](dbus_protocol_en.md), the English translation of DJI's receiver manual protocol section (the Chinese original is next to it). Keep it open while you work.
+**Read first:** [`dt7_dr16_protocol_v1.4_en.pdf`](dt7_dr16_protocol_v1.4_en.pdf), an English translation of DJI's *RoboMasters Remote Controller Control Protocol V1.4*. The Chinese original is next to it: [`dt7_dr16_protocol_v1.4_cn.pdf`](dt7_dr16_protocol_v1.4_cn.pdf).
 
 >  Taproot has its own parser in `taproot/src/tap/communication/serial/remote.cpp`. **Don't open it until you're checked off.** The point is to go from *document → bytes → code* yourself, like the LED pin in week 1.
 
@@ -74,8 +74,6 @@ idle ─┐   ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬───
 
 People write this as `8E1` (8 data, Even parity, 1 stop) or `8N1` (No parity). With start + 8 + parity + stop, **one byte takes 11 bits on the wire**. Remember that for section 4.
 
-**Why DBUS needs an inverter:** DJI's receiver sends the signal upside-down (idle LOW instead of HIGH). The Type C board has a hardware inverter in front of the DBUS port, so by the time bytes reach `Uart3` they're normal UART and you don't have to do anything about it.
-
 **How does that compare to the rest of the robot?**
 
 | Bus | Wires | Used for on our robot |
@@ -83,21 +81,19 @@ People write this as `8E1` (8 data, Even parity, 1 stop) or `8N1` (No parity). W
 | UART | TX, RX (point to point) | Remote (DBUS), referee system, Jetson |
 | CAN | CAN-H, CAN-L (many devices share it) | Every DJI motor, board-to-board |
 | SPI | clock, MOSI, MISO, chip select | The IMU on the dev board |
-| I²C | clock, data (addressed devices) | Small sensors, e.g. the magnetometer |
-
-I2C actually doesn't work on devboard type c due to hardware bug 😭
+| I²C | clock, data (addressed devices) | Actually doesn't work on devboard type c due to hardware bug 😭 |
 
 ---
 
 ## 2. The DBUS frame
 
-The receiver sends one **18-byte frame every 14 ms** (~70 frames per second). Each frame holds every stick, switch, the mouse and the keyboard. There's **no header byte and no checksum**; you'll see why that matters in section 4.
+The receiver sends one **18-byte frame every 7 ms** (~140 frames per second). Each frame holds every stick, switch, the mouse and the keyboard. There's **no header byte and no checksum**; you'll see why that matters in section 4.
 
 The sticks are **11-bit numbers** (0–2047), but bytes are 8 bits. So DJI packs them back to back as one long stream of bits, **least significant bit first**, ignoring byte boundaries:
 
 ```
 bit:   0          10 11         21 22 ...                   43 44 45 46 47
-       [   ch0 (11)  ][   ch1 (11)  ][ ch2 (11) ][ ch3 (11) ][s1 ][s2 ]
+       [   ch0 (11)  ][   ch1 (11)  ][ ch2 (11) ][ ch3 (11) ][S2 ][S1 ]
 byte:  |  byte 0  |  byte 1  |  byte 2  |  byte 3  |  byte 4  |  byte 5  |
 ```
 
@@ -107,15 +103,56 @@ You only need these:
 |---|---|---|---|
 | ch0 | 0–10 | right stick, horizontal | 364 … **1024 (center)** … 1684 |
 | ch1 | 11–21 | right stick, vertical | 364 … **1024 (center)** … 1684 |
-| s1 | 44–45 | right switch | 1 = UP, 3 = MID, 2 = DOWN |
+| S2 | 44–45 | right switch | 1 = UP, 3 = MID, 2 = DOWN |
 
-(Double-check every number here against [`dbus_protocol_en.md`](dbus_protocol_en.md). Never trust a README over the source document!)
+(Double-check the numbers in the protocol PDF.)
+
+> 🕵️ **But sometimes the source document is wrong too.** DJI's own protocol contradicts itself about the switches. Its table puts **S1** at bits 44–45 and **S2** at 46–47. But its picture of the remote (page 3 of the Chinese original) puts S1 on the **left** and S2 on the **right**, and its own reference code reads bits 44–45 as the **right** switch. We checked on a real board: **bits 44–45 are the right switch (S2)**, so the table has S1 and S2 swapped. This happens all the time with datasheets. When two parts of a document disagree, test it on hardware: flip one switch at a time and watch byte 5 in MCUViewer.
+>
+> The protocol has a few more mistakes in parts you don't need this week. If you try the "parse the rest" goal, note that the mouse buttons and keyboard are really at bit offsets 96, 104 and 112 (bytes 12, 13 and 14–15, as the struct's byte comments say), not 86, 94 and 102.
+
+### Hex: how we write bits
+
+Bytes are usually written in **hexadecimal** (base 16), not decimal. The digits go `0`–`9`, then `A`–`F` for 10–15.
+
+Hex is used because **one hex digit is exactly 4 bits**, so you can convert to and from binary one digit at a time. Decimal doesn't line up with bits like that.
+
+| Hex | Binary | Decimal | | Hex | Binary | Decimal |
+|---|---|---|---|---|---|---|
+| `0` | `0000` | 0 | | `8` | `1000` | 8 |
+| `1` | `0001` | 1 | | `9` | `1001` | 9 |
+| `2` | `0010` | 2 | | `A` | `1010` | 10 |
+| `3` | `0011` | 3 | | `B` | `1011` | 11 |
+| `4` | `0100` | 4 | | `C` | `1100` | 12 |
+| `5` | `0101` | 5 | | `D` | `1101` | 13 |
+| `6` | `0110` | 6 | | `E` | `1110` | 14 |
+| `7` | `0111` | 7 | | `F` | `1111` | 15 |
+
+So a byte (8 bits) is always **exactly two hex digits**. Convert each digit on its own and stick them together:
+
+```
+0x4A  →  4 = 0100,  A = 1010  →  0100 1010  (= 74 in decimal)
+0xE8  →  E = 1110,  8 = 1000  →  1110 1000  (= 232)
+```
+
+**In C++,** the same number can be written three ways. All three mean exactly the same value; the compiler doesn't care which you use:
+
+```cpp
+uint8_t a = 74;            // decimal
+uint8_t b = 0x4A;          // hex: prefix 0x
+uint8_t c = 0b0100'1010;   // binary: prefix 0b; the ' is just a separator for readability
+// a == b == c
+```
+
+- Use **hex** for masks and raw bytes: `0x7FF`, `0xFF`. It's short, and you can see the bits once you know the table.
+- Use **binary** when you want to see every bit: `0b11` for a 2-bit mask.
+- Use **decimal** for real quantities: `1024`, `660`, `100000`.
 
 ### The tools: shift and mask
 
 - `x >> n` slides the bits of `x` right by `n`, throwing away the bottom `n` bits.
 - `x << n` slides them left, making room at the bottom.
-- `x & 0x7FF` keeps only the bottom 11 bits (`0x7FF` = `0b111_1111_1111`). That's called a **mask**.
+- `x & 0x7FF` keeps only the bottom 11 bits. That's called a **mask**: `0x7FF` = `0b111'1111'1111`, eleven 1s. Using the table: `7` = `0111`, `F` = `1111`, `F` = `1111`.
 - `a | b` glues two pieces together when they don't overlap.
 
 ---
@@ -157,7 +194,7 @@ ch1 = 20 | (52 << 5) = 20 + 1664 = 1684
 
 1684 − 1024 = **+660**: fully up. ✔
 
-**s1 (bits 44–45)** is bits 4–5 of byte 5 (44 = 5 × 8 + 4):
+**S2, the right switch (bits 44–45)**, is bits 4–5 of byte 5 (44 = 5 × 8 + 4):
 
 ```
 byte 5 = 1110 1000
@@ -174,14 +211,14 @@ Before you flash anything, check your code by hand against this example frame.
 
 ## 4. From a stream of bytes to frames
 
-The UART hands you bytes, not frames. If you start reading halfway through a frame and just count to 18, **every frame after that is shifted**, and your "ch0" is really the end of ch2. You need to know where a frame **starts**.
+The UART hands you bytes, not frames (frames mean messages). If you start reading halfway through a frame and just count to 18, **every frame after that is shifted**, and your "ch0" is really the end of ch2. You need to know where a frame **starts**.
 
 **How other protocols do it:** most protocols start each message with a **magic/header byte** and end with a **checksum**. For example, the referee system's frames start with `0xA5` and carry a CRC. You search for the header, read the length, and verify the checksum.
 
-**DBUS has neither, so we use timing.** At 100,000 baud, 18 bytes × 11 bits = 198 bits ≈ **2 ms** to send a frame. Then the line is quiet until the next frame, 14 ms after the last one started:
+**DBUS has neither, so we use timing.** At 100,000 baud, 18 bytes × 11 bits = 198 bits ≈ **2 ms** to send a frame. Then the line is quiet until the next frame, 7 ms after the last one started:
 
 ```
-|<- 2 ms ->|<------ ~12 ms silence ------>|<- 2 ms ->|
+|<- 2 ms ->|<-- ~5 ms silence -->|<- 2 ms ->|
 [ 18 bytes ]                              [ 18 bytes ]
 ```
 
@@ -233,8 +270,6 @@ And `main.cpp` uses `#if` to compile in **exactly one** of them:
 #endif
 ```
 
-> 📎 **Why `#if` here and not `#ifdef`?** `#ifdef` only asks "is it defined?" and `0` still counts as defined. `#if` looks at the value. Other robots never include `training_config.hpp`, so `robot_specific_defines.hpp` gives them `#define TRAINING_USE_MY_REMOTE 0` as a fallback. Without that, `#if` would be testing an undefined name, which the compiler warns about (`-Wundef`).
-
 ### What is `Drivers`?
 
 `src::Drivers` (in `src/drivers.hpp`) is one big object that owns every piece of shared hardware code: the UARTs, CAN, PWM, IMU, the command scheduler and the command mapper. Everything gets to it through the `drivers` pointer. To make your remote reachable as `drivers->dt7Remote`, add it there.
@@ -277,13 +312,13 @@ The header already has the constants, the members you need, and getters that tur
     **This line is what makes `HoldCommandMapping`s work.** Taproot's remote does the same thing internally, which is how your week 1 mapping ever saw the switch. Your parser doesn't read the left switch, keys or mouse, so pass "nothing".
   - Check for disconnect (section 4) and send all-`UNKNOWN` to the mapper.
 - [ ] **`parseFrame()`**:
-  - Decode ch0, ch1 and s1 (section 3).
+  - Decode ch0, ch1 and the right switch (section 3).
   - Validate (section 4).
-  - On a good frame, store `channel - CHANNEL_CENTER` and `static_cast<SwitchState>(s1)`.
+  - On a good frame, store `channel - CHANNEL_CENTER` and `static_cast<SwitchState>(rightSwitchRaw)`.
   - Update `framesParsedDisplay` / `badFramesDisplay` / `rightVerticalDisplay` for MCUViewer.
 
 **Test it before the buzzer:** flip `TRAINING_USE_MY_REMOTE` to 1, build, flash, and open MCUViewer.
-- `framesParsedDisplay` should climb by ~70 per second.
+- `framesParsedDisplay` should climb by ~140 per second.
 - `badFramesDisplay` should stay at ~0.
 - `rightVerticalDisplay` should follow the stick from −1 to 1.
 - **Your week 1 LED should still blink on right switch UP.** That proves your switch → command mapper path works.
@@ -336,7 +371,6 @@ Taproot's buzzer function has two quirks that bite exactly this assignment:
 
 Also expect this:
 - **The robot plays a startup song.** Once the IMU warms up to 50 °C (a little after boot), `main.cpp` plays the robot's startup song on the same buzzer. Wait for it to finish before testing, because it will fight your command while it plays.
-- **High notes go up in little steps.** The timer period is set in whole microseconds (`1'000'000 / frequency`). At 15 kHz, one microsecond is a big fraction of the period, so the pitch steps instead of sliding. Can you work out the step size at 15 kHz?
 
 > 🎵 **Curious how we play actual songs?** That's the jukebox: [`utils/music/jukebox_player.cpp`](../../aimbots-src/src/utils/music/jukebox_player.cpp) plays a song note by note **without blocking**, using the same "check the clock, act when time is up" idea as your command. The note frequencies and durations are in [`jukebox_player.hpp`](../../aimbots-src/src/utils/music/jukebox_player.hpp), the songs themselves in [`sheetmusic_constants.hpp`](../../aimbots-src/src/utils/music/sheetmusic_constants.hpp), and an older version is in [`player.cpp`](../../aimbots-src/src/utils/music/player.cpp). You don't need any of it this week, but adding a song is a fun play-around goal.
 
@@ -357,10 +391,12 @@ Also expect this:
   - [ ] `initialize()`: silence, then start the timer.
   - [ ] `execute()`: map the stick, flip on/off when the timer expires, and follow the stick mid-note (with the deadband).
   - [ ] `end()`: silence.
-- [ ] `training_control.cpp`:
-  - [ ] `#include "robots/training/commands/buzzer_command.hpp"`
-  - [ ] Create a `BuzzerCommand`.
-  - [ ] Add a `HoldCommandMapping` on `RIGHT_SWITCH` / `DOWN` and register it.
+- [ ] `training_control.cpp` (**no TODOs here**; do exactly what you did for `BlinkLedCommand` in week 1):
+  - [ ] `#include "robots/training/commands/buzzer_command.hpp"` next to the blink command's include.
+  - [ ] Create a `BuzzerCommand`, passing it `drivers()` and `&board`, under your `BlinkLedCommand`.
+  - [ ] Add a `HoldCommandMapping` on `RIGHT_SWITCH` / `DOWN` that runs it, under your week 1 mapping.
+  - [ ] Register it in `registerIOMappings()` with another `drivers->commandMapper.addMap(...)`.
+  - Keep your week 1 command and mapping. The LED on UP and the buzzer on DOWN both need to work.
 
 ### Checkoff
 - [ ] Compiles with `pipenv run scons build robot=TRAINING` with no new errors or warnings from your files.
@@ -379,7 +415,7 @@ Also expect this:
 ### Play around try completing these goals
 - **Musical stick:** snap the frequency to the nearest note of a scale (the `NoteFreq` values in `jukebox_player.hpp`) so the stick plays real notes.
 - **Exponential pitch:** pitch sounds even to us when the frequency *doubles* (one octave), not when it goes up by a fixed number of Hz. Map the stick so every equal stick movement is an equal musical step: `f = MIN × (MAX / MIN)^((stick + 1) / 2)`. Compare it to the linear map.
-- **Parse the rest:** add the left stick (ch2, ch3), the left switch (s2) and the wheel, and pass the left switch to the command mapper too.
+- **Parse the rest:** add the left stick (ch2, ch3), the left switch (S1, bits 46–47) and the wheel, and pass the left switch to the command mapper too.
 - **Your own song:** add a short song to `sheetmusic_constants.hpp` and play it with `drivers->musicPlayer.requestSong(...)` when the switch goes to MID.
 
 ---
@@ -398,6 +434,7 @@ Also expect this:
 | `badFramesDisplay` climbs fast | Frame sync is wrong (shifted frames). Check the gap logic and that you reset the byte count after each frame. Wrong bit offsets also look like this. |
 | Stick values jump around or move the wrong axis | Bit offsets/masks are off. Decode the section 3 example frame by hand with your code. |
 | LED / buzzer never start, even though `framesParsedDisplay` climbs | You never call `commandMapper.handleKeyStateChange`, or you pass the switch in the left-switch slot. |
+| LED works on UP, but nothing happens on DOWN | The buzzer mapping isn't in `training_control.cpp`, or you created it but never called `addMap()` on it (same as the week 1 mistake). |
 | Buzzer silent on some notes, or buzzy and clicky | The two buzzer gotchas in section 7. |
 | Random tune plays over your beeps after boot | That's the startup song. Wait for it to finish. |
 | Builds take 10 minutes every time | Expected once after editing `drivers.hpp` (everything includes it). Edits to only your `.cpp` files rebuild quickly. |
