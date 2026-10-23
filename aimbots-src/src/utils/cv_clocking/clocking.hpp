@@ -2,9 +2,21 @@
 
 #include "drivers.hpp"
 
+namespace src {
+class Drivers;
+}
+
 namespace utils::CV_Clocking {
     
-    void reset(src::Drivers* drivers);
-    void startSignal(src::Drivers* drivers);
-    void stopSignal(src::Drivers* drivers);
+class CVClocker {
+    public:
+        CVClocker(src::Drivers* drivers);
+        ~CVClocker() = default;
+
+        void reset();
+        void startSignal();
+        void stopSignal();
+    private:
+        src::Drivers* drivers;
+};
 }

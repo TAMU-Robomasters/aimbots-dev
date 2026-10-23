@@ -45,6 +45,7 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
+#include "utils/cv_clocking/clocking.hpp"
 #include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
@@ -155,6 +156,7 @@ int main() {
             drivers->kinematicInformant.updateRobotFrames();
             if(atTemp){
                 drivers->musicPlayer.playMusic();
+                drivers->cvClocker.startSignal();
                 if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND, 25); startupSound = true;}
 
                 } else {

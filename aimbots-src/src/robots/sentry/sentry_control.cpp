@@ -513,6 +513,7 @@ void setDefaultCommands(src::Drivers *) {
 
 // Set commands scheduled on startup
 void startupCommands(src::Drivers *drivers) {
+    //drivers->CV_Clocking.startSignal(src::drivers* drivers)
     // drivers->refSerial.attachRobotToRobotMessageHandler(SENTRY_RESPONSE_MESSAGE_ID, &responseHandler);
 
     // no startup commands should be set
