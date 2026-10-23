@@ -14,7 +14,11 @@
 //
 #include "robots/training/commands/buzzer_command.hpp"
 #include "robots/training/training_config.hpp"
-
+//
+#include "robots/training/commands/velocity_pid_tuning_command.hpp"
+#include "robots/training/motor/training_motor_subsystem.hpp"
+#include "robots/training/motor/velocity_motor_pid.hpp"
+#include "robots/training/commands/velocity_control_command.hpp"
 /*
  * NOTE: We are using the DoNotUse_getDrivers() function here
  *      because this file defines all subsystems and command
@@ -32,14 +36,52 @@ namespace TrainingControl {
 
 // Define subsystems here ------------------------------------------------
 TrainingBoardSubsystem board(drivers());
+TrainingMotorSubsystem motorSubsystem(drivers());
+static constexpr SmoothPIDConfig VELOCITY_PID_CONFIG = {
+    .kp = 10.0f,
+    .ki = 0.0f,
+    .kd = 0.0f,
+    .maxICumulative = 1000000.0f,
+    .maxOutput = 25000.0f,
+};
 
+VelocityMotorPid velocityPid(
+    drivers(),
+    &motorSubsystem,
+    VELOCITY_PID_CONFIG);
+
+static constexpr VelocityTuningConfig TUNING_CONFIG = {
+    .amplitudeRpm = 60.0f,
+    .frequencyHz = 0.5f
+};
 // Define commands here ---------------------------------------------------
 // TODO(week1): create your BlinkLedCommand here.
 BlinkLedCommand blinkLedCommand(drivers(), &board);
 BuzzerCommand buzzerCommand(drivers(), &board);
+
+VelocityPidTuningCommand velocityPidTuningCommand(
+    drivers(),
+    &motorSubsystem,
+    &velocityPid,
+    TUNING_CONFIG);
+
+VelocityControlCommand velocityControlCommand(
+    drivers(),
+    &motorSubsystem,
+    &velocityPid);
 // Define command mappings here -------------------------------------------
-HoldCommandMapping rightSwitchUp(drivers(),{&blinkLedCommand},RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP));
-HoldCommandMapping rightSwitchDown(drivers(),{&buzzerCommand},RemoteMapState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN));
+HoldCommandMapping rightSwitchUp(
+    drivers(),
+    {&velocityPidTuningCommand},
+    RemoteMapState(
+        Remote::Switch::RIGHT_SWITCH,
+        Remote::SwitchState::UP));
+HoldCommandMapping rightSwitchDown(
+    drivers(),
+    {&velocityControlCommand},
+    RemoteMapState(
+        Remote::Switch::RIGHT_SWITCH,
+        Remote::SwitchState::DOWN));
 // TODO(week1): map your command to the RIGHT switch in the UP position.
 // A mapping ties a remote state to a list of commands. The three kinds you'll see most:
 //
@@ -54,10 +96,15 @@ HoldCommandMapping rightSwitchDown(drivers(),{&buzzerCommand},RemoteMapState(Rem
 //       RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // Register subsystems here -----------------------------------------------
-void registerSubsystems(src::Drivers *drivers) { drivers->commandScheduler.registerSubsystem(&board); }
-
+void registerSubsystems(src::Drivers *drivers) {
+    drivers->commandScheduler.registerSubsystem(&board);
+    drivers->commandScheduler.registerSubsystem(&motorSubsystem);
+}
 // Initialize subsystems here ---------------------------------------------
-void initializeSubsystems() { board.initialize(); }
+void initializeSubsystems() {
+    board.initialize();
+    motorSubsystem.initialize();
+}
 
 // Set default command here -----------------------------------------------
 void setDefaultCommands(src::Drivers *) {}

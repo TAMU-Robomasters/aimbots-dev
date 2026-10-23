@@ -79,9 +79,10 @@ float VelocityPidTuningCommand::getSquareWaveTarget() {
 
     // TODO(week3): return +amplitude during the first half of the period and -amplitude during the
     // second half. (Sketch the wave against timeInPeriodMs first.)
-    (void)amplitude;  // delete these two lines once you use them
-    (void)timeInPeriodMs;
-    return 0.0f;
+    if(timeInPeriodMs < periodMs / 2.0f){
+        return amplitude;
+    }
+    return -amplitude;
 }
 
 void VelocityPidTuningCommand::end(bool) {

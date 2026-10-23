@@ -21,19 +21,27 @@ VelocityControlCommand::VelocityControlCommand(
 
 void VelocityControlCommand::initialize() {
     // TODO(week3): get the controller ready (it may still remember the last command that used it).
+    controller->initialize();
 }
 
 void VelocityControlCommand::execute() {
     // TODO(week3):
     // 1. Read the right stick's vertical axis from YOUR remote: drivers->dt7Remote.getRightVertical()
     //    (-1 = full down, +1 = full up).
+    const float stickValue = drivers ->dt7Remote.getRightVertical();
     // 2. Map it to a speed between -MAX_SPEED_RPM and +MAX_SPEED_RPM.
+    const float targetRpm = stickValue * MAX_SPEED_RPM;
     // 3. Give that target to the controller and run it.
+    controller->setTargetVelocity(targetRpm);
+    controller->runVelocityController();
     // 4. Update stickTargetRpmDisplay / stickCurrentRpmDisplay for MCUViewer.
+    stickTargetRpmDisplay = controller->getTargetVelocity();
+    stickCurrentRpmDisplay = controller->getCurrentVelocity();
 }
 
 void VelocityControlCommand::end(bool) {
     // TODO(week3): stop the motor. (What happens to a spinning motor if you leave this empty?)
+    motor->setDesiredOutput(0.0f);
 }
 
 bool VelocityControlCommand::isFinished() const { return false; }

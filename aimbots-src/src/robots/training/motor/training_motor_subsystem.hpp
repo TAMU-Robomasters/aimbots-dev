@@ -12,7 +12,7 @@ namespace src::Training {
 
 // ---- Set these to match YOUR motor (training/week3/README.md, section 1) ----------------------
 // GM6020 DIP switch ID 1 -> MOTOR5, ID 2 -> MOTOR6, ID 3 -> MOTOR7, ID 4 -> MOTOR8.
-static constexpr MotorID TRAINING_MOTOR_ID = MotorID::MOTOR5;
+static constexpr MotorID TRAINING_MOTOR_ID = MotorID::MOTOR6;
 // The CAN port on the dev board the motor is plugged into.
 static constexpr CANBus TRAINING_MOTOR_BUS = CANBus::CAN_BUS1;
 // Flip this if "positive" spins the wrong way for you.
