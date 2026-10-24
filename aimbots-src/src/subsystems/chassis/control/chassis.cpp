@@ -300,6 +300,8 @@ void ChassisSubsystem::setTargetRPMs(float x, float y, float r, float maxWheelSp
 
 void ChassisSubsystem::setDesiredOutput(WheelIndex WheelIdx, MotorOnWheelIndex MotorPerWheelIdx) {
     motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(static_cast<int32_t>(desiredOutputs[WheelIdx][MotorPerWheelIdx]));
+    //lobotomize swerve for offsets
+    //motors[WheelIdx][MotorPerWheelIdx]->setDesiredOutput(static_cast<int32_t>(0));
 }
 
 #ifndef SWERVE
@@ -424,7 +426,7 @@ void ChassisSubsystem::optimizeSwerve(float& targetRPMDrive, float& targetYaw, f
 
 
 float wheelRPMDisplay = 0.0f;
-
+//warning, only shows up with calc swerve running
 uint16_t watchLFYaw = 0;
 uint16_t watchRFYaw = 0;
 uint16_t watchLBYaw = 0;
