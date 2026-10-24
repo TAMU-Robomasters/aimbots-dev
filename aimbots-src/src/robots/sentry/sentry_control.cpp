@@ -233,7 +233,7 @@ ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerComm
     defaultTokyoConfig,
     true,
     randomizerConfig,
-    6500.0f,
+    2500.0f,
     10000.0f);
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
@@ -279,9 +279,9 @@ ChassisTokyoMasterCommand manualTokyoMasterCommand(
     0,                                  // spinDirectionOverride (0 = random)
     true,                               // randomizeSpinRate
     randomizerConfig,
-    ChassisTokyoMasterMode::NORMAL,     // mode
+    ChassisTokyoMasterMode::SINUSODAL,     // mode
     0.0f,                               // joystick2OverrideVelocity
-    5000.0f,                            // maxWheelSpeed
+    3000.0f,                            // maxWheelSpeed
     false);                             // isAuto
 
 // Auto tokyo with ESP power limiting: wraps a Jetson-driven (isAuto=true) tokyo master and
@@ -423,8 +423,8 @@ ToggleHopperCommand toggleHopperCommand(drivers(), &hopper, HOPPER_CLOSED_ANGLE,
 HoldCommandMapping leftSwitchMid(
     drivers(),
     // Manual driving: custom-controller toggle drive + manual gimbal aiming.
-    // {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
-   {&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
+     {&chassisToggleDriveCustomControllerCommand, &gimbalFieldRelativeControlCommand},
+   //{&chassisToggleDriveIgnoreGimbalCommand2, &gimbalFieldRelativeControlCommand2},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
 // HoldRepeat (not Hold): gameGatedTokyoCommand self-finishes the instant the game starts (its
@@ -449,7 +449,7 @@ HoldRepeatCommandMapping leftSwitchUp(
      // {&nav2TokyoMasterCommand, &gimbalFieldRelativeControlCommand2},
      // {&nav2TokyoMasterCommand, &matchGimbalControlCommand},
      // Pre-game: manual tokyo. Once the ref system reports IN_GAME: nav2 auto tokyo.
-     {&autoTokyoPowerLimitedCommand, &gimbalFieldRelativeControlCommand},
+     {&manualTokyoMasterCommand, &gimbalFieldRelativeControlCommand},
      // {&gameGatedTokyoCommand, &matchGimbalControlCommand},
      // {&nav2TokyoMasterCommand},
     // {/*&chassisTokyoCommand,*/ &matchChassisControlCommand, &matchGimbalControlCommand, &matchFiringControlCommand
