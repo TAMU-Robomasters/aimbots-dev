@@ -1,4 +1,5 @@
 #include "dt7_remote.hpp"
+#include <cstdint>
 
 #ifdef TARGET_TRAINING
 
@@ -10,6 +11,7 @@
 uint32_t framesParsedDisplay = 0;  // should climb by ~140 every second with the remote on
 uint32_t badFramesDisplay = 0;     // should stay at (or very near) 0
 float rightVerticalDisplay = 0.0f;
+uint16_t rightVDisplay = 0;
 float rightHorizontalDisplay = 0.0f;
 uint32_t nowDisplay = 0;  // tap::arch::clock::getTimeMilliseconds() (for debugging FRAME_GAP_MS)
 
@@ -54,10 +56,11 @@ void Dt7Remote::read() {
         rxBuffer[bytesReceived++] = byte;
         if (bytesReceived == FRAME_LENGTH) {
             if (parseFrame()) {
-                drivers->commandMapper.handleKeyStateChange(0, SwitchState::UNKNOWN, rightSwitch, false, false);
+                drivers->commandMapper.handleKeyStateChange(0, rightSwitch, rightSwitch, false, false);
             }
             bytesReceived = 0;
         }
+        lastByteTimeMs = tap::arch::clock::getTimeMilliseconds();
     }
 
     if (connected && (tap::arch::clock::getTimeMilliseconds() - lastGoodFrameMs > DISCONNECT_TIMEOUT_MS)) {
@@ -94,7 +97,7 @@ bool Dt7Remote::parseFrame() {
     rightSwitch = static_cast<SwitchState>(rightSwitchBits);
 
     framesParsedDisplay++;
-    rightVerticalDisplay = static_cast<float>(rightVertical) / static_cast<float>(CHANNEL_MAX_OFFSET);
+    rightVDisplay = rightVertical;
     rightHorizontalDisplay = static_cast<float>(rightHorizontal) / static_cast<float>(CHANNEL_MAX_OFFSET);
 
     lastGoodFrameMs = tap::arch::clock::getTimeMilliseconds();
