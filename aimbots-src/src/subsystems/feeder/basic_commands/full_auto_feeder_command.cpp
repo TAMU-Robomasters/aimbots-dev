@@ -64,9 +64,9 @@ void FullAutoFeederCommand::execute() {
 
     overheat = feeder->getEncoderUnwrapped();
 
-    if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
-        feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
-    } else {
+    //if (/*false && */ feeder->getEncoderUnwrapped() >= antiOverheatEncoderThreshold) {
+        //feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+    //} else {
         if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
             feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::unjamFeederMotor);
             unjamTimer.restart(UNJAM_TIMER_MS);
@@ -80,7 +80,7 @@ void FullAutoFeederCommand::execute() {
         // lastHeatDisplay = refHelper->getCurrBarrelHeat();
         // heatLimitDisplay = refHelper->getCurrBarrelLimit();
         lastProjectileSpeedDisplay = refHelper->getLastProjectileSpeed();
-    }
+    //}
 }
 
 void FullAutoFeederCommand::end(bool) {
