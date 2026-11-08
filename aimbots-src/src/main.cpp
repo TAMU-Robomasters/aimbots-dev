@@ -47,7 +47,6 @@
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/cv_clocking/clocking.hpp"
-#include "utils/nxp_imu/magnetometer/ist8310_data.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
