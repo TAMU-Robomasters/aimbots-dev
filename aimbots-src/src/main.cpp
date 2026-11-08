@@ -137,6 +137,7 @@ int main() {
             if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
                 atTemp = true;
             }
+            drivers->cvClocker.startSignal();
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -156,7 +157,6 @@ int main() {
             drivers->kinematicInformant.updateRobotFrames();
             if(atTemp){
                 drivers->musicPlayer.playMusic();
-                drivers->cvClocker.startSignal();
                 if (!startupSound) {drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_STARTUP_SOUND, 25); startupSound = true;}
 
                 } else {
