@@ -51,7 +51,7 @@ using namespace tap::communication::serial;
 
 namespace TestbenchControl {
 
-BarrelID currentBarrel = BarrelID::TURRET_17MM_1;
+BarrelID currentBarrel = BarrelID::TURRET_17MM;
 
 src::Utils::RefereeHelperTurreted refHelper(drivers(), currentBarrel, 30);
 

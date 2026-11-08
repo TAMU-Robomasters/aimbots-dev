@@ -4,4 +4,4 @@
 
 #define GRABBER_COMPATIBLE
 
-static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::C1;
+static constexpr tap::gpio::Pwm::Pin GRABBER_PIN = tap::gpio::Pwm::PWM1;  // DM-MC02 PWM1 (PA0); was Type C C1

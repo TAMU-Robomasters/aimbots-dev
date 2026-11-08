@@ -26,10 +26,6 @@
 #include "modm/architecture/interface/can_message.hpp"
 #include "modm/platform.hpp"
 
-#ifdef PLATFORM_HOSTED
-#include "tap/motor/motorsim/dji_motor_sim_handler.hpp"
-#endif
-
 #include "tap/board/board.hpp"
 #include "tap/util_macros.hpp"
 
@@ -41,24 +37,50 @@ using namespace modm::literals;
 void tap::can::Can::initialize()
 {
 #ifndef PLATFORM_HOSTED
-    CanFilter::setStartFilterBankForCan2(14);
+    // RX FIFO blocking mode (overwriteOnOverrun = false, RM0468 61.4.2): once modm's RX queue and
+    // the RX FIFO are full, new frames are dropped. modm's overwrite mode can return a torn frame.
+    // The filter setters enter init mode, which resets the TX/RX FIFO state, so filters are only
+    // set here.
     // initialize CAN 1
-    Can1::connect<GpioD0::Rx, GpioD1::Tx>(Gpio::InputType::PullUp);
-    modm_assert((Can1::initialize<Board::SystemClock, 1000_kbps>(9)), "Can1", "initialize-failed");
+    Fdcan1::connect<GpioD0::Rx, GpioD1::Tx>(Gpio::InputType::PullUp);
+    Fdcan1::initialize<Board::SystemClock, 1000_kbps>(9, Fdcan1::Mode::Normal, false);
     // receive every message for CAN 1
-    CanFilter::setFilter(
+    Fdcan1::setStandardFilter(
         0,
-        CanFilter::FIFO0,
-        CanFilter::StandardIdentifier(0),
-        CanFilter::StandardFilterMask(0));
-    Can2::connect<GpioB5::Rx, GpioB6::Tx>(Gpio::InputType::PullUp);
-    modm_assert((Can2::initialize<Board::SystemClock, 1000_kbps>(12)), "Can2", "initialize-failed");
+        Fdcan1::FilterConfig::Fifo0,
+        modm::can::StandardIdentifier(0),
+        modm::can::StandardMask(0));
+    Fdcan1::setExtendedFilter(
+        0,
+        Fdcan1::FilterConfig::Fifo0,
+        modm::can::ExtendedIdentifier(0),
+        modm::can::ExtendedMask(0));
+    Fdcan2::connect<GpioB5::Rx, GpioB6::Tx>(Gpio::InputType::PullUp);
+    Fdcan2::initialize<Board::SystemClock, 1000_kbps>(12, Fdcan2::Mode::Normal, false);
     // receive every message for CAN 2
-    CanFilter::setFilter(
-        14,
-        CanFilter::FIFO0,
-        CanFilter::StandardIdentifier(0),
-        CanFilter::StandardFilterMask(0));
+    Fdcan2::setStandardFilter(
+        0,
+        Fdcan2::FilterConfig::Fifo0,
+        modm::can::StandardIdentifier(0),
+        modm::can::StandardMask(0));
+    Fdcan2::setExtendedFilter(
+        0,
+        Fdcan2::FilterConfig::Fifo0,
+        modm::can::ExtendedIdentifier(0),
+        modm::can::ExtendedMask(0));
+    Fdcan3::connect<GpioD12::Rx, GpioD13::Tx>(Gpio::InputType::PullUp);
+    Fdcan3::initialize<Board::SystemClock, 1000_kbps>(15, Fdcan3::Mode::Normal, false);
+    // receive every message for CAN 3
+    Fdcan3::setStandardFilter(
+        0,
+        Fdcan3::FilterConfig::Fifo0,
+        modm::can::StandardIdentifier(0),
+        modm::can::StandardMask(0));
+    Fdcan3::setExtendedFilter(
+        0,
+        Fdcan3::FilterConfig::Fifo0,
+        modm::can::ExtendedIdentifier(0),
+        modm::can::ExtendedMask(0));
 #endif
 }
 
@@ -71,9 +93,11 @@ bool tap::can::Can::isMessageAvailable(tap::can::CanBus bus) const
     switch (bus)
     {
         case CanBus::CAN_BUS1:
-            return Can1::isMessageAvailable();
+            return Fdcan1::isMessageAvailable();
         case CanBus::CAN_BUS2:
-            return Can2::isMessageAvailable();
+            return Fdcan2::isMessageAvailable();
+        case CanBus::CAN_BUS3:
+            return Fdcan3::isMessageAvailable();
         default:
             return false;
     }
@@ -83,14 +107,18 @@ bool tap::can::Can::isMessageAvailable(tap::can::CanBus bus) const
 bool tap::can::Can::getMessage(tap::can::CanBus bus, modm::can::Message* message)
 {
 #ifdef PLATFORM_HOSTED
-    return motor::motorsim::DjiMotorSimHandler::getInstance()->encodeMessage(bus, message);
+    UNUSED(bus);
+    UNUSED(message);
+    return false;
 #else
     switch (bus)
     {
         case CanBus::CAN_BUS1:
-            return Can1::getMessage(*message);
+            return Fdcan1::getMessage(*message);
         case CanBus::CAN_BUS2:
-            return Can2::getMessage(*message);
+            return Fdcan2::getMessage(*message);
+        case CanBus::CAN_BUS3:
+            return Fdcan3::getMessage(*message);
         default:
             return false;
     }
@@ -106,9 +134,11 @@ bool tap::can::Can::isReadyToSend(CanBus bus) const
     switch (bus)
     {
         case CanBus::CAN_BUS1:
-            return Can1::isReadyToSend();
+            return Fdcan1::isReadyToSend();
         case CanBus::CAN_BUS2:
-            return Can2::isReadyToSend();
+            return Fdcan2::isReadyToSend();
+        case CanBus::CAN_BUS3:
+            return Fdcan3::isReadyToSend();
         default:
             return false;
     }
@@ -118,14 +148,18 @@ bool tap::can::Can::isReadyToSend(CanBus bus) const
 bool tap::can::Can::sendMessage(CanBus bus, const modm::can::Message& message)
 {
 #ifdef PLATFORM_HOSTED
-    return motor::motorsim::DjiMotorSimHandler::getInstance()->parseMotorMessage(bus, message);
+    UNUSED(bus);
+    UNUSED(message);
+    return true;
 #else
     switch (bus)
     {
         case CanBus::CAN_BUS1:
-            return Can1::sendMessage(message);
+            return Fdcan1::sendMessage(message);
         case CanBus::CAN_BUS2:
-            return Can2::sendMessage(message);
+            return Fdcan2::sendMessage(message);
+        case CanBus::CAN_BUS3:
+            return Fdcan3::sendMessage(message);
         default:
             return false;
     }

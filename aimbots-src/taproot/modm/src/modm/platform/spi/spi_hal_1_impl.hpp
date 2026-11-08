@@ -1,125 +1,229 @@
 /*
- * Copyright (c) 2013, Kevin Läufer
- * Copyright (c) 2013-2017, Niklas Hauser
- * Copyright (c) 2014, Daniel Krebs
- * Copyright (c) 2020, Mike Wolfram
- *
- * This file is part of the modm project.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
+* Copyright (c) 2013, Kevin Läufer
+* Copyright (c) 2013-2017, Niklas Hauser
+* Copyright (c) 2014, Daniel Krebs
+* Copyright (c) 2020, Mike Wolfram
+* Copyright (c) 2023, Christopher Durand
+*
+* This file is part of the modm project.
+*
+* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_SPI_HAL1_HPP
+#ifndef MODM_STM32H7_SPI_HAL1_HPP
 #	error 	"Don't include this file directly, use 'spi_hal1.hpp' instead!"
 #endif
 #include <modm/platform/clock/rcc.hpp>
 
-void inline
-modm::platform::SpiHal1::enable()
+namespace modm::platform
+{
+
+inline void
+SpiHal1::enableClock()
 {
 	Rcc::enable<Peripheral::Spi1>();
-	SPI1->CR1 |= SPI_CR1_SPE;		// SPI Enable
 }
 
-void inline
-modm::platform::SpiHal1::disable()
+inline void
+SpiHal1::disableClock()
 {
-	SPI1->CR1 = 0;
 	Rcc::disable<Peripheral::Spi1>();
 }
 
-void inline
-modm::platform::SpiHal1::initialize(Prescaler prescaler,
+inline void
+SpiHal1::initialize(Prescaler prescaler,
 		MasterSelection masterSelection, DataMode dataMode,
 		DataOrder dataOrder, DataSize dataSize)
 {
-	enable();
-	// disable peripheral
-	SPI1->CR1 &= ~SPI_CR1_SPE;
-	// set parameters
-	SPI1->CR1 = 	  static_cast<uint32_t>(dataMode)
-						| static_cast<uint32_t>(dataOrder)
-						| static_cast<uint32_t>(masterSelection)
-						| static_cast<uint32_t>(prescaler)
-						| static_cast<uint32_t>(dataSize);
-	if(masterSelection == MasterSelection::Master) {
-		SPI1->CR2 |=  SPI_CR2_SSOE; // for master mode
+	enableClock();
+	disableTransfer();
+
+	acknowledgeInterruptFlags(
+		StatusFlag::EndOfTransfer |
+		StatusFlag::TxTransferFilled |
+		StatusFlag::Underrun |
+		StatusFlag::Overrun |
+		StatusFlag::CrcError |
+		StatusFlag::TiFrameError |
+		StatusFlag::ModeFault |
+		StatusFlag::Reload |
+		StatusFlag::Suspension
+	);
+
+	// initialize with unlimited transfer size
+	setTransferSize(0);
+
+	SPI1->CR1 = 0;
+
+	SPI1->CFG2 = static_cast<uint32_t>(dataMode)
+		| static_cast<uint32_t>(dataOrder)
+		| static_cast<uint32_t>(masterSelection)
+		| SPI_CFG2_SSOE; // disable multi-master support to prevent spurious mode fault
+
+	SPI1->CFG1 = static_cast<uint32_t>(prescaler)
+		| static_cast<uint32_t>(dataSize);
+}
+
+inline void
+SpiHal1::setDataMode(DataMode dataMode)
+{
+	SPI1->CFG2 = (SPI1->CFG2 & ~static_cast<uint32_t>(DataMode::Mask))
+										| static_cast<uint32_t>(dataMode);
+}
+
+inline void
+SpiHal1::setDataOrder(DataOrder dataOrder)
+{
+	SPI1->CFG2 = (SPI1->CFG2 & ~static_cast<uint32_t>(DataOrder::Mask))
+										| static_cast<uint32_t>(dataOrder);
+}
+
+inline void
+SpiHal1::setDataSize(DataSize dataSize)
+{
+	SPI1->CFG1 = (SPI1->CFG1 & ~SPI_CFG1_DSIZE_Msk)
+										| static_cast<uint32_t>(dataSize);
+}
+
+inline void
+SpiHal1::setMasterSelection(MasterSelection masterSelection)
+{
+	SPI1->CFG2 = (SPI1->CFG2 & ~static_cast<uint32_t>(MasterSelection::Mask))
+										| static_cast<uint32_t>(masterSelection);
+}
+
+inline void
+SpiHal1::setDuplexMode(DuplexMode mode)
+{
+	SPI1->CFG2 = (SPI1->CFG2 & ~static_cast<uint32_t>(DuplexMode::Mask))
+										| static_cast<uint32_t>(mode);
+}
+
+inline void
+SpiHal1::setCrcEnabled(bool enabled)
+{
+	if (enabled) {
+		SPI1->CFG1 |= SPI_CFG1_CRCEN;
+	} else {
+		SPI1->CFG1 &= ~SPI_CFG1_CRCEN;
 	}
-	// reenable peripheral
-	SPI1->CR1 |= SPI_CR1_SPE;
 }
 
-void inline
-modm::platform::SpiHal1::setDataMode(DataMode dataMode)
+inline void
+SpiHal1::setCrcSize(DataSize crcSize)
 {
-	SPI1->CR1 = (SPI1->CR1 & ~static_cast<uint32_t>(DataMode::All))
-										 | static_cast<uint32_t>(dataMode);
+	if ((crcSize == DataSize::Bit16) or (crcSize == DataSize::Bit32)) {
+		SPI1->CR1 |= SPI_CR1_CRC33_17;
+	} else {
+		SPI1->CR1 &= ~SPI_CR1_CRC33_17;
+	}
+	SPI1->CFG1 = (SPI1->CFG1 & ~SPI_CFG1_CRCSIZE_Msk)
+										| (static_cast<uint32_t>(crcSize) << SPI_CFG1_CRCSIZE_Pos);
 }
 
-void inline
-modm::platform::SpiHal1::setDataOrder(DataOrder dataOrder)
+inline void
+SpiHal1::setCrcPolynomial(uint32_t poly)
 {
-	SPI1->CR1 = (SPI1->CR1 & ~static_cast<uint32_t>(DataOrder::All))
-										 | static_cast<uint32_t>(dataOrder);
+	SPI1->CRCPOLY = poly;
 }
 
-void inline
-modm::platform::SpiHal1::setDataSize(DataSize dataSize)
+inline void
+SpiHal1::setCrcInitialValue(CrcInit init)
 {
-	// TODO: implement as set/reset bit
-	SPI1->CR1 = (SPI1->CR1 & ~static_cast<uint32_t>(DataSize::All))
-										 | static_cast<uint32_t>(dataSize);
+	SPI1->CR1 = (SPI1->CR1 & ~static_cast<uint32_t>(CrcInit::Mask)) |
+		static_cast<uint32_t>(init);
 }
 
-void inline
-modm::platform::SpiHal1::setMasterSelection(MasterSelection masterSelection)
+inline void
+SpiHal1::setTransferSize(uint16_t size, uint16_t reload)
 {
-	// TODO: implement as set/reset bit
-	SPI1->CR1 = (SPI1->CR1 & ~static_cast<uint32_t>(MasterSelection::All))
-										 | static_cast<uint32_t>(masterSelection);
+	static_assert(SPI_CR2_TSIZE_Pos == 0);
+	SPI1->CR2 = (reload << SPI_CR2_TSER_Pos) | size;
 }
 
-inline bool
-modm::platform::SpiHal1::isReceiveRegisterNotEmpty()
+inline void
+SpiHal1::setDmaMode(DmaMode_t mode)
 {
-	return static_cast<bool>(getInterruptFlags() & InterruptFlag::RxBufferNotEmpty);
+	SPI1->CFG1 = (SPI1->CFG1 & ~(DmaMode::Tx | DmaMode::Rx).value)
+										| mode.value;
 }
 
-inline bool
-modm::platform::SpiHal1::isTransmitRegisterEmpty()
+inline void
+SpiHal1::setSlaveSelectMode(SlaveSelectMode mode)
 {
-	return static_cast<bool>(getInterruptFlags() & InterruptFlag::TxBufferEmpty);
+	SPI1->CFG2 = (SPI1->CFG2 & ~SPI_CFG2_SSM_Msk)
+										| uint32_t(mode);
 }
 
-void inline
-modm::platform::SpiHal1::write(uint16_t data)
+inline void
+SpiHal1::setSlaveSelectPolarity(SlaveSelectPolarity polarity)
 {
-	SPI1->DR = data;
+	SPI1->CFG2 = (SPI1->CFG2 & ~SPI_CFG2_SSIOP_Msk)
+										| uint32_t(polarity);
 }
 
-void inline
-modm::platform::SpiHal1::write(uint8_t data)
+inline void
+SpiHal1::setSlaveSelectState(bool state)
 {
-	write(static_cast<uint16_t>(data));
+	if (state) {
+		SPI1->CR1 |= SPI_CR1_SSI;
+	} else  {
+		SPI1->CR1 &= ~SPI_CR1_SSI;
+	}
 }
 
-void inline
-modm::platform::SpiHal1::read(uint8_t &data)
+inline void
+SpiHal1::write(uint8_t data)
 {
-	data = static_cast<uint8_t>(SPI1->DR);
+	// Write with 8-bit access
+	auto* const ptr = reinterpret_cast<__IO uint8_t*>(&SPI1->TXDR);
+	*ptr = data;
 }
 
-void inline
-modm::platform::SpiHal1::read(uint16_t &data)
+inline void
+SpiHal1::write16(uint16_t data)
 {
-	data = static_cast<uint16_t>(SPI1->DR);
+	// Write with 16-bit access
+	// SPI1->TXDR is of type "volatile uint32_t".
+	// [[gnu::may_alias]] is required to avoid undefined behaviour due to strict aliasing violations.
+	auto* const [[gnu::may_alias]] ptr = reinterpret_cast<__IO uint16_t*>(&SPI1->TXDR);
+	*ptr = data;
 }
 
-void inline
-modm::platform::SpiHal1::enableInterruptVector(bool enable, uint32_t priority)
+inline void
+SpiHal1::write32(uint32_t data)
+{
+	SPI1->TXDR = data;
+}
+
+inline uint8_t
+SpiHal1::read()
+{
+	// Read with 8-bit access
+	return *reinterpret_cast<const __IO uint8_t*>(&SPI1->RXDR);
+}
+
+inline uint16_t
+SpiHal1::read16()
+{
+	// Read with 16-bit access
+	// SPI1->RXDR is of type "const volatile uint32_t".
+	// [[gnu::may_alias]] is required to avoid undefined behaviour due to strict aliasing violations.
+	auto* const [[gnu::may_alias]] ptr = reinterpret_cast<const __IO uint16_t*>(&SPI1->RXDR);
+	return *ptr;
+}
+
+inline uint32_t
+SpiHal1::read32()
+{
+	return SPI1->RXDR;
+}
+
+inline void
+SpiHal1::enableInterruptVector(bool enable, uint32_t priority)
 {
 	if (enable) {
 		// Set priority for the interrupt vector
@@ -132,27 +236,117 @@ modm::platform::SpiHal1::enableInterruptVector(bool enable, uint32_t priority)
 	}
 }
 
-void inline
-modm::platform::SpiHal1::enableInterrupt(Interrupt_t interrupt)
+inline void
+SpiHal1::enableInterrupt(Interrupt_t interrupt)
 {
-	SPI1->CR2 |= interrupt.value;
+	SPI1->IER |= interrupt.value;
 }
 
-void inline
-modm::platform::SpiHal1::disableInterrupt(Interrupt_t interrupt)
+inline void
+SpiHal1::disableInterrupt(Interrupt_t interrupt)
 {
-	SPI1->CR2 &= ~interrupt.value;
+	SPI1->IER &= ~interrupt.value;
 }
 
-modm::platform::SpiHal1::InterruptFlag_t inline
-modm::platform::SpiHal1::getInterruptFlags()
+inline void
+SpiHal1::acknowledgeInterruptFlags(StatusFlag_t flags)
 {
-	return InterruptFlag_t(SPI1->SR);
+	constexpr auto mask =
+		SPI_IFCR_EOTC |
+		SPI_IFCR_TXTFC |
+		SPI_IFCR_UDRC |
+		SPI_IFCR_OVRC |
+		SPI_IFCR_CRCEC |
+		SPI_IFCR_TIFREC |
+		SPI_IFCR_MODFC |
+		SPI_IFCR_TSERFC |
+		SPI_IFCR_SUSPC;
+
+	SPI1->IFCR = flags.value & mask;
 }
 
-void inline
-modm::platform::SpiHal1::acknowledgeInterruptFlag(InterruptFlag_t /*flags*/)
+inline SpiHal1::StatusFlag_t
+SpiHal1::status()
 {
-	// TODO: implement; see STM32F3 reference manual p. 736
-	// SPI1->SR = flags.value;
+	return StatusFlag_t(SPI1->SR);
 }
+
+inline bool
+SpiHal1::isTransferCompleted()
+{
+	return bool(status() & StatusFlag::EndOfTransfer);
+}
+
+inline bool
+SpiHal1::isTxCompleted()
+{
+	return bool(status() & StatusFlag::TxTransferComplete);
+}
+
+inline bool
+SpiHal1::isTxFifoFull()
+{
+	return !(status() & StatusFlag::TxPacketSpaceAvailable);
+}
+
+inline bool
+SpiHal1::isRxDataAvailable()
+{
+	return bool(status() & StatusFlag::RxPacketAvailable);
+}
+
+inline void
+SpiHal1::enableTransfer()
+{
+	SPI1->CR1 |= SPI_CR1_SPE;
+}
+
+inline void
+SpiHal1::disableTransfer()
+{
+	SPI1->CR1 &= ~SPI_CR1_SPE;
+}
+
+inline bool
+SpiHal1::isTransferEnabled()
+{
+	return (SPI1->CR1 & SPI_CR1_SPE);
+}
+
+inline void
+SpiHal1::startMasterTransfer()
+{
+	SPI1->CR1 |= SPI_CR1_CSTART;
+}
+
+inline void
+SpiHal1::suspendMasterTransfer()
+{
+	SPI1->CR1 |= SPI_CR1_CSUSP;
+}
+
+inline uint32_t
+SpiHal1::transmitCrc()
+{
+	return SPI1->TXCRC;
+}
+
+inline uint32_t
+SpiHal1::receiveCrc()
+{
+	return SPI1->RXCRC;
+}
+
+inline volatile uint32_t*
+SpiHal1::transmitRegister()
+{
+	return &SPI1->TXDR;
+}
+
+inline const volatile uint32_t*
+SpiHal1::receiveRegister()
+{
+	return &SPI1->RXDR;
+}
+
+} // namespace modm::platform

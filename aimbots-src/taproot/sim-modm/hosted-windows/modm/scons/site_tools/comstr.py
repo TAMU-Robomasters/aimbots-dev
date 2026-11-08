@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2013-2014, 2016-2017, German Aerospace Center (DLR)
-# Copyright (c) 2018, 2021, Niklas Hauser
+# Copyright (c) 2018, 2021, 2023, Niklas Hauser
 # Copyright (c) 2018, Fabian Greif
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -70,6 +70,7 @@ def generate(env, **kw):
         env['HEXCOMSTR'] =      "%sHex File······· %s$TARGET%s" % default
         env['BINCOMSTR'] =      "%sBinary File···· %s$TARGET%s" % default
         env['LSSCOMSTR'] =      "%sListing········ %s$TARGET%s" % default
+        env['UF2COMSTR'] =      "%sUF2 File······· %s$TARGET%s" % default
 
         # modm tools format strings
         env['BITMAPCOMSTR'] =   "%sBitmap········· %s${str(TARGET).replace(BUILDPATH,CONFIG_PROFILE)}%s" % default
@@ -95,54 +96,90 @@ def generate(env, **kw):
         env["XPCC_TASK_CALLER_COMSTR"] = "%s╭─────XPCC───── %s$SOURCE\n" \
                                          "%s╰─Task─Caller─> %s$TARGET%s" % template
 
-        # modm tools installing
+        env["NANOPB_MESSAGES_COMSTR"] =  "%s╭────Nanopb──── %s$SOURCE\n" \
+                                         "%s╰───Messages──> %s$TARGET%s" % template
+
+        # modm tools copying
         env["ARTIFACT_COMSTR"] =         "%s╭───Artifact─── %s$SOURCE\n" \
                                          "%s╰────Cache────> %s$ARTIFACT_FILEPATH%s" % install
 
+        # Debug probes running
+        env["RUN_OPENOCD_COMSTR"] =      "%s╭────────────── %s\n" \
+                                         "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["RUN_JLINK_COMSTR"] =        "%s╭────────────── %s\n" \
+                                         "%s╰────JLink────> %s$CONFIG_DEVICE_NAME%s" % install
+
+        # Debug probes debugging
         env["DEBUG_OPENOCD_COMSTR"] =    "%s╭─────GDB─────> %s$SOURCE\n" \
                                          "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
 
-        env["PROGRAM_OPENOCD_COMSTR"] =  "%s╭────────────── %s$SOURCE\n" \
-                                         "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["RESET_OPENOCD_COMSTR"] =    "%s╭────Reset───── %s\n" \
-                                         "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["PROGRAM_AVRDUDE_COMSTR"] =  "%s╭────────────── %s$SOURCE\n" \
-                                         "%s╰───Avrdude───> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["BMP_PROGRAM_COMSTR"] =      "%s╭─Black─Magic── %s$SOURCE\n" \
-                                         "%s╰────Probe────> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["BMP_DEBUG_COMSTR"] =        "%s╭─────GDB─────> %s$SOURCE\n" \
+        env["DEBUG_BMP_COMSTR"] =        "%s╭─────GDB─────> %s$SOURCE\n" \
                                          "%s╰─────BMP─────> %s$CONFIG_DEVICE_NAME%s" % install
 
-        env["BMP_RESET_COMSTR"] =        "%s╭────Reset───── %s\n" \
-                                         "%s╰─────BMP─────> %s$CONFIG_DEVICE_NAME%s" % install
+        env["DEBUG_JLINK_COMSTR"] =      "%s╭─────GDB─────> %s$SOURCE\n" \
+                                         "%s╰────JLink────> %s$CONFIG_DEVICE_NAME%s" % install
 
-        env["PROGRAM_BOSSAC_COMSTR"] =   "%s╭────────────── %s$SOURCE\n" \
-                                         "%s╰────BOSSAc───> %s$CONFIG_DEVICE_NAME%s" % install
+        env["DEBUG_REMOTE_COMSTR"] =     "%s╭─────GDB─────> %s$SOURCE\n" \
+                                         "%s╰─Rem─OpenOCD─> %s$CONFIG_DEVICE_NAME%s" % install
 
         env["DEBUG_COREDUMP_COMSTR"] =   "%s╭─────GDB─────> %s$SOURCE\n" \
                                          "%s╰───Coredump──> %s$CONFIG_DEVICE_NAME ($COREDUMP_FILE)%s" % install
 
+        # Debug probes programming
+        env["PROGRAM_OPENOCD_COMSTR"] =  "%s╭────────────── %s$SOURCE\n" \
+                                         "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["PROGRAM_BMP_COMSTR"] =      "%s╭─Black─Magic── %s$SOURCE\n" \
+                                         "%s╰────Probe────> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["PROGRAM_JLINK_COMSTR"] =    "%s╭────────────── %s$SOURCE\n" \
+                                         "%s╰────JLink────> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["PROGRAM_AVRDUDE_COMSTR"] =  "%s╭────────────── %s$SOURCE\n" \
+                                         "%s╰───Avrdude───> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["PROGRAM_BOSSAC_COMSTR"] =   "%s╭────────────── %s$SOURCE\n" \
+                                         "%s╰────BOSSAc───> %s$CONFIG_DEVICE_NAME%s" % install
+
         env['PROGRAM_DFU_COMSTR'] =      "%s╭────────────── %s$SOURCE\n" \
                                          "%s╰─────DFU─────> %s$CONFIG_DEVICE_NAME%s" % install
 
+        env["PROGRAM_REMOTE_COMSTR"] =   "%s╭────────────── %s$SOURCE\n" \
+                                         "%s╰─Rem─OpenOCD─> %s$CONFIG_DEVICE_NAME%s" % install
+
+        # Debug probes resetting
+        env["RESET_OPENOCD_COMSTR"] =    "%s╭────Reset───── %s\n" \
+                                         "%s╰───OpenOCD───> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["RESET_BMP_COMSTR"] =        "%s╭────Reset───── %s\n" \
+                                         "%s╰─────BMP─────> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["RESET_JLINK_COMSTR"] =      "%s╭────Reset───── %s\n" \
+                                         "%s╰────JLink────> %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["RESET_REMOTE_COMSTR"] =     "%s╭────Reset───── %s\n" \
+                                         "%s╰─Remote─GDB──> %s$CONFIG_DEVICE_NAME%s" % install
+
+        # Debug probes coredumping
+        env["COREDUMP_OPENOCD_COMSTR"] = "%s╭───Coredump──> %s$COREDUMP_FILE\n" \
+                                         "%s╰───OpenOCD──── %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["COREDUMP_JLINK_COMSTR"] =   "%s╭───Coredump──> %s$COREDUMP_FILE\n" \
+                                         "%s╰────JLink───── %s$CONFIG_DEVICE_NAME%s" % install
+
+        # Debug probes logging
         env["ITM_OPENOCD_COMSTR"] =      "%s╭───OpenOCD───> %sSingle Wire Viewer\n" \
+                                         "%s╰─────SWO────── %s$CONFIG_DEVICE_NAME%s" % install
+
+        env["ITM_JLINK_COMSTR"] =        "%s╭────JLink────> %sSingle Wire Viewer\n" \
                                          "%s╰─────SWO────── %s$CONFIG_DEVICE_NAME%s" % install
 
         env["RTT_OPENOCD_COMSTR"] =      "%s╭───OpenOCD───> %sReal Time Transfer\n" \
                                          "%s╰─────RTT────── %s$CONFIG_DEVICE_NAME%s" % install
 
-        env["PROGRAM_REMOTE_COMSTR"] =   "%s╭────────────── %s$SOURCE\n" \
-                                         "%s╰─Rem─OpenOCD─> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["DEBUG_REMOTE_COMSTR"] =     "%s╭─────GDB─────> %s$SOURCE\n" \
-                                         "%s╰─Rem─OpenOCD─> %s$CONFIG_DEVICE_NAME%s" % install
-
-        env["RESET_REMOTE_COMSTR"] =     "%s╭────Reset───── %s\n" \
-                                         "%s╰─Remote─GDB──> %s$CONFIG_DEVICE_NAME%s" % install
+        env["RTT_JLINK_COMSTR"] =        "%s╭────JLink────> %sReal Time Transfer\n" \
+                                         "%s╰─────RTT────── %s$CONFIG_DEVICE_NAME%s" % install
 
 def exists(env):
     return True

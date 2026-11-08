@@ -31,7 +31,7 @@ namespace tap
 namespace control
 {
 class Command;
-class RemoteMapState;
+class GenericRemoteMapState;
 
 /**
  * A CommandMapping that adds `Command`s when the contained mapping is a subset of the remote
@@ -48,11 +48,11 @@ class HoldRepeatCommandMapping : public CommandMapping
 {
 public:
     /**
-     * Constructor must take the set of `Command`s and the RemoteMapState.
+     * Constructor must take the set of `Command`s and the GenericRemoteMapState.
      *
      * @param[in] drivers Global drivers instance.
      * @param[in] cmds vector of commands that will be scheduled by this command mapping.
-     * @param[in] rms RemoteMapState that controls when commands will be scheduled.
+     * @param[in] rms GenericRemoteMapState that controls when commands will be scheduled.
      * @param[in] endCommandsWhenNotHeld If `true`, the commands will be forcibly ended by the
      * command mapping when no longer being held. Otherwise, the commands will naturally finish.
      * @param[in] maxTimesToSchedule Number of times to reschedule each of the commands. If -1 is
@@ -63,7 +63,7 @@ public:
     HoldRepeatCommandMapping(
         Drivers *drivers,
         const std::vector<Command *> cmds,
-        const RemoteMapState &rms,
+        const GenericRemoteMapState *rms,
         bool endCommandsWhenNotHeld,
         int maxTimesToSchedule = -1)
         : CommandMapping(drivers, cmds, rms),
@@ -79,7 +79,7 @@ public:
      */
     ~HoldRepeatCommandMapping() override = default;
 
-    void executeCommandMapping(const RemoteMapState &currState) override;
+    void executeCommandMapping(const GenericRemoteMapState &currState) override;
 
     /// Set the maximum times each of commands should be re-scheduled.
     inline mockable void setMaxTimesToSchedule(int maxTimes) { maxTimesToSchedule = maxTimes; }

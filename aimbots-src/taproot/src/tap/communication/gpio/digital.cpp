@@ -51,20 +51,8 @@ void Digital::configureInputPullMode(Digital::InputPin pin, Digital::InputPullMo
 #else
     switch (pin)
     {
-        case Digital::InputPin::PF1:
-            DigitalInPinPF1::configure(mode);
-            break;
-        case Digital::InputPin::PF0:
-            DigitalInPinPF0::configure(mode);
-            break;
-        case Digital::InputPin::B12:
-            DigitalInPinB12::configure(mode);
-            break;
-        case Digital::InputPin::C6:
-            DigitalInPinC6::configure(mode);
-            break;
-        case Digital::InputPin::C7:
-            DigitalInPinC7::configure(mode);
+        case Digital::InputPin::Button:
+            DigitalInPinButton::configure(mode);
             break;
     }
 #endif
@@ -78,23 +66,8 @@ void Digital::set(Digital::OutputPin pin, bool isSet)
 #else
     switch (pin)
     {
-        case Digital::OutputPin::C2:
-            DigitalOutPinC2::set(isSet);
-            break;
-        case Digital::OutputPin::C4:
-            DigitalOutPinC4::set(isSet);
-            break;
-        case Digital::OutputPin::B13:
-            DigitalOutPinB13::set(isSet);
-            break;
-        case Digital::OutputPin::B14:
-            DigitalOutPinB14::set(isSet);
-            break;
-        case Digital::OutputPin::B15:
-            DigitalOutPinB15::set(isSet);
-            break;
-        case Digital::OutputPin::Laser:
-            DigitalOutPinLaser::set(isSet);
+        case Digital::OutputPin::PD10:
+            DigitalOutPinPD10::set(isSet);
             break;
     }
 #endif
@@ -108,16 +81,8 @@ bool Digital::read(Digital::InputPin pin) const
 #else
     switch (pin)
     {
-        case Digital::InputPin::PF1:
-            return DigitalInPinPF1::read();
-        case Digital::InputPin::PF0:
-            return DigitalInPinPF0::read();
-        case Digital::InputPin::B12:
-            return DigitalInPinB12::read();
-        case Digital::InputPin::C6:
-            return DigitalInPinC6::read();
-        case Digital::InputPin::C7:
-            return DigitalInPinC7::read();
+        case Digital::InputPin::Button:
+            return DigitalInPinButton::read();
         default:
             return false;
     }

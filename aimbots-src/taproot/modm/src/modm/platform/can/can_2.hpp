@@ -1,9 +1,7 @@
 /*
- * Copyright (c) 2013-2014, 2016, Kevin Läufer
- * Copyright (c) 2014, 2017, Sascha Schade
- * Copyright (c) 2014-2018, Niklas Hauser
- * Copyright (c) 2017, Fabian Greif
- * Copyright (c) 2018, Christopher Durand
+ * Copyright (c) 2019, Raphael Lehmann
+ * Copyright (c) 2021, Christopher Durand
+ * Copyright (c) 2022, Rasmus Kleist Hørlyck Sørensen
  *
  * This file is part of the modm project.
  *
@@ -13,78 +11,120 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_CAN2_HPP
-#define MODM_STM32_CAN2_HPP
+#ifndef MODM_STM32_FDCAN2_HPP
+#define MODM_STM32_FDCAN2_HPP
+
+#include <optional>
 
 #include <modm/architecture/interface/can.hpp>
+#include <modm/architecture/interface/can_filter.hpp>
 #include <modm/platform/gpio/connector.hpp>
 #include "../device.hpp"
 
 #include "can_bit_timings.hpp"
-#include "can_filter.hpp"
+#include "message_ram.hpp"
+#include "can_message_ram_config.hpp"
 
-
-namespace modm
+namespace modm::platform
 {
-
-namespace platform
-{
-
 /**
- * @brief		Basic Extended CAN2
+ * @brief		FDCAN2 (CAN with Flexible Data-Rate)
  *
- * The Basic Extended CAN peripheral, named bxCAN, interfaces the CAN
- * network. It supports the CAN protocols version 2.0A and B. It has
- * been designed to manage a high number of incoming messages
- * efficiently with a minimum CPU load.
+ * The controller area network (CAN) subsystem consists of one CAN module,
+ * a shared Message RAM memory and a configuration block.
+ * The modules (FDCAN) are compliant with ISO 11898-1: 2015 (CAN protocol
+ * specification version 2.0 part A, B) and CAN FD protocol specification version 1.0.
+ * A Message RAM implements filters, receive FIFOs, transmit event FIFOs and
+ * transmit FIFOs. The RAM is 0.8 Kbyte per FDCAN instance, except for the H7
+ * series, which has 10 Kbytes of total message RAM arbitrarily split between
+ * FDCAN instances.
+ *
+ * This driver supports SW-managed/in-memory FIFOs which augment the hardware TX
+ * and RX FIFOs. Note that the HW TX queue defaults to FIFO order but can be
+ * configured to transmit the highest priority (lowest arbitration ID) frames
+ * first.
  *
  * ## Filter
- *
- * For connectivity line devices there are 28 filter banks,
- * i=0 .. 27, in other devices there are 14 filter banks i = 0 ..13.
- *
- * The 28 filter banks for the connectivity line devices are
- * shared between CAN1 and CAN2.
+ * Up to 128 filters can be defined for 11-bit IDs, up to 64 filters for 29-bit IDs.
+ * Space for these filters must be allocated in the message RAM via the parameters
+ * described below.
+ * The filter banks are not shared between the CAN instances.
  *
  * ## Configuration
- * You can set the buffer size using the `tx_buffer` and `rx_buffer` parameters.
+ * You can set the in-memory (SW-managed) buffer size using the `buffer.tx` and
+ * `buffer.rx` parameters. If set to 0, filling a HW FIFO will immediately drop
+ * frames.
  *
- * @author		Fabian Greif <fabian.greif@rwth-aachen.de>
- * @ingroup		modm_platform_can modm_platform_can_2
+ * The `tx_hw_queue_mode` configures the order in which frames are transmitted
+ * from the hardware buffers. "FIFO" transmits in the order frames were enqueued.
+ * "Priority" transmits the message with the lowest arbitration ID first.
+ *
+ * You can configure the message RAM space allocation as follows:
+ * - `message_ram.standard_filter_count`: Maximum number of standard (11-bit ID) acceptance filters
+ * - `message_ram.extended_filter_count`: Maximum number of extended (29-bit ID) acceptance filters
+ * - `message_ram.rx_fifo_0_elements` and `message_ram.rx_fifo_1_elements`:
+ *   Number of received frames which can be queued by hardware in each RX FIFO
+ * - `message_ram.tx_fifo_elements`: Number of frames pending transmit which can be queued in hardware
+ *
+ * See also: `modm:architecture:can:message.buffer` which determines the size of
+ * the CAN message class's payload buffer and in turn the amount of space used
+ * to store CAN frame payloads in the message RAM.
+ *
+ * @author		Raphael Lehmann <raphael@rleh.de>
+ * @author		Christopher Durand <christopher.durand@rwth-aachen.de>
+ * @author		Kaelin Laundry <wasabifan@outlook.com>
+ * @ingroup		modm_platform_can_2
  */
-class Can2 : public ::modm::Can
+class Fdcan2 : public ::modm::Can
 {
 public:
 	enum class
 	Mode : uint32_t
 	{
-		Normal		= 0,
-		ListenOnly	= CAN_BTR_SILM,
-		LoopBack	= CAN_BTR_LBKM,
-		ListenOnlyLoopBack	= CAN_BTR_SILM | CAN_BTR_LBKM,
+		Normal,
+		Restricted,
+		Monitoring,
+		Sleep,
+		TestExternalLoopback,
+		TestInternalLoopback,
+
+		// for compatibility with bxCAN:
+		ListenOnly = Monitoring, // no acknowledging
+		LoopBack = TestInternalLoopback,
+
 	};
 
+public:
 	// Expose jinja template parameters to be checked by e.g. drivers or application
 	static constexpr size_t RxBufferSize = 32;
 	static constexpr size_t TxBufferSize = 32;
 
+	using ErrorCallback = void (*)();
+
 private:
-	/// Private Initializer with computed prescaler and timing constants
-	static bool
-	initializeWithPrescaler(uint16_t prescaler, uint8_t bs1, uint8_t bs2,
-			uint32_t interruptPriority, Mode startupMode, bool overwriteOnOverrun);
+	using MessageRam = fdcan::MessageRam<1, fdcan::Fdcan2MessageRamConfig>;
+
+	static inline volatile ErrorCallback errorCallback_ = nullptr;
+	static inline bool messageRamInitialized_{false};
+
+	static void
+	initializeWithPrescaler(
+			CanBitTimingConfiguration standardTimings,
+			std::optional<CanBitTimingConfiguration> fdDataTimings,
+			uint32_t interruptPriority, Mode startupMode, bool overwriteOnOverrun
+			);
+
 public:
-	template< template<Peripheral _> class... Signals >
+	template< class... Signals >
 	static void
 	connect(Gpio::InputType inputType = Gpio::InputType::Floating)
 	{
-		using Connector = GpioConnector<Peripheral::Can2, Signals...>;
+		using Connector = GpioConnector<Peripheral::Fdcan2, Signals...>;
 		using Tx = typename Connector::template GetSignal< Gpio::Signal::Tx >;
 		using Rx = typename Connector::template GetSignal< Gpio::Signal::Rx >;
 		static_assert(Connector::template IsValid<Tx> and Connector::template IsValid<Rx> and sizeof...(Signals) == 2,
 					  "Can2::connect() requires one Tx and one Rx signal!");
 
-		// Connector::disconnect();
 		Tx::setOutput(Gpio::OutputType::PushPull);
 		Rx::setInput(inputType);
 		Connector::connect();
@@ -93,10 +133,27 @@ public:
 	/**
 	 * Enables the clock for the CAN controller and resets all settings
 	 *
-	 * \param bitrate
-	 * 			CAN bitrate (defined in driver/connectivity/can/message.hpp)
+	 * \tparam SystemClock
+	 * 			System clock struct with an FDCAN2 member containing
+	 * 			the clock speed supplied to the peripheral.
+	 * 			\warning	The CAN subsystem prescaler can be configured using
+	 * 						the RCC module and must be taken into account in
+	 * 						the provided clock speed value.
+	 * \tparam bitrate
+	 * 			Nominal CAN bitrate
+	 * \tparam tolerance
+	 * 			Maximum relative deviation between requested and resulting
+	 * 			CAN bitrates. If the tolerance is exceeded a compile-time
+	 * 			assertion will be triggered.
+	 * \tparam fastDataBitrate
+	 * 			CAN bitrate for data in FD frames with bit rate switching
+	 * 			Set to 0 to disable CANFD support.
+	 *
 	 * \param interruptPriority
 	 * 			Interrupt vector priority (0=highest to 15=lowest)
+	 * \param startupMode
+	 * 			Mode of operation set after initialization
+	 * 			\see Fdcan2::Mode
 	 * \param overwriteOnOverrun
 	 * 			Once a receive FIFO is full the next incoming message
 	 * 			will overwrite the previous one if \c true otherwise
@@ -105,26 +162,46 @@ public:
 	 * \warning	Has to called after connect(), but before any
 	 * 			other function from this class!
 	 */
-	template< class SystemClock, bitrate_t bitrate=kbps(125), percent_t tolerance=pct(1) >
-	[[nodiscard]] static inline bool
+	template<
+		class SystemClock,
+		bitrate_t bitrate=kbps(125),
+		percent_t tolerance=pct(1),
+		bitrate_t fastDataBitrate=0 // 0: FDCAN mode disabled
+	>
+	static inline void
 	initialize(	uint32_t interruptPriority, Mode startupMode = Mode::Normal,
 				bool overwriteOnOverrun = true)
 	{
-		using Timings = CanBitTiming<SystemClock::Can2, bitrate>;
-
+		using Timings = CanBitTiming<
+			SystemClock::Fdcan2,
+			bitrate,
+			9, 8, 7, 7
+		>;
 		Timings::template assertBitrateInTolerance<tolerance>();
 
+		std::optional<CanBitTimingConfiguration> fastDataTimings = std::nullopt;
+
+		if constexpr (fastDataBitrate != 0) {
+			using DataTimings = CanBitTiming<
+				SystemClock::Fdcan2,
+				fastDataBitrate,
+				5, 5, 4, 4
+			>;
+			DataTimings::template assertBitrateInTolerance<tolerance>();
+
+			fastDataTimings = DataTimings::getBitTimings();
+		}
+
 		return initializeWithPrescaler(
-			Timings::getPrescaler(),
-			Timings::getBS1(),
-			Timings::getBS2(),
+			Timings::getBitTimings(),
+			fastDataTimings,
 			interruptPriority,
 			startupMode,
 			overwriteOnOverrun);
 	}
 
 	/**
-	 * The the operating mode.
+	 * Set the operating mode.
 	 *
 	 * Default after initialization is the normal mode.
 	 */
@@ -135,18 +212,87 @@ public:
 	setAutomaticRetransmission(bool retransmission);
 
 public:
-	// Can Interface Methods
+	// Can interface methods
 	static bool
 	isMessageAvailable();
-
-	static bool
-	getMessage(can::Message& message, uint8_t *filter_id=nullptr);
 
 	static bool
 	isReadyToSend();
 
 	static bool
+	getMessage(can::Message& message, uint8_t *filter_id=nullptr, uint16_t *timestamp=nullptr);
+
+	static bool
 	sendMessage(const can::Message& message);
+
+public:
+	// Can filter configuration
+
+	using FilterConfig = MessageRam::FilterConfig;
+
+	static constexpr inline uint8_t StandardFilterCount = MessageRam::StandardFilterCount;
+	static constexpr inline uint8_t ExtendedFilterCount = MessageRam::ExtendedFilterCount;
+
+
+	/// Set standard filter with id and mask
+	/// \param standardIndex Standard filter index 0..27
+	/// \returns true if filter index is valid
+	static bool
+	setStandardFilter(uint8_t standardIndex, FilterConfig config,
+		modm::can::StandardIdentifier id,
+		modm::can::StandardMask mask);
+
+	/// Set standard filter with dual ids
+	/// Matches on any of both specified ids
+	/// \param standardIndex Standard filter index 0..27
+	/// \returns true if filter index is valid
+	static bool
+	setStandardFilter(uint8_t standardIndex, FilterConfig config,
+		modm::can::StandardIdentifier id0,
+		modm::can::StandardIdentifier id1);
+
+	/// Set standard range filter
+	/// Matches the inclusive range between both specified ids
+	/// \param standardIndex Standard filter index 0..27
+	/// \returns true if filter index is valid
+	static bool
+	setStandardRangeFilter(uint8_t standardIndex, FilterConfig config,
+		modm::can::StandardIdentifier first,
+		modm::can::StandardIdentifier last);
+
+	/// Set extended filter with id and mask
+	/// \param extendedIndex Extended filter index 0..7
+	/// \returns true if filter index is valid
+	static bool
+	setExtendedFilter(uint8_t extendedIndex, FilterConfig config,
+		modm::can::ExtendedIdentifier id,
+		modm::can::ExtendedMask mask);
+
+	/// Set standard filter with dual ids
+	/// Matches on any of both specified ids
+	/// \param extendedIndex Extended filter index 0..7
+	/// \returns true if filter index is valid
+	static bool
+	setExtendedFilter(uint8_t extendedIndex, FilterConfig config,
+		modm::can::ExtendedIdentifier id0,
+		modm::can::ExtendedIdentifier id1);
+
+	/// Set standard range filter
+	/// Matches the inclusive range between both specified ids
+	/// \param extendedIndex Extended filter index 0..7
+	/// \returns true if filter index is valid
+	static bool
+	setExtendedRangeFilter(uint8_t extendedIndex, FilterConfig config,
+		modm::can::ExtendedIdentifier first,
+		modm::can::ExtendedIdentifier last);
+
+	/// Disable all standard filters, receive no standard frames
+	static void
+	clearStandardFilters();
+
+	/// Disable all extended filters, receive no extended frames
+	static void
+	clearExtendedFilters();
 
 public:
 	// Extended Functionality
@@ -163,7 +309,7 @@ public:
 	static inline uint8_t
 	getReceiveErrorCounter()
 	{
-		return (CAN2->ESR & CAN_ESR_REC) >> 24;
+		return ((FDCAN2->ECR >> 8) & 0xFF);
 	}
 
 	/**
@@ -173,49 +319,77 @@ public:
 	static inline uint8_t
 	getTransmitErrorCounter()
 	{
-		return (CAN2->ESR & CAN_ESR_TEC) >> 16;
+		return (FDCAN2->ECR & 0xFF);
 	}
 
 	static BusState
 	getBusState();
 
 	/**
-	 * Enable the error and status change interrupt.
+	 * Set the error interrupt callback.
 	 *
-	 * Can be generated by the following events:
-	 * - Error condition, for more details on error conditions please
-	 *   refer to the CAN Error Status register (CAN_ESR).
-	 * - Wakeup condition, SOF monitored on the CAN Rx signal.
-	 * - Entry into Sleep mode
+	 * It will be called on the following events:
+	 * - The FDCAN peripheral enters ERROR_PASSIVE or BUS_OFF state
+	 * - The error counter exceeds the warning limit
 	 *
-	 * You need to create you own interrupt handler for this interrupt.
-	 * The interrupt handler has a fixed name:
-	 * \code
-	 * MODM_ISR(CAN2_SCE)
-	 * {
-	 *     ...
-	 *
-	 *     // e.g. Acknowledge interrupt
-	 *     CAN2->MSR = CAN_MSR_ERRI;
-	 * }
-	 * \endcode
-	 *
-	 * \param interruptEnable
-	 * 			Upper 24-bit of the CAN_IER register. E.g.:
-	 * 			 - CAN_IER_BOFIE
-	 * 			 - CAN_IER_EPVIE
-	 * 			 - ...
-	 * 			See Reference Manual >> bxCAN >> CAN_IER Register
-	 * \param interruptPriority
-	 * 			Interrupt vector priority (0=highest to 15=lowest)
+	 * To disable the interrupt set the callback to nullptr.
 	 */
 	static void
-	enableStatusChangeInterrupt(uint32_t interruptEnable,
-			uint32_t interruptPriority);
+	setErrorInterruptCallback(ErrorCallback callback)
+	{
+		errorCallback_ = callback;
+		if(callback) {
+			FDCAN2->IE |=  (FDCAN_IE_BOE | FDCAN_IE_EPE | FDCAN_IE_EWE);
+		} else {
+			FDCAN2->IE &= ~(FDCAN_IE_BOE | FDCAN_IE_EPE | FDCAN_IE_EWE);
+		}
+	}
+
+	static ErrorCallback
+	getErrorInterruptCallback()
+	{
+		return errorCallback_;
+	}
+
+	static uint16_t
+	getCurrentTimestamp()
+	{
+		return FDCAN2->TSCV;
+	}
+
+private:
+	static void
+	configureMode(Mode mode);
+
+	static void
+	configureInterrupts(uint32_t interruptPriority);
+
+	struct EnterInitMode
+	{
+		EnterInitMode()
+		{
+			FDCAN2->CCCR |= FDCAN_CCCR_INIT;
+			int deadlockPreventer = 10'000; // max ~10ms
+			while (((FDCAN2->CCCR & FDCAN_CCCR_INIT) == 0) and (deadlockPreventer-- > 0)) {
+				using namespace std::literals;
+				modm::delay(1us);
+				// Wait until the initialization mode is entered.
+			}
+			modm_assert(deadlockPreventer > 0, "can.2.init", "timeout expired");
+			FDCAN2->CCCR |= FDCAN_CCCR_CCE;
+		}
+
+		~EnterInitMode()
+		{
+			// Switch to normal operation, automatically clears CCE flag
+			FDCAN2->CCCR &= ~FDCAN_CCCR_INIT;
+		}
+
+		EnterInitMode(const EnterInitMode&) = delete;
+		EnterInitMode& operator=(const EnterInitMode&) = delete;
+	};
+
 };
+}	// namespace modm::platform
 
-}	// namespace platform
-
-}	// namespace modm
-
-#endif	//  MODM_STM32_CAN2_HPP
+#endif	//  MODM_STM32_FDCAN2_HPP

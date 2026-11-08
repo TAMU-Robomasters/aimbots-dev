@@ -23,7 +23,7 @@
 namespace modm
 {
 	/// @ingroup modm_ui_menu
-	template<typename Allocator = allocator::Dynamic<IAbstractView> >
+	template<typename Allocator = std::allocator<IAbstractView> >
 	class MenuEntryCallback
 	{
 	public:

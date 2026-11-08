@@ -28,7 +28,7 @@
 
 namespace tap::communication::sensors::imu_heater::bound_ports
 {
-    static constexpr tap::gpio::Pwm::Timer IMU_HEATER_TIMER = tap::gpio::Pwm::Timer::TIMER10;
+    static constexpr tap::gpio::Pwm::Timer IMU_HEATER_TIMER = tap::gpio::Pwm::Timer::TIMER3;
 }  // tap::sensors
 
 #endif  // TAPROOT_IMU_HEATER_CONSTANTS_HPP_

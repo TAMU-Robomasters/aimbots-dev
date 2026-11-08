@@ -5,6 +5,7 @@
  * Copyright (c) 2012, Georgi Grinshpun
  * Copyright (c) 2013, Kevin Läufer
  * Copyright (c) 2014, Sascha Schade
+ * Copyright (c) 2022-2023, Christopher Durand
  *
  * This file is part of the modm project.
  *
@@ -14,60 +15,34 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_SPI_MASTER2_HPP
-#define MODM_STM32_SPI_MASTER2_HPP
+#ifndef MODM_STM32H7_SPI_MASTER2_HPP
+#define MODM_STM32H7_SPI_MASTER2_HPP
 
+#include <modm/architecture/interface/spi_lock.hpp>
 #include <modm/architecture/interface/spi_master.hpp>
 #include <modm/platform/gpio/connector.hpp>
 #include <modm/math/algorithm/prescaler.hpp>
+#include <modm/processing/fiber.hpp>
 #include "spi_hal_2.hpp"
 
-namespace modm
-{
-
-namespace platform
+namespace modm::platform
 {
 
 /**
  * Serial peripheral interface (SPI2).
  *
- * Simple unbuffered implementation.
- *
- * @author	Niklas Hauser
  * @ingroup	modm_platform_spi modm_platform_spi_2
  */
-class SpiMaster2 : public modm::SpiMaster
+class SpiMaster2 : public modm::SpiMaster, public SpiLock<SpiMaster2>
 {
-	static uint8_t state;
-	static uint8_t count;
-	static void *context;
-	static ConfigurationHandler configuration;
 public:
 	using Hal = SpiHal2;
 
-	/// Spi Data Mode, Mode0 is the most common mode
-	enum class
-	DataMode : uint32_t
-	{
-		Mode0 = 0b00,			///< clock normal,   sample on rising  edge
-		Mode1 = SPI_CR1_CPHA,	///< clock normal,   sample on falling edge
-		Mode2 = SPI_CR1_CPOL,	///< clock inverted, sample on falling  edge
-		Mode3 = SPI_CR1_CPOL | SPI_CR1_CPHA
-		///< clock inverted, sample on rising edge
-	};
-
-	/// Spi Data Order, MsbFirst is the most common mode
-	enum class
-	DataOrder : uint32_t
-	{
-		MsbFirst = 0b0,
-		LsbFirst = SPI_CR1_LSBFIRST
-	};
-
+	using DataMode = Hal::DataMode;
+	using DataOrder = Hal::DataOrder;
 	using DataSize = Hal::DataSize;
 
-public:
-	template< template<Peripheral _> class... Signals >
+	template< class... Signals >
 	static void
 	connect()
 	{
@@ -76,14 +51,12 @@ public:
 		using Mosi = typename Connector::template GetSignal<Gpio::Signal::Mosi>;
 		using Miso = typename Connector::template GetSignal<Gpio::Signal::Miso>;
 
-		// Connector::disconnect();
 		Sck::setOutput(Gpio::OutputType::PushPull);
 		Mosi::setOutput(Gpio::OutputType::PushPull);
 		Miso::setInput(Gpio::InputType::Floating);
 		Connector::connect();
 	}
 
-	// start documentation inherited
 	template< class SystemClock, baudrate_t baudrate, percent_t tolerance=pct(5) >
 	static void
 	initialize()
@@ -92,61 +65,66 @@ public:
 		assertBaudrateInTolerance< result.frequency, baudrate, tolerance >();
 
 		// translate the prescaler into the bitmapping
-		constexpr SpiHal2::Prescaler prescaler{result.index << SPI_CR1_BR_Pos};
+		constexpr Hal::Prescaler prescaler{result.index << SPI_CFG1_MBR_Pos};
 
-		// initialize the Spi
-		SpiHal2::initialize(prescaler);
-		state = 0;
-	}
-
-	static modm_always_inline void
-	setDataMode(DataMode mode)
-	{
-		SpiHal2::setDataMode(static_cast<SpiHal2::DataMode>(mode));
-	}
-
-	static modm_always_inline void
-	setDataOrder(DataOrder order)
-	{
-		SpiHal2::setDataOrder(static_cast<SpiHal2::DataOrder>(order));
-	}
-	static modm_always_inline void
-	setDataSize(DataSize size)
-	{
-		SpiHal2::setDataSize(static_cast<SpiHal2::DataSize>(size));
-	}
-
-
-	static uint8_t
-	acquire(void *ctx, ConfigurationHandler handler = nullptr);
-
-	static uint8_t
-	release(void *ctx);
-
-
-	static uint8_t
-	transferBlocking(uint8_t data)
-	{
-		return RF_CALL_BLOCKING(transfer(data));
+		Hal::initialize(prescaler);
+		Hal::enableTransfer();
+		Hal::startMasterTransfer();
 	}
 
 	static void
-	transferBlocking(const uint8_t *tx, uint8_t *rx, std::size_t length)
+	setDataMode(DataMode mode)
 	{
-		RF_CALL_BLOCKING(transfer(tx, rx, length));
+		finishTransfer();
+		Hal::setDataMode(mode);
+		Hal::enableTransfer();
+		Hal::startMasterTransfer();
+	}
+
+	static void
+	setDataOrder(DataOrder order)
+	{
+		finishTransfer();
+		Hal::setDataOrder(order);
+		Hal::enableTransfer();
+		Hal::startMasterTransfer();
+	}
+
+	static void
+	setDataSize(DataSize size)
+	{
+		finishTransfer();
+		Hal::setDataSize(static_cast<SpiHal2::DataSize>(size));
+		Hal::enableTransfer();
+		Hal::startMasterTransfer();
+	}
+
+	[[deprecated("Use transfer() instead!")]] // DEPRECATED: 2026q3
+	static uint8_t
+	transferBlocking(uint8_t data)
+	{
+		return transfer(data);
+	}
+
+	[[deprecated("Use transfer() instead!")]] // DEPRECATED: 2026q3
+	static void
+	transferBlocking(const uint8_t* tx, uint8_t* rx, std::size_t length)
+	{
+		transfer(tx, rx, length);
 	}
 
 
-	static modm::ResumableResult<uint8_t>
+	static uint8_t
 	transfer(uint8_t data);
 
-	static modm::ResumableResult<void>
-	transfer(const uint8_t *tx, uint8_t *rx, std::size_t length);
-	// end documentation inherited
+	static void
+	transfer(const uint8_t* tx, uint8_t* rx, std::size_t length);
+
+private:
+	static void
+	finishTransfer();
 };
 
-} // namespace platform
+} // namespace modm::platform
 
-} // namespace modm
-
-#endif // MODM_STM32_SPI_MASTER2_HPP
+#endif // MODM_STM32H7_SPI_MASTER2_HPP

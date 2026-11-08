@@ -81,6 +81,8 @@ public:
      */
     virtual ImuState getImuState() const { return imuState; }
 
+    virtual bool isOnline() const { return imuState != ImuState::IMU_NOT_CONNECTED; }
+
     mockable inline float getAx() const override { return imuData.accG.x(); }
     mockable inline float getAy() const override { return imuData.accG.y(); }
     mockable inline float getAz() const override { return imuData.accG.z(); }
@@ -113,6 +115,8 @@ public:
     void setAccelOffset(float x, float y, float z);
     void setGyroOffset(float x, float y, float z);
 
+    void updateImuMeasurement();
+
 protected:
     void resetOffsets();
     void computeOffsets();
@@ -132,6 +136,11 @@ protected:
     ImuState imuState = ImuState::IMU_NOT_CONNECTED;
     int calibrationSample = 0;
     int offsetSampleCount = 1000;
+
+    static constexpr uint8_t MAX_NUM_SAMPLES = 100;
+    uint8_t sampleCounter = 0;
+    AbstractIMU::ImuData curImuData;
+    AbstractIMU::ImuData sumImuData;
 
     ImuData imuData;
 

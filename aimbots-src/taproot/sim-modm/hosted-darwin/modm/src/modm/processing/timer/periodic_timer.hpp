@@ -19,6 +19,8 @@
 
 namespace modm
 {
+/// @ingroup	modm_processing_timer
+/// @{
 
 /**
  * Generic periodic software timeout class for variable timebase and timestamp width.
@@ -32,7 +34,6 @@ namespace modm
  *
  * @author	Fabian Greif
  * @author	Niklas Hauser
- * @ingroup	modm_processing_timer
  */
 template< class Clock, class Duration  >
 class GenericPeriodicTimer : public GenericTimeout<Clock, Duration>
@@ -72,6 +73,17 @@ public:
 		}
 		return 0;
 	}
+
+	/// Wait until the periodic timer expired.
+	/// @warning This is a blocking call! Inside a fiber, this function yields.
+	/// @return the number of missed periods
+	size_t
+	wait()
+	{
+		size_t count{};
+		modm::this_fiber::poll([&]{ return (count = execute()); });
+		return count;
+	}
 };
 
 /**
@@ -84,25 +96,15 @@ public:
  * Always call `restart()` before reusing the timer to avoid this behaviour.
  *
  * If you need a longer time period, use PeriodicTimer.
- *
- * @ingroup		modm_processing_timer
  */
 using        ShortPeriodicTimer = GenericPeriodicTimer< Clock, ShortDuration >;
-
 /// Periodic software timer for up to 49 days with millisecond resolution.
-/// @ingroup	modm_processing_timer
 using             PeriodicTimer = GenericPeriodicTimer< Clock, Duration >;
-
 /// Periodic software timer for up to 65 milliseconds with microsecond resolution.
-/// @ingroup	modm_processing_timer
 using ShortPrecisePeriodicTimer = GenericPeriodicTimer< PreciseClock, ShortPreciseDuration >;
-
 /// Periodic software timer for up to 71 minutes with microsecond resolution.
-/// @ingroup	modm_processing_timer
 using      PrecisePeriodicTimer = GenericPeriodicTimer< PreciseClock, PreciseDuration >;
 
-/// @cond
-using PeriodicTimerState [[deprecated("Use `modm::TimerState` instead!")]] = TimerState;
-/// @endcond
+/// @}
 
 }	// namespace

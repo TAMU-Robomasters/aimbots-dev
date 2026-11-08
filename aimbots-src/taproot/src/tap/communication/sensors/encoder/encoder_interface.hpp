@@ -40,10 +40,12 @@ public:
      */
     virtual bool isOnline() const = 0;
     /**
-     * Zeros the encoder to its current position. All encoder positions will be based from this
-     * position.
+     * Assigns the given post-gearbox position to the encoder's current physical position, with all
+     * future measurements reflecting this.
+     *
+     * @param pos the new post-gearbox position in radians
      */
-    virtual void resetEncoderValue() = 0;
+    virtual void resetEncoderValue(float pos = 0) = 0;
     /**
      * Gets the current position of the encoder, in a wrapped float on the range [0, M_TWOPI)
      */

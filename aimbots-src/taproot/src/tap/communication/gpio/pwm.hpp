@@ -43,11 +43,11 @@ class Pwm
 {
 public:
 
-    static constexpr uint32_t DEFAULT_TIMER1_FREQUENCY = 2000;
+    static constexpr uint32_t DEFAULT_TIMER2_FREQUENCY = 2000;
 
-    static constexpr uint32_t DEFAULT_TIMER4_FREQUENCY = 2000;
+    static constexpr uint32_t DEFAULT_TIMER12_FREQUENCY = 2000;
 
-    static constexpr uint32_t DEFAULT_TIMER10_FREQUENCY = 2000;
+    static constexpr uint32_t DEFAULT_TIMER3_FREQUENCY = 2000;
 
     Pwm() = default;
     DISALLOW_COPY_AND_ASSIGN(Pwm)
@@ -55,16 +55,16 @@ public:
 
     enum Pin
     {
-        C1,
+        PWM1,
         Buzzer,
         ImuHeater,
     };
 
     enum Timer
     {
-        TIMER1,
-        TIMER4,
-        TIMER10,
+        TIMER2,
+        TIMER12,
+        TIMER3,
     };
 
     mockable void init();
@@ -99,27 +99,28 @@ private:
     enum Ch
     {
         Ch1 = 1,
-        Ch3 = 3,
+        Ch2 = 2,
+        Ch4 = 4,
     };
 
     /**
-     * Overflow as calculated by the modm Timer1 object in its getPeriod function.
+     * Overflow as calculated by the modm Timer2 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
-    uint16_t timer1CalculatedOverflow;
+    uint32_t timer2CalculatedOverflow;
     /**
-     * Overflow as calculated by the modm Timer4 object in its getPeriod function.
+     * Overflow as calculated by the modm Timer12 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
-    uint16_t timer4CalculatedOverflow;
+    uint32_t timer12CalculatedOverflow;
     /**
-     * Overflow as calculated by the modm Timer10 object in its getPeriod function.
+     * Overflow as calculated by the modm Timer3 object in its getPeriod function.
      * This is what the Auto Reload Register is set to and the pwm duty is scaled to
      * a value between 0 and this value.
      */
-    uint16_t timer10CalculatedOverflow;
+    uint32_t timer3CalculatedOverflow;
 };  // class Pwm
 
 }  // namespace gpio

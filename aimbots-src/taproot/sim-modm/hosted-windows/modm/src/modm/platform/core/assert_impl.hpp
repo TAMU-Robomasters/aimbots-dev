@@ -11,7 +11,9 @@
 
 #pragma once
 
+/// @cond
 
 #define MODM_ASSERTION_HANDLER(handler) \
 	const modm::AssertionHandler \
 	handler ## _assertion_handler_ptr = handler
+/// @endcond

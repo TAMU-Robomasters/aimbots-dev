@@ -20,6 +20,7 @@ def build_target(env, sources):
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".bin"))
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".hex"))
 	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".lss"))
+	env.Clean(program, join(env["BUILDPATH"], env["CONFIG_PROJECT_NAME"]+".uf2"))
 
 	env.Alias("qtcreator", env.QtCreatorProject(sources))
 	env.Alias("symbols", env.Symbols(chosen_program))
@@ -30,27 +31,43 @@ def build_target(env, sources):
 	# The executable depends on the linkerscript
 	env.Depends(target=program, dependency="$BASEPATH/modm/link/linkerscript.ld")
 	env.Alias("size", env.Size(chosen_program))
+	env.Alias("uf2", env.UF2(chosen_program))
+
 	env.Alias("log-itm", env.LogItmOpenOcd())
 	env.Alias("log-rtt", env.LogRttOpenOcd())
+	env.Alias("log-itm-jlink", env.LogItmJLink())
+	env.Alias("log-rtt-jlink", env.LogRttJLink())
 
 	env.Alias("artifact", env.CacheArtifact(program))
 	env.Alias("program-openocd", [env.ProgramOpenOcd(chosen_program)])
 	env.Alias("program-remote", [env.ProgramGdbRemote(chosen_program)])
 	env.Alias("program-bmp", [env.ProgramBMP(chosen_program)])
+	env.Alias("program-jlink", [env.ProgramJLink(chosen_program)])
 	env.Alias('program-dfu', [env.ProgramDFU(env.Bin(chosen_program))])
 	env.Alias("debug-openocd", env.DebugOpenOcd(chosen_program))
 	env.Alias("debug-remote", env.DebugGdbRemote(chosen_program))
 	env.Alias("debug-bmp", env.DebugBMP(chosen_program))
+	env.Alias("debug-jlink", env.DebugJLink(chosen_program))
 	env.Alias("debug-coredump", env.DebugCoredump(chosen_program))
 
 	env.Alias("reset-openocd", env.ResetOpenOcd())
 	env.Alias("reset-bmp", env.ResetBMP())
+	env.Alias("reset-jlink", env.ResetJLink())
 	env.Alias("reset-remote", env.ResetGdbRemote())
+
+	# Start only OpenOCD to attach a external (remote) debugger
+	env.Alias("openocd", env.OpenOcd())
+	env.Alias("jlink", env.JLink())
+
+	env.Alias("coredump-openocd", env.CoredumpOpenOcd())
+	env.Alias("coredump-bmp", env.CoredumpBMP())
+	env.Alias("coredump-jlink", env.CoredumpJLink())
 
 	# Default to OpenOCD
 	env.Alias("program", "program-openocd")
 	env.Alias("reset", "reset-openocd")
 	env.Alias("debug", "debug-openocd")
+	env.Alias("coredump", "coredump-openocd")
 
 	env.Alias("all", ["build", "size"])
 	env.Default("all")

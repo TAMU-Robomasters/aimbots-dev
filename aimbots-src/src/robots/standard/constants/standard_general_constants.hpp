@@ -10,7 +10,7 @@
 #if defined(TARGET_STANDARD_BLASTOISE)
     static constexpr SongTitle STARTUP_SONG = SongTitle::CHAINSAW_MAN;
 #else
-    static constexpr SongTitle STARTUP_SONG = SongTitle::CRAZY_TRAIN;
+    static constexpr SongTitle STARTUP_SONG = SongTitle::CAN_YOU_HEAR_THE_DUB;
 #endif
 
 /**
@@ -83,4 +83,4 @@ static constexpr float TIMU_CALIBRATION_EULER_Z = modm::toRadian(0.0f);
 static constexpr size_t PROJECTILE_SPEED_QUEUE_SIZE = 10;
 
 // This array holds the IDs of all speed monitor barrels on the robot
-static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM_1};
+static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM};

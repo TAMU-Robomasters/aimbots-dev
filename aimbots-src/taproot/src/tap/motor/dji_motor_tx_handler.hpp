@@ -110,11 +110,15 @@ public:
 
     mockable DjiMotor const* getCan2Motor(MotorId motorId);
 
+    mockable DjiMotor const* getCan3Motor(MotorId motorId);
+
 protected:
     Drivers* drivers;
 
     DjiMotor* can1MotorStore[DJI_MOTORS_PER_CAN] = {0};
     DjiMotor* can2MotorStore[DJI_MOTORS_PER_CAN] = {0};
+
+    DjiMotor* can3MotorStore[DJI_MOTORS_PER_CAN] = {0};
 
     void addMotorToManager(DjiMotor** canMotorStore, DjiMotor* const motor);
 

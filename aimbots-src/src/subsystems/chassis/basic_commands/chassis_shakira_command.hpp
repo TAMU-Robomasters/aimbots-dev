@@ -29,7 +29,7 @@ public:
         const SnapSymmetryConfig& snapSymmetryConfig = SnapSymmetryConfig(),
         float angularMagnitude = modm::toRadian(10.0f),
         uint32_t timePeriod = 3000);
-    ~ChassisShakiraCommand() override = default;
+    ~ChassisShakiraCommand() = default;  // tap::control::Command's destructor is not virtual on develop
 
     void initialize() override;
 

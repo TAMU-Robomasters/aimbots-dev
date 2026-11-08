@@ -16,6 +16,7 @@
 # along with Taproot.  If not, see <https://www.gnu.org/licenses/>.
 
 import shutil
+import os
 from os.path import abspath
 import platform
 import sys
@@ -49,10 +50,6 @@ def _get_sim_modm_instance_path():
 # Set up target environment-specific modm paths and compiler
 if args["TARGET_ENV"] == "tests" or args["TARGET_ENV"] == "sim":
     modm_path = _get_sim_modm_instance_path()
-    if env.Detect(["gcc-11", "gcc-10"]) is not None:
-        env["COMPILERSUFFIX"] = env.Detect(["gcc-11", "gcc-10"])[3:]
-    else:
-        print("No gcc-10 or gcc-11 found, using default gcc")
 elif args["TARGET_ENV"] == "hardware":
     modm_path = HARDWARE_MODM_PATH
     env["COMPILERSUFFIX"] = ""
@@ -151,6 +148,8 @@ if args["TARGET_ENV"] == "sim":
         abspath(r"modm/ext/cmsis/dsp"),
         abspath(r"modm/ext/cmsis/core")
     ])
+    # Tell CMSIS-DSP it is compiled by a host GCC, not for a Cortex-M core
+    env.AppendUnique(CPPDEFINES=["__GNUC_PYTHON__"])
 elif args["TARGET_ENV"] == "tests":
     env.AppendUnique(CPPFLAGS=[
         "-DPLATFORM_HOSTED",
@@ -162,6 +161,8 @@ elif args["TARGET_ENV"] == "tests":
         abspath(r"modm/ext/cmsis/dsp"),
         abspath(r"modm/ext/cmsis/core")
     ])
+    # Tell CMSIS-DSP it is compiled by a host GCC, not for a Cortex-M core
+    env.AppendUnique(CPPDEFINES=["__GNUC_PYTHON__"])
 
     # Add flags necessary for coverage
     if COMMAND_LINE_TARGETS[0] == "run-tests-gcov":
@@ -188,7 +189,8 @@ if args["TARGET_ENV"] == "tests":
     env.AppendUnique(CPPPATH=[abspath("test")])
 
 # Build external library, external SConscript should be ran before any of the build code defined below
-env.SConscript(dirs=["ext"], exports=["env"])
+if os.path.exists("ext"):
+    env.SConscript(dirs=["ext"], exports=["env"])
 
 # Find all files that need to be built with the library (files in src and ext, files
 # in test if target environment is tests)

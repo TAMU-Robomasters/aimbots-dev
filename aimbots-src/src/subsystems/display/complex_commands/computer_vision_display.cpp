@@ -21,12 +21,12 @@ CVDisplay::CVDisplay(
 modm::ResumableResult<bool> CVDisplay::sendInitialGraphics() {
     RF_BEGIN(0);
 
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 modm::ResumableResult<bool> CVDisplay::update() {
     RF_BEGIN(1)
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 void CVDisplay::initialize() {
@@ -99,7 +99,7 @@ modm::ResumableResult<bool> CVDisplay::updateVisionTargetStatus() {
         prevVisionIndicatorColor = newVisionIndicatorColor;
     }
 
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 }  // namespace src::Utils::ClientDisplay

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017-2018, Niklas Hauser
+ * Copyright (c) 2017-2026, Niklas Hauser
+ * Copyright (c) 2022, Andrey Kunitsyn
  *
  * This file is part of the modm project.
  *
@@ -9,18 +10,17 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_GPIO_PIN_UNUSED_HPP
-#define MODM_STM32_GPIO_PIN_UNUSED_HPP
+#pragma once
 
 #include "base.hpp"
-#include <modm/architecture/interface/gpio.hpp>
+#include "data.hpp"
+#include "static.hpp"
 
-namespace modm
+namespace modm::platform
 {
 
-namespace platform
-{
-
+/// @ingroup modm_platform_gpio
+using GpioUnused = GpioStatic<detail::DataUnused>;
 /**
  * Dummy implementation of an I/O pin.
  *
@@ -53,1399 +53,1417 @@ namespace platform
  * @author	Niklas Hauser
  * @ingroup	modm_platform_gpio
  */
-class GpioUnused : public Gpio, public ::modm::GpioIO
+template<>
+class GpioStatic<detail::DataUnused> : public Gpio, public ::modm::GpioIO
 {
 public:
 	using Output = GpioUnused;
 	using Input = GpioUnused;
 	using IO = GpioUnused;
 	using Type = GpioUnused;
+	using Data = detail::DataUnused;
 	static constexpr bool isInverted = false;
 	static constexpr Port port = Port(-1);
 	static constexpr uint8_t pin = uint8_t(-1);
 	static constexpr uint16_t mask = 0;
-
 protected:
-	/// @cond
 	static void setAlternateFunction(uint8_t) {}
+	static void setAlternateFunction() {}
 	static void setAnalogInput() {}
-	/// @endcond
-
 public:
 	// GpioOutput
-	// start documentation inherited
 	static void setOutput() {}
 	static void setOutput(bool) {}
+	static void setOutput(OutputType, OutputSpeed = OutputSpeed::MHz50) {}
+	static void configure(OutputType, OutputSpeed = OutputSpeed::MHz50) {}
 	static void set() {}
 	static void set(bool) {}
 	static void reset() {}
-	static void toggle() {}
 	static bool isSet() { return false; }
-	// stop documentation inherited
-	static void configure(OutputType, OutputSpeed = OutputSpeed::MHz50) {}
-	static void setOutput(OutputType, OutputSpeed = OutputSpeed::MHz50) {}
+	static void toggle() {}
 
 	// GpioInput
-	// start documentation inherited
 	static void setInput() {}
-	static bool read() { return false; }
-	// end documentation inherited
-	static void configure(InputType) {}
 	static void setInput(InputType) {}
-	// External Interrupts
-	static void enableExternalInterrupt() {}
-	static void disableExternalInterrupt() {}
-	static void enableExternalInterruptVector(const uint32_t) {}
-	static void disableExternalInterruptVector() {}
-	static void setInputTrigger(const InputTrigger) {}
-	static bool getExternalInterruptFlag() { return false; }
-	/// Reset the interrupt flag in the interrupt routine.
-	static void acknowledgeExternalInterruptFlag() {}
+	static void configure(InputType) {}
+	static bool read() { return false; }
 
 	// GpioIO
-	// start documentation inherited
-	static Direction getDirection() { return Direction::Special; }
-	// end documentation inherited
+	static Direction getDirection() { return Direction::In; }
 	static void lock() {}
 	static void disconnect() {}
 
 public:
-	/// @cond
-	template< Peripheral _ >
-	struct A0
+	struct BitBang
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::BitBang;
 	};
-	template< Peripheral _ >
-	struct A1
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A1;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A10
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A10;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A11
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A11;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A12
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A12;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A13
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A13;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A14
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A14;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A15
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A15;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct A16
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A16;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A16;
 	};
-	template< Peripheral _ >
 	struct A17
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A17;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A17;
 	};
-	template< Peripheral _ >
 	struct A18
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A18;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A18;
 	};
-	template< Peripheral _ >
 	struct A19
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A19;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A19;
 	};
-	template< Peripheral _ >
-	struct A2
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A2;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct A20
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A20;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A20;
 	};
-	template< Peripheral _ >
 	struct A21
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A21;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A21;
 	};
-	template< Peripheral _ >
 	struct A22
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A22;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A22;
 	};
-	template< Peripheral _ >
 	struct A23
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A23;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A23;
 	};
-	template< Peripheral _ >
-	struct A24
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A24;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct A25
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A25;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::A25;
 	};
-	template< Peripheral _ >
-	struct A3
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A3;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A4
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A4;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A5
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A5;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A6
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A6;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A7
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A7;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A8
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A8;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct A9
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::A9;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Af1
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Af1;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Af2
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Af2;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Ale
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ale;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ale;
 	};
-	template< Peripheral _ >
+	struct B0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B0;
+	};
+	struct B1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B1;
+	};
+	struct B2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B2;
+	};
+	struct B3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B3;
+	};
+	struct B4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B4;
+	};
+	struct B5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B5;
+	};
+	struct B6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B6;
+	};
+	struct B7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::B7;
+	};
 	struct Bkin
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Bkin;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkin;
 	};
-	template< Peripheral _ >
-	struct Cd
+	struct Bkin2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Cd;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkin2;
 	};
-	template< Peripheral _ >
+	struct Bkin2comp1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkin2comp1;
+	};
+	struct Bkin2comp2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkin2comp2;
+	};
+	struct Bkincomp1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkincomp1;
+	};
+	struct Bkincomp2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Bkincomp2;
+	};
+	struct Cdir
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cdir;
+	};
+	struct Cec
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cec;
+	};
 	struct Ch1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch1;
 	};
-	template< Peripheral _ >
 	struct Ch1n
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch1n;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch1n;
 	};
-	template< Peripheral _ >
 	struct Ch2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch2;
 	};
-	template< Peripheral _ >
 	struct Ch2n
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch2n;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch2n;
 	};
-	template< Peripheral _ >
 	struct Ch3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch3;
 	};
-	template< Peripheral _ >
 	struct Ch3n
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch3n;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch3n;
 	};
-	template< Peripheral _ >
 	struct Ch4
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ch4;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ch4;
 	};
-	template< Peripheral _ >
 	struct Ck
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ck;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ck;
 	};
-	template< Peripheral _ >
+	struct Ck1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ck1;
+	};
+	struct Ck2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ck2;
+	};
 	struct Ckin
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ckin;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin;
 	};
-	template< Peripheral _ >
+	struct Ckin0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin0;
+	};
+	struct Ckin1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin1;
+	};
+	struct Ckin2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin2;
+	};
+	struct Ckin3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin3;
+	};
+	struct Ckin4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin4;
+	};
+	struct Ckin5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin5;
+	};
+	struct Ckin6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin6;
+	};
+	struct Ckin7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckin7;
+	};
+	struct Ckout
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ckout;
+	};
 	struct Cle
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Cle;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cle;
 	};
-	template< Peripheral _ >
 	struct Clk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Clk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Clk;
 	};
-	template< Peripheral _ >
 	struct Cmd
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Cmd;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cmd;
 	};
-	template< Peripheral _ >
 	struct Col
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Col;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Col;
 	};
-	template< Peripheral _ >
 	struct Crs
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Crs;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Crs;
 	};
-	template< Peripheral _ >
+	struct Crssync
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Crssync;
+	};
+	struct Csleep
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Csleep;
+	};
+	struct Cstop
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cstop;
+	};
 	struct Cts
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Cts;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Cts;
 	};
-	template< Peripheral _ >
 	struct D0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D0;
 	};
-	template< Peripheral _ >
+	struct D0dir
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D0dir;
+	};
 	struct D1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D1;
 	};
-	template< Peripheral _ >
 	struct D10
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D10;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D10;
 	};
-	template< Peripheral _ >
 	struct D11
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D11;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D11;
 	};
-	template< Peripheral _ >
 	struct D12
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D12;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D12;
 	};
-	template< Peripheral _ >
+	struct D123dir
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D123dir;
+	};
 	struct D13
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D13;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D13;
 	};
-	template< Peripheral _ >
 	struct D14
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D14;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D14;
 	};
-	template< Peripheral _ >
 	struct D15
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D15;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D15;
 	};
-	template< Peripheral _ >
 	struct D2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D2;
 	};
-	template< Peripheral _ >
 	struct D3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D3;
 	};
-	template< Peripheral _ >
 	struct D4
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D4;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D4;
 	};
-	template< Peripheral _ >
 	struct D5
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D5;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D5;
 	};
-	template< Peripheral _ >
 	struct D6
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D6;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D6;
 	};
-	template< Peripheral _ >
 	struct D7
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D7;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D7;
 	};
-	template< Peripheral _ >
 	struct D8
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D8;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D8;
 	};
-	template< Peripheral _ >
 	struct D9
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::D9;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::D9;
 	};
-	template< Peripheral _ >
 	struct Da0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da0;
 	};
-	template< Peripheral _ >
 	struct Da1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da1;
 	};
-	template< Peripheral _ >
 	struct Da10
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da10;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da10;
 	};
-	template< Peripheral _ >
 	struct Da11
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da11;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da11;
 	};
-	template< Peripheral _ >
 	struct Da12
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da12;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da12;
 	};
-	template< Peripheral _ >
 	struct Da13
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da13;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da13;
 	};
-	template< Peripheral _ >
 	struct Da14
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da14;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da14;
 	};
-	template< Peripheral _ >
 	struct Da15
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da15;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da15;
 	};
-	template< Peripheral _ >
 	struct Da2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da2;
 	};
-	template< Peripheral _ >
 	struct Da3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da3;
 	};
-	template< Peripheral _ >
 	struct Da4
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da4;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da4;
 	};
-	template< Peripheral _ >
 	struct Da5
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da5;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da5;
 	};
-	template< Peripheral _ >
 	struct Da6
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da6;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da6;
 	};
-	template< Peripheral _ >
 	struct Da7
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da7;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da7;
 	};
-	template< Peripheral _ >
 	struct Da8
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da8;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da8;
 	};
-	template< Peripheral _ >
 	struct Da9
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Da9;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Da9;
 	};
-	template< Peripheral _ >
+	struct Datin0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin0;
+	};
+	struct Datin1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin1;
+	};
+	struct Datin2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin2;
+	};
+	struct Datin3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin3;
+	};
+	struct Datin4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin4;
+	};
+	struct Datin5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin5;
+	};
+	struct Datin6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin6;
+	};
+	struct Datin7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Datin7;
+	};
+	struct De
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::De;
+	};
 	struct Dm
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Dm;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Dm;
 	};
-	template< Peripheral _ >
 	struct Dp
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Dp;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Dp;
 	};
-	template< Peripheral _ >
 	struct Etr
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Etr;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Etr;
 	};
-	template< Peripheral _ >
-	struct Extsd
+	struct Fsa
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Extsd;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Fsa;
 	};
-	template< Peripheral _ >
+	struct Fsb
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Fsb;
+	};
+	struct G0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G0;
+	};
+	struct G1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G1;
+	};
+	struct G2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G2;
+	};
+	struct G3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G3;
+	};
+	struct G4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G4;
+	};
+	struct G5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G5;
+	};
+	struct G6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G6;
+	};
+	struct G7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::G7;
+	};
 	struct Hsync
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Hsync;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Hsync;
 	};
-	template< Peripheral _ >
 	struct Id
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Id;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Id;
 	};
-	template< Peripheral _ >
 	struct In0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::In0;
 	};
-	template< Peripheral _ >
 	struct In1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::In1;
 	};
-	template< Peripheral _ >
-	struct In10
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In10;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct In11
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In11;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct In12
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In12;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct In13
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In13;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct In14
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In14;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct In15
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In15;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct In2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::In2;
 	};
-	template< Peripheral _ >
 	struct In3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::In3;
 	};
-	template< Peripheral _ >
-	struct In4
+	struct Inm
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In4;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inm;
 	};
-	template< Peripheral _ >
-	struct In5
+	struct Inn1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In5;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn1;
 	};
-	template< Peripheral _ >
-	struct In6
+	struct Inn10
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In6;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn10;
 	};
-	template< Peripheral _ >
-	struct In7
+	struct Inn16
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In7;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn16;
 	};
-	template< Peripheral _ >
-	struct In8
+	struct Inn18
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In8;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn18;
 	};
-	template< Peripheral _ >
-	struct In9
+	struct Inn3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::In9;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn3;
 	};
-	template< Peripheral _ >
-	struct Int2
+	struct Inn4
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Int2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn4;
 	};
-	template< Peripheral _ >
-	struct Int3
+	struct Inn5
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Int3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inn5;
 	};
-	template< Peripheral _ >
-	struct Intr
+	struct Inp
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Intr;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp;
 	};
-	template< Peripheral _ >
+	struct Inp0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp0;
+	};
+	struct Inp1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp1;
+	};
+	struct Inp10
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp10;
+	};
+	struct Inp11
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp11;
+	};
+	struct Inp14
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp14;
+	};
+	struct Inp15
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp15;
+	};
+	struct Inp16
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp16;
+	};
+	struct Inp17
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp17;
+	};
+	struct Inp18
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp18;
+	};
+	struct Inp19
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp19;
+	};
+	struct Inp3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp3;
+	};
+	struct Inp4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp4;
+	};
+	struct Inp5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp5;
+	};
+	struct Inp7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp7;
+	};
+	struct Inp8
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp8;
+	};
+	struct Inp9
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Inp9;
+	};
+	struct Int
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Int;
+	};
+	struct Io
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Io;
+	};
 	struct Jtck
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Jtck;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Jtck;
 	};
-	template< Peripheral _ >
 	struct Jtdi
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Jtdi;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Jtdi;
 	};
-	template< Peripheral _ >
 	struct Jtdo
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Jtdo;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Jtdo;
 	};
-	template< Peripheral _ >
 	struct Jtms
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Jtms;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Jtms;
 	};
-	template< Peripheral _ >
 	struct Jtrst
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Jtrst;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Jtrst;
 	};
-	template< Peripheral _ >
 	struct Mck
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mck;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mck;
 	};
-	template< Peripheral _ >
+	struct Mclka
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mclka;
+	};
+	struct Mclkb
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mclkb;
+	};
 	struct Mco1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mco1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mco1;
 	};
-	template< Peripheral _ >
 	struct Mco2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mco2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mco2;
 	};
-	template< Peripheral _ >
 	struct Mdc
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mdc;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mdc;
 	};
-	template< Peripheral _ >
 	struct Mdio
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mdio;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mdio;
 	};
-	template< Peripheral _ >
 	struct Miso
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Miso;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Miso;
 	};
-	template< Peripheral _ >
 	struct Mosi
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Mosi;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Mosi;
 	};
-	template< Peripheral _ >
 	struct Nbl0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nbl0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nbl0;
 	};
-	template< Peripheral _ >
 	struct Nbl1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nbl1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nbl1;
 	};
-	template< Peripheral _ >
-	struct Nce2
+	struct Nce
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nce2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nce;
 	};
-	template< Peripheral _ >
-	struct Nce3
+	struct Ndstop2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nce3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ndstop2;
 	};
-	template< Peripheral _ >
-	struct Nce41
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nce41;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Nce42
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nce42;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Ne1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ne1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ne1;
 	};
-	template< Peripheral _ >
 	struct Ne2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ne2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ne2;
 	};
-	template< Peripheral _ >
-	struct Ne3
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ne3;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Ne4
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ne4;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Niord
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Niord;
-		static void connect() {}
-	};
-	template< Peripheral _ >
-	struct Niowr
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Niowr;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Nl
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nl;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nl;
 	};
-	template< Peripheral _ >
 	struct Noe
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Noe;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Noe;
 	};
-	template< Peripheral _ >
-	struct Nreg
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nreg;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Nss
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nss;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nss;
 	};
-	template< Peripheral _ >
 	struct Nwait
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nwait;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nwait;
 	};
-	template< Peripheral _ >
 	struct Nwe
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Nwe;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Nwe;
 	};
-	template< Peripheral _ >
 	struct Osc32in
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32in;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Osc32in;
 	};
-	template< Peripheral _ >
 	struct Osc32out
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Osc32out;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Osc32out;
 	};
-	template< Peripheral _ >
 	struct Oscin
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Oscin;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Oscin;
 	};
-	template< Peripheral _ >
 	struct Oscout
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Oscout;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Oscout;
 	};
-	template< Peripheral _ >
+	struct Out
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Out;
+	};
 	struct Out1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Out1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Out1;
 	};
-	template< Peripheral _ >
 	struct Out2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Out2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Out2;
 	};
-	template< Peripheral _ >
+	struct Outalarm
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Outalarm;
+	};
+	struct Outcalib
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Outcalib;
+	};
+	struct P1clk
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1clk;
+	};
+	struct P1dqs
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1dqs;
+	};
+	struct P1io0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io0;
+	};
+	struct P1io1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io1;
+	};
+	struct P1io2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io2;
+	};
+	struct P1io3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io3;
+	};
+	struct P1io4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io4;
+	};
+	struct P1io5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io5;
+	};
+	struct P1io6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io6;
+	};
+	struct P1io7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1io7;
+	};
+	struct P1nclk
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1nclk;
+	};
+	struct P1ncs
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::P1ncs;
+	};
+	struct Pdck
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Pdck;
+	};
 	struct Pixclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Pixclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Pixclk;
 	};
-	template< Peripheral _ >
 	struct Ppsout
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ppsout;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ppsout;
 	};
-	template< Peripheral _ >
+	struct Pvdin
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Pvdin;
+	};
+	struct R0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R0;
+	};
+	struct R1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R1;
+	};
+	struct R2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R2;
+	};
+	struct R3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R3;
+	};
+	struct R4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R4;
+	};
+	struct R5
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R5;
+	};
+	struct R6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R6;
+	};
+	struct R7
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::R7;
+	};
 	struct Rcccrsdv
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rcccrsdv;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rcccrsdv;
 	};
-	template< Peripheral _ >
+	struct Rdy
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rdy;
+	};
 	struct Refclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Refclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Refclk;
 	};
-	template< Peripheral _ >
 	struct Refin
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Refin;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Refin;
 	};
-	template< Peripheral _ >
 	struct Rts
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rts;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rts;
 	};
-	template< Peripheral _ >
 	struct Rx
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rx;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rx;
 	};
-	template< Peripheral _ >
 	struct Rxclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxclk;
 	};
-	template< Peripheral _ >
 	struct Rxd0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxd0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxd0;
 	};
-	template< Peripheral _ >
 	struct Rxd1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxd1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxd1;
 	};
-	template< Peripheral _ >
 	struct Rxd2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxd2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxd2;
 	};
-	template< Peripheral _ >
 	struct Rxd3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxd3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxd3;
 	};
-	template< Peripheral _ >
 	struct Rxdv
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxdv;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxdv;
 	};
-	template< Peripheral _ >
 	struct Rxer
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Rxer;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Rxer;
 	};
-	template< Peripheral _ >
 	struct Sck
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Sck;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sck;
 	};
-	template< Peripheral _ >
+	struct Scka
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Scka;
+	};
+	struct Sckb
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sckb;
+	};
 	struct Scl
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Scl;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Scl;
 	};
-	template< Peripheral _ >
-	struct Sd
-	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Sd;
-		static void connect() {}
-	};
-	template< Peripheral _ >
 	struct Sda
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Sda;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sda;
 	};
-	template< Peripheral _ >
+	struct Sdb
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdb;
+	};
+	struct Sdcke0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdcke0;
+	};
+	struct Sdcke1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdcke1;
+	};
+	struct Sdi
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdi;
+	};
+	struct Sdne0
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdne0;
+	};
+	struct Sdne1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdne1;
+	};
+	struct Sdnwe
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdnwe;
+	};
+	struct Sdo
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sdo;
+	};
 	struct Smba
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Smba;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Smba;
 	};
-	template< Peripheral _ >
 	struct Sof
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Sof;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Sof;
 	};
-	template< Peripheral _ >
+	struct Suspend
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Suspend;
+	};
 	struct Swclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Swclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Swclk;
 	};
-	template< Peripheral _ >
 	struct Swdio
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Swdio;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Swdio;
 	};
-	template< Peripheral _ >
 	struct Swo
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Swo;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Swo;
 	};
-	template< Peripheral _ >
+	struct Tamp1
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Tamp1;
+	};
+	struct Tamp3
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Tamp3;
+	};
 	struct Traceclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Traceclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Traceclk;
 	};
-	template< Peripheral _ >
 	struct Traced0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Traced0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Traced0;
 	};
-	template< Peripheral _ >
 	struct Traced1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Traced1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Traced1;
 	};
-	template< Peripheral _ >
 	struct Traced2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Traced2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Traced2;
 	};
-	template< Peripheral _ >
 	struct Traced3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Traced3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Traced3;
 	};
-	template< Peripheral _ >
+	struct Trgio
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Trgio;
+	};
+	struct Ts
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ts;
+	};
 	struct Tx
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Tx;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Tx;
 	};
-	template< Peripheral _ >
 	struct Txclk
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txclk;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txclk;
 	};
-	template< Peripheral _ >
 	struct Txd0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txd0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txd0;
 	};
-	template< Peripheral _ >
 	struct Txd1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txd1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txd1;
 	};
-	template< Peripheral _ >
 	struct Txd2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txd2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txd2;
 	};
-	template< Peripheral _ >
 	struct Txd3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txd3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txd3;
 	};
-	template< Peripheral _ >
 	struct Txen
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Txen;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txen;
 	};
-	template< Peripheral _ >
+	struct Txer
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Txer;
+	};
 	struct Ulpick
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpick;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpick;
 	};
-	template< Peripheral _ >
 	struct Ulpid0
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid0;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid0;
 	};
-	template< Peripheral _ >
 	struct Ulpid1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid1;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid1;
 	};
-	template< Peripheral _ >
 	struct Ulpid2
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid2;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid2;
 	};
-	template< Peripheral _ >
 	struct Ulpid3
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid3;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid3;
 	};
-	template< Peripheral _ >
 	struct Ulpid4
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid4;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid4;
 	};
-	template< Peripheral _ >
 	struct Ulpid5
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid5;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid5;
 	};
-	template< Peripheral _ >
 	struct Ulpid6
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid6;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid6;
 	};
-	template< Peripheral _ >
 	struct Ulpid7
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpid7;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpid7;
 	};
-	template< Peripheral _ >
 	struct Ulpidir
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpidir;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpidir;
 	};
-	template< Peripheral _ >
 	struct Ulpinxt
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpinxt;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpinxt;
 	};
-	template< Peripheral _ >
 	struct Ulpistp
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ulpistp;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ulpistp;
 	};
-	template< Peripheral _ >
 	struct Vbus
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Vbus;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Vbus;
 	};
-	template< Peripheral _ >
+	struct Vinm
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Vinm;
+	};
+	struct Vinp
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Vinp;
+	};
+	struct Vout
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Vout;
+	};
 	struct Vsync
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Vsync;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Vsync;
 	};
-	template< Peripheral _ >
-	struct Wkup
+	struct Wkup1
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Wkup;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Wkup1;
 	};
-	template< Peripheral _ >
+	struct Wkup2
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Wkup2;
+	};
+	struct Wkup4
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Wkup4;
+	};
+	struct Wkup6
+	{
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Wkup6;
+	};
 	struct Ws
 	{
-		using Gpio = GpioUnused;
-		static constexpr Gpio::Signal Signal = Gpio::Signal::Ws;
-		static void connect() {}
+		using Data = detail::DataUnused;
+		static constexpr platform::Gpio::Signal Signal = platform::Gpio::Signal::Ws;
 	};
-	/// @endcond
 };
 
-} // namespace platform
-
-} // namespace modm
-
-#endif // MODM_STM32_GPIO_PIN_UNUSED_HPP
+} // namespace modm::platform

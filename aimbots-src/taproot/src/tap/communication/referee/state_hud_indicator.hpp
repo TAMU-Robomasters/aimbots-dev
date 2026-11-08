@@ -28,7 +28,7 @@
 #include "tap/communication/serial/ref_serial.hpp"
 #include "tap/communication/serial/ref_serial_transmitter.hpp"
 
-#include "modm/processing/resumable.hpp"
+#include "modm/architecture/interface/fiber.hpp"
 
 namespace tap
 {
@@ -47,7 +47,7 @@ namespace tap::communication::referee
  * To use this drawer, pass in a `Graphic1Message` object that you must configure via calls to
  * `configGraphicGenerics` and `config<circle|line|etc.>`.
  *
- * @note `initialize` should be called once at the start of a protothread being used to write
+ * @note `initialize` should be called once at the start of a fiber being used to write
  *      graphic information to the referee system and `draw` should be called repeatedly, and will
  *      either resend the graphic if the color has changed or do nothing.
  *
@@ -63,17 +63,17 @@ namespace tap::communication::referee
  * ```
  *
  * Assuming some `Tx::Graphic1Message graphic` has been declared, to use the `indicator`, calls to
- * `initialize` and `draw` must be done in a prothread similar to the following. It is recommended
- * you put `PT_YIELD` in protothread loops to avoid infinite looping since the indicator's `draw`
- * function is not guaranteed to block:
+ * `initialize` and `draw` must be done in a fiber similar to the following. `initialize` and
+ * `draw` block (yielding) while sending. Put `modm::this_fiber::yield()` in the loop since `draw`
+ * returns immediately when nothing changed, and the loop would otherwise starve other fibers:
  *
  * ```
- * PT_CALL(indicator.initialize());
+ * indicator.initialize();
  *
  * while (true)
  * {
- *     PT_CALL(indicator.draw());
- *     PT_YIELD();
+ *     indicator.draw();
+ *     modm::this_fiber::yield();
  * }
  * // Initialize the declare a drawer
  * ```
@@ -81,7 +81,7 @@ namespace tap::communication::referee
  * @tparam T Type of the state associated with the HUD indicator.
  */
 template <typename T>
-class StateHUDIndicator : public modm::Resumable<2>
+class StateHUDIndicator
 {
 public:
     /**
@@ -112,39 +112,33 @@ public:
         minUpdatePeriodTimeout.stop();
     }
 
-    modm::ResumableResult<bool> initialize()
+    void initialize()
     {
-        RF_BEGIN(0);
-
         indicatorState = initialState;
 
         // Initially add the graphic
         graphic->graphicData.operation = tap::communication::serial::RefSerial::Tx::GRAPHIC_ADD;
-        RF_CALL(refSerialTransmitter.sendGraphic(graphic));
+        refSerialTransmitter.sendGraphic(graphic);
         // In future calls to sendGraphic only modify the graphic
         graphic->graphicData.operation = tap::communication::serial::RefSerial::Tx::GRAPHIC_MODIFY;
 
         delayTimeout.restart(
             tap::communication::serial::RefSerialData::Tx::getWaitTimeAfterGraphicSendMs(graphic));
-        RF_WAIT_UNTIL(delayTimeout.execute());
-
-        RF_END();
+        modm::this_fiber::poll([&] { return delayTimeout.execute(); });
     }
 
-    modm::ResumableResult<bool> draw()
+    void draw()
     {
-        RF_BEGIN(1);
         if (indicatorChanged)
         {
             // resend graphic if color changed
-            RF_CALL(refSerialTransmitter.sendGraphic(graphic));
+            refSerialTransmitter.sendGraphic(graphic);
             indicatorChanged = false;
             delayTimeout.restart(
                 tap::communication::serial::RefSerialData::Tx::getWaitTimeAfterGraphicSendMs(
                     graphic));
-            RF_WAIT_UNTIL(delayTimeout.execute());
+            modm::this_fiber::poll([&] { return delayTimeout.execute(); });
         }
-        RF_END();
     }
 
     void setIndicatorState(T newIndicatorState)

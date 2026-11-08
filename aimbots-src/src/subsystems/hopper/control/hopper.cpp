@@ -18,7 +18,7 @@ HopperSubsystem::HopperSubsystem(tap::Drivers* drivers)
       hopperState(CLOSED) {}
 
 void HopperSubsystem::initialize() {
-    drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER1, 330);  // Timer 1 for C1 Pin
+    drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER2, 330);  // Timer 2 for PWM1 (PA0)
 }
 
 void HopperSubsystem::refresh() { hopperMotor.updateSendPwmRamp(); }

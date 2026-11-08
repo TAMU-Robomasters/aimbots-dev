@@ -4,7 +4,7 @@
 
 #define HOPPER_LID_COMPATIBLE
 
-static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::PWM1;  // DM-MC02 PWM1 (PA0); was Type C C1
 
 static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
 

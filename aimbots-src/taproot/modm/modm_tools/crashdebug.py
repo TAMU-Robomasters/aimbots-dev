@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2020, Niklas Hauser
+# Copyright (c) 2020, 2023, Niklas Hauser
 #
 # This file is part of the modm project.
 #
@@ -11,45 +11,31 @@
 # -----------------------------------------------------------------------------
 
 import os, platform
+from .backend import DebugBackend
 
-class CrashDebugBackend:
-    def __init__(self, binary_path, coredump):
+
+class CrashDebugBackend(DebugBackend):
+    def __init__(self, coredump):
+        super().__init__()
         self.coredump = coredump
-
-        crashdebug = "lin64/CrashDebug"
+        self.binary = "CrashDebug"
         if "Windows" in platform.platform():
-            crashdebug = "win32/CrashDebug.exe"
-        elif "Darwin" in platform.system():
-            crashdebug = "osx64/CrashDebug"
-        self.binary = os.path.join(binary_path, crashdebug)
+            self.binary = "CrashDebug.exe"
+        self.binary = os.environ.get("MODM_CRASHDEBUG_BINARY", self.binary)
 
     def init(self, elf):
-        init = ["set target-charset ASCII",
+        return ["set target-charset ASCII",
                 "target remote | {} --elf {} --dump {}"
                 .format(self.binary, elf, self.coredump)]
-        return init
-
-    def start(self):
-        pass
-
-    def stop(self):
-        pass
 
 
 def add_subparser(subparser):
     parser = subparser.add_parser("crashdebug", help="Use CrashDebug as Backend.")
     parser.add_argument(
-            "--binary-path",
-            dest="binary_path",
-            required=True,
-            help="Folder of CrashDebug Binaries.")
-    parser.add_argument(
             "--dump",
             dest="coredump",
             default="coredump.txt",
             help="Path to coredump file.")
-    def build_backend(args):
-        return CrashDebugBackend(args.binary_path, args.coredump)
-    parser.set_defaults(backend=build_backend)
+    parser.set_defaults(backend=lambda args: CrashDebugBackend(args.coredump))
     return parser
 

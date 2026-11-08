@@ -22,7 +22,7 @@ modm::ResumableResult<bool> ReticleIndicator::sendInitialGraphics() {
         RF_CALL(refSerialTransmitter.sendGraphic(&reticleMsg[reticleIndex]));
     }
 
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 modm::ResumableResult<bool> ReticleIndicator::update() {
@@ -31,7 +31,7 @@ modm::ResumableResult<bool> ReticleIndicator::update() {
     for (reticleIndex = 0; reticleIndex < MODM_ARRAY_SIZE(reticleMsg); reticleIndex++) {
         RF_CALL(refSerialTransmitter.sendGraphic(&reticleMsg[reticleIndex]));
     }
-    RF_END();
+    RF_END_RETURN(false);  // fiber-backed RF_END() returns no value; the old one returned false
 }
 
 void ReticleIndicator::initialize() {

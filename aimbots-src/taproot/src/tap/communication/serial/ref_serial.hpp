@@ -32,7 +32,7 @@
 #include "tap/util_macros.hpp"
 
 #include "modm/container/deque.hpp"
-#include "modm/processing/protothread/semaphore.hpp"
+#include "modm/processing/fiber/semaphore.hpp"
 
 #include "dji_serial.hpp"
 #include "ref_serial_data.hpp"
@@ -81,8 +81,8 @@ public:
      * parser yet. They are values that are used in message headers to indicate the type of message
      * we have received.
      *
-     * Current Ref Serial Version: 1.7.0
-     * Updated March 2025.
+     * Current Ref Serial Version: RoboMaster 2026 1.3.1
+     * Updated May 2026.
      */
     enum MessageType
     {
@@ -109,7 +109,7 @@ public:
         REF_MESSAGE_TYPE_RADAR_INFO = 0x20E,
 
         REF_MESSAGE_TYPE_CUSTOM_DATA = 0x301,
-        // REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE = 0x302,
+        REF_MESSAGE_TYPE_CUSTOM_CONTROLLER_DATA_RECEIVE = 0x302,
         // REF_MESSAGE_TYPE_SMALL_MAP_INTERACTION = 0x303,
         // REF_MESSAGE_TYPE_VTM_INPUT_DATA = 0x304,
         // REF_MESSAGE_TYPE_RADAR_MINIMAP = 0x305,
@@ -161,13 +161,14 @@ public:
     /**
      * Used by `RefSerialTransmitter`. Attempts to acquire transmission semaphore.
      *
-     * @note should be called only using RF_WAIT_UNTIL to block until acquiring semaphore.
+     * @return `true` if the semaphore was acquired. Does not block; callers that need to wait
+     * should poll it with `modm::this_fiber::poll`.
      */
     mockable bool acquireTransmissionSemaphore()
     {
         if (transmissionDelayTimer.isExpired() || transmissionDelayTimer.isStopped())
         {
-            return transmissionSemaphore.acquire();
+            return transmissionSemaphore.try_acquire();
         }
         return false;
     }
@@ -200,7 +201,7 @@ private:
     modm::BoundedDeque<Rx::DamageEvent, DPS_TRACKER_DEQUE_SIZE> receivedDpsTracker;
     arch::MilliTimeout refSerialOfflineTimeout;
     std::unordered_map<uint16_t, RobotToRobotMessageHandler*> msgIdToRobotToRobotHandlerMap;
-    modm::pt::Semaphore transmissionSemaphore;
+    modm::fiber::binary_semaphore transmissionSemaphore;
     tap::arch::MilliTimeout transmissionDelayTimer;
 
     /**
@@ -220,10 +221,6 @@ private:
      * Decodes ref serial message containing occupation status of various field zones.
      */
     bool decodeToSiteEventData(const ReceivedSerialMessage& message);
-    /**
-     * Decodes ref serial message containing projectile supplier information.
-     */
-    bool decodeToProjectileSupplierAction(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing warning information (if a robot on your team received a
      * yellow or red card).
@@ -252,11 +249,6 @@ private:
      * Decodes ref serial message containing the robot buff status of the robot.
      */
     bool decodeToRobotBuffs(const ReceivedSerialMessage& message);
-    /**
-     * Decodes ref serial message containing the energy status, a countdown timer from 30 seconds to
-     * 0 seconds.
-     */
-    bool decodeToAerialEnergyStatus(const ReceivedSerialMessage& message);
     /**
      * Decodes ref serial message containing containing the damaged armor and damage type
      * last taken by the robot.
@@ -296,6 +288,10 @@ private:
      * Decodes ref serial message containing information about the radar station's actions.
      */
     bool decodeToRadarInfo(const ReceivedSerialMessage& message);
+    /**
+     * Decodes ref serial message containing custom controller data.
+     */
+    bool decodeToCustomControllerData(const ReceivedSerialMessage& message);
 
     bool handleRobotToRobotCommunication(const ReceivedSerialMessage& message);
 

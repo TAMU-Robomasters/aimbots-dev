@@ -29,7 +29,7 @@ namespace platform
 extern uint16_t delay_ns_per_loop;
 extern uint16_t delay_fcpu_MHz;
 
-constexpr uint8_t delay_fcpu_MHz_shift(4);
+constexpr uint8_t delay_fcpu_MHz_shift(2);
 constexpr uint16_t computeDelayMhz(uint32_t hz)
 { return std::round(hz / 1'000'000.f * (1ul << delay_fcpu_MHz_shift)); }
 }
@@ -40,7 +40,7 @@ void delay_ns(uint32_t ns)
     asm volatile(
         "mov r0, %0 \n\t"
         "blx %1"
-        :: "r" (ns), "l" (platform::delay_ns) : "r0", "r1", "r2");
+        :: "r" (ns), "l" (platform::delay_ns) : "r0", "r1", "r2", "lr");
 }
 
 

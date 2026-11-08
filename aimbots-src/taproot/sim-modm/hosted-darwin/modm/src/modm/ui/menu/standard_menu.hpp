@@ -35,7 +35,7 @@ namespace modm
 	* \ingroup	modm_ui_menu
 	* \author	Thorsten Lajewski
 	*/
-	template<typename Allocator = allocator::Dynamic<IAbstractView> >
+	template<typename Allocator = std::allocator<IAbstractView> >
 	struct MenuEntry
 	{
 		/**
@@ -63,7 +63,7 @@ namespace modm
 	* \author	Thorsten Lajewski
 	*/
 
-	template<typename Allocator = allocator::Dynamic<IAbstractView> >
+	template<typename Allocator = std::allocator<IAbstractView> >
 	class StandardMenu : public AbstractMenu<Allocator>
 	{
 	public:

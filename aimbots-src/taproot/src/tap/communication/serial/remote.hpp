@@ -30,6 +30,7 @@
 #include "modm/platform.hpp"
 #endif
 
+#include "tap/architecture/driver_fiber.hpp"
 #include "tap/util_macros.hpp"
 
 namespace tap
@@ -52,6 +53,12 @@ class Remote
 public:
     Remote(Drivers *drivers) : drivers(drivers) {}
     DISALLOW_COPY_AND_ASSIGN(Remote)
+
+    /**
+     * Starts a fiber that calls `read()` and yields, in a loop. Call once after the hardware is
+     * initialized and before `modm::fiber::Scheduler::run()`; then don't call `read()` yourself.
+     */
+    void startFiber() { fiber.start(); }
     mockable ~Remote() = default;
 
     /**
@@ -230,6 +237,10 @@ private:
 
     /// Resets the current remote info.
     void reset();
+
+private:
+    /// Calls `read()` and yields, in a loop, once started. Declared last so it is destroyed first.
+    tap::arch::DriverFiber<> fiber{[this] { read(); }};
 };  // class Remote
 
 }  // namespace tap::communication::serial

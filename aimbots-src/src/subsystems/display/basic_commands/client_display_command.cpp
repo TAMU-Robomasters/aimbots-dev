@@ -33,6 +33,8 @@ ClientDisplayCommand::ClientDisplayCommand(
     //    const ChassisSubsystem &chassis
     )
     : Command(),
+      // modm fiber-backed protothread: start the HUD fiber only once the command runs
+      ::modm::pt::Protothread(modm::fiber::Start::Later),
       drivers(drivers),
       commandScheduler(commandScheduler),
       refSerialTransmitter(&drivers),
@@ -60,7 +62,15 @@ void ClientDisplayCommand::restartHud() {
     this->restarting = false;
 }
 
-void ClientDisplayCommand::execute() { run(); }
+// run() is this object's own fiber now (modm fiber-backed protothread). Calling it here would
+// block the main loop at PT_WAIT_UNTIL, since refSerial is only updated by the main loop.
+// So execute() only (re)starts the fiber, which run() used to do itself.
+void ClientDisplayCommand::execute() {
+    if (!this->isRunning()) {
+        restart();
+        this->restartHud();
+    }
+}
 
 bool ClientDisplayCommand::run() {
     if (!this->isRunning()) {

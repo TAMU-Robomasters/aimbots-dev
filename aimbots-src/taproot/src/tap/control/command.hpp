@@ -24,6 +24,9 @@
 #ifndef TAPROOT_COMMAND_HPP_
 #define TAPROOT_COMMAND_HPP_
 
+#include <functional>
+#include <memory>
+
 #include "tap/util_macros.hpp"
 
 #include "command_scheduler_types.hpp"
@@ -44,8 +47,11 @@ class Command
 {
 public:
     Command();
-
-    virtual ~Command();
+    ~Command();
+    Command(const Command&) = delete;
+    Command(Command&&) = delete;
+    Command& operator=(const Command&) = delete;
+    Command& operator=(Command&&) = delete;
 
     /**
      * Specifies the encoded set of subsystems used by this command. Two commands cannot
@@ -127,6 +133,8 @@ public:
      * @return whether the command has finished.
      */
     virtual bool isFinished() const = 0;
+
+    virtual void addCommand(Command* command);
 
 private:
     /**

@@ -100,6 +100,20 @@ protected:
 #endif
           {}
 
+public:
+    /**
+     * Starts the fiber of every driver that polls hardware (CAN receive, remote, referee serial,
+     * IMU). Call once after initializing those drivers and before `modm::fiber::Scheduler::run()`.
+     * Don't call their poll functions yourself afterwards.
+     */
+    void startFibers()
+    {
+        canRxHandler.startFiber();
+        refSerial.startFiber();
+        remote.startFiber();
+        bmi088.startFiber();
+    }
+
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
     arch::Profiler profiler;
     testing::NiceMock<mock::AnalogMock> analog;

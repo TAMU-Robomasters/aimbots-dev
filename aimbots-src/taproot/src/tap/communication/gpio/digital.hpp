@@ -56,11 +56,7 @@ public:
      */
     enum InputPin
     {
-        PF1,
-        PF0,
-        B12,
-        C6,
-        C7,
+        Button,
     };
 
     /**
@@ -68,12 +64,7 @@ public:
      */
     enum OutputPin
     {
-        C2,
-        C4,
-        B13,
-        B14,
-        B15,
-        Laser,
+        PD10,
     };
 
 #ifdef PLATFORM_HOSTED

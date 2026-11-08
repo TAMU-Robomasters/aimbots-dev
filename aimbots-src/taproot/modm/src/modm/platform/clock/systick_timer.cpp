@@ -13,13 +13,12 @@
 
 #include <modm/architecture/interface/atomic_lock.hpp>
 #include <modm/platform/device.hpp>
-
 #include "systick_timer.hpp"
 
-static constexpr auto systick_step(250);
-static volatile uint32_t milli_time{0};
-static volatile uint32_t micro_time{0};
-static volatile uint8_t interrupt{false};
+static constexpr auto systick_step(10);
+static volatile uint32_t milli_time{};
+static volatile uint32_t micro_time{};
+static volatile bool interrupt{};
 
 extern "C" void
 SysTick_Handler(void)
@@ -34,17 +33,20 @@ static constexpr uint8_t systick_priority{(1ul << __NVIC_PRIO_BITS) - 1ul};
 
 // ----------------------------------------------------------------------------
 void
-modm::platform::SysTickTimer::enable(uint32_t modm_unused reload, bool modm_unused prescaler8)
+modm::platform::SysTickTimer::enable([[maybe_unused]] uint32_t reload,
+									 [[maybe_unused]] bool use_processor_clock)
 {
+	SysTick->CTRL = 0;
+
 	// Lower systick interrupt priority to lowest level
 	NVIC_SetPriority(SysTick_IRQn, systick_priority);
 
 	SysTick->LOAD = reload;
 	SysTick->VAL  = reload;
-	if (prescaler8) {
-		SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk;
-	} else {
+	if (use_processor_clock) {
 		SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_CLKSOURCE_Msk;
+	} else {
+		SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_TICKINT_Msk;
 	}
 }
 
@@ -55,11 +57,19 @@ modm::platform::SysTickTimer::disable()
 }
 
 // ----------------------------------------------------------------------------
+// Allow the ability to override the clock now functions
+#ifndef MODM_CHRONO_MILLI_CLOCK_NOW
+#	define MODM_CHRONO_MILLI_CLOCK_NOW modm::chrono::milli_clock::now
+#endif
+#ifndef MODM_CHRONO_MICRO_CLOCK_NOW
+#	define MODM_CHRONO_MICRO_CLOCK_NOW modm::chrono::micro_clock::now
+#endif
+
 modm::chrono::milli_clock::time_point modm_weak
-modm::chrono::milli_clock::now() noexcept
+MODM_CHRONO_MILLI_CLOCK_NOW() noexcept
 {
-	uint32_t val;
-	uint32_t ms;
+	uint32_t val, ms;
+
 	do	// We cannot use an atomic lock here, the counter still overflows even
 	{	// if the interrupt hasn't happened yet.
 		interrupt = false;
@@ -68,18 +78,18 @@ modm::chrono::milli_clock::now() noexcept
 	}
 	while(interrupt);
 	const auto diff = SysTick->LOAD - val;
-	const auto ms_per_Ncycles = platform::SysTickTimer::ms_per_Ncycles;
-	constexpr auto Ncycles = platform::SysTickTimer::Ncycles;
+	const auto ms_per_Ncycles = modm::platform::SysTickTimer::ms_per_Ncycles;
+	constexpr auto Ncycles = modm::platform::SysTickTimer::Ncycles;
 
 	ms += (uint64_t(diff) * uint64_t(ms_per_Ncycles)) >> Ncycles;
-	return time_point{duration{ms}};
+	return modm::chrono::milli_clock::time_point{modm::chrono::milli_clock::duration{ms}};
 }
 
 modm::chrono::micro_clock::time_point modm_weak
-modm::chrono::micro_clock::now() noexcept
+MODM_CHRONO_MICRO_CLOCK_NOW() noexcept
 {
-	uint32_t val;
-	uint32_t us;
+	uint32_t val, us;
+
 	do	// We cannot use an atomic lock here, the counter still overflows even
 	{	// if the interrupt hasn't happened yet.
 		interrupt = false;
@@ -88,10 +98,10 @@ modm::chrono::micro_clock::now() noexcept
 	}
 	while(interrupt);
 	const auto diff = SysTick->LOAD - val;
-	const auto us_per_Ncycles = platform::SysTickTimer::us_per_Ncycles;
-	constexpr auto Ncycles = platform::SysTickTimer::Ncycles;
+	const auto us_per_Ncycles = modm::platform::SysTickTimer::us_per_Ncycles;
+	constexpr auto Ncycles = modm::platform::SysTickTimer::Ncycles;
 
 	// use a 32x32=64bit multiplication
 	us += (uint64_t(diff) * uint64_t(us_per_Ncycles)) >> Ncycles;
-	return time_point{duration{us}};
+	return modm::chrono::micro_clock::time_point{modm::chrono::micro_clock::duration{us}};
 }

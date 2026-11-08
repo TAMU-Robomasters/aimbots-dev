@@ -71,6 +71,7 @@ struct CMSISMat
         matrix.pData = data.data();
     }
 
+    inline const float &operator[](int index) const { return data[index]; }
     inline float &operator[](int index) { return data[index]; }
 
     /**
@@ -210,6 +211,260 @@ inline CMSISMat<ROWS, COLS> operator/(const CMSISMat<ROWS, COLS> &a, float b)
     CMSISMat<ROWS, COLS> c;
     assert(ARM_MATH_SUCCESS == arm_mat_scale_f32(&a.matrix, b, &c.matrix));
     return c;
+}
+
+// ==============================================================================
+// 3x3 Specializations
+// ==============================================================================
+
+// 3x3 Multiplication
+template <>
+inline CMSISMat<3, 3> operator*(const CMSISMat<3, 3> &a, const CMSISMat<3, 3> &b)
+{
+    CMSISMat<3, 3> c;
+
+    const float *pA = a.matrix.pData;
+    const float *pB = b.matrix.pData;
+    float *pC = c.matrix.pData;
+
+    pC[0] = pA[0] * pB[0] + pA[1] * pB[3] + pA[2] * pB[6];
+    pC[1] = pA[0] * pB[1] + pA[1] * pB[4] + pA[2] * pB[7];
+    pC[2] = pA[0] * pB[2] + pA[1] * pB[5] + pA[2] * pB[8];
+
+    pC[3] = pA[3] * pB[0] + pA[4] * pB[3] + pA[5] * pB[6];
+    pC[4] = pA[3] * pB[1] + pA[4] * pB[4] + pA[5] * pB[7];
+    pC[5] = pA[3] * pB[2] + pA[4] * pB[5] + pA[5] * pB[8];
+
+    pC[6] = pA[6] * pB[0] + pA[7] * pB[3] + pA[8] * pB[6];
+    pC[7] = pA[6] * pB[1] + pA[7] * pB[4] + pA[8] * pB[7];
+    pC[8] = pA[6] * pB[2] + pA[7] * pB[5] + pA[8] * pB[8];
+
+    return c;
+}
+
+// 3x3 * 3x1 Multiplication
+template <>
+inline CMSISMat<3, 1> operator*(const CMSISMat<3, 3> &a, const CMSISMat<3, 1> &b)
+{
+    CMSISMat<3, 1> c;
+
+    const float32_t *pA = a.matrix.pData;
+    const float32_t *pB = b.matrix.pData;
+    float32_t *pC = c.matrix.pData;
+
+    pC[0] = pA[0] * pB[0] + pA[1] * pB[1] + pA[2] * pB[2];
+    pC[1] = pA[3] * pB[0] + pA[4] * pB[1] + pA[5] * pB[2];
+    pC[2] = pA[6] * pB[0] + pA[7] * pB[1] + pA[8] * pB[2];
+
+    return c;
+}
+
+// 3x3 Addition
+template <>
+inline CMSISMat<3, 3> operator+(const CMSISMat<3, 3> &a, const CMSISMat<3, 3> &b)
+{
+    CMSISMat<3, 3> c;
+    const float *pA = a.matrix.pData;
+    const float *pB = b.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] + pB[0];
+    pC[1] = pA[1] + pB[1];
+    pC[2] = pA[2] + pB[2];
+    pC[3] = pA[3] + pB[3];
+    pC[4] = pA[4] + pB[4];
+    pC[5] = pA[5] + pB[5];
+    pC[6] = pA[6] + pB[6];
+    pC[7] = pA[7] + pB[7];
+    pC[8] = pA[8] + pB[8];
+    return c;
+}
+
+// 3x3 Subtraction
+template <>
+inline CMSISMat<3, 3> operator-(const CMSISMat<3, 3> &a, const CMSISMat<3, 3> &b)
+{
+    CMSISMat<3, 3> c;
+    const float *pA = a.matrix.pData;
+    const float *pB = b.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] - pB[0];
+    pC[1] = pA[1] - pB[1];
+    pC[2] = pA[2] - pB[2];
+    pC[3] = pA[3] - pB[3];
+    pC[4] = pA[4] - pB[4];
+    pC[5] = pA[5] - pB[5];
+    pC[6] = pA[6] - pB[6];
+    pC[7] = pA[7] - pB[7];
+    pC[8] = pA[8] - pB[8];
+    return c;
+}
+
+// 3x3 Negation
+template <>
+inline CMSISMat<3, 3> operator-(const CMSISMat<3, 3> &a)
+{
+    CMSISMat<3, 3> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = -pA[0];
+    pC[1] = -pA[1];
+    pC[2] = -pA[2];
+    pC[3] = -pA[3];
+    pC[4] = -pA[4];
+    pC[5] = -pA[5];
+    pC[6] = -pA[6];
+    pC[7] = -pA[7];
+    pC[8] = -pA[8];
+    return c;
+}
+
+// 3x3 Scalar Multiplication
+template <>
+inline CMSISMat<3, 3> operator*(const CMSISMat<3, 3> &a, float b)
+{
+    CMSISMat<3, 3> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] * b;
+    pC[1] = pA[1] * b;
+    pC[2] = pA[2] * b;
+    pC[3] = pA[3] * b;
+    pC[4] = pA[4] * b;
+    pC[5] = pA[5] * b;
+    pC[6] = pA[6] * b;
+    pC[7] = pA[7] * b;
+    pC[8] = pA[8] * b;
+    return c;
+}
+
+template <>
+inline CMSISMat<3, 3> operator*(float b, const CMSISMat<3, 3> &a)
+{
+    return a * b;  // Reuse previous implementation
+}
+
+// 3x3 Scalar Division
+template <>
+inline CMSISMat<3, 3> operator/(const CMSISMat<3, 3> &a, float b)
+{
+    CMSISMat<3, 3> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    float invB = 1.0f / b;
+    pC[0] = pA[0] * invB;
+    pC[1] = pA[1] * invB;
+    pC[2] = pA[2] * invB;
+    pC[3] = pA[3] * invB;
+    pC[4] = pA[4] * invB;
+    pC[5] = pA[5] * invB;
+    pC[6] = pA[6] * invB;
+    pC[7] = pA[7] * invB;
+    pC[8] = pA[8] * invB;
+    return c;
+}
+
+// ==============================================================================
+// 3x1 Specializations
+// ==============================================================================
+
+// 3x1 Addition
+template <>
+inline CMSISMat<3, 1> operator+(const CMSISMat<3, 1> &a, const CMSISMat<3, 1> &b)
+{
+    CMSISMat<3, 1> c;
+    const float *pA = a.matrix.pData;
+    const float *pB = b.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] + pB[0];
+    pC[1] = pA[1] + pB[1];
+    pC[2] = pA[2] + pB[2];
+    return c;
+}
+
+// 3x1 Subtraction
+template <>
+inline CMSISMat<3, 1> operator-(const CMSISMat<3, 1> &a, const CMSISMat<3, 1> &b)
+{
+    CMSISMat<3, 1> c;
+    const float *pA = a.matrix.pData;
+    const float *pB = b.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] - pB[0];
+    pC[1] = pA[1] - pB[1];
+    pC[2] = pA[2] - pB[2];
+    return c;
+}
+
+// 3x1 Negation
+template <>
+inline CMSISMat<3, 1> operator-(const CMSISMat<3, 1> &a)
+{
+    CMSISMat<3, 1> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = -pA[0];
+    pC[1] = -pA[1];
+    pC[2] = -pA[2];
+    return c;
+}
+
+// 3x1 Scalar Multiplication
+template <>
+inline CMSISMat<3, 1> operator*(const CMSISMat<3, 1> &a, float b)
+{
+    CMSISMat<3, 1> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    pC[0] = pA[0] * b;
+    pC[1] = pA[1] * b;
+    pC[2] = pA[2] * b;
+    return c;
+}
+
+template <>
+inline CMSISMat<3, 1> operator*(float b, const CMSISMat<3, 1> &a)
+{
+    return a * b;  // Reuse previous implementation
+}
+
+// 3x1 Scalar Division
+template <>
+inline CMSISMat<3, 1> operator/(const CMSISMat<3, 1> &a, float b)
+{
+    CMSISMat<3, 1> c;
+    const float *pA = a.matrix.pData;
+    float *pC = c.matrix.pData;
+    float invB = 1.0f / b;
+    pC[0] = pA[0] * invB;
+    pC[1] = pA[1] * invB;
+    pC[2] = pA[2] * invB;
+    return c;
+}
+
+template <>
+inline CMSISMat<3, 3> CMSISMat<3, 3>::transpose() const
+{
+    CMSISMat<3, 3> ret;
+
+    const float *pA = this->matrix.pData;
+    float *pRet = ret.matrix.pData;
+
+    // The diagonal remains unchanged
+    pRet[0] = pA[0];
+    pRet[4] = pA[4];
+    pRet[8] = pA[8];
+
+    // Swap the off-diagonal elements
+    pRet[1] = pA[3];
+    pRet[3] = pA[1];
+
+    pRet[2] = pA[6];
+    pRet[6] = pA[2];
+
+    pRet[5] = pA[7];
+    pRet[7] = pA[5];
+
+    return ret;
 }
 
 }  // namespace tap::algorithms

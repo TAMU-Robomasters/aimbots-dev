@@ -44,7 +44,7 @@ public:
 
     MOCK_METHOD(float, getVelocity, (), (const override));
 
-    MOCK_METHOD(void, resetEncoderValue, (), (override));
+    MOCK_METHOD(void, resetEncoderValue, (float), (override));
 
     MOCK_METHOD(void, alignWith, (EncoderInterface*), (override));
 };

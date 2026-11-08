@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2020, Niklas Hauser
+# Copyright (c) 2020, 2023, Niklas Hauser
 #
 # This file is part of the modm project.
 #
@@ -10,19 +10,27 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # -----------------------------------------------------------------------------
 
-"""
+r"""
 ### OpenOCD
 
 Simply wraps OpenOCD and issues the right command to program the target.
 
 ```sh
-python3 modm/modm_tools/openocd.py -f modm/openocd.cfg path/to/project.elf
+python3 -m modm_tools.openocd -f modm/openocd.cfg path/to/project.elf
 ```
 
 You can also reset the target:
 
 ```sh
-python3 modm/modm_tools/openocd.py -f modm/openocd.cfg --reset
+python3 -m modm_tools.openocd -f modm/openocd.cfg --reset
+```
+
+You can use a different OpenOCD binary by setting the `MODM_OPENOCD_BINARY`
+environment variable before calling this script. This can be useful when
+using a custom OpenOCD build for specific targets.
+
+```sh
+export MODM_OPENOCD_BINARY=/path/to/other/openocd
 ```
 
 (\* *only ARM Cortex-M targets*)
@@ -33,24 +41,20 @@ import time
 import signal
 import tempfile
 import platform
-import telnetlib
 import subprocess
-if __name__ == "__main__":
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from modm_tools import utils, backend as bem
+from . import utils
+from .backend import DebugBackend
+
 
 # -----------------------------------------------------------------------------
-class OpenOcdBackend:
+class OpenOcdBackend(DebugBackend):
     def __init__(self, commands=None, config=None, search=None):
+        super().__init__(":3333")
         self.commands = utils.listify(commands)
         self.config = utils.listify(config)
         self.search = utils.listify(search)
         self.process = None
-
-    def init(self, elf):
-        return ["target extended-remote :3333"]
 
     def start(self):
         self.process = call(self.commands, self.config, self.search,
@@ -62,11 +66,11 @@ class OpenOcdBackend:
                 os.kill(self.process.pid, signal.CTRL_BREAK_EVENT)
             else:
                 os.killpg(os.getpgid(self.process.pid), signal.SIGTERM)
+                os.waitpid(os.getpgid(self.process.pid), 0)
             self.process = None
 
 
-# -----------------------------------------------------------------------------
-def call(commands=None, config=None, search=None, blocking=True, silent=False):
+def call(commands=None, config=None, search=None, blocking=True, silent=False, verbose=False):
     commands = utils.listify(commands)
     config = utils.listify(config)
     search = utils.listify(search)
@@ -78,16 +82,21 @@ def call(commands=None, config=None, search=None, blocking=True, silent=False):
     # See http://openocd.org/doc/html/Running.html
     # os.environ.get("OPENOCD_SCRIPTS", "")
 
-    command_openocd = "openocd {} {} {}".format(
+    binary = os.environ.get("MODM_OPENOCD_BINARY", "openocd")
+
+    command_openocd = "{} {} {} {}".format(
+        binary,
         " ".join(map('-s "{}"'.format, search)),
         " ".join(map('-f "{}"'.format, config)),
         " ".join(map('-c "{}"'.format, commands))
     )
-    # print(command_openocd)
+    if verbose:
+        print(command_openocd)
 
     kwargs = {"cwd": os.getcwd(), "shell": True}
     if blocking:
         return subprocess.call(command_openocd, **kwargs)
+
     # We have to start openocd in its own session ID, so that Ctrl-C in GDB
     # does not kill OpenOCD. See https://github.com/RIOT-OS/RIOT/pull/3619.
     if "Windows" in platform.platform():
@@ -98,16 +107,15 @@ def call(commands=None, config=None, search=None, blocking=True, silent=False):
 
 
 # -----------------------------------------------------------------------------
-def log_itm(backend, fcpu, baudrate=None):
-    baudrate = "" if baudrate is None else baudrate
+def itm(backend, fcpu, baudrate=None):
     if not fcpu:
         raise ValueError("fcpu must be the CPU/HCLK frequency!")
 
     with tempfile.NamedTemporaryFile() as tmpfile:
-        command = "modm_itm_log {} {} {}".format(tmpfile.name, fcpu, baudrate)
+        command = "modm_itm_log {} {} {}".format(tmpfile.name, fcpu, baudrate or "")
         backend.commands.append(command)
         # Start OpenOCD in the background
-        with bem.Scope(backend) as b:
+        with backend.scope():
             # Start a blocking call to monitor the log file
             # TODO: yield out new log lines in the future
             try:
@@ -116,22 +124,24 @@ def log_itm(backend, fcpu, baudrate=None):
             except KeyboardInterrupt:
                 pass
 
-def log_rtt(backend, channel=0):
-    backend.commands.append("modm_rtt")
+def rtt(backend, channel=0):
     # Start OpenOCD in the background
-    with bem.Scope(backend) as b:
+    backend.commands.append("modm_rtt")
+    with backend.scope():
         time.sleep(0.5)
-        with telnetlib.Telnet("localhost", 9090+channel) as tn:
-            tn.interact()
+        subprocess.call(f"stty -icanon -echo; nc localhost {9090 + channel}; stty sane", shell=True)
+
 
 # -----------------------------------------------------------------------------
 def program(source, config=None, search=None):
     commands = ["modm_program {{{}}}".format(source)]
     call(commands=commands, config=config, search=search)
 
+
 def reset(config=None, search=None):
     commands = ["reset", "shutdown"]
     call(commands=commands, config=config, search=search)
+
 
 # -----------------------------------------------------------------------------
 def add_subparser(subparser):
@@ -143,7 +153,7 @@ def add_subparser(subparser):
             help="Use these OpenOCD config files.")
     parser.add_argument(
             "-s",
-            dest="seachdirs",
+            dest="osearch",
             action="append",
             help="Search in these paths for config files.")
     parser.add_argument(
@@ -151,9 +161,8 @@ def add_subparser(subparser):
             dest="ocommands",
             action="append",
             help="Extra OpenOCD commands.")
-    def build_backend(args):
-        return OpenOcdBackend(args.ocommands, args.oconfig, args.seachdirs)
-    parser.set_defaults(backend=build_backend)
+    parser.set_defaults(backend=lambda args:
+            OpenOcdBackend(args.ocommands, args.oconfig, args.osearch))
     return parser
 
 

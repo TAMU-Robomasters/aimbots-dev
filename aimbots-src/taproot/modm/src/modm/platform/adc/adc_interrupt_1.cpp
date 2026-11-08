@@ -15,11 +15,5 @@
 #include <modm/architecture/interface/interrupt.hpp>
 // ----------------------------------------------------------------------------
 modm::platform::AdcInterrupt1::Handler
-modm::platform::AdcInterrupt1::handler(modm::dummy);
+modm::platform::AdcInterrupt1::handler([]{});
 
-MODM_ISR(ADC1)
-{
-    if (modm::platform::AdcInterrupt1::getInterruptFlags()) {
-        modm::platform::AdcInterrupt1::handler();
-    }
-}

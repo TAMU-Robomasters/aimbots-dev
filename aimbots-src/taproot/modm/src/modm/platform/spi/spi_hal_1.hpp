@@ -3,6 +3,7 @@
  * Copyright (c) 2013-2018, Niklas Hauser
  * Copyright (c) 2014, Daniel Krebs
  * Copyright (c) 2020, Mike Wolfram
+ * Copyright (c) 2023, Christopher Durand
  *
  * This file is part of the modm project.
  *
@@ -12,49 +13,60 @@
  */
 // ----------------------------------------------------------------------------
 
-#ifndef MODM_STM32_SPI_HAL1_HPP
-#define MODM_STM32_SPI_HAL1_HPP
+#ifndef MODM_STM32H7_SPI_HAL1_HPP
+#define MODM_STM32H7_SPI_HAL1_HPP
 
 #include "spi_base.hpp"
 
-namespace modm
-{
-
-namespace platform
+namespace modm::platform
 {
 
 /**
  * Serial peripheral interface (SPI1)
  *
- * Very basic implementation that exposes more hardware features than
- * the regular Spi classes.
- *
- * @author		Kevin Laeufer
  * @ingroup		modm_platform_spi modm_platform_spi_1
  */
 class SpiHal1 : public SpiBase
 {
 public:
-	/// Enables the clock, resets the hardware and sets the SPE bit
-	static void
-	enable();
+	static constexpr auto peripheral = Peripheral::Spi1;
 
-	/// Disables the hw module (by disabling its clock line)
-	static void
-	disable();
+	static constexpr DataSize MaxDataBits = DataSize::Bit32;
+	static constexpr DataSize MaxCrcBits = DataSize::Bit32;
 
-	/**
-	 * Initialize Spi Peripheral
-	 *
-	 * Enables clocks, the UART peripheral
-	 * Sets baudrate and parity.
-	 */
+	/// Maximum permitted size for fixed size transfers
+	static constexpr std::size_t MaxTransferSize = 65535;
+
+	/// Size of FIFO in bytes
+	static constexpr std::size_t FifoSize = 16;
+
 	static void
-	initialize(	Prescaler prescaler,
-				MasterSelection masterSelection = MasterSelection::Master,
-				DataMode dataMode   = DataMode::Mode0,
-				DataOrder dataOrder = DataOrder::MsbFirst,
-				DataSize  dataSize  = DataSize::Bit8);
+	enableClock();
+
+	static void
+	disableClock();
+
+	static void
+	initialize(Prescaler prescaler,
+			   MasterSelection masterSelection = MasterSelection::Master,
+			   DataMode dataMode = DataMode::Mode0,
+			   DataOrder dataOrder = DataOrder::MsbFirst,
+			   DataSize  dataSize  = DataSize::Bit8);
+
+	static void
+	enableTransfer();
+
+	static void
+	disableTransfer();
+
+	static bool
+	isTransferEnabled();
+
+	static void
+	startMasterTransfer();
+
+	static void
+	suspendMasterTransfer();
 
 	static void
 	setDataMode(DataMode dataMode);
@@ -68,53 +80,114 @@ public:
 	static void
 	setMasterSelection(MasterSelection masterSelection);
 
-	/// Returns true if data has been received
-	static bool
-	isReceiveRegisterNotEmpty();
+	static void
+	setDuplexMode(DuplexMode mode);
 
-	/// Returns true if data can be written
-	static bool
-	isTransmitRegisterEmpty();
+	static void
+	setCrcEnabled(bool enabled);
+
+	static void
+	setCrcSize(DataSize crcSize);
+
+	static void
+	setCrcPolynomial(uint32_t poly);
+
+	static void
+	setCrcInitialValue(CrcInit init);
+
+	static void
+	setDmaMode(DmaMode_t mode);
 
 	/**
-	 * Write up to 16 Bit to the data register
-	 *
-	 * @warning 	This method does NOT do any sanity checks!!
-	 *				It is your responsibility to check if the register
-	 *				is empty!
+	 * Configure total amount of data items of transfer
+	 * Set size to 0 for unlimited transfers.
+	 * @param reload Next transfer size after reload
 	 */
 	static void
-	write(uint16_t data);
+	setTransferSize(uint16_t size, uint16_t reload = 0);
+
+	static void
+	setSlaveSelectMode(SlaveSelectMode mode);
+
+	static void
+	setSlaveSelectPolarity(SlaveSelectPolarity polarity);
+
+	static void
+	setSlaveSelectState(bool state);
+
+	static uint32_t
+	transmitCrc();
+
+	static uint32_t
+	receiveCrc();
+
+	static volatile uint32_t*
+	transmitRegister();
+
+	static const volatile uint32_t*
+	receiveRegister();
+
+	static StatusFlag_t
+	status();
+
+	/// @return true if SPI_SR_EOT is set
+	static bool
+	isTransferCompleted();
+
+	/// @return true if SPI_SR_TXC is set
+	static bool
+	isTxCompleted();
+
+	/// @return true if SPI_SR_TXP is not set
+	static bool
+	isTxFifoFull();
+
+	/// @return true if SPI_SR_RXP is set
+	static bool
+	isRxDataAvailable();
 
 	/**
-	 * Write 8 Bit to the data register
+	 * Write up to 8 Bit to the transmit data register
 	 *
-	 * @warning 	This method does NOT do any sanity checks!!
-	 *				It is your responsibility to check if the register
-	 *				is empty!
+	 * @warning Writing with a size smaller than the configured data size is not allowed.
 	 */
 	static void
 	write(uint8_t data);
 
 	/**
-	 * Returns the value of the data register
-	 *
-	 * @warning 	This method does NOT do any sanity checks!!
-	 *				It is your responsibility to check if the register
-	 *				contains something useful!
+	 * Write up to 16 Bit to the data register
+	 * @warning Writing with a size smaller than the configured data size is not allowed.
 	 */
 	static void
-	read(uint8_t &data);
+	write16(uint16_t data);
 
 	/**
-	 * Returns the value of the data register
-	 *
-	 * @warning 	This method does NOT do any sanity checks!!
-	 *				It is your responsibility to check if the register
-	 *				contains something useful!
+	 * Write up to 32 Bit to the transmit data register
 	 */
 	static void
-	read(uint16_t &data);
+	write32(uint32_t data);
+
+	/**
+	 * Read an 8-bit value from the receive data register.
+	 *
+	 * @warning Reading with a size smaller than the configured data size is not allowed.
+	 */
+	static uint8_t
+	read();
+
+	/**
+	 * Read a 16-bit value from the receive data register.
+	 *
+	 * @warning Reading with a size smaller than the configured data size is not allowed.
+	 */
+	static uint16_t
+	read16();
+
+	/**
+	 * Read a 32-bit value from the receive data register.
+	 */
+	static uint32_t
+	read32();
 
 	static void
 	enableInterruptVector(bool enable, uint32_t priority);
@@ -125,22 +198,12 @@ public:
 	static void
 	disableInterrupt(Interrupt_t interrupt);
 
-	static InterruptFlag_t
-	getInterruptFlags();
-
-	/**
-	 *
-	 *
-	 * @warning 	Not all InterruptFlags can be cleared this way.
-	 */
 	static void
-	acknowledgeInterruptFlag(InterruptFlag_t flags);
+	acknowledgeInterruptFlags(StatusFlag_t flags);
 };
 
-} // namespace platform
-
-} // namespace modm
+} // namespace modm::platform
 
 #include "spi_hal_1_impl.hpp"
 
-#endif // MODM_STM32_SPI_HAL1_HPP
+#endif // MODM_STM32H7_SPI_HAL1_HPP

@@ -33,6 +33,8 @@ namespace tap::algorithms::transforms
 class DynamicOrientation
 {
 public:
+    inline DynamicOrientation() : rotation(), angularVelocity() {}
+
     inline DynamicOrientation(
         const float roll,
         const float pitch,
@@ -40,92 +42,89 @@ public:
         const float rollVel,
         const float pitchVel,
         const float yawVel)
-        : orientation(Orientation::fromEulerAngles(roll, pitch, yaw)),
-          angularVelocity(AngularVelocity::skewMatFromAngVel(rollVel, pitchVel, yawVel))
+        : rotation(roll, pitch, yaw),
+          angularVelocity(rollVel, pitchVel, yawVel)
     {
     }
 
-    inline DynamicOrientation(Orientation&& orientation, AngularVelocity&& angularVelocity)
-        : orientation(std::move(orientation.matrix_)),
-          angularVelocity(std::move(angularVelocity.matrix_))
+    inline DynamicOrientation(const CMSISMat<3, 3>& orientation, const CMSISMat<3, 1>& angVel)
+        : rotation(orientation),
+          angularVelocity(angVel)
     {
     }
 
-    inline DynamicOrientation(Orientation& orientation, AngularVelocity& angularVelocity)
-        : orientation(orientation.matrix_),
-          angularVelocity(angularVelocity.matrix_)
+    inline DynamicOrientation(CMSISMat<3, 3>&& orientation, CMSISMat<3, 1>&& angVel)
+        : rotation(std::move(orientation)),
+          angularVelocity(std::move(angVel))
     {
     }
 
-    inline DynamicOrientation(
-        const CMSISMat<3, 3>&& orientation,
-        const CMSISMat<3, 3>&& angularVelocity)
-        : orientation(std::move(orientation)),
-          angularVelocity(std::move(angularVelocity))
+    inline DynamicOrientation(const Orientation& orientation, const AngularVelocity& angVel)
+        : rotation(orientation),
+          angularVelocity(angVel)
     {
     }
 
-    /* Costly; use rvalue reference whenever possible */
-    inline DynamicOrientation(
-        const CMSISMat<3, 3>& orientation,
-        const CMSISMat<3, 3>& angularVelocity)
-        : orientation(orientation),
-          angularVelocity(angularVelocity)
+    inline DynamicOrientation(Orientation&& orientation, AngularVelocity&& angVel)
+        : rotation(std::move(orientation)),
+          angularVelocity(std::move(angVel))
     {
     }
 
     DynamicOrientation compose(const DynamicOrientation& other) const
     {
         return DynamicOrientation(
-            this->orientation * other.orientation,
-            this->angularVelocity +
-                this->orientation * other.angularVelocity * this->orientation.transpose());
+            this->rotation.matrix_ * other.rotation.matrix_,
+            this->angularVelocity.toSkewMatrix() + this->rotation.matrix_ *
+                                                       other.angularVelocity.toSkewMatrix() *
+                                                       this->rotation.matrixT_);
     }
 
     DynamicOrientation inverse() const
     {
         return DynamicOrientation(
-            this->orientation.transpose(),
-            -(this->orientation.transpose() * this->angularVelocity * this->orientation));
+            this->rotation.matrixT_,
+            -(this->rotation.matrixT_ * this->angularVelocity.toSkewMatrix() *
+              this->rotation.matrix_));
     }
 
-    inline Orientation getOrientation() const { return Orientation(orientation); }
+    DynamicOrientation projectForward(float dt) const
+    {
+        if (compareFloatClose(angularVelocity[Axis::X], 0, 1e-5) &&
+            compareFloatClose(angularVelocity[Axis::Y], 0, 1e-5) &&
+            compareFloatClose(angularVelocity[Axis::Z], 0, 1e-5))
+        {
+            return DynamicOrientation(this->rotation, this->angularVelocity);
+        }
 
-    inline AngularVelocity getAngularVelocity() const { return AngularVelocity(angularVelocity); }
+        float angVelMag = this->angularVelocity.toVector().magnitude();
 
-    /**
-     * Returns roll as values between [-pi, +pi].
-     *
-     * If pitch is completely vertical (-pi / 2 or pi / 2) then roll and yaw are gimbal-locked. In
-     * this case, roll is taken to be 0.
-     */
-    inline float roll() const { return atan2(orientation.data[7], orientation.data[8]); }
+        float theta = dt * angVelMag;
+        CMSISMat<3, 3> angVelNormalized = this->angularVelocity.toSkewMatrix() / angVelMag;
+        CMSISMat<3, 3> velDt = CMSISMat<3, 3>();
+        velDt.constructIdentityMatrix();
+        velDt = velDt + sin(theta) * angVelNormalized +
+                (1 - cos(theta)) * angVelNormalized * angVelNormalized;
+        CMSISMat<3, 3> newRot = velDt * this->rotation.matrix_;
+        return DynamicOrientation(newRot, this->angularVelocity);
+    }
 
-    inline float pitch() const { return asinf(-orientation.data[6]); }
+    inline const Orientation& getRotation() const { return rotation; }
+    inline const AngularVelocity& getAngularVelocity() const { return angularVelocity; }
 
-    inline float yaw() const { return atan2(orientation.data[3], orientation.data[0]); }
+    inline float getRoll() const { return rotation.roll(); }
+    inline float getPitch() const { return rotation.pitch(); }
+    inline float getYaw() const { return rotation.yaw(); }
 
-    /**
-     * @brief Get the roll velocity
-     */
-    inline float getRollVelocity() const { return angularVelocity.data[0 * 3 + 2]; }
-
-    /**
-     * @brief Get the pitch velocity
-     */
-    inline float getPitchVelocity() const { return -angularVelocity.data[1 * 3 + 2]; }
-
-    /**
-     * @brief Get the yaw velocity
-     */
-    inline float getYawVelocity() const { return -angularVelocity.data[0 * 3 + 1]; }
+    inline float getRollVelocity() const { return angularVelocity.getRollVelocity(); }
+    inline float getPitchVelocity() const { return angularVelocity.getPitchVelocity(); }
+    inline float getYawVelocity() const { return angularVelocity.getYawVelocity(); }
 
     friend class Transform;
 
 private:
-    CMSISMat<3, 3> orientation;
-
-    CMSISMat<3, 3> angularVelocity;
+    Orientation rotation;
+    AngularVelocity angularVelocity;
 
 };  // class DynamicOrientation
 }  // namespace tap::algorithms::transforms

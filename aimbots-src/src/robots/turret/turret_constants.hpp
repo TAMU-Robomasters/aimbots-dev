@@ -228,7 +228,7 @@ static constexpr float FEEDER_DEFAULT_RPM = 3000.0f;
 // balls
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS3;  // DM-MC02: was CAN_BUS2
 
 static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
 static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
@@ -251,7 +251,7 @@ static constexpr bool SHOOTER_2_DIRECTION = true;
 static constexpr bool FEEDER_DIRECTION = false;
 
 // Hopper constants
-static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::C1;
+static constexpr tap::gpio::Pwm::Pin HOPPER_PIN = tap::gpio::Pwm::PWM1;  // DM-MC02 PWM1 (PA0); was Type C C1
 
 static constexpr float HOPPER_PWM_RAMP_SPEED = 0.01f;  // pwm percent per millisecond
 

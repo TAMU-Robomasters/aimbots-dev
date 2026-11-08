@@ -27,56 +27,51 @@ namespace tap::algorithms::transforms
 {
 Transform::Transform(const Position& translation, const Orientation& rotation)
     : dynamic(false),
-      translation(translation.coordinates()),
-      transVel({0, 0, 0}),
-      transAcc({0, 0, 0}),
-      rotation(rotation.matrix()),
-      tRotation(rotation.matrix().transpose()),
-      angVel({0, 0, 0, 0, 0, 0, 0, 0, 0})
+      translation(translation),
+      transVel(),
+      transAcc(),
+      rotation(rotation),
+      angVel()
 {
 }
 
 Transform::Transform(Position&& translation, Orientation&& rotation)
     : dynamic(false),
-      translation(std::move(translation.coordinates())),
-      transVel({0, 0, 0}),
-      transAcc({0, 0, 0}),
-      rotation(std::move(rotation.matrix())),
-      tRotation(rotation.matrix().transpose()),
-      angVel({0, 0, 0, 0, 0, 0, 0, 0, 0})
+      translation(std::move(translation)),
+      transVel(),
+      transAcc(),
+      rotation(std::move(rotation)),
+      angVel()
 {
 }
 
 Transform::Transform(const CMSISMat<3, 1>& translation, const CMSISMat<3, 3>& rotation)
     : dynamic(false),
       translation(translation),
-      transVel({0, 0, 0}),
-      transAcc({0, 0, 0}),
+      transVel(),
+      transAcc(),
       rotation(rotation),
-      tRotation(rotation.transpose()),
-      angVel({0, 0, 0, 0, 0, 0, 0, 0, 0})
+      angVel()
 {
 }
 
 Transform::Transform(CMSISMat<3, 1>&& translation, CMSISMat<3, 3>&& rotation)
     : dynamic(false),
       translation(std::move(translation)),
-      transVel({0, 0, 0}),
-      transAcc({0, 0, 0}),
+      transVel(),
+      transAcc(),
       rotation(std::move(rotation)),
-      tRotation(rotation.transpose()),
-      angVel({0, 0, 0, 0, 0, 0, 0, 0, 0})
+      angVel()
 {
 }
 
 Transform::Transform(float x, float y, float z, float rx, float ry, float rz)
     : dynamic(false),
-      translation({x, y, z}),
-      transVel({0, 0, 0}),
-      transAcc({0, 0, 0}),
-      rotation(Orientation::fromEulerAngles(rx, ry, rz)),
-      tRotation(rotation.transpose()),
-      angVel({0, 0, 0, 0, 0, 0, 0, 0, 0})
+      translation(x, y, z),
+      transVel(),
+      transAcc(),
+      rotation(rx, ry, rz),
+      angVel()
 {
 }
 
@@ -85,16 +80,12 @@ Transform::Transform(
     const Orientation& rotation,
     const Vector& velocity,
     const Vector& acceleration,
-    const Vector& angularVelocity)
-    : translation(translation.coordinates()),
-      transVel(velocity.coordinates()),
-      transAcc(acceleration.coordinates()),
-      rotation(rotation.matrix()),
-      tRotation(rotation.matrix().transpose()),
-      angVel(AngularVelocity::skewMatFromAngVel(
-          angularVelocity.x(),
-          angularVelocity.y(),
-          angularVelocity.z()))
+    const AngularVelocity& angularVelocity)
+    : translation(translation),
+      transVel(velocity),
+      transAcc(acceleration),
+      rotation(rotation),
+      angVel(angularVelocity)
 {
     checkDynamic();
 }
@@ -104,16 +95,12 @@ Transform::Transform(
     Orientation&& rotation,
     Vector&& velocity,
     Vector&& acceleration,
-    Vector&& angularVelocity)
-    : translation(std::move(translation.coordinates())),
-      transVel(std::move(velocity.coordinates())),
-      transAcc(std::move(acceleration.coordinates())),
-      rotation(std::move(rotation.matrix())),
-      tRotation(rotation.matrix().transpose()),
-      angVel(AngularVelocity::skewMatFromAngVel(
-          angularVelocity.x(),
-          angularVelocity.y(),
-          angularVelocity.z()))
+    AngularVelocity&& angularVelocity)
+    : translation(std::move(translation)),
+      transVel(std::move(velocity)),
+      transAcc(std::move(acceleration)),
+      rotation(std::move(rotation)),
+      angVel(std::move(angularVelocity))
 {
     checkDynamic();
 }
@@ -125,8 +112,7 @@ Transform::Transform(
       translation(dynamicPosition.position),
       transVel(dynamicPosition.velocity),
       transAcc(dynamicPosition.acceleration),
-      rotation(dynamicOrientation.orientation),
-      tRotation(rotation.transpose()),
+      rotation(dynamicOrientation.rotation),
       angVel(dynamicOrientation.angularVelocity)
 {
     checkDynamic();
@@ -137,8 +123,7 @@ Transform::Transform(DynamicPosition&& dynamicPosition, DynamicOrientation&& dyn
       translation(std::move(dynamicPosition.position)),
       transVel(std::move(dynamicPosition.velocity)),
       transAcc(std::move(dynamicPosition.acceleration)),
-      rotation(std::move(dynamicOrientation.orientation)),
-      tRotation(rotation.transpose()),
+      rotation(std::move(dynamicOrientation.rotation)),
       angVel(std::move(dynamicOrientation.angularVelocity))
 {
     checkDynamic();
@@ -154,7 +139,6 @@ Transform::Transform(
       transVel(velocity),
       transAcc(acceleration),
       rotation(rotation),
-      tRotation(rotation.transpose()),
       angVel(angularVelocity)
 {
     checkDynamic();
@@ -170,7 +154,6 @@ Transform::Transform(
       transVel(std::move(velocity)),
       transAcc(std::move(acceleration)),
       rotation(std::move(rotation)),
-      tRotation(rotation.transpose()),
       angVel(std::move(angularVelocity))
 {
     checkDynamic();
@@ -192,98 +175,208 @@ Transform::Transform(
     float wx,
     float wy,
     float wz)
-    : translation({x, y, z}),
-      transVel({vx, vy, vz}),
-      transAcc({ax, ay, az}),
-      rotation(Orientation::fromEulerAngles(rx, ry, rz)),
-      tRotation(rotation.transpose()),
-      angVel(AngularVelocity::skewMatFromAngVel(wx, wy, wz))
+    : translation(x, y, z),
+      transVel(vx, vy, vz),
+      transAcc(ax, ay, az),
+      rotation(rx, ry, rz),
+      angVel(wx, wy, wz)
 {
     checkDynamic();
 }
 
-Position Transform::apply(const Position& position) const
+Transform::Transform() : dynamic(false), translation(), transVel(), transAcc(), rotation(), angVel()
 {
-    return Position(tRotation * (position.coordinates_ - translation));
 }
 
-Vector Transform::apply(const Vector& vector) const
+Position Transform::applyForward(const Position& position) const
 {
-    return Vector(tRotation * vector.coordinates_);
+    return Position((rotation.matrixT_ * (position - translation)).coordinates_);
 }
 
-DynamicPosition Transform::apply(const DynamicPosition& p) const
+Position Transform::applyReverse(const Position& position) const
 {
-    CMSISMat<3, 1> pf = tRotation * (p.position - translation);
-    CMSISMat<3, 1> vf = tRotation * (p.velocity - transVel + angVel * (translation - p.position));
-    CMSISMat<3, 1> af =
-        tRotation * (p.acceleration - transAcc +
-                     angVel * (2 * (transVel - p.velocity) + angVel * (p.position - translation)));
+    return Position((rotation.matrix_ * position.coordinates_) + translation.coordinates_);
+}
+
+Vector Transform::applyForward(const Vector& vector) const { return rotation.T() * vector; }
+
+Vector Transform::applyReverse(const Vector& vector) const { return rotation * vector; }
+
+DynamicPosition Transform::applyForward(const DynamicPosition& p) const
+{
+    CMSISMat<3, 3> angVelSkewMat = angVel.toSkewMatrix();
+    Position pf = applyForward(p.position);
+    Vector vf =
+        rotation.matrixT_ * (p.velocity - transVel + angVelSkewMat * (translation - p.position));
+    Vector af = rotation.matrixT_ * (p.acceleration - transAcc +
+                                     angVelSkewMat * (2 * (transVel - p.velocity) +
+                                                      angVelSkewMat * (p.position - translation)));
     return DynamicPosition(pf, vf, af);
 }
 
-Orientation Transform::apply(const Orientation& orientation) const
+DynamicPosition Transform::applyReverse(const DynamicPosition& p) const
 {
-    return Orientation(tRotation * orientation.matrix_);
+    CMSISMat<3, 3> angVelSkewMat = angVel.toSkewMatrix();
+    Position pf = applyReverse(p.position);
+    Vector vf = rotation * p.velocity + transVel + angVelSkewMat * rotation * p.position.toVector();
+    Vector af = rotation * p.acceleration + transAcc +
+                angVelSkewMat * (2.0f * (rotation * p.velocity) +
+                                 angVelSkewMat * rotation * p.position.toVector());
+
+    return DynamicPosition(pf, vf, af);
 }
 
-DynamicOrientation Transform::apply(const DynamicOrientation& dynamicOrientation) const
+Orientation Transform::applyForward(const Orientation& orientation) const
+{
+    return rotation.T() * orientation;
+}
+
+Orientation Transform::applyReverse(const Orientation& orientation) const
+{
+    return rotation * orientation;
+}
+
+DynamicOrientation Transform::applyForward(const DynamicOrientation& dynamicOrientation) const
 {
     return DynamicOrientation(
-        tRotation * dynamicOrientation.orientation,
-        tRotation * (dynamicOrientation.angularVelocity - angVel) * rotation);
+        applyForward(dynamicOrientation.rotation).matrix_,
+        rotation.matrixT_ *
+            (dynamicOrientation.angularVelocity.toSkewMatrix() - angVel.toSkewMatrix()) *
+            rotation.matrix_);
+}
+
+DynamicOrientation Transform::applyReverse(const DynamicOrientation& dynamicOrientation) const
+{
+    return DynamicOrientation(
+        applyReverse(dynamicOrientation.rotation).matrix_,
+        rotation.matrix_ * dynamicOrientation.angularVelocity.toSkewMatrix() * rotation.matrixT_ +
+            angVel.toSkewMatrix());
 }
 
 Transform Transform::getInverse() const
 {
     // negative transposed rotation matrix times original position = new position
-    CMSISMat<3, 1> invTranslation = -tRotation * translation;
+    CMSISMat<3, 1> invTranslation = -rotation.matrixT_ * translation.coordinates_;
     if (dynamic)
     {
-        CMSISMat<3, 1> invVel = tRotation * (angVel * translation - transVel);
+        CMSISMat<3, 3> angVelSkewMat = angVel.toSkewMatrix();
+        CMSISMat<3, 1> invVel =
+            rotation.matrixT_ * (angVelSkewMat * translation.coordinates_ - transVel.coordinates_);
         CMSISMat<3, 1> invAcc =
-            tRotation * (angVel * (2 * transVel - angVel * translation) - transAcc);
-        CMSISMat<3, 3> invAngVel = -tRotation * angVel * rotation;
-        return Transform(invTranslation, tRotation, invVel, invAcc, invAngVel);
+            rotation.matrixT_ * (angVelSkewMat * (2 * transVel.coordinates_ -
+                                                  angVelSkewMat * translation.coordinates_) -
+                                 transAcc.coordinates_);
+        CMSISMat<3, 3> invAngVel = -rotation.matrixT_ * angVelSkewMat * rotation.matrix_;
+        return Transform(invTranslation, rotation.matrixT_, invVel, invAcc, invAngVel);
     }
     else
     {
-        return Transform(invTranslation, tRotation);
+        return Transform(invTranslation, rotation.matrixT_);
     }
+}
+
+Transform Transform::compose(const Orientation& second) const
+{
+    Orientation newRot = this->rotation * second.matrix_;
+    return Transform(translation, newRot);
+}
+
+Transform Transform::compose(const Vector& second) const
+{
+    Position newPos = this->translation + this->rotation * second;
+    return Transform(newPos, rotation);
+}
+
+Transform Transform::compose(const DynamicOrientation& second) const
+{
+    Orientation newRot = this->rotation * second.rotation;
+    if (this->dynamic)
+    {
+        AngularVelocity newAngVel = AngularVelocity(
+            this->angVel.toSkewMatrix() + this->rotation.matrix_ *
+                                              second.angularVelocity.toSkewMatrix() *
+                                              this->rotation.matrixT_);
+        return Transform(translation, newRot, transVel, transAcc, newAngVel);
+    }
+
+    AngularVelocity newAngVel = AngularVelocity(
+        this->rotation.matrix_ * second.angularVelocity.toSkewMatrix() * this->rotation.matrixT_);
+    return Transform(translation, newRot, Vector(), Vector(), newAngVel);
+}
+
+Transform Transform::compose(const DynamicPosition& second) const
+{
+    if (this->dynamic)
+    {
+        CMSISMat<3, 3> angVelSkewMat = angVel.toSkewMatrix();
+        CMSISMat<3, 1> newPos =
+            this->translation.coordinates_ + this->rotation.matrix_ * second.position.coordinates_;
+        CMSISMat<3, 1> newVel =
+            this->transVel.coordinates_ +
+            angVelSkewMat * this->rotation.matrix_ * second.position.coordinates_ +
+            this->rotation.matrix_ * second.velocity.coordinates_;
+        CMSISMat<3, 1> newAcc =
+            this->transAcc.coordinates_ +
+            angVelSkewMat * angVelSkewMat * this->rotation.matrix_ * second.position.coordinates_ +
+            2 * angVelSkewMat * this->rotation.matrix_ * second.velocity.coordinates_ +
+            this->rotation.matrix_ * second.acceleration.coordinates_;
+        return Transform(newPos, this->rotation, newVel, newAcc, this->angVel);
+    }
+
+    CMSISMat<3, 1> newPos =
+        this->translation.coordinates_ + this->rotation.matrix_ * second.position.coordinates_;
+    CMSISMat<3, 1> newVel = this->rotation.matrix_ * second.velocity.coordinates_;
+    CMSISMat<3, 1> newAcc = this->rotation.matrix_ * second.acceleration.coordinates_;
+    return Transform(newPos, this->rotation, newVel, newAcc, this->angVel);
 }
 
 Transform Transform::compose(const Transform& second) const
 {
     if (this->dynamic && second.dynamic)
     {
-        CMSISMat<3, 3> newRot = this->rotation * second.rotation;
-        CMSISMat<3, 1> newPos = this->translation + this->rotation * second.translation;
-        CMSISMat<3, 1> newVel = this->transVel +
-                                this->angVel * this->rotation * second.translation +
-                                this->rotation * second.transVel;
+        CMSISMat<3, 3> angVelSkewMat = this->angVel.toSkewMatrix();
+        CMSISMat<3, 3> newRot = this->rotation.matrix_ * second.rotation.matrix_;
+        CMSISMat<3, 1> newPos = this->translation.coordinates_ +
+                                this->rotation.matrix_ * second.translation.coordinates_;
+        CMSISMat<3, 1> newVel =
+            this->transVel.coordinates_ +
+            angVelSkewMat * this->rotation.matrix_ * second.translation.coordinates_ +
+            this->rotation.matrix_ * second.transVel.coordinates_;
         CMSISMat<3, 1> newAcc =
-            this->transAcc + this->angVel * this->angVel * this->rotation * second.translation +
-            2 * this->angVel * this->rotation * second.transVel + this->rotation * second.transAcc;
-        CMSISMat<3, 3> newAngVel = this->angVel + this->rotation * second.angVel * this->tRotation;
+            this->transAcc.coordinates_ +
+            angVelSkewMat * angVelSkewMat * this->rotation.matrix_ *
+                second.translation.coordinates_ +
+            2 * angVelSkewMat * this->rotation.matrix_ * second.transVel.coordinates_ +
+            this->rotation.matrix_ * second.transAcc.coordinates_;
+        CMSISMat<3, 3> newAngVel = angVelSkewMat + this->rotation.matrix_ *
+                                                       second.angVel.toSkewMatrix() *
+                                                       this->rotation.matrixT_;
         return Transform(newPos, newRot, newVel, newAcc, newAngVel);
     }
     else if (this->dynamic)
     {
-        CMSISMat<3, 3> newRot = this->rotation * second.rotation;
-        CMSISMat<3, 1> newPos = this->translation + this->rotation * second.translation;
-        CMSISMat<3, 1> newVel = this->transVel + this->angVel * this->rotation * second.translation;
-        CMSISMat<3, 1> newAcc =
-            this->transAcc + this->angVel * this->angVel * this->rotation * second.translation;
-        CMSISMat<3, 3> newAngVel = this->angVel;
+        CMSISMat<3, 3> angVelSkewMat = this->angVel.toSkewMatrix();
+        CMSISMat<3, 3> newRot = this->rotation.matrix_ * second.rotation.matrix_;
+        CMSISMat<3, 1> newPos = this->translation.coordinates_ +
+                                this->rotation.matrix_ * second.translation.coordinates_;
+        CMSISMat<3, 1> newVel = this->transVel.coordinates_ + angVelSkewMat *
+                                                                  this->rotation.matrix_ *
+                                                                  second.translation.coordinates_;
+        CMSISMat<3, 1> newAcc = this->transAcc.coordinates_ + angVelSkewMat * angVelSkewMat *
+                                                                  this->rotation.matrix_ *
+                                                                  second.translation.coordinates_;
+        CMSISMat<3, 3> newAngVel = angVelSkewMat;
         return Transform(newPos, newRot, newVel, newAcc, newAngVel);
     }
     else if (second.dynamic)
     {
-        CMSISMat<3, 3> newRot = this->rotation * second.rotation;
-        CMSISMat<3, 1> newPos = this->translation + this->rotation * second.translation;
-        CMSISMat<3, 1> newVel = this->rotation * second.transVel;
-        CMSISMat<3, 1> newAcc = this->rotation * second.transAcc;
-        CMSISMat<3, 3> newAngVel = this->rotation * second.angVel * this->tRotation;
+        CMSISMat<3, 3> newRot = this->rotation.matrix_ * second.rotation.matrix_;
+        CMSISMat<3, 1> newPos = this->translation.coordinates_ +
+                                this->rotation.matrix_ * second.translation.coordinates_;
+        CMSISMat<3, 1> newVel = this->rotation.matrix_ * second.transVel.coordinates_;
+        CMSISMat<3, 1> newAcc = this->rotation.matrix_ * second.transAcc.coordinates_;
+        CMSISMat<3, 3> newAngVel =
+            this->rotation.matrix_ * second.angVel.toSkewMatrix() * this->rotation.matrixT_;
         return Transform(newPos, newRot, newVel, newAcc, newAngVel);
     }
 
@@ -292,14 +385,15 @@ Transform Transform::compose(const Transform& second) const
 
 Transform Transform::composeStatic(const Transform& second) const
 {
-    CMSISMat<3, 3> newRot = this->rotation * second.rotation;
-    CMSISMat<3, 1> newPos = this->translation + this->rotation * second.translation;
+    CMSISMat<3, 3> newRot = this->rotation.matrix_ * second.rotation.matrix_;
+    CMSISMat<3, 1> newPos =
+        this->translation.coordinates_ + this->rotation.matrix_ * second.translation.coordinates_;
     return Transform(newPos, newRot);
 }
 
 Transform Transform::projectForward(float dt) const
 {
-    if (!dynamic)
+    if (!dynamic || compareFloatClose(dt, 0, 1e-5))
     {
         return Transform(
             this->translation,
@@ -309,53 +403,9 @@ Transform Transform::projectForward(float dt) const
             this->angVel);
     }
 
-    CMSISMat<3, 1> newPos =
-        this->translation + dt * this->transVel + 0.5f * dt * dt * this->transAcc;
-    CMSISMat<3, 1> newVel = this->transVel + dt * this->transAcc;
-
-    float angVelMag = sqrt(
-        getRollVelocity() * getRollVelocity() + getPitchVelocity() * getPitchVelocity() +
-        getYawVelocity() * getYawVelocity());
-
-    if (compareFloatClose(angVelMag, 0, 1e-3))
-    {
-        return Transform(newPos, this->rotation, newVel, this->transAcc, this->angVel);
-    }
-
-    float theta = dt * angVelMag;
-    CMSISMat<3, 3> angVelNormalized = angVel / angVelMag;
-    CMSISMat<3, 3> velDt = CMSISMat<3, 3>();
-    velDt.constructIdentityMatrix();
-    velDt = velDt + sin(theta) * angVelNormalized +
-            (1 - cos(theta)) * angVelNormalized * angVelNormalized;
-    CMSISMat<3, 3> newRot = velDt * this->rotation;
-    return Transform(newPos, newRot, newVel, this->transAcc, this->angVel);
+    return Transform(
+        getDynamicTranslation().projectForward(dt),
+        getDynamicOrientation().projectForward(dt));
 }
-
-float Transform::getRoll() const
-{
-    float jz = rotation.data[2 * 3 + 1];
-    float kz = rotation.data[2 * 3 + 2];
-    return atan2(jz, kz);
-}
-
-float Transform::getRollVelocity() const { return -angVel.data[1 * 3 + 2]; }
-
-float Transform::getPitch() const
-{
-    float iz = rotation.data[2 * 3 + 0];
-    return asinf(-iz);
-}
-
-float Transform::getPitchVelocity() const { return angVel.data[0 * 3 + 2]; }
-
-float Transform::getYaw() const
-{
-    float iy = rotation.data[1 * 3 + 0];
-    float ix = rotation.data[0 * 3 + 0];
-    return atan2(iy, ix);
-}
-
-float Transform::getYawVelocity() const { return -angVel.data[0 * 3 + 1]; }
 
 }  // namespace tap::algorithms::transforms

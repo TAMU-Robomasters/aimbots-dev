@@ -36,55 +36,54 @@ public:
     RefSerialTransmitterMock(Drivers* drivers);
     ~RefSerialTransmitterMock();
 
-    MOCK_METHOD(
-        modm::ResumableResult<void>,
-        deleteGraphicLayer,
-        (Tx::DeleteGraphicOperation, uint8_t),
-        (override));
-    MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic1Message*, bool, bool));
-    MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic2Message*, bool, bool));
-    MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic5Message*, bool, bool));
-    MOCK_METHOD3(sendGraphicImpl, modm::ResumableResult<void>(Tx::Graphic7Message*, bool, bool));
-    MOCK_METHOD3(
-        sendGraphicImpl,
-        modm::ResumableResult<void>(Tx::GraphicCharacterMessage*, bool, bool));
-    virtual modm::ResumableResult<void> sendGraphic(
+    MOCK_METHOD(void, deleteGraphicLayer, (Tx::DeleteGraphicOperation, uint8_t, bool), (override));
+    MOCK_METHOD3(sendGraphicImpl, void(Tx::Graphic1Message*, bool, bool));
+    MOCK_METHOD3(sendGraphicImpl, void(Tx::Graphic2Message*, bool, bool));
+    MOCK_METHOD3(sendGraphicImpl, void(Tx::Graphic5Message*, bool, bool));
+    MOCK_METHOD3(sendGraphicImpl, void(Tx::Graphic7Message*, bool, bool));
+    MOCK_METHOD3(sendGraphicImpl, void(Tx::GraphicCharacterMessage*, bool, bool));
+    virtual void sendGraphic(
         Tx::Graphic1Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
-    virtual modm::ResumableResult<void> sendGraphic(
+    virtual void sendGraphic(
         Tx::Graphic2Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
-    virtual modm::ResumableResult<void> sendGraphic(
+    virtual void sendGraphic(
         Tx::Graphic5Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
-    virtual modm::ResumableResult<void> sendGraphic(
+    virtual void sendGraphic(
         Tx::Graphic7Message* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
-    virtual modm::ResumableResult<void> sendGraphic(
+    virtual void sendGraphic(
         Tx::GraphicCharacterMessage* msg,
         bool configMsgHeader = true,
-        bool sendMsg = true)
+        bool sendMsg = true,
+        bool doubleSend = true)
     {
-        return sendGraphic(msg, configMsgHeader, sendMsg);
+        return sendGraphic(msg, configMsgHeader, sendMsg, doubleSend);
     }
     MOCK_METHOD(
-        modm::ResumableResult<void>,
+        void,
         sendRobotToRobotMsg,
         (Tx::RobotToRobotMessage*, uint16_t, RobotId, uint16_t),
         (override));

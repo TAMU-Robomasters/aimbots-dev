@@ -40,6 +40,7 @@ SmoothPid::SmoothPid(const SmoothPidConfig &pidConfig)
 
 float SmoothPid::runController(float error, float errorDerivative, float dt)
 {
+    prevError = error;
     if (abs(error) < config.errDeadzone)
     {
         error = 0.0f;

@@ -3,12 +3,14 @@
 
 namespace src::Informants
 {
-    using Spi2Master = modm::platform::SpiMaster2;
-    using Spi2Hal = modm::platform::SpiHal2;
-    using Spi2Nss = modm::platform::GpioB12;
-    using Spi2Sck = modm::platform::GpioB13;
-    using Spi2Miso = modm::platform::GpioB14;
-    using Spi2Mosi = modm::platform::GpioB15;
+    // DM-MC02: SPI3 on the 24-pin expansion header (SCK pin 23, MISO pin 21, MOSI pin 19,
+    // CS = GPIO pin 13). SPI2 is the onboard BMI088 on this board. The Type C used SPI2 PB12-15.
+    using Spi3Master = modm::platform::SpiMaster3;
+    using Spi3Hal = modm::platform::SpiHal3;
+    using Spi3Nss = modm::platform::GpioE14;
+    using Spi3Sck = modm::platform::GpioC10;
+    using Spi3Miso = modm::platform::GpioC11;
+    using Spi3Mosi = modm::platform::GpioC12;
 
     float positionDisplay = 0.0f;
     float velocityDisplay = 0.0f;
@@ -17,21 +19,21 @@ namespace src::Informants
 
     void RevEncoder::initialize()
     {
-        Spi2Master::connect<
-            Spi2Sck::Sck,
-            Spi2Miso::Miso,
-            Spi2Mosi::Mosi
+        Spi3Master::connect<
+            Spi3Sck::Sck,
+            Spi3Miso::Miso,
+            Spi3Mosi::Mosi
         >();
 
-        Spi2Nss::setOutput(modm::platform::Gpio::OutputType::PushPull);
-        Spi2Nss::set();
+        Spi3Nss::setOutput(modm::platform::Gpio::OutputType::PushPull);
+        Spi3Nss::set();
 
-        Spi2Hal::initialize(
-            Spi2Hal::Prescaler::Div16,
-            Spi2Hal::MasterSelection::Master,
-            Spi2Hal::DataMode::Mode1,
-            Spi2Hal::DataOrder::MsbFirst,
-            Spi2Hal::DataSize::Bit8
+        Spi3Hal::initialize(
+            Spi3Hal::Prescaler::Div32,  // 80 MHz / 32 = 2.5 MHz (Type C: 42 MHz / 16 = 2.625 MHz)
+            Spi3Hal::MasterSelection::Master,
+            Spi3Hal::DataMode::Mode1,
+            Spi3Hal::DataOrder::MsbFirst,
+            Spi3Hal::DataSize::Bit8
         );
         startupThreshold.restart(500);
     }
@@ -42,9 +44,9 @@ namespace src::Informants
     {
         uint8_t rx[2];
 
-        Spi2Nss::reset();
-        Spi2Master::transferBlocking(nullptr, rx, 2);
-        Spi2Nss::set();
+        Spi3Nss::reset();
+        Spi3Master::transferBlocking(nullptr, rx, 2);
+        Spi3Nss::set();
 
         debug_byte[0] = rx[0];
         debug_byte[1] = rx[1];

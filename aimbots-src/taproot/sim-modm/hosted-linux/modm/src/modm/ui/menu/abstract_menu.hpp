@@ -30,7 +30,7 @@ namespace modm{
 	 * \author Thorsten Lajewski
 	 * \ingroup modm_ui_menu
 	 */
-	template<typename Allocator = allocator::Dynamic<IAbstractView> >
+	template<typename Allocator = std::allocator<IAbstractView> >
 	class AbstractMenu : public AbstractView<Allocator>
 	{
 		public:

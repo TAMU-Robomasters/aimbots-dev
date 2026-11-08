@@ -62,8 +62,7 @@ private:
         "    - [all] prints all motor info\n"
         "    Or specifiy a motor id and/or can id, where\n"
         "    - [mid] is the id of a motor, in [1, 8]\n"
-        "    - [cid] is some the can id, in [1, 2]\n";
-
+        "    - [cid] is some the can id, in [1, 3]\n";
     Drivers* drivers;
 
     bool motorIdValid = false;

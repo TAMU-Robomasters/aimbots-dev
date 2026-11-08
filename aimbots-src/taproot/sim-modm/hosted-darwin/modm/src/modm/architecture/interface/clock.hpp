@@ -88,38 +88,10 @@ struct micro_clock
 
 } // namespace chrono
 
+/// @ingroup modm_architecture_clock
 using Clock = chrono::milli_clock;
+/// @ingroup modm_architecture_clock
 using PreciseClock = chrono::micro_clock;
 using namespace ::std::chrono_literals;
 
 }	// namespace modm
-
-#if MODM_HAS_IOSTREAM
-#include <modm/io/iostream.hpp>
-
-namespace modm
-{
-
-template<class C, class D>
-modm::IOStream&
-operator << (modm::IOStream& s, const std::chrono::time_point<C, D>& m)
-{
-	s << m.time_since_epoch();
-	return s;
-}
-
-template<class T, class R>
-modm::IOStream&
-operator << (modm::IOStream& s, const std::chrono::duration<T, R>& m)
-{
-	s << m.count();
-	if constexpr (std::is_same_v<R, std::nano>)  s << "ns";
-	if constexpr (std::is_same_v<R, std::micro>) s << "us";
-	if constexpr (std::is_same_v<R, std::milli>) s << "ms";
-	if constexpr (std::is_same_v<R, std::ratio<60>>) s << "min";
-	if constexpr (std::is_same_v<R, std::ratio<3600>>) s << 'h';
-	return s;
-}
-
-} // modm namespace
-#endif

@@ -156,7 +156,7 @@ float lbWheelVelDisplay[2] = {0.0f, 0.0f};
 float rbWheelVelDisplay[2] = {0.0f, 0.0f};
 #endif
 
-Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() {
+Matrix<float, 3, 1> ChassisSubsystem::getActualVelocityChassisRelative() const {
 #ifndef SWERVE
     Matrix<float, DRIVEN_WHEEL_COUNT, 1> wheelVelocities;
     wheelVelocities[LF][0] = leftFrontWheel.getShaftRPM();

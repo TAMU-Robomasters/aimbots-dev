@@ -24,7 +24,9 @@
 #ifndef TAPROOT_CREATE_ERRORS_HPP_
 #define TAPROOT_CREATE_ERRORS_HPP_
 
+#if __has_include("tap/errors/system_error.hpp")
 #include "system_error.hpp"
+#endif
 
 namespace tap::errors
 {
@@ -39,13 +41,16 @@ namespace tap::errors
  * RAISE_ERROR(drivers, "CRC8 failure");
  * ```
  */
+#if __has_include("tap/errors/error_controller.hpp")
 #define RAISE_ERROR(drivers, desc)                                      \
     do                                                                  \
     {                                                                   \
         tap::errors::SystemError stringError(desc, __LINE__, __FILE__); \
         drivers->errorController.addToErrorList(stringError);           \
     } while (0);
-
+#else
+#define RAISE_ERROR(drivers, desc)
+#endif
 }  // namespace tap::errors
 
 #endif  // TAPROOT_TAPROOT_CREATE_ERRORS_HPP_

@@ -34,28 +34,23 @@ void
 modm_assert_report(_modm_assertion_info *cinfo)
 {
 	auto info = reinterpret_cast<modm::AssertionInfo *>(cinfo);
-	AbandonmentBehavior behavior(info->behavior);
+	uint8_t behavior(uint8_t(info->behavior));
 
 	for (const AssertionHandler *handler = &__assertion_table_start;
 		 handler < &__assertion_table_end; handler++)
 	{
-		behavior |= (*handler)(*info);
+		behavior |= (uint8_t)(*handler)(*info);
 	}
 
-	info->behavior = behavior;
-	behavior.reset(Abandonment::Debug);
-	if ((behavior == Abandonment::DontCare) or
-		(behavior & Abandonment::Fail))
+	info->behavior = AbandonmentBehavior(behavior);
+	behavior &= ~uint8_t(Abandonment::Debug);
+	if ((behavior == uint8_t(Abandonment::DontCare)) or
+		(behavior & uint8_t(Abandonment::Fail)))
 	{
 		modm_abandon(*info);
 		abort();
 	}
 }
-
-// Mingw64 :facepalm;
-#if defined(__MINGW64__) && !defined(__clang__)
-#define PRIuPTR "I64u"
-#endif
 
 modm_weak
 void modm_abandon(const modm::AssertionInfo &info)

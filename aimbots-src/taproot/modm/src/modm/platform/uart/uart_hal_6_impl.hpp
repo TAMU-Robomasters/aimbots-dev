@@ -58,23 +58,13 @@ UsartHal6::initialize(Parity parity, WordLength length)
 	enable();
 	disableOperation();
 
-	constexpr uint32_t scalar = (baudrate * 16 > SystemClock::Usart6) ? 8 : 16;
-	constexpr uint32_t max = ((scalar == 16) ? (1ul << 16) : (1ul << 15)) - 1ul;
-	constexpr auto result = Prescaler::from_range(SystemClock::Usart6, baudrate, 1, max);
+	constexpr uint32_t max = (1ul << 16) - 1ul;
+	constexpr auto result = Prescaler::from_linear(SystemClock::Usart6, baudrate, 16, max);
 	modm::PeripheralDriver::assertBaudrateInTolerance< result.frequency, baudrate, tolerance >();
 
 	uint32_t cr1 = USART6->CR1;
-	// set baudrate and oversampling
-	if constexpr (scalar == 16) {
-		// When OVER8 = 0:, BRR[3:0] = USARTDIV[3:0].
-		USART6->BRR = result.prescaler;
-		cr1 &= ~USART_CR1_OVER8;
-	} else {
-		// When OVER8 = 1: BRR[15:4] = USARTDIV[15:4]
-		// BRR[2:0] = USARTDIV[3:0] shifted 1 bit to the right. BRR[3] must be kept cleared.
-		USART6->BRR = (result.prescaler & ~0b1111) | ((result.prescaler & 0b1111) >> 1);
-		cr1 |= USART_CR1_OVER8;
-	}
+	// Set baudrate
+	USART6->BRR = result.prescaler;
 	// Set parity
 	cr1 &= ~(USART_CR1_PCE | USART_CR1_PS);
 	cr1 |= static_cast<uint32_t>(parity);
@@ -110,19 +100,19 @@ UsartHal6::setSpiDataMode(SpiDataMode mode)
 void
 UsartHal6::write(uint16_t data)
 {
-	USART6->DR = data;
+	USART6->TDR = data;
 }
 
 void
 UsartHal6::read(uint8_t &data)
 {
-	data = USART6->DR;
+	data = USART6->RDR;
 }
 
 void
 UsartHal6::read(uint16_t &data)
 {
-	data = USART6->DR;
+	data = USART6->RDR;
 }
 
 void
@@ -148,13 +138,19 @@ UsartHal6::setReceiverEnable(bool enable)
 bool
 UsartHal6::isReceiveRegisterNotEmpty()
 {
-	return USART6->SR & USART_SR_RXNE;
+	return USART6->ISR & USART_ISR_RXNE;
 }
 
 bool
 UsartHal6::isTransmitRegisterEmpty()
 {
-	return USART6->SR & USART_SR_TXE;
+	return USART6->ISR & USART_ISR_TXE;
+}
+
+bool
+UsartHal6::isTransmissionComplete()
+{
+	return USART6->ISR & USART_ISR_TC;
 }
 
 void
@@ -193,24 +189,15 @@ UsartHal6::disableInterrupt(Interrupt_t interrupt)
 UsartHal6::InterruptFlag_t
 UsartHal6::getInterruptFlags()
 {
-	return InterruptFlag_t( USART6->SR );
+	return InterruptFlag_t( USART6->ISR );
 }
 
 void
 UsartHal6::acknowledgeInterruptFlags(InterruptFlag_t flags)
 {
-	/* Interrupts must be cleared manually by accessing SR and DR.
-	 * Overrun Interrupt, Noise flag detected, Framing Error, Parity Error
-	 * p779: "It is cleared by a software sequence (an read to the
-	 * USART_SR register followed by a read to the USART_DR register"
-	 */
-	if (flags.value & 0xful) {
-		uint32_t tmp;
-		tmp = USART6->SR;
-		tmp = USART6->DR;
-		(void) tmp;
-	}
-	(void) flags;	// avoid compiler warning
+	// Flags are cleared by writing a one to the flag position.
+	// Writing a zero is (hopefully) ignored.
+	USART6->ICR = flags.value;
 }
 
 } // namespace modm::platform

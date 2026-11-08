@@ -31,7 +31,7 @@ namespace tap
 namespace control
 {
 class Command;
-class RemoteMapState;
+class GenericRemoteMapState;
 
 /**
  * A CommandMapping that adds `Command`s when the contained
@@ -45,12 +45,12 @@ class HoldCommandMapping : public CommandMapping
 {
 public:
     /**
-     * Constructor must take the set of `Command`s and the RemoteMapState.
+     * Constructor must take the set of `Command`s and the GenericRemoteMapState.
      */
     HoldCommandMapping(
         Drivers *drivers,
         const std::vector<Command *> cmds,
-        const RemoteMapState &rms)
+        const GenericRemoteMapState *rms)
         : CommandMapping(drivers, cmds, rms),
           commandScheduled(false)
     {
@@ -61,7 +61,7 @@ public:
      */
     ~HoldCommandMapping() override = default;
 
-    void executeCommandMapping(const RemoteMapState &currState) override;
+    void executeCommandMapping(const GenericRemoteMapState &currState) override;
 
 private:
     bool commandScheduled;

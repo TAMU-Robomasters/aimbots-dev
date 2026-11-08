@@ -24,8 +24,8 @@
 
 #include <cmath>
 
+#include "tap/algorithms/math_user_utils.hpp"
 #include "tap/architecture/clock.hpp"
-#include "tap/control/chassis/chassis_subsystem_interface.hpp"
 
 #include "modm/math/geometry/angle.hpp"
 #include "modm/math/geometry/vector.hpp"
@@ -68,9 +68,7 @@ void Odometry2DTracker::update()
             vel[0][0] = chassisVelocity.x;
             vel[1][0] = chassisVelocity.y;
             vel[2][0] = 0;  ///< Rotational velocity doesn't matter
-            tap::control::chassis::ChassisSubsystemInterface::getVelocityWorldRelative(
-                vel,
-                chassisYaw);
+            getVelocityWorldRelative(vel, chassisYaw);
             velocity.setX(vel[0][0]);
             velocity.setY(vel[1][0]);
         }
@@ -84,6 +82,28 @@ void Odometry2DTracker::update()
 void Odometry2DTracker::overrideOdometryPosition(const float positionX, const float positionY)
 {
     location.setPosition(positionX, positionY);
+}
+
+void getVelocityWorldRelative(
+    modm::Matrix<float, 3, 1>& chassisRelativeVelocity,
+    float chassisHeading)
+{
+    modm::Matrix<float, 3, 3> transform;
+    float headingCos = cosf(chassisHeading);
+    float headingSin = sinf(chassisHeading);
+    headingCos = tap::algorithms::compareFloatClose(headingCos, 0.0f, 1e-6) ? 0.0f : headingCos;
+    headingSin = tap::algorithms::compareFloatClose(headingSin, 0.0f, 1e-6) ? 0.0f : headingSin;
+
+    transform[0][0] = headingCos;
+    transform[1][0] = headingSin;
+    transform[2][0] = 0;
+    transform[0][1] = -headingSin;
+    transform[1][1] = headingCos;
+    transform[2][1] = 0;
+    transform[0][2] = 0;
+    transform[1][2] = 0;
+    transform[2][2] = 1;
+    chassisRelativeVelocity = transform * chassisRelativeVelocity;
 }
 
 }  // namespace tap::algorithms::odometry

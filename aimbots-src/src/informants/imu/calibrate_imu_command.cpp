@@ -87,7 +87,7 @@ void IMUCalibrateCommand::execute() {
         }
 
         case CalibrationState::DONE:
-            drivers->leds.set(tap::gpio::Leds::Green, true);
+            // TODO: restore drivers->leds.set(tap::gpio::Leds::Green, true) once Taproot drives the MC02 WS2812 LED (MC02 has no GPIO LEDs)
             break;
     }
 }

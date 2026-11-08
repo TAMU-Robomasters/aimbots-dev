@@ -8,8 +8,8 @@
 /**
  * @brief GIMBAL SETUP
  */
-static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS2;
-static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS2;
+static constexpr CANBus YAW_GIMBAL_BUS = CANBus::CAN_BUS3;  // DM-MC02: was CAN_BUS2
+static constexpr CANBus PITCH_GIMBAL_BUS = CANBus::CAN_BUS3;  // DM-MC02: was CAN_BUS2
 
 static constexpr uint8_t YAW_MOTOR_COUNT = 1;
 static constexpr uint8_t PITCH_MOTOR_COUNT = 1;
