@@ -76,10 +76,10 @@ float GimbalVelocityTunningCommand::getYawTargetVelocity() { // in degrees per s
     }
     #else
     currPositionDis  = gimbal->getYawEncoderTick();
-    maxPositionDis = DJIEncoderValueToRadians(YAW_AXIS_SOFTSTOP_HIGH);
-    if(gimbal->getYawEncoderTick() >= YAW_AXIS_SOFTSTOP_HIGH && goingRight){
+    maxPositionDis = DJIEncoderValueToRadians(YAW_ENCODER_SOFTSTOP_HIGH);
+    if(gimbal->getYawEncoderTick() >= YAW_ENCODER_SOFTSTOP_HIGH && goingRight){
         goingRight = false;
-    }else if(gimbal->getYawEncoderTick() <= YAW_AXIS_SOFTSTOP_LOW && !goingRight){
+    }else if(gimbal->getYawEncoderTick() <= YAW_ENCODER_SOFTSTOP_LOW && !goingRight){
         goingRight = true;
     }
 

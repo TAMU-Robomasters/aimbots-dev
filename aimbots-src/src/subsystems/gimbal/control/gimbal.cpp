@@ -46,6 +46,8 @@ float tartgetYawDisplay = 0.0f;
 float currentYawMotorAngleDisplay = 0.0f;
 float otherYawMotorAngleDisplay = 0.0f;
 float currentPitchMotorAngleDisplay = 0.0f;
+int currentPitchEncoderValueDisplay = 0;
+int currentYawEncoderValueDisplay = 0;
 float pitchErrorDisplay = 0.0f;
 float targePitchAngleDisplay = 0.0f;
 float targetPitchAxisAngleDisplay = 0.0f;
@@ -107,6 +109,7 @@ void GimbalSubsystem::refresh() {
         ////////////////
 #ifndef YAW_3508
         yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
+        currentYawEncoderValueDisplay = yawMotors[yawDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue();
         currentYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(currentYawEncoderPosition));
 #else
         yawEncoderDisplay = drivers->revEncoder.getData();
@@ -165,6 +168,7 @@ void GimbalSubsystem::refresh() {
         ////////////////
         currentPitchMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(
             pitchMotors[pitchDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue()));
+        currentPitchEncoderValueDisplay = pitchMotors[pitchDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue();
         // currentPitchAxisAnglesByMotor[pitchDisplayMotorIdx]->getWrappedValue();
         pitchOutputDisplay = pitchMotors[pitchDisplayMotorIdx]->getOutputDesired();
         pitchErrorDisplay = this->getPitchMotorSetpointError(pitchDisplayMotorIdx, AngleUnit::Radians);

@@ -190,6 +190,10 @@ public:
         return yawMotors[YawIdx]->getInternalEncoder().getEncoder().getWrappedValue();
     }
 
+    inline int getPitchEncoderTick(uint8_t PitchIdx = 0) const {
+        return pitchMotors[PitchIdx]->getInternalEncoder().getEncoder().getWrappedValue();
+    }
+
     inline tap::algorithms::WrappedFloat const& getCurrentYawAxisAngleAsWrappedFloat() const { return currentYawAxisAngle; }
     inline tap::algorithms::WrappedFloat const& getCurrentPitchAxisAngleAsWrappedFloat() const {
         return currentPitchAxisAngle;
@@ -226,8 +230,12 @@ public:
     }
     inline void setTargetPitchAxisAngle(AngleUnit unit, float angle) {
         angle = (unit == AngleUnit::Radians) ? angle : modm::toRadian(angle);
+#ifndef ALL_AERIALS
         targetPitchAxisAngle.setWrappedValue(
             tap::algorithms::limitVal(angle, PITCH_AXIS_SOFTSTOP_LOW, PITCH_AXIS_SOFTSTOP_HIGH));
+#else
+        targetPitchAxisAngle.setWrappedValue(angle);
+#endif
     }
 
     float getYawSetpointError(AngleUnit unit) const {

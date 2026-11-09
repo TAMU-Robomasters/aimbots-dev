@@ -125,25 +125,6 @@ GimbalFieldRelativeController gimbalFieldRelativeController(drivers(), &gimbal);
 // Ballistics Solver -------------------------------------------------------
 src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSITION_FROM_GIMBAL_ORIGIN);
 
-// Define behavior configs here --------------------------------------------
-// Gimbal PID tuning oscillation configs (amplitude/frequency of the test sweep).
-GimbalVelocityTunningConfig gimbalYawVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 60.0f,
-    .frequencyHz = 0.2f,
-};
-GimbalVelocityTunningConfig gimbalPitchVelocityTunningConfig = {
-    .velocityAmplitudeDegreesPerSec = 30.0f,
-    .frequencyHz = 0.2f,
-};
-GimbalPositionTunningConfig gimbalYawPositionTunningConfig = {
-    .positionAmplitudeDegrees = 30.0f,
-    .frequencyHz = 0.5f,
-};
-GimbalPositionTunningConfig gimbalPitchPositionTunningConfig = {
-    .positionAmplitudeDegrees = 20.0f,
-    .frequencyHz = 0.5f,
-};
-
 // Define commands here ---------------------------------------------------
 // Manual field-relative gimbal control (Left-Switch MID).
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
@@ -155,20 +136,6 @@ GimbalToggleAimCommand gimbalToggleAimCommand(
     &refHelper,
     &ballisticsSolver,
     SHOOTER_SPEED_MATRIX[0][0]);
-
-// Gimbal PID tuning commands (oscillate the gimbal so the velocity/position PIDs can be tuned in Ozone).
-GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    gimbalYawVelocityTunningConfig,
-    gimbalPitchVelocityTunningConfig);
-GimbalPositionTunningCommand gimbalPositionTunningCommand(
-    drivers(),
-    &gimbal,
-    &gimbalFieldRelativeController,
-    gimbalYawPositionTunningConfig,
-    gimbalPitchPositionTunningConfig);
 
 FullAutoFeederCommand runFeederCommand(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
 FullAutoFeederCommand runFeederCommandFromMouse(drivers(), &feeder, &refHelper, 0, UNJAM_TIMER_MS);
@@ -188,11 +155,10 @@ HoldCommandMapping leftSwitchMid(
     // {&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
-// Toggle CV auto-aim.
+// Toggle CV auto-aim (Left-Switch UP).
 HoldCommandMapping leftSwitchUp(
     drivers(),
-    //{&gimbalToggleAimCommand},
-    {&gimbalVelocityTunningCommand},
+    {&gimbalToggleAimCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // HoldCommandMapping rightSwitchDown(

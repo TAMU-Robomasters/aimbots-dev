@@ -246,6 +246,8 @@ float yawVelocityIDebug = 0.0f;
 float yawVelocityDDebug = 0.0f;
 bool updateYawVelocityPIDsDebug = false;
 
+
+
 float yawPositionPDebug = 0.0f;
 float yawPositionIDebug = 0.0f;
 float yawPositionDDebug = 0.0f;
@@ -294,6 +296,7 @@ void GimbalFieldRelativeController::runYawVelocityController(
         yawVelocityPID->pid.reset();
         updateYawVelocityPIDsDebug = false;
     }
+
 
     // speedTarget += 1 / 200.0f;
     for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
@@ -432,7 +435,18 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             chassisRelativeVelocityTarget - RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)),
             gimbal->getPitchMotorTorque(i));
 
-        pitchOutputVelocityDisplay = velocityFeedforward + velocityControllerOutput;
+        const float pitchMotorOutput = velocityFeedforward + velocityControllerOutput;
+#ifdef ALL_AERIALS
+        const int pitchEncoderTick = gimbal->getPitchEncoderTick(i);
+        const bool atPitchEncoderHighLimit = pitchEncoderTick >= PITCH_ENCODER_SOFTSTOP_HIGH;
+        const bool atPitchEncoderLowLimit = pitchEncoderTick <= PITCH_ENCODER_SOFTSTOP_LOW;
+        float limitedPitchMotorOutput = pitchMotorOutput;
+        if ((atPitchEncoderHighLimit && limitedPitchMotorOutput > 0.0f) ||
+            (atPitchEncoderLowLimit && limitedPitchMotorOutput < 0.0f)) {
+            limitedPitchMotorOutput = 0.0f;
+        }
+        gimbal->setDesiredPitchMotorOutput(i, limitedPitchMotorOutput);
+#else
         softstopHighDisplay = PITCH_AXIS_SOFTSTOP_HIGH + 0.0873;
         softstopLowDisplay = PITCH_AXIS_SOFTSTOP_LOW - 0.0873;
         if (gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians) < PITCH_AXIS_SOFTSTOP_HIGH + 0.0873 &&
@@ -446,6 +460,7 @@ void GimbalFieldRelativeController::runPitchController(std::optional<float> velo
             gimbal->setDesiredPitchMotorOutput(i, 10000 /** sgn(kGRAVITY)*/);
             overshootPitchMotorDisplay = 10000 /** sgn(kGRAVITY)*/;
         }
+#endif
     }
 }
 
@@ -529,19 +544,20 @@ float highDiffDis = 0.0f;
         rawTargetDis = targetYaw;
         #ifdef ALL_AERIALS
         // convert chassis-relative pitch soft stops to field-relative angles
-        float targetAngleDiff = targetYaw - drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue();
-        float maxAngleDiffHigh = DJIEncoderValueToRadians(YAW_AXIS_SOFTSTOP_HIGH - gimbal->getYawMotorAngleUnwrapped()); 
-        float maxAngleDiffLow = DJIEncoderValueToRadians(YAW_AXIS_SOFTSTOP_LOW - gimbal->getYawMotorAngleUnwrapped()); 
-
+        float targetAngleDiff = targetYaw - drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+        float maxAngleDiffHigh =
+            DJIEncoderValueToRadians(YAW_ENCODER_SOFTSTOP_HIGH - gimbal->getYawEncoderTick());
+        float maxAngleDiffLow =
+            DJIEncoderValueToRadians(YAW_ENCODER_SOFTSTOP_LOW - gimbal->getYawEncoderTick());
         targetDiffDis = targetYaw;
         highDiffDis = maxAngleDiffHigh;
         lowDiffDis = maxAngleDiffLow;
 
         if(targetAngleDiff > maxAngleDiffHigh){
-            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue() + maxAngleDiffHigh;
+            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue() + maxAngleDiffHigh;
             limitedDisplay = true;
         }else if(targetAngleDiff < maxAngleDiffLow){
-            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getUnwrappedValue() + maxAngleDiffLow;
+            targetYaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue() + maxAngleDiffLow;
             limitedDisplay = true;
         }else {limitedDisplay = false;}
         #endif
