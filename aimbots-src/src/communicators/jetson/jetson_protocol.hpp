@@ -10,7 +10,7 @@ enum CVState : uint8_t {
     CONTINUOUS_FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 69; // header for jetson -> devboard comms
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 97; // header for jetson -> devboard comms
 static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 67; // header for devboard -> jetson comms
 
 static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
@@ -22,6 +22,14 @@ static constexpr uint8_t JETSON_LOCALIZATION_MESSAGE = 'l';
 static constexpr uint8_t JETSON_ODOMETRY_QUERY = 'q';
 
 static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 turret-relative chassis velocity command
+
+static constexpr uint8_t JETSON_CLOCK_RESET_MESSAGE = 'c';
+
+struct JetsonResetMessage {
+    uint8_t magic;
+    uint8_t messageType;
+    uint8_t reset;
+} __attribute__((packed));
 
 struct JetsonAimMessage {
     uint8_t magic;
@@ -61,6 +69,13 @@ struct EmbeddedOdometryMessage {
     float theta; // orientation in radians
 } __attribute__((packed));
 
+struct Embedded {
+    uint8_t magic;
+    float x; // location in meters
+    float y; // location in meters
+    float theta; // orientation in radians
+} __attribute__((packed));
+
 static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the correct size");
 static_assert(sizeof(JetsonVelocityMessage) == 10, "JetsonVelocityMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
@@ -69,6 +84,7 @@ static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformati
 static constexpr size_t JETSON_AIM_MESSAGE_SIZE = sizeof(JetsonAimMessage);
 static constexpr size_t JETSON_LOCALIZATION_MESSAGE_SIZE = sizeof(JetsonLocalizationMessage);
 static constexpr size_t JETSON_VELOCITY_MESSAGE_SIZE = sizeof(JetsonVelocityMessage);
+static constexpr size_t JETSON_RESET_MESSAGE_SIZE = sizeof(JetsonResetMessage);
 
 static constexpr size_t JETSON_MAX_MESSAGE_SIZE =
     std::max({JETSON_AIM_MESSAGE_SIZE, JETSON_LOCALIZATION_MESSAGE_SIZE, JETSON_VELOCITY_MESSAGE_SIZE});

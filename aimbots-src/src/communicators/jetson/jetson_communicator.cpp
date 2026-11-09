@@ -85,6 +85,7 @@ void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     timeDisplay = currTime;
 
+   // ImHereDisplay = true;
     fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
     timeDisplay = currTime;
 
@@ -117,6 +118,7 @@ void JetsonCommunicator::updateSerial() {
         }
         // ...received packet from Jetson, decide what to do
         case JetsonCommunicatorSerialState::HandleMessageType: {
+            ImHereDisplay = true;
             uint8_t messageType = rawSerialBuffer[nextByteIndex];
             messageTypeDisplay = messageType;
             if (messageType == JETSON_AIM_MESSAGE) {
@@ -132,6 +134,11 @@ void JetsonCommunicator::updateSerial() {
             else if (messageType == JETSON_VELOCITY_MESSAGE) {
                 nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingVelocityMessage;
+            }
+
+            else if (messageType == JETSON_CLOCK_RESET_MESSAGE) {
+                nextByteIndex++;
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingResetMessage;
             }
 
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // wait for the frame delay byte before responding
@@ -289,11 +296,33 @@ void JetsonCommunicator::updateSerial() {
 
             break;
         }
+
+        case JetsonCommunicatorSerialState::AssemblingResetMessage: {
+            nextByteIndex++;
+
+            // Increment the byte index until we reach the expected end of a message, then parse the message.
+            if (nextByteIndex == JETSON_VELOCITY_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonVelocityMessage
+                std::memcpy(&lastResetMessage, rawSerialBuffer, sizeof(JetsonResetMessage));
+
+                // As we've received a full message, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            }
+
+            break;
+        }
     }
 }
 
 PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
     return visionDataConverter.getPlatePrediction(dt);
+}
+
+bool JetsonCommunicator::getResetMessage() {
+    bool message = lastResetMessage.reset;
+    if(lastResetMessage.reset){lastResetMessage.reset = 0;}
+    return message;
 }
 
 modm::Location2D<float> JetsonCommunicator::getLocationEstimate() const {
@@ -306,6 +335,7 @@ AutoAimAngles JetsonCommunicator::getAutoAimAngles() const {
     angles.pitch = lastAimMessage.pitch;
     return angles;
 }
+
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 

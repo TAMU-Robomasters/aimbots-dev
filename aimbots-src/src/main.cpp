@@ -96,6 +96,7 @@ float cancoderAbsolutePositionDisplay = 0;
 float cancoderVelocityDisplay = 0;
 
 bool actualattachDisplay = false;
+bool resetDisplay = false;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -162,6 +163,10 @@ static void mainLoop(src::Drivers *drivers) {
                 atTemp = true;
             }
             drivers->cvClocker.startSignal();
+            resetDisplay = drivers->cvCommunicator.getResetMessage();
+            if(drivers->cvCommunicator.getResetMessage()){
+                drivers->cvClocker.reset();
+            }
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
