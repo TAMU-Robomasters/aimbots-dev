@@ -10,8 +10,8 @@ enum CVState : uint8_t {
     CONTINUOUS_FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
-static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'b'; // header for devboard -> jetson comms
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 69; // header for jetson -> devboard comms
+static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 67; // header for devboard -> jetson comms
 
 static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType

@@ -17,5 +17,6 @@ class CVClocker {
         void stopSignal();
     private:
         src::Drivers* drivers;
+        MilliTimeout resetTimer;
 };
 }
