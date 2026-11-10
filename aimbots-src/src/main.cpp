@@ -145,7 +145,7 @@ static void mainLoop(src::Drivers *drivers) {
     while (1) {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
-
+        drivers->cvClocker.togglePWM();
         if (mainLoopTimeout.execute()) {
 
 
@@ -162,11 +162,12 @@ static void mainLoop(src::Drivers *drivers) {
             if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
                 atTemp = true;
             }
-            drivers->cvClocker.startSignal();
-            resetDisplay = drivers->cvCommunicator.getResetMessage();
-            if(resetDisplay){
-                drivers->cvClocker.reset();
-            }
+            // drivers->cvClocker.startSignal();
+            // resetDisplay = drivers->cvCommunicator.getResetMessage();
+            // if(resetDisplay){
+            //     drivers->cvClocker.reset();
+            // }
+            //drivers->cvClocker.togglePWM();
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {

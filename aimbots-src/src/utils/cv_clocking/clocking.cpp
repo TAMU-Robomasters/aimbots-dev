@@ -12,6 +12,8 @@ namespace utils::CV_Clocking {
 
   //  uint8_t resetDisplay = 0;
   bool bootUp = true;
+  bool toggle = false;
+  long long increment = 0;
 
     void CVClocker::startSignal(){
         if(resetTimer.isExpired()){
@@ -35,6 +37,23 @@ namespace utils::CV_Clocking {
             resetTimer.restart(1000);
         }
         bootUp = false;
+    }
+
+    void CVClocker::forceHigh(){
+        drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER2, 10000);
+        drivers->pwm.write(1.0,tap::gpio::Pwm::PWM1);
+        drivers->pwm.start(tap::gpio::Pwm::Timer::TIMER2);
+    }
+
+    void CVClocker::togglePWM(){
+        if(toggle){
+            this->forceHigh();
+            toggle = false;
+            increment++;
+        }else{
+            this->stopSignal();
+            toggle = true;
+        }
     }
 
 }

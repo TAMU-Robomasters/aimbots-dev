@@ -15,6 +15,8 @@ class CVClocker {
         void reset();
         void startSignal();
         void stopSignal();
+        void forceHigh();
+        void togglePWM();
     private:
         src::Drivers* drivers;
         MilliTimeout resetTimer;
