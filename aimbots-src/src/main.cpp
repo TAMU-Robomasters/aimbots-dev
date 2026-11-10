@@ -164,7 +164,7 @@ static void mainLoop(src::Drivers *drivers) {
             }
             drivers->cvClocker.startSignal();
             resetDisplay = drivers->cvCommunicator.getResetMessage();
-            if(drivers->cvCommunicator.getResetMessage()){
+            if(resetDisplay){
                 drivers->cvClocker.reset();
             }
         }

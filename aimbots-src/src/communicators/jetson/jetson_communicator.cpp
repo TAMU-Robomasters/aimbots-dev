@@ -301,8 +301,8 @@ void JetsonCommunicator::updateSerial() {
             nextByteIndex++;
 
             // Increment the byte index until we reach the expected end of a message, then parse the message.
-            if (nextByteIndex == JETSON_VELOCITY_MESSAGE_SIZE) {
-                // Reinterpret the received bytes into a JetsonVelocityMessage
+            if (nextByteIndex == JETSON_RESET_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonResetMessage
                 std::memcpy(&lastResetMessage, rawSerialBuffer, sizeof(JetsonResetMessage));
 
                 // As we've received a full message, reset the byte index and go back to searching for the magic number.
