@@ -145,7 +145,7 @@ static void mainLoop(src::Drivers *drivers) {
     while (1) {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
-        drivers->cvClocker.togglePWM();
+        drivers->cvClocker.togglePWM(true);
         if (mainLoopTimeout.execute()) {
 
 
@@ -167,7 +167,7 @@ static void mainLoop(src::Drivers *drivers) {
             // if(resetDisplay){
             //     drivers->cvClocker.reset();
             // }
-            //drivers->cvClocker.togglePWM();
+            drivers->cvClocker.togglePWM(false);
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {

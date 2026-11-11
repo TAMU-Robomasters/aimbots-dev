@@ -13,7 +13,14 @@ namespace utils::CV_Clocking {
   //  uint8_t resetDisplay = 0;
   bool bootUp = true;
   bool toggle = false;
-  long long increment = 0;
+  bool toggleFast = false;
+  int increment = 0;
+  int incrementFast = 0;
+  bool displayFast = false;
+  uint32_t lastTime = 0;
+  uint32_t lastTimeFast = 0;
+  float freq = 0.0f;
+  float freqFast = 0.0f;
 
     void CVClocker::startSignal(){
         if(resetTimer.isExpired()){
@@ -45,14 +52,41 @@ namespace utils::CV_Clocking {
         drivers->pwm.start(tap::gpio::Pwm::Timer::TIMER2);
     }
 
-    void CVClocker::togglePWM(){
-        if(toggle){
-            this->forceHigh();
-            toggle = false;
-            increment++;
+    // void CVClocker::togglePWM(){
+    //     // if(toggle){
+    //     //     this->forceHigh();
+    //     //     toggle = false;
+    //     //     increment++;
+    //     // }else{
+    //     //     this->stopSignal();
+    //     //     toggle = true;
+    //     // }
+    // }
+
+    void CVClocker::togglePWM(bool fast){
+        displayFast = fast;
+        if(fast){
+            if(toggleFast){
+         //       this->forceHigh();
+                toggleFast = false;
+                incrementFast++;
+                freqFast = 1/(float(tap::arch::clock::getTimeMicroseconds()-lastTimeFast))*1000000;
+                lastTimeFast = tap::arch::clock::getTimeMicroseconds();
+            }else{
+           //     this->stopSignal();
+                toggleFast = true;
+            }
         }else{
-            this->stopSignal();
-            toggle = true;
+            if(toggle){
+         //       this->forceHigh();
+                toggle = false;
+                increment++;
+                freq = 1/(float(tap::arch::clock::getTimeMicroseconds()-lastTime))*1000000;
+                lastTime = tap::arch::clock::getTimeMicroseconds();
+            }else{
+           //     this->stopSignal();
+                toggle = true;
+            }
         }
     }
 
