@@ -233,7 +233,7 @@ ChassisToggleDriveCustomControllerCommand chassisToggleDriveCustomControllerComm
     defaultTokyoConfig,
     true,
     randomizerConfig,
-    4000.0f,
+    6000.0f,
     10000.0f);
 
 ChassisTokyoCommand chassisTokyoCommand(drivers(), &chassis, &gimbal, defaultTokyoConfig, 0, true, randomizerConfig);
@@ -281,7 +281,7 @@ ChassisTokyoMasterCommand manualTokyoMasterCommand(
     randomizerConfig,
     ChassisTokyoMasterMode::SINUSODAL,     // mode
     0.0f,                               // joystick2OverrideVelocity
-    5000.0f,                            // maxWheelSpeed
+    6500.0f,                            // maxWheelSpeed
     false);                             // isAuto
 
 // Auto tokyo with ESP power limiting: wraps a Jetson-driven (isAuto=true) tokyo master and

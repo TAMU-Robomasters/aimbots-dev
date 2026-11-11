@@ -73,7 +73,7 @@ private:
     static constexpr bool POWER_LIMITING_ENABLED = true;
     static constexpr uint32_t POWER_SENSOR_FRESH_TIMEOUT_MS = 50;
     #if defined(ALL_HEROES)
-        static constexpr float TARGET_CHASSIS_POWER_W = 100.0f;
+        static constexpr float TARGET_CHASSIS_POWER_W = 300.0f;
     #else
         static constexpr float TARGET_CHASSIS_POWER_W = 75.0f;
     #endif
