@@ -7,11 +7,11 @@
 static constexpr uint8_t SHOOTER_MOTOR_COUNT = 2;
 
 static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
-    .kp = 15.0f,
-    .ki = 0.10f,  // 0.10f;
-    .kd = 0.00f,
+    .kp = 30.0f,
+    .ki = 0.10f,
+    .kd = 0.0f,
     .maxICumulative = 10.0f,
-    .maxOutput = 30000.0f,
+    .maxOutput = M3508_MAX_OUTPUT,
     .tQDerivativeKalman = 1.0f,
     .tRDerivativeKalman = 1.0f,
     .tQProportionalKalman = 1.0f,
@@ -20,24 +20,23 @@ static constexpr SmoothPIDConfig SHOOTER_VELOCITY_PID_CONFIG = {
     .errorDerivativeFloor = 0.0f,
 };
 
-// clang-format off
-static constexpr uint16_t shooter_speed_array[6] = {  // ONLY TUNE WITH FULL BATTERY
-    25,
-    6200,  // {ball m/s, flywheel rpm}
-    18,
-    5100,
-    25,
-    6000};
-// clang-format on
+static constexpr uint16_t shooter_speed_array[4] = {
+    10,
+    5200,  // {ball m/s, flywheel rpm} //3900
+    16,
+    5100};  // 6100
 
-static const Matrix<uint16_t, 3, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
+static const Matrix<uint16_t, 2, 2> SHOOTER_SPEED_MATRIX(shooter_speed_array);
 
-// CAN Bus 1
-static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS1;
+static constexpr int DEFAULT_BURST_LENGTH = 5;  // balls
+
+static constexpr CANBus SHOOTER_BUS = CANBus::CAN_BUS2;
 
 static constexpr MotorID SHOOTER_1_ID = MotorID::MOTOR3;
-static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR4;
+static constexpr MotorID SHOOTER_2_ID = MotorID::MOTOR1;
 
-static constexpr bool SHOOTER_1_DIRECTION = false;
-static constexpr bool SHOOTER_2_DIRECTION = true;
+static constexpr bool SHOOTER_1_DIRECTION = true;
+static constexpr bool SHOOTER_2_DIRECTION = false;
 
+// This array holds the IDs of all speed monitor barrels on the robot
+static const std::array<BarrelID, 1> BARREL_IDS = {BarrelID::TURRET_17MM};

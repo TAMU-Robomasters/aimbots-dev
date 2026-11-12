@@ -23,12 +23,12 @@ static constexpr SmoothPIDConfig CHASSIS_VELOCITY_PID_CONFIG = {
 };
 
 // CAN Bus 2
-static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS3;  // DM-MC02: was CAN_BUS2
+static constexpr CANBus CHASSIS_BUS = CANBus::CAN_BUS1;  // DM-MC02: was CAN_BUS2
 
-static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR1;
-static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR2;
-static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR3;
-static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID LEFT_BACK_WHEEL_ID = MotorID::MOTOR2;
+static constexpr MotorID LEFT_FRONT_WHEEL_ID = MotorID::MOTOR4;
+static constexpr MotorID RIGHT_FRONT_WHEEL_ID = MotorID::MOTOR5;
+static constexpr MotorID RIGHT_BACK_WHEEL_ID = MotorID::MOTOR6;
 
 // Mechanical chassis constants, all in m
 /**
@@ -40,8 +40,8 @@ static constexpr float WHEELBASE_WIDTH = 0.3849f;
 
 static constexpr float WHEELBASE_LENGTH = 0.3284f;
 
-static constexpr float GIMBAL_X_OFFSET = 0.0f;
-static constexpr float GIMBAL_Y_OFFSET = 0.0f;
+//static constexpr float GIMBAL_X_OFFSET = 0.0f;
+//static constexpr float GIMBAL_Y_OFFSET = 0.0f;
 
 static constexpr float CHASSIS_GEARBOX_RATIO = (1.0f / 19.0f);
 

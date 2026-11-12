@@ -14,6 +14,7 @@
 namespace src::Feeder {
 
 bool limitPressed = false;
+float kickerRPM = 0;
 bool wantToShoot = false;
 bool watchFire = false;
 bool underHeat = false;
@@ -42,8 +43,9 @@ void FeederLimitCommand::initialize() {
 }
 
 void FeederLimitCommand::execute() {
+    kickerRPM = std::abs(feeder->getCurrentRPM(1));
     updateBarrelHeat();
-    limitPressed = feeder->getPressed();  
+    limitPressed = (std::abs(feeder->getCurrentRPM(1)) < 50 ? true : false);   
     // Updates the previous controller switch state (is up or not)
     // Updates the current controller switch state
     wantToShoot = (drivers->remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP || drivers->remote.getMouseL()==true || drivers->cvCommunicator.shouldFire());
@@ -59,27 +61,44 @@ void FeederLimitCommand::execute() {
                     feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
                     canShoot = true;
                 }else{
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
-                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
+                    //feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
+
+                    if (fabs(feeder->getCurrentRPM(0)) <= 10.0f && startupThreshold.execute()) {
+                        feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::unjamFeederMotor);
+                        unjamTimer.restart(UNJAM_TIMER_MS);
+                    }
+
+                    if (unjamTimer.execute()) {
+                        feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::activateFeederMotor);
+                        startupThreshold.restart(500);
+                    }
                 }
                 break;
+                    currState = loading;
+                
+                    currState = loading;
+                
             case loaded:
-                canShoot = underHeat;
-                if(wantToShoot && underHeat){
+                canShoot = true;
+                if(wantToShoot){
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
                     currState = firing;
                     registerShot();
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateFeederMotor);
                     canShoot = false;
                     //funny hero shoot noise
                     //drivers->canSoundSystem.play(src::communicators::can_sound_system::CanSoundSystem::SOUND_SHOOT, 20);
-                }else{
-                    feeder->ForFeederMotorGroup(ALL, &FeederSubsystem::deactivateFeederMotor);
+                }else if(!limitPressed){
+                    currState = loading;
+                } else {
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
+                    feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::deactivateFeederMotor);
                 }
                 break;
             case firing:
-                if(!limitPressed){
+                if((!limitPressed) && (std::abs(feeder->getCurrentRPM(1)) > 500)){
                     currState = loading;
-                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::deactivateFeederMotor);
+                    feeder->ForFeederMotorGroup(KICKER, &FeederSubsystem::activateKickerSlowFeed);
                     feeder->ForFeederMotorGroup(LOADER, &FeederSubsystem::activateFeederMotor);
                 }else{
                     watchFire = true;

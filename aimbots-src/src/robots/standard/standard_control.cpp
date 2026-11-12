@@ -32,6 +32,7 @@
 //
 #include "subsystems/feeder/basic_commands/dual_barrel_feeder_command.hpp"
 #include "subsystems/feeder/basic_commands/full_auto_feeder_command.hpp"
+#include "subsystems/feeder/complex_commands/feeder_limit_command.hpp"
 #include "subsystems/feeder/basic_commands/stop_feeder_command.hpp"
 #include "subsystems/feeder/control/feeder.hpp"
 //
@@ -270,6 +271,7 @@ StopFeederCommand stopFeederCommand(drivers(), &feeder);
 RunShooterCommand runShooterCommand(drivers(), &shooter, &refHelper);
 RunShooterCommand runShooterWithFeederCommand(drivers(), &shooter, &refHelper);
 StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
+FeederLimitCommand feederLimitCommand(drivers(), &feeder, &refHelper, UNJAM_TIMER_MS);
 
 OpenHopperCommand openHopperCommand(drivers(), &hopper, HOPPER_OPEN_ANGLE);
 OpenHopperCommand openHopperCommand2(drivers(), &hopper, HOPPER_OPEN_ANGLE);
@@ -289,7 +291,7 @@ RemoteMapState leftSwitchMidState(Remote::Switch::LEFT_SWITCH, Remote::SwitchSta
 RemoteMapState rightSwitchUpState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::UP);
 RemoteMapState rightSwitchMidState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::MID);
 RemoteMapState rightSwitchDownState(Remote::Switch::RIGHT_SWITCH, Remote::SwitchState::DOWN);
-RemoteMapState leftClickMouseState(RemoteMapState::MouseButton::LEFT);
+//RemoteMapState leftClickMouseState(RemoteMapState::MouseButton::LEFT);
 RemoteMapState bCtrlPressedState({Remote::Key::CTRL, Remote::Key::B});
 
 // develop's CommandMapper owns its mappings (addMap takes a std::unique_ptr), so they are
@@ -315,20 +317,20 @@ auto rightSwitchDown = std::make_unique<HoldCommandMapping>(
 // Runs shooter only and closes hopper
 auto rightSwitchMid = std::make_unique<HoldCommandMapping>(
     drivers(),
-    std::vector<Command *>{&runShooterCommand, &toggleHopperCommand},
+    std::vector<Command *>{&feederLimitCommand, &runShooterCommand},
     &rightSwitchMidState);
 
 // Runs shooter with feeder and closes hopper
 auto rightSwitchUp = std::make_unique<HoldRepeatCommandMapping>(
     drivers(),
-    std::vector<Command *>{&runFeederCommand, &runShooterWithFeederCommand, &closeHopperCommand2},
+    std::vector<Command *>{&feederLimitCommand, &runShooterWithFeederCommand},
     &rightSwitchUpState,
     true);
 
-auto leftClickMouse = std::make_unique<HoldCommandMapping>(
-    drivers(),
-    std::vector<Command *>{&runFeederCommandFromMouse},
-    &leftClickMouseState);
+// auto leftClickMouse = std::make_unique<HoldCommandMapping>(
+//     drivers(),
+//     std::vector<Command *>{&feederLimitCommand},
+//     &leftClickMouseState);
 
 // The user can press b+ctrl when the remote right switch is in the down position to restart the
 // client display command. This is necessary since we don't know when the robot is connected to the
@@ -388,7 +390,7 @@ void registerIOMappings(src::Drivers *drivers) {
     drivers->commandMapper.addMap(std::move(rightSwitchUp));
     drivers->commandMapper.addMap(std::move(rightSwitchMid));
     drivers->commandMapper.addMap(std::move(rightSwitchDown));
-    drivers->commandMapper.addMap(std::move(leftClickMouse));
+    //drivers->commandMapper.addMap(std::move(leftClickMouse));
     drivers->commandMapper.addMap(std::move(bCtrlPressed));
 }
 

@@ -21,7 +21,7 @@ public:
         feederRPMFilter = new src::Utils::Filters::EMAFilter(0.1);
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
             feederMotors[i] =
-                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS, FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
+                new DJIMotor(drivers, FEEDER_MOTOR_IDS[i], FEEDER_BUS[i], FEEDER_DIRECTION[i], FEEDER_MOTOR_NAMES[i]);
             feederTargetRPMs[i] = 0.0f;
             feederCustomSpeedActive[i] = false;
             feederShotTimingActive[i] = false;
@@ -54,7 +54,7 @@ public:
     void BuildPIDControllers() {
         for (auto i = 0; i < FEEDER_MOTOR_COUNT; i++) {
 
-            #ifndef ALL_HEROES //TODO add ability for multiple pids for all robot feeders
+            #if !defined(ALL_HEROES) && !defined(ALL_STANDARDS) //TODO add ability for multiple pids for all robot feeders
                feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG);
             #else
                 feederVelocityPIDs[i] = new SmoothPID(FEEDER_VELOCITY_PID_CONFIG[i]);
@@ -119,6 +119,12 @@ public:
     void activateFeederMotor(uint8_t feederIdx = 0) {
         if (!feederCustomSpeedActive[feederIdx]) {  // Ignore the default RPM for a custom speed setting
             setTargetRPM(feederIdx, FEEDER_NORMAL_RPMS[feederIdx]);
+        }
+    }
+
+    void activateKickerSlowFeed(uint8_t feederIdx = 1) {
+        if (!feederCustomSpeedActive[feederIdx]) {
+            setTargetRPM(feederIdx, 250); //TODO: add this magic number to the feeder constants class
         }
     }
 
