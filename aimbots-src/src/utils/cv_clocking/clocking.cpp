@@ -2,6 +2,7 @@
 
 #include "tap/architecture/clock.hpp"
 #include "tap/communication/gpio/pwm.hpp"
+#include "tap/communication/gpio/digital.hpp"
 
 #include "drivers.hpp"
 
@@ -44,6 +45,7 @@ namespace utils::CV_Clocking {
             resetTimer.restart(1000);
         }
         bootUp = false;
+        this->ticks = 0;
     }
 
     void CVClocker::forceHigh(){
@@ -67,7 +69,7 @@ namespace utils::CV_Clocking {
         displayFast = fast;
         if(fast){
             if(toggleFast){
-         //       this->forceHigh();
+             //   this->forceHigh();
                 toggleFast = false;
                 incrementFast++;
                 freqFast = 1/(float(tap::arch::clock::getTimeMicroseconds()-lastTimeFast))*1000000;
@@ -88,6 +90,33 @@ namespace utils::CV_Clocking {
                 toggle = true;
             }
         }
+    }
+
+    void CVClocker::toogleClock(){
+        if(resetTimer.isExpired()){
+            if(toggle){
+                toggle = false;
+                this->ticks++;
+                drivers->digital.set(tap::gpio::Digital::PE13, true);
+            }else{
+                toggle = true;
+                drivers->digital.set(tap::gpio::Digital::PE13, false);
+            }
+        }else if(bootUp){
+            if(toggle){
+                toggle = false;
+                this->ticks++;
+                drivers->digital.set(tap::gpio::Digital::PE13, true);
+            }else{
+                toggle = true;
+                drivers->digital.set(tap::gpio::Digital::PE13, false);
+            }
+            resetTimer.restart(1);
+        }
+    }
+
+    uint32_t CVClocker::getTicks(){
+        return this->ticks;
     }
 
 }

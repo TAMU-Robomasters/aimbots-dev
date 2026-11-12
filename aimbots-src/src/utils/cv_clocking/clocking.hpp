@@ -18,8 +18,12 @@ class CVClocker {
         void forceHigh();
   //      void togglePWM();
         void togglePWM(bool fast);
+        //toggles pin PE13 and keeps track of ticks to jetson TODO: make doc of what pins are used for what
+        void toogleClock();
+        uint32_t getTicks();
     private:
         src::Drivers* drivers;
         MilliTimeout resetTimer;
+        uint64_t ticks;
 };
 }

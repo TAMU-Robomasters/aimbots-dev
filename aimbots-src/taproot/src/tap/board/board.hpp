@@ -172,8 +172,9 @@ using DigitalInPins = SoftwareGpioPort<DigitalInPinButton>;
 // Initialize digital output pins
         
 using DigitalOutPinPD10 = GpioD10;
+using DigitalOutPinPE13 = GpioE13;
         
-using DigitalOutPins = SoftwareGpioPort<DigitalOutPinPD10>;
+using DigitalOutPins = SoftwareGpioPort<DigitalOutPinPD10, DigitalOutPinPE13>;
 
 // gpio pins used for SPI communication to the onboard BMI088 IMU
 using ImuSck = GpioB13;

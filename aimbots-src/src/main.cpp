@@ -37,6 +37,7 @@
 /* communication includes ---------------------------------------------------*/
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
+#include "tap/communication/gpio/digital.hpp"
 
 /* error handling includes --------------------------------------------------*/
 #include "tap/errors/create_errors.hpp"
@@ -51,6 +52,8 @@
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 // not where this should go lol
+
+tap::arch::PeriodicMicroTimer cvClockTimeout(100);
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
@@ -97,6 +100,7 @@ float cancoderVelocityDisplay = 0;
 
 bool actualattachDisplay = false;
 bool resetDisplay = false;
+uint32_t displayTicks = 0;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -145,7 +149,6 @@ static void mainLoop(src::Drivers *drivers) {
     while (1) {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
-        drivers->cvClocker.togglePWM(true);
         if (mainLoopTimeout.execute()) {
 
 
@@ -167,7 +170,11 @@ static void mainLoop(src::Drivers *drivers) {
             // if(resetDisplay){
             //     drivers->cvClocker.reset();
             // }
-            drivers->cvClocker.togglePWM(false);
+            // drivers->digital.set(tap::gpio::Digital::PE13, true);
+            // drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER2, 10000);
+            // drivers->pwm.write(1.0,tap::gpio::Pwm::PWM1);
+            // drivers->pwm.writeAllZeros();
+            //drivers->pwm.start(tap::gpio::Pwm::Timer::TIMER2);
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -204,6 +211,15 @@ static void mainLoop(src::Drivers *drivers) {
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
+
+        if(cvClockTimeout.execute()){
+            if(drivers->cvCommunicator.getResetMessage()){
+                drivers->cvClocker.reset();
+            }
+            drivers->cvClocker.toogleClock();
+            displayTicks = drivers->cvClocker.getTicks();
+        }
+
         // Was modm::delay_us(10): yield so the other fibers run.
         modm::this_fiber::yield();
     }

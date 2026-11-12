@@ -69,6 +69,9 @@ void Digital::set(Digital::OutputPin pin, bool isSet)
         case Digital::OutputPin::PD10:
             DigitalOutPinPD10::set(isSet);
             break;
+        case Digital::OutputPin::PE13:
+            DigitalOutPinPE13::set(isSet);
+            break;
     }
 #endif
 }

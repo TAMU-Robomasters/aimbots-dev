@@ -65,6 +65,7 @@ public:
     enum OutputPin
     {
         PD10,
+        PE13
     };
 
 #ifdef PLATFORM_HOSTED
