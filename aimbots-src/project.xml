@@ -41,8 +41,14 @@
     <option name="taproot:board:analog_in_pins"></option>
     <option name="taproot:board:pwm_pins">PWM1,Buzzer,ImuHeater</option>
     <!-- Rev encoder (YAW_3508 robots) on the expansion header's SPI3 -->
+    <!-- USB CDC (virtual serial) over the board's USB-C (OTG_HS port, internal FS PHY) -->
+    <option name="taproot:modm-project.xml:modm_hal_options">
+      modm:tinyusb:config device.cdc
+    </option>
     <option name="taproot:modm-project.xml:modm_hal_modules">
       modm:platform:spi:3
+      modm:platform:usb:hs
+      modm:tinyusb:device:cdc
     </option>
 
   </options>

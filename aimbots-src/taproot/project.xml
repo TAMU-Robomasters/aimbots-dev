@@ -12,6 +12,7 @@
     <option name="modm:build:scons:include_sconstruct">False</option>
     <option name="modm:target">stm32h723vgt6</option>
 
+    <option name="modm:tinyusb:config">device.cdc</option>
 
     <!-- 3 hardware TX buffers per FDCAN, the same as the 3 bxCAN TX mailboxes on Type A/C -->
     <option name="modm:platform:can:1:message_ram.tx_fifo_elements">3</option>
@@ -65,6 +66,8 @@
     <module>modm:ui:display</module>
     <module>modm:ui:menu</module>
     <module>modm:platform:spi:3</module>
+    <module>modm:platform:usb:hs</module>
+    <module>modm:tinyusb:device:cdc</module>
 
   </modules>
 </library>

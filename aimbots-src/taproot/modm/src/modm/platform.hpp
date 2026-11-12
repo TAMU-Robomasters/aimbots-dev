@@ -63,3 +63,5 @@
 #include "platform/uart/uart_hal_5.hpp"
 #include "platform/uart/uart_hal_6.hpp"
 #include "platform/uart/uart_hal_7.hpp"
+#include "platform/usb/uart.hpp"
+#include "platform/usb/usb_hs.hpp"
