@@ -188,9 +188,10 @@ void GimbalSubsystem::refresh() {
     currentPitchAxisAngleDisplay = modm::toDegree(currentPitchAxisAngle.getWrappedValue());
 
     // update gimbal orientation buffer
-    std::pair<float, float> orientation;
-    orientation.first = currentYawAxisAngle.getWrappedValue();
-    orientation.second = currentPitchAxisAngle.getWrappedValue();
+    std::pair<float[2], uint32_t> orientation;
+    orientation.first[0] = currentYawAxisAngle.getWrappedValue();
+    orientation.first[1] = currentPitchAxisAngle.getWrappedValue();
+    orientation.second = drivers->cvClocker.getTicks();
 
     gimbalOrientationBuffer.prependOverwrite(orientation);
 }

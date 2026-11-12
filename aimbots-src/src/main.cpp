@@ -53,7 +53,7 @@
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 // not where this should go lol
 
-tap::arch::PeriodicMicroTimer cvClockTimeout(100);
+tap::arch::PeriodicMicroTimer cvClockTimeout(500);
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.

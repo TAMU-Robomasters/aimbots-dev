@@ -26,7 +26,6 @@ public:
     void BuildYawMotors() {
         for (auto i = 0; i < YAW_MOTOR_COUNT; i++) {
             yawMotors[i] =
-                // TODO: retune sentry so with the right gear ratio then change the macro to if yaw_3508
                 #ifdef YAW_3508
                     new DJIMotor(drivers, YAW_MOTOR_IDS[i], YAW_GIMBAL_BUS, YAW_MOTOR_DIRECTIONS[i], YAW_MOTOR_NAMES[i], false, tap::motor::DjiMotorEncoder::GEAR_RATIO_M3508);
                 #else 
@@ -238,10 +237,10 @@ public:
     float getPitchMotorSetpointError(uint8_t PitchIdx, AngleUnit unit) const;
 
     // from the buffer. gimbal orientation from the buffer.
-    inline std::pair<float, float>& getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
+    inline std::pair<float[2], uint32_t> & getGimbalOrientation(int index) { return gimbalOrientationBuffer[index]; }
 
     // put in your time, we get the closest orientation entry at that time.
-    inline std::pair<float, float>& getGimbalOrientationAtTime(uint32_t time_ms) {
+    inline std::pair<float[2], uint32_t>& getGimbalOrientationAtTime(uint32_t ticks) {
         // assume 2 ms delay between gimbal updates
         int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
         return gimbalOrientationBuffer[index];
@@ -277,7 +276,7 @@ private:
 
     // gimbal yaw / pitch buffer
     // yaw is first, pitch is second, respectively in the pair
-    Deque<std::pair<float, float>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;
+    Deque<std::pair<float[2], uint32_t>, GIMBAL_BUFFER_SIZE> gimbalOrientationBuffer;
 };
 
 }  // namespace src::Gimbal
