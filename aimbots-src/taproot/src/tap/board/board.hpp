@@ -118,6 +118,8 @@ struct SystemClock
     static constexpr uint32_t Timer23 = Apb1Timer;
     static constexpr uint32_t Timer24 = Apb1Timer;
 
+    static constexpr uint32_t Usb = 48_MHz; // usb_hs.hpp states USB must be 48MHz
+
     static bool inline enable()
     {
 #ifndef PLATFORM_HOSTED
@@ -137,6 +139,17 @@ struct SystemClock
         Rcc::enablePll1(Rcc::PllSource::Hse, pllFactors1);
         Rcc::setCanClockSource(Rcc::CanClockSource::Pll1Q);
         Rcc::setFlashLatency<Ahb>();
+
+        const Rcc::PllFactors pllFactors3{
+            .range = Rcc::PllInputRange::MHz8_16,
+            .pllM = 2,   //  24 MHz / 2  =  12 MHz
+            .pllN = 40,  //  12 MHz * 40 = 480 MHz
+            .pllP = 10,   // 480 MHz / 10  = 48 MHz, 
+            .pllQ = 6,   // 480 MHz / 6  = 80 MHz, unused
+            .pllR = 2,   // 480 MHz / 2  = 240 MHz, unused
+        };
+        Rcc::enablePll3(Rcc::PllSource::Hse, pllFactors3);
+        Rcc::enableUsbClockSource(Rcc::UsbClockSource::Pll3Q);
 
         Rcc::setAhbPrescaler(Rcc::AhbPrescaler::Div2);
         Rcc::setApb1Prescaler(Rcc::Apb1Prescaler::Div2);
@@ -193,6 +206,12 @@ using Power5V = GpioOutputC15;
 using PowerOuts = SoftwareGpioPort<PowerOut1, PowerOut2, Power5V>;
 
 #endif
+inline void initializeUsb() 
+{
+    UsbHs::initialize<SystemClock>();
+    UsbHs::connect<GpioA11::Dm, GpioA12::Dp>();
+    tusb_init();
+}
 
 inline void initialize()
 {

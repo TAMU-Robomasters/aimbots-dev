@@ -80,7 +80,7 @@ def parse_args():
     args["SUPPRESS_WARNINGS"] = ARGUMENTS.get("suppress_warnings", "false")
     if args["SUPPRESS_WARNINGS"] not in VALID_SUPPRESS_WARNING_TYPES:
         raise Exception("You specified an invalid warning type.\n" + USAGE)
-    elif ARGUMENTS.get("supress_warnings", "false"):
+    elif args["SUPPRESS_WARNINGS"] == "true":
         print("SUPPRESSING WARNINGS")
 
     j = ARGUMENTS.get("funny", "no")

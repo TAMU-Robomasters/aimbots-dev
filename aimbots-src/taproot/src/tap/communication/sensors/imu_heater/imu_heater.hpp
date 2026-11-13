@@ -65,11 +65,11 @@ private:
     /**
      * PID constants for temperature control.
      */
-    static constexpr float TEMPERATURE_PID_P = 0.12f;
-    static constexpr float TEMPERATURE_PID_I = 0.005;
+    static constexpr float TEMPERATURE_PID_P = 0.01f;
+    static constexpr float TEMPERATURE_PID_I = 5e-6f;
     static constexpr float TEMPERATURE_PID_D = 0.0f;
-    static constexpr float TEMPERATURE_PID_MAX_ERR_SUM = 0.1f / TEMPERATURE_PID_I;
-    static constexpr float TEMPERATURE_PID_MAX_OUT = 1.0f;
+    static constexpr float TEMPERATURE_PID_MAX_ERR_SUM = 0.08f / TEMPERATURE_PID_I;
+    static constexpr float TEMPERATURE_PID_MAX_OUT = 0.1f;
 
     /**
      * PWM frequency of the timer associated with the GPIO pin that is in charge

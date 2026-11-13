@@ -98,6 +98,8 @@ print("Configured {0} parallel build jobs (-j{0}), {1}"
 # Append on the global robot target build flag
 env.AppendUnique(CCFLAGS=["-D " + args["ROBOT_TYPE"]])
 
+if args["SUPPRESS_WARNINGS"] == "true":
+    env.AppendUnique(CCFLAGS=["-w"])
 
 # Find source files to compile
 if args["TARGET_ENV"] != "tests":

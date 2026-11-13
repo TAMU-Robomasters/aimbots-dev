@@ -6,9 +6,12 @@
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 #include "communicators/jetson/jetson_protocol.hpp"
 #include "modm/math/geometry/angle.hpp"
+#include "modm/platform/usb/uart.hpp"
 
-#define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
+using JetsonUsb = modm::platform::UsbUart<0>; 
+
+#define READ(data, length) JetsonUsb::read(data, length)
+#define WRITE(data, length) JetsonUsb::write(data, length)
 
 namespace src::Informants::Vision {
 
@@ -27,7 +30,6 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-    drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
 uint8_t displayBuffer[JETSON_MAX_MESSAGE_SIZE];

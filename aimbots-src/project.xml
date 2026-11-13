@@ -44,6 +44,7 @@
     <!-- USB CDC (virtual serial) over the board's USB-C (OTG_HS port, internal FS PHY) -->
     <option name="taproot:modm-project.xml:modm_hal_options">
       modm:tinyusb:config device.cdc
+      modm:tinyusb:max-speed full
     </option>
     <option name="taproot:modm-project.xml:modm_hal_modules">
       modm:platform:spi:3

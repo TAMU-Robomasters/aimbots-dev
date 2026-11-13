@@ -13,6 +13,7 @@
     <option name="modm:target">stm32h723vgt6</option>
 
     <option name="modm:tinyusb:config">device.cdc</option>
+    <option name="modm:tinyusb:max-speed">full</option>
 
     <!-- 3 hardware TX buffers per FDCAN, the same as the 3 bxCAN TX mailboxes on Type A/C -->
     <option name="modm:platform:can:1:message_ram.tx_fifo_elements">3</option>
