@@ -242,7 +242,7 @@ public:
     // put in your time, we get the closest orientation entry at that time.
     inline std::pair<float[2], uint32_t>& getGimbalOrientationAtTime(uint32_t ticks) {
         // assume 2 ms delay between gimbal updates
-        int index = std::min(time_ms / 2, GIMBAL_BUFFER_SIZE - 1);
+        int index = std::min(ticks / 2, GIMBAL_BUFFER_SIZE - 1);
         return gimbalOrientationBuffer[index];
     }
     // just in case?
