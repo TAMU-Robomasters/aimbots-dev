@@ -60,6 +60,8 @@ float tempPitchDisplay = 0.0f;
 int yawDisplayMotorIdx = 0;  // don't change in code, should only be changed in debugger
 int pitchDisplayMotorIdx = 0;
 
+int64_t currentPitchEncoderDisplay = 0;
+
 float yawDesiredOutputDisplay = 0;
 float pitchDesiredOutputDisplay = 0;
 
@@ -151,6 +153,7 @@ void GimbalSubsystem::refresh() {
 
         int64_t currentPitchEncoderPosition =
             pitchMotors[pitchDisplayMotorIdx]->getInternalEncoder().getEncoder().getWrappedValue();
+        currentPitchEncoderDisplay = currentPitchEncoderPosition;
 
         // https://www.desmos.com/calculator/fydwmos1xr
         float wrappedPitchAxisAngle =
