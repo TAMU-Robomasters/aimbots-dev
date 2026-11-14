@@ -26,7 +26,7 @@
 #endif
 
 #ifndef CFG_TUD_CDC_TX_BUFSIZE
-#	define CFG_TUD_CDC_TX_BUFSIZE 64
+#	define CFG_TUD_CDC_TX_BUFSIZE 128
 #endif
 
 #ifndef CFG_TUSB_DEBUG_PRINTF

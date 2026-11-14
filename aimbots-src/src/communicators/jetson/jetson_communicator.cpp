@@ -66,6 +66,7 @@ float velCmdYDisplay = 0.0f;
 
 float fieldYawDisplay = 0.0f;
 float fieldPitchDisplay = 0.0f;
+float fieldRollDisplay = 0.0f;
 float cameraToTurretMatrixDisplay[16] = {0.0f};
 bool ImHereDisplay = false;
 
@@ -183,11 +184,16 @@ void JetsonCommunicator::updateSerial() {
 
             Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
 
-            transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-            transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //for alumni dinner
+            transformationMessageToJetson.yaw = drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS);
+            transformationMessageToJetson.pitch = drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS);
+            transformationMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
 
             fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
             fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
+            fieldRollDisplay = modm::toDegree(transformationMessageToJetson.roll);
 
             std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 
