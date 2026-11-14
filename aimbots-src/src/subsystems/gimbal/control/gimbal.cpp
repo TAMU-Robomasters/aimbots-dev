@@ -85,8 +85,10 @@ void GimbalSubsystem::refresh() {
 #ifndef YAW_3508
         int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
 #else
+    #ifndef NO_REV_ENCODER
         int64_t currentYawEncoderPosition = drivers->revEncoder.getUnwrappedPosition();
         currentYawEncoderPositionDisplay = currentYawEncoderPosition;
+    #endif
 #endif
         // https://www.desmos.com/calculator/bducsk7y6v
 #ifndef YAW_3508
@@ -96,29 +98,36 @@ void GimbalSubsystem::refresh() {
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
 #else  // FIXME: fix this when we retune sentry
+    #ifndef NO_REV_ENCODER
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO *
             (RevEncoderValueToRadians(currentYawEncoderPosition - 13815.0f));  // Yaw offset, move later
-
+    #endif
 #endif
+    #ifndef NO_REV_ENCODER
         currentYawAxisAnglesByMotor[i]->setWrappedValue(wrappedYawAxisAngle);
 
         yawAxisAngleSum += wrappedYawAxisAngle;
         ////////////////
         // DEBUG VARS //
         ////////////////
+    #endif
 #ifndef YAW_3508
         yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
         currentYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(currentYawEncoderPosition));
 #else
+    #ifndef NO_REV_ENCODER
         yawEncoderDisplay = drivers->revEncoder.getData();
+    #endif
 #endif
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
 #ifdef YAW_3508 
+    #ifndef NO_REV_ENCODER
         currentYawMotorAngleDisplay =
             // modm::toDegree(getEncoderWrapped(yawMotors[yawDisplayMotorIdx]));
             modm::toDegree(RevEncoderValueToRadians(currentYawEncoderPosition));
         // Guard index-1 accesses: single-yaw-motor robots (e.g. aerial) only have yawMotors[0].
+    #endif
 #endif
         if (YAW_MOTOR_COUNT > 1) {
             otherYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(

@@ -221,7 +221,9 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->espPowerSensor.initialize();
     drivers->canSoundSystem.initialize();
 #ifdef YAW_3508
-    drivers->revEncoder.initialize();
+    #ifndef NO_REV_ENCODER
+        drivers->revEncoder.initialize();
+    #endif
 #endif
 
 //drivers->kinematicInformant.recalibrateIMU();
@@ -265,7 +267,9 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
-    drivers->revEncoder.execute();
+    #ifndef NO_REV_ENCODER
+        drivers->revEncoder.execute();
+    #endif
 #endif
 
    // drivers->powerCommunicator.updateSerial();

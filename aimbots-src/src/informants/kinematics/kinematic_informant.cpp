@@ -537,7 +537,9 @@ void KinematicInformant::updateChassisIMUAngles() {
     // Only robots with a 3508 yaw + rev encoder (sentry/hero) have drivers->revEncoder.
     // YawPosEncoder is display-only and unused elsewhere, so turret-IMU robots without a
     // rev encoder (e.g. aerial) simply leave it at 0.
-    YawPosEncoder = drivers->revEncoder.getUnwrappedPositionRadians();
+    #ifndef NO_REV_ENCODER
+        YawPosEncoder = drivers->revEncoder.getUnwrappedPositionRadians();
+    #endif
 #endif
 
     Vector3f IMUAngles = getLocalIMUAngles();
