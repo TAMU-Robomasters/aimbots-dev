@@ -50,7 +50,7 @@
 #include "utils/cv_clocking/clocking.hpp"
 
 /* define timers here -------------------------------------------------------*/
-tap::arch::PeriodicMilliTimer sendMotorTimeout(1);
+tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 // not where this should go lol
 
 tap::arch::PeriodicMicroTimer cvClockTimeout(500);
