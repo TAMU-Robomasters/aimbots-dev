@@ -53,7 +53,7 @@
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 // not where this should go lol
 
-tap::arch::PeriodicMicroTimer cvClockTimeout(100);
+tap::arch::PeriodicMicroTimer cvClockTimeout(500);
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
@@ -100,7 +100,7 @@ float cancoderVelocityDisplay = 0;
 
 bool actualattachDisplay = false;
 bool resetDisplay = false;
-uint32_t displayTicks = 0;
+uint32_t currentTicks = 0;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 

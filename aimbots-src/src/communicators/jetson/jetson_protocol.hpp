@@ -21,9 +21,12 @@ static constexpr uint8_t JETSON_LOCALIZATION_MESSAGE = 'l';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
 static constexpr uint8_t JETSON_ODOMETRY_QUERY = 'q';
 
+static constexpr uint8_t JETSON_UNIVERSAL_QUERY = 42;
+
 static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 turret-relative chassis velocity command
 
 static constexpr uint8_t JETSON_CLOCK_RESET_MESSAGE = 'c';
+
 
 struct JetsonResetMessage {
     uint8_t magic;
@@ -55,6 +58,19 @@ struct JetsonVelocityMessage {
     float vy; // turret-relative chassis velocity, m/s
 } __attribute__((packed));
 
+struct EmbeddedUniversalMessage {
+    uint8_t magic;
+    uint32_t currTicks;
+    //odometry
+    float x;
+    float y;
+    float theta;
+    //transformation
+    float yaw;
+    float pitch;
+    float matrix[16];
+} __attribute__((packed));
+
 struct EmbeddedTransformationMessage {
     uint8_t magic;
     float yaw;
@@ -69,15 +85,10 @@ struct EmbeddedOdometryMessage {
     float theta; // orientation in radians
 } __attribute__((packed));
 
-struct Embedded {
-    uint8_t magic;
-    float x; // location in meters
-    float y; // location in meters
-    float theta; // orientation in radians
-} __attribute__((packed));
 
 static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the correct size");
 static_assert(sizeof(JetsonVelocityMessage) == 10, "JetsonVelocityMessage is not the correct size");
+static_assert(sizeof(EmbeddedUniversalMessage) == 89, "EmbeddedUniversalMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
 static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
 

@@ -109,6 +109,7 @@ private:
         .reset = false
     };
 
+    EmbeddedUniversalMessage universalMessageToJetson;
     EmbeddedTransformationMessage transformationMessageToJetson;
     EmbeddedOdometryMessage odometryMessageToJetson;
     uint32_t lastFoundTargetTime;

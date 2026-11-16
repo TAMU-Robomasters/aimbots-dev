@@ -21,6 +21,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       fireTimeout(),
       lastAimMessage(),
       lastLocalizationMessage(),
+      universalMessageToJetson({EMBEDDED_MESSAGE_MAGIC,})
       transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}}),
       odometryMessageToJetson({EMBEDDED_MESSAGE_MAGIC, 0.0f, 0.0f, 0.0f})
 {}
@@ -139,6 +140,15 @@ void JetsonCommunicator::updateSerial() {
             else if (messageType == JETSON_CLOCK_RESET_MESSAGE) {
                 nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingResetMessage;
+            }
+
+            else if (messageType == JETSON_UNIVERSAL_QUERY){
+                universalMessageToJetson.currTicks = drivers->cvClocker.getTicks();
+                universalMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
+                universalMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
 
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // wait for the frame delay byte before responding
