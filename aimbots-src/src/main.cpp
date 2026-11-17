@@ -217,7 +217,7 @@ static void mainLoop(src::Drivers *drivers) {
                 drivers->cvClocker.reset();
             }
             drivers->cvClocker.toogleClock();
-            displayTicks = drivers->cvClocker.getTicks();
+            currentTicks = drivers->cvClocker.getTicks();
         }
 
         // Was modm::delay_us(10): yield so the other fibers run.

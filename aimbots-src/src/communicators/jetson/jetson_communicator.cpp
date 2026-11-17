@@ -21,7 +21,7 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       fireTimeout(),
       lastAimMessage(),
       lastLocalizationMessage(),
-      universalMessageToJetson({EMBEDDED_MESSAGE_MAGIC,})
+      universalMessageToJetson({EMBEDDED_MESSAGE_MAGIC,}),
       transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}}),
       odometryMessageToJetson({EMBEDDED_MESSAGE_MAGIC, 0.0f, 0.0f, 0.0f})
 {}
@@ -146,6 +146,20 @@ void JetsonCommunicator::updateSerial() {
                 universalMessageToJetson.currTicks = drivers->cvClocker.getTicks();
                 universalMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
                 universalMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+
+                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+                src::Informants::Transformers::CoordinateFrame cameraFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+
+                Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
+
+                universalMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+                universalMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+
+                std::memcpy(universalMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
 
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
