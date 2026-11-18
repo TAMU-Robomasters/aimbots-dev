@@ -6,9 +6,12 @@
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 #include "communicators/jetson/jetson_protocol.hpp"
 #include "modm/math/geometry/angle.hpp"
+#include "modm/platform/usb/uart.hpp"
 
-#define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
+using JetsonUsb = modm::platform::UsbUart<0>; 
+
+#define READ(data, length) JetsonUsb::read(data, length)
+#define WRITE(data, length) JetsonUsb::write(data, length)
 
 namespace src::Informants::Vision {
 
@@ -28,7 +31,6 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-    drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
 uint8_t displayBuffer[JETSON_MAX_MESSAGE_SIZE];
@@ -65,6 +67,7 @@ float velCmdYDisplay = 0.0f;
 
 float fieldYawDisplay = 0.0f;
 float fieldPitchDisplay = 0.0f;
+float fieldRollDisplay = 0.0f;
 float cameraToTurretMatrixDisplay[16] = {0.0f};
 bool ImHereDisplay = false;
 
@@ -212,11 +215,16 @@ void JetsonCommunicator::updateSerial() {
 
             Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
 
-            transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-            transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //for alumni dinner
+            transformationMessageToJetson.yaw = drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS);
+            transformationMessageToJetson.pitch = drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS);
+            transformationMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
 
             fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
             fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
+            fieldRollDisplay = modm::toDegree(transformationMessageToJetson.roll);
 
             std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 

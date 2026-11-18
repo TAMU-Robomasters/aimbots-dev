@@ -126,6 +126,9 @@ int main() {
     src::Drivers *drivers = src::DoNotUse_getDrivers();
 
     Board::initialize();
+#ifndef TARGET_AERIAL
+    Board::initializeUsb();
+#endif
 
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);
@@ -290,6 +293,9 @@ static void updateIo(src::Drivers *drivers) {
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
     drivers->revEncoder.execute();
+#endif
+#ifndef TARGET_AERIAL
+    tud_task();  // USB task
 #endif
 
    // drivers->powerCommunicator.updateSerial();

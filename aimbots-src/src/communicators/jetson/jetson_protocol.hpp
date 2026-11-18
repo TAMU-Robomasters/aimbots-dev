@@ -75,6 +75,7 @@ struct EmbeddedTransformationMessage {
     uint8_t magic;
     float yaw;
     float pitch;
+    float roll;
     float matrix[16];
 } __attribute__((packed));
 
@@ -90,7 +91,7 @@ static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the corre
 static_assert(sizeof(JetsonVelocityMessage) == 10, "JetsonVelocityMessage is not the correct size");
 static_assert(sizeof(EmbeddedUniversalMessage) == 89, "EmbeddedUniversalMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
-static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
+static_assert(sizeof(EmbeddedTransformationMessage) == 77, "EmbeddedTransformationMessage is not the correct size");
 
 static constexpr size_t JETSON_AIM_MESSAGE_SIZE = sizeof(JetsonAimMessage);
 static constexpr size_t JETSON_LOCALIZATION_MESSAGE_SIZE = sizeof(JetsonLocalizationMessage);
