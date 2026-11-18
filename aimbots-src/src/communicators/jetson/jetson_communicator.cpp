@@ -160,6 +160,7 @@ void JetsonCommunicator::updateSerial() {
 
                 universalMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
                 universalMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+                universalMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
 
                 std::memcpy(universalMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 
