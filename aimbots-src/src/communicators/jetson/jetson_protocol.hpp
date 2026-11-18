@@ -11,7 +11,7 @@ enum CVState : uint8_t {
 };
 
 static constexpr uint8_t JETSON_MESSAGE_MAGIC = 97; // header for jetson -> devboard comms
-static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 67; // header for devboard -> jetson comms
+static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'a'; // header for devboard -> jetson comms
 
 static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
@@ -25,7 +25,7 @@ static constexpr uint8_t JETSON_UNIVERSAL_QUERY = 42;
 
 static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 turret-relative chassis velocity command
 
-static constexpr uint8_t JETSON_CLOCK_RESET_MESSAGE = 'c';
+static constexpr uint8_t JETSON_CLOCK_RESET_MESSAGE = 3;
 
 
 struct JetsonResetMessage {

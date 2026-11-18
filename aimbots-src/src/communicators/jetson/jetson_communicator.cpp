@@ -122,7 +122,7 @@ void JetsonCommunicator::updateSerial() {
         }
         // ...received packet from Jetson, decide what to do
         case JetsonCommunicatorSerialState::HandleMessageType: {
-            ImHereDisplay = true;
+            //ImHereDisplay = true;
             uint8_t messageType = rawSerialBuffer[nextByteIndex];
             messageTypeDisplay = messageType;
             if (messageType == JETSON_AIM_MESSAGE) {
@@ -141,11 +141,13 @@ void JetsonCommunicator::updateSerial() {
             }
 
             else if (messageType == JETSON_CLOCK_RESET_MESSAGE) {
+                ImHereDisplay = true;
                 nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingResetMessage;
             }
 
             else if (messageType == JETSON_UNIVERSAL_QUERY){
+                //ImHereDisplay = true;
                 universalMessageToJetson.currTicks = drivers->cvClocker.getTicks();
                 universalMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
                 universalMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
@@ -206,7 +208,7 @@ void JetsonCommunicator::updateSerial() {
             // reach this point rawSerialBuffer[nextByteIndex] holds the frame delay byte. If no byte
             // was available yet, updateSerial() already returned and we stay in this state.
             uint8_t frameDelay_ms = rawSerialBuffer[nextByteIndex];
-            ImHereDisplay = true;
+            //ImHereDisplay = true;
 
             drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
 
