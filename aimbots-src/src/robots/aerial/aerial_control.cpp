@@ -128,6 +128,12 @@ src::Utils::Ballistics::BallisticsSolver ballisticsSolver(drivers(), BARREL_POSI
 // Define commands here ---------------------------------------------------
 // Manual field-relative gimbal control (Left-Switch MID).
 GimbalFieldRelativeControlCommand gimbalFieldRelativeControlCommand(drivers(), &gimbal, &gimbalFieldRelativeController);
+GimbalVelocityTunningCommand gimbalVelocityTunningCommand(
+    drivers(),
+    &gimbal,
+    &gimbalFieldRelativeController,
+    {150.0f, 1.0f},  // yaw: 150 deg/s amplitude, freq unused for aerial
+    {30.0f, 1.0f});  // pitch: 30 deg/s amplitude
 // CV auto-aim toggle (Left-Switch UP). Field-relative, matching the CV testbench.
 GimbalToggleAimCommand gimbalToggleAimCommand(
     drivers(),
@@ -150,8 +156,8 @@ StopShooterComprisedCommand stopShooterComprisedCommand(drivers(), &shooter);
 // Manual field-relative gimbal control. Swap in a tuning command here to tune the gimbal PIDs.
 HoldCommandMapping leftSwitchMid(
     drivers(),
-    {&gimbalFieldRelativeControlCommand},
-    //{&gimbalVelocityTunningCommand},
+    {&gimbalVelocityTunningCommand},
+    // {&gimbalFieldRelativeControlCommand},
     // {&gimbalPositionTunningCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::MID));
 
