@@ -37,6 +37,7 @@
 /* communication includes ---------------------------------------------------*/
 #include "drivers.hpp"
 #include "drivers_singleton.hpp"
+#include "tap/communication/gpio/digital.hpp"
 
 /* error handling includes --------------------------------------------------*/
 #include "tap/errors/create_errors.hpp"
@@ -46,10 +47,13 @@
 //
 #include "robots/robot_control.hpp"
 #include "utils/music/jukebox_player.hpp"
+#include "utils/cv_clocking/clocking.hpp"
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
 // not where this should go lol
+
+tap::arch::PeriodicMicroTimer cvClockTimeout(500);
 
 // Place any sort of input/output initialization here. For example, place
 // serial init stuff here.
@@ -95,6 +99,8 @@ float cancoderAbsolutePositionDisplay = 0;
 float cancoderVelocityDisplay = 0;
 
 bool actualattachDisplay = false;
+bool resetDisplay = false;
+uint32_t currentTicks = 0;
 
 SongTitle playSongWatch = PACMAN;  // Watch variable
 
@@ -120,6 +126,9 @@ int main() {
     src::Drivers *drivers = src::DoNotUse_getDrivers();
 
     Board::initialize();
+#ifndef TARGET_AERIAL
+    Board::initializeUsb();
+#endif
 
     initializeIo(drivers);
     src::Control::initializeSubsystemCommands(drivers);
@@ -143,7 +152,6 @@ static void mainLoop(src::Drivers *drivers) {
     while (1) {
         // do this as fast as you can
         PROFILE(drivers->profiler, updateIo, (drivers));
-
         if (mainLoopTimeout.execute()) {
 
 
@@ -160,6 +168,16 @@ static void mainLoop(src::Drivers *drivers) {
             if(imuTemp > 49.5 && imuTemp < 50.5 && !atTemp){
                 atTemp = true;
             }
+            // drivers->cvClocker.startSignal();
+            // resetDisplay = drivers->cvCommunicator.getResetMessage();
+            // if(resetDisplay){
+            //     drivers->cvClocker.reset();
+            // }
+            // drivers->digital.set(tap::gpio::Digital::PE13, true);
+            // drivers->pwm.setTimerFrequency(tap::gpio::Pwm::Timer::TIMER2, 10000);
+            // drivers->pwm.write(1.0,tap::gpio::Pwm::PWM1);
+            // drivers->pwm.writeAllZeros();
+            //drivers->pwm.start(tap::gpio::Pwm::Timer::TIMER2);
         }
         // every 2ms...
         if (sendMotorTimeout.execute()) {
@@ -196,6 +214,15 @@ static void mainLoop(src::Drivers *drivers) {
 #endif
             loopTimeDisplay = tap::arch::clock::getTimeMicroseconds() - loopStartTime;
         }
+
+        if(cvClockTimeout.execute()){
+            if(drivers->cvCommunicator.getResetMessage()){
+                drivers->cvClocker.reset();
+            }
+            drivers->cvClocker.toogleClock();
+            currentTicks = drivers->cvClocker.getTicks();
+        }
+
         // Was modm::delay_us(10): yield so the other fibers run.
         modm::this_fiber::yield();
     }
@@ -266,6 +293,9 @@ static void updateIo(src::Drivers *drivers) {
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
     drivers->revEncoder.execute();
+#endif
+#ifndef TARGET_AERIAL
+    tud_task();  // USB task
 #endif
 
    // drivers->powerCommunicator.updateSerial();
