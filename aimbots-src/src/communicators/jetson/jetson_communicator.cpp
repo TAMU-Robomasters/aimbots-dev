@@ -164,6 +164,8 @@ void JetsonCommunicator::updateSerial() {
 
                 std::memcpy(universalMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 
+                WRITE((uint8_t*)&universalMessageToJetson, sizeof(universalMessageToJetson));
+
 
                 nextByteIndex = 0;
                 currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
