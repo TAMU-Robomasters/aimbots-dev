@@ -74,7 +74,7 @@ public:
      */
     mockable void writeAllZeros();
 
-    /**
+    /**Cq
      * Sets the PWM duty for a specified pin.
      *
      * @param [in] duty the duty cycle to be set. If the duty is outside of the range

@@ -6,9 +6,12 @@
 #include "tap/communication/sensors/buzzer/buzzer.hpp"
 #include "communicators/jetson/jetson_protocol.hpp"
 #include "modm/math/geometry/angle.hpp"
+#include "modm/platform/usb/uart.hpp"
 
-#define READ(data, length) drivers->uart.read(JETSON_UART_PORT, data, length)
-#define WRITE(data, length) drivers->uart.write(JETSON_UART_PORT, data, length)
+using JetsonUsb = modm::platform::UsbUart<0>; 
+
+#define READ(data, length) JetsonUsb::read(data, length)
+#define WRITE(data, length) JetsonUsb::write(data, length)
 
 namespace src::Informants::Vision {
 
@@ -21,13 +24,13 @@ JetsonCommunicator::JetsonCommunicator(src::Drivers* drivers)
       fireTimeout(),
       lastAimMessage(),
       lastLocalizationMessage(),
+      universalMessageToJetson({EMBEDDED_MESSAGE_MAGIC,}),
       transformationMessageToJetson({EMBEDDED_MESSAGE_MAGIC, {0}}),
       odometryMessageToJetson({EMBEDDED_MESSAGE_MAGIC, 0.0f, 0.0f, 0.0f})
 {}
 
 void JetsonCommunicator::initialize() {
     jetsonOfflineTimeout.restart(JETSON_OFFLINE_TIMEOUT_MILLISECONDS);
-    drivers->uart.init<JETSON_UART_PORT, JETSON_BAUD_RATE>();
 }
 
 uint8_t displayBuffer[JETSON_MAX_MESSAGE_SIZE];
@@ -64,6 +67,7 @@ float velCmdYDisplay = 0.0f;
 
 float fieldYawDisplay = 0.0f;
 float fieldPitchDisplay = 0.0f;
+float fieldRollDisplay = 0.0f;
 float cameraToTurretMatrixDisplay[16] = {0.0f};
 bool ImHereDisplay = false;
 
@@ -85,6 +89,7 @@ void JetsonCommunicator::updateSerial() {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
     timeDisplay = currTime;
 
+   // ImHereDisplay = true;
     fireTimeoutTimeRemainingDisplay = fireTimeout.timeRemaining();
     timeDisplay = currTime;
 
@@ -117,6 +122,7 @@ void JetsonCommunicator::updateSerial() {
         }
         // ...received packet from Jetson, decide what to do
         case JetsonCommunicatorSerialState::HandleMessageType: {
+            //ImHereDisplay = true;
             uint8_t messageType = rawSerialBuffer[nextByteIndex];
             messageTypeDisplay = messageType;
             if (messageType == JETSON_AIM_MESSAGE) {
@@ -132,6 +138,39 @@ void JetsonCommunicator::updateSerial() {
             else if (messageType == JETSON_VELOCITY_MESSAGE) {
                 nextByteIndex++;
                 currentSerialState = JetsonCommunicatorSerialState::AssemblingVelocityMessage;
+            }
+
+            else if (messageType == JETSON_CLOCK_RESET_MESSAGE) {
+                ImHereDisplay = true;
+                nextByteIndex++;
+                currentSerialState = JetsonCommunicatorSerialState::AssemblingResetMessage;
+            }
+
+            else if (messageType == JETSON_UNIVERSAL_QUERY){
+                //ImHereDisplay = true;
+                universalMessageToJetson.currTicks = drivers->cvClocker.getTicks();
+                universalMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
+                universalMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+
+                src::Informants::Transformers::CoordinateFrame turretFieldFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
+
+                src::Informants::Transformers::CoordinateFrame cameraFrame =
+                drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_CAMERA_FRAME);
+
+                Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
+
+                universalMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+                universalMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+                universalMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
+
+                std::memcpy(universalMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
+
+                WRITE((uint8_t*)&universalMessageToJetson, sizeof(universalMessageToJetson));
+
+
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
             }
 
             else if (messageType == JETSON_TRANSFORMATION_QUERY) { // wait for the frame delay byte before responding
@@ -169,7 +208,7 @@ void JetsonCommunicator::updateSerial() {
             // reach this point rawSerialBuffer[nextByteIndex] holds the frame delay byte. If no byte
             // was available yet, updateSerial() already returned and we stay in this state.
             uint8_t frameDelay_ms = rawSerialBuffer[nextByteIndex];
-            ImHereDisplay = true;
+            //ImHereDisplay = true;
 
             drivers->kinematicInformant.mirrorPastRobotFrame(frameDelay_ms + frameDelayOffsetDisplay_ms);
 
@@ -181,11 +220,16 @@ void JetsonCommunicator::updateSerial() {
 
             Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
 
-            transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-            transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+            //transformationMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+            //for alumni dinner
+            transformationMessageToJetson.yaw = drivers->kinematicInformant.getLocalIMUAngle(YAW_AXIS);
+            transformationMessageToJetson.pitch = drivers->kinematicInformant.getLocalIMUAngle(PITCH_AXIS);
+            transformationMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
 
             fieldPitchDisplay = modm::toDegree(transformationMessageToJetson.pitch);
             fieldYawDisplay = modm::toDegree(transformationMessageToJetson.yaw);
+            fieldRollDisplay = modm::toDegree(transformationMessageToJetson.roll);
 
             std::memcpy(transformationMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
 
@@ -289,11 +333,33 @@ void JetsonCommunicator::updateSerial() {
 
             break;
         }
+
+        case JetsonCommunicatorSerialState::AssemblingResetMessage: {
+            nextByteIndex++;
+
+            // Increment the byte index until we reach the expected end of a message, then parse the message.
+            if (nextByteIndex == JETSON_RESET_MESSAGE_SIZE) {
+                // Reinterpret the received bytes into a JetsonResetMessage
+                std::memcpy(&lastResetMessage, rawSerialBuffer, sizeof(JetsonResetMessage));
+
+                // As we've received a full message, reset the byte index and go back to searching for the magic number.
+                nextByteIndex = 0;
+                currentSerialState = JetsonCommunicatorSerialState::SearchingForMagic;
+            }
+
+            break;
+        }
     }
 }
 
 PlateKinematicState JetsonCommunicator::getPlatePrediction(uint32_t dt) const {
     return visionDataConverter.getPlatePrediction(dt);
+}
+
+bool JetsonCommunicator::getResetMessage() {
+    bool message = lastResetMessage.reset;
+    if(lastResetMessage.reset){lastResetMessage.reset = 0;}
+    return message;
 }
 
 modm::Location2D<float> JetsonCommunicator::getLocationEstimate() const {
@@ -306,6 +372,7 @@ AutoAimAngles JetsonCommunicator::getAutoAimAngles() const {
     angles.pitch = lastAimMessage.pitch;
     return angles;
 }
+
 
 bool JetsonCommunicator::isLastFrameStale() const { return visionDataConverter.isLastFrameStale(); }
 

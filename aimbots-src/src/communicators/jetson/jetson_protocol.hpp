@@ -10,8 +10,8 @@ enum CVState : uint8_t {
     CONTINUOUS_FIRE = 2,
 };
 
-static constexpr uint8_t JETSON_MESSAGE_MAGIC = 'a'; // header for jetson -> devboard comms
-static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'b'; // header for devboard -> jetson comms
+static constexpr uint8_t JETSON_MESSAGE_MAGIC = 97; // header for jetson -> devboard comms
+static constexpr uint8_t EMBEDDED_MESSAGE_MAGIC = 'a'; // header for devboard -> jetson comms
 
 static constexpr uint8_t JETSON_AIM_MESSAGE = 'd';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
@@ -21,7 +21,18 @@ static constexpr uint8_t JETSON_LOCALIZATION_MESSAGE = 'l';
 // Query messages are just `JETSON_MESSAGE_MAGIC` + uint8_t messageType
 static constexpr uint8_t JETSON_ODOMETRY_QUERY = 'q';
 
+static constexpr uint8_t JETSON_UNIVERSAL_QUERY = 42;
+
 static constexpr uint8_t JETSON_VELOCITY_MESSAGE = 'v'; // nav2 turret-relative chassis velocity command
+
+static constexpr uint8_t JETSON_CLOCK_RESET_MESSAGE = 3;
+
+
+struct JetsonResetMessage {
+    uint8_t magic;
+    uint8_t messageType;
+    uint8_t reset;
+} __attribute__((packed));
 
 struct JetsonAimMessage {
     uint8_t magic;
@@ -47,10 +58,25 @@ struct JetsonVelocityMessage {
     float vy; // turret-relative chassis velocity, m/s
 } __attribute__((packed));
 
+struct EmbeddedUniversalMessage {
+    uint8_t magic;
+    uint32_t currTicks;
+    //odometry
+    float x;
+    float y;
+    float theta;
+    //transformation
+    float yaw;
+    float pitch;
+    float roll;
+    float matrix[16];
+} __attribute__((packed));
+
 struct EmbeddedTransformationMessage {
     uint8_t magic;
     float yaw;
     float pitch;
+    float roll;
     float matrix[16];
 } __attribute__((packed));
 
@@ -61,14 +87,17 @@ struct EmbeddedOdometryMessage {
     float theta; // orientation in radians
 } __attribute__((packed));
 
+
 static_assert(sizeof(JetsonAimMessage) == 13, "JetsonAimMessage is not the correct size");
 static_assert(sizeof(JetsonVelocityMessage) == 10, "JetsonVelocityMessage is not the correct size");
+static_assert(sizeof(EmbeddedUniversalMessage) == 93, "EmbeddedUniversalMessage is not the correct size");
 static_assert(sizeof(EmbeddedOdometryMessage) == 13, "EmbeddedOdometryMessage is not the correct size");
-static_assert(sizeof(EmbeddedTransformationMessage) == 73, "EmbeddedTransformationMessage is not the correct size");
+static_assert(sizeof(EmbeddedTransformationMessage) == 77, "EmbeddedTransformationMessage is not the correct size");
 
 static constexpr size_t JETSON_AIM_MESSAGE_SIZE = sizeof(JetsonAimMessage);
 static constexpr size_t JETSON_LOCALIZATION_MESSAGE_SIZE = sizeof(JetsonLocalizationMessage);
 static constexpr size_t JETSON_VELOCITY_MESSAGE_SIZE = sizeof(JetsonVelocityMessage);
+static constexpr size_t JETSON_RESET_MESSAGE_SIZE = sizeof(JetsonResetMessage);
 
 static constexpr size_t JETSON_MAX_MESSAGE_SIZE =
     std::max({JETSON_AIM_MESSAGE_SIZE, JETSON_LOCALIZATION_MESSAGE_SIZE, JETSON_VELOCITY_MESSAGE_SIZE});
