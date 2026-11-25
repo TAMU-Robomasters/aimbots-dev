@@ -123,7 +123,7 @@ static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
 
 // VELOCITY PID CONSTANTS
 static constexpr SmoothPIDConfig YAW_VELOCITY_PID_CONFIG = {
-    .kp = 1200.0f,  
+    .kp = 500.0f,  
     .ki = 10.0f,    
     .kd = 0.0f,
     .maxICumulative = 2000.0f,

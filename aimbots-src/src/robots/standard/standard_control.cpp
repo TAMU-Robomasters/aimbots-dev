@@ -304,8 +304,8 @@ auto leftSwitchMid = std::make_unique<HoldCommandMapping>(
 // Enables both chassis and gimbal control and closes hopper
 auto leftSwitchUp = std::make_unique<HoldCommandMapping>(
     drivers(),  // gimbalFieldRelativeControlCommand2
-    std::vector<Command *>{&chassisTokyoCommand, &gimbalChaseCommand2},
-    //{&gimbalVelocityTunningCommand},
+    std::vector<Command *>//{&chassisTokyoCommand, &gimbalChaseCommand2},
+    {&gimbalVelocityTunningCommand},
     //{&gimbalPositionTunningCommand},
     &leftSwitchUpState);
 
