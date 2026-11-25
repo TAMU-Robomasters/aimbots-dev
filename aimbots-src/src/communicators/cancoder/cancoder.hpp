@@ -24,7 +24,7 @@ namespace src::communicators::cancoder
 class CANcoder
 {
 public:
-    static constexpr tap::can::CanBus DEFAULT_BUS = tap::can::CanBus::CAN_BUS2;
+    static constexpr tap::can::CanBus DEFAULT_BUS = tap::can::CanBus::CAN_BUS1;
 
     static constexpr uint32_t SENSOR_BASE_ID = 0x05042CC0u;
     static constexpr uint32_t AUX_BASE_ID    = 0x05043440u;
