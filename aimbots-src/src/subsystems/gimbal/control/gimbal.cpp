@@ -40,7 +40,7 @@ int64_t currentYawEncoderPositionDisplay = 0;
 float currentYawAxisAngleDisplay = 0.0f;
 float currByFuncYawAngleDisplay = 0;
 float currentPitchAxisAngleDisplay = 0.0f;
-int yawEncoderDisplay = 0;
+float yawEncoderDisplay = 0;
 float tartgetYawDisplay = 0.0f;
 
 float currentYawMotorAngleDisplay = 0.0f;
