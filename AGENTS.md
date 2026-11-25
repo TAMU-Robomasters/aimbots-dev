@@ -18,7 +18,7 @@ uv run scons build robot=SENTRY_SWERVE   # no TARGET_ prefix
 
 | Builds | Fails for Taproot reasons | Fails for other reasons (missing per-robot constants) |
 |---|---|---|
-| `STANDARD_BLASTOISE`, `SENTRY_SWERVE`, `HERO` | `AERIAL`, `ENGINEER`, `DART` (command mappings, see below) | `STANDARD_SQUIRTLE`, `SENTRY_BRAVO`, `TURRET`, `CVTEST_*`, plus `CAMERA_*_OFFSET` for `ENGINEER`/`DART` |
+| `STANDARD_GOOSE`, `SENTRY_SWERVE`, `HERO` | `AERIAL`, `ENGINEER`, `DART` (command mappings, see below) | `STANDARD_SQUIRTLE`, `SENTRY_BRAVO`, `TURRET`, `CVTEST_*`, plus `CAMERA_*_OFFSET` for `ENGINEER`/`DART` |
 
 `STANDARD_2023` and `STANDARD_2025` were not checked.
 

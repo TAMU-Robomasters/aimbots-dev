@@ -7,7 +7,7 @@
 // #define TURRET_HAS_IMU
 #define GIMBAL_UNTETHERED
 
-#if defined(TARGET_STANDARD_BLASTOISE)
+#if defined(TARGET_STANDARD_GOOSE)
     static constexpr SongTitle STARTUP_SONG = SongTitle::CHAINSAW_MAN;
 #else
     static constexpr SongTitle STARTUP_SONG = SongTitle::CAN_YOU_HEAR_THE_DUB;
@@ -58,7 +58,7 @@ static Vector3f BARREL_POSITION_FROM_GIMBAL_ORIGIN{
 
 static constexpr float CHASSIS_START_ANGLE_WORLD = modm::toRadian(0.0f);  // theta (about z axis)
 
-#if defined(TARGET_STANDARD_BLASTOISE) || defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_SQUIRTLE)
+#if defined(TARGET_STANDARD_GOOSE) || defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_SQUIRTLE)
 
 static constexpr float CIMU_CALIBRATION_EULER_X = modm::toRadian(0.0f);
 static constexpr float CIMU_CALIBRATION_EULER_Y = modm::toRadian(0.0f);

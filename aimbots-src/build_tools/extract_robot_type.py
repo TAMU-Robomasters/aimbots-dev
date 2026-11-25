@@ -19,7 +19,7 @@ from SCons.Script import *
 
 ROBOT_TYPE_FILE     = "robot-type/robot_type.hpp"
 VALID_ROBOT_TYPES   = [ "STANDARD_2023",
-                        "STANDARD_BLASTOISE",
+                        "STANDARD_GOOSE",
                         "STANDARD_SQUIRTLE",
                         "STANDARD_2025",
                         "AERIAL",

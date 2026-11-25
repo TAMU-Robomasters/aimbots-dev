@@ -44,7 +44,7 @@ void rescaleDesiredInputToPowerLimitedSpeeds(
         drivers->refSerial.getRefSerialReceivingData(),
         drivers->refSerial.getRobotData().chassis.powerConsumptionLimit);
 
-#if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_BLASTOISE)
+#if defined(TARGET_STANDARD_2025) || defined(TARGET_STANDARD_GOOSE)
     maxWheelSpeed = 4000.0f;
 #endif
 

@@ -33,7 +33,6 @@
 #include "communicators/cancoder/cancoder.hpp"
 #include "communicators/vtm_can/can_test_listener.hpp"
 #include "communicators/can_sound_system/can_sound_system.hpp"
-#include "communicators/rev_encoder/rev_encoder_protocol.hpp"
 //#include "communicators/INA260/INA260_communicator.hpp"
 #include "utils/music/jukebox_player.hpp"
 #include "utils/cv_clocking/clocking.hpp"
