@@ -59,9 +59,7 @@ public:
           cancoder(this),
       //  powerCommunicator(this),
       #ifdef YAW_3508
-          #ifndef NO_REV_ENCODER
-            revEncoder(this),
-          #endif
+          revEncoder(this),
       #endif
           kinematicInformant(this),
           hitTracker(this),
@@ -82,9 +80,7 @@ public:
     src::communicators::cancoder::CANcoder cancoder;
   //  Informants::INA260::INA260Communicator powerCommunicator;
   #ifdef YAW_3508
-    #ifndef NO_REV_ENCODER
-        Informants::RevEncoder revEncoder;
-    #endif
+    Informants::RevEncoder revEncoder;
   #endif
     Informants::KinematicInformant kinematicInformant;
     Informants::HitTracker hitTracker;

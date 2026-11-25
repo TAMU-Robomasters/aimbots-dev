@@ -7,8 +7,7 @@
 #define GIMBAL_UNTETHERED
 #define GIMBAL_COMPATIBLE
 
-#define YAW_3508
-#define NO_REV_ENCODER
+//#define YAW_3508
 //#define INVERTED_YAW_ENCODER
 
 /**

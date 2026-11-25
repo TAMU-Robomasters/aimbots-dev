@@ -248,9 +248,7 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->espPowerSensor.initialize();
     drivers->canSoundSystem.initialize();
 #ifdef YAW_3508
-    #ifndef NO_REV_ENCODER
-        drivers->revEncoder.initialize();
-    #endif
+    drivers->revEncoder.initialize();
 #endif
 
 //drivers->kinematicInformant.recalibrateIMU();
@@ -294,9 +292,7 @@ static void updateIo(src::Drivers *drivers) {
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
 #ifdef YAW_3508
-    #ifndef NO_REV_ENCODER
-        drivers->revEncoder.execute();
-    #endif
+    drivers->revEncoder.execute();
 #endif
 #ifndef TARGET_AERIAL
     tud_task();  // USB task
