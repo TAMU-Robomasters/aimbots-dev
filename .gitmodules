@@ -1,4 +1,0 @@
-[submodule "taproot"]
-	path = taproot
-	url = https://github.com/kahzmic/taproot-modm-upgrade.git
-	branch = dm-mc02/p3-fdcan
