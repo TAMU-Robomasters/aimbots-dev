@@ -85,20 +85,17 @@ void GimbalSubsystem::refresh() {
 #ifndef YAW_3508
         int64_t currentYawEncoderPosition = yawMotors[i]->getInternalEncoder().getEncoder().getUnwrappedValue();
 #else
-        int64_t currentYawEncoderPosition = drivers->revEncoder.getUnwrappedPosition();
+        float currentYawEncoderPosition = drivers->cancoder.getAbsolutePositionRadians();
         currentYawEncoderPositionDisplay = currentYawEncoderPosition;
 #endif
         // https://www.desmos.com/calculator/bducsk7y6v
 #ifndef YAW_3508
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO * (DJIEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
-#elif defined(ALL_HEROES)
-        float wrappedYawAxisAngle =
-            GIMBAL_YAW_GEAR_RATIO * (RevEncoderValueToRadians(currentYawEncoderPosition) - YAW_MOTOR_OFFSET_ANGLES[i]);
-#else  // FIXME: fix this when we retune sentry
+#else 
         float wrappedYawAxisAngle =
             GIMBAL_YAW_GEAR_RATIO *
-            (RevEncoderValueToRadians(currentYawEncoderPosition - 13815.0f));  // Yaw offset, move later
+            (currentYawEncoderPosition);
 
 #endif
         currentYawAxisAnglesByMotor[i]->setWrappedValue(wrappedYawAxisAngle);
@@ -111,7 +108,7 @@ void GimbalSubsystem::refresh() {
         yawEncoderDisplay = yawMotors[i]->getInternalEncoder().getEncoder().getWrappedValue();
         currentYawMotorAngleDisplay = modm::toDegree(DJIEncoderValueToRadians(currentYawEncoderPosition));
 #else
-        yawEncoderDisplay = drivers->revEncoder.getData();
+        yawEncoderDisplay = drivers->cancoder.getAbsolutePositionRadians();;
 #endif
         currentYawAxisAngleByMotorDisplay = currentYawAxisAnglesByMotor[yawDisplayMotorIdx]->getWrappedValue();
 #ifdef YAW_3508 

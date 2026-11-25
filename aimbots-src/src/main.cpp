@@ -247,9 +247,6 @@ static void initializeIo(src::Drivers *drivers) {
     drivers->customController.initialize();
     drivers->espPowerSensor.initialize();
     drivers->canSoundSystem.initialize();
-#ifdef YAW_3508
-    drivers->revEncoder.initialize();
-#endif
 
 //drivers->kinematicInformant.recalibrateIMU();
 #ifndef TARGET_TURRET  // Chassis-exclusive initializations
@@ -291,9 +288,6 @@ static void updateIo(src::Drivers *drivers) {
     drivers->refSerial.updateSerial();
     drivers->remote.read();
     drivers->cvCommunicator.updateSerial();
-#ifdef YAW_3508
-    drivers->revEncoder.execute();
-#endif
 #ifndef TARGET_AERIAL
     tud_task();  // USB task
 #endif
