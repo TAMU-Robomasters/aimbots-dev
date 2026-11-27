@@ -28,9 +28,9 @@ static constexpr uint8_t CHASSIS_SNAP_POSITIONS = 2;
 
 // clang-format off
 static Vector3f CAMERA_ORIGIN_RELATIVE_TO_TURRET_ORIGIN{ // in meters
-    -0.002201f, // x
-    0.1348f, // y
-    -0.0498f,  // z
+    0.0f, // x
+    0.126762f - 0.02328f, // y offset subtracted by the sensor location in case
+    0.025253f,  // z
 };
 
 static Vector3f TURRET_ORIGIN_RELATIVE_TO_CHASSIS_ORIGIN{

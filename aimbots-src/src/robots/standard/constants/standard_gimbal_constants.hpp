@@ -78,7 +78,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_PID_CONFIG = {
-    .kp = 10.750f,
+    .kp = 10.00f,
     .ki = 0.002f,
     .kd = 0.30f,
     .maxICumulative = 10.0f,
@@ -107,7 +107,7 @@ static constexpr SmoothPIDConfig YAW_POSITION_CASCADE_PID_CONFIG = {
 };
 
 static constexpr SmoothPIDConfig PITCH_POSITION_CASCADE_PID_CONFIG = {
-    .kp = 10.750f,  // 30
+    .kp = 10.00f,  // 30
     .ki = 0.002f,
     .kd = 0.30f,  // 0
     .maxICumulative = 1000.0f,
