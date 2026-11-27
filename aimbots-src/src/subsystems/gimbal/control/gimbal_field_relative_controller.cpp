@@ -486,7 +486,8 @@ void GimbalFieldRelativeController::runPitchVelocityController(std::optional<flo
 
         chassisPitchRelativeVelocityTargetDisplay = chassisRelativeVelocityTarget;
        // chassisPitchRelativeVelocityCurrentDisplay = modm::toDegree(RPM_TO_RADPS(gimbal->getPitchMotorRPM(i)));
-        chassisPitchRelativeVelocityCurrentDisplay = pitchVelocityFilters[0]->getValue();
+        chassisPitchRelativeVelocityCurrentDisplay =
+            modm::toRadian(pitchVelocityFilters[0]->getValue());
         pitchGimbalMotorPositionDisplay = gimbal->getCurrentPitchAxisAngle(AngleUnit::Radians);
         pitchGimbalMotorPositionTargetDisplay = gimbal->getTargetPitchAxisAngle(AngleUnit::Radians);
         pitchVelocityFeedforwardOutputDisplay = velocityFeedforward;
