@@ -151,6 +151,20 @@ void JetsonCommunicator::updateSerial() {
                 universalMessageToJetson.currTicks = drivers->cvClocker.getTicks();
                 universalMessageToJetson.x = drivers->kinematicInformant.getRobotLocation2D().getX();
                 universalMessageToJetson.y = drivers->kinematicInformant.getRobotLocation2D().getY();
+                universalMessageToJetson.theta =
+                    drivers->kinematicInformant.getGimbalIMUAngle(src::Informants::YAW_AXIS, AngleUnit::Radians);
+
+                const float currentGimbalYaw =
+                    drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
+                const float currentGimbalPitch =
+                    drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+
+                // The transformation frame is normally refreshed by a transformation query's
+                // frame-delay path. Universal queries must refresh it themselves, otherwise the
+                // matrix remains at its zero-initialized/stale value when no transformation query
+                // has arrived first.
+                drivers->kinematicInformant.getTurretFrames().mirrorPastCameraFrame(
+                    currentGimbalYaw, currentGimbalPitch, AngleUnit::Radians);
 
                 src::Informants::Transformers::CoordinateFrame turretFieldFrame =
                 drivers->kinematicInformant.getTurretFrames().getFrame(Transformers::TurretFrameType::TURRET_FIELD_FRAME);
@@ -160,8 +174,8 @@ void JetsonCommunicator::updateSerial() {
 
                 Matrix4f cameraToTurret = cameraFrame.getTransformToFrame(turretFieldFrame);
 
-                universalMessageToJetson.yaw = drivers->kinematicInformant.getCurrentFieldRelativeGimbalYawAngleAsWrappedFloat().getWrappedValue();
-                universalMessageToJetson.pitch = drivers->kinematicInformant.getCurrentFieldRelativeGimbalPitchAngleAsWrappedFloat().getWrappedValue();
+                universalMessageToJetson.yaw = currentGimbalYaw;
+                universalMessageToJetson.pitch = currentGimbalPitch;
                 universalMessageToJetson.roll = drivers->kinematicInformant.getLocalIMUAngle(ROLL_AXIS);
 
                 std::memcpy(universalMessageToJetson.matrix, cameraToTurret.element, sizeof(float) * 16);
