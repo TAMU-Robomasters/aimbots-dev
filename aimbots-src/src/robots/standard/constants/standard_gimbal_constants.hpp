@@ -39,7 +39,7 @@ static const std::array<const char*, PITCH_MOTOR_COUNT> PITCH_MOTOR_NAMES = {"Pi
 static const std::array<float, PITCH_MOTOR_COUNT> PITCH_MOTOR_OFFSET_ANGLES = {wrapTo0To2PIRange(modm::toRadian(155.0f))};
 /* What motor angles ensures that the barrel is pointing straight forward and level relative to the robot chassis? */
 
-static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(-25.0f);
+static constexpr float PITCH_AXIS_START_ANGLE = modm::toRadian(0.0f);
 
 static constexpr float GIMBAL_PITCH_GEAR_RATIO = (50.0f / 25.4f);
 /*Changing this means the encoder-readable range of the PITCH axis is reduced to 360deg * GIMBAL_PITCH_GEAR_RATIO before the
@@ -48,8 +48,8 @@ static constexpr float GIMBAL_PITCH_GEAR_RATIO = (50.0f / 25.4f);
 
 //static constexpr float GIMBAL_YAW_MOTOR_GEAR_RATIO = (38.0f / 1.0f);
 
-static constexpr float PITCH_AXIS_SOFTSTOP_LOW = (modm::toRadian(-25.0f));
-static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = (modm::toRadian(25.0f));
+static constexpr float PITCH_AXIS_SOFTSTOP_LOW = -0.3f;
+static constexpr float PITCH_AXIS_SOFTSTOP_HIGH = 0.4f;
 
 //20 220
 
