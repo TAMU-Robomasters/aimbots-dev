@@ -534,9 +534,9 @@ void KinematicInformant::updateChassisIMUAngles() {
 
     yawMotorRPMDisplay = gimbalSubsystem->getYawMotorRPM(0);
 #ifdef YAW_3508
-    // Only robots with a 3508 yaw + rev encoder (sentry/hero) have drivers->revEncoder.
+    // Only robots with a 3508 yaw + CANcoder expose this yaw position display value.
     // YawPosEncoder is display-only and unused elsewhere, so turret-IMU robots without a
-    // rev encoder (e.g. aerial) simply leave it at 0.
+    // CANcoder (e.g. aerial) simply leave it at 0.
     YawPosEncoder = drivers->cancoder.getAbsolutePositionRadians();
 #endif
 
